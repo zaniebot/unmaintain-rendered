@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add Property Tests for Intersection and Union - astral-sh/ruff #15415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add Property Tests for Intersection and Union</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15415">#15415</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2025-01-11 07:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-01-11 07:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #14986</p>
+<h3>stable tests</h3>
+<ul>
+<li><code>all_fully_static_type_pairs_are_subtype_of_their_union</code></li>
+</ul>
+<h3>flaky tests</h3>
+<ul>
+<li><code>negation_is_disjoint</code></li>
+<li><code>all_fully_static_type_pairs_are_supertypes_of_their_union</code></li>
+<li><code>all_type_pairs_can_be_assigned_from_their_intersection</code></li>
+<li><code>all_type_pairs_are_assignable_to_their_union</code></li>
+</ul>
+<p>The tests that are currently failing have been categorized as flaky. The failure of <code>fully_static_types_are_supertypes_of_their_intersection</code> seems a bit unusual, so I’ll take look into it and create a separate issue if needed. :)</p>
+<h2>Test Plan</h2>
+<p>stable: <code>QUICKCHECK_TESTS=10000 cargo test -p red_knot_python_semantic -- --ignored types::property_tests::stable</code>
+flaky: <code>QUICKCHECK_TESTS=10000 cargo test -p red_knot_python_semantic -- --ignored types::property_tests::flaky</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2025-01-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2025-01-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2025-01-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @cake-monotone on 2025-01-11 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-11 07:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:319 on 2025-01-11 12:44</div>
+            <div class="timeline-body"><p>Let's use boolean and (<code>&amp;&amp;</code>) rather than bitwise and <code>&amp;</code> :-)</p>
+<pre><code class="language-suggestion">            s.is_fully_static(db) &amp;&amp; t.is_fully_static(db)
+            =&gt; s.is_subtype_of(db, union(db, s, t)) &amp; t.is_subtype_of(db, union(db, s, t))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:380 on 2025-01-11 12:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            s.is_fully_static(db) &amp;&amp; t.is_fully_static(db)
+            =&gt; intersection(db, s, t).is_subtype_of(db, s) &amp;&amp; intersection(db, s, t).is_subtype_of(db, t)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 12:46</div>
+            <div class="timeline-body"><p>Brilliant, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-01-11 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-11 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-01-11 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:380 on 2025-01-11 13:56</div>
+            <div class="timeline-body"><p>Thanks for catching it! 👍 !!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:320 on 2025-01-11 23:44</div>
+            <div class="timeline-body"><p>Is it worth adding another test as well for assignability with non-fully-static types?</p>
+<pre><code class="language-suggestion">    // For fully static types, they should be subtype of their union.
+    type_property_test!(
+        fully_static_types_are_subtype_of_their_union, db,
+        forall types s, t.
+            s.is_fully_static(db) &amp;&amp; t.is_fully_static(db)
+            =&gt; s.is_subtype_of(db, union(db, s, t)) &amp;&amp; t.is_subtype_of(db, union(db, s, t))
+    );
+    
+    // And for *any* two types, even non-fully-static types,
+    // each of the pair they should be assignable to the union of the two.
+    type_property_test!(
+        all_type_pairs_are_assignable_to_their_union, db,
+        forall types s, t. s.is_assignable_to(db, union(db, s, t)) &amp;&amp; t.is_assignable_to(db, union(db, s, t))
+    );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:381 on 2025-01-11 23:47</div>
+            <div class="timeline-body"><p>And for non-fully-static types, the intersection should be assignable, I think:</p>
+<pre><code class="language-suggestion">    // For fully static types, their intersection should be subtype of them.
+    type_property_test!(
+        fully_static_types_are_supertypes_of_their_intersection, db,
+        forall types s, t.
+            s.is_fully_static(db) &amp;&amp; t.is_fully_static(db)
+            =&gt; intersection(db, s, t).is_subtype_of(db, s) &amp;&amp; intersection(db, s, t).is_subtype_of(db, t)
+    );
+
+    // And for non-fully-static types, the intersection of a pair of types
+    // should be assignable to both types of the pair.
+    type_property_test!(
+        fully_static_types_are_supertypes_of_their_intersection, db,
+        forall types s, t. intersection(db, s, t).is_assignable_to(db, s) &amp;&amp; intersection(db, s, t).is_assignable_to(db, t)
+    );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 23:49</div>
+            <div class="timeline-body"><p>A couple of suggestions to also add some non-fully-static variations of these tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-01-12 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:320 on 2025-01-12 07:42</div>
+            <div class="timeline-body"><p>That makes sense! I’ve added it. However, <code>all_type_pairs_are_assignable_to_their_union</code> was failing with high probability, so I moved it to the flaky module. It seems that <code>is_assignable_to</code> is not fully implemented for non-fully-static types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-12 13:17</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-12 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-12 13:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

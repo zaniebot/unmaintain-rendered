@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix unstable f-string formatting for expressions containing a trailing comma - astral-sh/ruff #15545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix unstable f-string formatting for expressions containing a trailing comma</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15545">#15545</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-17 07:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-17 07:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/15536</p>
+<p>The <code>RemoveSoftlinesBuffer</code> removes soft line breaks and <code>if_group_breaks</code> elements but it
+doesn't remove <code>expand_parent</code> elements. This can lead to instable formatting
+when f-strings are wrapped in a <code>group</code> because it makes that group expand. For example,
+<code>print(f&quot;{ {}, 1, }&quot;)</code> first gets formatted to</p>
+<pre><code class="language-py">print(
+    f&quot;{ {}, 1 }&quot;
+)
+</code></pre>
+<p>and only then converges at <code>print(f&quot;{ {}, 1 }&quot;)</code>.</p>
+<p>I first tried to also remove <code>expand_parent</code> elemnents in the <code>RemoveSoftLinesBuffer</code>
+but that results in many failing tests around assignment formatting because
+we rely on <code>Document::will_break</code> to determine if we should try the flat
+layout and that only returns <code>true</code> if the f-string formatting contains the <code>expand_parent</code> along the trailing comma.</p>
+<p>I reviewed all <code>expand_parent</code> usages and realized that the trailing comma is the only
+usage in our expression formatting. That's why I decided to adjust the trailing comma
+formatting instead to omit the trailing comma if we know that we're in a flat f-string.</p>
+<p>This is also how Dhruv implemented it originally before I removed the check in https://github.com/astral-sh/ruff/pull/14489 because I thought it
+it no longer necessary.</p>
+<h2>Test Plan</h2>
+<p>Added regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-17 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-01-17 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-01-17 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-01-17 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-17 08:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-17 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix instable f-string formatting for expressions containing a trailing comma" to "Fix unstable f-string formatting for expressions containing a trailing comma" by @dhruvmanila on 2025-01-17 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-17 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-17 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-17 09:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

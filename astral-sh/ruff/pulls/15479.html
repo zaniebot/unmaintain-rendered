@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `AstNode` and `AnyNode` - astral-sh/ruff #15479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>AstNode</code> and <code>AnyNode</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15479">#15479</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-01-14 20:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-14 20:35</div>
+            <div class="timeline-body"><p>While looking into potential AST optimizations, I noticed the <code>AstNode</code> trait and <code>AnyNode</code> type aren't used anywhere in Ruff or Red Knot.  It looks like they might be historical artifacts of previous ways of consuming AST nodes?</p>
+<ul>
+<li><code>AstNode::cast</code>, <code>AstNode::cast_ref</code>, and <code>AstNode::can_cast</code> are not used anywhere.</li>
+<li>Since <code>cast_ref</code> isn't needed anymore, the <code>Ref</code> associated type isn't either.</li>
+</ul>
+<p>This is a pure refactoring, with no intended behavior changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MichaReiser on 2025-01-14 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-14 20:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-01-14 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 07:59</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like they might be historical artifacts of previous ways of consuming AST nodes?</p>
+</blockquote>
+<p>They're mainly experimentations on my end but I never really had time to fully persuade them. The overall design with <code>AstNode</code> is inspired by rust analyzers/BiomeJS AST <a href="https://github.com/biomejs/biome/blob/main/crates/biome_js_syntax/src/generated/nodes.rs#L16418">facade over a generic syntax node</a>. But I don't think the design works as well for our AST. That's why removing <code>cast</code>, <code>cast_ref</code>, and <code>Ref</code> is probably a good idea. I'm also open to removing the <code>AstNode</code>.</p>
+<p>I do think it might be valuable to keep <code>StatementRef</code> around:</p>
+<ul>
+<li>We have and use <code>ExpressionRef</code>, <code>AnyNodeRef</code>. <code>StatementRef</code> is needed for a &quot;complete&quot; API</li>
+<li>The main motivation for <code>StatementRef</code> (and <code>ExpressionRef</code>) is that we have methods that should accept any statement node. Historically, we used <code>&amp;Stmt</code> for those. The problem with using <code>&amp;Stmt</code> is that you're screwed if you only have a <code>&amp;StmtIf</code> because there's no way to go from <code>&amp;StmtIf</code> to <code>&amp;Stmt::If</code>. Our previous solution was to change the call-site to get access to the <code>&amp;Stmt</code> node. Unfortunately, that method now accepts redundant arguments or we just weakened its signature (with a very likely <code>unwrap</code> call in the method itself). A possible solution for this problem is to use <code>StatementRef</code> over <code>&amp;Stmt</code> because you can convert a <code>&amp;Stmt</code> and a specific statement node to <code>StatementRef</code>. I've never had the time to refactor some code to use <code>StatementRef</code> because it's hard to identify the problematic methods now where they all use <code>&amp;Stmt</code> instead of a specific node. It's also something that needs to be done at a larger scale because mixing <code>StatementRef</code> and <code>&amp;Stmt</code> is problematic again whenever you have to call from a function taking a <code>StatementRef</code> into a function that takes a <code>&amp;Stmt</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-15 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I do think it might be valuable to keep <code>StatementRef</code> around:</p>
+<ul>
+<li><p>We have and use <code>ExpressionRef</code>, <code>AnyNodeRef</code>. <code>StatementRef</code> is needed for a &quot;complete&quot; API</p>
+</li>
+<li><p>The main motivation for <code>StatementRef</code> (and <code>ExpressionRef</code>) is that we have methods that should accept any statement node. Historically, we used <code>&amp;Stmt</code> for those. The problem with using <code>&amp;Stmt</code> is that you're screwed if you only have a <code>&amp;StmtIf</code> because there's no way to go from <code>&amp;StmtIf</code> to <code>&amp;Stmt::If</code>. Our previous solution was to change the call-site to get access to the <code>&amp;Stmt</code> node. Unfortunately, that method now accepts redundant arguments or we just weakened its signature (with a very likely <code>unwrap</code> call in the method itself). A possible solution for this problem is to use <code>StatementRef</code> over <code>&amp;Stmt</code> because you can convert a <code>&amp;Stmt</code> and a specific statement node to <code>StatementRef</code>. I've never had the time to refactor some code to use <code>StatementRef</code> because it's hard to identify the problematic methods now where they all use <code>&amp;Stmt</code> instead of a specific node. It's also something that needs to be done at a larger scale because mixing <code>StatementRef</code> and <code>&amp;Stmt</code> is problematic again whenever you have to call from a function taking a <code>StatementRef</code> into a function that takes a <code>&amp;Stmt</code>.</p>
+</li>
+</ul>
+</blockquote>
+<p>What I'm eventually aiming for (WIP branch <a href="https://github.com/astral-sh/ruff/tree/dcreager/ast-builder">here</a>) would be to use <code>IndexVec</code> to store all of the AST variants, and <code>Stmt</code>/<code>Expr</code>/etc would be enums wrapping the <em>id</em>, not the actual data.  I think that would make <code>Expr</code> work in places where we're currently using <code>ExpressionRef</code>.  And a method that only operates on <code>StmtIf</code> would take in <code>StmtIfId</code> instead of the enum wrapper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-01-16 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-16 02:06</div>
+            <div class="timeline-body"><p>Putting this back to draft while I iterate on some follow-on patches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove dead code from `AstNode` trait" to "Remove `AstNode` and `AnyNode`" by @dcreager on 2025-01-17 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-17 19:43</div>
+            <div class="timeline-body"><p>This PR diff is <em>much</em> nicer with #15544 merged!  This is ready for review again.</p>
+<p>I've also taken the opportunity to remove <code>AnyNode</code>.  In general, we operate on references to syntax nodes, and not owned copies of them.  It was only being used in one test, which can be updated to use <code>AnyNodeRef</code> instead.</p>
+<blockquote>
+<p>I do think it might be valuable to keep <code>StatementRef</code> around:</p>
+</blockquote>
+<p>I've kept <code>StatementRef</code> (and <code>ExpressionRef</code>), though with #15544 they're now auto-generated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-01-17 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-17 20:30</div>
+            <div class="timeline-body"><p>It's now also much easier to review. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-01-17 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-01-17 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-17 22:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

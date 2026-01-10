@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] More precise inference for classes with non-class metaclasses - astral-sh/ruff #15138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] More precise inference for classes with non-class metaclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15138">#15138</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-25 00:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-25 00:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14208.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-12-25 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-12-25 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-12-25 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2024-12-25 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-25 00:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-25 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3399 on 2024-12-29 00:12</div>
+            <div class="timeline-body"><p>I think we should use <code>return_ty_result</code> here for better handling of union cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/metaclass.md</code>:188 on 2024-12-29 00:12</div>
+            <div class="timeline-body"><p>I think this should emit an <code>invalid-metaclass</code> diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-29 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-29 03:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3399 on 2024-12-29 03:10</div>
+            <div class="timeline-body"><p>I'm not sure if <code>.return_ty_result()</code> is optimal in this context. It adds diagnostics all on its own, but such errors should instead be delegated so that <code>INVALID_METACLASS</code> can be emitted cleanly. This would require either:</p>
+<ul>
+<li>Handling call outcomes here, one by one, instead of asking <code>.return_ty_result()</code>. Problem: Code duplication.</li>
+<li>Add a new method <code>.return_ty_result_pure()</code> (tentative name) that does not report diagnostics. Problem: One-time refactoring cost (<code>.return_ty_result()</code> is currently used at 8 places).</li>
+</ul>
+<p>I personally prefer the former, because it is simpler and allows for minutiae control. Besides, I don't think <code>class A(metaclass=reveal_type)</code> should trigger the &quot;reveal type&quot; effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-30 00:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3399 on 2024-12-30 00:35</div>
+            <div class="timeline-body"><p>Hmm, our <code>CallOutcome</code> methods are in a bit of a confused state, I think tbh some refactoring is needed :/ For non-union error cases, <code>return_ty_result</code> does not emit a diagnostic (it just returns an error result), but it does for <code>reveal_type</code> and for union cases. But we don't need to refactor this in this PR.</p>
+<p>I'm fine with directly matching on the <code>CallOutcome</code> here for now, to avoid scope creep into refactoring <code>CallOutcome</code> methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:651 on 2025-01-08 17:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            &quot;Metaclass type `{}` may not be callable&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-08 17:21</div>
+            <div class="timeline-body"><p>Looks great, thank you! Will apply my diagnostic wording nit and then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 17:29</div>
+            <div class="timeline-body"><p>Oops, looks like this needs a rebase before it can land. I don't have time to do that right now, but will merge if you're able to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 18:28</div>
+            <div class="timeline-body"><p>Sorry, I should have clarified that it's not just a rebase -- the rebase causes logical conflicts that make compilation fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-08 20:42</div>
+            <div class="timeline-body"><blockquote>
+<p>[...] the rebase causes logical conflicts that make compilation fail.</p>
+</blockquote>
+<p>Indeed, now there's a panic that I can't make heads or tails of:</p>
+<pre><code class="language-text">metaclass.md - Non-class
+
+  crates/red_knot_python_semantic/resources/mdtest/metaclass.md:169 panicked at /home/runner/.cargo/git/checkouts/salsa-61760caba2b17ca5/88a1d77/src/runtime.rs:335:13
+</code></pre>
+<p>Here's the code in question:</p>
+<pre><code class="language-python">def f(*args, **kwargs) -&gt; int: ...  # 169 (not even modified)
+
+class A(metaclass=f): ...           # 171 (also not modified)
+</code></pre>
+<p>I'm also getting <code>&quot;Module `knot_extensions` has no member `static_assert`&quot;</code> errors, but only locally (Windows). Does the new Python API require some kind of configuration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 20:51</div>
+            <div class="timeline-body"><blockquote>
+<p>now there's a panic</p>
+</blockquote>
+<p>I can repro this, will take a couple minutes to look at it and see if I can understand it.</p>
+<blockquote>
+<p>I'm also getting <code>&quot;Module `knot_extensions` has no member `static_assert`&quot;</code> errors, but only locally (Windows). Does the new Python API require some kind of configuration?</p>
+</blockquote>
+<p>No, but I suspect this is related to the use of a symlink to include <code>knot_extensions.pyi</code> in typeshed; we should probably just copy instead. Cc @sharkdp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 21:07</div>
+            <div class="timeline-body"><p>The panic is due to a Salsa query cycle. Still looking into why it's new after the rebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-08 21:17</div>
+            <div class="timeline-body"><blockquote>
+<p>No, but I suspect this is related to the use of a symlink to include <code>knot_extensions.pyi</code> in typeshed; we should probably just copy instead. Cc @sharkdp</p>
+</blockquote>
+<p>Strange that our CI tests on Windows seem to have no problem with it? I can take a look tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 00:19</div>
+            <div class="timeline-body"><p>Ok, I tracked down the cycle. It's new with the rebase because we are now doing proper call binding. What happens is that we call the metaclass <code>f</code>, which takes <code>*args</code>, and the behavior of call binding is to create a bound type for the variadic parameter <code>*args</code> which is the union of the types of all arguments which map to that variadic parameter. In this case that is all three of <code>self_ty</code>, <code>bases</code>, and <code>namespace</code>. In constructing that union, we end up checking whether <code>namespace</code> (which is <code>dict</code>) and <code>self_ty</code> (which is the class <code>A</code>) are subtypes of each other, and this check ends up needing to know the metaclass of <code>A</code>, which obviously leads to a cycle.</p>
+<p>I think this reveals a bug in the PR that I hadn't noticed. The first argument to the metaclass is not the actual class object, as modeled in the PR via <code>self_ty</code>. That would be pretty circular at runtime, too, since the metaclass is responsible for creating the class object! The first argument to the metaclass is a string, the name of the new class:</p>
+<pre><code>&gt;&gt;&gt; def f(*a):
+...     print(a)
+...
+&gt;&gt;&gt; class A(metaclass=f): ...
+...
+('A', (), {'__module__': '__main__', '__qualname__': 'A', '__firstlineno__': 1, '__static_attributes__': ()})
+</code></pre>
+<p>If we correctly reflect this by passing <code>Type::string_literal(db, self.name(db))</code> as the first argument instead of <code>Type::class_literal(self)</code>, the cycle goes away and the tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3616 on 2025-01-09 00:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let name = Type::string_literal(self.name(db));
+            let bases = TupleType::from_elements(db, self.explicit_bases(db));
+            // TODO: Should be `dict[str, Any]`
+            let namespace = KnownClass::Dict.to_instance(db);
+
+            // TODO: Other keyword arguments?
+            let arguments = CallArguments::positional([name, bases, namespace]);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-09 00:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-09 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3610 on 2025-01-09 00:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let name = Type::string_literal(db, self.name(db));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 00:25</div>
+            <div class="timeline-body"><p>For future reference, the technique I found most effective for tracking down the cause of the cycle was simply adding <code>dbg!</code> statements in the red-knot code to bisect where the panic occurred (I found it occurred in the <code>metaclass.call(...)</code> line in the non-class metaclass branch of <code>Class::try_metaclass</code>, then I added <code>dbg!</code> statements inside <code>Type::call</code> and discovered it was happening inside <code>bind_call</code>, then I added <code>dbg!</code> statements inside <code>bind_call</code> until I figured out that it was happening when adding the third argument to the union of argument types for <code>*args</code>, etc.)</p>
+<p>Using query tracing (in red-knot or Salsa) was ineffective in this case, because the cycle was a single-query cycle: it was just <code>Class::try_metaclass</code> calling itself; there were some intervening function call layers, but no intervening Salsa queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-09 00:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3660 on 2025-01-09 00:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // TODO we should also check for binding errors that would indicate the metaclass
+                // does not accept the right arguments
+                CallOutcome::Callable { binding }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-01-09 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-01-09 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-09 00:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

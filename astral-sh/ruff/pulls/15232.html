@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve logging system using `logLevel`, avoid trace value - astral-sh/ruff #15232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve logging system using <code>logLevel</code>, avoid trace value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15232">#15232</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-01-03 04:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-03 04:05</div>
+            <div class="timeline-body"><p><strong>Changelog:</strong> This PR improves observability in the server by removing the need of using the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#traceValue">&quot;trace&quot; value</a> as a means to turn on or off logging. Now, the server logging is solely controlled using the <a href="https://docs.astral.sh/ruff/editors/settings/#loglevel"><code>logLevel</code> server setting</a> which defaults to &quot;info&quot;. This avoids the confusion where the user is notified about going through the log messages but there aren't any.</p>
+<h2>Summary</h2>
+<p>Refer to the VS Code PR (https://github.com/astral-sh/ruff-vscode/pull/659) for details on the change.</p>
+<p>This PR changes the following:</p>
+<ol>
+<li>Add tracing span for both request (request id and method name) and notification (method name) handler</li>
+<li>Remove the <code>RUFF_TRACE</code> environment variable. This was being used to turn on / off logging for the server</li>
+<li>Similarly, remove reading the <code>trace</code> value from the initialization options</li>
+<li>Remove handling the <code>$/setTrace</code> notification</li>
+<li>Remove the specialized <code>TraceLogWriter</code> used for Zed and VS Code (https://github.com/astral-sh/ruff/pull/12564)</li>
+</ol>
+<p>Regarding the (5) for the Zed editor, the reason that was implemented was because there was no way of looking at the stderr messages in the editor which has been changed. Now, it captures the stderr as part of the &quot;Server Logs&quot;. (https://github.com/zed-industries/zed/blob/82492d74a8d0350cba66671c27e282a928fd4c85/crates/language_tools/src/lsp_log.rs#L548-L552)</p>
+<h3>Question</h3>
+<p>Regarding (1), I think having just a simple trace level message should be good for now as the spans are not hierarchical. This could be tackled with astral-sh/ty#90. The difference between the two:</p>
+<details><summary>Using <code>tracing::trace</code></summary>
+<p>
+
+<pre><code>   0.019243416s DEBUG ThreadId(08) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.026398750s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.026802125s TRACE ruff:main ruff_server::server::api: Received notification &quot;textDocument/didOpen&quot;
+   0.026930666s TRACE ruff:main ruff_server::server::api: Received notification &quot;textDocument/didOpen&quot;
+   0.026962333s TRACE ruff:main ruff_server::server::api: Received request &quot;textDocument/diagnostic&quot; (1)
+   0.027042875s TRACE ruff:main ruff_server::server::api: Received request &quot;textDocument/diagnostic&quot; (2)
+   0.027097500s TRACE ruff:main ruff_server::server::api: Received request &quot;textDocument/codeAction&quot; (3)
+   0.027107458s DEBUG ruff:worker:0 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   0.027123541s DEBUG ruff:worker:3 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/organize_imports.py
+   0.027514875s  INFO     ruff:main ruff_server::server: Configuration file watcher successfully registered
+   0.285689833s TRACE     ruff:main ruff_server::server::api: Received request &quot;textDocument/codeAction&quot; (4)
+  45.741101666s TRACE     ruff:main ruff_server::server::api: Received notification &quot;textDocument/didClose&quot;
+  47.108745500s TRACE     ruff:main ruff_server::server::api: Received notification &quot;textDocument/didOpen&quot;
+  47.109802041s TRACE     ruff:main ruff_server::server::api: Received request &quot;textDocument/diagnostic&quot; (5)
+  47.109926958s TRACE     ruff:main ruff_server::server::api: Received request &quot;textDocument/codeAction&quot; (6)
+  47.110027791s DEBUG ruff:worker:6 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+  51.863679125s TRACE     ruff:main ruff_server::server::api: Received request &quot;textDocument/hover&quot; (7)
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Using <code>tracing::trace_span</code></summary>
+<p>
+
+<p>Only logging the enter event:</p>
+<pre><code>   0.018638750s DEBUG ThreadId(11) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.025895791s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.026378791s TRACE ruff:main notification{method=&quot;textDocument/didOpen&quot;}: ruff_server::server::api: enter
+   0.026531208s TRACE ruff:main notification{method=&quot;textDocument/didOpen&quot;}: ruff_server::server::api: enter
+   0.026567583s TRACE ruff:main request{id=1 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   0.026652541s TRACE ruff:main request{id=2 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   0.026711041s DEBUG ruff:worker:2 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/organize_imports.py
+   0.026729166s DEBUG ruff:worker:1 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   0.027023083s  INFO     ruff:main ruff_server::server: Configuration file watcher successfully registered
+   5.197554750s TRACE     ruff:main notification{method=&quot;textDocument/didClose&quot;}: ruff_server::server::api: enter
+   6.534458000s TRACE     ruff:main notification{method=&quot;textDocument/didOpen&quot;}: ruff_server::server::api: enter
+   6.535027958s TRACE     ruff:main request{id=3 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   6.535271166s DEBUG ruff:worker:3 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/organize_imports.py
+   6.544240583s TRACE     ruff:main request{id=4 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   7.049692458s TRACE     ruff:main request{id=5 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   7.508142541s TRACE     ruff:main request{id=6 method=&quot;textDocument/hover&quot;}: ruff_server::server::api: enter
+   7.872421958s TRACE     ruff:main request{id=7 method=&quot;textDocument/hover&quot;}: ruff_server::server::api: enter
+   8.024498583s TRACE     ruff:main request{id=8 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+  13.895063666s TRACE     ruff:main request{id=9 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+  14.774706083s TRACE     ruff:main request{id=10 method=&quot;textDocument/hover&quot;}: ruff_server::server::api: enter
+  16.058918958s TRACE     ruff:main notification{method=&quot;textDocument/didChange&quot;}: ruff_server::server::api: enter
+  16.060562208s TRACE     ruff:main request{id=11 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  16.061109083s DEBUG ruff:worker:8 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+  21.561742875s TRACE     ruff:main notification{method=&quot;textDocument/didChange&quot;}: ruff_server::server::api: enter
+  21.563573791s TRACE     ruff:main request{id=12 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  21.564206750s DEBUG ruff:worker:4 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+  21.826691375s TRACE     ruff:main request{id=13 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+  22.091080125s TRACE     ruff:main request{id=14 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+</code></pre>
+</p>
+</details> 
+
+<p><strong>Todo</strong></p>
+<ul>
+<li>[x] Update documentation (I'll be adding a troubleshooting section under &quot;Editors&quot; as a follow-up which is for all editors)</li>
+<li>[x] Check for backwards compatibility. I don't think this should break backwards compatibility as it's mainly targeted towards improving the debugging experience.</li>
+</ul>
+<p>~<strong>Before I go on to updating the documentation, I'd appreciate initial review on the chosen approach.</strong>~</p>
+<p>resolves: astral-sh/ruff#14959</p>
+<h2>Test Plan</h2>
+<p>Refer to the test plan in https://github.com/astral-sh/ruff-vscode/pull/659.</p>
+<p>Example logs at <code>debug</code> level:</p>
+<pre><code>   0.010770083s DEBUG ThreadId(15) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.018101916s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.018559916s DEBUG ruff:worker:4 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   0.018992375s  INFO     ruff:main ruff_server::server: Configuration file watcher successfully registered
+  23.408802375s DEBUG ruff:worker:11 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+  24.329127416s DEBUG  ruff:worker:6 ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+</code></pre>
+<p>Example logs at <code>trace</code> level:</p>
+<pre><code>   0.010296375s DEBUG ThreadId(13) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.017422583s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.018034458s TRACE ruff:main notification{method=&quot;textDocument/didOpen&quot;}: ruff_server::server::api: enter
+   0.018199708s TRACE ruff:worker:0 request{id=1 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   0.018251167s DEBUG ruff:worker:0 request{id=1 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   0.018528708s  INFO     ruff:main ruff_server::server: Configuration file watcher successfully registered
+   1.611798417s TRACE ruff:worker:1 request{id=2 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   1.861757542s TRACE ruff:worker:4 request{id=3 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   7.027361792s TRACE ruff:worker:2 request{id=4 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   7.851361500s TRACE ruff:worker:5 request{id=5 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   7.901690875s TRACE     ruff:main notification{method=&quot;textDocument/didChange&quot;}: ruff_server::server::api: enter
+   7.903063167s TRACE ruff:worker:10 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   7.903183500s DEBUG ruff:worker:10 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   8.702385292s TRACE      ruff:main notification{method=&quot;textDocument/didChange&quot;}: ruff_server::server::api: enter
+   8.704106625s TRACE  ruff:worker:3 request{id=7 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+   8.704304875s DEBUG  ruff:worker:3 request{id=7 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/playground/ruff/lsp/play.py
+   8.966853458s TRACE  ruff:worker:9 request{id=8 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+   9.229622792s TRACE  ruff:worker:6 request{id=9 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+  10.513111583s TRACE  ruff:worker:7 request{id=10 method=&quot;textDocument/codeAction&quot;}: ruff_server::server::api: enter
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-01-03 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-03 04:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Improve server logging" to "Improve language server logging" by @dhruvmanila on 2025-01-03 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve language server logging" to "Use stderr for server log messages" by @dhruvmanila on 2025-01-03 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-01-03 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-01-03 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-01-03 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-01-03 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-01-03 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use stderr for server log messages" to "Improve logging system using `logLevel`, avoid trace value" by @dhruvmanila on 2025-01-07 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/logging.rs</code>:84 on 2025-01-07 13:11</div>
+            <div class="timeline-body"><p>Should this default to <code>Info</code> or is the <code>Default</code> implementation unused?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/logging.rs</code>:62 on 2025-01-07 13:13</div>
+            <div class="timeline-body"><p>IMO, the ideal setup for Red Knot would be if we'd reuse the tracing setup from the CLI for as much as possible instead of introducing a slightly different tracing setup. But that's something we can follow up separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_server/src/logging.rs</code>:23 on 2025-01-07 13:14</div>
+            <div class="timeline-body"><p>I think this can be removed, now that we no longer use <code>logMessage</code> for logging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api.rs</code>:29 on 2025-01-07 13:17</div>
+            <div class="timeline-body"><p>I don't think this works as expected because the <code>span</code> is dropped as soon as the <code>request</code> method ends. You should be able to see this by adding other tracing logs in a request handler. Those messages should be nested under the <code>request</code> level.</p>
+<p>Instead, what we have to do is to create the <code>span</code> here, but only call <code>entered</code> in the thread that process the request OR defer creating the span to the thread that processes the request.</p>
+<p>The same applies to notification.</p>
+<p>Does this also cover response handlers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-07 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-07 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/logging.rs</code>:84 on 2025-01-07 14:10</div>
+            <div class="timeline-body"><p>Good catch, I didn't see that. Yes, the default is unused but I think we should use the default implementation. I'll update the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-07 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_server/src/logging.rs</code>:62 on 2025-01-07 14:13</div>
+            <div class="timeline-body"><p>Yes, #12744</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-08 04:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api.rs</code>:29 on 2025-01-08 04:13</div>
+            <div class="timeline-body"><p>Thanks, I've updated them.</p>
+<p>No it doesn't cover response handler, I think we decided not to add them for now as the results are large.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-08 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api.rs</code>:29 on 2025-01-08 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>No it doesn't cover response handler, I think we decided not to add them for now as the results are large.</p>
+</blockquote>
+<p>Can you tell me more about what you mean by &quot;the results are large&quot;? What I mean is that we may want to add a tracing span to</p>
+<p>https://github.com/astral-sh/ruff/blob/b63c2e126b928fab4180eda5d9132552beeee7fe/crates/ruff_server/src/server/client.rs#L110-L143</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-08 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api.rs</code>:29 on 2025-01-08 12:32</div>
+            <div class="timeline-body"><p>I see, yeah I think it makes sense to add it there as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-08 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-08 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api.rs</code>:29 on 2025-01-08 12:46</div>
+            <div class="timeline-body"><p>I'm actually thinking to avoid this for now as currently the output isn't hierarchical so I'll prefer to add this after we merge it with red knot logging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-01-08 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-08 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-08 12:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

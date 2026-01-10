@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Associate a trailing end-of-line comment in a parenthesized implicit concatenated string with the last literal - astral-sh/ruff #15378</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Associate a trailing end-of-line comment in a parenthesized implicit concatenated string with the last literal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15378">#15378</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-09 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-09 17:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements a fix for the implicit concatenated string formatting. Specifically for strings where the last part has a trailing end-of-line comment and they're in the value position of an assignment (including type alias) or return statement.</p>
+<p>For example:</p>
+<pre><code class="language-py">self._attr_unique_id = (
+    f&quot;{self._device.temperature.group_address_state}_&quot;
+    f&quot;{self._device.target_temperature.group_address_state}_&quot;
+    f&quot;{self._device.target_temperature.group_address}_&quot;
+    f&quot;{self._device._setpoint_shift.group_address}&quot;  # noqa: SLF001
+)
+</code></pre>
+<p>got reformatted to</p>
+<pre><code class="language-py">self._attr_unique_id = (
+    f&quot;{self._device.temperature.group_address_state}_&quot;
+    f&quot;{self._device.target_temperature.group_address_state}_&quot;
+    f&quot;{self._device.target_temperature.group_address}_&quot;
+    f&quot;{self._device._setpoint_shift.group_address}&quot;
+)  # noqa: SLF001
+</code></pre>
+<p>which is undesired because the <code>noqa</code> comment is now misplaced. It's also impossible to move it back to the right place because the formatter keeps moving it out of the parentheses.</p>
+<p>The reason this is happening is because we try to match Black's formatting for assignments:</p>
+<pre><code class="language-py">a = (
+	&quot;a&quot; &quot;b&quot;  # comment
+)
+
+# Get's formatted to 
+a = &quot;ab&quot;  # comment
+</code></pre>
+<p>Notice how the comment gets moved out.</p>
+<p>The relevant logic for this behavior lives here</p>
+<p>https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/statement/stmt_assign.rs#L349-L449</p>
+<p>and <code>inline_comments</code> stores all the comments that should either be moved in or outside the parentheses.</p>
+<p>Ideally, we would adjust this logic (and it's counterpart in https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/statement/stmt_assign.rs#L759-L908) but this is going to be fairly involved and is something I consider too risky for a bugfix release.</p>
+<p>That's why I decided to instead implement it in <code>place_comment</code> and associate a comment in a parenthesized f-string expression that's on the same line as the last part with said part, but only if the last part is on its own line.</p>
+<p>This has two downsides:</p>
+<ol>
+<li><p>Ideally, we'd collapse the following but we'll no longer be able to do that with the changes from this PR:</p>
+<pre><code class="language-py">a = (
+    &quot;a&quot;
+    &quot;b&quot; # comment
+)
+
+# could be formatted to
+a = &quot;ab&quot; # comment
+</code></pre>
+<p>This used to work before and works for implicit concatenated strings outside of assignment-value positions. I think this is acceptable.</p>
+</li>
+<li><p>This is directly related to the above limitation. I made this behavior specific to implicit concatenated strings in assignment value positions or return statements. That means that the behavior is somewhat inconsistent to how we e.g. handle implicit concatenated strings embedded in another expression (you can see an example in the snapshot changes)</p>
+</li>
+</ol>
+<p>I'm open to changing the behavior to all implicit concatenated strings. It might be the right move, but I'm not sure. There are trade offs ;)</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/15375</p>
+<h2>Test Plan</h2>
+<p>Added snapshots</p>
+<p>The ecosystem changes look good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-01-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-09 17:54</div>
+            <div class="timeline-body"><p>It might actually be better to handle this inside <code>FormatStatementsLastExpression::left_to_right</code> but I have to take another look how comments in assignments are handled (it's complicated)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-09 17:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+12 -12 lines in 6 files in 2 projects; 1 project error; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+2 -2 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/langchain-ai/langchain/blob/facfd42768485d92777608e5d62d705550c1a5c4/libs/core/tests/unit_tests/utils/test_html.py#L166'>libs/core/tests/unit_tests/utils/test_html.py~L166</a></p>
+<pre><code class="language-diff">         '&lt;a href=&quot;https://foobar.com:9999&quot;&gt;BAD&lt;/a&gt;'
+         '&lt;a href=&quot;http://foobar.com:9999/&quot;&gt;BAD&lt;/a&gt;'
+         '&lt;a href=&quot;https://foobar.com/OK&quot;&gt;OK&lt;/a&gt;'
+-        '&lt;a href=&quot;http://foobar.com/BAD&quot;&gt;BAD&lt;/a&gt;'
+-    )  # Change in scheme is not OK here
++        '&lt;a href=&quot;http://foobar.com/BAD&quot;&gt;BAD&lt;/a&gt;'  # Change in scheme is not OK here
++    )
+ 
+     expected = sorted(
+         [
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+10 -10 lines across 5 files)</summary>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/history_events.py#L362'>rotkehlchen/db/history_events.py~L362</a></p>
+<pre><code class="language-diff">         free_base_suffix = (
+             f&quot;* FROM (SELECT {base_suffix}) WHERE event_identifier IN (&quot;
+             f&quot;SELECT DISTINCT event_identifier FROM history_events {ignore_asset_filter} &quot;
+-            &quot;ORDER BY timestamp DESC,sequence_index ASC LIMIT ?)&quot;
+-        )  # free query only select the last LIMIT groups  # noqa: E501
++            &quot;ORDER BY timestamp DESC,sequence_index ASC LIMIT ?)&quot;  # free query only select the last LIMIT groups  # noqa: E501
++        )
+ 
+         if has_premium:
+             suffix, limit = premium_base_suffix, []
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v42_v43.py#L83'>rotkehlchen/db/upgrades/v42_v43.py~L83</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v43_v44.py#L222'>rotkehlchen/db/upgrades/v43_v44.py~L222</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v44_v45.py#L46'>rotkehlchen/db/upgrades/v44_v45.py~L46</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v45_v46.py#L187'>rotkehlchen/db/upgrades/v45_v46.py~L187</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+12 -12 lines in 6 files in 2 projects; 1 project error; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+2 -2 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/langchain-ai/langchain/blob/facfd42768485d92777608e5d62d705550c1a5c4/libs/core/tests/unit_tests/utils/test_html.py#L158'>libs/core/tests/unit_tests/utils/test_html.py~L158</a></p>
+<pre><code class="language-diff">         '&lt;a href=&quot;https://foobar.com:9999&quot;&gt;BAD&lt;/a&gt;'
+         '&lt;a href=&quot;http://foobar.com:9999/&quot;&gt;BAD&lt;/a&gt;'
+         '&lt;a href=&quot;https://foobar.com/OK&quot;&gt;OK&lt;/a&gt;'
+-        '&lt;a href=&quot;http://foobar.com/BAD&quot;&gt;BAD&lt;/a&gt;'
+-    )  # Change in scheme is not OK here
++        '&lt;a href=&quot;http://foobar.com/BAD&quot;&gt;BAD&lt;/a&gt;'  # Change in scheme is not OK here
++    )
+ 
+     expected = sorted([
+         &quot;https://foobar.com/OK&quot;,
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+10 -10 lines across 5 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/history_events.py#L362'>rotkehlchen/db/history_events.py~L362</a></p>
+<pre><code class="language-diff">         free_base_suffix = (
+             f&quot;* FROM (SELECT {base_suffix}) WHERE event_identifier IN (&quot;
+             f&quot;SELECT DISTINCT event_identifier FROM history_events {ignore_asset_filter} &quot;
+-            &quot;ORDER BY timestamp DESC,sequence_index ASC LIMIT ?)&quot;
+-        )  # free query only select the last LIMIT groups  # noqa: E501
++            &quot;ORDER BY timestamp DESC,sequence_index ASC LIMIT ?)&quot;  # free query only select the last LIMIT groups  # noqa: E501
++        )
+ 
+         if has_premium:
+             suffix, limit = premium_base_suffix, []
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v42_v43.py#L83'>rotkehlchen/db/upgrades/v42_v43.py~L83</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v43_v44.py#L220'>rotkehlchen/db/upgrades/v43_v44.py~L220</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v44_v45.py#L46'>rotkehlchen/db/upgrades/v44_v45.py~L46</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/4a99f573d6b3ada401114f262dd21da14111ed7f/rotkehlchen/db/upgrades/v45_v46.py#L187'>rotkehlchen/db/upgrades/v45_v46.py~L187</a></p>
+<pre><code class="language-diff">                 &quot;DELETE FROM history_events WHERE identifier IN (&quot;
+                 &quot;SELECT H.identifier from history_events H INNER JOIN evm_events_info E &quot;
+                 &quot;ON H.identifier=E.identifier AND E.tx_hash IN &quot;
+-                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;
+-            )  # location 'o' is zksync lite  # noqa: E501
++                &quot;(SELECT tx_hash FROM evm_transactions) AND H.location != 'o')&quot;  # location 'o' is zksync lite  # noqa: E501
++            )
+             bindings: tuple = ()
+             if customized_events != 0:
+                 querystr += &quot; AND identifier NOT IN (SELECT parent_identifier FROM history_events_mappings WHERE name=? AND value=?)&quot;  # noqa: E501
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-01-10 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2025-01-10 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @charliermarsh removed by @MichaReiser on 2025-01-10 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-01-10 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2025-01-10 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string_assignment.py</code>:346 on 2025-01-10 11:19</div>
+            <div class="timeline-body"><p>I understand the change but I want to confirm as to why does this comment belongs to the f-string expression. I think the reason is that without that, the formatting might move the last part of the string to it's own line along with the comment which means the comment won't be applicable for the last second part. Is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-10 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-10 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:358 on 2025-01-10 11:22</div>
+            <div class="timeline-body"><p>Do we need to cover other statements like <code>raise</code> and <code>assert</code>?</p>
+<pre><code class="language-python">raise Exception(
+    &quot;a&quot;
+    &quot;b&quot;  # belongs to `b`
+)
+
+assert False, (
+    &quot;a&quot;
+    &quot;b&quot;  # belongs to `b`
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string_assignment.py</code>:361 on 2025-01-10 11:28</div>
+            <div class="timeline-body"><p>It might be useful to shorten these strings (similar to other test cases) just to make sure that the formatter isn't going to collapse them because I think otherwise the line length won't even allow this to be tested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-10 11:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-10 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:358 on 2025-01-10 12:17</div>
+            <div class="timeline-body"><p>No, only statements that use <code>FormatStatementsLastExpression</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-10 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string_assignment.py</code>:346 on 2025-01-10 12:21</div>
+            <div class="timeline-body"><p>This is an edge case where there's no &quot;right&quot; solution because the formatter can't tell if the comment belongs to the middle part, the last part, or the entire f-string.</p>
+<p>That's why I decided to associate it with the f-string. This matches the default behavior where we associate a comment with the outer most node that ends right before it. We could also decide to associate it with the last part, if we think this is more appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-10 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/join_implicit_concatenated_string_assignment.py</code>:346 on 2025-01-10 13:09</div>
+            <div class="timeline-body"><p>Yeah, that seems like a reasonable default. It might be worth adding this as a comment to that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-10 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Keep trailing part comment associated with its part" to "Associate a trailing end-of-line comment in a parenthesized implicit concatenated string with the last literal" by @MichaReiser on 2025-01-10 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-10 14:16</div>
+            <div class="timeline-body"><p>This seems like a wise behavior change. Is the intent that we'd eventually do the thing that you called &quot;too risky for a bugfix release&quot;, so that we <em>can</em> collapse these in some cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 16:50</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems like a wise behavior change. Is the intent that we'd eventually do the thing that you called &quot;too risky for a bugfix release&quot;, so that we can collapse these in some cases?</p>
+</blockquote>
+<p>Possibly. I think it depends on how often it comes up and if it's worth the extra complexity. A possible other direction is to remove the custom assignment logic altogether.... but that would come at the cost of black compatibility and is something we should consider carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-10 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-10 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-10 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

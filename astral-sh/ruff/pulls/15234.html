@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Avoid reporting when `ndigits` is possibly negative (`RUF057`) - astral-sh/ruff #15234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Avoid reporting when <code>ndigits</code> is possibly negative (<code>RUF057</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15234">#15234</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-03 05:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-03 05:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #15221.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs</code>:118 on 2025-01-03 05:09</div>
+            <div class="timeline-body"><p>What do you think about <code>LiteralPositiveInt</code> instead to avoid the double negative?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-03 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Avoid fixing when `ndigits` is possibly negative (`RUF057`)" to "[`ruff`] Avoid reporting when `ndigits` is possibly negative (`RUF057`)" by @InSyncWithFoo on 2025-01-03 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-01-03 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2025-01-03 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-03 05:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs</code>:118 on 2025-01-03 05:15</div>
+            <div class="timeline-body"><p>I don't think there's any double negative here. Besides, 0 is not positive:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; round(42, 0)
+42
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-03 05:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-03 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs</code>:118 on 2025-01-03 07:44</div>
+            <div class="timeline-body"><p>I'd go with. It simplifies the matches where the negative flag isn't relevant and it avoids the <code>NotNegative</code> (which feels like a double negative)</p>
+<pre><code class="language-suggestion">    LiteralInt { negative: bool }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-03 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs</code>:119 on 2025-01-03 07:46</div>
+            <div class="timeline-body"><p>I'd prefer keeping <code>Int</code> here to keep it aligned with <code>RoundedValue</code> and the current name is also clearer because does the new name mean <em>it's not a Literal but an int</em> or <em>everything else other than an integer literal</em>. I think it's the former, but the name doesn't make it clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-03 09:13</div>
+            <div class="timeline-body"><p>Thanks for fixing this so quickly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-03 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-03 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-03 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-03 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2025-01-03 22:35</div>
+            <div class="timeline-body"><p>Lovely, thank you @InSyncWithFoo</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

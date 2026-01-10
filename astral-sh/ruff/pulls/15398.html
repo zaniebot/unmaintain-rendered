@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert the cells from the `start` position - astral-sh/ruff #15398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Insert the cells from the <code>start</code> position</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15398">#15398</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-01-10 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-10 12:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The cause of this bug is from https://github.com/astral-sh/ruff/pull/12575 which was itself a bug fix but the fix wasn't completely correct.</p>
+<p>fixes: #14768
+fixes: https://github.com/astral-sh/ruff-vscode/issues/644
+fixes: https://github.com/astral-sh/ruff-vscode/issues/573</p>
+<h2>Test Plan</h2>
+<p>Consider the following three cells:</p>
+<ol>
+<li></li>
+</ol>
+<pre><code class="language-python">class Foo:
+    def __init__(self):
+        self.x = 1
+
+    def __str__(self):
+        return f&quot;Foo({self.x})&quot;
+</code></pre>
+<ol start="2">
+<li></li>
+</ol>
+<pre><code class="language-python">def hello():
+    print(&quot;hello world&quot;)
+</code></pre>
+<ol start="3">
+<li></li>
+</ol>
+<pre><code class="language-python">y = 1
+</code></pre>
+<p>The test case is moving cell 2 to the top i.e., cell 2 goes to position 1 and cell 1 goes to position 2.</p>
+<p>Before this fix, it can be seen that the cells were pushed at the end of the vector:</p>
+<pre><code>  12.643269917s  INFO ruff:main ruff_server::edit::notebook: Before update: [
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;class Foo:\n    def __init__(self):\n        self.x = 1\n\n    def __str__(self):\n        return f\&quot;Foo({self.x})\&quot;&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;def hello():\n    print(\&quot;hello world\&quot;)&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;y = 1&quot;,
+        },
+    },
+]
+  12.643777667s  INFO ruff:main ruff_server::edit::notebook: After update: [
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;y = 1&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;class Foo:\n    def __init__(self):\n        self.x = 1\n\n    def __str__(self):\n        return f\&quot;Foo({self.x})\&quot;&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;def hello():\n    print(\&quot;hello world\&quot;)&quot;,
+        },
+    },
+]
+</code></pre>
+<p>After the fix in this PR, it can be seen that the cells are being pushed at the correct <code>start</code> index:</p>
+<pre><code>   6.520570917s  INFO ruff:main ruff_server::edit::notebook: Before update: [
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;class Foo:\n    def __init__(self):\n        self.x = 1\n\n    def __str__(self):\n        return f\&quot;Foo({self.x})\&quot;&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;def hello():\n    print(\&quot;hello world\&quot;)&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;y = 1&quot;,
+        },
+    },
+]
+   6.521084792s  INFO ruff:main ruff_server::edit::notebook: After update: [
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;def hello():\n    print(\&quot;hello world\&quot;)&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;class Foo:\n    def __init__(self):\n        self.x = 1\n\n    def __str__(self):\n        return f\&quot;Foo({self.x})\&quot;&quot;,
+        },
+    },
+    NotebookCell {
+        document: TextDocument {
+            contents: &quot;y = 1&quot;,
+        },
+    },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-01-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-01-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-01-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @AlexWaygood on 2025-01-10 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-10 12:31</div>
+            <div class="timeline-body"><p>TODO: I'm going to write a test case for this.</p>
+<p>Edit: Added a test case for this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-10 12:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:139 on 2025-01-10 12:33</div>
+            <div class="timeline-body"><p>Nit: We could now move the <code>sell.insert</code> call out of the <code>if else</code> and instead return the <code>content</code> and <code>version</code> from the <code>if else</code></p>
+<pre><code class="language-rust">let (content, version) = if let Some(text_document) = deleted_cells.remove(&amp;cell.document) {
+	let version = text_document.version();
+	(text_document.into_contents(), version)
+} else {
+	(String::new(), 0)
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-10 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-01-10 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-10 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-10 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

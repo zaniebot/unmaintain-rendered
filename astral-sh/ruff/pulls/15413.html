@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support `cast` - astral-sh/ruff #15413</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support <code>cast</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15413">#15413</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-11 05:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-11 05:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #15379.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2025-01-11 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2025-01-11 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2025-01-11 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2025-01-11 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-11 05:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-11 05:45</div>
+            <div class="timeline-body"><p>I think reusing <code>arguments</code> is easier than the workaround mentioned <a href="https://github.com/astral-sh/ruff/issues/15379#issuecomment-2584001258">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-11 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3491 on 2025-01-11 12:33</div>
+            <div class="timeline-body"><p>As your PR curerently stands, there's no need to add this extra variant, as it has exactly the same rules as the first variant in this enum. If I make this change, all your tests pass:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -3447,7 +3447,7 @@ impl KnownFunction {
+     /// Return the [`ParameterExpectations`] for this function.
+     const fn parameter_expectations(self) -&gt; ParameterExpectations {
+         match self {
+-            Self::IsFullyStatic | Self::IsSingleton | Self::IsSingleValued =&gt; {
++            Self::IsFullyStatic | Self::IsSingleton | Self::IsSingleValued | Self::Cast =&gt; {
+                 ParameterExpectations::SingleTypeExpression
+             }
+ 
+@@ -3457,7 +3457,6 @@ impl KnownFunction {
+             | Self::IsDisjointFrom =&gt; ParameterExpectations::TwoTypeExpressions,
+ 
+             Self::AssertType =&gt; ParameterExpectations::ValueExpressionAndTypeExpression,
+-            Self::Cast =&gt; ParameterExpectations::TypeExpressionAndValueExpression,
+ 
+             Self::ConstraintFunction(_)
+             | Self::Len
+@@ -3478,16 +3477,14 @@ enum ParameterExpectations {
+     /// All parameters in the function expect value expressions
+     #[default]
+     AllValueExpressions,
+-    /// The first parameter in the function expects a type expression
++    /// The first parameter in the function expects a type expression;
++    /// all other parameters expect value expressions
+     SingleTypeExpression,
+     /// The first two parameters in the function expect type expressions
+     TwoTypeExpressions,
+     /// The first parameter in the function expects a value expression,
+     /// and the second expects a type expression
+     ValueExpressionAndTypeExpression,
+-    /// The first parameter in the function expects a type expression,
+-    /// and the second expects a value expression
+-    TypeExpressionAndValueExpression,
+ }
+ 
+ impl ParameterExpectations {
+@@ -3516,13 +3513,6 @@ impl ParameterExpectations {
+                     ParameterExpectation::ValueExpression
+                 }
+             }
+-            Self::TypeExpressionAndValueExpression =&gt; {
+-                if parameter_index == 1 {
+-                    ParameterExpectation::ValueExpression
+-                } else {
+-                    ParameterExpectation::TypeExpression
+-                }
+-            }
+         }
+     }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 12:39</div>
+            <div class="timeline-body"><p><code>cast()</code> <em>can</em> actually be used with keyword arguments (not necessarily in the same order as the parameters!) at runtime:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import cast
+&gt;&gt;&gt; cast(val=&quot;foo&quot;, typ=int)
+'foo'
+</code></pre>
+<p>Other type checkers do not support <code>cast()</code> being called with keyword arguments, so I don't think we need to either. However, we <em>do</em> need to make sure that we give a comphrehensible error message if either argument passed is a keyword argument. Right now, running red-knot with this branch on the following snippet...</p>
+<pre><code class="language-py">from typing_extensions import cast, reveal_type
+reveal_type(cast(val=&quot;foo&quot;, typ=int))
+</code></pre>
+<p>...yields this output:</p>
+<pre><code>info[revealed-type] /Users/alexw/dev/experiment/foo.py:3:1 Revealed type is `Unknown`
+warning[lint:unresolved-reference] /Users/alexw/dev/experiment/foo.py:3:23 Name `foo` used when not defined
+</code></pre>
+<p>By comparison, <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2b296c518c2a2652ab156353c6c9e762">mypy reports</a>:</p>
+<pre><code>main.py:3: error: &quot;cast&quot; must be called with 2 positional arguments  [misc]
+main.py:3: note: Revealed type is &quot;Any&quot;
+</code></pre>
+<p>which is an error message that makes much more sense.</p>
+<p>I think we do need to add the logic forbidding keyword arguments manually. Even when we support overloads and understand the signature that typeshed gives for this function, it won't help us here, because the typeshed signature permits keyword arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-11 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 16:08</div>
+            <div class="timeline-body"><p>The context here is that this PR's argument binding is a temporary hack to work around the fact that <code>cast</code> is typed with overloads, and we don't understand overloads yet. Better error messages for various kinds of calls will fall out automatically when this uses real call binding, when we support overloads. So I don't think we should spend significant effort here improving diagnostics related to edge cases of argument binding, in this version. We should either decide that we want <code>cast</code> support sooner, that generally works on the typical use cases, or that we want to hold off on <code>cast</code> support entirely until after we support overloads. I would be inclined to land this PR with TODOs. (But I haven't done a full review of it yet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 16:11</div>
+            <div class="timeline-body"><p>@carljm, as I said above, I think support for overloads is irrelevant to the issue I'm pointing out here:</p>
+<blockquote>
+<p>I think we do need to add the logic forbidding keyword arguments manually. Even when we support overloads and understand the signature that typeshed gives for this function, it won't help us here, because the typeshed signature permits keyword arguments.</p>
+</blockquote>
+<p>Pyright supports overloads, of course, but it gives a terrible error message because it falls down the same pitfall that this PR has: https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDGAhgM4wBQ5IApgG7VEA2A%2BvAtQBTFke1MC8AImBgwggDSxE-VDACUc8kA. But mypy does much better here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 16:19</div>
+            <div class="timeline-body"><p>I am okay with leaving this as-is for now if you think that the logical place to insert the necessary special-casing will be moved about/rewritten once we have support for overloads. But I think we should at least add a test (with a TODO for a better diagnostic) that demonstrates what happens if you pass arguments out of order by keyword</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-11 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3491 on 2025-01-11 17:03</div>
+            <div class="timeline-body"><p>That would be correct, but I think the semantic difference is important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3491 on 2025-01-11 17:06</div>
+            <div class="timeline-body"><p>in which case I would at least make this change:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -3495,7 +3495,7 @@ impl ParameterExpectations {
+     fn expectation_at_index(self, parameter_index: usize) -&gt; ParameterExpectation {
+         match self {
+             Self::AllValueExpressions =&gt; ParameterExpectation::ValueExpression,
+-            Self::SingleTypeExpression =&gt; {
++            Self::SingleTypeExpression | Self::TypeExpressionAndValueExpression =&gt; {
+                 if parameter_index == 0 {
+                     ParameterExpectation::TypeExpression
+                 } else {
+@@ -3516,13 +3516,6 @@ impl ParameterExpectations {
+                     ParameterExpectation::ValueExpression
+                 }
+             }
+-            Self::TypeExpressionAndValueExpression =&gt; {
+-                if parameter_index == 1 {
+-                    ParameterExpectation::ValueExpression
+-                } else {
+-                    ParameterExpectation::TypeExpression
+-                }
+-            }
+         }
+     }
+ }
+</code></pre>
+<p>Your PR currently has a logic bug: if three arguments were passed to <code>cast()</code>, we'd call <code>infer_type_expression()</code> on the third parameter, when we should be calling <code>infer_expression()</code> on it. Calling <code>cast()</code> with three arguments is obviously invalid, but we still need to call either <code>infer_expression()</code> or <code>infer_type_expression()</code> on every argument passed to every call, and for everything except the first argument to <code>cast()</code>, it should be <code>infer_expression()</code> rather than <code>infer_type_expression()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-11 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:17</div>
+            <div class="timeline-body"><p>Ah yeah, I just realized that what you're talking about is actually the same problem that I was just thinking about last night! I don't think any special-casing for <code>cast</code> is what we will want here; the problem is that our &quot;type expression or value expression&quot; feature is fundamentally wrong, because it is currently based on argument order instead of parameter order. What we should do is first (before we even infer types for arguments) establish the mapping of arguments to parameters, then infer types for arguments (possibly inferring some as type expressions based not on their argument index, but on the index of the <em>parameter</em> they map to), and then check argument types against parameter types.</p>
+<p>If we both fix this, and support overloads, then we'll get correct behavior in the case you're discussing, without any special-casing.</p>
+<p>This will require some re-working of the call checking code, to split up &quot;map arguments to parameters&quot; from &quot;check types&quot;, and allow type inference of arguments to occur in between those two. It's something we will need to do anyway for contextual type inference of arguments. I don't think it has to block this PR, but I agree we should add a clear test with TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think any special-casing for <code>cast</code> is what we will want here; the problem is that our &quot;type expression or value expression&quot; feature is fundamentally wrong, because it is currently based on argument order instead of parameter order. What we should do is first (before we even infer types for arguments) establish the mapping of arguments to parameters, then infer types for arguments (possibly inferring some as type expressions based on which <em>parameter</em> they map to), and then check argument types against parameter types.</p>
+</blockquote>
+<p>Hmm, are you really sure it's worth the added complexity? As I demonstrated above, neither mypy or pyright supports using keyword arguments with <code>cast()</code>. And the problem doesn't arise with <code>assert_type()</code>, as that function only supports arguments being passed positionally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, are you really sure it's worth the added complexity?</p>
+</blockquote>
+<p>Yes, because we will need 100% of this complexity regardless, in order to support contextual type inference of arguments in general. (Things like inferring a dict literal argument as <code>TypedDict</code> when the parameter it maps to is annotated as <code>TypedDict</code> vs some other mapping/dict type.)</p>
+<p>Supporting calls to <code>cast</code> with out-of-order keyword arguments is unimportant, but it's fine if it falls out of just generally handling contextual type inference correctly, and it's also nice if comprehensible error messages also fall out without any special-casing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-11 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:25</div>
+            <div class="timeline-body"><p>I'm not sure I understand what you're referring to there, but I'm happy to leave this for now if you're sure this will be necessary :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3525 on 2025-01-11 17:26</div>
+            <div class="timeline-body"><p>I still don't understand what the advantage is here to having a separate branch, when the logic is identical to the <code>Self::SingleTypeExpression</code> branch above. Why not just do this? It's surely less code for us to maintain?</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -3495,7 +3495,7 @@ impl ParameterExpectations {
+     fn expectation_at_index(self, parameter_index: usize) -&gt; ParameterExpectation {
+         match self {
+             Self::AllValueExpressions =&gt; ParameterExpectation::ValueExpression,
+-            Self::SingleTypeExpression =&gt; {
++            Self::SingleTypeExpression | Self::TypeExpressionAndValueExpression =&gt; {
+                 if parameter_index == 0 {
+                     ParameterExpectation::TypeExpression
+                 } else {
+@@ -3516,13 +3516,6 @@ impl ParameterExpectations {
+                     ParameterExpectation::ValueExpression
+                 }
+             }
+-            Self::TypeExpressionAndValueExpression =&gt; {
+-                if parameter_index == 0 {
+-                    ParameterExpectation::TypeExpression
+-                } else {
+-                    ParameterExpectation::ValueExpression
+-                }
+-            }
+         }
+     }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2018 on 2025-01-11 17:27</div>
+            <div class="timeline-body"><p>did you mean this?</p>
+<pre><code class="language-suggestion">                        // TODO: Use `.two_parameter_tys()` exclusively when overloads are supported.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:27 on 2025-01-11 17:28</div>
+            <div class="timeline-body"><p>Let's assert the full error message here so it's clear what the problem is</p>
+<pre><code class="language-suggestion">cast(val=&quot;foo&quot;, typ=int)  # error: [unresolved-reference] &quot;Name `foo` used when not defined&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:29</div>
+            <div class="timeline-body"><p>I'm referring to cases like the ones Eric shows in https://discuss.python.org/t/pep-747-typeexpr-type-hint-for-a-type-expression/55984/67 -- but extend the same cases to functions with multiple arguments and the possibility of out-of-order keyword calls of those functions. In general, there are cases where we have to know which annotated parameter an argument maps to, in order to infer the correct type for that argument among multiple possibly valid types for it. (<code>TypeForm</code> will add another case of this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-11 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:1 on 2025-01-11 17:33</div>
+            <div class="timeline-body"><p>Okay, I think I see. So you're saying that other changes that we will anyway need to make to our logic (in order to support contextual inference of arguments passed to calls) will mean that supporting keyword arguments for <code>cast()</code> will become trivial, meaning that (unlike other type checkers) we'll be able to support keyword arguments for <code>cast()</code> and no special-casing here will be necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:5 on 2025-01-11 23:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The (inferred) type of the value and the given type do not need to have any correlation.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:11 on 2025-01-11 23:38</div>
+            <div class="timeline-body"><p>this import is unused</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:26 on 2025-01-11 23:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: Either support keyword arguments properly,
+# or give a comprehensible error message saying they're unsupported
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-11 23:40</div>
+            <div class="timeline-body"><p>Looks good to me now, thanks! Just a couple more small nits</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-11 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-12 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-12 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-12 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:54 on 2025-01-13 18:54</div>
+            <div class="timeline-body"><p>I didn't complete a review here before it was landed, but I was going to recommend that we not add this <code>CallOutcome</code> variant. Put up a follow-up PR at https://github.com/astral-sh/ruff/pull/15461</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-13 18:55</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

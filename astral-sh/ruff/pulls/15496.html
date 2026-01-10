@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix more edge cases for intersection simplification with `LiteralString` and `AlwaysTruthy`/`AlwaysFalsy` - astral-sh/ruff #15496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix more edge cases for intersection simplification with <code>LiteralString</code> and <code>AlwaysTruthy</code>/<code>AlwaysFalsy</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15496">#15496</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-15 13:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 13:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Re-reading the diff in https://github.com/astral-sh/ruff/commit/bcf0a715c2d33a638785ba842fd0ec9f608f0932, I realised that there were still one or two cases I failed to handle properly. Namely, we currently simplify <code>LiteralString &amp; AlwaysTruthy</code> to <code>LiteralString &amp; ~Literal[&quot;&quot;]</code>, but we do <em>not</em> do the same simplification for <code>AlwaysTruthy &amp; LiteralString</code>. Similarly, we currently simplify <code>LiteralString &amp; ~AlwaysFalsy</code> to <code>LiteralString &amp; ~Literal[&quot;&quot;]</code>, but we don't do the same for <code>~AlwaysFalsy &amp; LiteralString</code>.</p>
+<p>This PR fixes those cases, and moves all <code>LiteralString</code> handling to the top of the <code>add_positive()</code> method so that it's easier to think through the various cases and see that they're both complete and correct. The default diff that GitHub shows is a bit messy because the refactoring to <code>add_positive</code> means that the indentation increases by one level for most of the function. Everything is <em>much</em> easier to review if you select GitHub's option to view the diff without whitespace changes, however.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test -p red_knot_python_semantic</code></li>
+<li><code>QUICKCHECK_TESTS=200000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code></li>
+<li><code>uvx pre-commit run -a</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-15 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-01-15 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-15 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-01-15 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2025-01-15 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-01-15 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 13:50</div>
+            <div class="timeline-body"><p>Briefly deleted my whole patch there by accident 😅 it's back now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 13:53</div>
+            <div class="timeline-body"><p>Once we understand differently ordered intersections as equivalent to each other (which I'm working on), we'll be able to add a property test that would have caught this. I've noted it down as a TODO for myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 13:55</div>
+            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmore-intersections">No change</a> on the codspeed benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-15 13:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-15 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:276 on 2025-01-15 14:01</div>
+            <div class="timeline-body"><p>it's tempting to think that we could avoid some indirection here, e.g.</p>
+<pre><code class="language-suggestion">            // `AlwaysTruthy &amp; LiteralString` -&gt; `LiteralString &amp; ~Literal[&quot;&quot;]`
+            Type::LiteralString if self.positive.swap_remove(&amp;Type::AlwaysTruthy) =&gt; {
+                self.positive.insert(Type::LiteralString);
+                self.negative.insert(Type::string_literal(db, &quot;&quot;));
+            }
+            // `AlwaysFalsy &amp; LiteralString` -&gt; `Literal[&quot;&quot;]`
+            Type::LiteralString if self.positive.swap_remove(&amp;Type::AlwaysFalsy) =&gt; {
+                self.positive.insert(Type::string_literal(db, &quot;&quot;));
+            }
+            // `LiteralString &amp; ~AlwaysTruthy` -&gt; `LiteralString &amp; AlwaysFalsy` -&gt; `Literal[&quot;&quot;]`
+            Type::LiteralString if self.negative.swap_remove(&amp;Type::AlwaysTruthy) =&gt; {
+                self.positive.insert(Type::string_literal(db, &quot;&quot;));
+            }
+            // `LiteralString &amp; ~AlwaysFalsy` -&gt; `LiteralString &amp; ~Literal[&quot;&quot;]`
+            Type::LiteralString if self.negative.swap_remove(&amp;Type::AlwaysFalsy) =&gt; {
+                self.positive.insert(Type::LiteralString);
+                self.negative.insert(Type::string_literal(db, &quot;&quot;));
+            }
+</code></pre>
+<p>but this causes many property test failures, because we skip the simplifications done in the fallback branch of this function where redundant supertypes are removed if subtypes exist in the intersection, and where the entire intersection simplifies to <code>Never</code> if it contains a pair of disjoint types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-01-15 15:01</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-15 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-15 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-15 15:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

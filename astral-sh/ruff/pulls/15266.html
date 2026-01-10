@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better error message when `--config` is given a table key and a non-inline-table value - astral-sh/ruff #15266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better error message when <code>--config</code> is given a table key and a non-inline-table value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15266">#15266</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-05 08:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-05 08:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #13995.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-05 09:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @AlexWaygood on 2025-01-05 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-05 12:49</div>
+            <div class="timeline-body"><p>This is great! I think we can do even better with a few tweaks, though. With your branch currently, this is the error message I get:</p>
+<pre><code>~/dev/ruff (cli-config)⚡ % cargo run -- check . --config='lint.flake8-pytest-style=&quot;csv&quot;'
+   Compiling ruff v0.8.6 (/Users/alexw/dev/ruff/crates/ruff)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.51s
+     Running `target/debug/ruff check . '--config=lint.flake8-pytest-style=&quot;csv&quot;'`
+error: invalid value 'lint.flake8-pytest-style=&quot;csv&quot;' for '--config &lt;CONFIG_OPTION&gt;'
+
+  tip: A `--config` flag must either be a path to a `.toml` configuration file
+       or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair overriding a specific configuration
+       option
+
+`lint.flake8-pytest-style` is a table.
+Did you mean to use one of its subkeys instead? Possible choices:
+lint.flake8-pytest-style.fixture-parentheses
+lint.flake8-pytest-style.parametrize-names-type
+lint.flake8-pytest-style.parametrize-values-type
+lint.flake8-pytest-style.parametrize-values-row-type
+lint.flake8-pytest-style.raises-require-match-for
+lint.flake8-pytest-style.raises-extend-require-match-for
+lint.flake8-pytest-style.mark-parentheses
+
+Could not parse the supplied argument as a `ruff.toml` configuration option:
+
+invalid type: string &quot;csv&quot;, expected struct Flake8PytestStyleOptions
+in `lint`
+
+For more information, try '--help'.
+</code></pre>
+<details>
+<summary>Colorized screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/d3e19543-ce22-4c19-a7df-b289651b5f5a" alt="image" /></p>
+</details>
+
+<p>But if I apply this diff to your branch:</p>
+<pre><code class="language-diff">--- a/crates/ruff/src/args.rs
++++ b/crates/ruff/src/args.rs
+@@ -978,23 +978,25 @@ The path `{value}` does not point to a configuration file&quot;
+                     let prefixed_subkeys = format!(&quot;{set}&quot;)
+                         .trim_ascii()
+                         .split('\n')
+-                        .map(|child| format!(&quot;{key}.{child}&quot;))
++                        .map(|child| format!(&quot; - `{key}.{child}`&quot;))
+                         .join(&quot;\n&quot;);
+ 
+                     tip.push_str(&amp;format!(
+                         &quot;
+ 
+-`{key}` is a table.
+-Did you mean to use one of its subkeys instead? Possible choices:
++`{key}` is a table of configuration options, but only a single option can be
++overridden with `--config`. Did you want to override one of the table's subkeys?
++
++Possible choices:
+ {prefixed_subkeys}&quot;
+                     ));
+                 }
+-            };
+-
+-            tip.push_str(&amp;format!(
+-                &quot;\n\n{}:\n\n{underlying_error}&quot;,
+-                config_parse_error.description()
+-            ));
++            } else {
++                tip.push_str(&amp;format!(
++                    &quot;\n\n{}:\n\n{underlying_error}&quot;,
++                    config_parse_error.description()
++                ));
++            }
+         }
+</code></pre>
+<p>Then it becomes:</p>
+<pre><code>~/dev/ruff (cli-config)⚡ [2] % cargo run -- check . --config='lint.flake8-pytest-style=&quot;csv&quot;'
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running `target/debug/ruff check . '--config=lint.flake8-pytest-style=&quot;csv&quot;'`
+error: invalid value 'lint.flake8-pytest-style=&quot;csv&quot;' for '--config &lt;CONFIG_OPTION&gt;'
+
+  tip: A `--config` flag must either be a path to a `.toml` configuration file
+       or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair overriding a specific configuration
+       option
+
+`lint.flake8-pytest-style` is a table of configuration options, but only a single option can be
+overridden with `--config`. Did you want to override one of the table's subkeys?
+
+Possible choices:
+ - `lint.flake8-pytest-style.fixture-parentheses`
+ - `lint.flake8-pytest-style.parametrize-names-type`
+ - `lint.flake8-pytest-style.parametrize-values-type`
+ - `lint.flake8-pytest-style.parametrize-values-row-type`
+ - `lint.flake8-pytest-style.raises-require-match-for`
+ - `lint.flake8-pytest-style.raises-extend-require-match-for`
+ - `lint.flake8-pytest-style.mark-parentheses`
+
+For more information, try '--help'.
+</code></pre>
+<details>
+<summary>Colorized screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/c49133ab-9506-4b42-aa9f-27634d0bb0ea" alt="image" /></p>
+</details>
+
+<p>which feels significantly more readable to me. WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-05 13:40</div>
+            <div class="timeline-body"><p>@AlexWaygood I was actually aiming for copyability, but readability is fine too.</p>
+<blockquote>
+<p>[...] but only a single option can be overridden with <code>--config</code>.</p>
+</blockquote>
+<p>This is rather misleading, because you <em>can</em> pass an inline table as the value:</p>
+<pre><code class="language-shell"># Same as &quot;lint.select = ['I001']&quot;
+$ ruff check --isolated --config=&quot;lint = { select = ['I001'] }&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-05 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This is rather misleading, because you <em>can</em> pass an inline table as the value:</p>
+</blockquote>
+<p>Oh, great point! I forgot how my own feature worked :-) We can scrap that clause, then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-05 14:03</div>
+            <div class="timeline-body"><p>LGTM, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-05 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-01-06 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:984 on 2025-01-06 08:57</div>
+            <div class="timeline-body"><p>This will not only list fields but also sub-tables, which I think is confusing (at least with how the message is phrased because setting <code>lint.isort</code> wouldn't be a correct option either):</p>
+<pre><code>`lint` is a table of configuration options.
+Did you want to override one of the table's subkeys?
+
+Possible choices:
+
+- `lint.allowed-confusables`
+- `lint.dummy-variable-rgx`
+- `lint.extend-ignore (deprecated)`
+- `lint.extend-select`
+- `lint.extend-fixable`
+- `lint.external`
+- `lint.fixable`
+- `lint.ignore`
+- `lint.extend-safe-fixes`
+- `lint.extend-unsafe-fixes`
+- `lint.ignore-init-module-imports (deprecated)`
+- `lint.logger-objects`
+- `lint.select`
+- `lint.explicit-preview-rules`
+- `lint.task-tags`
+- `lint.typing-modules`
+- `lint.unfixable`
+- `lint.flake8-annotations`
+- `lint.flake8-bandit`
+- `lint.flake8-boolean-trap`
+- `lint.flake8-bugbear`
+- `lint.flake8-builtins`
+- `lint.flake8-comprehensions`
+- `lint.flake8-copyright`
+- `lint.flake8-errmsg`
+- `lint.flake8-quotes`
+- `lint.flake8-self`
+- `lint.flake8-tidy-imports`
+- `lint.flake8-type-checking`
+- `lint.flake8-gettext`
+- `lint.flake8-implicit-str-concat`
+- `lint.flake8-import-conventions`
+- `lint.flake8-pytest-style`
+- `lint.flake8-unused-arguments`
+- `lint.isort`
+- `lint.mccabe`
+- `lint.pep8-naming`
+- `lint.pycodestyle`
+- `lint.pydocstyle`
+- `lint.pyflakes`
+- `lint.pylint`
+- `lint.pyupgrade`
+- `lint.per-file-ignores`
+- `lint.extend-per-file-ignores`
+- `lint.exclude`
+- `lint.ruff`
+- `lint.preview`
+
+For more information, try '--help'.
+</code></pre>
+<p>Using the <code>Display</code> output and then reparsing it also seems fragile, considering that we have the structured metadata.</p>
+<p>I'd suggest to add a <code>collect_fields</code> method to <code>OptionSet</code> that collects the direct children of <code>set</code> and then map over the field names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 08:57</div>
+            <div class="timeline-body"><p>This looks great. I'm a bit worried about the output parsing and I think we can improve the handling if <code>set</code> itself has sub-table entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-06 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/lint.rs</code>:789 on 2025-01-06 13:14</div>
+            <div class="timeline-body"><p>this comment is irrelevant to this test; I think it was just copied and pasted from the test immediately above</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/lint.rs</code>:826 on 2025-01-06 13:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-06 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-06 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-06 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-06 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

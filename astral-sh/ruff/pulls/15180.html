@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Apply `TC008` more eagerly in `TYPE_CHECKING` blocks and disapply it in stubs - astral-sh/ruff #15180</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Apply <code>TC008</code> more eagerly in <code>TYPE_CHECKING</code> blocks and disapply it in stubs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15180">#15180</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2024-12-29 08:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 08:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>quoted-type-alias</code> (<code>TC008</code>) can be applied more liberally for annotated type aliases defined inside a <code>if TYPE_CHECKING</code> block.</p>
+<p>This also disables <code>TC008</code> in stub files, since that use-case is already covered by <code>quoted-annotation-in-stub</code> (<code>PYI020</code>).</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 08:53</div>
+            <div class="timeline-body"><p>The stub test case will fail until #15179 is merged, due to the circularity issues with TC007, when TC007 isn't skipped in stub files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-29 21:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/c300e0e7c6b9b74b1171cce9dbc6f683f721c0cc/airflow/decorators/condition.py#L32'>airflow/decorators/condition.py:32:35:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/apache/airflow/blob/c300e0e7c6b9b74b1171cce9dbc6f683f721c0cc/airflow/decorators/condition.py#L33'>airflow/decorators/condition.py:33:35:</a> TC008 [*] Remove quotes from type alias
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/f986b146bce5cd9d915721edaf608d84c53d8648/src/latch/ldata/_transfer/upload.py#L30'>src/latch/ldata/_transfer/upload.py:30:32:</a> TC008 [*] Remove quotes from type alias
++ <a href='https://github.com/latchbio/latch/blob/f986b146bce5cd9d915721edaf608d84c53d8648/src/latch/ldata/_transfer/upload.py#L31'>src/latch/ldata/_transfer/upload.py:31:35:</a> TC008 [*] Remove quotes from type alias
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC008 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 21:52</div>
+            <div class="timeline-body"><p>Alright, this is a little too liberal right now. I had my suspicions.</p>
+<p>I'll go more conservative and only remove the subscript/attribute exception. Recursive type aliases should also result in TC008 in a typing only context, but it might be too much work to carve out that exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 22:35</div>
+            <div class="timeline-body"><p>The remaining ecosystem hits look correct to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 22:41</div>
+            <div class="timeline-body"><p>Actually, we probably need to carve out an additional exception for <code>|</code> if the target version is &lt; 3.10 and we're not inside a stub file.</p>
+<p>But that's getting out of scope, since it has nothing to do with execution context. I'll create a follow-up PR for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-30 17:37</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>Do you have any references that I could read why it is okay to apply TC008 more eagerly in typing only context? Having a more detailed explanation might also be useful for users reading the Changelog</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-30 18:46</div>
+            <div class="timeline-body"><p>The exceptions TC008 currently carves out for attribute and subscript access only are there because some types will only be subscriptable at type checking time (E.g. a class is made generic in a <code>pyi</code> file, but the class in the corresponding <code>py</code> file is not generic, so it can't be subscripted at runtime) and some attributes will be internal to the stubs (E.g. convenience type aliases like <code>webob.request._FieldStorageWithFile</code>, if you import <code>webob.request</code> and access the attribute as <code>webob.request._FieldStorageWithFile</code> at runtime, it will be a <code>NameError</code>).</p>
+<p>Neither of these cases are relevant in typing only contexts like type checking blocks or stub files. Since they will never be evaluated by CPython, only by static analysis tools, which includes most if not all runtime type checkers. So we only really need to adhere to what type checkers consider correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-30 18:54</div>
+            <div class="timeline-body"><p>As for references. I don't think this is something that's explicitly specced out anywhere, except maybe in some specific type checker's documentation. These are just some nuances/heuristics I have learned over the course of many hundreds of hours of working with mypy and to some degree pyright and pytype via typeshed contributions.</p>
+<p>Once ruff performs deeper analysis it might be possible to detect some of these errors without having to carve out large sweeping exceptions like these two. Although it would involve analyzing both the stubs and the actual source for modules with external stubs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 14:25</div>
+            <div class="timeline-body"><p>Hmm okay, thanks for the explanation. This does make sense but I think it might be better to wait for @AlexWaygood or @carljm to review this change.</p>
+<p>I was interested whether this would impact runtime type checkers but it seems they replace all types declared in <code>TYPE_CHECKING</code> blocks with <code>Any</code> (<a href="https://typeguard.readthedocs.io/en/latest/userguide.html#notes-on-forward-reference-handling">source</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @MichaReiser on 2024-12-31 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-12-31 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-03 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 11:26</div>
+            <div class="timeline-body"><p>@Daverball before I review this PR, could you clarify this a little bit for me:</p>
+<blockquote>
+<p>Actually, we probably need to carve out an additional exception for <code>|</code> if the target version is &lt; 3.10 and we're not inside a stub file.</p>
+<p>But that's getting out of scope, since it has nothing to do with execution context. I'll create a follow-up PR for that.</p>
+</blockquote>
+<p>Does this PR <em>introduce</em> a false positive that you then plan to fix in https://github.com/astral-sh/ruff/pull/15201? Or does this false positive that you identify here already exist on <code>main</code>?</p>
+<p>If the former, then I think the false positive should be fixed in this PR, because otherwise there's a chance that we review and merge this PR, then look at your other PR, decide it's not the correct fix, and we're stuck with a false positive on <code>main</code> for a prolonged period of time. But if the latter, then I'm happy for things to be split into two PRs, as you've done :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-03 11:50</div>
+            <div class="timeline-body"><p>@AlexWaygood Yes, the false positive already exists on main, otherwise I would've fixed it in this PR. I just happened to notice the bug while I was implementing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 11:54</div>
+            <div class="timeline-body"><p>Great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-01-03 12:16</div>
+            <div class="timeline-body"><p>This preview rule seems to already overlap with our stable rule <a href="https://docs.astral.sh/ruff/rules/quoted-annotation-in-stub/"><code>PYI020</code></a>. If you run <code>uvx ruff check --select=PYI,TC --preview</code> on this snippet saved as a <code>.pyi</code> file, you already get two diagnostics (one from PYI20, one from TC008) using the latest version of Ruff:</p>
+<pre><code class="language-py">type Y = &quot;list[str]&quot;
+</code></pre>
+<p>This PR makes the problem worse; with this PR branch, running <code>cargo run -- check foo.pyi --select=TC,PYI --preview --no-cache</code> means that the problem is extended to old-style type aliases. Now we get duplicate diagnostics on this as well in a stub-file context:</p>
+<pre><code class="language-py">from typing import TypeAlias
+
+X: TypeAlias = &quot;list[str]&quot;
+</code></pre>
+<p>We'll need to decide how to resolve the overlap between the two rules before we can consider stabilising <code>TC008</code>. I think PYI020` is likely to be a rule that stub authors will already have enabled (since it's already stable, and since the whole category is focussed on writing better stubs), so my instinct is to say that it would be best if TC008 did not emit any lints at all regarding stub files. That feels like the way of resolving the overlap between the rules that will be least disruptive to users.</p>
+<p>This is obviously not a perfect solution. In an ideal world, I think we'd have a single rule (probably <code>TC008</code>) that just adjusted its behaviour depending on whether it was analyzing a stub file or a runtime file (what you're doing now). Perhaps that's something we could do as part of rule recategorisation. As it stands, however, this would require deprecating PYI020. That feels unnecessarily disruptive to me, considering that it's a stable rule with no known problems in its implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-03 12:34</div>
+            <div class="timeline-body"><p>@AlexWaygood I'm fine with disabling this rule in stub files, if the use-case is already served by <code>flake8-pyi</code>, that simplifies some things too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-03 13:00</div>
+            <div class="timeline-body"><p>@AlexWaygood Maybe this means we want to disable TC010 in stubs as well. Although the overlap there should be much smaller, if there is one. It only seems to apply to type expressions that are contained within value expressions, like a <code>cast</code> or a generic subscript in the rhs of an assignment or a function default. And it's also possible that PYI020 doesn't apply in that specific context, so there isn't actually any overlap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-type-checking`] Apply `TC008` more eagerly in typing context" to "[`flake8-type-checking`] Apply `TC008` more eagerly in `TYPE_CHECKING` blocks" by @Daverball on 2025-01-03 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2328 on 2025-01-03 13:05</div>
+            <div class="timeline-body"><p>Let's add a comment so it's obvious to future readers why this rule is disabled on stub files:</p>
+<pre><code class="language-suggestion">                        // stub files are covered by PYI020
+                        if !self.source_type.is_stub() &amp;&amp; self.enabled(Rule::QuotedTypeAlias) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-03 13:06</div>
+            <div class="timeline-body"><p>Could we also add a note to the docs for this rule pointing users to PYI020 for stub files? (And we could similarly add a note to the PYI020 docs pointing users to this rule for runtime files)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Daverball on 2025-01-03 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:219 on 2025-01-03 13:19</div>
+            <div class="timeline-body"><p>The issue with boolean parameters in Rust is that, because the language doesn't have keyword arguments, it's impossible to know what the passed-in argument means without jumping to the function's definition (which is kind of a pain). Using a custom enum for this parameter in the methods in the semantic model would make this much more readable at callsites such as this one, e.g.</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs b/crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs
+index 92b1d7d07..cc663022d 100644
+--- a/crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs
++++ b/crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs
+@@ -4,7 +4,7 @@ use ruff_diagnostics::{AlwaysFixableViolation, Diagnostic, Edit, Fix, FixAvailab
+ use ruff_macros::{derive_message_formats, ViolationMetadata};
+ use ruff_python_ast as ast;
+ use ruff_python_ast::{Expr, Stmt};
+-use ruff_python_semantic::{Binding, SemanticModel};
++use ruff_python_semantic::{Binding, SemanticModel, TypingOnlyBindingsStatus};
+ use ruff_python_stdlib::typing::{is_pep_593_generic_type, is_standard_library_literal};
+ use ruff_text_size::Ranged;
+ 
+@@ -221,7 +221,7 @@ fn collect_typing_references&lt;'a&gt;(
+             };
+             if checker
+                 .semantic()
+-                .simulate_runtime_load(name, false)
++                .simulate_runtime_load(name, TypingOnlyBindingsStatus::Disallowed)
+                 .is_some()
+             {
+                 return;
+@@ -322,7 +322,7 @@ fn quotes_are_unremovable(semantic: &amp;SemanticModel, expr: &amp;Expr) -&gt; bool {
+         Expr::Name(name) =&gt; {
+             semantic.resolve_name(name).is_some()
+                 &amp;&amp; semantic
+-                    .simulate_runtime_load(name, semantic.in_type_checking_block())
++                    .simulate_runtime_load(name, semantic.in_type_checking_block().into())
+                     .is_none()
+         }
+         _ =&gt; false,
+diff --git a/crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs b/crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs
+index 6678b90d6..186b9636e 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs
+@@ -7,7 +7,7 @@ use ruff_python_ast as ast;
+ use ruff_python_literal::format::FormatSpec;
+ use ruff_python_parser::parse_expression;
+ use ruff_python_semantic::analyze::logging::is_logger_candidate;
+-use ruff_python_semantic::{Modules, SemanticModel};
++use ruff_python_semantic::{Modules, SemanticModel, TypingOnlyBindingsStatus};
+ use ruff_text_size::{Ranged, TextRange};
+ 
+ use crate::checkers::ast::Checker;
+@@ -216,7 +216,7 @@ fn should_be_fstring(
+                         id,
+                         literal.range(),
+                         semantic.scope_id,
+-                        false,
++                        TypingOnlyBindingsStatus::Disallowed,
+                     )
+                     .map_or(true, |id| semantic.binding(id).kind.is_builtin())
+                 {
+diff --git a/crates/ruff_python_semantic/src/model.rs b/crates/ruff_python_semantic/src/model.rs
+index ae8997158..56cd21ddb 100644
+--- a/crates/ruff_python_semantic/src/model.rs
++++ b/crates/ruff_python_semantic/src/model.rs
+@@ -713,13 +713,13 @@ impl&lt;'a&gt; SemanticModel&lt;'a&gt; {
+     pub fn simulate_runtime_load(
+         &amp;self,
+         name: &amp;ast::ExprName,
+-        allow_typing_only_bindings: bool,
++        typing_only_bindings_status: TypingOnlyBindingsStatus,
+     ) -&gt; Option&lt;BindingId&gt; {
+         self.simulate_runtime_load_at_location_in_scope(
+             name.id.as_str(),
+             name.range,
+             self.scope_id,
+-            allow_typing_only_bindings,
++            typing_only_bindings_status,
+         )
+     }
+ 
+@@ -752,7 +752,7 @@ impl&lt;'a&gt; SemanticModel&lt;'a&gt; {
+         symbol: &amp;str,
+         symbol_range: TextRange,
+         scope_id: ScopeId,
+-        allow_typing_only_bindings: bool,
++        typing_only_bindings_status: TypingOnlyBindingsStatus,
+     ) -&gt; Option&lt;BindingId&gt; {
+         let mut seen_function = false;
+         let mut class_variables_visible = true;
+@@ -795,7 +795,9 @@ impl&lt;'a&gt; SemanticModel&lt;'a&gt; {
+                     // runtime binding with a source-order inaccurate one
+                     for shadowed_id in scope.shadowed_bindings(binding_id) {
+                         let binding = &amp;self.bindings[shadowed_id];
+-                        if !allow_typing_only_bindings &amp;&amp; binding.context.is_typing() {
++                        if typing_only_bindings_status.is_disallowed()
++                            &amp;&amp; binding.context.is_typing()
++                        {
+                             continue;
+                         }
+                         if let BindingKind::Annotation
+@@ -830,7 +832,7 @@ impl&lt;'a&gt; SemanticModel&lt;'a&gt; {
+                         _ =&gt; binding_id,
+                     };
+ 
+-                    if !allow_typing_only_bindings
++                    if typing_only_bindings_status.is_disallowed()
+                         &amp;&amp; self.bindings[candidate_id].context.is_typing()
+                     {
+                         continue;
+@@ -2065,6 +2067,32 @@ impl ShadowedBinding {
+     }
+ }
+ 
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub enum TypingOnlyBindingsStatus {
++    Allowed,
++    Disallowed,
++}
++
++impl TypingOnlyBindingsStatus {
++    pub const fn is_allowed(self) -&gt; bool {
++        matches!(self, TypingOnlyBindingsStatus::Allowed)
++    }
++
++    pub const fn is_disallowed(self) -&gt; bool {
++        matches!(self, TypingOnlyBindingsStatus::Disallowed)
++    }
++}
++
++impl From&lt;bool&gt; for TypingOnlyBindingsStatus {
++    fn from(value: bool) -&gt; Self {
++        if value {
++            TypingOnlyBindingsStatus::Allowed
++        } else {
++            TypingOnlyBindingsStatus::Disallowed
++        }
++    }
++}
++
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-03 13:21</div>
+            <div class="timeline-body"><p>Thanks for updating this! It overall looks reasonable to me now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 13:22</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood Maybe this means we want to disable TC010 in stubs as well. Although the overlap there should be much smaller, if there is one. It only seems to apply to type expressions that are contained within value expressions, like a <code>cast</code> or a generic subscript in the rhs of an assignment or a function default. And it's also possible that PYI020 doesn't apply in that specific context, so there isn't actually any overlap.</p>
+</blockquote>
+<p>PYI020 bans all quotes in all type expressions in stubs (with very narrow exceptions for <code>Literal</code> and <code>Annotated</code>), so yes, it looks like there's overlap there as well, which we should fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-03 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-03 13:43</div>
+            <div class="timeline-body"><p>@AlexWaygood Do you happen to know how to cross reference rules from another rule? I couldn't find any examples. Does linking to the corresponding enum variant work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-03 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-03 14:30</div>
+            <div class="timeline-body"><p>Hmmm... no, I'm not sure what the best solution is there. @MichaReiser, do you have any guidance/insight?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-06 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-06 11:16</div>
+            <div class="timeline-body"><p>I chatted to @MichaReiser this morning and we concluded that neither of us knows of a great way to do this :-) hardcoding a link to https://docs.astral.sh/ruff/rules/quoted-annotation-in-stub/ might be best for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-06 11:42</div>
+            <div class="timeline-body"><p>I just double checked and yes, there's no custom handling in https://github.com/astral-sh/ruff/blob/bb12fe9d0c71fcb36a5000260f62dbf8411b74b4/crates/ruff_dev/src/generate_docs.rs#L118-L187</p>
+<p>It might be possible to use relative links as we do in the linter documentation</p>
+<p>https://github.com/astral-sh/ruff/blob/68eb0a25111c23b0891afb07e68e785978963904/docs/linter.md#L165-L167</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-06 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-06 11:43</div>
+            <div class="timeline-body"><p>I could probably also link <code>/rules/quoted-annotation-in-stub.md</code> so it's only semi-hardlinked, I had to do something similar in a setting to link to a rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-06 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs</code>:1 on 2025-01-06 12:16</div>
+            <div class="timeline-body"><p>@AlexWaygood I think a reference from TC008 to PYI020 is sufficient. A reference the other way doesn't make that much sense to me, since most PYI rules are so specific to stub files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Daverball on 2025-01-06 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-08 09:15</div>
+            <div class="timeline-body"><p>@AlexWaygood Bumping this in case it slipped through the cracks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-08 12:05</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-type-checking`] Apply `TC008` more eagerly in `TYPE_CHECKING` blocks" to "[`flake8-type-checking`] Apply `TC008` more eagerly in `TYPE_CHECKING` blocks and disapply it in stubs" by @AlexWaygood on 2025-01-08 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-08 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-08 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-08 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

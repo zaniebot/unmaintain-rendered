@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `Type::tuple` in favor of `TupleType::from_elements` - astral-sh/ruff #15218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>Type::tuple</code> in favor of <code>TupleType::from_elements</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15218">#15218</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-02 08:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-02 08:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Remove <code>Type::tuple</code> in favor of <code>TupleType::from_elements</code>, avoid a few intermediate <code>Vec</code>tors. Resolves an old <a href="https://github.com/astral-sh/ruff/pull/14744#discussion_r1867493706">review comment</a>.</p>
+<h2>Test Plan</h2>
+<p>—</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-02 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-01-02 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-01-02 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-01-02 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-02 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-02 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-02 11:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 12:01</div>
+            <div class="timeline-body"><p>I'm not a 100% if here is the right place to fix this because <code>from_elements</code> could also be used from non-inference code. Maybe it's better to keep the collect in <code>infer.rs</code>?</p>
+<p>If you decide to keep it here. I then suggest that we avoid copy over the <code>elements</code> if we've seen any <code>Never</code> type</p>
+<pre><code class="language-suggestion">                // We can not return early here because we need to consume the whole iterator,
+                // to ensure that all element types are inferred.
+                let _ = types.last();
+                return Type::Never
+</code></pre>
+<p>This probably requires using a <code>while let</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-02 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-02 12:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 12:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not a 100% if here is the right place to fix this because <code>from_elements</code> could also be used from non-inference code.</p>
+</blockquote>
+<p>To be clear: I'm assuming you are only referring to a potential performance implication — not some correctness argument?</p>
+<p>My thinking was that I'd rather remove this footgun alltogether as opposed to squeezing out a tiny bit of performance: when do we really gain something — performance-wise — by returning early here? Only if we have a very long tuple type where one of the first elements is <code>Never</code>. This is an extremely unlikely case that I don't think is worth optimizing for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-02 12:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 12:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not a 100% if here is the right place to fix this because <code>from_elements</code> could also be used from non-inference code. Maybe it's better to keep the collect in <code>infer.rs</code>?</p>
+</blockquote>
+<p>I agree, I think it's best to keep the collect in <code>infer.rs</code> and keep the early return here. It seems better for a clean separation of concerns.</p>
+<p>Could we also add an mdtest that reproduces the regression that was nearly introduced here? That way we won't accidentally lose test coverage if the fixture file in <code>crates/ruff_linter</code> is changed for some unrelated reason</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-02 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 12:16</div>
+            <div class="timeline-body"><blockquote>
+<p>My thinking was that I'd rather remove this footgun alltogether</p>
+</blockquote>
+<p>That's a reasonable point... it just still feels to me like it's the wrong place to be fixing the footgun. Conceptually, the code in <code>types.rs</code> should be &quot;pure code&quot; that operates on types and produces other types, rather than code that is concerned with inferring types from ASTs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-02 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 14:00</div>
+            <div class="timeline-body"><p>That's a fair point. An alternative would be to change the signature to accept a <code>&amp;[Type&lt;'db&gt;]</code> which, would remove the need to collecting the types and remove <code>from_elements</code> to a simple check if the slices contains <code>Never</code>.</p>
+<pre><code>		if types.iter().any(Type::is_never) {
+            return Type::Never;
+        }
+
+        Type::Tuple(Self::new(db, elements))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-02 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3732 on 2025-01-02 14:20</div>
+            <div class="timeline-body"><p>I saw this too late and changed it back to using <code>.collect</code> in <code>infer.rs</code>. I added a comment and a regression test. I also manually reviewed all other occurrences of <code>TupleType::from_elements</code> and I <em>think</em> they are not problematic. But of course, there is no guarantee that we wont run into this again.</p>
+<p>I do fully agree with your point that this has actually nothing to do with <code>TupleType::from_elements</code> but is more of a general problem in <code>infer.rs</code>. We need to be careful everywhere, and I was not, when removing the <code>.collect</code> in <code>infer_tuple_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/corpus/88_regression_tuple_type_short_circuit.py</code>:14 on 2025-01-02 14:40</div>
+            <div class="timeline-body"><p>For a more realistic function that would be reasonably annotated as returning <code>Never</code>, you could do</p>
+<pre><code class="language-suggestion">    while True:
+        pass
+</code></pre>
+<p>But it might be more concise to create the tuple in a function, where the function has a parameter annotated with <code>Never</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-02 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-02 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/88_regression_tuple_type_short_circuit.py</code>:14 on 2025-01-02 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>For a more realistic function that would be reasonably annotated as returning <code>Never</code></p>
+</blockquote>
+<p>What's wrong with my function? I believe it is correctly typed? It's also an infinite loop, just with recursion.</p>
+<blockquote>
+<p>it might be more concise to create the tuple in a function, where the function has a parameter annotated with <code>Never</code></p>
+</blockquote>
+<p>I didn't do that on purpose. A function that accepts <code>Never</code> can not be called (as there is no way to produce an element of type <code>Never</code>). So we might later detect its body to be unreachable code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-02 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/resources/test/corpus/88_regression_tuple_type_short_circuit.py</code>:14 on 2025-01-02 15:29</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>For a more realistic function that would be reasonably annotated as returning <code>Never</code></p>
+</blockquote>
+<p>What's wrong with my function? I believe it is correctly typed?</p>
+</blockquote>
+<p>There's nothing wrong with it at all from a typing perspective! But at runtime, it would obviously cause infinite recursion and not be particularly useful 😆 the more common situation in which a function is annotated as returning <code>Never</code> or <code>NoReturn</code> in my experience is when a function unconditionally raises an exception, or has an infinite loop.</p>
+<p>So this is a very minor nitpick, and I certainly don't object if you ignore it and merge your PR as it is! I just think that as a general principle, it's nice if our test snippets emulate realistic Python code as much as possible :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-02 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/resources/test/corpus/88_regression_tuple_type_short_circuit.py</code>:14 on 2025-01-02 16:21</div>
+            <div class="timeline-body"><p>I'm afraid I don't really understand why a function returning <code>Never</code> with an infinite (no op) loop is more realistic / useful than one with infinite recursion?</p>
+<p>You mean if someone <em>actually</em> wants to run this, they would prefer an infinite loop because the recursive version would run into &quot;max recursion depth exceeded&quot;? Okay :smile:</p>
+<p>(Note that this is just a corpus test, not a Markdown test)</p>
+<blockquote>
+<p>I certainly don't object if you ignore it and merge your PR as it is</p>
+</blockquote>
+<p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-02 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-02 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-02 16:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

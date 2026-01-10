@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] improve type shrinking coverage in red-knot property tests - astral-sh/ruff #15297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] improve type shrinking coverage in red-knot property tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15297">#15297</a>
+        opened by <a href="https://github.com/rtpg">@rtpg</a>
+        on 2025-01-06 05:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rtpg">@rtpg</a> on 2025-01-06 05:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>While looking at #14899, I looked at seeing if I could get shrinking on the examples. It turned out to be straightforward, with a couple of caveats.</p>
+<p>I'm calling <code>clone</code> a lot during shrinking. Since by the shrink step we're already looking at a test failure this feels fine? Unless I misunderstood <code>quickcheck</code>'s core loop</p>
+<p>When shrinking <code>Intersection</code>s, in order to just rely on <code>quickcheck</code>'s <code>Vec</code> shrinking without thinking about it too much, the shrinking strategy is:</p>
+<ul>
+<li>try to shrink the negative side (keeping the positive side the same)</li>
+<li>try to shrink the positive side (keeping the negative side the same)</li>
+</ul>
+<p>This means that you can't shrink from <code>(A &amp; B &amp; ~C &amp; ~D)</code> directly to <code>(A &amp; ~C)</code>! You would first need an intermediate failure at <code>(A &amp; B &amp; ~C)</code> or <code>(A &amp; ~C &amp; ~D)</code>. This feels good enough. Shrinking the negative side first also has the benefit of trying to strip down negative elements in these intersections.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_python_semantic -- --ignored types::property_tests::stable</code> still fails as it current does on <code>main</code>, but now the errors seem more minimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @rtpg on 2025-01-06 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @rtpg on 2025-01-06 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @rtpg on 2025-01-06 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @rtpg on 2025-01-06 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-06 06:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 07:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:165 on 2025-01-06 07:35</div>
+            <div class="timeline-body"><p>Nit: Can you tell me more about what the benefits of the <code>chain</code> macro are over the <code>Iterator::chain</code> method?</p>
+<pre><code class="language-suggestion">
+                    // we shrink negative constraints first, as
+                    // intersections with only negative constraints are
+                    // more confusing
+                    neg.shrink().map(move |shrunk_neg| Ty::Intersection {
+                        pos: pos_orig.clone(),
+                        neg: shrunk_neg,
+                    }).chain(pos.shrink().map(move |shrunk_pos| Ty::Intersection {
+                        pos: shrunk_pos,
+                        neg: neg_orig.clone(),
+                    })
+</code></pre>
+<p>I'd otherwise prefer the <code>std</code> chain method because it's what most people are familiar with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:130 on 2025-01-06 07:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                1 =&gt; Some(elts.into_iter().next().unwrap()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:135 on 2025-01-06 07:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                1 =&gt; Some(elts.into_iter().next().unwrap()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @MichaReiser on 2025-01-06 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-06 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2025-01-06 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:165 on 2025-01-06 10:08</div>
+            <div class="timeline-body"><p>it's easier to swap around elements of <code>chain!</code> ad-hoc, since they're on the same level of the AST.</p>
+<p>I also think aesthetically that it makes sense for the components of the chain to be at the same level, rather than the second one to be chained off of the first. But that's <em>purely</em> an aesthetics thing.</p>
+<p>I'll switch over to <code>a.chain(b)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2025-01-06 11:18</div>
+            <div class="timeline-body"><p>I believe to have handled all the comments in the first review and have pushed up a new version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:128 on 2025-01-06 13:08</div>
+            <div class="timeline-body"><p>It might not be completely unreasonable to try and return <code>Ty::Never</code> here?</p>
+<p>This also makes me think: I think we currently only try shrinking for the root of the <code>Type</code> tree? Like if we have <code>tuple[A | B, C]</code>, I think we would only try to remove either <code>A | B</code> from the tuple, or try to remove <code>C</code> from the tuple, i.e. we try to shrink to <code>C</code> or to <code>A | B</code>, but we would not try to shrink the <code>A | B</code> union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-06 13:10</div>
+            <div class="timeline-body"><p>Thank you very much for working on this!</p>
+<p>If it's not too much effort, it would be great to see some evidence that shrinking actually gets better. Is it possible to pin the random seed in quickcheck and then show a few before/after results?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2025-01-06 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:128 on 2025-01-06 21:49</div>
+            <div class="timeline-body"><p>Calling shrink on the vector of types actually does attempt to shrink the elements of the vector as well as trying to remove elements, so we get nice shrinking just leaning on the shrinking built into quickcheck (at least that was my read of the source)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2025-01-06 22:28</div>
+            <div class="timeline-body"><p>@sharkdp do you know how to pin the quickcheck seed? I'm looking through the quickcheck source and readme and not seeing anything, but I am famously bad at finding things that are obvious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2025-01-06 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:128 on 2025-01-06 22:29</div>
+            <div class="timeline-body"><p>Regarding the empty union shrinking to <code>Ty::Never</code>... feels fine by me! Especially now that I fully grok that <code>Ty</code> is a smart constructor for <code>Type</code> so I don't need to worried about types being in the &quot;wrong location&quot;, so to speak</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-07 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>@sharkdp do you know how to pin the quickcheck seed?</p>
+</blockquote>
+<p>No, I just hoped there would be a way. But it does not seem to be the case: https://github.com/BurntSushi/quickcheck/pull/278</p>
+<p>In this case, I'm okay with your &quot;now the errors seem more minimal&quot; observation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-07 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:128 on 2025-01-07 09:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Calling shrink on the vector of types actually does attempt to shrink the elements of the vector as well as trying to remove elements</p>
+</blockquote>
+<p>:+1:</p>
+<blockquote>
+<p>Regarding the empty union shrinking to <code>Ty::Never</code>... feels fine by me! Especially now that I fully grok that <code>Ty</code> is a smart constructor for <code>Type</code> so I don't need to worried about types being in the &quot;wrong location&quot;, so to speak</p>
+</blockquote>
+<p>If we try to shrink at all &quot;depths&quot;, I think we can skip this. The idea was to simplify nested <code>Ty</code> unions like <code>A | B | (C | D)</code> to <code>A | B | Never</code> and then further down to <code>A | B</code>, but there are many other possible shrinking-paths that would lead to that result (e.g. via the single-element union or via a element-removal shrink on the outer union).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-01-07 09:09</div>
+            <div class="timeline-body"><p>Thank you for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-07 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-07 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

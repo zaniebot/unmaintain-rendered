@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't special-case class instances in binary expression inference - astral-sh/ruff #15161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't special-case class instances in binary expression inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15161">#15161</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-27 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-27 15:54</div>
+            <div class="timeline-body"><p>Just like in #15045 for unary expressions: In binary expressions, we were only looking for dunder expressions for <code>Type::Instance</code> types.  We had some special cases for coercing the various <code>Literal</code> types into their corresponding <code>Instance</code> types before doing the lookup.  But we can side-step all of that by using the existing <code>Type::to_meta_type</code> and <code>Type::to_instance</code> methods.</p>
+<p>Closes #14549</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2024-12-27 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2024-12-27 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-27 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-27 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3503 on 2024-12-27 15:55</div>
+            <div class="timeline-body"><p>I reordered these so that all of the special cases for literals appeared together</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3402 on 2024-12-27 15:56</div>
+            <div class="timeline-body"><p>Had to add clauses for our other gradual type forms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-27 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3521 on 2024-12-27 15:57</div>
+            <div class="timeline-body"><p>These are now all handled by the <code>to_meta_type</code> calls down below.  The new approach is more complete: before we handled when each literal type appeared in an expression with an <code>Instance</code>, but not with other (different) literal types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:15 on 2024-12-27 16:00</div>
+            <div class="timeline-body"><p>This test produced a <code>@Todo</code> type before, since our literal coercions weren't complete</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3524 on 2024-12-27 16:01</div>
+            <div class="timeline-body"><p>I've expanded this out into a list of all of the coercable types, just like @AlexWaygood  requested in https://github.com/astral-sh/ruff/pull/15045#discussion_r1890556626</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-27 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-12-27 16:05</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finfer-binary">CodSpeed Performance Report</a></h2>
+<h3>Merging #15161 will <strong>degrade performances by 4.5%</strong></h3>
+<p><sub>Comparing <code>dcreager/infer-binary</code> (7149f42) with <code>main</code> (d45c1ee)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dcreager/infer-binary</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[cold]</code> | 83.7 ms | 87.7 ms | -4.5% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:276 on 2024-12-27 19:58</div>
+            <div class="timeline-body"><p>The test failures were because we're now noticing the recursiveness of some additional class definitions (https://github.com/astral-sh/ruff/issues/14672)</p>
+<pre><code class="language-py">class Tree(list[Tree | Leaf]): ...
+</code></pre>
+<p>We now see into the <code>BitOr</code> of two <code>ClassLiterals</code>, and in most cases, can see via the typeshed that the result is a <code>UnionType</code>.  But in these two fixtures, there's a recursive reference inside that union, which we can't yet handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-27 19:59</div>
+            <div class="timeline-body"><p>This comes from the typeshed.  We might consider special-casing the <code>BitOr</code> of two <code>ClassLiteral</code>s to return a more specific <code>Type::Union</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-27 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-27 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-27 20:02</div>
+            <div class="timeline-body"><p>(Note that this is not a type annotation, so none of the logic in <code>Type::in_type_expression</code> applies)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-27 20:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-27 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-27 20:15</div>
+            <div class="timeline-body"><p>I went ahead and added this special case, but retaining the behavior that it's only available in Python ≥3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-29 00:29</div>
+            <div class="timeline-body"><p>I don't think <code>Literal[A, B]</code> is the right type to assign to the value expression <code>A | B</code>.</p>
+<p>In a type expression, <code>A | B</code> spells the type <code>Type::Union[Type::Instance(A), Type::Instance(B)]</code> -- that is, the type consisting of all instances of <code>A</code> (or any subclass) and all instances of <code>B</code> (or any subclass).</p>
+<p>The value expression <code>A if flag else B</code> would correctly be assigned the type <code>Literal[A, B]</code>, since its runtime value must either be the class object <code>A</code> or the class object <code>B</code>.</p>
+<p>But the runtime value of the value expression <code>A | B</code> is not either of those, so its type can't be <code>Literal[A, B]</code>. Its runtime value is an instance of <code>types.UnionType</code>, which can't be treated as if it were a class object at all. So the type we should assign to it is <code>Type::Instance(types.UnionType)</code>.</p>
+<pre><code class="language-suggestion">reveal_type(A | B)  # revealed: UnionType
+</code></pre>
+<p>If we did any special-casing here, the correct special casing would be to create a custom type representation for <code>types.UnionType</code> so we can record the fact that its <code>__args__</code> attribute (in this case) has the type <code>tuple[Literal[A], Literal[B]]</code>. But I don't think this is worth doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/custom.md</code>:134 on 2024-12-29 00:32</div>
+            <div class="timeline-body"><p>It feels like we are missing the <code>Yes() &lt;op&gt; No()</code> case here; is there a reason you didn't include that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/custom.md</code>:192 on 2024-12-29 00:34</div>
+            <div class="timeline-body"><p>This feels very closely related to the <code>## Classes</code> section above -- maybe group them together instead of having the intervening function literals section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3369 on 2024-12-29 00:36</div>
+            <div class="timeline-body"><p>This is the clause that I think we don't want; I expect typeshed will natively give us the correct type of <code>types.UnionType</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:276 on 2024-12-29 00:38</div>
+            <div class="timeline-body"><p>Maybe eliminating the special case and just returning <code>types.UnionType</code> instead, as commented above, will help these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-29 00:38</div>
+            <div class="timeline-body"><p>Looks great, thank you! Just one substantive comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-29 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-29 00:44</div>
+            <div class="timeline-body"><p>Oh, I commented on this in my review; I think the added special case is not correct, the type from typeshed is :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-29 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/tests/check.rs</code>:276 on 2024-12-29 00:45</div>
+            <div class="timeline-body"><p>Oh, perhaps not; I see now that this comment was made before you added that special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-29 00:50</div>
+            <div class="timeline-body"><p>It's odd that this PR would cause a regression. The profiles on CodSpeed suggest that we are fetching some ingredient more often. I suspect that the cause is that improving completeness here means we now return a more complex type in lots of cases that would previously have just returned <code>Unknown</code>. Since this is just a natural consequence of better completeness, I'll go ahead and acknowledge the regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-30 13:59</div>
+            <div class="timeline-body"><p>:+1: Sounds good!  I wasn't sure about which way to go, so I added the special case in a separate commit that would be easier to revert</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/classes.md</code>:16 on 2024-12-30 14:00</div>
+            <div class="timeline-body"><p>Reverted the special case, this is now returning <code>UnionType</code> again as before</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/custom.md</code>:134 on 2024-12-30 14:07</div>
+            <div class="timeline-body"><p>I wasn't sure if that would be needed, since <code>No</code> is not a subclass of <code>Yes</code>. So it doesn't matter whether it implements <code>__radd__</code>, we're always going to use <code>Yes.__add__</code>, and so that would give the same result as the <code>Yes() &lt;op&gt; Yes()</code> case.</p>
+<p>So I think what I want is another stanza, where <code>Sub</code> and <code>No</code> both implemented the reflected methods, to show that we correctly use the <code>Sub</code> reflections since it's a subclass, but don't pick up the <code>No</code> reflections since it's not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/custom.md</code>:192 on 2024-12-30 14:08</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3369 on 2024-12-30 14:08</div>
+            <div class="timeline-body"><p>Removed by the revert mentioned above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-30 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @MichaReiser on 2024-12-30 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-06 18:34</div>
+            <div class="timeline-body"><p>Looks great, thanks for the thorough tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-01-06 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-01-06 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-06 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

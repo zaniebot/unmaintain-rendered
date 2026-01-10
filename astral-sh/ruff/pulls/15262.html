@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Future-proof `Type::is_disjoint_from()` - astral-sh/ruff #15262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Future-proof <code>Type::is_disjoint_from()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15262">#15262</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-04 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-04 19:27</div>
+            <div class="timeline-body"><p>(This PR is stacked on top of #15261; review that first.)</p>
+<h2>Summary</h2>
+<p>Currently we hardcode a lot of knowledge about various classes' MROs into <code>Type::is_disjoint_from()</code>. This is undesirable for two reasons:</p>
+<ul>
+<li>If typeshed changes a class's MRO to reflect that it changed in a future Python version, or typeshed changes a class's MRO for some other reason, bugs will be silently introduced into this function without us noticing it.</li>
+<li>Once we add support for generics, we'll want red-knot to understand that <code>Literal[&quot;foo&quot;]</code> is a subtype of <code>typing.Sequence[str]</code> and <code>typing.Iterable[str]</code>; with the current way <code>is_disjoint_from()</code> is written, we would have to manually update the function to take account of that.</li>
+</ul>
+<p>This PR reworks <code>Type::is_disjoint_from()</code> to use generic <code>is_subclass_of()</code> methods rather than hardcoding knowledge of various classes' MROs. This fixes both the above issues, and also makes <code>Type::is_disjoint_from()</code> more extensible for future improvements, such as incorporating knowledge of <code>@final</code> classes into the method.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>No new unit tests added; this should be largely a pure refactor with no significant change to current behaviour.</li>
+<li>I ran <code>QUICKCHECK_TESTS=200000 cargo test -p red_knot_python_semantic -- --ignored types::property_tests::stable</code> to verify that this doesn't introduce any new failures in the property tests</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-04 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-01-04 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-04 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-01-04 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-04 19:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1244 on 2025-01-05 22:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // A `Type::IntLiteral()` must be an instance of exactly `int`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-05 22:50</div>
+            <div class="timeline-body"><p>Great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-05 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-05 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-05 22:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

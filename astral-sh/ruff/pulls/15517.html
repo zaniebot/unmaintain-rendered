@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyflakes`] Fix infinite loop with unused local import in `__init__.py` (`F401`) - astral-sh/ruff #15517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyflakes</code>] Fix infinite loop with unused local import in <code>__init__.py</code> (<code>F401</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15517">#15517</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-01-15 22:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-15 22:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes the infinite loop reported in #12897, where an <code>unused-import</code> that is undefined at the scope of <code>__all__</code> is &quot;fixed&quot; by adding it to <code>__all__</code> repeatedly. These changes make it so that only imports in the global scope will be suggested to add to <code>__all__</code> and the unused local import is simply removed.</p>
+<h2>Test Plan</h2>
+<p>Added a CLI integration test that sets up the same module structure as the original report</p>
+<p>Closes #12897</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-01-15 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-15 22:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:306 on 2025-01-16 06:57</div>
+            <div class="timeline-body"><p>I think it would be cheaper to retrieve the binding with said <code>id</code> and then test if <code>binding.scope.is_global</code> (<code>O(1)</code> vs <code>O(n)</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:339 on 2025-01-16 07:02</div>
+            <div class="timeline-body"><p>I'm inclined to store the <code>ScopeId</code> instead. It seems more generally useful and is cheap as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-16 07:03</div>
+            <div class="timeline-body"><p>I'd prefer if we can move the test closer to the rule rather than making it a CLI tests. We only use CLI tests for features that can't be tested otherwise but we prefer unit tests or tool specific integration tests for everything else because they're faster to run, easier to find, and there's less code &quot;between&quot; the test and the implementation if something goes wrong.</p>
+<p>I'm requesting review from @AlexWaygood to review the rule behavior change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-16 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:339 on 2025-01-16 11:42</div>
+            <div class="timeline-body"><p>And passing around a <code>ScopeId</code> is more strongly typed/more readable than passing around a boolean value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-16 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 12:05</div>
+            <div class="timeline-body"><p>Nice diagnosis! The change to the rule's semantics look correct to me.</p>
+<p>It's nice that this is a targeted fix as well. I think I tried to fix this a while back, but made the mistake of trying to untangle some of the more spaghetti-code-like parts of this rule at the same time, and got bogged down in a tricky refactor that was hard to pull off.</p>
+<p>I agree that I think it should be possible to test this fix using fixtures rather than a CLI integration test. We already have several mock packages set up here that we use for testing F401; can we create another mock package for this scenario? <a href="https://github.com/astral-sh/ruff/tree/main/crates/ruff_linter/resources/test/fixtures/pyflakes">https://github.com/astral-sh/ruff/tree/main/crates/ruff_linter/resources/test/fixtures/pyflakes</a>. The actual tests that use the fixtures are here: https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pyflakes/mod.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-01-16 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_33/__init__.py</code>:3 on 2025-01-16 12:52</div>
+            <div class="timeline-body"><p>(you'll have to update the snapshots if you accept this change)</p>
+<pre><code class="language-suggestion">&quot;&quot;&quot;Regression test for https://github.com/astral-sh/ruff/issues/12897&quot;&quot;&quot;
+
+__all__ = ('Spam',)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-16 12:52</div>
+            <div class="timeline-body"><p>Thank you both for the suggestions! For some reason I immediately assumed that multiple files meant I needed an integration test, but these examples were very helpful. I first made the unit test changes on <code>main</code> to make sure they triggered the original error before applying them here. And using the <code>ScopeId</code> is much nicer, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyflakes/mod.rs</code>:290 on 2025-01-16 12:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Regression test for https://github.com/astral-sh/ruff/issues/12897
+    #[test_case(Rule::UnusedImport, Path::new(&quot;F401_33/__init__.py&quot;))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-16 12:53</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-16 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_33/__init__.py</code>:3 on 2025-01-16 12:54</div>
+            <div class="timeline-body"><p>Oops, good call. I'll accept these and rerun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2025-01-16 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-16 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-16 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-01-16 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-16 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-16 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`FastAPI`] Update `Annotated` fixes (`FAST002`) - astral-sh/ruff #15462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>FastAPI</code>] Update <code>Annotated</code> fixes (<code>FAST002</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15462">#15462</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-01-13 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-13 22:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>The initial purpose was to fix #15043, where code like this:</p>
+<pre><code class="language-python">from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+@app.get(&quot;/test&quot;)
+def handler(echo: str = Query(&quot;&quot;)):
+    return echo
+</code></pre>
+<p>was being fixed to the invalid code below:</p>
+<pre><code class="language-python">from typing import Annotated
+from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+@app.get(&quot;/test&quot;)
+def handler(echo: Annotated[str, Query(&quot;&quot;)]): # changed
+    return echo
+</code></pre>
+<p>As @MichaReiser pointed out, the correct fix is:</p>
+<pre><code class="language-python">from typing import Annotated
+from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+@app.get(&quot;/test&quot;)
+def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
+    return echo 
+</code></pre>
+<p>After fixing the issue for <code>Query</code>, I realized that other classes like <code>Path</code>, <code>Body</code>, <code>Cookie</code>, <code>Header</code>, <code>File</code>, and <code>Form</code> also looked susceptible to this issue. The last few commits should handle these too, which I think means this will also close #12913.</p>
+<p>I had to reorder the arguments to the <code>do_stuff</code> test case because the new fix removes some default argument values (eg for <code>Path</code>: <code>some_path_param: str = Path()</code> becomes <code>some_path_param: Annotated[str, Path()]</code>).</p>
+<p>There's also #14484 related to this rule. I'm happy to take a stab at that here or in a follow up PR too.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p><code>cargo test</code></p>
+<p>I also checked the fixed output with <code>uv run --with fastapi FAST002_0.py</code>, but it required making a bunch of additional changes to the test file that I wasn't sure we wanted in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-13 22:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @AlexWaygood on 2025-01-14 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-14 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-14 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:205 on 2025-01-14 07:56</div>
+            <div class="timeline-body"><p>What's the reason for only setting <code>is_default</code> to <code>true</code> if <code>is_dep</code> is true? What if a non <code>is_dep</code> argument has a default value?</p>
+<p>If it's possible to set <code>seen_default</code> to <code>true</code> whenever there's a default value, I then suggest moving <code>seen_default</code> out of this function and simplify it to always compute it on line 115 (on the call site)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 07:57</div>
+            <div class="timeline-body"><p>Nit: It isn't very obvious what the boolean return value suggests. My first assumption would be that it returns <code>true</code> if the diagnostic was created and <code>false</code> otherwise but that's not the case. We should either consider splitting the method or at least document the return value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:231 on 2025-01-14 08:02</div>
+            <div class="timeline-body"><p>I try to use <code>unwrap</code> if possible because it requires readers to think through why <code>unwrap</code> is correct to do so and it's also very easy to violate the correctness constraint when refactoring code. At least if possible without requiring too much restructuring.</p>
+<pre><code class="language-suggestion">            let content = match default_arg {
+                Some(default_arg) if is_dep =&gt; {
+                    let default_arg = default_arg.unwrap();
+                    let kwarg_list = match kwarg_list {
+                        Some(v) =&gt; v.join(&quot;, &quot;),
+                        None =&gt; String::new(),
+                    };
+                    seen_default = true;
+                    format!(
+                        &quot;{}: {}[{}, {}({kwarg_list})] = {}&quot;,
+                        &amp;parameter.parameter.name.id,
+                        binding,
+                        checker.locator().slice(annotation.range()),
+                        checker.locator().slice(map_callable(default).range()),
+                        checker.locator().slice(default_arg.value().range()),
+                    )
+                },
+                None =&gt; {
+                    if !seen_default {
+                        format!(
+                            &quot;{}: {}[{}, {}]&quot;,
+                            parameter.parameter.name.id,
+                            binding,
+                            checker.locator().slice(annotation.range()),
+                            checker.locator().slice(default.range())
+                        )
+                    } else {
+                        return Ok(None);
+                    }
+            };
+            
+            let parameter_edit = Edit::range_replacement(content, parameter.range);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:170 on 2025-01-14 08:05</div>
+            <div class="timeline-body"><p>We'll fail to update <code>seen_default</code> if adding the import fails. That's probably fine because it's unlikely that importing the symbol will succeed for the next parameter but it might proof a footgun in the future if we happen to add other code paths that bail early.</p>
+<p>Should we move the <code>parameter_edit</code> generation out of the <code>try_set_optional_fix</code> to ensure it always runs to completion? (unless we manage to find a way to move <code>seen_default</code> out of <code>create_diagnostic</code> which would be my preferred solution)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:219 on 2025-01-14 08:13</div>
+            <div class="timeline-body"><p>This is sort of hard to read. It would help readability to use named arguments</p>
+<pre><code class="language-suggestion">                    &quot;{parameter_name}: {binding}[{annotation}, {default}({kwarg_list})] = {default_value}&quot;,
+                    parameter_name = &amp;parameter.parameter.name.id,
+                    annotation = checker.locator().slice(annotation.range()),
+                    metadata = checker.locator().slice(map_callable(default).range()),
+                    default_valuechecker.locator().slice(default_arg.value().range()),
+                )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-14 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-14 08:14</div>
+            <div class="timeline-body"><p>Thanks. This overall looks good. I've a few nit improvements</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-14 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:231 on 2025-01-14 12:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I try to use <code>unwrap</code> if possible</p>
+</blockquote>
+<p>I think you mean that you try to <em>avoid</em> using <code>unwrap</code> if possible :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-01-14 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-14 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:231 on 2025-01-14 12:15</div>
+            <div class="timeline-body"><p>whoops :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-14 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:205 on 2025-01-14 13:29</div>
+            <div class="timeline-body"><p>Computing it at the call site is how the original code was, but I think now we need more information (both <code>is_dep &amp;&amp; default_arg.is_some()</code>) to know if the current fix will lead to a default argument. The examples I'm trying to handle here are cases like <code>some_path_param: str = Path() </code> becoming <code>some_path_param: Annotated[str, Path()]</code>, where the initial presence of a default argument, which is checkable at the call site, doesn't determine the final presence of a default. <code>is_dep</code> might be a bad name for this, at a minimum.</p>
+<p>Totally non-<code>is_dep</code> arguments (failing the <code>is_fastapi_dependency</code> check) are handled in the caller at 118.</p>
+<p>Does that make sense? I felt like I was over-complicating this yesterday, so the answer could definitely be &quot;no,&quot; but it still looks right to me today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 13:31</div>
+            <div class="timeline-body"><p>Would it be any better to use a <code>&amp;mut bool</code>? That's another option I considered, which might make it slightly more clear. I can definitely document it either way, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-14 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-14 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 13:33</div>
+            <div class="timeline-body"><p>I do prefer a return value over <code>&amp;mut</code>. Another option is to introduce a custom enum but that might over complicate things. I'm fine with just adding some documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-14 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:231 on 2025-01-14 13:41</div>
+            <div class="timeline-body"><p>Good catch, thank you! If only we had let-chains!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-14 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:170 on 2025-01-14 15:54</div>
+            <div class="timeline-body"><p>Wow good catch. Did you have something in mind here? I tried naively moving most of the <code>try_set_optional_fix</code> body out, but we need the <code>binding</code> from the import to generate <code>content</code>.</p>
+<p>My fix now is to call the closure and check its <code>Result</code> before sending it to <code>try_set_optional_fix</code>, but that feels a bit awkward too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-14 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:261 on 2025-01-14 16:00</div>
+            <div class="timeline-body"><p>I don't think it's guaranteed that it's always a default when the fix failed.</p>
+<p>After your explanation about <code>seen_default,</code> I wonder if this is even needed. What I understand is that the fix introduces a new default value and if we don't fix, then there will never be a default? (or we should just use <code>parameter.default.is_some()</code> in that case.</p>
+<p>This also makes me wonder: What happens if we change a parameter to now have a default value where it is preceded by parameters without a default value? Can we add a test for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-14 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:261 on 2025-01-14 16:25</div>
+            <div class="timeline-body"><p>The rule actually only triggers at all if there's a default value initially (line 112 in particular):</p>
+<p>https://github.com/astral-sh/ruff/blob/6f7a8ad560f03638a7efe59c80a29a47da16003e/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs#L110-L119</p>
+<p>We just have to avoid setting <code>seen_default</code> here in case we <em>remove</em> a default. So if we tried to fix but failed, we're definitely leaving a default argument in the parameter list, if I'm understanding correctly.</p>
+<p>I'm noticing now that this <code>match!</code> is the same as the <code>if let</code> in <code>create_diagnostic</code>. I was trying to leave the general structure of the code as I found it, but some of this might be more clear without the separation into <code>create_diagnostic</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:196 on 2025-01-15 08:39</div>
+            <div class="timeline-body"><p>I find the name <code>is_dep</code> slightly confusing because it explicitly excludes <code>Depends</code>. How about: <code>is_route_param</code> <code>is_route</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-15 08:56</div>
+            <div class="timeline-body"><p>I spent some more time reading the code and I think I now have a better understanding what the fix is doing.</p>
+<p>I'd suggest the following changes:</p>
+<ul>
+<li>Change <code>is_fastapi_dependency</code> to return <code>Option&lt;FastApiDependency&gt;</code> where <code>FastApiDependency</code> is an enum. This removes the need to call <code>resolve_qualified_name</code> again when creating the fix.</li>
+<li>I'd suggest moving the logic for extracting the <code>default_value</code> out of <code>create_fix</code> and move it into <code>fastapi_non_annotated_dependency</code>.</li>
+<li>I think we can then move the logic for <code>seen_default</code> entirely into <code>fastapi_non_annotated_dependency</code></li>
+</ul>
+<details><summary>Patch</summary>
+
+<pre><code class="language-patch">Index: crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs b/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs
+--- a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs	(revision 6f7a8ad560f03638a7efe59c80a29a47da16003e)
++++ b/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs	(date 1736931332112)
+@@ -3,7 +3,7 @@
+ use ruff_python_ast as ast;
+ use ruff_python_ast::helpers::map_callable;
+ use ruff_python_semantic::Modules;
+-use ruff_text_size::Ranged;
++use ruff_text_size::{Ranged, TextRange};
+ 
+ use crate::checkers::ast::Checker;
+ use crate::importer::ImportRequest;
+@@ -107,41 +107,94 @@
+         .iter()
+         .chain(&amp;function_def.parameters.kwonlyargs)
+     {
+-        let needs_update = matches!(
+-            (&amp;parameter.parameter.annotation, &amp;parameter.default),
+-            (Some(_annotation), Some(default)) if is_fastapi_dependency(checker, default)
+-        );
++        let (Some(annotation), Some(default)) =
++            (&amp;parameter.parameter.annotation, &amp;parameter.default)
++        else {
++            seen_default |= parameter.default.is_some();
++            continue;
++        };
+ 
+-        if needs_update {
+-            seen_default = create_diagnostic(checker, parameter, seen_default);
+-        } else if parameter.default.is_some() {
+-            seen_default = true;
++        if let Some(dependency) = is_fastapi_dependency(checker, default) {
++            let dependency_call = DependencyCall::from_expression(default);
++            let dependency_parameter = DependencyParameter {
++                annotation,
++                default,
++                kind: dependency,
++                name: &amp;*parameter.parameter.name,
++                range: parameter.range,
++            };
++            seen_default =
++                create_diagnostic(checker, dependency_parameter, dependency_call, seen_default);
++        } else {
++            seen_default |= parameter.default.is_some();
+         }
+     }
+ }
+ 
+-fn is_fastapi_dependency(checker: &amp;Checker, expr: &amp;ast::Expr) -&gt; bool {
++fn is_fastapi_dependency(checker: &amp;Checker, expr: &amp;ast::Expr) -&gt; Option&lt;FastApiDependency&gt; {
+     checker
+         .semantic()
+         .resolve_qualified_name(map_callable(expr))
+-        .is_some_and(|qualified_name| {
+-            matches!(
+-                qualified_name.segments(),
+-                [
+-                    &quot;fastapi&quot;,
+-                    &quot;Query&quot;
+-                        | &quot;Path&quot;
+-                        | &quot;Body&quot;
+-                        | &quot;Cookie&quot;
+-                        | &quot;Header&quot;
+-                        | &quot;File&quot;
+-                        | &quot;Form&quot;
+-                        | &quot;Depends&quot;
+-                        | &quot;Security&quot;
+-                ]
+-            )
++        .and_then(|qualified_name| match qualified_name.segments() {
++            [&quot;fastapi&quot;, dependency_name] =&gt; match *dependency_name {
++                &quot;Query&quot; =&gt; Some(FastApiDependency::Query),
++                &quot;Path&quot; =&gt; Some(FastApiDependency::Path),
++                &quot;Body&quot; =&gt; Some(FastApiDependency::Body),
++                &quot;Cookie&quot; =&gt; Some(FastApiDependency::Cookie),
++                &quot;Header&quot; =&gt; Some(FastApiDependency::Header),
++                &quot;File&quot; =&gt; Some(FastApiDependency::File),
++                &quot;Form&quot; =&gt; Some(FastApiDependency::Form),
++                &quot;Depends&quot; =&gt; Some(FastApiDependency::Depends),
++                &quot;Security&quot; =&gt; Some(FastApiDependency::Security),
++                _ =&gt; None,
++            },
++            _ =&gt; None,
+         })
+ }
++
++#[derive(Debug, Copy, Clone)]
++enum FastApiDependency {
++    Query,
++    Path,
++    Body,
++    Cookie,
++    Header,
++    File,
++    Form,
++    Depends,
++    Security,
++}
++
++struct DependencyParameter&lt;'a&gt; {
++    annotation: &amp;'a ast::Expr,
++    default: &amp;'a ast::Expr,
++    range: TextRange,
++    name: &amp;'a str,
++    kind: FastApiDependency,
++}
++
++struct DependencyCall&lt;'a&gt; {
++    default_argument: ast::ArgOrKeyword&lt;'a&gt;,
++    keyword_arguments: Vec&lt;&amp;'a ast::Keyword&gt;,
++}
++
++impl&lt;'a&gt; DependencyCall&lt;'a&gt; {
++    fn from_expression(expr: &amp;'a ast::Expr) -&gt; Option&lt;Self&gt; {
++        let call = expr.as_call_expr()?;
++        let default_argument = call.arguments.find_argument(&quot;default&quot;, 0)?;
++        let keyword_arguments = call
++            .arguments
++            .keywords
++            .iter()
++            .filter(|kwarg| kwarg.arg.as_ref().map_or(false, |name| name != &quot;default&quot;))
++            .collect();
++
++        Some(Self {
++            default_argument,
++            keyword_arguments,
++        })
++    }
++}
+ 
+ /// Create a [`Diagnostic`] for `parameter` and return an updated value of `seen_default`.
+ ///
+@@ -164,7 +217,8 @@
+ /// `seen_default` here.
+ fn create_diagnostic(
+     checker: &amp;mut Checker,
+-    parameter: &amp;ast::ParameterWithDefault,
++    parameter: DependencyParameter,
++    dependency_call: Option&lt;DependencyCall&gt;,
+     mut seen_default: bool,
+ ) -&gt; bool {
+     let mut diagnostic = Diagnostic::new(
+@@ -174,94 +228,78 @@
+         parameter.range,
+     );
+ 
+-    if let (Some(annotation), Some(default)) = (&amp;parameter.parameter.annotation, &amp;parameter.default)
+-    {
+-        let mut try_generate_fix = || {
+-            let module = if checker.settings.target_version &gt;= PythonVersion::Py39 {
+-                &quot;typing&quot;
+-            } else {
+-                &quot;typing_extensions&quot;
+-            };
+-            let (import_edit, binding) = checker.importer().get_or_import_symbol(
+-                &amp;ImportRequest::import_from(module, &quot;Annotated&quot;),
+-                parameter.range.start(),
+-                checker.semantic(),
+-            )?;
++    let mut try_generate_fix = || {
++        let module = if checker.settings.target_version &gt;= PythonVersion::Py39 {
++            &quot;typing&quot;
++        } else {
++            &quot;typing_extensions&quot;
++        };
++        let (import_edit, binding) = checker.importer().get_or_import_symbol(
++            &amp;ImportRequest::import_from(module, &quot;Annotated&quot;),
++            parameter.range.start(),
++            checker.semantic(),
++        )?;
+ 
+-            // Refine the match from `is_fastapi_dependency` to exclude Depends
+-            // and Security, which don't have the same argument structure. The
+-            // others need to be converted from `q: str = Query(&quot;&quot;)` to `q:
+-            // Annotated[str, Query()] = &quot;&quot;` for example, but Depends and
+-            // Security need to stay like `Annotated[str, Depends(callable)]`
+-            let is_dep = checker
+-                .semantic()
+-                .resolve_qualified_name(map_callable(default))
+-                .is_some_and(|qualified_name| {
+-                    !matches!(
+-                        qualified_name.segments(),
+-                        [&quot;fastapi&quot;, &quot;Depends&quot; | &quot;Security&quot;]
+-                    )
+-                });
++        // Each of these classes takes a single, optional default
++        // argument, followed by kw-only arguments
++
++        // Refine the match from `is_fastapi_dependency` to exclude Depends
++        // and Security, which don't have the same argument structure. The
++        // others need to be converted from `q: str = Query(&quot;&quot;)` to `q:
++        // Annotated[str, Query()] = &quot;&quot;` for example, but Depends and
++        // Security need to stay like `Annotated[str, Depends(callable)]`
++        let is_dep = !matches!(
++            parameter.kind,
++            FastApiDependency::Depends | FastApiDependency::Security
++        );
+ 
+-            // Each of these classes takes a single, optional default
+-            // argument, followed by kw-only arguments
+-            let default_arg = default
+-                .as_call_expr()
+-                .and_then(|args| args.arguments.find_argument(&quot;default&quot;, 0));
+-
+-            let kwarg_list: Option&lt;Vec&lt;_&gt;&gt; = default.as_call_expr().map(|args| {
+-                args.arguments
+-                    .keywords
++        let content = match dependency_call {
++            Some(dependency_call) if is_dep =&gt; {
++                let kwarg_list = dependency_call
++                    .keyword_arguments
+                     .iter()
+-                    .filter_map(|kwarg| match kwarg.arg.as_ref() {
+-                        None =&gt; None,
+-                        Some(name) if name == &quot;default&quot; =&gt; None,
+-                        Some(_) =&gt; Some(checker.locator().slice(kwarg.range())),
+-                    })
+-                    .collect()
+-            });
++                    .map(|kwarg| checker.locator().slice(kwarg.range()))
++                    .collect::&lt;Vec&lt;_&gt;&gt;()
++                    .join(&quot;, &quot;);
+ 
+-            let content = match default_arg {
+-                Some(default_arg) if is_dep =&gt; {
+-                    let kwarg_list = match kwarg_list {
+-                        Some(v) =&gt; v.join(&quot;, &quot;),
+-                        None =&gt; String::new(),
+-                    };
+-                    seen_default = true;
+-                    format!(
+-                        &quot;{parameter_name}: {binding}[{annotation}, {default_}({kwarg_list})] \
++                seen_default = true;
++                format!(
++                    &quot;{parameter_name}: {binding}[{annotation}, {default_}({kwarg_list})] \
+                             = {default_value}&quot;,
+-                        parameter_name = &amp;parameter.parameter.name.id,
+-                        annotation = checker.locator().slice(annotation.range()),
+-                        default_ = checker.locator().slice(map_callable(default).range()),
+-                        default_value = checker.locator().slice(default_arg.value().range()),
+-                    )
+-                }
+-                _ =&gt; {
+-                    if seen_default {
+-                        return Ok(None);
+-                    }
+-                    format!(
+-                        &quot;{parameter_name}: {binding}[{annotation}, {default_}]&quot;,
+-                        parameter_name = parameter.parameter.name.id,
+-                        annotation = checker.locator().slice(annotation.range()),
+-                        default_ = checker.locator().slice(default.range())
+-                    )
+-                }
+-            };
+-            let parameter_edit = Edit::range_replacement(content, parameter.range);
+-            Ok(Some(Fix::unsafe_edits(import_edit, [parameter_edit])))
+-        };
++                    parameter_name = parameter.name,
++                    annotation = checker.locator().slice(parameter.annotation.range()),
++                    default_ = checker
++                        .locator()
++                        .slice(map_callable(parameter.default).range()),
++                    default_value = checker
++                        .locator()
++                        .slice(dependency_call.default_argument.value().range()),
++                )
++            }
++            _ =&gt; {
++                if seen_default {
++                    return Ok(None);
++                }
++                format!(
++                    &quot;{parameter_name}: {binding}[{annotation}, {default_}]&quot;,
++                    parameter_name = parameter.name,
++                    annotation = checker.locator().slice(parameter.annotation.range()),
++                    default_ = checker.locator().slice(parameter.default.range())
++                )
++            }
++        };
++        let parameter_edit = Edit::range_replacement(content, parameter.range);
++        Ok(Some(Fix::unsafe_edits(import_edit, [parameter_edit])))
++    };
+ 
+-        // make sure we set `seen_default` if we bail out of `try_generate_fix` early. we could
+-        // `match` on the result directly, but still calling `try_set_optional_fix` avoids
+-        // duplicating the debug logging here
+-        let fix: anyhow::Result&lt;Option&lt;Fix&gt;&gt; = try_generate_fix();
+-        if fix.is_err() {
+-            seen_default = true;
+-        }
+-        diagnostic.try_set_optional_fix(|| fix);
+-    }
++    // make sure we set `seen_default` if we bail out of `try_generate_fix` early. we could
++    // `match` on the result directly, but still calling `try_set_optional_fix` avoids
++    // duplicating the debug logging here
++    let fix: anyhow::Result&lt;Option&lt;Fix&gt;&gt; = try_generate_fix();
++    if fix.is_err() {
++        seen_default = true;
++    }
++    diagnostic.try_set_optional_fix(|| fix);
+ 
+     checker.diagnostics.push(diagnostic);
+ 
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-15 15:54</div>
+            <div class="timeline-body"><p>Wow thanks for the patch! I think it's much easier to follow now. I applied the patch, made a few clippy fixes, and then renamed <code>is_dep</code>. <code>is_route_param</code> makes a lot more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-15 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-01-15 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-15 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-15 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

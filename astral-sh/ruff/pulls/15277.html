@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Parenthesize arguments to `int` when removing `int` would change semantics in `unnecessary-cast-to-int` (`RUF046`) - astral-sh/ruff #15277</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Parenthesize arguments to <code>int</code> when removing <code>int</code> would change semantics in <code>unnecessary-cast-to-int</code> (<code>RUF046</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15277">#15277</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-01-05 21:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-05 21:04</div>
+            <div class="timeline-body"><p>When removing <code>int</code> in calls like <code>int(expr)</code> we may need to keep parentheses around <code>expr</code> even when it is a function call or subscript, since there may be newlines in between the function/value name and the opening parentheses/bracket of the argument.</p>
+<p>This PR implements that logic.</p>
+<p>Closes #15263</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-05 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-01-05 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-01-05 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-05 21:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-05 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF046.py</code>:180 on 2025-01-05 21:36</div>
+            <div class="timeline-body"><p>Could you add a few tests with parenthesized <code>func</code>s?</p>
+<pre><code class="language-python">int((round)  # Comment
+(42)
+)
+
+int((round  # Comment
+)(42)
+)
+
+int(  # Comment
+(  # Comment
+    (round
+)  # Comment
+)(42)
+)
+
+# etc.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-05 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF046.py</code>:180 on 2025-01-05 21:38</div>
+            <div class="timeline-body"><p>Good call! I'll probably have to use the end of the parenthesized range of the function name as the start of the check for newlines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF046.py</code>:180 on 2025-01-05 22:00</div>
+            <div class="timeline-body"><p>An <code>outermost_parenthesized_range()</code> function would probably do us some good. I can recall some of my old PRs that could have used such a function (#14978, #15097).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-05 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_cast_to_int.rs</code>:287 on 2025-01-06 06:11</div>
+            <div class="timeline-body"><p>Can you add couple of test cases for subscript expressions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__preview__RUF046_RUF046.py.snap</code>:1196 on 2025-01-06 06:19</div>
+            <div class="timeline-body"><p>I think we'd need to retain the parentheses for this case as otherwise it's removing the first comment after <code>int(</code> on line 190.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-06 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-06 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__preview__RUF046_RUF046.py.snap</code>:1196 on 2025-01-06 17:56</div>
+            <div class="timeline-body"><p>looks like this is an issue even in much simpler cases like</p>
+<pre><code class="language-python">int( # a comment
+    round(42)
+)
+</code></pre>
+<p>I'll try to add some logic to preserve the end-of-line comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-07 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__preview__RUF046_RUF046.py.snap</code>:1196 on 2025-01-07 08:01</div>
+            <div class="timeline-body"><p>Note: An alternative option is to mark the fix as unsafe because of the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_cast_to_int.rs</code>:287 on 2025-01-07 17:39</div>
+            <div class="timeline-body"><p>As far as I can tell, type inference is not robust enough to ever apply this rule to a subscript. So I can't write a test that would trigger this branch. On the other hand, I think I should leave this match arm in case type inference is later improved to cover this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-07 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-07 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__preview__RUF046_RUF046.py.snap</code>:1196 on 2025-01-07 18:01</div>
+            <div class="timeline-body"><p>went with the latter option</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dylwil3 on 2025-01-07 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-07 21:39</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-07 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-07 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

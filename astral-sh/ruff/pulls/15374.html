@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Move `UnionBuilder` tests to Markdown - astral-sh/ruff #15374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Move <code>UnionBuilder</code> tests to Markdown</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15374">#15374</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-09 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-09 13:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This moves almost all of our existing <code>UnionBuilder</code> tests to a Markdown-based test suite.</p>
+<p>I see how this could be a more controversial change, since these tests where written specifically for <code>UnionBuilder</code>, and by creating the union types using Python type expressions, we add an additional layer on top (parsing and inference of these expressions) that moves these tests away from clean unit tests more in the direction of integration tests. Also, there are probably a few implementation details of <code>UnionBuilder</code> hidden in the test assertions (e.g. order of union elements after simplifications).</p>
+<p>That said, I think we would like to see all those properties that are being tested here from <em>any</em> implementation of union types. And the Markdown tests come with the usual advantages:</p>
+<ul>
+<li>More consice</li>
+<li>Better readability</li>
+<li>No re-compiliation when working on tests</li>
+<li>Easier to add additional explanations and structure to the test suite</li>
+</ul>
+<p>This changeset adds a few additional tests, but keeps the logic of the existing tests except for a few minor modifications for consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-01-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-01-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-01-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-09 13:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:23 on 2025-01-09 13:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## `Never` is removed
+
+`Never` is an empty set, a type with no inhabitants. Its presence in a union is always redundant, and so we eagerly simplify it away:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-09 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:68 on 2025-01-09 13:44</div>
+            <div class="timeline-body"><p>These tests would be more readable if we had something like C++'s <code>std::declval&lt;T&gt;()</code> (https://github.com/astral-sh/ruff/issues/13789) which pretends to create a value of type <code>T</code>. Using <code>knot_extensions</code>, we could now easily implement a function like the following (using PEP 747 language):</p>
+<pre><code class="language-py">def value_of[T](typ: TypeForm[T]) -&gt; T: ...
+</code></pre>
+<p>that would allow us to write these tests in a single line without having to introduce dummy parameters and without having the definitions a few lines away from the assertions:</p>
+<pre><code class="language-suggestion">reveal_type(value_of(str | LiteralString))  # revealed: str
+reveal_type(value_of(LiteralString | str))  # revealed: str
+reveal_type(value_of(Literal[&quot;a&quot;] | str | LiteralString))  # revealed: str
+reveal_type(value_of(str | bytes | LiteralString))  # revealed: str | bytes
+</code></pre>
+<p>A disadvantage of this approach would be that it makes more of these tests dependent on <code>knot_extensions</code>. @AlexWaygood is still &quot;a little sceptical&quot; about this idea, so I kept the usual strategy of using function parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:26 on 2025-01-09 13:44</div>
+            <div class="timeline-body"><p>is it worth also including an example using <code>typing.NoReturn</code>...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:50 on 2025-01-09 13:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The type `S | T` can be simplified to `T` if `S` is a subtype of `T`:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:66 on 2025-01-09 13:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The union `Literal[True] | Literal[False]` is exactly equivalent to `bool`:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:76 on 2025-01-09 13:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    u1: Literal[True, False],
+    u2: bool | Literal[True],
+    u3: Literal[True] | bool,
+    u4: Literal[True] | Literal[True, 17],
+    u5: Literal[True, False, True, 17],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:102 on 2025-01-09 13:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Collapse multiple `Unknown`s
+
+Since `Unknown` is a gradual type, it is not a subtype of anything,
+but multiple `Unknown`s in a union are still redundant:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-09 13:49</div>
+            <div class="timeline-body"><p>Nice. I think this is definitely worthwhile</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-01-09 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:68 on 2025-01-09 16:42</div>
+            <div class="timeline-body"><p>Interestingly, <code>typing.cast</code> (with a dummy second argument), is effectively the <code>value_of</code> function. I wouldn't be opposed to adding <code>value_of</code> as a variant that doesn't require the dummy second argument, at the same time we add <code>typing.cast</code>. But I don't feel strongly either way, I think the function arguments are reasonable too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-09 16:49</div>
+            <div class="timeline-body"><p>I haven't reviewed in detail, happy to let Alex do that for efficiency's sake. Just clarifying that I'm on board with moving these tests to mdtest, I think the pros outweigh the cons. I think almost any test where we have to use the <code>Ty</code> enum and construct arbitrary types, is probably better as an mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-09 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:68 on 2025-01-09 17:29</div>
+            <div class="timeline-body"><blockquote>
+<p>A disadvantage of this approach would be that it makes more of these tests dependent on <code>knot_extensions</code>.</p>
+</blockquote>
+<p>Also, could consider <code>reveal_type_of_value(...)</code> function which has same logic of <code>reveal_type</code> that doesn't need to explicitly import?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-09 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:92 on 2025-01-09 17:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    reveal_type(u1)  # revealed: Unknown | str
+    reveal_type(u2)  # revealed: str | Unknown
+</code></pre>
+<p>consistent with other examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-09 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:68 on 2025-01-09 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, could consider <code>reveal_type_of_value(...)</code> function which has same logic of <code>reveal_type</code> that doesn't need to explicitly import?</p>
+</blockquote>
+<p>More like <code>reveal_type_of_type_expression</code> or something like that, but yes — that's a good idea! We could take it one step further and implement the analog to <code>assert_type</code> on that level. Basically <code>assert_equal_type(type1, type2)</code>.</p>
+<p>And now that I write it out, I realize that we sort-of already have this in <code>knot_extensions</code>. We can write</p>
+<pre><code class="language-py">static_assert(is_equivalent_to(str | LiteralString, str))
+</code></pre>
+<p>Now that only works for fully static types, but once we have <code>is_gradual_equivalent_to</code>, that would be a (slightly more verbose) alternative to <code>assert_equal_type</code>:</p>
+<pre><code class="language-py">static_assert(is_gradual_equivalent_to(Unknown | Unknown | str, Unknown | str))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-09 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:68 on 2025-01-09 18:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Interestingly, <code>typing.cast</code> (with a dummy second argument), is effectively the <code>value_of</code> function.</p>
+</blockquote>
+<p><em>&quot;It's like <code>typing.cast</code>, just without having a value in the first place!&quot;</em> is exactly how I pitched it to Alex, and he <em>still</em> didn't want it :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-09 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-09 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-09 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

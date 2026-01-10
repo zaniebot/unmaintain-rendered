@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`internal`] Return statements in finally block point to end block for `unreachable` (`PLW0101`) - astral-sh/ruff #15276</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>internal</code>] Return statements in finally block point to end block for <code>unreachable</code> (<code>PLW0101</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15276">#15276</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-01-05 19:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-05 19:47</div>
+            <div class="timeline-body"><p>Note: <code>PLW0101</code> remains in testing rather than preview, so this PR does not modify any public behavior (hence the title beginning with <code>internal</code> rather than <code>pylint</code>, for the sake of the changelog.)</p>
+<p>Fixes an error in the processing of <code>try</code> statements in the control flow graph builder.</p>
+<p>When processing a try statement, the block following a <code>return</code> was forced to point to the <code>finally</code> block. However, if the return was <em>in</em> the <code>finally</code> block, this caused the block to point to itself. In the case where the whole <code>try-finally</code> statement was also included inside of a loop, this caused an infinite loop in the builder for the control flow graph as it attempted to resolve edges.</p>
+<p>Closes #15248</p>
+<h2>Test function</h2>
+<h3>Source</h3>
+<pre><code class="language-python">def l():
+    while T:
+        try:
+            while ():
+                if 3:
+                    break
+        finally:
+            return
+</code></pre>
+<h3>Control Flow Graph</h3>
+<pre><code class="language-mermaid">flowchart TD
+  start((&quot;Start&quot;))
+  return((&quot;End&quot;))
+  block0[[&quot;`*(empty)*`&quot;]]
+  block1[[&quot;Loop continue&quot;]]
+  block2[&quot;return\n&quot;]
+  block3[[&quot;Loop continue&quot;]]
+  block4[&quot;break\n&quot;]
+  block5[&quot;if 3:
+                    break\n&quot;]
+  block6[&quot;while ():
+                if 3:
+                    break\n&quot;]
+  block7[[&quot;Exception raised&quot;]]
+  block8[&quot;try:
+            while ():
+                if 3:
+                    break
+        finally:
+            return\n&quot;]
+  block9[&quot;while T:
+        try:
+            while ():
+                if 3:
+                    break
+        finally:
+            return\n&quot;]
+  start --&gt; block9
+  block9 -- &quot;T&quot; --&gt; block8
+  block9 -- &quot;else&quot; --&gt; block0
+  block8 -- &quot;Exception raised&quot; --&gt; block7
+  block8 -- &quot;else&quot; --&gt; block6
+  block7 --&gt; block2
+  block6 -- &quot;()&quot; --&gt; block5
+  block6 -- &quot;else&quot; --&gt; block2
+  block5 -- &quot;3&quot; --&gt; block4
+  block5 -- &quot;else&quot; --&gt; block3
+  block4 --&gt; block2
+  block3 --&gt; block6
+  block2 --&gt; return
+  block1 --&gt; block9
+  block0 --&gt; return
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @dylwil3 on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> removed by @dylwil3 on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-05 19:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-05 21:44</div>
+            <div class="timeline-body"><p>Is this overlapping with https://github.com/astral-sh/ruff/pull/15278 or do they fix different issues?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2025-01-06 00:19</div>
+            <div class="timeline-body"><p>Yes they are attempting to fix the same issue. Technically, this PR is more of a band-aid because the CFG should not fall through to the finally block in the <code>post_process_try</code> and is only doing so because of the issue I pointed out in #15278. Still I would recommend applying both changes: #15276 and #15278 to make it more robust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-06 02:34</div>
+            <div class="timeline-body"><p>I agree we should apply both corrections to the CFG construction, but I think we should keep the rule as &quot;test&quot; for now.</p>
+<p>I'm not so worried about discovering more edge cases where the CFG needs improvements, that's fine. However, infinite loops or panics are more disruptive since they cause the whole <code>ruff</code> call to crash. So I would feel more comfortable if we could either prove that the loops in <code>post_process_loop</code> and <code>post_process_try</code> must terminate, or, even better, replace them with some bounded <code>for</code> loop (which we know to be correct for some other reason).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-06 07:47</div>
+            <div class="timeline-body"><p>Thanks for the explanation.</p>
+<p>What's the CFG if we wrap the <code>try</code> statement in another <code>try</code> with a <code>finally</code> block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-07 03:14</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the CFG if we wrap the try statement in another try with a finally block?</p>
+</blockquote>
+<p>Like this, which looks correct to me:</p>
+<pre><code class="language-python">def l():
+    while T:
+        try:
+            try:
+                while ():
+                    if 3:
+                        break
+            finally:
+                return
+        finally:
+            return
+</code></pre>
+<pre><code class="language-mermaid">flowchart TD
+  start((&quot;Start&quot;))
+  return((&quot;End&quot;))
+  block0[[&quot;`*(empty)*`&quot;]]
+  block1[[&quot;Loop continue&quot;]]
+  block2[&quot;return\n&quot;]
+  block3[&quot;return\n&quot;]
+  block4[[&quot;Loop continue&quot;]]
+  block5[&quot;break\n&quot;]
+  block6[&quot;if 3:
+                        break\n&quot;]
+  block7[&quot;while ():
+                    if 3:
+                        break\n&quot;]
+  block8[[&quot;Exception raised&quot;]]
+  block9[&quot;try:
+                while ():
+                    if 3:
+                        break
+            finally:
+                return\n&quot;]
+  block10[[&quot;Exception raised&quot;]]
+  block11[&quot;try:
+            try:
+                while ():
+                    if 3:
+                        break
+            finally:
+                return
+        finally:
+            return\n&quot;]
+  block12[&quot;while T:
+        try:
+            try:
+                while ():
+                    if 3:
+                        break
+            finally:
+                return
+        finally:
+            return\n&quot;]
+
+  start --&gt; block12
+  block12 -- &quot;T&quot; --&gt; block11
+  block12 -- &quot;else&quot; --&gt; block0
+  block11 -- &quot;Exception raised&quot; --&gt; block10
+  block11 -- &quot;else&quot; --&gt; block9
+  block10 --&gt; block2
+  block9 -- &quot;Exception raised&quot; --&gt; block8
+  block9 -- &quot;else&quot; --&gt; block7
+  block8 --&gt; block3
+  block7 -- &quot;()&quot; --&gt; block6
+  block7 -- &quot;else&quot; --&gt; block3
+  block6 -- &quot;3&quot; --&gt; block5
+  block6 -- &quot;else&quot; --&gt; block4
+  block5 --&gt; block3
+  block4 --&gt; block7
+  block3 --&gt; block2
+  block2 --&gt; return
+  block1 --&gt; block12
+  block0 --&gt; return
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unreachable.rs</code>:674 on 2025-01-07 07:56</div>
+            <div class="timeline-body"><p>This would probably be a small refactor and is something better left for its own PR but we could have better runtime assertions around preventing loops by introducing a <code>blocks.set_next(idx, next)</code> method that contains an assertion that <code>idx</code> and the <code>next</code>'s index aren't equal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-07 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-01-07 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-07 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-07 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

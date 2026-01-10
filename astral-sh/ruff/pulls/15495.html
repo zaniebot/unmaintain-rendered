@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid indexing the same workspace multiple times - astral-sh/ruff #15495</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid indexing the same workspace multiple times</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15495">#15495</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-01-15 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 12:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is not lazy indexing but it should somewhat help with #13686.</p>
+<p>Currently, processing the change notifications for config files doesn't account for the fact that multiple config files could belong to the same workspace. This means that the server will re-index the same workspace <code>n</code> times where <code>n</code> is the number of file events which belongs to the same workspace. This is evident in the following trace logs:</p>
+<p><strong>Trace logs:</strong></p>
+<pre><code>[Trace - 6:21:15 PM] Sending notification 'workspace/didChangeWatchedFiles'.
+Params: {
+    &quot;changes&quot;: [
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/pylint/ruff.toml&quot;,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/script/ruff.toml&quot;,
+            &quot;type&quot;: 2
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/script/scaffold/templates/ruff.toml&quot;,
+            &quot;type&quot;: 2
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/pyproject.toml&quot;,
+            &quot;type&quot;: 2
+        }
+    ]
+}
+
+...
+
+[Trace - 6:21:19 PM] Sending notification 'workspace/didChangeWatchedFiles'.
+Params: {
+    &quot;changes&quot;: [
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/tests/testing_config/custom_components/ruff.toml&quot;,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/tests/ruff.toml&quot;,
+            &quot;type&quot;: 2
+        }
+    ]
+}
+
+...
+</code></pre>
+<p><strong>Server logs:</strong></p>
+<pre><code> 14.838004208s TRACE     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::server::api: enter
+  14.838043583s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  14.854324541s DEBUG ThreadId(55) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  14.854388500s DEBUG ThreadId(55) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  14.937713291s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  14.954429833s DEBUG ThreadId(75) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  14.954675708s DEBUG ThreadId(66) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  15.041465500s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  15.056731541s DEBUG ThreadId(78) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  15.056796833s DEBUG ThreadId(78) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  15.117545833s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  15.133091666s DEBUG ThreadId(90) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  15.133146500s DEBUG ThreadId(90) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  15.220340666s TRACE ruff:worker:6 request{id=5 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  15.220401458s DEBUG ruff:worker:6 request{id=5 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/homeassistant/bootstrap.py
+  18.577521250s TRACE     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::server::api: enter
+  18.577561291s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  18.616564583s DEBUG ThreadId(102) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  18.616627291s DEBUG ThreadId(102) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  18.687424250s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  18.704441416s DEBUG ThreadId(114) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  18.704694958s DEBUG ThreadId(121) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  18.769627500s TRACE ruff:worker:4 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  18.769696791s DEBUG ruff:worker:4 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/homeassistant/bootstrap.py
+</code></pre>
+<p>This PR updates the logic to consider all the change events at once keeping track of the workspace path that have been already indexed.</p>
+<p>I want to include this in tomorrow's release to check how this change would affect the linked issue.</p>
+<h2>Test Plan</h2>
+<p>Run the same scenario as above and check the logs to see that the server isn't re-indexing the same workspace multiple times:</p>
+<p><strong>Trace logs:</strong></p>
+<pre><code>[Trace - 6:04:07 PM] Sending notification 'workspace/didChangeWatchedFiles'.
+Params: {
+    &quot;changes&quot;: [
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/script/ruff.toml&quot;,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/script/scaffold/templates/ruff.toml&quot;,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/pylint/ruff.toml&quot;,
+            &quot;type&quot;: 2
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/pyproject.toml&quot;,
+            &quot;type&quot;: 2
+        }
+    ]
+}
+
+...
+
+[Trace - 6:04:11 PM] Sending notification 'workspace/didChangeWatchedFiles'.
+Params: {
+    &quot;changes&quot;: [
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/tests/testing_config/custom_components/ruff.toml&quot;,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;uri&quot;: &quot;file:///Users/dhruv/work/astral/parser-checkouts/home-assistant-core/tests/ruff.toml&quot;,
+            &quot;type&quot;: 2
+        }
+    ]
+}
+
+...
+</code></pre>
+<p><strong>Server logs:</strong></p>
+<pre><code>  17.047706750s TRACE     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::server::api: enter
+  17.047747875s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  17.080006083s DEBUG ThreadId(54) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  17.080085708s DEBUG ThreadId(54) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  17.145328791s TRACE ruff:worker:6 request{id=5 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  17.145386166s DEBUG ruff:worker:6 request{id=5 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/homeassistant/bootstrap.py
+  20.756845958s TRACE     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::server::api: enter
+  20.756923375s DEBUG     ruff:main notification{method=&quot;workspace/didChangeWatchedFiles&quot;}: ruff_server::session::index::ruff_settings: Indexing settings for workspace: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core
+  20.781733916s DEBUG ThreadId(66) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.vscode
+  20.781825875s DEBUG ThreadId(75) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/.git
+  20.848340750s TRACE ruff:worker:7 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::server::api: enter
+  20.848408041s DEBUG ruff:worker:7 request{id=6 method=&quot;textDocument/diagnostic&quot;}: ruff_server::resolve: Included path via `include`: /Users/dhruv/work/astral/parser-checkouts/home-assistant-core/homeassistant/bootstrap.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-01-15 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-15 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:276 on 2025-01-15 12:53</div>
+            <div class="timeline-body"><p>That makes sense to me. We do something similar in Red Knot where we process all changes and compute what requires updating and only then do the updating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-01-15 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-01-15 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-15 13:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index.rs</code>:276 on 2025-01-15 13:09</div>
+            <div class="timeline-body"><p>I was a little confused at first why we aren't matching on the file names. It might be worth mentioning in the documentation that it's expected that the <code>FileEvent</code> are only for configuration files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-15 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 13:14</div>
+            <div class="timeline-body"><p>Unrelated to your changes but I noticed it in the tracing logs. I think we could improve the logs by making tracing aware that the walk_dir threads run as part of the request (untested)</p>
+<pre><code class="language-patch">Index: crates/ruff_server/src/session/index/ruff_settings.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_server/src/session/index/ruff_settings.rs b/crates/ruff_server/src/session/index/ruff_settings.rs
+--- a/crates/ruff_server/src/session/index/ruff_settings.rs	(revision f20780584daf0b42a641639f3e8da4d67e005dff)
++++ b/crates/ruff_server/src/session/index/ruff_settings.rs	(date 1736946797069)
+@@ -211,8 +211,11 @@
+         let index = std::sync::RwLock::new(index);
+         let has_error = AtomicBool::new(has_error);
+ 
++        let index_span = tracing::debug_span!(&quot;walk_dir&quot;);
++
+         walker.run(|| {
+             Box::new(|result| {
++                let index_span = index_span.clone();
++                let _span = index_span.entered();
+                 let Ok(entry) = result else {
+                     return WalkState::Continue;
+                 };
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 13:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Unrelated to your changes but I noticed it in the tracing logs. I think we could improve the logs by making tracing aware that the walk_dir threads run as part of the request (untested)</p>
+</blockquote>
+<p>Thank you, will look at it in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 13:17</div>
+            <div class="timeline-body"><p>This is great. It would be a much simpler fix than making indexing actually lazy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 13:28</div>
+            <div class="timeline-body"><blockquote>
+<p>This is great. It would be a much simpler fix than making indexing actually lazy!</p>
+</blockquote>
+<p>It's not a complete fix because the client sends multiple <code>didChangeWatchedFiles</code> request as seen in the above trace logs. One of the ways to solve this would be to implement the file watching on the server side and not rely on client side implementation and we would make sure to only re-index the project once.</p>
+<p>@MichaReiser I'm interested in hearing your opinion about whether that would be more feasible than lazy indexing. Maybe we could re-use the existing implementation from Red knot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-01-15 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-15 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-15 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not a complete fix because the client sends multiple didChangeWatchedFiles request as seen in the above trace logs.</p>
+</blockquote>
+<p>I don't see how this can be avoided. At least not if the modifications happen too far apart. Red Knot debounces the events to combine events that happen shortly after each other, but that timeout must be small (&lt;300ms), or users experience a lag when making changes in the editor. The server could implement its own debounce logic to debounce the change events coming from the client, but it increases the risk that we respond to requests with an outdated configuration, and it introduces a delay that will become noticeable to users.</p>
+<p>Lazy indexing might also not help if the changes happen too far apart because VS code might request updated diagnostics, forcing Ruff to search for the configuration.</p>
+<p>Let's see if your change improves the experience. I think it's fairly likely that it will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 14:45</div>
+            <div class="timeline-body"><blockquote>
+<p>The server could implement its own debounce logic to debounce the change events coming from the client, but it increases the risk that we respond to requests with an outdated configuration, and it introduces a delay that will become noticeable to users.</p>
+</blockquote>
+<p>This is an interesting idea. I think the risk is less because at least for pull diagnostics it's only when the server will ask the client to refresh the diagnostics then the client will ask for diagnostics:</p>
+<p>https://github.com/astral-sh/ruff/blob/b5dbb2a1d70feae84c3d9ee3d9d84301636f7a7b/crates/ruff_server/src/server/api/notifications/did_change_watched_files.rs#L25-L47</p>
+<p>We could experiment with a small amount of debounce period only after which the server will re-index the project and ask the client to refresh the diagnostics / publish the new diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 14:46</div>
+            <div class="timeline-body"><blockquote>
+<p>We could experiment with a small amount of debounce period only after which the server will re-index the project and ask the client to refresh the diagnostics / publish the new diagnostics.</p>
+</blockquote>
+<p>I suspect that VS codes file watcher already does some debouncing but maybe not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that VS codes file watcher already does some debouncing but maybe not?</p>
+</blockquote>
+<p>I'll need to look, maybe it does.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

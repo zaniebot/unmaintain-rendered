@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-generate AST boilerplate - astral-sh/ruff #15544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-generate AST boilerplate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15544">#15544</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-01-17 01:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-17 01:38</div>
+            <div class="timeline-body"><p>This PR replaces most of the hard-coded AST definitions with a generation script, similar to what happens in <code>rust_python_formatter</code>.  I've replaced every &quot;rote&quot; definition that I could find, where the content is entirely boilerplate and only depends on what syntax nodes there are and which groups they belong to.</p>
+<p>This is a pretty massive diff, but it's entirely a refactoring.  It should make absolutely no changes to the API or implementation.  In particular, this required adding some configuration knobs that let us override default auto-generated names where they don't line up with types that we created previously by hand.</p>
+<h2>Test plan</h2>
+<p>There should be no changes outside of the <code>rust_python_ast</code> crate, which verifies that there were no API changes as a result of the auto-generation.  Aggressive <code>cargo clippy</code> and <code>uvx pre-commit</code> runs after each commit in the branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-01-17 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-17 01:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to read examples/Assistants_API_overview_python.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: expected `,` or `]` at line 197 column 8
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/ast.toml</code>:31 on 2025-01-17 03:44</div>
+            <div class="timeline-body"><p>Should this be called &quot;rustdoc&quot; or &quot;doc&quot; instead to indicate that this is the documentation for the generated enum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 03:49</div>
+            <div class="timeline-body"><p>Maybe we could make this a standalone script that can be run by uv?</p>
+<pre><code class="language-py"># /// script
+# requires-python = &quot;&gt;=3.11&quot;
+# dependencies = []
+# ///
+</code></pre>
+<p>This requires 3.11 because of <code>tomllib</code> library usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-17 03:51</div>
+            <div class="timeline-body"><p>This is great, thanks for doing this!</p>
+<p>Unrelated to this PR, Biome does something similar (https://github.com/biomejs/biome/tree/main/xtask/codegen).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-01-17 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:4 on 2025-01-17 08:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># these nodes belong to groups. For instance, there is a `Stmt` group
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:14 on 2025-01-17 08:15</div>
+            <div class="timeline-body"><p>Is it intentional that you insert two spaces after each <code>.</code>?</p>
+<pre><code class="language-suggestion"># Each group is defined by two sections below. The `[GROUP]` section defines
+# options that control the auto-generation for that group. The `[GROUP.nodes]`
+# section defines which syntax nodes belong to that group. The name of each
+# entry in the nodes section must match the name of the corresponding Rust
+# struct. The value of each entry defines options that control the
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:28 on 2025-01-17 08:19</div>
+            <div class="timeline-body"><p>I find the code a bit hard to read because it mixes top level statement with class and declarations. I'd prefer to instead have a <code>main</code> function that's called in <code>if __name__ == &quot;__main__&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:77 on 2025-01-17 08:23</div>
+            <div class="timeline-body"><p>I'd use one of:</p>
+<pre><code class="language-py">out = [
+    textwrap.dedent(&quot;&quot;&quot;
+        // This is a generated file. Don't modify it by hand!
+        // Run `crates/ruff_python_ast/generate.py` to re-generate the file.
+    &quot;&quot;&quot;)
+]
+
+
+out = [
+    textwrap.dedent(
+        &quot;&quot;&quot;
+        // This is a generated file. Don't modify it by hand!
+        // Run `crates/ruff_python_ast/generate.py` to re-generate the file.
+        &quot;&quot;&quot;
+    )
+]
+</code></pre>
+<p>Or use the auto formatted code. IMO, it's roughly equally esthetic as the manually formatted array</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:83 on 2025-01-17 08:24</div>
+            <div class="timeline-body"><p>I think each of those blocks could be functions instead where the inline comment becomes a docstring.</p>
+<p>It would also be nice if the docstring could contain. code snippet of what it generates:</p>
+<p>Generates the owned enum for each group, e.g <code>Stmt</code>, <code>Expr</code> etc. For each, generate:</p>
+<ul>
+<li>The enum</li>
+<li>Implement <code>From&lt;Variant&gt;</code></li>
+<li>Implement <code>Ranged</code></li>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/generated.rs</code>:35 on 2025-01-17 08:28</div>
+            <div class="timeline-body"><p>Not for this PR but I think it would be nice if we generated the <code>is</code> implementations as well. The <code>is</code> macro doesn't always work well with ide's and macros are also more expensive to compile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-17 08:31</div>
+            <div class="timeline-body"><p>Nice, this is great.</p>
+<p>I think my long term preference would be to use something like ungrammar that would also allow us to e.g. generate the source order visitor but I think this is a great start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-17 10:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/ast.toml</code>:1 on 2025-01-17 10:42</div>
+            <div class="timeline-body"><p>Is it worth adding a small CI job that checks that <code>generated.rs</code> is up to date with what this script would output? Or would we just quickly get alerted by compiler errors if we forgot to run the script to update the file?</p>
+<p>I guess maybe the more likely way that things could go wrong would be if a contributor tried to edit <code>generated.rs</code> directly and we didn't notice they were updating a generated file, and merged it. Then their edits would just get overwritten the next time somebody ran <code>generate.py</code>, and it might be pretty confusing when the tests they added started failing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:1 on 2025-01-17 10:50</div>
+            <div class="timeline-body"><p>Oh yeah, I forgot to mention that. We could integrate it into https://github.com/astral-sh/ruff/blob/f319531632ecb683051891637be56ec58d470993/.github/workflows/ci.yaml#L377-L396</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-17 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:9 on 2025-01-17 10:53</div>
+            <div class="timeline-body"><p>nit: could you run Ruff on this file with its isort rules enabled? (Sorry! 😄)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:45 on 2025-01-17 10:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    def __init__(self, group_name: str, group: dict[str, Any]) -&gt; None:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:43 on 2025-01-17 10:54</div>
+            <div class="timeline-body"><p>since the script can only run with Python 3.11+ (due to <code>tomllib</code> usage), let's use the new-style syntax for unions with <code>None</code></p>
+<pre><code class="language-suggestion">    comment: str | None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:63 on 2025-01-17 10:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    def __init__(self, group: Group, node_name: str, node: dict[str, Any]) -&gt; None:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-17 10:55</div>
+            <div class="timeline-body"><p>Some Python nitpicks ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:1 on 2025-01-17 13:29</div>
+            <div class="timeline-body"><p>Yes good idea!  Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:14 on 2025-01-17 13:30</div>
+            <div class="timeline-body"><p>Old habits die hard, I guess :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:9 on 2025-01-17 13:32</div>
+            <div class="timeline-body"><p>Sure!  I was relying on however <code>ruff</code> is run via <code>uvx pre-commit run --all-files</code>.  Is this an option we want to turn on globally for the pre-commit hook?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 13:35</div>
+            <div class="timeline-body"><p>Could you add the file to .gitattributes and mark it as generated so that it is by default?</p>
+<p>https://github.com/astral-sh/ruff/blob/47c9ed07f2c00ac0d600294a0cb418d91c13b4ea/.gitattributes#L17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-17 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 13:50</div>
+            <div class="timeline-body"><p>It would be <code>generated.rs</code> that gets marked as generated, not the Python script, right?</p>
+<p>I had considered this, but thought that it might be useful (in future PRs at least) to see changes to the generated code in diffs.  But maybe that will be too verbose, given the number of syntax node types, and (per your other comment) if the docstring comments include descriptions of what changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/ast.toml</code>:31 on 2025-01-17 13:53</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 13:55</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 14:00</div>
+            <div class="timeline-body"><p>Done.  I also added <code>rust_python_formatter</code>'s generated file, and added the <code>-diff</code> attribute so that these files don't show up in local <code>git diff</code> output either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-17 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:9 on 2025-01-17 14:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this an option we want to turn on globally for the pre-commit hook?</p>
+</blockquote>
+<p>That makes sense to me! I think import sorting is pretty uncontroversial</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:1 on 2025-01-17 14:06</div>
+            <div class="timeline-body"><blockquote>
+<p>But maybe that will be too verbose, given the number of syntax node types, and (per your other comment) if the docstring comments include descriptions of what changes?</p>
+</blockquote>
+<p>You can still see the changes, it's just that the files are collapsed by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-17 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:9 on 2025-01-17 14:20</div>
+            <div class="timeline-body"><p>Done.  I marked the <code>red_knot_vendored</code> crate as being skipped, since that is code we bring in from elsewhere and not under our control</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.pre-commit-config.yaml</code>:85 on 2025-01-17 14:21</div>
+            <div class="timeline-body"><p>Would it be better to put this config in the <code>tool.ruff</code> section of our <code>pyproject.toml</code> file at the directory root?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.pre-commit-config.yaml</code>:87 on 2025-01-17 14:21</div>
+            <div class="timeline-body"><p>These files should already be excluded from all pre-commit hooks</p>
+<p>https://github.com/astral-sh/ruff/blob/4fdf8af7473a1e55f0bc38cd762da6e4a958df70/.pre-commit-config.yaml#L3-L17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>.pre-commit-config.yaml</code>:85 on 2025-01-17 14:25</div>
+            <div class="timeline-body"><p>Yes it would!  Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>.pre-commit-config.yaml</code>:87 on 2025-01-17 14:25</div>
+            <div class="timeline-body"><p>Ah okay, now I see what I was seeing — the actually vendored part of that crate is already being excluded.  But <code>knot_extensions</code> isn't vendored, we wrote that.  So the new lint regression is something I should accept and add to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-01-17 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-01-17 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/calumy">@calumy</a> reviewed on 2025-01-17 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/calumy">@calumy</a> on <code>.pre-commit-config.yaml</code>:85 on 2025-01-17 14:29</div>
+            <div class="timeline-body"><p>It might be worth considering moving the <a href="https://github.com/astral-sh/ruff/blob/main/scripts/pyproject.toml">ruff config in the scripts dir</a> into the root dir <code>pyproject.toml</code>. Isort and some other common rules are already enabled there, so it may be useful to enable them for the whole project if scripts are being added outwith the scripts dir.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:28 on 2025-01-17 18:28</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:77 on 2025-01-17 18:28</div>
+            <div class="timeline-body"><p>This is moot as part of reorganizing into functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:83 on 2025-01-17 18:29</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 18:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/generate.py</code>:81 on 2025-01-17 18:46</div>
+            <div class="timeline-body"><p>nit: I would personally add return annotations to all functions, even those which just return <code>None</code></p>
+<pre><code class="language-suggestion">def write_preamble(out: list[str]) -&gt; None:
+</code></pre>
+<p>but I know some find this just needless boilerplate. No strong feeling! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-17 18:50</div>
+            <div class="timeline-body"><p>LGTM. I agree with @calumy's comment at https://github.com/astral-sh/ruff/pull/15544#discussion_r1920276383, but that could be done as a followup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-17 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:81 on 2025-01-17 19:03</div>
+            <div class="timeline-body"><p>Done!  (I must be too used to Rust, where that's the default :sweat_smile:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-01-17 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-01-17 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-17 19:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

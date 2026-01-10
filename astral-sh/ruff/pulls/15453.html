@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add boundness and declaredness tests - astral-sh/ruff #15453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add boundness and declaredness tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15453">#15453</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-13 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-13 11:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This changeset adds new tests for public types of symbols and diagnostics, considering all possible declaredness and boundness states. This was previously not the case as <a href="https://github.com/astral-sh/ruff/pull/15019#discussion_r1890970501">discussed here</a>.</p>
+<p>Note that this is a mere documentation of the current behavior. There is still an <a href="https://github.com/astral-sh/ty/issues/229">open ticket</a> questioning some of these choices (or unintential behaviors).</p>
+<p>| <strong>Public type</strong>  | declared     | possibly-undeclared        | undeclared   |
+| ---------------- | ------------ | -------------------------- | ------------ |
+| bound            | <code>T_declared</code> | <code>T_declared \| T_inferred</code> | <code>T_inferred</code> |
+| possibly-unbound | <code>T_declared</code> | <code>T_declared \| T_inferred</code> | <code>T_inferred</code> |
+| unbound          | <code>T_declared</code> | <code>T_declared</code>               | <code>Unknown</code>    |</p>
+<p>| <strong>Diagnostic</strong>   | declared | possibly-undeclared       | undeclared          |
+| ---------------- | -------- | ------------------------- | ------------------- |
+| bound            |          |                           |                     |
+| possibly-unbound |          | <code>possibly-unbound-import</code> |                     |
+| unbound          |          |                           | <code>unresolved-import</code> |</p>
+<h2>Test plan</h2>
+<p>Made sure that the respective test fails if I add the questionable case again in <code>symbol_by_id</code>:</p>
+<pre><code class="language-rs">Symbol::Type(inferred_ty, Boundness::Bound) =&gt; {
+    Symbol::Type(inferred_ty, Boundness::Bound)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-13 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-01-13 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-01-13 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-01-13 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-13 11:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:29 on 2025-01-13 13:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">If a symbol has a declared type (`int`), we use that as the symbol's &quot;public type&quot; (the type of the symbol from the perspective of other scopes) even if there is a more precise local inferred type for the symbol
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-13 13:12</div>
+            <div class="timeline-body"><p>Nice! This will make it much easier to see how our behaviour changes if we decide to tweak some of this in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:17 on 2025-01-13 19:17</div>
+            <div class="timeline-body"><p>While there may be other behaviors here that we might reconsider, I think the fact that <code>possibly-unbound-import</code> diagnostic occurs in the &quot;possibly-undeclared and possibly-unbound&quot; case but not in the &quot;undeclared and possibly-unbound&quot; or &quot;unbound and possibly-undeclared&quot; cases is clearly a bug, I don't see any justification for it. I'm tempted to call that out more clearly with a TODO here (and/or below where those specific cases are tested.) I don't feel strongly about it, though, the existing note below is sufficient and refers to an issue that clearly discusses the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:29 on 2025-01-13 19:18</div>
+            <div class="timeline-body"><p>This clarification applies to the entire document, not just this test. I do think it would be useful to outline more clearly what we mean by &quot;public symbols&quot; or &quot;public types&quot;, but that should probably happen at the top of the document, not here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:138 on 2025-01-13 19:19</div>
+            <div class="timeline-body"><p>The &quot;we also don't raise an error&quot; here seems confusing, since in the prior case we <em>do</em> raise an error (and it sure seems like either we should here, or we shouldn't there.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-13 19:20</div>
+            <div class="timeline-body"><p>Awesome, thank you! Very clear exposition of a confusing area.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-13 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:3 on 2025-01-13 19:22</div>
+            <div class="timeline-body"><p>Maybe clarify scoping of this document. Here at top-level we mention &quot;public symbols&quot;, but then there's a heading <code>## Public symbols</code> below, and the name of the file doesn't mention &quot;public&quot;, so it seems a little unclear whether this document is intended to (eventually?) cover boundedness and declaredness for non-public cases as well.</p>
+<p>(Personally I would be inclined to say this document is large enough already, and well-scoped as-is, so I'd probably clarify the headings/names to explicitly make this whole document about public symbols. But either way is fine.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:138 on 2025-01-14 11:16</div>
+            <div class="timeline-body"><p>Oh, I moved subsections around too often. Will clarify.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-14 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-14 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness.md</code>:17 on 2025-01-14 11:49</div>
+            <div class="timeline-body"><blockquote>
+<p>but not in the &quot;undeclared and possibly-unbound&quot; or &quot;unbound and possibly-undeclared&quot;</p>
+</blockquote>
+<p>I agree. In this table, when moving to the right or to the bottom, things only get worse. So if we raise a diagnostic in a particular cell, then everything in the lower-right quadrant of that cell (inclusive) should also raise a diagnostic. I added additional text, TODO-notes in the detailed examples, and question-marks in the corresponding cells in the table.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-14 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-14 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-14 12:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

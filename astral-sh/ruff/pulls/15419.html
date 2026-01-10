@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid cloning live declarations - astral-sh/ruff #15419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid cloning live declarations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15419">#15419</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-11 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-11 10:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I don't know what I'm doing but all tests still pass ;)</p>
+<p>The declarations get merged below so maybe this is no longer needed?</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-11 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-11 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:313 on 2025-01-11 10:27</div>
+            <div class="timeline-body"><p>Could we initialize all vecs here with their existing capacity or even use the max capacity between <code>a</code> and <code>b</code>? It seems to me that we always add at least all existing entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-11 10:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-01-11 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-01-11 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-11 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-01-11 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-11 13:14</div>
+            <div class="timeline-body"><p>I'm not the expert in this area, but if this <em>is</em> correct, you could further simplify it:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs
+@@ -127,7 +127,7 @@ type VisibilityConstraintsIntoIterator = smallvec::IntoIter&lt;InlineVisibilityCons
+ 
+ /// Live declarations for a single symbol at some point in control flow, with their
+ /// corresponding visibility constraints.
+-#[derive(Clone, Debug, PartialEq, Eq)]
++#[derive(Clone, Debug, PartialEq, Eq, Default)]
+ pub(super) struct SymbolDeclarations {
+     /// [`BitSet`]: which declarations (as [`ScopedDefinitionId`]) can reach the current location?
+     pub(crate) live_declarations: Declarations,
+@@ -177,7 +177,7 @@ impl SymbolDeclarations {
+ 
+ /// Live bindings for a single symbol at some point in control flow. Each live binding comes
+ /// with a set of narrowing constraints and a visibility constraint.
+-#[derive(Clone, Debug, PartialEq, Eq)]
++#[derive(Clone, Debug, PartialEq, Eq, Default)]
+ pub(super) struct SymbolBindings {
+     /// [`BitSet`]: which bindings (as [`ScopedDefinitionId`]) can reach the current location?
+     live_bindings: Bindings,
+@@ -244,7 +244,7 @@ impl SymbolBindings {
+     }
+ }
+ 
+-#[derive(Clone, Debug, PartialEq, Eq)]
++#[derive(Clone, Debug, PartialEq, Eq, Default)]
+ pub(super) struct SymbolState {
+     declarations: SymbolDeclarations,
+     bindings: SymbolBindings,
+@@ -303,18 +303,7 @@ impl SymbolState {
+         b: SymbolState,
+         visibility_constraints: &amp;mut VisibilityConstraints,
+     ) {
+-        let mut a = Self {
+-            bindings: SymbolBindings {
+-                live_bindings: Bindings::default(),
+-                constraints: ConstraintsPerBinding::default(),
+-                visibility_constraints: VisibilityConstraintPerBinding::default(),
+-            },
+-            declarations: SymbolDeclarations {
+-                live_declarations: Declarations::default(),
+-                visibility_constraints: VisibilityConstraintPerDeclaration::default(),
+-            },
+-        };
+-
++        let mut a = Self::default();
+         std::mem::swap(&amp;mut a, self);
+</code></pre>
+<p>It looks like it's a 1% speedup on the cold benchmark: https://codspeed.io/astral-sh/ruff/branches/micha%2Fdont-clone-live-declarations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-13 08:13</div>
+            <div class="timeline-body"><blockquote>
+<p>The declarations get merged below so maybe this is no longer needed?</p>
+</blockquote>
+<p>Yes, thank you. This is an oversight by me from https://github.com/astral-sh/ruff/pull/15019. There is no semantic difference, we just inserted declarations twice into the <code>BitSet</code> (where the second insertion was a no-op).</p>
+<p>Your solution here might be the best way, but for comparison, I opened #15451 which changes the code back to the state before statically-known branches. It uses <code>BitSet::union</code> instead of inserting elements one by one. The solution here might still be faster, because with the statically-known branches work, we now have to iterate over live declarations (to construct merged visibility constraints). So it might make sense to compute the union &quot;as we go&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-13 08:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:313 on 2025-01-13 08:16</div>
+            <div class="timeline-body"><p>Note that <code>live_declarations</code> is a <code>BitSet</code>, not a vector. Or do you think it would make sense to add something like a capacity parameter for large <code>BitSet</code>s that have overflowed onto the heap?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 08:25</div>
+            <div class="timeline-body"><p>Thanks @sharkdp. I like your solution better because it simplifies the <code>merge</code> flow (and already goes in the direction of incorporating the expected size <code>with_capacity</code> for all structs). I'll close this in favor of https://github.com/astral-sh/ruff/pull/15451</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-13 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-13 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:313 on 2025-01-13 08:26</div>
+            <div class="timeline-body"><p>Isn't the bitset dynamically sized? I'd suggest to have a <code>BitSet::with_capacity</code> so that it can allocate the right inner vector. We could consider doing the same for all other fields. E.g. <code>visibility_constraint</code>'s length is at least as large as the max of <code>a</code>'s and <code>b</code>'s visibility constraints (if I understand the logic correctly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-13 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:313 on 2025-01-13 11:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't the bitset dynamically sized?</p>
+</blockquote>
+<p>It is, I was mostly just responding to the &quot;initialize all vecs here&quot;.</p>
+<p>For small sizes, the <code>BitSet</code> is stack-allocated with a fixed capacity, so as long as we're below that threshold, reserving wouldn't help. But in general, adding reserve/with_capacity calls here sounds like a reasonable thing to try!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:30 UTC
+    </footer>
+</body>
+</html>

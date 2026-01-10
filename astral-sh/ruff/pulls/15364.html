@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`fastapi`] Handle parameters with `Depends` correctly (`FAST003`) - astral-sh/ruff #15364</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>fastapi</code>] Handle parameters with <code>Depends</code> correctly (<code>FAST003</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15364">#15364</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-09 03:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-09 03:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #13657.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-09 03:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-09 03:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:226 on 2025-01-09 07:59</div>
+            <div class="timeline-body"><p>I'd call this <code>Dependency</code> to align it with the terminology used by fastapi https://fastapi.tiangolo.com/reference/dependencies</p>
+<p>Dependable also sort of means something different <a href="https://dictionary.cambridge.org/dictionary/english/dependable">source</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:142 on 2025-01-09 08:01</div>
+            <div class="timeline-body"><p>Considering that you filter out <code>Dependable::None</code> here, I'd suggest to change <code>Dependable::from_paramter</code> to return an <code>Option&lt;Dependable&gt;</code> instead. It has the advantage (other than just being less code) that the compiler can prove, that <code>Dependable::None</code> is not a valid value after line 139</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:150 on 2025-01-09 08:03</div>
+            <div class="timeline-body"><p>Using <code>collect</code> only to bail in the case of <code>Unknown</code> seems unfortunate. I'd prefer to rewrite the <code>dependables_parameter_names</code> like this</p>
+<pre><code class="language-rust">let mut dependable_paramter_names = Vec::new();
+
+for dependable in dependables {
+	if let Some(parameter_names) = dependable.parameter_names() {
+		dependable_parameter_names.extend(paramter_names);
+	} else {
+		return;
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:219 on 2025-01-09 08:05</div>
+            <div class="timeline-body"><p>I find the name of this function rather confusing because <code>keywordable</code> isn't a term I've come across before. I'd prefer inlining the code again. I found that clearer in the absence of a better term</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:158 on 2025-01-09 08:07</div>
+            <div class="timeline-body"><p>I think we should just collect the dependencies directly into the <code>named_args</code> vector instead of building a second vector (and iterating over all parameters again).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:321 on 2025-01-09 08:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let scope = &amp;semantic.scopes[scope_id];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-01-09 08:10</div>
+            <div class="timeline-body"><p>Nice. A few comments related to how the code is structured and the used terminology</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-09 08:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2025-01-09 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-09 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:226 on 2025-01-09 12:22</div>
+            <div class="timeline-body"><p>(I took that term from <a href="https://fastapi.tiangolo.com/tutorial/dependencies/#create-a-dependency-or-dependable">this section header</a>.) Renamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_unused_path_parameter.rs</code>:142 on 2025-01-09 13:57</div>
+            <div class="timeline-body"><p>Nice. I like the new name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:161 on 2025-01-09 14:02</div>
+            <div class="timeline-body"><p>Just for my understanding. Is this an error because fastapi only respects the first <code>Depends</code>? Do you have a reference that documents this behavior or did you find it out by try and error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:151 on 2025-01-09 14:03</div>
+            <div class="timeline-body"><p>Nit: Can we rename this to <code>dependency_with_thing_id_param</code> and <code>dependency_without_thing_id_param</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-09 14:05</div>
+            <div class="timeline-body"><p>This is great. One small nit and an understand question from my end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2025-01-09 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-09 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:161 on 2025-01-09 14:44</div>
+            <div class="timeline-body"><p>The documentation doesn't mention what happens when two <code>Depends</code> are used in a <i>path operation function</i>, only when <a href="https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators">multiple of them are used in a <i>path operation decorator</i></a>.</p>
+<p>Testing this again, I think I made a mistake. FastAPI seems to respect the last rather than the first. The code in question:</p>
+<pre><code class="language-python">from fastapi import FastAPI, Depends
+from typing import Annotated
+
+app = FastAPI()
+
+def foo(a: str) -&gt; str:
+    print(f'foo: {a}')
+    return 'lorem'
+    
+def bar(b: str) -&gt; int:
+    print(f'bar: {b}')
+    return 42
+    
+def baz(c: str) -&gt; bytes:
+    print(f'baz: {c}')
+    return b''
+
+@app.get(&quot;/things/{c}&quot;)  # `a`/`b`
+async def read_thing(other: Annotated[str, Depends(baz), Depends(bar), Depends(foo)]):
+    return other
+</code></pre>
+<pre><code class="language-text">$ uv run fastapi run hello.py
+      ...
+      INFO   1.2.3.4:5 - &quot;GET /things/ipsum HTTP/1.1&quot; 422
+</code></pre>
+<pre><code class="language-json">{
+    &quot;detail&quot;: [
+        {
+            &quot;type&quot;: &quot;missing&quot;,
+            &quot;loc&quot;: [&quot;query&quot;, &quot;a&quot;],
+            &quot;msg&quot;: &quot;Field required&quot;,
+            &quot;input&quot;: null
+        }
+    ]
+}
+</code></pre>
+<p>It would be best if we could ask someone with FastAPI expertise to have a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-10 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:161 on 2025-01-10 07:38</div>
+            <div class="timeline-body"><p>Thanks for the detailed investigation.</p>
+<p>@charliermarsh do you know someone we could ping on this?</p>
+<p>I'd otherwise suggest to bail (ignore the rule) if multiple <code>Depends</code> are seen</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-11 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:161 on 2025-01-11 13:35</div>
+            <div class="timeline-body"><p>I asked Sebastian</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tiangolo">@tiangolo</a> reviewed on 2025-01-12 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tiangolo">@tiangolo</a> on <code>crates/ruff_linter/resources/test/fixtures/fastapi/FAST003.py</code>:161 on 2025-01-12 22:23</div>
+            <div class="timeline-body"><p>Thanks for the ping @charliermarsh ! (and thanks for doing it on DM, I wouldn't have seen the GitHub notification 😅)</p>
+<p>Yeah, only one <code>Depends()</code> is supported in <em>path operation function</em> parameters. I actually didn't give much thought about what would happen if there's more than one when implementing it, I don't think I have tests for that. So I currently don't have any guarantee (tests) to ensure that it's always the first or last one (maybe I should? 🤔)... It's currently unspecified. 😅</p>
+<p>Nevertheless, although there are no current guarantees, the implementation is probably gonna stay the same for quite a while.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 01:31</div>
+            <div class="timeline-body"><p>I'll let @MichaReiser merge but I removed all the string allocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-13 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-13 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-13 08:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>

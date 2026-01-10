@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve symbol-lookup tracing - astral-sh/ruff #14907</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve symbol-lookup tracing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14907">#14907</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-12-11 08:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-11 08:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When debugging, I frequently want to know which symbols are being looked up. <code>symbol_by_id</code> adds tracing information, but it only shows the <code>ScopedSymbolId</code>. Since <code>symbol_by_id</code> is only called from <code>symbol</code>, it seems reasonable to move the tracing call one level up from <code>symbol_by_id</code> to <code>symbol</code>, where we can also show the name of the symbol.</p>
+<p><strong>Before</strong>:</p>
+<pre><code>6      └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(60de), file=/home/shark/tomllib_modified/_parser.py}
+6        └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(33)}
+6        ┌─┘
+6        └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(123)}
+6        ┌─┘
+6        └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(54)}
+6        ┌─┘
+6        └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(122)}
+6        ┌─┘
+6        └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(165)}
+6        ┌─┘
+6      ┌─┘
+6      └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(32)}
+6      ┌─┘
+6      └─┐red_knot_python_semantic::types::symbol_by_id{symbol=ScopedSymbolId(232)}
+6      ┌─┘
+6    ┌─┘
+6  ┌─┘
+6┌─┘
+</code></pre>
+<p><strong>After</strong>:</p>
+<pre><code>5      └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(60de), file=/home/shark/tomllib_modified/_parser.py}
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;dict&quot;}
+5        ┌─┘
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;dict&quot;}
+5        ┌─┘
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;list&quot;}
+5        ┌─┘
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;list&quot;}
+5        ┌─┘
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;isinstance&quot;}
+5        ┌─┘
+5        └─┐red_knot_python_semantic::types::symbol{name=&quot;isinstance&quot;}
+5        ┌─┘
+5      ┌─┘
+5      └─┐red_knot_python_semantic::types::symbol{name=&quot;ValueError&quot;}
+5      ┌─┘
+5      └─┐red_knot_python_semantic::types::symbol{name=&quot;ValueError&quot;}
+5      ┌─┘
+5    ┌─┘
+5  ┌─┘
+5┌─┘
+</code></pre>
+<h2>Test Plan</h2>
+<pre><code>cargo run --bin red_knot -- --current-directory path/to/tomllib -vvv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-12-11 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-12-11 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-12-11 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-12-11 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:79 on 2024-12-11 08:44</div>
+            <div class="timeline-body"><p>I'm inclined to inline the entire <code>symbol_by_id</code> function into <code>symbol</code> to avoid &quot;missing&quot; symbol lookups in tracing because a symbol gets looked up by its id.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-11 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-11 08:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-11 11:00</div>
+            <div class="timeline-body"><p>I agree with Micha's comment, but LGTM otherwise. (Wow, that output is so much more useful!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-11 16:25</div>
+            <div class="timeline-body"><p>So much better, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-07 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:79 on 2025-01-07 09:33</div>
+            <div class="timeline-body"><p><code>symbol_by_id</code> is now <code>#[salsa::tracked]</code>, so I can't inline it trivially. Also, it feels a bit wrong to inline that nicely encapsulated into this lambda here:</p>
+<p>https://github.com/astral-sh/ruff/blob/897c307f40f9909ac2b5c5db1194cbeda4d1750f/crates/red_knot_python_semantic/src/types.rs#L171-L175</p>
+<p>I now pushed a version where I nested <code>symbol_by_id</code> inside <code>symbol</code>. I'm not a huge fan, but it solves your concern as well. What do you think @MichaReiser?</p>
+<p>(The diff is horrible. The only thing I did was to move <code>symbol_by_id</code> inside <code>symbol</code> and adapted the doc comments. No code has been changed except for the removed/added <code>tracing::trace_span</code> line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-07 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:81 on 2025-01-07 09:35</div>
+            <div class="timeline-body"><p>I tried to remove this (and use <code>scope</code> from the outer scope), but it seems to be required in order to make this salsa_tracked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-07 09:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:81 on 2025-01-07 09:36</div>
+            <div class="timeline-body"><p>This works for me. Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-07 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-07 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:79 on 2025-01-07 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>(The diff is horrible. The only thing I did was to move <code>symbol_by_id</code> inside <code>symbol</code> and adapted the doc comments. No code has been changed except for the removed/added <code>tracing::trace_span</code> line.</p>
+</blockquote>
+<p>fyi if you click the gear icon at the top of the diff view, you can check &quot;Hide whitespace&quot;, which makes this particular diff much cleaner</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-07 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:79 on 2025-01-07 13:54</div>
+            <div class="timeline-body"><p>Thanks! I know about hide-whitespace, but somehow didn't think of enabling it for this changeset :+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:34:29 UTC
+    </footer>
+</body>
+</html>
