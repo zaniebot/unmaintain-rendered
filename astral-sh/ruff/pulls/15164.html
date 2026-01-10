@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] More precise inference for dictionaries (`SIM300`) - astral-sh/ruff #15164</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] More precise inference for dictionaries (<code>SIM300</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15164">#15164</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-28 03:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-28 03:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14761.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-28 03:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-28 03:46</div>
+            <div class="timeline-body"><p>As for the case of <code>C().A == print('B')</code>, I think it is reasonable to expect that a constant-like attribute access will have no side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-28 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs</code>:115 on 2024-12-28 09:24</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                dict
+                .items
+                .iter()
+                .map(|item| {
+                    ConstantLikelihood::from(&amp;item.value).min(
+                        item.key
+                            .as_ref()
+                            .map(ConstantLikelihood::from)
+                            .unwrap_or(ConstantLikelihood::Definitely),
+                    )
+                })
+                .min()
+                .unwrap_or(ConstantLikelihood::Definitely)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-28 09:27</div>
+            <div class="timeline-body"><p>I'm probably missing something but don't we need to take the value into consideration as well? E.g. <code>{ &quot;a&quot;: 1} == { &quot;a&quot;: 2 }</code> returns <code>False</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-12-28 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-28 10:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs</code>:115 on 2024-12-28 10:54</div>
+            <div class="timeline-body"><p>I'm not sure why this functional style should be preferred. It adds 4 more LOC and one or two more levels of indentation. Does it trigger compiler optimization or has some kind of obvious advantage over the traditional, imperative <code>for</code> loop that I'm simply missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/yoda_conditions.rs</code>:115 on 2024-12-30 10:34</div>
+            <div class="timeline-body"><p>To me it's mainly that <code>Iterator::min</code> encodes the <code>accumulator</code> + for loop pattern. It allows me to skip over most code because I see: Okay, we compute the minimum from a sequence of items and it falls back to <code>Definetely</code> if the sequence is empty. This is different from the <code>acc</code> + <code>for</code> loop where my thought process was:</p>
+<ul>
+<li><code>acc</code>: That probably means <code>accumulator</code>? What's it accumualting?</li>
+<li><code>acc</code> starts with <code>Definitely</code>. Is this the default?</li>
+<li>We take the <code>min</code> of the <code>key</code> and the current <code>acc</code> value, okay</li>
+<li>and we then take the min of the <code>value</code> and the <code>acc</code> value</li>
+<li>Okay, I think this calculates the min over all value and keys</li>
+</ul>
+<p>I reworked my code and it's now down to a total of 6 lines. It's also closer to how we handle lists, which I think is nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-30 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-30 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-30 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-30 10:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Simplify tuples containing `Never` - astral-sh/ruff #14744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Simplify tuples containing <code>Never</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14744">#14744</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-12-02 21:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-02 21:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Simplify tuples containing <code>Never</code> to <code>Never</code>:</p>
+<pre><code class="language-py">from typing import Never
+
+def never() -&gt; Never: ...
+
+reveal_type((1, never(), &quot;foo&quot;))  # revealed: Never
+</code></pre>
+<p>I should note that mypy and pyright do <em>not</em> perform this simplification. I don't know why.</p>
+<p>There is <a href="https://github.com/astral-sh/ruff/blob/5137fcc9c81610f687b6cb45413ef83c2c5eea73/crates/red_knot_python_semantic/src/types/infer.rs#L1477-L1484">only one place</a> where we use <code>TupleType::new</code> directly (instead of <code>Type::tuple</code>, which changes behavior here). This appears when creating <code>TypeVar</code> constraints, and it looks to me like it should stay this way, because we're using <code>TupleType</code> to store a list of constraints there, instead of an actual type. We also store <code>tuple[constraint1, constraint2, …]</code> as the type for the <code>constraint1, constraint2, …</code> tuple expression. This would mean that we infer a type of <code>tuple[str, Never]</code> for the following type variable constraints, without simplifying it to <code>Never</code>. This seems like a weird edge case that's maybe not worth looking further into?!</p>
+<pre><code class="language-py">from typing import Never
+
+#         vvvvvvvvvv
+def f[T: (str, Never)](x: T):
+    pass
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a new unit test. Did not add additional Markdown tests as that seems superfluous.</li>
+<li>Tested the example above using red knot, mypy, pyright.</li>
+<li>Verified that this allows us to remove <code>contains_never</code> from the property tests (https://github.com/astral-sh/ruff/pull/14178#discussion_r1866473192)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-12-02 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-12-02 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-12-02 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-12-02 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-02 21:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3021 on 2024-12-02 22:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            if ty.is_never() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-02 23:08</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-12-03 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-12-03 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-03 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-03 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:582 on 2024-12-03 10:52</div>
+            <div class="timeline-body"><p>nit: this method now feels a bit redundant. I'd probably have got rid of it and changed the callsites to use the new <code>TupleType::from_elements()</code> method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 11:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I should note that mypy and pyright do <em>not</em> perform this simplification. I don't know why.</p>
+</blockquote>
+<p>Mypy in general appears not to do much eager simplification at all, e.g. it <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=ed550c85c7b4ec2fcddf9ffb4e14621d">doesn't even simplify this union</a>:</p>
+<pre><code class="language-py">def f(x: int | int):
+    reveal_type(x)  # mypy: revealed type is &quot;Union[builtins.int, builtins.int]&quot;
+</code></pre>
+<p>Pyright does a lot more eager simplification than mypy. But it's important to note, I think, that it's only relatively recently that we formalized the idea that <code>Never</code>/<code>NoReturn</code> constitute the bottom type in Python. Mypy has historically always treated it as such, but I think pyright only started treating it as such <a href="https://github.com/microsoft/pyright/issues/2921">relatively recently</a>. So the issue of simplification may just not have been considered. This is just speculation, though!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

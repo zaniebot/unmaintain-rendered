@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Property tests - astral-sh/ruff #14178</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Property tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14178">#14178</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-07 22:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-07 22:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>property_tests</code> module with quickcheck-based tests that verify certain properties of types. The following properties are currently checked:</p>
+<ul>
+<li><code>is_equivalent_to</code>:<ul>
+<li>is reflexive: <code>T</code> is equivalent to itself</li>
+</ul>
+</li>
+<li><code>is_subtype_of</code>:<ul>
+<li>is reflexive: <code>T</code> is a subtype of <code>T</code></li>
+<li>is antisymmetric: if <code>S &lt;: T</code> and <code>T &lt;: S</code>, then <code>S</code> is equivalent to <code>T</code></li>
+<li>is transitive: <code>S &lt;: T</code> &amp; <code>T &lt;: U</code> =&gt; <code>S &lt;: U</code></li>
+</ul>
+</li>
+<li><code>is_disjoint_from</code>:<ul>
+<li>is irreflexive: <code>T</code> is not disjoint from <code>T</code></li>
+<li>is symmetric: <code>S</code> disjoint from <code>T</code> =&gt; <code>T</code> disjoint from <code>S</code></li>
+</ul>
+</li>
+<li><code>is_assignable_to</code>:<ul>
+<li>is reflexive</li>
+</ul>
+</li>
+<li><code>negate</code>:<ul>
+<li>is an involution: <code>T.negate().negate()</code> is equivalent to <code>T</code></li>
+</ul>
+</li>
+</ul>
+<p>There are also some tests that validate higher-level properties like:</p>
+<ul>
+<li><code>S &lt;: T</code> implies that <code>S</code> is not disjoint from <code>T</code></li>
+<li><code>S &lt;: T</code> implies that <code>S</code> is assignable to <code>T</code></li>
+<li>A singleton type must also be single-valued</li>
+</ul>
+<p>These tests found a few bugs so far:</p>
+<ul>
+<li>#14177</li>
+<li>#14195</li>
+<li>#14196</li>
+<li>#14210</li>
+<li>#14731</li>
+</ul>
+<p>Some additional notes:</p>
+<ul>
+<li><p>Quickcheck-based property tests are non-deterministic and finding counter-examples might take an arbitrary long time. This makes them bad candidates for running in CI (for every PR). We can think of running them in a cron-job way from time to time, similar to fuzzing. But for now, it's only possible to run them locally (see instructions in source code).</p>
+</li>
+<li><p>Some tests currently find false positive &quot;counterexamples&quot; because our understanding of equivalence of types is not yet complete. We do not understand that <code>int | str</code> is the same as <code>str | int</code>, for example. These tests are in a separate <code>property_tests::flaky</code> module.</p>
+</li>
+<li><p>Properties can not be formulated in every way possible, due to the fact that <code>is_disjoint_from</code> and <code>is_subtype_of</code> can produce false negative answers.</p>
+</li>
+<li><p>The current shrinking implementation is very naive, which leads to counterexamples that are very long (<code>str &amp; Any &amp; ~tuple[Any] &amp; ~tuple[Unknown] &amp; ~Literal[&quot;&quot;] &amp; ~Literal[&quot;a&quot;] | str &amp; int &amp; ~tuple[Any] &amp; ~tuple[Unknown]</code>), requiring the developer to simplify manually. It has not been a major issue so far, but there is a comment in the code how this can be improved.</p>
+</li>
+<li><p>The tests are currently implemented using a macro. This is a single commit on top which can easily be reverted, if we prefer the plain code instead. With the macro:</p>
+<pre><code class="language-rs">// `S &lt;: T` implies that `S` can be assigned to `T`.
+type_property_test!(
+    subtype_of_implies_assignable_to, db,
+    forall types s, t. s.is_subtype_of(db, t) =&gt; s.is_assignable_to(db, t)
+);
+</code></pre>
+<p>without the macro:</p>
+<pre><code class="language-rs">/// `S &lt;: T` implies that `S` can be assigned to `T`.
+#[quickcheck]
+fn subtype_of_implies_assignable_to(s: Ty, t: Ty) -&gt; bool {
+    let db = get_cached_db();
+
+    let s = s.into_type(&amp;db);
+    let t = t.into_type(&amp;db);
+
+    !s.is_subtype_of(&amp;*db, t) || s.is_assignable_to(&amp;*db, t)
+}
+</code></pre>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<pre><code class="language-bash">while cargo test --release -p red_knot_python_semantic --features property_tests types::property_tests; do :; done
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-07 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3916 on 2024-11-07 22:19</div>
+            <div class="timeline-body"><p>If we want to move forward with this, we could probably auto-generate this boilerplate in each test using a macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-07 22:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-07 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3820 on 2024-11-07 23:11</div>
+            <div class="timeline-body"><p>There must be a better way to do this. If only we had the author of this library on our team...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3820 on 2024-11-08 08:58</div>
+            <div class="timeline-body"><p>CC: @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-08 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-08 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3820 on 2024-11-08 12:30</div>
+            <div class="timeline-body"><p>I think this looks reasonable to me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 16:55</div>
+            <div class="timeline-body"><p>This is awesome! Thank you for doing this, I've been wanting to explore this. I think property testing is very well suited to testing type relation invariants, and I do think we should move forward with actually landing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/Cargo.toml</code>:53 on 2024-12-02 14:47</div>
+            <div class="timeline-body"><p>Dev-dependencies can't be optional, otherwise I would have made these dependent on the <code>property_tests</code> feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2024-12-02 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-12-02 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-12-02 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:37 on 2024-12-02 19:01</div>
+            <div class="timeline-body"><p>Including <code>i64::MIN</code> and <code>i64::MAX</code> here also seems likely to uncover interesting edge cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-02 19:08</div>
+            <div class="timeline-body"><p>Hm, we run tests with <code>--all-features</code>, so my current approach doesn't work. I'm working on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:134 on 2024-12-02 19:15</div>
+            <div class="timeline-body"><p>It's not said clearly here, but I think the implication is that we should add this simplification of types containing <code>Never</code> (which doesn't seem too complicated? I guess it would require mostly that we introduce a builder pattern for constructing tuple types also?), and once we've done that, this could go away?</p>
+<p>Maybe this should be a TODO and/or a new GH issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:142 on 2024-12-02 19:17</div>
+            <div class="timeline-body"><p>Is this correct? Based on the above comment, I'm assuming the semantics of <code>contains_never</code> are really supposed to be &quot;is equivalent to Never&quot; -- but an intersection that contains <code>Never</code> as a negative element is not equivalent to <code>Never</code>. In fact, <code>Never</code> should just be eliminated from negative elements of an intersection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:249 on 2024-12-02 19:21</div>
+            <div class="timeline-body"><p>Another useful property we could test here when we fix the issue about <code>is_subtype_of</code> and non-fully-static types is that a non-fully-static type never participates in subtyping. (This assumes that we add <code>Type::is_fully_static</code> so we can check this predicate.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-02 19:21</div>
+            <div class="timeline-body"><p>This is great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 20:09</div>
+            <div class="timeline-body"><p>I think you can just ignore them and they can then be run by name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-02 20:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you can just ignore them and they can then be run by name</p>
+</blockquote>
+<p>That's an option, but I wanted to mark some of them as <code>#[ignore]</code>d  for another reason as well (because they yield many false positives right now). I guess I can also just comment them out for now.. but I don't like commented out committed code :-/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:37 on 2024-12-02 20:38</div>
+            <div class="timeline-body"><p>Ok. I wasn't sure about these. They seem more like red knot internal limitations. But if we add property tests for things like the type level <code>Literal[…]</code> math, adding those makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-02 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:37 on 2024-12-02 21:04</div>
+            <div class="timeline-body"><p>Yeah, that's fair, it may not make sense to add these unless we add property tests for literal arithmetic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 21:20</div>
+            <div class="timeline-body"><p>I'd prefer ignoring them with different reasons. Commented out code defeats the reason why we're merging the tests in the first place</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:134 on 2024-12-02 21:53</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/14744</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:142 on 2024-12-02 21:53</div>
+            <div class="timeline-body"><p>You're right, thanks. This will be resolved/removed via #14744.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-03 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:249 on 2024-12-03 08:02</div>
+            <div class="timeline-body"><p>Added as a task in #14524</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:2195 on 2024-12-03 08:03</div>
+            <div class="timeline-body"><p>Do we make use of the <code>env_logger</code> and <code>regex</code> feature or could we disable all default features?</p>
+<p>https://docs.rs/crate/quickcheck/1.0.3/features</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:144 on 2024-12-03 08:16</div>
+            <div class="timeline-body"><p>I find the macro fairly hard to read. What I understand is that their primary benefit is to reduce the repetition of creating the cached db and dereferencing it.</p>
+<ul>
+<li>How much faster is reusing the db over creating a new database?</li>
+<li>Have you considered adding a snapshot method to the database instead of locking it? Databases are thread safe and can be shared (for as long as you don't update the db with a <code>&amp;mut Db</code> reference</li>
+</ul>
+<pre><code>        pub fn snapshot(&amp;self) -&gt; Self {
+            Self {
+                storage: self.storage.clone(),
+                files: self.files.snapshot(),
+                system: self.system.clone(),
+                vendored: self.vendored.clone(),
+                events: Arc::clone(&amp;self.events),
+            }
+        }
+</code></pre>
+<p>A test then becomes</p>
+<pre><code>    #[test]
+    #[quickcheck_macros::quickcheck]
+    fn equivalent_to_is_reflexive2(t: crate::types::tests::Ty) -&gt; bool {
+        let db = get_cached_db();
+        let t = t.into_type(&amp;db);
+        t.is_equivalent_to(&amp;db, t)
+    }
+</code></pre>
+<p>Which I don't find too bad</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-03 08:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-03 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:144 on 2024-12-03 08:40</div>
+            <div class="timeline-body"><blockquote>
+<p>How much faster is reusing the db over creating a new database?</p>
+</blockquote>
+<p>Three orders of magnitude. It's essential. I found some bugs only after I added this optimization.</p>
+<blockquote>
+<ul>
+<li>Have you considered adding a snapshot method to the database instead of locking it</li>
+</ul>
+</blockquote>
+<p>I have not. Would the benefit be to get rid of the <code>let db = &amp;*db;</code>, or do you think that would be faster?</p>
+<blockquote>
+<p>I find the macro fairly hard to read</p>
+</blockquote>
+<p>Because macros are hard to read, or because this particular macro is hard to read? :smile:</p>
+<p>I don't disagree, but it's also not like we're hiding lots of complexity in there. It's really just a boilerplate-reduction macro. I personally care much more about the readability of the individual tests. The macro is ugly, yes. But I won't have to read the macro code again when writing new tests.</p>
+<blockquote>
+<p>A test then becomes [...] Which I don't find too bad</p>
+</blockquote>
+<p>Well, you picked the easiest example there ;-). With just one type and no logical implication. Did you see the macro-vs-non-macro comparison in the PR description? Or this example, which has three types:</p>
+<pre><code class="language-rs">#[quickcheck]
+fn subtype_of_is_transitive(s: Ty, t: Ty, u: Ty) -&gt; bool {
+    let db = get_cached_db();
+    let db = &amp;*db;
+    let s = s.into_type(db);
+    let t = t.into_type(db);
+    let u = u.into_type(db);
+
+    !(s.is_subtype_of(db, t) &amp;&amp; t.is_subtype_of(db, u)) || s.is_subtype_of(db, u)
+}
+</code></pre>
+<pre><code class="language-rs">type_property_test!(
+    subtype_of_is_transitive,
+    db,
+    (s, t, u),
+    s.is_subtype_of(db, t) &amp;&amp; t.is_subtype_of(db, u) =&gt; s.is_subtype_of(db, u)
+);
+</code></pre>
+<blockquote>
+<p>their primary benefit is to reduce the repetition of creating the cached db and dereferencing it</p>
+</blockquote>
+<p>It also removes the necessity for lots of <code>let t = t.into_type(db);</code> lines, and allows us to write logical implications using <code>premise =&gt; conclusion</code> instead of <code>!(premise) || (conclusion)</code>.</p>
+<p>Let me know what you think. I'm going to be okay if we remove it again :smile:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-03 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:144 on 2024-12-03 09:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I have not. Would the benefit be to get rid of the let db = &amp;*db;, or do you think that would be faster?</p>
+</blockquote>
+<p>It would allow you to remove the mutex guard and the deref (you still need to use <code>&amp;db</code> when calling any function)</p>
+<blockquote>
+<p>Because macros are hard to read, or because this particular macro is hard to read? 😄</p>
+</blockquote>
+<p>It's somewhat both. I had to expand the macro to understand what the different parts map to. Like what's up with the <code>(s, t, u)</code>? which part is even the assertion? Some extra documentation might help.</p>
+<blockquote>
+<p>Did you see the macro-vs-non-macro comparison in the PR description? Or this example, which has three types:</p>
+</blockquote>
+<p>I admit, I did not! I see how it simplifies the code a bit, but it doesn't significantly reduce the number of lines.</p>
+<p>Could we implement <code>into_type</code> for tuples so that you can keep writing <code>(s, t, u) = (s, t, u).into_types(db)</code>?</p>
+<blockquote>
+<p>It also removes the necessity for lots of let t = t.into_type(db); lines, and allows us to write logical implications using premise =&gt; conclusion instead of !(premise) || (conclusion).</p>
+</blockquote>
+<p>I do like that. Maybe we can limit the macro part to just that?</p>
+<p>I'm not opposed to keeping the macros. I just had to expand them, and I still spent about 5 minutes trying to figure out what was going on. But I'm also not sure if it's worth it if you spend more time on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-03 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-03 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:144 on 2024-12-03 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Like what's up with the <code>(s, t, u)</code>? which part is even the assertion?</p>
+</blockquote>
+<p>These are valid concerns. I now pushed another commit where I change the syntax to the following:</p>
+<pre><code class="language-rs">type_property_test!(
+    subtype_of_implies_assignable_to, db,
+    forall types s, t. s.is_subtype_of(db, t) =&gt; s.is_assignable_to(db, t)
+);
+</code></pre>
+<p>The intention is that it reads like a mathematical property <code>∀ S, T. …</code>.</p>
+<p>I also simplified the macro definition (only two clauses instead of four), clarified the variable names and added some documentation.</p>
+<p>I kind of like how this looks, and would merge it for now. I'm happy to revisit it though if I get more feedback on it (from you or others).</p>
+<blockquote>
+<p>It would allow you to remove the mutex guard and the deref (you still need to use <code>&amp;db</code> when calling any function)</p>
+</blockquote>
+<p>I'll note it down as a task for me (low priority), thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-12-03 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-12-03 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-03 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-03 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/property_tests.rs</code>:144 on 2024-12-03 13:31</div>
+            <div class="timeline-body"><p>Thanks. I like this much more!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Avoid undeclared path when raising conflicting declarations - astral-sh/ruff #14958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Avoid undeclared path when raising conflicting declarations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14958">#14958</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-12-13 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-13 13:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the logic when raising conflicting declarations diagnostic to avoid the undeclared path if present.</p>
+<p>The conflicting declaration diagnostics is added when there are two or more declarations in the control flow path of a definition whose type isn't equivalent to each other. This can be seen in the following example:</p>
+<pre><code class="language-py">if flag:
+	x: int
+x = 1  # conflicting-declarations: Unknown, int
+</code></pre>
+<p>After this PR, we'd avoid considering &quot;Unknown&quot; as part of the conflicting declarations. This means we'd still flag it for the following case:</p>
+<pre><code class="language-py">if flag:
+	x: int
+else:
+	x: str
+x = 1  # conflicting-declarations: int, str
+</code></pre>
+<p>A solution that's local to the exception control flow was also explored which required updating the logic for merging the flow snapshot to avoid considering declarations using a flag. This is preserved here: https://github.com/astral-sh/ruff/compare/dhruv/control-flow-no-declarations?expand=1.</p>
+<p>The main motivation to avoid that is we don't really understand what the user experience is w.r.t. the Unknown type and the conflicting-declaration diagnostics. This makes us unsure on what the right semantics are as to whether that diagnostics should be raised or not and when to raise them. For now, we've decided to move forward with this PR and could decide to adopt another solution or remove the conflicting-declaration diagnostics in the future.</p>
+<p>Closes: #13966</p>
+<h2>Test Plan</h2>
+<p>Update the existing mdtest case. Add an additional case specific to exception control flow to verify that the diagnostic is not being raised now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-12-13 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-13 13:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-12-13 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-12-13 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-12-13 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-12-13 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2024-12-13 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:798 on 2024-12-13 18:51</div>
+            <div class="timeline-body"><p>I think this has an issue: there could be three or more conflicting types, e.g. <code>int</code>, <code>str</code>, and <code>Unknown</code>; this should still emit a diagnostic for the conflict between <code>int</code> and <code>str</code>.</p>
+<p>It's also a little weird that we just search for <code>Unknown</code>, because there could be an actual annotation <code>x: Foo</code> in one path, where <code>Foo</code> resolves to <code>Unknown</code> (e.g. because it is imported from a module we can't find), and we would still treat this <code>Unknown</code> the same as the undeclared-path <code>Unknown</code>.</p>
+<p>I think it would be easier to make a more correct fix if we do it inside <code>declarations_ty</code> instead, so that in the cases where we don't want to emit the diagnostic, we don't even return an <code>Err</code> result at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:50 on 2024-12-13 18:51</div>
+            <div class="timeline-body"><p>Love to see these go away!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 18:52</div>
+            <div class="timeline-body"><p>Tests look great! I think we should move the fix inside <code>declarations_ty</code>, and add a test for the &quot;three paths, conflicting declarations in two of them&quot; case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-16 06:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:798 on 2024-12-16 06:37</div>
+            <div class="timeline-body"><p>Ah yes, thanks for pointing that out. I've pushed a commit that moves the logic to <code>declarations_ty</code> which doesn't consider the <code>undeclared_ty</code> when looking for conflicting types. It <em>does</em> add the type to the final declared type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-12-16 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-16 20:14</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-12-17 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-12-17 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-17 04:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

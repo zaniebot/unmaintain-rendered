@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pep8-naming`] Avoid false positive for `class Bar(type(foo))` (`N804`) - astral-sh/ruff #14683</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pep8-naming</code>] Avoid false positive for <code>class Bar(type(foo))</code> (<code>N804</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14683">#14683</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2024-11-29 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-29 18:34</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fixes #14675, which reports N804 (<code>invalid-first-argument-name-for-class-method</code>) for this code:</p>
+<pre><code class="language-python">foo = {}
+
+class Bar(type(foo)):
+    def foo_method(self):
+        pass
+</code></pre>
+<p>I don't really love having to capture <code>maybe</code> in the closure, but this was the best way I could come up with to avoid propagating the new <code>IsMetaclass</code> return type through <code>any_base_class</code>. Another option along these lines, which at least avoids changing the <code>Fn</code>s to <code>FnMut</code>, is to let <code>maybe</code> be a <code>RefCell&lt;bool&gt;</code> and mutate it that way.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p><code>cargo test</code> with the example above added to <code>N804.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2024-11-29 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-29 18:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:126 on 2024-11-29 18:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum IsMetaclass {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-29 19:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really love having to capture maybe in the closure</p>
+</blockquote>
+<p>hmm, yeah, this does feel a bit... icky 😄</p>
+<p>I wonder if a better solution (though it's a bit more of a refactor) would be to split up <code>any_base_class()</code> into two functions: one that just handles iterating through all superclasses recursively (<code>iter_base_classes()</code> or <code>iter_superclasses()</code>), and one that checks if a condition holds true for any of the superclasses (that one could still be called <code>any_base_class()</code>). That way <code>is_metaclass()</code> could use the lower-level <code>iter_base_classes()</code> function directly rather than having to awkwardly work around the fact that the quite high-level <code>any_base_class</code> function doesn't really have quite the API we'd like it to have here.</p>
+<p>WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 19:07</div>
+            <div class="timeline-body"><p>Also thanks for jumping on this! :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 19:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-29 19:10</div>
+            <div class="timeline-body"><p>I think that's a great idea, I'll give it a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-29 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-29 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-29 19:13</div>
+            <div class="timeline-body"><p>Just some extra data point if it helps to avoid a lot of work: I don't mind that it it captures the variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 22:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-29 22:25</div>
+            <div class="timeline-body"><p>This was a little harder than I thought. I've added an <code>iter_base_classes</code> function, but it's not truly an iterator now since I build up a <code>Vec</code> of base classes and then call <code>into_iter</code>. I'll keep thinking about this, but at least the API has the shape I was going for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-30 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-30 15:08</div>
+            <div class="timeline-body"><p>I kind of prefer the old solution. It overall felt simpler and avoiding the extra allocation is nice too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-30 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-30 17:26</div>
+            <div class="timeline-body"><p>Yeah, writing a recursive iterator seems annoyingly hard :(</p>
+<p>Sorry for leading you down the wrong track here @ntBre. My bad -- your first solution probably was best!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-30 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-30 19:32</div>
+            <div class="timeline-body"><p>No worries, it was interesting to try! I've reverted to the original.</p>
+<p>One other thing I just noticed, should <code>maybe</code> also be <code>true</code> for the subscript case? I only handled the <code>type(foo)</code> example directly from the issue, but should <code>type[foo]</code> work as well? That's just a one-line code change, but I can update the tests too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-30 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-30 22:35</div>
+            <div class="timeline-body"><blockquote>
+<p>should <code>maybe</code> also be <code>true</code> for the subscript case</p>
+</blockquote>
+<p>I don't think so -- <code>type[str]</code>, <code>type[int]</code>, etc. always behaves the same as bare <code>type</code> in the context of a class's bases, and if a class inherits from <code>type</code> then it's always a metaclass</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-30 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:142 on 2024-11-30 22:36</div>
+            <div class="timeline-body"><p>Even subscripts that are &quot;invalid&quot; from a typing perspective behave the same way:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class bar(type[int, str]): pass
+... 
+&gt;&gt;&gt; bar.__bases__
+(&lt;class 'type'&gt;,)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-30 22:36</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-30 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-30 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-30 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexhenman">@alexhenman</a> on 2024-12-04 11:20</div>
+            <div class="timeline-body"><p>Thanks all for your very speedy work getting this fixed!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Display definition range in trace logs - astral-sh/ruff #14955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Display definition range in trace logs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14955">#14955</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-12-13 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-13 10:23</div>
+            <div class="timeline-body"><p>I've mainly opened this PR to get some opinions. I've found having some additional information in the tracing logs to be useful to determine what we are currently inferring. For the <code>Definition</code> ingredient, the range seems to be much useful. I thought of using the identifier name but we would have to deconstruct the <code>Expr</code> to find out the identifier which seems a lot for just trace logs. Additionally, multiple identifiers <em>could</em> have the same name where range would be useful.</p>
+<p>The ranges are isolated to the names that have been defined by the definition except for the <code>except</code> block where the entire range is being used because the name is optional.</p>
+<p><em><strong>Before:</strong></em></p>
+<pre><code>3      ├─   0.074671s  54ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_definition_types(Id(1402)) } }
+3      └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1402), file=/Users/dhruv/playground/ruff/type_inference/isolated3/play.py}
+3      ┌─┘
+3      ├─   0.074768s  54ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: inner_fn_name_(Id(2800)) } }
+3      ├─   0.074807s  54ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_deferred_types(Id(1735)) } }
+3      └─┐red_knot_python_semantic::types::infer::infer_deferred_types{definition=Id(1735), file=vendored://stdlib/typing.pyi}
+3        ├─   0.074842s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_definition_types(Id(14f3)) } }
+3        └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(14f3), file=vendored://stdlib/typing.pyi}
+3          ├─   0.074871s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_expression_types(Id(1820)) } }
+3          └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(1820), file=vendored://stdlib/typing.pyi}
+3            ├─   0.074924s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_definition_types(Id(1429)) } }
+3            └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1429), file=vendored://stdlib/typing.pyi}
+3              ├─   0.074958s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: infer_definition_types(Id(1428)) } }
+3              └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1428), file=vendored://stdlib/typing.pyi}
+3              ┌─┘
+</code></pre>
+<p><em><strong>After:</strong></em></p>
+<pre><code>12      ├─   0.074609s  55ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_definition_types(Id(1402)) } }
+12      └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1402), range=36..37, file=/Users/dhruv/playground/ruff/type_inference/isolated3/play.py}
+12      ┌─┘
+12      ├─   0.074705s  55ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: inner_fn_name_(Id(2800)) } }
+12      ├─   0.074742s  55ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_deferred_types(Id(1735)) } }
+12      └─┐red_knot_python_semantic::types::infer::infer_deferred_types{definition=Id(1735), range=30225..30236, file=vendored://stdlib/typing.pyi}
+12        ├─   0.074775s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_definition_types(Id(14f3)) } }
+12        └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(14f3), range=9472..9474, file=vendored://stdlib/typing.pyi}
+12          ├─   0.074803s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_expression_types(Id(1820)) } }
+12          └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(1820), range=9477..9490, file=vendored://stdlib/typing.pyi}
+12            ├─   0.074855s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_definition_types(Id(1429)) } }
+12            └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1429), range=3139..3146, file=vendored://stdlib/typing.pyi}
+12              ├─   0.074892s   0ms TRACE red_knot_workspace::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_definition_types(Id(1428)) } }
+12              └─┐red_knot_python_semantic::types::infer::infer_definition_types{definition=Id(1428), range=3102..3107, file=vendored://stdlib/typing.pyi}
+12              ┌─┘
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-12-13 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-12-13 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-12-13 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-12-13 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2024-12-13 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-13 10:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:470 on 2024-12-13 13:20</div>
+            <div class="timeline-body"><p>would it be better to implement <code>Ranged</code> for <code>DefinitionKind</code>? Then we'd also get the <code>start()</code> and <code>stop()</code> methods that the trait implements</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-13 13:21</div>
+            <div class="timeline-body"><p>Nice, this is a big improvement! Even better would be the line number/column number, but we could consider that separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-13 13:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Nice, this is a big improvement! Even better would be the line number/column number, but we could consider that separately</p>
+</blockquote>
+<p>Getting the line and column number is too expensive because it a) requires building the line index and b) a binary search to get the line number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-13 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:470 on 2024-12-13 13:46</div>
+            <div class="timeline-body"><p>I thought about that but that would make it publicly available which I wasn't sure about. I could possibly rename this function to <code>debug_range</code> and provide a brief docs on what this represents.</p>
+<p>I guess it's fine to implement it, will do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Display definition range in trace logs" to "[red-knot] Display definition range in trace logs" by @dhruvmanila on 2024-12-13 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-12-13 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-12-13 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-13 14:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

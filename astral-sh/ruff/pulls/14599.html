@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer precise types for `len()` calls - astral-sh/ruff #14599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer precise types for <code>len()</code> calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14599">#14599</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-26 04:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-26 04:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14598.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-11-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-11-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-11-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2024-11-26 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-26 05:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-26 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3078 on 2024-11-26 06:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn chars_count(&amp;self, db: &amp;'db dyn Db) -&gt; usize {
+        self.value(db).chars().count()
+    }
+</code></pre>
+<p>The name here is confusing because <code>str.len</code> <code>chars().count</code> is the number of characters. The utf8-len is <code>str.len</code>.</p>
+<p>I suggest to either rename the method to <code>chars_count</code> or expose a <code>as_str</code> method that returns the str instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-26 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-26 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2472 on 2024-11-26 07:58</div>
+            <div class="timeline-body"><p>Minor point: maybe rename this to <code>StaticallyUnknown</code> or similar to avoid any confusion with <code>Type::Unknown</code>? (especially since you map <code>Len::Never</code> to <code>Type::Never</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-26 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2474 on 2024-11-26 08:12</div>
+            <div class="timeline-body"><p>I understand the intention behind returning <code>Type::Never</code> in cases where we can statically see that the <code>len</code> call will return an error at runtime. But I'm not sure if this leads to the best user experience?</p>
+<p>Once we have call signature checking, we will definitely raise a diagnostic for something like taking the <code>len</code> of a <code>Literal[1]</code>/<code>int</code> here:</p>
+<pre><code class="language-py">x = 1
+xs = [x]
+
+# some code
+
+n = len(x)  # oops, was supposed to be `xs` &lt;-- we will definitely raise a diagnostic here
+
+# more code
+</code></pre>
+<p>The question is what happens after the <code>n = len(x)</code> line. If we infer <code>Never</code>, we risk hiding further downstream errors. If we infer <code>int</code> (because we know that the error in the offending line has to be fixed anyway), we can catch other potential errors in the <code>more code</code> section.</p>
+<p>Once we add unreachable-code analysis, we might even flag the <code>more code</code> section as unreachable if we infer <code>Never</code> here. Which is technically correct, but potentially confusing if all you need to do is to fix the <code>len(x)</code> error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-26 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1394 on 2024-11-26 08:30</div>
+            <div class="timeline-body"><p>We fall back to a hard-coded <code>int</code> here in case we can't statically compute a more precise type. I think I would prefer a slightly different logic here where we try to compute a statically-known result type, but if that fails, fall back to normal signature checking, like we do in the catchall <code>_ =&gt;</code> branch below. This would lead to <a href="https://github.com/python/typeshed/blob/02533d13ea43423fab76f6e8d2decf1350fcc302/stdlib/builtins.pyi#L1480">the same result</a> under normal circumstances, but would also handle cases where we have a custom <code>typeshed</code>, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-26 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2474 on 2024-11-26 10:14</div>
+            <div class="timeline-body"><p>Removed <code>Len::Never</code>. I was thinking about cases where a <code>len(...) == ...</code> might affect narrowing; in hindsight, that does seem overcomplicated.</p>
+<pre><code class="language-python">if len(a) == 2:           # Never != 2
+    do_something_with(a)  # Unreachable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:146 on 2024-11-26 20:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Negative literal integer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:187 on 2024-11-26 20:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO emit a diagnostic
+    def __len__(self) -&gt; Literal[-1]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:94 on 2024-11-26 20:23</div>
+            <div class="timeline-body"><p>That's fine, but we should also have a test for the simple and more common case where <code>__len__</code> is annotated to return an int literal directly. I think that case wouldn't be that hard to support in this PR, rather than leaving it as a todo; in a sense it's the most basic case we should support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:188 on 2024-11-26 20:24</div>
+            <div class="timeline-body"><p>To be honest I am not sure if it will ever be worth supporting all this, rather than just inferring <code>int</code>. But we can leave it as a Todo and see if we ever prioritize it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1397 on 2024-11-26 22:23</div>
+            <div class="timeline-body"><p>We should not have special handling for the <code>Todo</code> type as a tuple element, even if this gives us wrong results currently in some cases with starred elements. We can mark those cases with TODOs in the tests. They will be fixed when we fix the todo in tuple construction.</p>
+<pre><code class="language-suggestion">            Type::Tuple(tuple) =&gt; tuple.elements(db).len().into(),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-11-26 22:25</div>
+            <div class="timeline-body"><p>Thank you!! A few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-27 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:188 on 2024-11-27 08:21</div>
+            <div class="timeline-body"><p>I didn't think so either; these were added just for the sake of completeness. Added a few more edge cases in the same vein.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-11-27 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1375 on 2024-11-27 17:07</div>
+            <div class="timeline-body"><p>This union can't exist, it would be simplified to just <code>int</code>.</p>
+<pre><code class="language-suggestion"></code></pre>
+<p>On the other hand, a case I think we will need handling for is the case where there's a literal boolean in a union, e.g. <code>Literal[1, True]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2482 on 2024-11-27 17:24</div>
+            <div class="timeline-body"><p>I'm hesitant to leave this as a TODO, because it's odd to support some valid return annotations on <code>__len__</code> and not others (so I think we'll want it), and it's not particularly complex to implement, but it could have significant impact on the overall design of this PR. For instance, if we store a vec of u64, that means <code>Len</code> can no longer be <code>Copy</code>. It might suggest alternative designs, like <code>Len</code> wrapping a <code>Type</code> (which is interned, thus <code>Copy</code>), or perhaps just having <code>Type::len()</code> return a <code>Type</code>. It's not clear to me that we'll get enough value from the <code>Len</code> enum to justify the extra ceremony of converting a <code>Type</code> to a <code>Len</code> just so we can (at least in the only use case in this PR) immediately convert it back to a <code>Type</code>.</p>
+<p>Though we do need to validate the type from <code>__len__</code>: anything not assignable to <code>builtins.int</code> should fall back to <code>builtins.int</code> (and emit a diagnostic on the <code>__len__</code> definition, though that doesn't have to be part of this PR), and we do need the special-case to convert a <code>BooleanLiteral</code> to an <code>IntLiteral</code> (including inside of a union). So we can't simplify down to a simple pass-through from the return type of <code>__len__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-11-28 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2482 on 2024-11-28 11:59</div>
+            <div class="timeline-body"><blockquote>
+<p>or perhaps just having <code>Type::len()</code> return a <code>Type</code>.</p>
+</blockquote>
+<p>This seems like the most obvious design to me. I think I'd probably have have <code>Type::len</code> return <code>Option&lt;Type&lt;'db&gt;&gt;</code>. Or if there are multiple things that can go wrong when calling <code>len(x)</code>, then you could it return <code>Result&lt;Type&lt;'db&gt;, LenError&gt;</code>, where <code>LenError</code> is an enum that lists the various ways calling <code>len(x)</code> can result in an error at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2482 on 2024-11-28 17:26</div>
+            <div class="timeline-body"><p>Done: I added support for unions and made <code>Type::len()</code> return <code>Option&lt;Type&lt;'db&gt;&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-28 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2596 on 2024-11-28 17:29</div>
+            <div class="timeline-body"><p>I would prefer that we enumerate these all explicitly. It means that the compiler forces us to think about whether the new function we're adding support for is a constraint function or not whenever we add a new <code>KnownFunction</code>; this is very useful!</p>
+<pre><code class="language-suggestion">            Self::RevealType | Self::Len =&gt; None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1377 on 2024-11-28 17:44</div>
+            <div class="timeline-body"><p>I think you've correctly identified here that <code>StringLiteralType::len</code> would be subtly incorrect for your use case here. However, <code>StringLiteralType::len</code> is only used in one place currently, and I think its implementation is subtly incorrect for <em>that</em> use case as well. It's used here, in our implementation of unpacked assignments:</p>
+<p>https://github.com/astral-sh/ruff/blob/d9cbf2fe44e3f13b28295377a41ae541cab6b54f/crates/red_knot_python_semantic/src/types/unpacker.rs#L90-L101</p>
+<p>But according to the <a href="https://doc.rust-lang.org/std/primitive.str.html#method.len">Rust docs for <code>str</code></a>, <code>&quot;ƒoo&quot;.len() == 4</code> in Rust (because of the fancy Unicode <code>f</code>). That gives us the wrong result for Python unpacking:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; a, b, c = &quot;ƒoo&quot;
+&gt;&gt;&gt; a
+'ƒ'
+&gt;&gt;&gt; b
+'o'
+&gt;&gt;&gt; c
+'o'
+</code></pre>
+<p>Therefore, I think rather than adding a separate <code>StringLiteralType::as_str()</code>, we should simply change <code>StringLiteralType::len</code> to count the characters rather than the bytes (and add a comment about why). Per Micha's earlier comment, it might be best to rename it to <code>python_len()</code>, so that we don't get confused about how it differs from the way that Rust counts the length of the string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1383 on 2024-11-28 17:48</div>
+            <div class="timeline-body"><p>this is incorrect -- we want to treat classes the same as instances here (because a class is an instance of its metaclass). I think you want something like</p>
+<pre><code class="language-rs">match self {
+    Type::BytesLiteral(bytes) =&gt; return bytes.len(db).try_into().ok(),
+    Type::StringLiteral(string) =&gt; {
+        return string.as_str(db).chars().count().try_into().ok()
+    }
+    Type::Tuple(tuple) =&gt; tuple.elements(db).len().try_into().ok(),
+    _ =&gt; {}
+}
+
+let meta_type = self.to_meta_type();
+
+let Symbol::Type(dunder_len, _) = meta_type.member(db, &quot;__len__&quot;) else {
+    return None;
+};
+</code></pre>
+<p>We do something similar here for our <code>Type::iter()</code> method; you should be able to look at that for inspiration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1394 on 2024-11-28 17:51</div>
+            <div class="timeline-body"><p>It doesn't actually need to be a function; any callable object will do:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __call__(self):
+...         return 42
+...         
+&gt;&gt;&gt; class Bar:
+...     __len__ = Foo()
+...     
+&gt;&gt;&gt; len(Bar())
+42
+</code></pre>
+<p>We have a <code>Type::call()</code> method that abstracts away the details of trying to call a possibly-not-callable type; you should be able to use that here, which will mean you'll support arbitrary callable objects here rather than just functions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3047 on 2024-11-28 17:53</div>
+            <div class="timeline-body"><p>This is cool, but doesn't seem to be used right now; do we need it?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> had review dismissed on 2024-11-28 17:54</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:445 on 2024-11-28 19:22</div>
+            <div class="timeline-body"><p>I'm not a massive fan of this. Converting &quot;from a usize to a Type&quot; doesn't feel like the right way of thinking about what we're doing when we attempt to create a <code>Type::IntLiteral</code> from a numeric value that has type <code>usize</code>. It also doesn't save us many lines; I think I'd prefer to just write it out:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -1,5 +1,4 @@
+ use std::hash::Hash;
+-use std::num::TryFromIntError;
+ 
+ use indexmap::IndexSet;
+ use itertools::Itertools;
+@@ -436,14 +435,6 @@ pub enum Type&lt;'db&gt; {
+     // TODO protocols, callable types, overloads, generics, type vars
+ }
+ 
+-impl TryFrom&lt;usize&gt; for Type&lt;'_&gt; {
+-    type Error = TryFromIntError;
+-
+-    fn try_from(value: usize) -&gt; Result&lt;Self, Self::Error&gt; {
+-        i64::try_from(value).map(Type::IntLiteral)
+-    }
+-}
+-
+ impl&lt;'db&gt; Type&lt;'db&gt; {
+     pub const fn is_never(&amp;self) -&gt; bool {
+         matches!(self, Type::Never)
+@@ -1371,11 +1362,15 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+     /// This is used to determine the value that would be returned
+     /// when `len(x)` is called on an object `x`.
+     fn len(&amp;self, db: &amp;'db dyn Db) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+-        match self {
+-            Type::BytesLiteral(bytes) =&gt; return bytes.len(db).try_into().ok(),
+-            Type::StringLiteral(string) =&gt; return string.python_len(db).try_into().ok(),
+-            Type::Tuple(tuple) =&gt; return tuple.elements(db).len().try_into().ok(),
+-            _ =&gt; {}
++        let usize_len = match self {
++            Type::BytesLiteral(bytes) =&gt; Some(bytes.len(db)),
++            Type::StringLiteral(string) =&gt; Some(string.python_len(db)),
++            Type::Tuple(tuple) =&gt; Some(tuple.elements(db).len()),
++            _ =&gt; None,
++        };
++
++        if let Some(usize_len) = usize_len {
++            return usize_len.try_into().ok().map(Type::IntLiteral);
+         }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-29 05:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:98 on 2024-11-29 05:04</div>
+            <div class="timeline-body"><p>Thanks for catching this. Can we add a test for this in <code>unpacking.md</code>? Like:</p>
+<pre><code class="language-py">(a, b) = &quot;é&quot;
+
+reveal_type(a)  # revealed: LiteralString
+reveal_type(b)  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-29 05:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:98 on 2024-11-29 05:40</div>
+            <div class="timeline-body"><p>Sure. I added a few Unicode tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:533 on 2024-11-29 11:12</div>
+            <div class="timeline-body"><p>While I can see that it's quite convenient, I think this change is a little bit dangerous.</p>
+<p>Firstly, it's inconsistent with all the other <code>into_*</code> methods we have on <code>Type</code>: the pattern for these methods is that if the <code>Type</code> instance has exactly the variant we expect, the method returns <code>Some(&lt;wrapped inner data&gt;)</code>, but for any other variant the method returns <code>None</code>. This method breaks that pattern.</p>
+<p>Secondly, it's incorrect from the perspective of Python's type system in some cases. Sometimes we can treat a boolean literal equivalently to a int literal, and I think you're correct that this is so for all the cases in this PR. But it's not always the case that you can do that: <code>Literal[True]</code> is <em>not</em> a subtype of <code>Literal[1]</code>, despite <code>True</code> and <code>1</code> both comparing equal at runtime, and despite <code>bool</code> being a subtype of <code>int</code>. For example, in due course we will need to issue a diagnostic on something like this:</p>
+<pre><code class="language-py">from typing import Literal
+
+def foo(x: Literal[1, 2]) -&gt; None:
+    ...
+
+foo(True)
+</code></pre>
+<p>For these reasons, I would not make the change you're making to this method, and I would not write <code>as_int_literal</code> the way you do below. In fact, since you only use the <code>as_len_int_literal</code> method once, inside <code>Type::len</code>, I'd probably inline the method there. Something like this (relative to your PR):</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index 83cd9b6d6..f2eba093e 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -527,7 +527,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+     pub const fn into_int_literal(self) -&gt; Option&lt;i64&gt; {
+         match self {
+             Type::IntLiteral(value) =&gt; Some(value),
+-            Type::BooleanLiteral(value) =&gt; Some(if value { 1 } else { 0 }),
+             _ =&gt; None,
+         }
+     }
+@@ -551,22 +550,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             .expect(&quot;Expected a Type::KnownInstance variant&quot;)
+     }
+ 
+-    pub fn as_int_literal(&amp;self) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+-        match self {
+-            int_literal @ Type::IntLiteral(_) =&gt; Some(*int_literal),
+-            Type::BooleanLiteral(value) =&gt; Some(Type::IntLiteral(i64::from(*value))),
+-            _ =&gt; None,
+-        }
+-    }
+-
+-    /// Returns the result of [`Type::as_int_literal`] if that value is not negative.
+-    pub fn as_len_int_literal(&amp;self) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+-        self.as_int_literal().take_if(|it| match it {
+-            Type::IntLiteral(value) =&gt; *value &gt;= 0,
+-            _ =&gt; false,
+-        })
+-    }
+-
+     pub const fn is_boolean_literal(&amp;self) -&gt; bool {
+         matches!(self, Type::BooleanLiteral(..))
+     }
+@@ -1362,6 +1345,22 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+     /// This is used to determine the value that would be returned
+     /// when `len(x)` is called on an object `x`.
+     fn len(&amp;self, db: &amp;'db dyn Db) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
++        fn positive_int_literal&lt;'db&gt;(db: &amp;'db dyn Db, ty: Type&lt;'db&gt;) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
++            match ty {
++                // TODO emit diagnostic for Literal integer &lt;0
++                Type::IntLiteral(int) =&gt; (int &gt;= 0).then_some(ty),
++                Type::BooleanLiteral(bool_literal) =&gt; Some(Type::IntLiteral(bool_literal.into())),
++                Type::Union(union) =&gt; {
++                    let mut builder = UnionBuilder::new(db);
++                    for element in union.elements(db) {
++                        builder = builder.add(positive_int_literal(db, *element)?);
++                    }
++                    Some(builder.build())
++                }
++                _ =&gt; None,
++            }
++        }
++
+         let usize_len = match self {
+             Type::BytesLiteral(bytes) =&gt; Some(bytes.len(db)),
+             Type::StringLiteral(string) =&gt; Some(string.python_len(db)),
+@@ -1380,21 +1379,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             }
+         };
+ 
+-        let Type::Union(union) = return_ty else {
+-            return return_ty.as_len_int_literal();
+-        };
+-
+-        let converted = union
+-            .elements(db)
+-            .iter()
+-            .map(|e| e.as_len_int_literal().unwrap_or(Type::Unknown))
+-            .collect::&lt;Vec&lt;_&gt;&gt;();
+-
+-        if converted.iter().any(|e| matches!(e, Type::Unknown)) {
+-            return None;
+-        }
+-
+-        Some(UnionType::from_elements(db, converted))
++        positive_int_literal(db, return_ty)
+     }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:188 on 2024-11-29 11:18</div>
+            <div class="timeline-body"><p>I think the key reason why inferring precise types for <code>len()</code> comes in handy is so that you can narrow <code>tuple[int, ...]</code> to <code>tuple[int, int]</code> by testing the length of the tuple. I'm not sure that inferring the precise length of an arbitrary instance holds that much value, so I also doubt it will ever be worth supporting this really.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 11:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3036 on 2024-11-29 14:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.value(db).chars().count()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1401 on 2024-11-29 14:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    let [only_arg] = arg_types else {
+                        // TODO should really return a variant indicating the wrong
+                        // number of arguments was passed (we don't have that yet)
+                        return CallOutcome::callable(normal_return_ty);
+                    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:59 on 2024-12-04 17:47</div>
+            <div class="timeline-body"><p>Let's be a bit more specific on the TODOs here, to help make things clear for future-us updating this later:</p>
+<pre><code class="language-suggestion"># TODO: Handle star unpacks, should be Literal[0]
+reveal_type(len((*[],)))  # revealed: Literal[1]
+# TODO: Handle star unpacks, should be Literal[1]
+reveal_type(  # revealed: Literal[2]
+    len(
+        (
+            *[],
+            1,
+        )
+    )
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:61 on 2024-12-04 17:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: handle star unpacks, should be Literal[2]
+reveal_type(len((*[], 1, 2)))  # revealed: Literal[3]
+# TODO: handle star unpacks, should be Literal[0]
+reveal_type(len((*[], *{})))  # revealed: Literal[2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:118 on 2024-12-04 17:50</div>
+            <div class="timeline-body"><p>Both of these should emit a diagnostic.</p>
+<pre><code class="language-suggestion"># TODO: diagnostic
+reveal_type(len(OneOrFoo()))  # revealed: int
+# TODO: diagnostic
+reveal_type(len(ZeroOrStr()))  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:180 on 2024-12-04 17:53</div>
+            <div class="timeline-body"><p>On looking at this again, I think we probably shouldn't emit the diagnostic on the definition of <code>__len__</code> with an invalid return type, but rather when <code>len()</code> is called on it. It's actually <code>len()</code> that enforces the restriction, this code doesn't raise any error at runtime:</p>
+<pre><code class="language-py">class A:
+    def __len__(self):
+        return -1
+
+A.__len__()
+</code></pre>
+<p>It's only <code>len(A())</code> that errors. So I think erroring on the definition of <code>__len__</code> here would be more like a lint rule, it shouldn't be a core type checker error.</p>
+<pre><code class="language-suggestion">class Negative:
+    def __len__(self) -&gt; Literal[-1]: ...
+
+# TODO: diagnostic
+reveal_type(len(Negative()))  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/len.md</code>:197 on 2024-12-04 17:55</div>
+            <div class="timeline-body"><p>Same as above.</p>
+<pre><code class="language-suggestion">class SecondOptionalArgument:
+    def __len__(self, v: int = 0) -&gt; Literal[0]: ...
+
+class SecondRequiredArgument:
+    def __len__(self, v: int) -&gt; Literal[1]: ...
+
+# TODO: diagnostic
+reveal_type(len(SecondOptionalArgument()))  # revealed: Literal[0]
+# TODO: diagnostic
+reveal_type(len(SecondRequiredArgument()))  # revealed: Literal[1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1350 on 2024-12-04 17:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // TODO: Emit diagnostic for non-integers, or negative integers
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1346 on 2024-12-04 17:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the type of `len()` on a type, if it is known more precisely than `int`.
+    ///
+    /// Return `None` if it isn't known precisely; in this case we fall back to the return type of `len()`
+    /// in typeshed, which is `int`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1455 on 2024-12-04 18:05</div>
+            <div class="timeline-body"><p>Let's also add a test for this case (user class with no defined <code>__len__</code>), showing that we get <code>int</code> and with a <code>TODO</code> for a diagnostic in the test also.</p>
+<pre><code class="language-suggestion">            # TODO: emit a diagnostic
+            CallDunderResult::MethodNotAvailable =&gt; return None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1401 on 2024-12-04 18:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        // TODO: diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3049 on 2024-12-04 18:07</div>
+            <div class="timeline-body"><p>Should this method also be named <code>python_len</code> in parallel with the method on <code>StringLiteralType</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-04 18:11</div>
+            <div class="timeline-body"><p>This looks quite close! Thanks for your patience with all the review comments.</p>
+<p>I think it makes sense to leave the diagnostics as TODO here, because it will be a lot easier to emit these diagnostics once https://github.com/astral-sh/ruff/pull/14760 lands (we won't have to return some indicator such that inference emits the diagnostic, we'll be able to just emit it directly where we find the issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-04 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3049 on 2024-12-04 18:29</div>
+            <div class="timeline-body"><p>I'm not sure about this. Won't the length of a byte sequence be the same in both Python and Rust?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 18:30</div>
+            <div class="timeline-body"><p>@carljm I'm not sure if #14760 will land. It's unclear to me how suppressions would work with accumulators whereas it's clear to me how they would work in our existing model.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-04 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3049 on 2024-12-04 18:31</div>
+            <div class="timeline-body"><p>Yes. But the point is clarity to the reader that this is the case, and that there isn't a missing method for getting the Python length of a byte sequence, the correct way is the <code>python_len</code> method. We could add <code>python_len</code> and just have it be a pass-through to <code>len()</code>, but if we don't currently need a way to get the Rust length, that doesn't seem necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-04 18:35</div>
+            <div class="timeline-body"><p>@MichaReiser Ok, let's discuss those details elsewhere. The only part that's relevant here is to say that I think accumulators will be super useful in type checking and make a lot of things much simpler and easier, so I think we really want/need it, even if it requires more work on handling suppressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-04 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1421 on 2024-12-04 19:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the type of `len()` on a type if it is known more precisely than `int`,
+    /// or `None` otherwise.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-04 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1421 on 2024-12-04 19:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the type of `len()` on a type if it is known more precisely than `int`,
+    /// or `None` otherwise.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-04 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-04 19:16</div>
+            <div class="timeline-body"><p>Thanks! And great find on the string-literal-unpacking issue. Merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-04 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-04 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

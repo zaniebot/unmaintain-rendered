@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Avoid emitting `assignment-in-assert` when all references to the assigned variable are themselves inside `assert`s (`RUF018`) - astral-sh/ruff #14661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Avoid emitting <code>assignment-in-assert</code> when all references to the assigned variable are themselves inside <code>assert</code>s (<code>RUF018</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14661">#14661</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-28 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 19:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #14658.</p>
+<p>The stated rationale for RUF018 is that it's unsafe to assign a variable using an assignment expression inside an <code>assert</code> statement, because if you run Python in optimised mode the assertion might be stripped out of the program at compilation time, meaning the variable is never actually defined. This concern is irrelevant, however, if the variable is only ever read from inside other <code>assert</code> statements: either all <code>assert</code> statements will be stripped from the Python program, or none will be. This PR therefore moves the rule to <code>bindings.rs</code> and modifies the rule so that it iterates through all references to the binding introduced by the assignment expression to see whether those references take place inside <code>assert</code> statements or not.</p>
+<p>In order to determine whether a <code>Binding</code> or <code>ResolvedReference</code> took place inside an <code>assert</code> statement, it's necessary to add <code>SemanticModelFlags::ASSERT_STATEMENT</code> and <code>BindingFlags::IN_ASSERT_STATEMENT</code> to Ruff's semantic model.</p>
+<h2>Test Plan</h2>
+<p>New fixtures added. <code>cargo test -p ruff_linter --lib</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-28 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-28 19:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+13 -3 violations, +0 -0 fixes in 3 projects; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/b882246702ccb040243db803c08d2097d67283a5/providers/tests/google/cloud/transfers/test_sql_to_gcs.py#L487'>providers/tests/google/cloud/transfers/test_sql_to_gcs.py:487:68:</a> RUF018 Avoid assignment expressions in `assert` statements
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/93ba8e16c3f1218c564e949ddf3de93a19125b6c/tests/unit_tests/db_engine_specs/utils.py#L44'>tests/unit_tests/db_engine_specs/utils.py:44:13:</a> RUF018 Avoid assignment expressions in `assert` statements
+- <a href='https://github.com/apache/superset/blob/93ba8e16c3f1218c564e949ddf3de93a19125b6c/tests/unit_tests/db_engine_specs/utils.py#L60'>tests/unit_tests/db_engine_specs/utils.py:60:13:</a> RUF018 Avoid assignment expressions in `assert` statements
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L266'>ibis/common/tests/test_patterns.py:266:62:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L267'>ibis/common/tests/test_patterns.py:267:58:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L269'>ibis/common/tests/test_patterns.py:269:62:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L801'>ibis/common/tests/test_patterns.py:801:78:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L803'>ibis/common/tests/test_patterns.py:803:70:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L806'>ibis/common/tests/test_patterns.py:806:70:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L918'>ibis/common/tests/test_patterns.py:918:72:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L922'>ibis/common/tests/test_patterns.py:922:64:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L924'>ibis/common/tests/test_patterns.py:924:68:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L935'>ibis/common/tests/test_patterns.py:935:41:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L951'>ibis/common/tests/test_patterns.py:951:86:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L968'>ibis/common/tests/test_patterns.py:968:71:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L973'>ibis/common/tests/test_patterns.py:973:71:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 13 | 13 | 0 | 0 | 0 |
+| RUF018 | 3 | 0 | 3 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+13 -3 violations, +0 -0 fixes in 3 projects; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/b882246702ccb040243db803c08d2097d67283a5/providers/tests/google/cloud/transfers/test_sql_to_gcs.py#L487'>providers/tests/google/cloud/transfers/test_sql_to_gcs.py:487:68:</a> RUF018 Avoid assignment expressions in `assert` statements
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/93ba8e16c3f1218c564e949ddf3de93a19125b6c/tests/unit_tests/db_engine_specs/utils.py#L44'>tests/unit_tests/db_engine_specs/utils.py:44:13:</a> RUF018 Avoid assignment expressions in `assert` statements
+- <a href='https://github.com/apache/superset/blob/93ba8e16c3f1218c564e949ddf3de93a19125b6c/tests/unit_tests/db_engine_specs/utils.py#L60'>tests/unit_tests/db_engine_specs/utils.py:60:13:</a> RUF018 Avoid assignment expressions in `assert` statements
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L266'>ibis/common/tests/test_patterns.py:266:62:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L267'>ibis/common/tests/test_patterns.py:267:58:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L269'>ibis/common/tests/test_patterns.py:269:62:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L801'>ibis/common/tests/test_patterns.py:801:78:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L803'>ibis/common/tests/test_patterns.py:803:70:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L806'>ibis/common/tests/test_patterns.py:806:70:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L918'>ibis/common/tests/test_patterns.py:918:72:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L922'>ibis/common/tests/test_patterns.py:922:64:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L924'>ibis/common/tests/test_patterns.py:924:68:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L935'>ibis/common/tests/test_patterns.py:935:41:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L951'>ibis/common/tests/test_patterns.py:951:86:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L968'>ibis/common/tests/test_patterns.py:968:71:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
++ <a href='https://github.com/ibis-project/ibis/blob/1a8300a2cc3daabbd8caf3bfcc6d5b7d3cc6a8af/ibis/common/tests/test_patterns.py#L973'>ibis/common/tests/test_patterns.py:973:71:</a> RUF100 Unused `noqa` directive (unused: `RUF018`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 13 | 13 | 0 | 0 | 0 |
+| RUF018 | 3 | 0 | 3 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 19:17</div>
+            <div class="timeline-body"><p>The ecosystem hits all look good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/bindings.rs</code>:95 on 2024-11-29 05:11</div>
+            <div class="timeline-body"><p>Should we just update the <code>diagnostics</code> vector inside the rule logic to avoid doing this here? We usually do that in other rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:285 on 2024-11-29 05:14</div>
+            <div class="timeline-body"><p>Should this method be just <code>expression</code> instead? Considering <code>assert (x := 1)</code>, for the binding <code>x</code> this would return the named expression, right? If so, shouldn't that be the &quot;expression in which the binding was defined&quot; (similar to the <code>statement</code> method)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-29 05:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:285 on 2024-11-29 13:24</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. I named it like this because the implementation is more similar to <code>Binding::parent_statement()</code> than to <code>Binding::statement()</code>. That's because <code>self.source.and_then(|expression_id| semantic.expression(expression_id))</code> will give you the <code>ast::Expr::Name()</code> that represents the symbol <code>x</code> rather than the <code>ast::Expr::Named()</code> that represents the <code>x := 1</code> walrus. But I don't think you ever really want the <code>ast::Expr::Name</code> node (you can get the range directly from the <code>Binding</code>), so your naming is likely more intuitive for users of the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/bindings.rs</code>:95 on 2024-11-29 13:26</div>
+            <div class="timeline-body"><p>We do that for most rules in <code>expressions.rs</code> and <code>statement.rs</code>, but we don't do that for any rules in <code>bindings.rs</code> for some reason. I'm happy to look separately into whether we should change the structure of these rules to make them more consistent with the majority of other AST-based rules, but for now I think local consistency within this file probably wins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-11-29 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-11-29 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/bindings.rs</code>:95 on 2024-11-29 13:34</div>
+            <div class="timeline-body"><p>Oh, that's fine then, no need to spend any more time here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-11-29 13:36</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-11-29 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-11-29 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-29 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

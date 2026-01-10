@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[airflow]: Import modules that has been moved to airflow providers (AIR303) - astral-sh/ruff #14764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[airflow]: Import modules that has been moved to airflow providers (AIR303)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14764">#14764</a>
+        opened by <a href="https://github.com/Lee-W">@Lee-W</a>
+        on 2024-12-04 05:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Lee-W">@Lee-W</a> on 2024-12-04 05:00</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Many core Airflow features have been deprecated and moved to Airflow Providers since users might need to install an additional package (e.g., <code>apache-airflow-provider-fab==1.0.0</code>); a separate rule (AIR303) is created for this.</p>
+<p>As some of the changes only relate to the module/package moved, instead of listing out all the functions, variables, and classes in a module or a package, it warns the user to import from the new path instead of the specific name.</p>
+<p>The following is the ones that has been moved to <code>apache-airflow-provider-fab==1.0.0</code></p>
+<ul>
+<li>module moved<ul>
+<li><code>airflow.api.auth.backend.basic_auth</code> → <code>airflow.providers.fab.auth_manager.api.auth.backend.basic_auth</code></li>
+<li><code>airflow.api.auth.backend.kerberos_auth</code> → <code>airflow.providers.fab.auth_manager.api.auth.backend.kerberos_auth</code></li>
+<li><code>airflow.auth.managers.fab.api.auth.backend.kerberos_auth</code> → <code>airflow.providers.fab.auth_manager.api.auth.backend.kerberos_auth</code></li>
+<li><code>airflow.auth.managers.fab.security_manager.override</code> → <code>airflow.providers.fab.auth_manager.security_manager.override</code></li>
+</ul>
+</li>
+<li>classes (e.g., functions, classes) moved<ul>
+<li><code>airflow.www.security.FabAirflowSecurityManagerOverride</code> → <code>airflow.providers.fab.auth_manager.security_manager.override.FabAirflowSecurityManagerOverride</code></li>
+<li><code>airflow.auth.managers.fab.fab_auth_manager.FabAuthManager</code> → <code>airflow.providers.fab.auth_manager.security_manager.FabAuthManager</code></li>
+</ul>
+</li>
+</ul>
+<p>https://github.com/astral-sh/ruff/pull/14764</p>
+<details>
+    <summary><h2>How to contribute to AIR303</h2></summary>
+
+<h3>Browse the airflow / ruff migration guideline</h3>
+<p><a href="https://hackmd.io/@uranusjr/ByyCA_-m1l">How to create a Ruff lint rule for Airflow 2-to-3 migrations</a></p>
+<h3>Setup local development environment</h3>
+<pre><code class="language-sh">cargo install cargo-insta
+
+uv tool install pre-commit
+pre-commit install
+
+cargo install cargo-nextest --locked
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/contributing/">Contributing to Ruff</a></p>
+<h3>Check the existing rules from airflow issue</h3>
+<p>All the ruff rules are listed down in <a href="https://github.com/apache/airflow/issues/44556">Airflow 2 to 3 auto migration rules - ruff #44556</a></p>
+<p>Go to <code>AIR303: moved to provider</code> in the issue description and you'll find rules like</p>
+<pre><code class="language-markdown">* `airflow.www.security.FabAirflowSecurityManagerOverride` → `airflow.providers.fab.auth_manager.security_manager.override.FabAirflowSecurityManagerOverride` (from https://github.com/apache/airflow/pull/41758)
+</code></pre>
+<p>It means <code>airflow.www.security.FabAirflowSecurityManagerOverride</code> has been moved to airflow provider and the import should be changed to <code>airflow.providers.fab.auth_manager.security_manager.override.FabAirflowSecurityManagerOverride</code>. This changed is made in https://github.com/apache/airflow/pull/41758</p>
+<p>Some of the rules might not be correct, so checking the pull request again is suggested.</p>
+<h3>Add a new rule</h3>
+<p>Go to <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code></p>
+<p>In function <code>moved_to_provider</code>, add code section like the following</p>
+<pre><code class="language-rust">                [&quot;airflow&quot;, &quot;www&quot;, &quot;security&quot;, &quot;FabAirflowSecurityManagerOverride&quot;] =&gt; Some((
+                    qualname.to_string(),
+                    Replacement::ProviderName {
+                        name: &quot;airflow.providers.fab.auth_manager.security_manager.override.FabAirflowSecurityManagerOverride&quot;,
+                        provider: &quot;fab&quot;,
+                        version: &quot;1.0.0&quot;
+                    },
+                )),
+</code></pre>
+<ul>
+<li><code>&quot;airflow&quot;, &quot;www&quot;, &quot;security&quot;, &quot;FabAirflowSecurityManagerOverride&quot;</code>: the deprecated import path</li>
+<li><code>name</code> is the new name that should be used.</li>
+<li><code>provider</code> is which provider this name has been moved to.</li>
+<li><code>version</code> is the first version of the provider that has been moved to.</li>
+</ul>
+<p>For rules like</p>
+<pre><code class="language-markdown">* [ ] `airflow.api.auth.backend.basic_auth` → `airflow.providers.fab.auth_manager.api.auth.backend.basic_auth` (from https://github.com/apache/airflow/pull/41663)
+</code></pre>
+<p>The whole module/pacakge has been moved to the provider. Thus, we'll need to warn the users when something is imported from the old path instead.</p>
+<pre><code class="language-rust">                [&quot;airflow&quot;, &quot;api&quot;, &quot;auth&quot;, &quot;backend&quot;, &quot;basic_auth&quot;, ..] =&gt; Some((
+                    qualname.to_string(),
+                    Replacement::ImportPathMoved{
+                        original_path: &quot;airflow.api.auth.backend.basic_auth&quot;,
+                        new_path: &quot;airflow.providers.fab.auth_manager.api.auth.backend.basic_auth&quot;,
+                        provider:&quot;fab&quot;,
+                        version: &quot;1.0.0&quot;
+                },
+                )),
+</code></pre>
+<ul>
+<li><code>&quot;airflow&quot;, &quot;api&quot;, &quot;auth&quot;, &quot;backend&quot;, &quot;basic_auth&quot;, ..</code>: anything under this import path</li>
+<li><code>original path</code></li>
+<li><code>new path</code>: new import path in the provider</li>
+<li><code>provider</code> is which provider this name has been moved to.</li>
+<li><code>version</code> is the first version of the provider that has been moved to.</li>
+</ul>
+<h3>Add test case</h3>
+<p>Add a case that violate this rule to <code>crates/ruff_linter/resources/test/fixtures/airflow/AIR303.py</code></p>
+<h3>Test and generate snapshop to review</h3>
+<pre><code class="language-sh">cargo insta test
+cargo insta review
+</code></pre>
+<h3>Now you're ready to create a pull request</h3>
+</details>
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>A test fixture has been included for the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat(AIR303): initial air303" to "[airflow]: Import modules that has been moved to airflow providers (AIR303)" by @Lee-W on 2024-12-04 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-09 03:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Lee-W on 2024-12-10 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2024-12-11 05:11</div>
+            <div class="timeline-body"><p>@MichaReiser would love to know whether the overall idea of this PR makes sense if you have some time. I plan on writing a guideline for folks from the airflow community to contribute to AIR303 more easily. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-11 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 06:47</div>
+            <div class="timeline-body"><p>I think this is a pretty long message, it might be useful to break it down into two parts - the description and the suggestion. For the description we can avoid the entire import path and just provide the symbol name itself while for the help text we can guide the user to install the provider and use the provider namespace for the symbol. For example:</p>
+<pre><code>AIR303.py:10:1: AIR303 `basic_auth` will be moved into `fab` provider in Airflow 3.0
+   |
+ 8 | from airflow.www.security import FabAirflowSecurityManagerOverride
+ 9 | 
+10 | basic_auth, kerberos_auth
+   | ^^^^^^^^^^ AIR303
+11 | auth_current_user
+12 | backend_kerberos_auth
+   |
+   = help: Install `apache-airflow-provider-fab` and import from `airflow.providers.fab` instead
+</code></pre>
+<p>The help text is rendered using the <code>fix_title</code> method: https://github.com/astral-sh/ruff/blob/a3bb0cd5ec4d4dffea5d42d184e8c4a062976663/crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs#L65-L72</p>
+<p>I'm also a bit worried about the version number for the package, I'd prefer to omit them as it can get outdated pretty quickly.</p>
+<p>Curious to know your thoughts on this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-11 06:51</div>
+            <div class="timeline-body"><p>Is it correct that the entire module itself has been moved to being used as a provider without changing any of the public symbols available in that module? i.e., are the symbols that were available in the old module the same as that in the provider module? If so, we could consider the rule to work on the module instead of individual symbols from the module and suggest to use the provider instead. That way we'll only emit a single diagnostic for the entire module which will be the import statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-12-11 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-12-11 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2024-12-11 06:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it correct that the entire module itself has been moved to being used as a provider without changing any of the public symbols available in that module? i.e., are the symbols that were available in the old module the same as that in the provider module?</p>
+</blockquote>
+<p>Yep, that's what I think for some of the modules, but I'll confirm it again.</p>
+<blockquote>
+<p>If so, we could consider the rule to work on the module instead of individual symbols from the module and suggest to use the provider instead. That way we'll only emit a single diagnostic for the entire module which will be the import statement.</p>
+</blockquote>
+<p>Yep, some of the modules can be done this way, but others might not, so that why I'd like to keep the individual symbols check as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 07:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 07:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also a bit worried about the version number for the package, I'd prefer to omit them as it can get outdated pretty quickly.</p>
+</blockquote>
+<p>One of my worries is that it might be removed in the future 🤔 (unlikely, but still possible I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-11 07:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Yep, some of the modules can be done this way, but others might not, so that why I'd like to keep the individual symbols check as well</p>
+</blockquote>
+<p>That's sounds reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-11 07:28</div>
+            <div class="timeline-body"><p>Do you for see cases where any of the strings are dynamic (contain e.g. an expression)? I'd otherwise suggest to use <code>&amp;'static str</code> here to avoid the annoying <code>to_string</code> calls and reduce the amount of allocations</p>
+<pre><code class="language-suggestion">enum Replacement {
+    ProviderName(&amp;'static str, &amp;'static str &amp;'static str),
+    ImportPathMoved(&amp;'static str, &amp;'static str, &amp;'static str, &amp;'static str),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-11 07:29</div>
+            <div class="timeline-body"><p>I'd prefer if we use variants with named fields. It's kind of hard to guess what the 4 Strings in <code>ImportPathMoved</code> mean</p>
+<pre><code class="language-suggestion">enum Replacement {
+    ProviderName { name: String, provider_name: String, version: String},
+    ImportPathMoved { original_path: String, new_path: String, provider_name: String, provider_version: String },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 07:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also a bit worried about the version number for the package, I'd prefer to omit them as it can get outdated pretty quickly.</p>
+</blockquote>
+<p>Agree. What's the motivation for including the version? Is it because they need a specific minimal version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-11 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>writing a guideline for folks from the airflow community to contribute to AIR303 more easily.</p>
+</blockquote>
+<p>This sounds great. I'd appreciate your with reviewing and coordinating the PRs as you have the most knowledge about what the rules should cover.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Agree. What's the motivation for including the version? Is it because they need a specific minimal version?</p>
+</blockquote>
+<p>Yep, some module moves might not happen in the <code>1.0.0</code> version of that provider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 07:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-11 07:37</div>
+            <div class="timeline-body"><p>I guess not 🤔  Thanks for your suggestion! I'll change it this way. we can change it back if we really need to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 07:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-11 07:39</div>
+            <div class="timeline-body"><p>Sure! can't believe I missed it 🤦‍♂️ Thanks for your suggestion! Will update it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2024-12-11 07:39</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>writing a guideline for folks from the airflow community to contribute to AIR303 more easily.</p>
+</blockquote>
+<p>This sounds great. I'd appreciate your with reviewing and coordinating the PRs as you have the most knowledge about what the rules should cover.</p>
+</blockquote>
+<p>Will do 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-11 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 08:19</div>
+            <div class="timeline-body"><p>We could potentially use <code>&gt;=1.0.0,&lt;2</code> presuming that the changes follow semantic versioning. The <code>1.0.0</code> can be updated to the provider version in which the change takes place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 08:20</div>
+            <div class="timeline-body"><p>sounds good! this is a great suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-11 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 08:24</div>
+            <div class="timeline-body"><p>I'm not sure about the upper bound. It would require us to update the rule if a new provider version gets released. Maybe just mention <em>newer than x.x.x</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-11 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-11 08:26</div>
+            <div class="timeline-body"><p>After a second thought, yep, it would make things easier, <code>&gt;=1.0.0</code> sounds like a good enough solution 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-13 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR303_AIR303.py.snap</code>:13 on 2024-12-13 09:18</div>
+            <div class="timeline-body"><p>Updated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-13 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-13 09:18</div>
+            <div class="timeline-body"><p>fixed. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2024-12-13 09:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/moved_to_provider_in_3.rs</code>:22 on 2024-12-13 09:19</div>
+            <div class="timeline-body"><p>fixed. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-13 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-13 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-13 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-18 00:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pycodestyle`] Handle f-strings properly for `invalid-escape-sequence (W605)` - astral-sh/ruff #14748</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pycodestyle</code>] Handle f-strings properly for <code>invalid-escape-sequence (W605)</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14748">#14748</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-12-03 05:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-03 05:54</div>
+            <div class="timeline-body"><p>When fixing an invalid escape sequence in an f-string, each f-string element is analyzed for valid escape characters prior to creating the diagnostic and fix. This allows us to safely prefix with <code>r</code> to create a raw string if no valid escape characters were found anywhere in the f-string, and otherwise insert backslashes.</p>
+<p>This fixes a bug in the original implementation: each &quot;f-string part&quot; was treated separately, so it was not possible to tell whether a valid escape character was or would be used elsewhere in the f-string.</p>
+<p>Progress towards #11491 but format specifiers are not handled in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-12-03 05:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2024-12-03 05:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-03 06:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:271 on 2024-12-03 09:46</div>
+            <div class="timeline-body"><p>Nit: The method name is somewhat long and doesn't tell me much. I'd probably just inline the code into <code>check</code>, considering that <code>check</code> only contains one additional function call</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-03 09:48</div>
+            <div class="timeline-body"><p>This makes sense and roughly matches what we do in the implicit concatenated string formatting.</p>
+<p>Do we need to have any special handling for escapes in format specifiers or the debug text parts of an f-string? We don't have to fix this as part of this PR but format specifiers and debug texts were something that caused me a a lot of pain when working on f-string formatting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-03 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:271 on 2024-12-03 15:35</div>
+            <div class="timeline-body"><p>Happy to change the method name!</p>
+<p>I don't think I can inline this into <code>check</code> though. Right now <code>check</code> is the composite of <code>analyze_escape_chars</code> and <code>check_from_escape_chars_state</code>. For ordinary strings we can just do <code>check</code> all at once, but the purpose of the refactoring was that, for f-strings, I need to do <code>analyze_escape_chars</code> on each f-string part <em>before</em> doing <code>check_from_escape_chars_state</code>.</p>
+<p>Sorry if I'm misunderstanding the suggestion!</p>
+<p>I'll try to add some comments around this and think of a better name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-03 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:271 on 2024-12-03 22:01</div>
+            <div class="timeline-body"><p>Ah I see. I'd be inclined to inline <code>check</code> into the string literal and byte literal branches (it's really just that one <code>analyze</code> call). Actually, I'd probably rewrite it to</p>
+<pre><code class="language-rust">				let state = match part {
+            StringLikePart::String(_) | StringLikePart::Bytes(_) =&gt; {
+							analyze_escape_chars(locator, part.range(), part.flags())
+            }
+            StringLikePart::FString(f_string) =&gt; {
+                let flags = AnyStringFlags::from(f_string.flags);
+                let mut escape_chars_state = EscapeCharsState::default();
+                for element in &amp;f_string.elements {
+                    match element {
+                        FStringElement::Literal(literal) =&gt; {
+                            escape_chars_state.update(analyze_escape_chars(
+                                locator,
+                                literal.range(),
+                                flags,
+                            ));
+                        }
+                        FStringElement::Expression(expression) =&gt; {
+                            let Some(format_spec) = expression.format_spec.as_ref() else {
+                                continue;
+                            };
+                            for literal in format_spec.elements.literals() {
+                                escape_chars_state.update(analyze_escape_chars(
+                                    locator,
+                                    literal.range(),
+                                    flags,
+                                ));
+                            }
+                        }
+                    }
+
+								escape_chars_state
+                }
+            }
+				};
+
+        check(
+            &amp;mut checker.diagnostics,
+            locator,
+            part.start(),
+            part.range(),
+            part.flags(),
+						state
+        );
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-03 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:271 on 2024-12-03 22:01</div>
+            <div class="timeline-body"><p>Finger crossed that part has all these methods</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-04 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:271 on 2024-12-04 02:08</div>
+            <div class="timeline-body"><p>perfect, much better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-04 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-04 12:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need to have any special handling for escapes in format specifiers or the debug text parts of an f-string? We don't have to fix this as part of this PR but format specifiers and debug texts were something that caused me a a lot of pain when working on f-string formatting</p>
+</blockquote>
+<p>As far as I can tell you can't really put an escape in either of those places: for format specifiers I think that's a <a href="https://docs.python.org/3/library/string.html#format-specification-mini-language">syntax error</a> and for debug text I think you could only do that inside a nested string (e.g. <code>f&quot;{'\InHere'=}&quot;</code>), which is handled fine (added test to fixture).</p>
+<p>But maybe I missed something so if someone comes up with an example I can do a followup PR.</p>
+<p>Thank you for the thoughtful review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 12:42</div>
+            <div class="timeline-body"><pre><code>&gt;&gt;&gt; a = 10
+&gt;&gt;&gt; f&quot;{a:\xFF}&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: Unknown format code '\xff' for object of type 'int'
+</code></pre>
+<p>I think you can have arbitrary escapes but the above is recognized as a hex string. What you linked to is only the list of standard format specifiers but an object can implement support for arbitrary format specifiers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-04 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>What you linked to is only the list of standard format specifiers but an object can implement support for arbitrary format specifiers</p>
+</blockquote>
+<p>Terrifying.</p>
+<p>Yes, this doesn't seem quite right when I make the escape invalid:</p>
+<pre><code class="language-console">➜  cargo run -p ruff -- check tmp.py --no-cache --select W605 --fix --diff
+--- tmp.py
++++ tmp.py
+@@ -1,2 +1,2 @@
+ a = 10
+-f&quot;{a:\Xff}&quot;
++rf&quot;{a:\Xff}&quot;
+
+Would fix 1 error.
+</code></pre>
+<p>I'll leave the linked issue open and do a followup PR once I understand better how these things work...</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2024-12-04 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-04 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prioritize attribute in from/import statement - astral-sh/ruff #15041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prioritize attribute in from/import statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15041">#15041</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-17 20:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-17 20:29</div>
+            <div class="timeline-body"><p>This tweaks the new semantics from #15026 a bit when a symbol could be interpreted both as an attribute and a submodule of a package.  For <code>from...import</code>, we should actually prioritize the attribute, because of how the statement itself <a href="https://docs.python.org/3/reference/simple_stmts.html#the-import-statement">is implemented</a>:</p>
+<blockquote>
+<ol>
+<li>check if the imported module has an attribute by that name</li>
+<li>if not, attempt to import a submodule with that name and then check the imported module again for that attribute</li>
+</ol>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2024-12-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2024-12-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2319 on 2024-12-17 20:34</div>
+            <div class="timeline-body"><p>If we wanted to get really ambitious, in this case we'd go ahead with the submodule lookup and if the submodule exists we'd union its type with the attribute type, and return that.</p>
+<p>But I don't think we need to get that ambitious unless we see it in real code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 20:35</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-17 20:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-12-17 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:39 on 2024-12-17 20:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">reveal_type(a.b)  # revealed: &lt;module 'a.b'&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-12-17 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:64 on 2024-12-17 20:48</div>
+            <div class="timeline-body"><p><code>b</code> is always <code>Literal[42]</code> in there:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from a import b
+&gt;&gt;&gt; import a.b
+&gt;&gt;&gt; b
+42
+</code></pre>
+<p>Did you mean those tests against <code>a.b</code>?</p>
+<pre><code class="language-suggestion">reveal_type(a.b)  # revealed: &lt;module 'a.b'&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-17 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:64 on 2024-12-17 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p><code>b</code> is always <code>Literal[42]</code> in there</p>
+</blockquote>
+<p>Not always; not if someone else in the process has done <code>import a.b</code> first. Though we intentionally don't model this global action-at-a-distance.</p>
+<p>This test reflects the other known limitation of our model (currently), that our treatment of &quot;is the submodule imported (locally)&quot; is not flow-sensitive; if <code>a.b</code> is imported in the current module, we always treat it as if it were imported first. This is clearly documented elsewhere, but I guess to avoid confusion it could be mentioned in this test too (at least to point the reader to where it is discussed.)</p>
+<p>So it is intentional here to test the type of <code>b</code>. (Though it wouldn't hurt also test <code>a.b</code> type.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-17 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:39 on 2024-12-17 21:04</div>
+            <div class="timeline-body"><p>It is intentional to test the type of <code>b</code> here. In this case, because <code>import a.b</code> occurs first, what we are testing here does match the runtime behavior.</p>
+<p>I guess it would be fine to <em>also</em> test the type of <code>a.b</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:64 on 2024-12-17 21:27</div>
+            <div class="timeline-body"><blockquote>
+<p>This is clearly documented elsewhere, but I guess to avoid confusion it could be mentioned in this test too (at least to point the reader to where it is discussed.)</p>
+</blockquote>
+<p>I agree too, thanks for clarification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-12-17 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:39 on 2024-12-17 21:36</div>
+            <div class="timeline-body"><p>Added a test of <code>a.b</code> as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:64 on 2024-12-17 21:37</div>
+            <div class="timeline-body"><p>Added a test of <code>a.b</code> as well, and added some commentary describing how this behavior differs from the interpreter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2319 on 2024-12-17 21:37</div>
+            <div class="timeline-body"><p>Added a TODO comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-17 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2319 on 2024-12-17 21:42</div>
+            <div class="timeline-body"><p>Nit on the TODO comment. If we did this, it would not be unconditional, it would only be in the case where the attribute exists but is possibly unbound. In that specific scenario, we would ideally given the union because we don't know if the attribute exists or not.</p>
+<pre><code class="language-suggestion">        if let Symbol::Type(ty, boundness) = module_ty.member(self.db, name) {
+            if boundness == Boundness::PossiblyUnbound {
+                // TODO: Consider loading _both_ the attribute and any submodule and unioning
+                // them together if the attribute exists but is possibly-unbound.
+                self.diagnostics.add_lint(
+                    &amp;POSSIBLY_UNBOUND_IMPORT,
+                    AnyNodeRef::Alias(alias),
+                    format_args!(&quot;Member `{name}` of module `{module_name}` is possibly unbound&quot;,),
+                );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:63 on 2024-12-17 21:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># Python would say `Literal[42]` for `b`
+</code></pre>
+<p>(Just repeating Alex's job here 😅)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-12-17 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2319 on 2024-12-17 21:50</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conflicts.md</code>:63 on 2024-12-17 21:51</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-17 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2024-12-17 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-17 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-17 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-12-18 05:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

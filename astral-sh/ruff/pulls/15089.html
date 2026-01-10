@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] More precise inference for chained boolean expressions - astral-sh/ruff #15089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] More precise inference for chained boolean expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15089">#15089</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-21 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-21 00:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #13632.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-12-21 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-12-21 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-12-21 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2024-12-21 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-21 00:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-21 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:223 on 2024-12-22 16:01</div>
+            <div class="timeline-body"><p>The term we use for this is &quot;narrowing&quot;, not &quot;filtering&quot;</p>
+<pre><code class="language-suggestion">## Narrowing in chained boolean expressions
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:237 on 2024-12-22 16:04</div>
+            <div class="timeline-body"><p>This is not part of the requirements in the linked task. For the scope of this task, we should simply intersect with <code>~AlwaysTruthy</code> or <code>~AlwaysFalsy</code> and let the resulting types shake out.</p>
+<p>If we feel we need to simplify display of some types to avoid user confusion, we may do that in future, but we want to evaluate that holistically in the context of real-world code, not pre-emptively. And we will implement that in a general way (either in type display or in intersection building), not special-cased to a single narrowing scenario.</p>
+<pre><code class="language-suggestion">def _(x: str):
+    reveal_type(x or A())  # revealed: str &amp; ~AlwaysFalsy | A
+    reveal_type(x and A())  # revealed: str &amp; ~AlwaysTruthy | A
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:266 on 2024-12-22 16:07</div>
+            <div class="timeline-body"><p>FWIW, in case you're interested, I don't think this should be a difficult TODO to address (and I think it will also fix some other TODOs in the tests.) It just requires handling <code>ClassLiteral</code> differently in <code>Type::bool</code>. (The TODO comment there says we should look up &quot;<code>__bool__</code> and <code>__len__</code>&quot; methods on the metaclass, but this is wrong, we've since realized we can't rely on <code>__len__</code> for anything, as explained below under the Instance case.)</p>
+<p>In fact I think the simplest implementation might be to treat the <code>ClassLiteral</code> type as instead an <code>Instance</code> type of its metaclass, and just recursively defer to the <code>Instance</code> case.</p>
+<p>Probably best to do this in a separate PR though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3598 on 2024-12-22 16:08</div>
+            <div class="timeline-body"><p>We shouldn't be doing all this special-casing of specific types here. As described in the issue, all we need to do here is intersect with <code>~AlwaysFalsy</code> or <code>~AlwaysTruthy</code>; <code>IntersectionBuilder</code> and our type-relation methods should determine what happens from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-22 16:09</div>
+            <div class="timeline-body"><p>Thanks! A few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-22 18:01</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-22 19:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

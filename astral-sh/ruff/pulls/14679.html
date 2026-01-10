@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Extend unnecessary-regular-expression to non-literal strings (`RUF055`) - astral-sh/ruff #14679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Extend unnecessary-regular-expression to non-literal strings (<code>RUF055</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14679">#14679</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2024-11-29 14:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2024-11-29 14:52</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This is a follow-up to #14659 to try to resolve variable bindings for the <code>pattern</code> argument in <code>re</code> methods like <code>sub</code> and <code>match</code>. The rule currently only matches string literals, but these changes enable detection of patterns like this:</p>
+<pre><code class="language-python">import re
+
+pat1 = &quot;xyz&quot;
+pat2 = pat1
+pat3 = pat2
+
+re.sub(pat3, &quot;&quot;, s)
+</code></pre>
+<p>For <code>sub</code> specifically, it also handles non-literal <code>repl</code> arguments, which also have to be strings for the suggested fix to be valid.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p><code>cargo test</code> with a new snapshot test based on the example above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-29 14:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:260 on 2024-11-29 15:04</div>
+            <div class="timeline-body"><p>Nit: Do we need both lifetimes or can this be simplified to</p>
+<pre><code class="language-suggestion">fn resolve_name&lt;'a&gt;(
+    name: &amp;'a Expr,
+    semantic: &amp;'a SemanticModel,
+) -&gt; Option&lt;&amp;'a ExprStringLiteral&gt;
+{
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-29 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:260 on 2024-11-29 15:07</div>
+            <div class="timeline-body"><p>Oh yes, it can be simplified, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 15:07</div>
+            <div class="timeline-body"><p>Does the following of aliases find many new diagnostics?</p>
+<p>I'm otherwise leaning towards not supporting it. It seems rare that you have</p>
+<pre><code class="language-py">pat = &quot;string&quot;
+alias = pat
+
+re.sub(alias, ...)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:254 on 2024-11-29 15:09</div>
+            <div class="timeline-body"><p>Nit: Maybe rename to <code>resolve_pattern</code> or <code>resolve_string_literal</code> because it isn't returning a name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-29 15:09</div>
+            <div class="timeline-body"><p>Neat</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-29 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-29 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 15:11</div>
+            <div class="timeline-body"><p>It looks like there's nothing new from the ecosystem check, which surprised me. I'm happy not supporting this either, in light of that. The literal case definitely seems like the main one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-29 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 15:52</div>
+            <div class="timeline-body"><p>Let me know what you decide or when it's ready to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 16:01</div>
+            <div class="timeline-body"><p>Do you think it's worth following any variables? I can remove the loop to follow only a direct reference, or we can even close the whole PR if you think the literal case is all we need. I'm happy with any of these options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-29 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 16:37</div>
+            <div class="timeline-body"><p>Oh, I like that the rule now follows a direct reference. We should merge the PR. The only part I'm unsure about is whether it's worth to follow a chain of aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:274 on 2024-11-29 16:41</div>
+            <div class="timeline-body"><p>Okay, I think I'll go with just the direct reference. I was a little worried this could somehow become an infinite loop anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:12</div>
+            <div class="timeline-body"><p>If I understand correctly, I think the need here is slightly different to the need on lines 95-96. On lines 95-96, we do need to know the <em>value</em> of the string in order to be able to check it doesn't have any metacharacters in it (so only a string literal will do, or something that we can resolve to a string literal). But here, we just need to know it's a string; any string will do, as long as the user <em>isn't</em> passing in a function.</p>
+<p>Is that the case? If so, it <em>might</em> be worth adding back the <code>is_str</code> function you added in https://github.com/astral-sh/ruff/pull/14679/commits/efcc4cfbe121203443d146961f5fce2c9d117a69 and using that here, rather than using <code>resolve_string_literal</code> in both places. The advantage of the <code>is_str</code> technique is that it also understands basic type hints, e.g. it would understand that <code>re.sub()</code> is being passed a string for the <code>repl</code> argument in something like this:</p>
+<pre><code class="language-py">import re
+
+def foo(input_str: str, repl: str):
+    re.sub(&quot;foobar&quot;, repl, input_str)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 17:12</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:25</div>
+            <div class="timeline-body"><p>Now that I look at it, maybe we <em>do</em> need to know (and analyze) the value of the <code>repl</code> string for a fully accurate analysis, though. For example, it seems like the initial version of the check that we merged yesterday emits a false-positive diagnostic (and incorrect autofix) for this:</p>
+<pre><code class="language-py">import re
+
+re.sub(r&quot;a&quot;, r&quot;\g&lt;0&gt;\g&lt;0&gt;\g&lt;0&gt;&quot;, &quot;a&quot;)
+</code></pre>
+<p>Now, this is a massive edge case -- I had to work quite hard to find it! I believe the only way you get a false positive with the rule's current logic is if there's a <code>\g</code> in the replacement string but no backslashes or metacharacters in the pattenr string, and it's <em>almost</em> impossible to think of a way you could plausibly have a <code>re.sub()</code> call with those characteristics. So maybe we shouldn't worry about this -- I'm interested in your thoughts and @MichaReiser's!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:35</div>
+            <div class="timeline-body"><p>Oh wow, good catch! I was working on adding <code>is_str</code> back in, but maybe instead I need to check for metacharacters in <code>repl</code> too.</p>
+<p>I thought we were safe from backreferences by avoiding <code>(</code> in the pattern, but I overlooked <code>\g&lt;0&gt;</code>. That exact sequence seems like the only way to trigger this behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought we were safe from backreferences by avoiding <code>(</code> in the pattern, but I overlooked <code>\g&lt;0&gt;</code>. That exact sequence seems like the only way to trigger this behavior?</p>
+</blockquote>
+<p>I think so, yes! Although we also emit a RUF055 diagnostic on <em>invalid</em> <code>re.sub()</code> calls like this, and maybe we should just ignore them? It feels like it might be outside of this rule's purview to autofix invalid <code>re.sub()</code> calls into valid <code>str.replace()</code> calls. We probably don't really know what the user intended exactly if the <code>re.sub()</code> call is invalid:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import re
+&gt;&gt;&gt; re.sub(r&quot;a&quot;, r&quot;\1&quot;, &quot;a&quot;)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-12&gt;&quot;, line 1, in &lt;module&gt;
+    re.sub(r&quot;a&quot;, r&quot;\1&quot;, &quot;a&quot;)
+    ~~~~~~^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/__init__.py&quot;, line 208, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/__init__.py&quot;, line 377, in _compile_template
+    return _sre.template(pattern, _parser.parse_template(repl, pattern))
+                                  ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/_parser.py&quot;, line 1070, in parse_template
+    addgroup(int(this[1:]), len(this) - 1)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/_parser.py&quot;, line 1015, in addgroup
+    raise s.error(&quot;invalid group reference %d&quot; % index, pos)
+re.PatternError: invalid group reference 1 at position 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:56</div>
+            <div class="timeline-body"><p>I've added back <code>is_str</code> locally, along with your function argument test case. It's really nice to handle that case, but I'm a bit bothered by this edge case too, so I could go either way. I'm interested to hear which approach you and Micha think is best overall.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 17:59</div>
+            <div class="timeline-body"><p>Why don't you push the version with <code>is_str</code> to this PR, and we can see if it results in any more ecosystem hits? That might give us some more data on how useful it is to be able to detect that the <code>repl</code> argument is a string from the function annotation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 18:20</div>
+            <div class="timeline-body"><p>Hmm, it doesn't look like it adds any new ecosystem hits :/</p>
+<p>I guess in that case, I'd vote for removing <code>is_str</code> again, and fixing the false positives on <code>\g&lt;0&gt;</code> and <code>\1</code> in <code>repl</code> arguments.</p>
+<p>Thanks for putting up with my pernickitiness here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 18:33</div>
+            <div class="timeline-body"><p>No problem, thanks for the thorough review! Should I reuse the other code to reject <em>any</em> metacharacters, or are references to named or numbered capture groups the only problems? I'm picturing checking for <code>\</code> followed by <code>g</code> or <code>1</code> through <code>9</code>. That seems a bit nicer than rejecting any metacharacter like I did for the patterns but possibly less safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-29 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 18:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm picturing checking for <code>\</code> followed by <code>g</code> or <code>1</code> through <code>9</code>. That seems a bit nicer than rejecting any metacharacter like I did for the patterns but possibly less safe.</p>
+</blockquote>
+<p>I think actually we could check for <code>\</code> followed by any ASCII character <em>except</em> one of <code>abfnrtv</code>. Other than <code>0-9</code> and <code>g</code> (which both have special behaviour in <code>repl</code> strings, as we've just been discussing!), I believe those are the <em>only</em> ASCII escapes that will be permitted in a <code>repl</code> string by <code>re.sub()</code>, Anything else causes <code>re.PatternError</code> to be raised -- meaning it's probably out of scope for us to emit this diagnostic on it:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; re.sub(r&quot;a&quot;, r&quot;\d&quot;, &quot;a&quot;)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-13&gt;&quot;, line 1, in &lt;module&gt;
+    re.sub(r&quot;a&quot;, r&quot;\d&quot;, &quot;a&quot;)
+    ~~~~~~^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/__init__.py&quot;, line 208, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/__init__.py&quot;, line 377, in _compile_template
+    return _sre.template(pattern, _parser.parse_template(repl, pattern))
+                                  ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.0/lib/python3.13/re/_parser.py&quot;, line 1076, in parse_template
+    raise s.error('bad escape %s' % this, len(this)) from None
+re.PatternError: bad escape \d at position 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2024-11-29 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:179 on 2024-11-29 19:19</div>
+            <div class="timeline-body"><p>Let me know what you think about this version. If it looks good, it might be nice to reuse this escape check for <code>pattern</code> as well instead of rejecting <code>\</code> entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:183 on 2024-12-02 08:57</div>
+            <div class="timeline-body"><p>Does this work for non-raw strings where <code>\a</code> is not a valid escape? Instead, it should be <code>\\a</code>.</p>
+<blockquote>
+<p>if it is a string, any backslash escapes in it are processed.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-02 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-02 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:183 on 2024-12-02 09:06</div>
+            <div class="timeline-body"><p>Here another case where using <code>replace</code> alters behavior:</p>
+<pre><code>&gt;&gt;&gt; re.sub(r&quot;a&quot;, r&quot;\z&quot;, &quot;a&quot;)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;C:\Users\Micha\AppData\Local\Programs\Python\Python312\Lib\re\__init__.py&quot;, line 186, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\Micha\AppData\Local\Programs\Python\Python312\Lib\re\__init__.py&quot;, line 334, in _compile_template
+    return _sre.template(pattern, _parser.parse_template(repl, pattern))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\Micha\AppData\Local\Programs\Python\Python312\Lib\re\_parser.py&quot;, line 1075, in parse_template
+    raise s.error('bad escape %s' % this, len(this)) from None
+re.error: bad escape \z at position 0
+&gt;&gt;&gt; &quot;a&quot;.replace(&quot;a&quot;, r&quot;\z&quot;)
+'\\z'
+</code></pre>
+<p>The relevant section of the spec:</p>
+<blockquote>
+<p>Unknown escapes of ASCII letters are reserved for future use and treated as errors. Other unknown escapes such as &amp; are left alone. Backreferences, such as \6, are replaced with the substring matched by group 6 in the pattern. For example:</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-02 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:183 on 2024-12-02 09:08</div>
+            <div class="timeline-body"><p>And numbered groups:</p>
+<pre><code>re.sub(r&quot;(a)&quot;, r&quot;\1\1\1&quot;, &quot;a&quot;)
+'aaa'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:183 on 2024-12-02 09:10</div>
+            <div class="timeline-body"><p>Reading code is hard. That's all covered because it uses an allowlist. Sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-02 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 09:11</div>
+            <div class="timeline-body"><p>This looks good to me and nice find @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-03 15:13</div>
+            <div class="timeline-body"><p>Thanks @ntBre!! I pushed some minor fixes to address some other edge cases identified by @dscorbett in #14757</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-12-03 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-03 15:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

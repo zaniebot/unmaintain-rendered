@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle type[Any] correctly - astral-sh/ruff #14876</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle type[Any] correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14876">#14876</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-09 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-09 15:16</div>
+            <div class="timeline-body"><p>This adds support for <code>type[Any]</code>, which represents an unknown type (not an instance of an unknown type), and <code>type</code>, which we are choosing to interpret as <code>type[object]</code>.</p>
+<p>Closes #14546</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-09 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-09 15:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2024-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2024-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2024-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-09 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:45 on 2024-12-09 20:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO bound method types
+    reveal_type(x.__repr__)  # revealed: Literal[__repr__]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:9 on 2024-12-09 20:59</div>
+            <div class="timeline-body"><p>I think this could actually be <code>Literal[__repr__] &amp; Any</code> -- it could be a subclass of <code>type</code> with a narrower definition of <code>__repr__</code>, but it can't be wider than <code>object.__repr__</code>. (Though as discussed below, the <code>Literal[__repr__]</code> part of this isn't really correct, we just don't handle bound methods yet.) But I think all of this can be TODO pending more handling of <code>Type::SubclassOf</code> attributes.</p>
+<pre><code class="language-suggestion">    # TODO could be `&lt;object.__repr__ type&gt; &amp; Any`
+    reveal_type(x.__repr__)  # revealed: Any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-09 20:59</div>
+            <div class="timeline-body"><p>🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-09 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:14 on 2024-12-09 21:22</div>
+            <div class="timeline-body"><p>Note that we do not have call-signature checking, so this doesn't test anything yet. If you want to check for assignability, you would have to do something like</p>
+<pre><code class="language-suggestion">x: type[Any] = object
+x: type[Any] = type
+x: type[Any] = A
+</code></pre>
+<p>For some reason, those assignments currently seem to fail(?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-09 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:14 on 2024-12-09 21:23</div>
+            <div class="timeline-body"><p>Oh, great catch! Yeah, if those assignments are failing, we should definitely understand why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-09 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:345 on 2024-12-09 21:31</div>
+            <div class="timeline-body"><p>This seems to be unused?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-09 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:14 on 2024-12-09 22:06</div>
+            <div class="timeline-body"><p>I think assignability falls back to subtyping, and <code>type[Any]</code> does not participate in subtyping. We probably need something like this special case in <code>Type::is_assignable_to</code>:</p>
+<pre><code class="language-rs">(Type::ClassLiteral(_) | Type::SubclassOf(_), Type::SubclassOf(target))
+    if target.base == ClassBase::Any =&gt;
+{
+    true
+}
+</code></pre>
+<p>It might make sense to add a new <code>Ty::SubclassOfAny</code> (and <code>Ty::SubclassOf(…)</code>) variant to our testing-enum <code>Ty</code> and to write a few explicit unit tests for this type?</p>
+<p>For example, I think we currently treat <code>type[Any]</code> as fully static.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:14 on 2024-12-10 14:54</div>
+            <div class="timeline-body"><p>Thanks for catching that, @sharkdp!</p>
+<p>I had to add a few more clauses to <code>is_assignable_to</code>.  I added test cases for all of the entries in this truth table:</p>
+<p>| | <code>Instance(type)</code> | <code>SubtypeOf(Any)</code> | <code>SubtypeOf(object)</code> | <code>SubtypeOf(str)</code> |
+|-|-|-|-|-|
+|<code>Instance(type)</code>|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||
+|<code>SubtypeOf(Any)</code>|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+|<code>SubtypeOf(object)</code>|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||
+|<code>SubtypeOf(str)</code>|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|</p>
+<p>If I'm understanding the semantics, <code>Instance(type)</code> and <code>SubtypeOf(object)</code> should be equivalent to each other, and those are not assignable to <code>SubtypeOf(str)</code>.  Those are the only two cases of non-assignability in the table.  <code>SubtypeOf(Any)</code>, in particular, should be assignable to any <code>type</code>-like type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:345 on 2024-12-10 14:56</div>
+            <div class="timeline-body"><p>Removed</p>
+<p>I had added it thinking that I'd use it in <code>Type::is_assignable_to</code>, but then I didn't — largely because I also need to handle assignability with <code>Instance(type)</code>, and it seemed better to have all of the cases in a single place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:45 on 2024-12-10 14:57</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:9 on 2024-12-10 14:58</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:17 on 2024-12-10 15:27</div>
+            <div class="timeline-body"><p>It makes me slightly nervous that all the assignment tests in this file are &quot;no error&quot; assignments; we could make all these tests pass if <code>type[...]</code> were always just <code>Any</code>! (Not the <code>reveal_type</code> ones, but the assignment ones.) We could add something like this to show that we do actually discriminate?</p>
+<pre><code class="language-suggestion">x: type[Any] = A()  # error: [invalid-assignment]
+</code></pre>
+<p>And maybe similar in below sections, too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:30 on 2024-12-10 15:29</div>
+            <div class="timeline-body"><p>This section is supposed to be about bare <code>type</code>, right?</p>
+<pre><code class="language-suggestion">x: type = object
+x: type = type
+x: type = A
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:24 on 2024-12-10 15:32</div>
+            <div class="timeline-body"><p>Per discussion this morning in Discord:</p>
+<pre><code class="language-suggestion">## Bare type
+
+The interpretation of bare `type` is not clear: existing wording in the spec does not match the behavior of mypy or pyright. For now we interpret it as simply &quot;an instance of `builtins.type`&quot;, which is equivalent to `type[object]`. This is similar to the current behavior of mypy, and pyright in strict mode.
+
+```py
+def f(x: type):
+    reveal_type(x)  # revealed: type
+    # TODO bound method types
+    reveal_type(x.__repr__)  # revealed: Literal[__repr__]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:45 on 2024-12-10 15:33</div>
+            <div class="timeline-body"><p>This section is supposed to be about <code>type[object]</code>?</p>
+<pre><code class="language-suggestion">x: type[object] = object
+x: type[object] = type
+x: type[object] = A
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1724 on 2024-12-10 15:34</div>
+            <div class="timeline-body"><p>Per discussion in Discord:</p>
+<pre><code class="language-suggestion">                Type::subclass_of(KnownClass::Object.to_class())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3398 on 2024-12-10 15:36</div>
+            <div class="timeline-body"><p>Can we also add this one as a test case for <code>is_equivalent_to</code>? (Should also require adding the case to <code>is_equivalent_to</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-10 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:30 on 2024-12-10 15:53</div>
+            <div class="timeline-body"><p>Yes, yes it is!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:45 on 2024-12-10 15:53</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:17 on 2024-12-10 15:54</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1724 on 2024-12-10 15:55</div>
+            <div class="timeline-body"><p>Do you have a preference between that and <code>Type::instance(KnownClass::Type.to_class())</code>?</p>
+<p>Or we had also discussed consolidating those two down into a single internal representation.  I don't think that would be (easily) expressible in the Rust types, so I'd consider adding a <code>debug_assert!</code> in the other constructor function to help ensure we only ever instantiate the preferred variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 15:58</div>
+            <div class="timeline-body"><p>(Initial responses, still need to make the <code>type ⇒ type[object]</code> change and add the <code>equivalent_to</code> tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-10 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1724 on 2024-12-10 16:01</div>
+            <div class="timeline-body"><p>I think I would expect <code>Type::SubclassOf(object)</code> to delegate to <code>Type::Instance(type)</code> in most respects; as such, it feels like <code>Type::Instance(type)</code> is a &quot;simpler&quot;, &quot;more fundamental&quot; representation, so I'd probably go with that where have the choice between the two.</p>
+<p>Not sure whether or not it's worth forbidding the instantiation of <code>Type::SubclassOf(object)</code> as a type; if we do everything correctly, it should behave identically to <code>Type::Instance(type)</code>, so I don't think it's <em>necessary</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-10 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1724 on 2024-12-10 16:01</div>
+            <div class="timeline-body"><p>Oh, yeah, now that you mention it, I think the instance type is better.</p>
+<p>Until we have a clear reason to do so, I think we don't need to worry about consolidating to a single representation; we can have both, and they will display differently (<code>type</code> vs <code>type[object]</code>), but we should treat them as equivalent (subtypes of each other).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3310 on 2024-12-10 16:20</div>
+            <div class="timeline-body"><p>nit: looking at the implementation of the tests that use this variant, maybe it should be called <code>SubclassOfBuiltinClass</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:337 on 2024-12-10 16:25</div>
+            <div class="timeline-body"><p>it looks like this is only used in one place. I'm not sure I love having this method -- a <code>ClassBase</code> is not the same concept as a <code>Type</code>, but having this method feels like it blurs the lines between the two enums in a slightly unfortunate way. Can we just inline it?</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index defa2dd9a..d49a67df3 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -666,9 +666,10 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             {
+                 self_class.class.is_subclass_of_base(db, target_class.base)
+             }
+-            (Type::SubclassOf(self_class), Type::SubclassOf(target_class)) =&gt; {
+-                self_class.base.is_subtype_of(db, target_class.base)
+-            }
++            (
++                Type::SubclassOf(SubclassOfType { base: self_base }),
++                Type::SubclassOf(SubclassOfType { base: target_base }),
++            ) =&gt; Type::from(self_base).is_subtype_of(db, Type::from(target_base)),
+             (
+                 Type::SubclassOf(SubclassOfType {
+                     base: ClassBase::Class(self_class),
+diff --git a/crates/red_knot_python_semantic/src/types/mro.rs b/crates/red_knot_python_semantic/src/types/mro.rs
+index 75da7f7f3..131b512ed 100644
+--- a/crates/red_knot_python_semantic/src/types/mro.rs
++++ b/crates/red_knot_python_semantic/src/types/mro.rs
+@@ -328,14 +328,6 @@ impl&lt;'db&gt; ClassBase&lt;'db&gt; {
+         Display { base: self, db }
+     }
+ 
+-    pub fn is_subtype_of(self, db: &amp;'db dyn Db, target: ClassBase&lt;'db&gt;) -&gt; bool {
+-        match (self, target) {
+-            (ClassBase::Any | ClassBase::Todo | ClassBase::Unknown, _) =&gt; false,
+-            (_, ClassBase::Any | ClassBase::Todo | ClassBase::Unknown) =&gt; false,
+-            (ClassBase::Class(class), ClassBase::Class(target)) =&gt; class.is_subclass_of(db, target),
+-        }
+-    }
+-
+     /// Return a `ClassBase` representing the class `builtins.object`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-10 16:27</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:337 on 2024-12-10 17:01</div>
+            <div class="timeline-body"><p>That's much nicer, though I had to use <code>Class::is_subclass_of</code> instead of <code>Type::is_subtype_of</code>, since <code>ClassLiteral(C)</code> ⊈ <code>ClassLiteral(D)</code> even if C is a subclass of D.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3310 on 2024-12-10 17:01</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3398 on 2024-12-10 17:44</div>
+            <div class="timeline-body"><p>Done.  I also took the liberty of updating the test to verify that equivalence is symmetric.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1724 on 2024-12-10 17:47</div>
+            <div class="timeline-body"><p>Done.  Interpreting <code>type</code> as <code>type[object]</code> means we don't need this special-case clause anymore, since interpreting it as <code>Instance(type)</code> is what we already do for any other class literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_of/any.md</code>:24 on 2024-12-10 17:50</div>
+            <div class="timeline-body"><p>Done, though the revealed type of <code>x.__repr__</code> now becomes a TODO for instance attributes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:611 on 2024-12-10 18:07</div>
+            <div class="timeline-body"><p>I removed these since they (and the new <code>Subclass(Any)</code> form) are handled by the <code>is_fully_static</code> checks above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:658 on 2024-12-10 18:07</div>
+            <div class="timeline-body"><p>This is just a special case of the metaclass check below, which I've extended to work for <code>ClassLiteral(C)</code> as well as <code>SubclassOf(C)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1099 on 2024-12-10 18:09</div>
+            <div class="timeline-body"><p><code>SubclassOf(Any)</code> is not fully static</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1099 on 2024-12-10 18:13</div>
+            <div class="timeline-body"><p>There are unit tests below for <code>is_fully_static</code> as well; let's add a couple tests (negative and positive) for this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:835 on 2024-12-10 18:18</div>
+            <div class="timeline-body"><p>this gets a little hard to read 😄 how about writing it like this?</p>
+<pre><code class="language-suggestion">            (Type::Instance(self_instance), Type::Instance(target_instance)) =&gt; {
+                let Some(self_known_class) = self_instance.class.known(db) else {
+                    return false;
+                };
+                if !matches!(
+                    self_known_class,
+                    KnownClass::NoneType | KnownClass::NoDefaultType
+                ) {
+                    return false;
+                }
+                Some(self_known_class) == target_instance.class.known(db)
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-10 18:19</div>
+            <div class="timeline-body"><p>Looking good! In addition to the additional unit tests I mentioned inline, this PR seems a good candidate to run the quickcheck property-based tests for core type algebra invariants. These don't run in CI because they are slow, but it would be good to see whether they catch any issues here. See https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/types/property_tests.rs</p>
+<p>EDIT: just realized that in order to get value from that on this PR, we should also add SubclassOf types to the <code>arbitrary_core_type</code> function there!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:851 on 2024-12-10 18:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            ) =&gt; {
+                object_class.is_known(db, KnownClass::Object)
+                    &amp;&amp; type_class.is_known(db, KnownClass::Type)
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:678 on 2024-12-10 18:21</div>
+            <div class="timeline-body"><p>I think I'd either call the captured variable here <code>target_instance</code> or do something like this</p>
+<pre><code class="language-suggestion">                Type::Instance(InstanceType {class: target_class}),
+</code></pre>
+<p>so that you can avoid the awkward <code>target_class.class</code> immediately below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:657 on 2024-12-10 18:23</div>
+            <div class="timeline-body"><p>similarly here, maybe the captured variables inside <code>Type::SubclassOf</code> could be renamed <code>target_ty</code> rather than <code>target_class</code>, since the inner data wrapped by this variant is no longer a class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-10 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-10 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:835 on 2024-12-10 18:26</div>
+            <div class="timeline-body"><p>We have to be careful here; these <code>return false</code> in the suggested change are not correct. They would have to be <code>return self == other</code>, and I'm not sure we want to duplicate that condition in various places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-10 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:851 on 2024-12-10 18:27</div>
+            <div class="timeline-body"><p>This one should be safe because a <code>Type::Instance</code> can't be <code>==</code> to a <code>Type::SubclassOf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-10 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:835 on 2024-12-10 18:28</div>
+            <div class="timeline-body"><p>argh, great spot. thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-10 19:34</div>
+            <div class="timeline-body"><blockquote>
+<p>In addition to the additional unit tests I mentioned inline, this PR seems a good candidate to run the quickcheck property-based tests for core type algebra invariants. These don't run in CI because they are slow, but it would be good to see whether they catch any issues here. See https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/types/property_tests.rs</p>
+</blockquote>
+<p>I already did this. I didn't mention it here because they are currently broken (surprise!). I'll put up a small PR with a fix.</p>
+<p>Edit: https://github.com/astral-sh/ruff/pull/14897</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:678 on 2024-12-10 20:02</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:657 on 2024-12-10 20:03</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:835 on 2024-12-10 20:05</div>
+            <div class="timeline-body"><p>I had also considered handling each of the special cases with a separate <code>if</code> statement + early return.  Then it would possibly be clearer that <code>self == other</code> is the fall-back / general case.  But we had other large <code>match</code> blocks elsewhere that made me think that might be preferred house style.  I will take a stab at the early return pattern and see if it's more readable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1099 on 2024-12-10 20:08</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2024-12-10 20:16</div>
+            <div class="timeline-body"><p>Thank you for all the updates and the new tests!</p>
+<p>FWIW, I did successfully run the property tests on your branch after cherry-picking my fix in #14897 and applying the following patch, where the 4=&gt;3 change is a weird way to suppress the creation of intersection types to prevent running into #14899:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/property_tests.rs b/crates/red_knot_python_semantic/src/types/property_tests.rs
+index 15f4d5648..e6b223034 100644
+--- a/crates/red_knot_python_semantic/src/types/property_tests.rs
++++ b/crates/red_knot_python_semantic/src/types/property_tests.rs
+@@ -64,6 +64,10 @@ fn arbitrary_core_type(g: &amp;mut Gen) -&gt; Ty {
+         Ty::BuiltinClassLiteral(&quot;int&quot;),
+         Ty::BuiltinClassLiteral(&quot;bool&quot;),
+         Ty::BuiltinClassLiteral(&quot;object&quot;),
++        Ty::SubclassOfAny,
++        Ty::SubclassOfBuiltinClass(&quot;object&quot;),
++        Ty::SubclassOfBuiltinClass(&quot;int&quot;),
++        Ty::SubclassOfBuiltinClass(&quot;bool&quot;),
+     ])
+     .unwrap()
+     .clone()
+@@ -78,7 +82,7 @@ fn arbitrary_type(g: &amp;mut Gen, size: u32) -&gt; Ty {
+     if size == 0 {
+         arbitrary_core_type(g)
+     } else {
+-        match u32::arbitrary(g) % 4 {
++        match u32::arbitrary(g) % 3 {
+             0 =&gt; arbitrary_core_type(g),
+             1 =&gt; Ty::Union(
+                 (0..*g.choose(&amp;[2, 3]).unwrap())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 20:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I did successfully run the property tests on your branch</p>
+</blockquote>
+<p>Thanks @sharkdp, was just looking at the property tests myself and running into the <code>assignable</code> bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-10 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:835 on 2024-12-10 20:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I will take a stab at the early return pattern and see if it's more readable.</p>
+</blockquote>
+<p>Now using early return.  lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-10 20:32</div>
+            <div class="timeline-body"><p>Looks good to me!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2024-12-10 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-10 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-10 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

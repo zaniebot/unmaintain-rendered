@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`]  Include parentheses and multiple comparators in check for `boolean-chained-comparison (PLR1716)` - astral-sh/ruff #14781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>]  Include parentheses and multiple comparators in check for <code>boolean-chained-comparison (PLR1716)</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14781">#14781</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-12-05 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-05 04:11</div>
+            <div class="timeline-body"><p>This PR introduces three changes to the diagnostic and fix behavior (still under preview) for <a href="https://docs.astral.sh/ruff/rules/boolean-chained-comparison/#boolean-chained-comparison-plr1716">boolean-chained-comparison (PLR1716)</a>.</p>
+<ol>
+<li>We now offer a <em>fix</em> in the case of parenthesized expressions like <code>(a &lt; b) and b &lt; c</code>. The fix will merge the chains of comparisons and then balance parentheses by <em>adding</em> parentheses to one side of the expression.</li>
+<li>We now trigger a diagnostic (and fix) in the case where some comparisons have multiple comparators like <code>a &lt; b &lt; c and c &lt; d</code>.</li>
+<li>When adjacent comparators are parenthesized, we prefer the left parenthesization and apply the replacement to the whole parenthesized range. So, for example, <code>a &lt; (b) and ((b)) &lt; c</code> becomes <code>a &lt; (b) &lt; c</code>.</li>
+</ol>
+<p>While these seem like somewhat disconnected changes, they are actually related. If we only offered (1), then we would see the following fix behavior:</p>
+<pre><code class="language-diff">- (a &lt; b) and b &lt; c and ((c &lt; d))
++ (a &lt; b &lt; c) and ((c &lt; d))
+</code></pre>
+<p>This is because the fix which add parentheses to the first pair of comparisons overlaps with the fix that removes the <code>and</code> between the second two comparisons. So the latter fix is deferred. However, the latter fix does not get a second chance because, upon the next lint iteration, there is no violation of <code>PLR1716</code>.</p>
+<p>Upon adopting (2), however, both fixes occur by the time ruff completes several iterations and we get:</p>
+<pre><code class="language-diff">- (a &lt; b) and b &lt; c and ((c &lt; d))
++ ((a &lt; b &lt; c &lt; d))
+</code></pre>
+<p>Finally, (3) fixes a previously unobserved bug wherein the autofix for <code>a &lt; (b) and b &lt; c</code> used to result in <code>a&lt;(b&lt;c</code> which gives a syntax error. It could in theory have been fixed in a separate PR, but seems to be on theme here.</p>
+<hr />
+<ul>
+<li>Closes #13524</li>
+<li>(1), (2), and (3) are implemented in separate commits for ease of review and modification.</li>
+<li>Technically a user can trigger an error in ruff (by reaching max iterations) if they have a humongous boolean chained comparison with differing parentheses levels.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-12-05 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2024-12-05 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2024-12-05 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-05 04:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +2 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/astropy/astropy/blob/7aa40e84c52af37a555d8656f2a407b54221b249/astropy/cosmology/flrw/lambdacdm.py#L267'>astropy/cosmology/flrw/lambdacdm.py:267:15:</a> PLR1716 Contains chained boolean comparison that can be simplified
++ <a href='https://github.com/astropy/astropy/blob/7aa40e84c52af37a555d8656f2a407b54221b249/astropy/cosmology/flrw/lambdacdm.py#L267'>astropy/cosmology/flrw/lambdacdm.py:267:15:</a> PLR1716 [*] Contains chained boolean comparison that can be simplified
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR1716 | 2 | 0 | 0 | 2 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-06 05:22</div>
+            <div class="timeline-body"><p>No obligation to review @zanieb , but figured I'd ping you since you wrote the first PR addressing this issue. Let me know if this fix is way off base from what you had in mind 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/boolean_chained_comparison.py</code>:132 on 2024-12-06 16:41</div>
+            <div class="timeline-body"><p>Can we add a few test cases where the expressions themselves are parenthesized and have comments?</p>
+<pre><code>a &lt; ( # sneaky comment
+	b
+  # more comments 
+) and b &lt; c
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/boolean_chained_comparison.rs</code>:78 on 2024-12-06 16:53</div>
+            <div class="timeline-body"><p>Very not related to your change but it confused me big time when reading through the code. Would you mind changing the comment on line 65 and the variable on line 69 not to mention statements, as these are clearly expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/boolean_chained_comparison.rs</code>:78 on 2024-12-06 16:55</div>
+            <div class="timeline-body"><p>Oh, and nice find on the <code>first</code>. That's sneaky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-06 17:01</div>
+            <div class="timeline-body"><p>This is great. I suggest adding some more tests with comments because the comment range (or parentheses for that fact) isn't part of the expression range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-06 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/boolean_chained_comparison.py</code>:132 on 2024-12-06 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>where the expressions themselves are parenthesized</p>
+</blockquote>
+<p>good catch! the fix causes a syntax error in that case.</p>
+<p>In fact, that bug is present in the <em>current</em> version of the fix too: Apply the fix in this <a href="https://play.ruff.rs/9fb781e1-3189-4c24-b297-0e98b766fb1f">playground example</a> and you get <code>SyntaxError: unexpected EOF while parsing [Ln 1, Col 7]</code>.</p>
+<p>I see the cause of the issue (we're ignoring parentheses when comparing expressions before merging them), but I'll have to tinker a little to figure out how to solve this.</p>
+<p>Once I do I'll also check to see if comments are an issue.</p>
+<p>Thanks again for finding this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-06 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/boolean_chained_comparison.py</code>:132 on 2024-12-06 18:03</div>
+            <div class="timeline-body"><p>I think it's also fine to bail on providing a fix in those cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-06 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/boolean_chained_comparison.py</code>:132 on 2024-12-06 18:48</div>
+            <div class="timeline-body"><p>Actually that wasn't so bad! Should be fixed, and added some tests mixing the various new behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2024-12-09 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-09 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-09 04:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

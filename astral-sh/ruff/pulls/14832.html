@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Do not simplify `round()` calls (`RUF046`) - astral-sh/ruff #14832</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Do not simplify <code>round()</code> calls (<code>RUF046</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14832">#14832</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-08 04:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-08 04:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part 1 of the big change introduced in #14828. This temporarily causes all fixes for <code>round(...)</code> to be considered unsafe, but they will eventually be enhanced.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-08 04:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__preview__RUF046_RUF046.py.snap</code>:487 on 2024-12-08 17:41</div>
+            <div class="timeline-body"><p>This now seems incorrect, considering that it is in the &quot;no errors&quot; section</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_cast_to_int.rs</code>:123 on 2024-12-08 17:42</div>
+            <div class="timeline-body"><p>I think this now removes too much. We still need to validate that the <code>round</code> call returns a number, that is, that it has an <code>number</code> argument and the <code>ndigits</code> argument is either absent, <code>None</code>, or <code>0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-12-08 17:43</div>
+            <div class="timeline-body"><p>Thanks for splitting the PR!</p>
+<p>I think the rule is now over eager in removing <code>int</code> calls from <code>rount</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-08 21:29</div>
+            <div class="timeline-body"><p>For reference, here's the logic table for <code>round()</code> cases:</p>
+<p>|     <code>number</code>     |   <code>ndigits</code>   |  <code>round()</code>   | Error/fix |
+|:----------------:|:-------------:|:------------:|:---------:|
+|  Literal <code>int</code>   |   Not given   |    <code>int</code>     |   Safe    |
+|  Literal <code>int</code>   | Literal <code>int</code> |    <code>int</code>     |   Safe    |
+|  Literal <code>int</code>   |    <code>None</code>     |    <code>int</code>     |   Safe    |
+|  Literal <code>int</code>   |     Other     |    Other     |     -     |
+| Literal <code>float</code>  |   Not given   |    <code>int</code>     |   Safe    |
+| Literal <code>float</code>  | Literal <code>int</code> |   <code>float</code>    |     -     |
+| Literal <code>float</code>  |    <code>None</code>     |    <code>int</code>     |   Safe    |
+| Literal <code>float</code>  |     Other     |    Other     |     -     |
+|  Inferred <code>int</code>  |   Not given   |    <code>int</code>     |  Unsafe   |
+|  Inferred <code>int</code>  | Literal <code>int</code> |    <code>int</code>     |  Unsafe   |
+|  Inferred <code>int</code>  |    <code>None</code>     |    <code>int</code>     |  Unsafe   |
+|  Inferred <code>int</code>  |     Other     |    Other     |     -     |
+| Inferred <code>float</code> |   Not given   |    <code>int</code>     |  Unsafe   |
+| Inferred <code>float</code> | Literal <code>int</code> |   <code>float</code>    |     -     |
+| Inferred <code>float</code> |    <code>None</code>     |    <code>int</code>     |  Unsafe   |
+| Inferred <code>float</code> |     Other     |    Other     |     -     |
+|      Other       |   Not given   | Likely <code>int</code> |  Unsafe   |
+|      Other       | Literal <code>int</code> |    Other     |     -     |
+|      Other       |    <code>None</code>     | Likely <code>int</code> |  Unsafe   |
+|      Other       |     Other     |    Other     |     -     |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-09 08:26</div>
+            <div class="timeline-body"><p>Nice table: From testing a few cases, it seems that <code>round(4, ndigits=10)</code> always returns an <code>int</code></p>
+<pre><code>&gt;&gt;&gt; round(4, 10)
+4
+&gt;&gt;&gt; type(_)
+&lt;class 'int'&gt;
+</code></pre>
+<p>But we should not create a diagnostic if <code>ndigits</code> isn't an integer, e.g. <code>round(4, 10.4)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-12-09 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-12-09 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-09 08:31</div>
+            <div class="timeline-body"><p>Nice. This looks good now, except that we can also provide a safe fix if the number is an int, and <code>ndigits</code> is any integer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-09 13:56</div>
+            <div class="timeline-body"><p>Logic changed and table updated. <code>round(0, integer)</code> and <code>round(inferred_integer, integer)</code> are now both fixable, safely and unsafely correspondingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-09 15:51</div>
+            <div class="timeline-body"><p>Perfect, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-09 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-09 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-09 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

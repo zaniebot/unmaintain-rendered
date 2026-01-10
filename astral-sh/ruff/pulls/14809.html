@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix infinite watch loop by ignoring 'uninteresting' watch events - astral-sh/ruff #14809</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix infinite watch loop by ignoring 'uninteresting' watch events</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14809">#14809</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-06 08:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 08:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/14807</p>
+<p>I suspect that this broke when we updated notify, although I'm not quiet sure how this <em>ever</em> worked...</p>
+<p>The problem was that the file watcher didn't skip over <code>Access</code> events, but Ruff itself accesses the <code>pyproject.toml</code> when checking the project.
+That means, Ruff triggers <code>Access</code> events but it also schedules a re-check on every <code>Access</code> event... and this goes one forever.</p>
+<p>This PR skips over <code>Access</code> and <code>Other</code> event. <code>Access</code> events are uninteresting because they're only reads, they don't change any file metadata or content.
+The <code>Other</code> events should be rare and are mainly to inform about file watcher changes... we don't need those.</p>
+<p>I also added an explicit handling for the <code>Rescan</code> event. File watchers emit a <code>Rescan</code> event if they failed to capture some file watching changes
+and it signals that the program should assume that all files might have changed (the program should do a rescan to <em>get up to date</em>).</p>
+<h2>Test Plan</h2>
+<p>I tested that Ruff no longer loops when running <code>check --watch</code>. I verified that Ruff rechecks file after making content changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-06 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-12-06 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-06 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-06 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-06 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-06 08:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add fuzzer to catch panics for invalid syntax - astral-sh/ruff #14678</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add fuzzer to catch panics for invalid syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14678">#14678</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-11-29 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-29 13:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a fuzzer harness for red knot that runs the type checker on source code that contains invalid syntax.</p>
+<p>Additionally, this PR also updates the <code>init-fuzzer.sh</code> script to increase the corpus size to:</p>
+<ul>
+<li>Include various crates that includes Python source code</li>
+<li>Use the 3.13 CPython source code</li>
+</ul>
+<p>And, remove any non-Python files from the final corpus so that when the fuzzer tries to minify the corpus, it doesn't produce files that only contains documentation content as that's just noise.</p>
+<h2>Test Plan</h2>
+<p>Run <code>./fuzz/init-fuzzer.sh</code>, say no to the large dataset.
+Run the fuzzer with <code>cargo +night fuzz run red_knot_check_invalid_syntax -- -timeout=5</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-11-29 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-03 06:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-12-03 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-12-03 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2024-12-03 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-03 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>fuzz/init-fuzzer.sh</code>:32 on 2024-12-03 13:20</div>
+            <div class="timeline-body"><p>Should we also keep stub files?</p>
+<p>Using</p>
+<pre><code class="language-suggestion">    find . -type f -not \( -name &quot;*.py&quot; -or -name &quot;*.pyi&quot; \) -delete
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">    find . -type f -not -regex '.*\.pyi?' -delete
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/red_knot_check_invalid_syntax.rs</code>:129 on 2024-12-03 13:37</div>
+            <div class="timeline-body"><p>Constructing the <code>db</code> can be fairly expensive. It might be worth to cache the db instance to make the fuzzer faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-03 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-04 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>fuzz/init-fuzzer.sh</code>:32 on 2024-12-04 08:11</div>
+            <div class="timeline-body"><p>We could but at the end we would still use a <code>.py</code> file even if the content is coming from a stub file. The reason is that the fuzzer gives us the raw bytes of the source code that it generates.</p>
+<p>Hmm, maybe we should run red knot once on a <code>.py</code> file and then on a <code>.pyi</code> file with the same content as we do on the corpus tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-12-04 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-12-04 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

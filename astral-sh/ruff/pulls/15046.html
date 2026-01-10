@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic support for `type: ignore` comments - astral-sh/ruff #15046</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Basic support for <code>type: ignore</code> comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15046">#15046</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-18 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-18 16:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds initial support for <code>type: ignore</code>. It doesn't do anything fancy yet like:</p>
+<ul>
+<li>Detecting invalid type ignore comments</li>
+<li>Detecting type ignore comments that are part of another suppression comment: <code># fmt: skip # type: ignore</code></li>
+<li>Suppressing specific lints <code>type: ignore [code]</code></li>
+<li>Detecting unsused type ignore comments</li>
+<li>...</li>
+</ul>
+<p>The goal is to add this functionality in separate PRs.</p>
+<h2>Test Plan</h2>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-18 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Initial type: ignore support" to "Basic support for `type: ignore` comments" by @MichaReiser on 2024-12-18 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-18 16:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-18 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-18 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-18 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-18 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:9 on 2024-12-18 16:22</div>
+            <div class="timeline-body"><p>Whoops. I accidentally commited this file when I rebased https://github.com/astral-sh/ruff/pull/14956/files#diff-b1807b646317ac1945d748f7db40451ac62c582b1bbc049b174e8d98f13d3f22 Probably because it didn't get stashed with <code>git stash</code>. So consider all code in this file as new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:21 on 2024-12-18 16:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Before opening parenthesis
+
+A suppression that applies to all errors before the opening parenthesis.
+</code></pre>
+<p>(&quot;Parentheses&quot; is plural, &quot;parenthesis&quot; is singular; here we are discussing a single opening parenthesis.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:59 on 2024-12-18 16:59</div>
+            <div class="timeline-body"><p>Nit: when we have a TODO, I prefer to be extra clear about what precisely should change in the test when the TODO is fixed, to reduce ambiguity for future-us.</p>
+<pre><code class="language-suggestion">TODO: We should support this for better interopability with other suppression comments.
+
+```py
+# fmt: off
+# TODO this error should be suppressed
+# error: [unresolved-reference]
+a = test \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-18 17:39</div>
+            <div class="timeline-body"><p>I'm a bit confused how this test is working. I see you use the end of the diagnostic range for finding applicable suppressions. In this case the diagnostic spans the entire statement, so the end of the diagnostic range would be on the third line. But the suppression range would be just the first line. So why does this suppression apply? (To be clear, I think it <em>should</em> apply, I just don't understand how it works. I could debug and figure it out, but faster to ask you :) )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-18 17:39</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:34 on 2024-12-18 18:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                line_start = token.end();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 18:04</div>
+            <div class="timeline-body"><p>does this mean we ignore <code>type: ignore</code> comments that use mypy error codes? That's different to e.g. what pyright does. If pyright sees a <code>type: ignore[misc]</code> comment, it just interprets it as a bare <code>type: ignore</code> comment that suppresses all typing violations (because the tool doesn't support using <code>type: ignore</code> comments with error codes).</p>
+<p>This has proved to be very useful in e.g. typeshed, where we often have <code>type: ignore</code> comments that use mypy error codes. Pyright just treats them as blanket <code>type: ignore</code> comments in our CI at typeshed, but mypy understands them as only applying to specific mypy error codes.</p>
+<p>Pytype is the third type checker that we run in CI at typeshed, but I believe they do not support <code>type: ignore</code> comments at all, so anything we put in the <code>type: ignore</code> comment is sort-of irrelevant from pytype's perspective</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:95 on 2024-12-18 18:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// However, there are few cases where the range gets expanded to
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-18 18:08</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 20:33</div>
+            <div class="timeline-body"><p>Oh nice find. Let me add a test for this and also take a look at pyrights regex</p>
+<p>It's not entirely clear to me yet whether we should support type: ignore comments with codes or do what pyright does. I can see how ignoring them is useful in a situation like typeshed but I could see why users would want to use them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-18 20:36</div>
+            <div class="timeline-body"><p>This is just a bad example. There's only one error: the unresolved reference to Test. The declared type is unknown, so the assignment itself is fine.</p>
+<p>I think a better example would be to change the right side to Test too and add and acknowledge that error with an error pragma comment. I'll change it tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-18 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-18 21:03</div>
+            <div class="timeline-body"><p>Oh, of course!</p>
+<p>But does that mean that with the current implementation, in a case where the diagnostic range does span multiple lines:</p>
+<pre><code class="language-py">x: str = (
+    1 + 3
+)  # type: ignore
+</code></pre>
+<p>You would be required to suppress this on the last line (as shown), not on the first (after the opening paren)?</p>
+<p>I find that a little counter-intuitive; I would expect to be able to suppress a multi-line diagnostic on the line where it starts. (Imagine for example a diagnostic covering an entire <code>def</code> or <code>class</code> statement: I'd want to suppress that with a <code>type: ignore</code> on the <code>def</code> or <code>class</code> line, not on the final line of the function or class body, which would be pretty weird.) How does this work in pyright and mypy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-18 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 21:05</div>
+            <div class="timeline-body"><p>I don't think we should support <code>type: ignore</code> comments with our own codes. This will cause us a practical problem right out of the gate, because typeshed uses mypy codes in <code>type: ignore</code> comments, and our codes don't match mypy codes. If we did this, we'd also have to implement compatibility code aliases for mypy codes right away, which is a complexity we probably want to avoid?</p>
+<p>For better or worse, mypy already claimed the &quot;code namespace&quot; for <code>type: ignore</code>; given the typeshed situation I think our best option is to do what pyright does: accept and ignore codes with <code>type: ignore</code>. And use our own codes with our own form of suppression comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-18 21:12</div>
+            <div class="timeline-body"><p>I'd have to look but there's the other parenthesis case where mypy doesn't do anything fancy</p>
+<p>For classes and other suites. I don't think we should ever use the entire statement range. It leads to awful diagnostic frames. We should instead report the diagnostic on the name, which then also works perfectly with suppression comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 21:15</div>
+            <div class="timeline-body"><p>I don't mind deferring the decision but I'm not sure if the decision should only be based on what one project does.</p>
+<p>I don't think supporting codes does imply that we have to support mypy rule names. I consider these two separate decisions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-18 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 21:19</div>
+            <div class="timeline-body"><p>I agree that in terms of the principle it should not be, and I totally get that it's frustrating to have our design space constrained here. But I agree with Carl that it will probably cause too many compatibility problems if we reject or ignore all <code>type: ignore</code> comments that use mypy error codes. That will make it quite painful for users to migrate from mypy to red-knot, or for users to run both tools on one repo. Obviously we hope that most users won't need to run multiple type checkers on any one repo, but some users such as typeshed will <em>have</em> to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-18 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 21:23</div>
+            <div class="timeline-body"><p>That makes sense. I'm also not reasoning about it nor feeling frustrated. I just think that users will ask for it and we may want to add support for it in some way or another. It could just be an option.</p>
+<p>Ignoring codes also isn't necessarily enough to run mypy and red knot side by side. At least not if red knot warns about unused suppressions. I don't think we have to solve this now and not supporting codes seems a good start. But we may need a little more but let's learn from users and testing on real projects</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-18 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-18 21:24</div>
+            <div class="timeline-body"><p>It looks like mypy and pyright both allow you to put the <code>type: ignore</code> on <em>any</em> line within the diagnostic range:</p>
+<ul>
+<li>https://pyright-play.net/?strict=true&amp;code=IYLgBAzgLgTmC8YAUAoM6wEYwGoxowCYUBKFFAD3GjkSXQGIwoBPABwFNwBLAcwDsA9jA4F02PMTIoW1WAmRisuRs3ZcwfISKVTyLQnNqKMynLtWtOPAcNHSAXkYWpTEsFMvqb2jkA</li>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2352369ed2274c23a8e54605a1307f16</li>
+</ul>
+<p>(The difference between them in this example is that pyright includes the opening and closing parentheses in the diagnostic range; mypy does not.)</p>
+<p>I think we will probably want to match this suppression-on-any-line behavior for multi-line diagnostics, otherwise we are just creating an unnecessary barrier for migration as some people's <code>type: ignore</code> comments that worked on mypy/pyright will stop working for us.</p>
+<p>Either way, it would be good to include a test like this one with multi-line diagnostic range, to show what our behavior is, and maybe include some commentary on the tradeoffs.</p>
+<p>(Agreed that it's better to avoid reporting diagnostics on an entire <code>def</code> or <code>class</code> statement.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-18 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/suppression.rs</code>:29 on 2024-12-18 21:26</div>
+            <div class="timeline-body"><p>I feel quite strongly that we should avoid creating migration barriers unnecessarily, and mypy is currently the most popular type checker, so I do think we will sometimes have to make decisions based on what it does.</p>
+<p>Supporting our own codes in <code>type: ignore</code>, without mypy compat aliases, unnecessarily creates a migration barrier from mypy, so I think it would be shooting ourselves in the foot to do this without very strong reasons.</p>
+<p>(Edit: wrote this before seeing the previous two comments, github wasn't live updating. Conclusion in the last comment sounds good, agreed that it could be an option.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-19 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-19 09:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like mypy and pyright both allow you to put the type: ignore on any line within the diagnostic range:</p>
+</blockquote>
+<p>I've to take another look but i'm a bit concerned about using intersection here because it would mean that an ignore comment in the body of a statement would ignore any error in that statement's clause. E.g.</p>
+<pre><code>class ThisClassHasAnError:
+	def test():
+		a + 3  # type: ignore
+</code></pre>
+<p>We don't want that the <code>type: ignore</code> ignores any errors from the enclosing function or class!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-19 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-19 09:33</div>
+            <div class="timeline-body"><p>Sooo, this is all slightly more subtle ;)</p>
+<p>Your examples don't work with Red Knot because we report a different error range:</p>
+<ul>
+<li>Red Knot: Reports the entire assignment as invalid (the statement!)</li>
+<li>Mypy: Reports the range of the right side (the assigned value)</li>
+<li>Pyright: Reports the range of the right side</li>
+</ul>
+<p>So red knot is the weird one here.</p>
+<p>To add another data point. Ruff does the opposite of what I have here. It searches by the range's start position https://play.ruff.rs/280de058-f694-4f93-8321-46474a0aa541</p>
+<p>Overall, I'm worried about allowing suppression comments anywhere inside an expression. Let's say you have</p>
+<pre><code class="language-py">a = (
+	some_call(a, b, c)   # type: ignore 
+		+ d
+		+ e
+		+ b
+)
+</code></pre>
+<p>The <code>type: ignore</code> now disables not just an error related to the call but also any diagnostics related to the binary expression. I'd find this very surprising. It gets worse the more nested your expressions are.</p>
+<p>I could see a middle ground where we allow any suppression comment on the same line as the diagnostic range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-19 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-19 10:09</div>
+            <div class="timeline-body"><p>My understanding is that Mypy also uses the start and end line numbers.</p>
+<p>Mypy checks if the error is ignored on any <code>origin.lines</code></p>
+<p>https://github.com/python/mypy/blob/1f9317f593dc41a2805a3093e2e1890665485e76/mypy/errors.py#L493-L505</p>
+<p>And origin is defined as</p>
+<p>https://github.com/python/mypy/blob/1f9317f593dc41a2805a3093e2e1890665485e76/mypy/errors.py#L98-L101</p>
+<p>So I think we should do the same for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2024-12-19 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-19 11:37</div>
+            <div class="timeline-body"><p>I adjusted the implementation to accept <code>type: ignore</code> comments on the start and end lines of the diagnostic range. I understand that this matches mypy's behavior https://github.com/astral-sh/ruff/pull/15046#discussion_r1891545731.</p>
+<p>However, this in itself won't be sufficient for mypy compatibility. We'd also have to match mypy's diagnostic range which we currently don't for invalid assignments (https://github.com/astral-sh/ruff/pull/15046#discussion_r1891439644). But that's a problem out of this PR's scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-19 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-19 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-19 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:26 on 2024-12-19 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>We don't want that the <code>type: ignore</code> ignores any errors from the enclosing function or class!</p>
+</blockquote>
+<p>Well, we agreed that we shouldn't have diagnostics spanning an entire function or class anyway. But yes, the point about full intersection potentially leading to too much suppression makes sense. It is interesting that this still seems to be what pyright does (at least that's how I interpret https://pyright-play.net/?strict=true&amp;code=IYLgBAzgLgTmC8YAUAoM6wEYwGoxowCYUBKFFAD3GjkSXQGIwoBPABwFNwBLAcwDsA9jA4F02HGLDEyKFtVgJkUiY2bsuYPkJFSZ5FoQW1lGLLj1rWnHgOGjZAL2NLUZiXtJWNtnRyA ). Though I'm having trouble constructing any case where it's ambiguous -- pyright seems to mostly avoid &quot;nested&quot; diagnostics by using narrow enough ranges, and having erroring operations return Unknown which then causes the outer operation to no longer be an error.</p>
+<p>EDIT: oops, should have read your updated tests first, I see you explored this already! The ambiguous case can be constructed in pyright by using <code>typing.cast</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:48 on 2024-12-19 15:46</div>
+            <div class="timeline-body"><p>Could we use <code>/ 0</code> here and then the test would function without a TODO?</p>
+<p>Or maybe that muddies the comparison with pyright, which doesn't error on division by zero</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-19 15:48</div>
+            <div class="timeline-body"><p>Looks good, thank you for digging into the multi-line behavior here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-19 16:45</div>
+            <div class="timeline-body"><p>Something for tomorrow. I want to take another look why we need to test both the start and the end. Ruff only tests the start. Testing both might be a problem for a future linter if we have</p>
+<pre><code class="language-py">if True:
+	print(&quot;test&quot;)
+else: 
+	pass  # knot: ignore
+</code></pre>
+<p>because the ignore on the <code>pass</code> would now ignore any error that applies to the entire else-clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-20 09:29</div>
+            <div class="timeline-body"><p>Not supporting end positions does seem unintuitive. For example, the following wouldn't work</p>
+<pre><code class="language-py">y = (
+    4 /
+    0  # type: ignore
+)
+</code></pre>
+<p>We should push users towards using specific error codes to mitigate the issue that I pointed out in https://github.com/astral-sh/ruff/pull/15046#issuecomment-2555032954</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-20 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type-ignore.md</code>:48 on 2024-12-20 09:35</div>
+            <div class="timeline-body"><p>It doesn't work with <code>/ 0</code> because Red Knot doesn't support <code>cast</code> yet (and without the cast it's <code>Unknown / 0</code> which we seem to accept)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-20 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-20 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-20 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-20 18:16</div>
+            <div class="timeline-body"><blockquote>
+<p>We should push users towards using specific error codes</p>
+</blockquote>
+<p>And try to avoid overly-large diagnostic ranges. In particular, I suspect we should try to avoid diagnostic ranges on statements, because I think those are the cases where the end is least intuitive.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

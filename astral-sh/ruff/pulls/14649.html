@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Deeper understanding of `LiteralString` - astral-sh/ruff #14649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Deeper understanding of <code>LiteralString</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14649">#14649</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-11-28 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-28 00:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14648.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-11-28 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-11-28 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-11-28 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2024-11-28 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-28 00:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:3 on 2024-11-28 03:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`LiteralString` represents a string that is either defined directly within the source code or is
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:10 on 2024-11-28 03:42</div>
+            <div class="timeline-body"><p>IMO this section goes too far. We don't need to test that every special annotation form works in every possible type expression location. It's sufficient to test that it works in a type expression, and we will have other tests showing that all these various locations are parsed as type expressions, as we add support for them.</p>
+<p>Also, this section doesn't go far enough :) In that the tests here don't really test that we actually understand the annotation. I expect most or all of these tests already pass without the code changes in this PR?</p>
+<p>I would simplify this entire section down to a single test showing that <code>x: LiteralString</code> results in a declared type of <code>LiteralString</code> for <code>x</code>. Unless you think there are specific other cases that are especially interesting to test (i.e. because it would be easy to get them wrong in the implementation.) The test can look something like this:</p>
+<pre><code class="language-py">x: LiteralString
+
+def f():
+    reveal_type(x)  # revealed: LiteralString
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:104 on 2024-11-28 03:46</div>
+            <div class="timeline-body"><p>It's not clear to me what these have to do with parametrizing <code>LiteralString</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:100 on 2024-11-28 03:47</div>
+            <div class="timeline-body"><p>I don't think there's anything we need to test here involving <code>TypeAlias</code> or <code>TypeAliasType</code>, which would also eliminate the need for the TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:42 on 2024-11-28 03:48</div>
+            <div class="timeline-body"><p>IMO these two lines are the only thing we actually need to test in the tests for <code>LiteralString</code>. The rest belongs in a future test suite for type aliases, which we don't really support yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:160 on 2024-11-28 03:53</div>
+            <div class="timeline-body"><p>I don't think we should likely ever add the level of special-casing that would be needed to infer <code>&quot;foo, bar&quot;</code> here. I think we should just follow the typeshed annotations (and overloads) for <code>str.format</code>, which would result in inferring this as <code>LiteralString</code>. (That's also a more appropriate thing to test in this file.)</p>
+<pre><code class="language-suggestion"># TODO: Infer `LiteralString`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:164 on 2024-11-28 03:54</div>
+            <div class="timeline-body"><p>&quot;Compatible&quot; is an informal term that isn't defined in the Python typing spec. We should prefer defined terms, such as &quot;assignable&quot; or &quot;subtype&quot;</p>
+<pre><code class="language-suggestion">### Assignability
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:167 on 2024-11-28 03:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`Literal[&quot;&quot;]` is assignable to `LiteralString`, and `LiteralString` is assignable to `str`, but
+not vice versa.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:176 on 2024-11-28 03:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">foo_2 = &quot;foo&quot; if bool() else &quot;bar&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:192 on 2024-11-28 03:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">baz_3 = &quot;foo&quot; if bool() else 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:636 on 2024-11-28 04:01</div>
+            <div class="timeline-body"><p>All of the tests in this PR pass without adding these lines. The default fallback case for <code>is_subtype_of</code> is &quot;not a subtype&quot;, so generally we don't need to add specific <code>false</code> cases like this, unless they need to be handled before a subsequent &quot;true&quot; case.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1411 on 2024-11-28 04:02</div>
+            <div class="timeline-body"><p>&quot;call type&quot; doesn't really make sense here, &quot;call todo&quot; would make more sense</p>
+<pre><code class="language-suggestion">            Type::Todo(_) =&gt; CallOutcome::callable(todo_type!(&quot;call todo&quot;)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:302 on 2024-11-28 04:06</div>
+            <div class="timeline-body"><p>This looks like it's improving support for chained comparisons? It doesn't appear directly connected to <code>LiteralString</code>.</p>
+<p>I'm not immediately seeing what test added in this PR requires this support?</p>
+<p>Unless this is definitely required in this PR for reasons I'm not seeing, I think it would be easier to evaluate in a separate PR, accompanied by tests which specifically require this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:341 on 2024-11-28 04:09</div>
+            <div class="timeline-body"><p>Building an intersection with just one type in it is a no-op, just use the single type directly.</p>
+<pre><code class="language-suggestion">                            constraints.insert(symbol, rhs_ty);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-11-28 04:10</div>
+            <div class="timeline-body"><p>Thanks for the contribution! I appreciate the thorough tests, but it is possible to have too many tests :) We should make sure that each test, and each part of each test, is asserting something meaningful about the added feature. Usually added tests should fail without the code added in the PR, unless the PR is specifically about improving test coverage for existing features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-28 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1411 on 2024-11-28 08:28</div>
+            <div class="timeline-body"><p>We could also just propagate the existing TODO from the left-hand side</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-28 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:10 on 2024-11-28 13:17</div>
+            <div class="timeline-body"><p>Most of the logic is already in place (props to everyone!), so, yes, this PR is rather small in terms of features. Removed most of the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-28 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:160 on 2024-11-28 13:17</div>
+            <div class="timeline-body"><p>I have to disagree on this one. While it is true that the type checker often doesn't need to care about such minutiae, the linter might, especially if we are going to add support for embedded languages in the future.</p>
+<p>Consider this regex example:</p>
+<pre><code class="language-python"># Regex group names, extracted to constants to avoid typos
+NAME = 'name'      # Inferred type: Final[Literal['name']]
+DOMAIN = 'domain'  # Inferred type: Final[Literal['domain']]
+
+# This should work as if it was written as a literal string.
+PATTERN = re.compile('(?P&lt;{}&gt;[^@]+)@(?P&lt;{}&gt;[^@]+)'.format(NAME, DOMAIN))
+
+# Somewhere else
+match = PATTERN.fullmatch(email)
+name, group = match[NAME], match[DOMAIN]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-28 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:176 on 2024-11-28 13:18</div>
+            <div class="timeline-body"><p>Red Knot's inference capabilities are so powerful, an <code>if</code> expression won't prevent it from knowing that <code>foo_2</code> will be <code>&quot;bar&quot;</code>. These two ugly branches are thus necessary to ensure that <code>foo_2</code> is inferred to be of type <code>Literal[&quot;foo&quot;, &quot;bar&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-28 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:302 on 2024-11-28 13:19</div>
+            <div class="timeline-body"><p>This part is covered by the &quot;Narrowing&quot; section. <code>last_rhs_ty</code> is introduced to avoid inferring an expression twice. Added a chained comparison test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:176 on 2024-11-28 13:21</div>
+            <div class="timeline-body"><p>This is because you're using <code>bool()</code> to create the test, and red-knot knows that <code>bool()</code> with no arguments creates an object of type <code>Literal[False]</code>. It actually seems like a bug that it <em>doesn't</em> know that for the more verbose form that doesn't use a ternary expression. We shouldn't rely on the bug.</p>
+<p>Instead, you should create a custom function that is annotated as returning a <code>bool</code>, since red-knot will not be able to &quot;see through&quot; the return annotation, and use <em>that</em> for the test:</p>
+<pre><code class="language-py">def coinflip() -&gt; bool:
+    return True
+
+foo_2 = &quot;foo&quot; if coinflip() else &quot;bar&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-28 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:160 on 2024-11-28 13:30</div>
+            <div class="timeline-body"><p>I see your point @InSyncWithFoo: maybe string templating really is special enough for us to warrant special-casing <code>str.format</code> in the way you describe here. It's a somewhat slippery slope there, though (we obviously are not building a complete Python interpreter in this project!), and I feel like it's not clear that we'll <em>necessarily</em> add this special casing. It's also going to be a long way off; adding this kind of special casing isn't a priority for us right now. I agree with @carljm that this TODO feels unnecessary right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:37 on 2024-12-03 03:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">from typing import LiteralString
+
+x: LiteralString
+
+def f():
+    reveal_type(x)  # revealed: LiteralString
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4650 on 2024-12-03 03:17</div>
+            <div class="timeline-body"><p>Nice error message!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-03 03:27</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-03 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-03 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

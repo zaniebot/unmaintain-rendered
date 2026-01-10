@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle nested imports correctly in `from ... import` - astral-sh/ruff #15026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle nested imports correctly in <code>from ... import</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15026">#15026</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-16 23:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-16 23:19</div>
+            <div class="timeline-body"><p>#14946 fixed our handling of nested imports with the <code>import</code> statement, but didn't touch <code>from...import</code> statements.</p>
+<p>cf https://github.com/astral-sh/ruff/issues/14826#issuecomment-2525344515</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2281 on 2024-12-16 23:29</div>
+            <div class="timeline-body"><p>I took the liberty of reorganizing this logic to use early-return to tease apart the different cases.  I find it easier to reason about this way, but I'm happy to revert back to the previous style if that's house style.  Other than the part I call out below, most of this diff should just be a refactoring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-16 23:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2332 on 2024-12-16 23:29</div>
+            <div class="timeline-body"><p>This stanza is the part that's new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-16 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-16 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 00:05</div>
+            <div class="timeline-body"><p>What if we did record each <code>from</code> import as a potential submodule import in semantic indexing? I think this might work, because when it isn't a submodule, we'd just get a little further into the submodule stanza in <code>Type::member</code> before finding we can't resolve the &quot;submodule&quot; and giving up and continuing to a regular module-namespace lookup. Then we wouldn't need to have this stanza both places, but I think also it would make code like this work, which doesn't in the current PR (this is the new code for <code>bar.py</code> in the test fixed by this PR):</p>
+<pre><code class="language-py">from . import foo
+import pkg
+
+reveal_type(pkg.foo.X)
+</code></pre>
+<p>That said: I'm not sure we need to make that code work. It's pretty subtle why it works at runtime, and (just as in the case without the <code>from . import foo</code> line) there's no reason you can't change <code>import pkg</code> to <code>import pkg.foo</code> to make it work explicitly.</p>
+<p>And adding every <code>from</code> import as a speculative submodule import is going to increase the size of the data we have to store in semantic index, potentially a lot (especially for codebases that mostly use <code>from</code> imports of individual objects, which is definitely a style preferred some places).</p>
+<p>So I think I'm happy going with this approach for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 00:06</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-17 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2281 on 2024-12-17 00:08</div>
+            <div class="timeline-body"><p>I think we (or at least I) have tended towards expression style rather than early return style, probably particularly in this case to avoid the repeat calls to <code>add_declaration_with_binding</code>. But I don't really have a strong preference for that, and I agree that in this case your version approves readability. In other words: feel free to improve our house style, that's what you're here for :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-17 08:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2281 on 2024-12-17 08:37</div>
+            <div class="timeline-body"><p>Just some additional data point: Early returns are used extensively in Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-17 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 08:42</div>
+            <div class="timeline-body"><p>We can use the identifier directly without creating a new name</p>
+<pre><code class="language-suggestion">        if let Some(submodule_name) = ModuleName::new(&amp;name) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:124 on 2024-12-17 11:36</div>
+            <div class="timeline-body"><p>I think this means that you can delete the last bullet point of the TODO here:</p>
+<p>https://github.com/astral-sh/ruff/blob/7c2e7cf25e2b04f7b52052ed4c0710a593ebe4a1/crates/red_knot_python_semantic/src/types/infer.rs#L2244-L2252</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-17 11:38</div>
+            <div class="timeline-body"><p>Nice! I like the use of early return</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-17 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:124 on 2024-12-17 12:57</div>
+            <div class="timeline-body"><p>Oh, I think you can also get rid of the TODO comment here:</p>
+<p>https://github.com/astral-sh/ruff/blob/dcb99cc8171aa579256f53ca3277a6ac524f5224/crates/red_knot_python_semantic/resources/mdtest/import/relative.md?plain=1#L133-L143</p>
+<p>I don't think there's actually anything to do there? It looks to me like that test is actually testing that we emit a diagnostic if you attempt a relative import of a nonexistent submodule. So previously it passed for the wrong reasons, but I'm guessing with this PR it now passes for the right reasons...?</p>
+<p>It would be great to add a short description to that test that clarifies what it's actually testing 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-17 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 14:03</div>
+            <div class="timeline-body"><p>Oh, this also doesn't handle invalid syntax like the following well:</p>
+<pre><code class="language-py"># experiment/foo.py
+from importlib import metadata.diagnose
+reveal_type(metadata)
+</code></pre>
+<p>Running red-knot with <code>--project experiment</code> gives this output:</p>
+<pre><code>error[invalid-syntax] /Users/alexw/dev/experiment/foo.py:1:31 Expected ',', found '.'
+error[lint:unresolved-import] /Users/alexw/dev/experiment/foo.py:1:32 Module `importlib` has no member `diagnose`
+warning[lint:undefined-reveal] /Users/alexw/dev/experiment/foo.py:2:1 `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+info[revealed-type] /Users/alexw/dev/experiment/foo.py:2:1 Revealed type is `&lt;module 'importlib.metadata'&gt;`
+</code></pre>
+<p>This is because <code>metadata.diagnose</code> is a valid module name, but not a valid import alias (an import alias must be a valid identifier; it cannot have any <code>.</code>s in it).</p>
+<p>I think the output we should aim for on this snippet are:</p>
+<pre><code>error[invalid-syntax] /Users/alexw/dev/experiment/foo.py:1:31 Expected ',', found '.'
+warning[lint:undefined-reveal] /Users/alexw/dev/experiment/foo.py:2:1 `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+info[revealed-type] /Users/alexw/dev/experiment/foo.py:2:1 Revealed type is Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-17 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 14:08</div>
+            <div class="timeline-body"><p>Though this is at least partly a pre-existing issue; here's the error message we give on <code>main</code> for this:</p>
+<pre><code>error[lint:unresolved-import] /Users/alexw/dev/experiment/foo.py:1:23 Module `importlib` has no member `metadata`
+error[invalid-syntax] /Users/alexw/dev/experiment/foo.py:1:31 Expected ',', found '.'
+error[lint:unresolved-import] /Users/alexw/dev/experiment/foo.py:1:32 Module `importlib` has no member `diagnose`
+warning[lint:undefined-reveal] /Users/alexw/dev/experiment/foo.py:2:1 `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+info[revealed-type] /Users/alexw/dev/experiment/foo.py:2:1 Revealed type is `Unknown`
+</code></pre>
+<p>I'm okay deferring this to a followup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:33 on 2024-12-17 15:06</div>
+            <div class="timeline-body"><p>This is no longer needed with https://github.com/astral-sh/ruff/pull/15030 merged.  Thanks @MichaReiser!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:124 on 2024-12-17 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>So previously it passed for the wrong reasons, but I'm guessing with this PR it now passes for the right reasons...?</p>
+</blockquote>
+<p>Ha!  Yeah that looks right to me...  I was a bit surprised, and also a bit not surprised, to learn that that <code>from . import foo</code> syntax works to import a symbol from the current package.  Surprised in that it's a no-op, so why would you do that.  But not surprised in that it seems like the right behavior for that syntax.</p>
+<p>Anyway, added a comment to hopefully clarify all of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>And adding every <code>from</code> import as a speculative submodule import is going to increase the size of the data we have to store in semantic index</p>
+</blockquote>
+<p>I was worried less about the size of the data, since there are compressible representations if that turns out to be a problem.  My concern was more about execution time, since we would attempt a submodule resolution every time we look up a member of a module.</p>
+<p>Though as I talk through this, I realize it wouldn't be for <em>every</em> module member lookup — just the ones that are involved in a <code>from...import</code>.  Which would be a weird pattern to follow:</p>
+<pre><code class="language-py">import unittest
+from unittest import mock
+reveal_type(unittest.mock)
+</code></pre>
+<p>So maybe it wouldn't be so bad?  I do like the idea of these imports being handled by the existing code from #14946, and not needing the additional check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 15:29</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 15:37</div>
+            <div class="timeline-body"><p>I added an mdtest with the current behavior, along with a TODO that we might consider cleaning up the diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-17 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-17 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 15:51</div>
+            <div class="timeline-body"><p>Ah, but tracking this in the semantic index means that we'd need to resolve relative import paths, which means we'd need to know (when building the semantic index) whether the current file is a module or a package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-17 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 15:52</div>
+            <div class="timeline-body"><p>Makes sense! I don't have strong feelings about which way we go here, happy to go with whatever makes more sense to you. I think the most valuable thing is that we record in some form our conclusions from the time we've spent thinking about the two options here :) (The code example I gave above may be worth adding as a test either way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:133 on 2024-12-17 15:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">This test verifies that we emit an error when we try to import a symbol that is neither a submodule
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 15:56</div>
+            <div class="timeline-body"><blockquote>
+<p>we'd need to resolve relative import paths, which means we'd need to know (when building the semantic index) whether the current file is a module or a package.</p>
+</blockquote>
+<p>Ah! Yeah, that's a problem; we can't have dependencies on information external to the file in semantic indexing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-17 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2322 on 2024-12-17 15:58</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/relative.md</code>:133 on 2024-12-17 18:10</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2320 on 2024-12-17 18:10</div>
+            <div class="timeline-body"><p>Added that test case and some additional commentary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-17 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 18:19</div>
+            <div class="timeline-body"><p>Looks great!</p>
+<p>EDIT: well, except for the failing test 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-17 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>well, except for the failing test 😆</p>
+</blockquote>
+<p>Details :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-17 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2024-12-17 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-17 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-17 19:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

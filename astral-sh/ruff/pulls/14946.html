@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bind top-most parent when importing nested module - astral-sh/ruff #14946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bind top-most parent when importing nested module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14946">#14946</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-12 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-12 20:37</div>
+            <div class="timeline-body"><p>When importing a nested module, we were correctly creating a binding for the top-most parent, but we were binding that to the nested module, not to that parent module.  Moreover, we weren't treating those submodules as members of their containing parents.  This PR addresses both issues, so that nested imports work as expected.</p>
+<p>As discussed in ~Slack~ whatever chat app I find myself in these days :smile:, this requires keeping track of which modules have been imported within the current file, so that when we resolve member access on a module reference, we can see if that member has been imported as a submodule.  If so, we return the submodule reference immediately, instead of checking whether the parent module's definition defines the symbol.</p>
+<p>This is currently done in a flow insensitive manner.  The <code>SemanticIndex</code> now tracks all of the modules that are imported (via <code>import</code>, not via <code>from...import</code>).  The member access logic mentioned above currently only considers module imports in the file containing the attribute expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-12 20:37</div>
+            <div class="timeline-body"><p>(This is still marked as draft because I still plan on adding some additional test cases, but should be code complete if folks want to take an initial look at the implementation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-12 20:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-13 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:203 on 2024-12-13 07:12</div>
+            <div class="timeline-body"><p>Nit: I'd call this <code>push</code> similar to <code>PathBuf::push</code>, <code>Vec::push</code>, <code>String::push</code>, ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:227 on 2024-12-13 07:16</div>
+            <div class="timeline-body"><p>Nit: I'd call this <code>ancestors</code> similar to <code>PathBuf::ancestors</code>. I'm further leaning towards naming it <code>ancestor_components</code> because the method returns a <code>&amp;str</code>, unlike <code>ModuleName::Parent</code> that returns a <code>&amp;str</code> or change the return type to <code>ModuleName</code> (or we introduce a <code>ModuleNameRef</code> if we're concerned about the potential allocation).</p>
+<p>Nit2: I think we can simplify this by calling <code>ModuleName::parent</code> (Only true if you change the return type)</p>
+<pre><code>std::iter::successors(Some(self.clone()), Self::parent)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:674 on 2024-12-13 07:17</div>
+            <div class="timeline-body"><p>Nit:</p>
+<ul>
+<li>The usage suggest that we should change <code>parents</code> to return a <code>ModuleName</code></li>
+<li>We can use <code>extend</code></li>
+</ul>
+<pre><code class="language-suggestion">                        self.import_modules.extend(module_name.parents().map(|name| ModuleName::new(name).unwrap()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2662 on 2024-12-13 07:20</div>
+            <div class="timeline-body"><p>Nit: I'm slightly leaning towards naming this <code>file</code>. It's the file in which the module is defined. Also I was a bit confused what <code>module_ref.module()</code> would return: The module of the module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:82 on 2024-12-13 07:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::ModuleLiteral(module) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3084 on 2024-12-13 07:25</div>
+            <div class="timeline-body"><p>Nit: Could this logic be moved into <code>Type::member</code> (which then calls into <code>ModuleType::member</code>) or does it only apply when looking up attributes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2660 on 2024-12-13 07:28</div>
+            <div class="timeline-body"><p>I don't have a good sense for what's better but we could remove the <code>name</code> here and instead call <code>file_to_module</code> and then retrieve the name from <code>module.name</code>. We can add a <code>name(db)</code> method that hides the <code>file_to_module</code> and <code>unwrap</code> calls.</p>
+<p>It would reduce the amount of data that we store, possibly at the cost that module attribute lookups are slightly slower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-13 07:28</div>
+            <div class="timeline-body"><p>This is great. I only have a few nit comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2662 on 2024-12-13 20:16</div>
+            <div class="timeline-body"><p>Ah yes, this came from when I was also storing the file containing the reference that was originally resolved to this module, and in that case I was using more descriptive names to distinguish the two files.  But now I'm not, ~so I'll revert back to that name!~</p>
+<p>Actually, with the change to store <code>Module</code> in here, <code>module</code> does (now) seem to be the right name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:82 on 2024-12-13 20:17</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3084 on 2024-12-13 20:19</div>
+            <div class="timeline-body"><p>I don't think it can be in <code>Type</code> because it requires resolving the module, which is currently handled by <code>TypeInferenceBuilder</code>.  And the &quot;submodules are available as attributes of the containing package&quot; bit is only relevant during attribute access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:203 on 2024-12-13 20:20</div>
+            <div class="timeline-body"><p>Yes, good catch!  I had my language wires crossed thinking of Python's <code>list.append</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:227 on 2024-12-13 20:24</div>
+            <div class="timeline-body"><p>I like that <code>successors</code> formulation.  At least at the moment, the extra allocations aren't an issue since we were already doing a <code>clone</code> over in the semantic index builder.  So this change just moves where the allocation occurs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:674 on 2024-12-13 20:25</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2660 on 2024-12-13 20:30</div>
+            <div class="timeline-body"><p>Ah, actually this tells me we should just use <code>Module</code> here!  I've kept the <code>ModuleLiteralType</code> wrapper struct so that I could mark it as <code>salsa::tracked</code>, which lets <code>Type</code> still be <code>Copy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-13 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-13 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3084 on 2024-12-13 20:46</div>
+            <div class="timeline-body"><p>That said, resolving the module doesn't look like it <em>needs</em> to be in <code>TypeInferenceBuilder</code>, since it's just calling <code>resolve_module</code>.  Let me see if I can move it into <code>Type</code> after all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-13 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3084 on 2024-12-13 20:49</div>
+            <div class="timeline-body"><p>Sorry, no, scratch that — it needs access to the semantic index of the containing file to see which modules have been imported.  So the two options are:</p>
+<ul>
+<li>Leave it here</li>
+<li>Add the containing <code>File</code> to <code>ModuleLiteralType</code> so that we can move this logic into <code>Type::member</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3084 on 2024-12-13 21:43</div>
+            <div class="timeline-body"><p>Latest patch adds the containing file to <code>ModuleLiteralType</code>.  Interestingly, that allowed one of the expected-failure mdtests to <a href="https://github.com/astral-sh/ruff/pull/14946/commits/5fb1246cbe4dac1529defb990a8fb5c12c00b6a0#diff-5c8508e2bc14c029e901b266c723a52bbf1b574be8129942162b108492b77fcf">start succeeding</a>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-13 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2024-12-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2024-12-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:203 on 2024-12-13 22:08</div>
+            <div class="timeline-body"><p>Hmm, we work quite hard in the other methods of this struct to maintain the invariant that the wrapped string can only be a valid module name. I think this method breaks that invariant, since the <code>Name</code> node could wrap a string that constitutes an invalid identifier. (Remember that we have a parser that supports error recovery, so it can produce <code>Name</code> nodes that wrap invalid identifiers! There are few guarantees.)</p>
+<p>I think to fix this we could:</p>
+<ul>
+<li>Change the signature of this method so that it accepts a <code>ModuleName</code> rather than a <code>Name</code> -- but then it has the same signature of <code>ModuleName::extend</code>.</li>
+<li>Verify that the string passed in is valid using <code>ModuleName::is_valid_name</code>, and change the return type of this method to return a <code>Result</code>, where an error variant is returned if you passed in a string that constitutes an invalid identifier. But then it becomes less ergonomic to use the method.</li>
+</ul>
+<p>Overall I'm wondering if we need this new method, or if it might just be better to use the existing <code>ModuleName::extend()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-13 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>As discussed in Slack</p>
+</blockquote>
+<p>I doubt it 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/tracking.md</code>:18 on 2024-12-13 22:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    track submodule imports flow-sensitively, in which case we will have to update the assertions in some of
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2814 on 2024-12-13 22:35</div>
+            <div class="timeline-body"><p>Is this name clearer?</p>
+<p>Also, doc comments to help clarify what these are?</p>
+<pre><code class="language-suggestion">    /// The file in which this module was imported.
+    ///
+    /// We need this in order to know which submodules should be attached to it as attributes
+    /// (because the submodules were also imported in this file).
+    pub importing_file: File,
+    
+    /// The imported module.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1445 on 2024-12-13 22:54</div>
+            <div class="timeline-body"><p>I realize now reading this that the priority between a non-submodule package attribute and a submodule is a bit of a subtle thing.</p>
+<p>What actually happens at runtime is that, when the submodule is imported, it writes its own name to the containing package namespace. This means that which takes priority actually depends on whether the package <code>__init__.py</code> itself imports the submodule before creating its own attribute of that same name, or not.</p>
+<p>In other words, given <code>pkg/a.py</code> and these two versions of <code>pkg/__init__.py</code>:</p>
+<pre><code class="language-py">a = 1
+</code></pre>
+<pre><code class="language-py">from . import a as _
+a = 1
+</code></pre>
+<p>Then <code>import pkg.a; print(pkg.a)</code> will print <code>&lt;module 'pkg.a' ...&gt;</code> in the first case, but it will print <code>1</code> in the second case. Because in the first case, we first execute <code>pkg/__init__.py</code> fully, and only then import the submodule, overwriting the value <code>1</code> for the name <code>&quot;a&quot;</code> in the <code>pkg</code> namespace with the submodule. In the second case, we first import the submodule, which sets the submodule as the value for the <code>a</code> name, and then we continue executing <code>__init__.py</code>, overwriting the submodule with the value <code>1</code>.</p>
+<p>Neither mypy nor pyright model this accurately. Pyright prefers the submodule in both scenarios, and mypy prefers <code>1</code> in both scenarios.</p>
+<p>What you have here currently would match pyright.</p>
+<p>Is it worth trying to model this accurately? I think probably not, at least not for now. But we could put some of this context into this comment? And/or we could add some tests for the above two cases, with commentary on how they behave at runtime vs in our model?</p>
+<p>I think the behavior you have here currently is good for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2353 on 2024-12-13 23:07</div>
+            <div class="timeline-body"><p>I realize now that what I had originally imagined we would do would be to look up the submodule data from <code>self.index</code> here and populate the interned <code>ModuleLiteralType</code> with the set of its imported submodule names. This means we would store more data per <code>ModuleLiteralType</code> (a set of submodule names, instead of just a File), but member lookups (in particular, those which don't match a submodule) would be a bit cheaper: the initial check would just be a membership test for the attribute name in the submodule set, without needing to build a <code>ModuleName</code>.</p>
+<p>But I suspect all of this is just in the noise performance-wise (and the extra storage per <code>ModuleLiteralType</code> may well outweigh the cheaper lookups), so I don't see any reason to switch to that approach. Just thought the alternative worth mentioning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-13 23:10</div>
+            <div class="timeline-body"><p>Lovely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:671 on 2024-12-14 14:55</div>
+            <div class="timeline-body"><p>nit: we implement <code>Deref&lt;Target = str&gt;</code> for the <code>ruff_python_ast::Identifier</code> struct</p>
+<pre><code class="language-suggestion">                    if let Some(module_name) = ModuleName::new(&amp;alias.name) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1449 on 2024-12-14 14:57</div>
+            <div class="timeline-body"><p>what's the reason we wrap the string in an <code>ast::name::Name</code> node before passing it into <code>ModuleName::push</code>? <code>ModuleName::push</code> immediately converts it back to a <code>&amp;str</code>, I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1456 on 2024-12-14 14:58</div>
+            <div class="timeline-body"><p>nit: maybe we could create a new <code>Type::module_literal()</code> constructor for the <code>Type</code> enum, similar to our <code>Type::string_literal()</code> constructor and others?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2814 on 2024-12-14 15:01</div>
+            <div class="timeline-body"><p>hmm, why do we need to store the <code>File</code> as a separate field on <code>ModuleLiteralType</code>, when the first field is a <code>Module</code>, and <code>Module</code> already stores the file?</p>
+<p>The definition of <code>Module</code> is here -- it's just a thin wrapper around <code>ModuleInner</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/c4df0a29ef81813b0f8274ba36064b60c0fbd265/crates/red_knot_python_semantic/src/module_resolver/module.rs#L9-L13</p>
+<p>And <code>ModuleInner</code> is here:</p>
+<p>https://github.com/astral-sh/ruff/blob/c4df0a29ef81813b0f8274ba36064b60c0fbd265/crates/red_knot_python_semantic/src/module_resolver/module.rs#L64-L70</p>
+<p>The <code>Module</code> struct exposes a public getter method to retrieve the <code>File</code> of the module:</p>
+<p>https://github.com/astral-sh/ruff/blob/c4df0a29ef81813b0f8274ba36064b60c0fbd265/crates/red_knot_python_semantic/src/module_resolver/module.rs#L37-L40</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-14 15:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-14 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2814 on 2024-12-14 15:48</div>
+            <div class="timeline-body"><p>It's not the same File. This is the file in which the import occurred, not the file of the module being imported. One of my comments recommends clarifying doc comments here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-14 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2814 on 2024-12-14 15:50</div>
+            <div class="timeline-body"><p>Ahh, thanks. I should have looked more closely -- my bad. Yes, I definitely support a better name for the field and more doc-comments, in that case! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1449 on 2024-12-16 15:49</div>
+            <div class="timeline-body"><p>Changed to use <code>extend</code> per other comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:671 on 2024-12-16 15:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1456 on 2024-12-16 15:55</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1445 on 2024-12-16 18:07</div>
+            <div class="timeline-body"><p>Updated the comment and added a test case with commentary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2353 on 2024-12-16 18:13</div>
+            <div class="timeline-body"><p>Yeah that's a good point that this would make us construct a <code>ModuleName</code> every time we dereference a module.  I had considered a more complex representation for <code>ModuleName</code>, but figured it would be better to experiment with that separately instead of trying to fold it into this.  (Or better to just say this is good enough and leave it alone for now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/module_name.rs</code>:203 on 2024-12-16 18:28</div>
+            <div class="timeline-body"><p>Yes that's a great point — I had gotten it into my mind somehow that <code>Name</code> was similarly checked, and so appending one would be safe just like extending a <code>ModuleName</code> is.  But it's not, and even if we added one, I believe we have to handle <code>__getattr__</code> calls here, too, which aren't guaranteed to be valid identifiers.</p>
+<p>Updated this to use <code>extend</code> and to check the result of <code>ModuleName::new</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-16 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1448 on 2024-12-16 18:38</div>
+            <div class="timeline-body"><p>Hmm, I'm a bit concerned about calling <code>semantic_index</code> here. Are there cases where <code>importing_file != self.file</code>? If so, then we shouldn't call <code>semantic_index</code> here because it would introduce a cross-file dependency: This file would always be rechecked if the <code>importing_file</code>'s AST changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-16 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-16 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2897 on 2024-12-16 18:39</div>
+            <div class="timeline-body"><p>Does that mean we have multiple <code>ModuleLiteralType</code>s for the same module? One for each place from which it's imported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-16 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1448 on 2024-12-16 18:41</div>
+            <div class="timeline-body"><p>Never mind. I thought this is in the <code>SemanticindexBuilder</code> but that's not true. So I think this is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-16 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1455 on 2024-12-16 18:45</div>
+            <div class="timeline-body"><p>This is more of a fine-tuning comment:
+It could make sense to define an <code>imported_modules(db, file)</code> query that returns the set with all known imported modules (it would just be a thin wrapper around <code>semantic_index(db, file).imported_modules()</code>.</p>
+<p>The advantage of having this intermediate query is that currenlty, <code>Type::member</code> has to re-execute whenever the AST of <code>importing-file</code> changes. Salsa might to truncate any dependent queries because it can determine that the type returned by <code>Type::member</code> is still the same and, therefore, dependent queries don't have to re-run. However, salsa could determine this sooner if <code>Type::member</code> only dependent on a <code>imported_modules</code> query. It would then only have to re-run the <code>imported_modules</code> query and, if the imports are unchanged, can't stop immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2897 on 2024-12-16 19:47</div>
+            <div class="timeline-body"><p>Yes that's right</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1455 on 2024-12-16 19:48</div>
+            <div class="timeline-body"><p>Done, thanks for the suggestion!  I wrapped the <code>imported_modules</code> set in an <code>Arc</code>, since it seems like the set now needs to be able to outlive the containing <code>SemanticIndex</code>, is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-16 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-16 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2353 on 2024-12-16 20:01</div>
+            <div class="timeline-body"><p>I think that unless we a) are seeing a clear regression in the existing benchmark, or b) there's a very clear alternative that will definitely perform better, it's best not to spend much time on performance optimizations when we don't even know if they are meaningful in the overall performance profile. So I would suggest leaving this as-is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-16 20:10</div>
+            <div class="timeline-body"><p>This looks merge-ready to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2024-12-16 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-16 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-16 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

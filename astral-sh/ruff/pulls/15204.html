@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Improve flexibility of `runtime-evaluated-decorators` - astral-sh/ruff #15204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Improve flexibility of <code>runtime-evaluated-decorators</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15204">#15204</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2024-12-30 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-30 16:28</div>
+            <div class="timeline-body"><p>This is an alternative proposal towards accomplishing the use-case #15060 is trying to provide, which doesn't require adding a new setting.</p>
+<h2>Summary</h2>
+<p>This slightly changes semantics of the setting to support a common pattern used by e.g. <code>FastAPI</code>. We will resolve assignments so you can do things like this:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+import fastapi
+
+from mymodule import Foo
+
+app = fastapi.FastAPI(&quot;My App&quot;)
+
+@app.get(&quot;/home&quot;)
+def home() -&gt; Foo: ...
+</code></pre>
+<p>And add <code>fastapi.FastAPI.get</code> to <code>runtime-evaluated-decorators</code> in order to prevent a <code>TC001</code> violation for <code>from mymodule import Foo</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-30 16:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 17:03</div>
+            <div class="timeline-body"><p>It seems I was a few minutes too slow. I replied on #15060</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-30 17:12</div>
+            <div class="timeline-body"><p>@MichaReiser No worries, the glob part is honestly the smaller part of this proposal. You can make it work without the glob support. It just seemed really annoying to me having to manually list all the decorators. With some frameworks you may very well be looking at multiple dozens of methods. The decorator as application configuration hook style is quite popular.</p>
+<p>So I can take it back out if we're sure we really don't want it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 17:15</div>
+            <div class="timeline-body"><p>Thanks @Daverball My preference would be to start without it and add it if users run into it. We then also have the option to a) allow regex or b) do a prefix match</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-type-checking`] Allow globs in `runtime-evaluated-decorators`" to "[`flake8-type-checking`] Improve flexibility of `runtime-evaluated-decorators`" by @Daverball on 2024-12-30 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-30 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-30 17:31</div>
+            <div class="timeline-body"><p>Could we use <code>semantic.lookup_attribute</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-30 17:41</div>
+            <div class="timeline-body"><p>I would've liked to, but it only gives us the fully qualified name, but we also need the name node at the bottom, so we can <code>resolve_assignment</code> on it.</p>
+<p>I also considered shifting this complexity into <code>resolve_assignment</code>, or adding a new function to <code>analyze::typing</code>, but that wouldn't really help us reuse <code>lookup_attribute</code> either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-30 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-30 18:38</div>
+            <div class="timeline-body"><p>The only thing I dislike about this approach, is that it forces you to write two separate entries for the same module and separate module case.</p>
+<p>I also considered adding an option to <code>resolve_qualified_name</code> that would return a <code>Some(QualifiedName)</code> for <code>Assignment</code> and <code>AnnAssignment</code> as a band-aid for not having full cross-module type inference. That would bring it back down to one entry, but each instance would need to be ignored separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-31 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 10:05</div>
+            <div class="timeline-body"><p>Yeah, our semantic model API is a bit annoying here.</p>
+<p>So, the &quot;cheap&quot; solution here would be to do the same as <code>is_logger_candidate</code> where we match on the <code>UnqualifiedName::from_expr</code> directly.</p>
+<p>Or we keep the &quot;clever&quot; solution that tries to follow at least one alias. This makes me wonder if this logic should be moved into <code>resolve_assignment</code>. I think it would make the API more intuitive overall because it isn't very intuitive that the first argument must be a name and we have multiple rules now that manually unroll one level of attributes.</p>
+<p>I think it could help performance to use a <code>SmallVec</code> with at least a size of 3 to avoid allocating in the common case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 10:06</div>
+            <div class="timeline-body"><blockquote>
+<p>The only thing I dislike about this approach, is that it forces you to write two separate entries for the same module and separate module case.</p>
+</blockquote>
+<p>Can you expand on what you mean by this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-31 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you expand on what you mean by this</p>
+</blockquote>
+<p>Sure, if you have a look at the new tests, you'll notice that I'm adding an entry for <code>fastapi.FastAPI.get</code> for the case that uses <code>resolve_assignment</code> but also <code>module.app.app.get</code> for the regular import case from another module, which assumes that whatever you're importing is something that would either be a class or function defined in the module you're importing from, even though it could just be regular assignment as well.</p>
+<p>So <code>fastapi.FastAPI.get</code> works for decorators in the same file. but if you import <code>app</code> into another file you need a second entry in order for ruff to do the correct thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-31 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 10:58</div>
+            <div class="timeline-body"><p>We could generate a faux-<code>QualifiedName</code> when <code>resolve_qualified_name</code> fails from <code>UnqualifiedName</code> prefixed with the current module (using the same logic as <code>resolve_qualified_name</code> uses for class/function definitions)</p>
+<p>That would get rid of the need of having to add two entries to support both the same/foreign module use-case, i.e. in the test you'd only need <code>module.app.app.get</code> and not <code>fastapi.FastAPI.get</code> as well. The only drawback would be that you'd need an entry for each app instance. But you would need that anyways if you share the instances across module boundaries.</p>
+<p>The only part of that, which feels a bit icky is, that red knot will be able to infer the fully qualified name even across module boundaries. So eventually the correct entry will be <code>fastapi.FastAPI.get</code> rather than <code>module.app.app.get</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 11:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Sure, if you have a look at the new tests, you'll notice that I'm adding an entry for fastapi.FastAPI.get for the case that uses resolve_assignment but also module.app.app.get for the regular import case from another module, which assumes that whatever you're importing is something that would either be a class or function defined in the module you're importing from, even though it could just be regular assignment as well.</p>
+</blockquote>
+<p>Thanks, that makes sense, considering that Ruff can't see what <code>module.app.App</code> resolves to. The problem is similar to why we have the <a href="https://docs.astral.sh/ruff/settings/#lint_typing-modules"><code>typing-modules</code></a>, <a href="https://docs.astral.sh/ruff/settings/#lint_logger-objects"><code>logger_objects</code></a>, and <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_extend-function-names"><code>gettext.extend-function-names</code></a> settings. This makes me wonder if we need a more generic approach that allows mapping qualified names, e.g., <code>module.app.App -&gt; </code>fastapi.FastAPI`.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-31 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 11:26</div>
+            <div class="timeline-body"><p>I could see us returning a <code>Result</code> from <code>resolve_qualified_name</code> where the <code>Err</code> returns an <code>UnqualifiedName</code>, but I don't think we should make up qualified names; this seems somewhat error-prone. But I think we should still try to resolve the <code>UnqualifiedName</code>, e.g if you have:</p>
+<pre><code>import fastapi
+
+a = fastapi
+
+a.FastAPI # the full qualified name should resolve to `fastapi.FastAPI`
+</code></pre>
+<p>Which is what <code>resolve_assignment</code> does today, at least if you call it with <code>a</code> (but not if called with <code>a.FastAPI</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-31 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 11:50</div>
+            <div class="timeline-body"><p>Yes, that's why it feels icky to do that, but it would solve the issue of having redundant entries.</p>
+<p>Although your proposed generic solution for an additional setting to map qualified names seems more robust. Especially once we transition to red knot as the backend where we no longer need to do that mapping manually.</p>
+<p>The only problem with the generic solution is that we either end up having to add the same translation call after all of the <code>resolve_qualified_name</code> calls that benefit from this translation or we build it into <code>resolve_qualified_name</code> itself and end up with a potentially fairly big overhead if the list of mappings is large.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-31 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 12:25</div>
+            <div class="timeline-body"><p>We might be able to reduce the overhead by, e.g., using <a href="https://docs.rs/matchit/latest/matchit/"><code>matchit</code></a> similar to what we do when resolving configurations, but I haven't fully thought that through. I'd say the good thing is the list will be small for most cases, so it might not be as big of a perf problem.</p>
+<p>But I think we can tackle the extra setting separately. What we need in this PR is to resolve to <code>module.app.App</code> so that it can later be rewritten to <code>fastapi.FastAPI</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-31 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 12:48</div>
+            <div class="timeline-body"><p>Yup I agree. I will switch to <code>SmallVec</code>, move the attribute logic to <code>resolve_assignment</code> and clean up any call sites that do the manual 1-wide attribute extension. Unless you want to do that refactor in a separate PR as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-31 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 12:57</div>
+            <div class="timeline-body"><p>I think doing it in this PR is fine. There are only five call-sites but it's up to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-31 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:108 on 2024-12-31 13:43</div>
+            <div class="timeline-body"><p>Turns out the other call sites don't really need to change, the only one that might slightly benefit is the airflow rule, although it would make the logic for the replacement more complicated, so I left it as is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:105 on 2024-12-31 14:05</div>
+            <div class="timeline-body"><p>Nit: It might help future readers to add a small example here</p>
+<pre><code class="language-suggestion">						// ```python
+						// from fastapi import FastAPI
+						// @FastAPI.get
+						// def test(): ...
+						//  ```
+            .resolve_qualified_name(expression)
+            // if we can't resolve the name, then try resolving the assignment
+						// ```python
+						// from fastapi import FastAPI
+						// app = FastAPI()
+						// 
+						// @app.get
+						// def test(): ...
+						// ```
+            .or_else(|| analyze::typing::resolve_assignment(expression, semantic))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:1020 on 2024-12-31 14:07</div>
+            <div class="timeline-body"><p>Nit: We could consider adding an <code>extend</code> method` to reduce the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-31 14:10</div>
+            <div class="timeline-body"><p>Nice, thank you. I think it would be great if we could extend the setting documentation to cover both using a framework decorator but also an instance method from a symbol exported from a user module</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-12-31 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2024-12-31 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:1020 on 2024-12-31 15:49</div>
+            <div class="timeline-body"><p>I struggled a bit to get the lifetimes correct. If there's a more idiomatic way to write the function, feel free to go ahead and fix it. But I definitely like how it simplified <code>resolve_assignment</code>, I also noticed that the two match arms were redundant, so I consolidated them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-31 16:23</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-31 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:1020 on 2024-12-31 16:24</div>
+            <div class="timeline-body"><p>The trick was to use <code>into_iterator</code> so that the items have the type <code>&amp;'a str</code> and not <code>&amp;&amp;'a str</code>. The alternative would have been to use <code>iter().copied()</code>, I think, which dereferences <code>&amp;&amp;'a str</code> to <code>&amp;'a str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-31 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-31 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-31 16:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

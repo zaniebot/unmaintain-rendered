@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] function parameter types - astral-sh/ruff #14802</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] function parameter types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14802">#14802</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-12-06 01:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-12-06 01:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Inferred and declared types for function parameters, in the function body scope.</p>
+<p>Fixes #13693.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests.</p>
+<p>Co-authored By: Alex Waygood <a href="mailto:AlexWaygood@Gmail.com">AlexWaygood@Gmail.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-12-06 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-12-06 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-12-06 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2024-12-06 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-06 01:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:4 on 2024-12-06 09:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Within a function scope, the declared type of each parameter is its annotated type (or Unknown if not
+annotated). The initial inferred type is the union of the declared type with the type of the
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:22 on 2024-12-06 09:33</div>
+            <div class="timeline-body"><p>Unrelated to this PR and I know you're aware of it.... I find it very confusing as a <em>user</em> that this infers to <code>Literal[1] | Unknown</code>, and I'd have a hard time explaining it to any colleague of why and even what it means.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:58 on 2024-12-06 09:35</div>
+            <div class="timeline-body"><p>Can we add a test case that demonstrates the behavior if the annotated type and the default expression aren't compatible and how that impacts the uses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-06 09:37</div>
+            <div class="timeline-body"><p>Nit: It's uncommon to prefix <code>Option</code> values with <code>opt</code>.</p>
+<pre><code class="language-suggestion">        let default_ty = default
+            .as_deref()
+            .map(|default| definition_expression_ty(self.db, definition, default));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-06 09:39</div>
+            <div class="timeline-body"><p>Just an understand question. Why are we calling <code>definition_expression_ty</code> over <code>infer_standalone_expression</code>?</p>
+<p>Do we need to merge the diagnostics from the <code>definition_expression_ty</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-06 09:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:19 on 2024-12-06 11:45</div>
+            <div class="timeline-body"><p>nit: the return annotation is irrelevant here and is slightly distracting:</p>
+<pre><code class="language-suggestion">def f(a, b: int, c=1, d: int = 2, /, e=3, f: Literal[4] = 4, *args: object, g=5, h: Literal[6] = 6, **kwargs: str):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 11:47</div>
+            <div class="timeline-body"><p>nit: for consistency, I'd probably call these variants</p>
+<pre><code class="language-suggestion">    VariadicPositionalParameter(&amp;'a ast::Parameter),
+    VariadicKeywordParameter(&amp;'a ast::Parameter),
+    NonVariadicParameter(&amp;'a ast::ParameterWithDefault),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1090 on 2024-12-06 11:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // TODO `tuple[Unknown, ...]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1083 on 2024-12-06 11:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // TODO `tuple[annotated_ty, ...]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1103 on 2024-12-06 11:49</div>
+            <div class="timeline-body"><p>I guess I'm feeling picky today :P</p>
+<pre><code class="language-suggestion">            // TODO `dict[str, annotated_ty]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1110 on 2024-12-06 11:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // TODO `dict[str, Unknown]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1544 on 2024-12-06 11:51</div>
+            <div class="timeline-body"><p>I think we could actually resolve this TODO now that we support <code>type[T]</code>. But not something we need to address in this PR, obviously</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-06 11:52</div>
+            <div class="timeline-body"><p>🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 12:01</div>
+            <div class="timeline-body"><p>@AlexWaygood are you nitpicking your own code? :laughing: (just kidding, these are great improvements and not nits!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-06 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:22 on 2024-12-06 13:41</div>
+            <div class="timeline-body"><p>I know this is not the answer you are looking for, but let me try to explain the current/intended behavior, to see if my own understanding is correct.</p>
+<p>We want to follow a philosophy where a perfectly valid un-annotated program should ideally not lead us to issue any diagnostics.</p>
+<p>Consider this perfectly reasonable and working (untyped) program:</p>
+<pre><code class="language-py">def f(x, a=0):
+    return 2 * x * x + a
+
+
+f(2.0, 1.2)
+</code></pre>
+<p>pyright issues a diagnostic here (<em>Argument of type &quot;float&quot; cannot be assigned to parameter &quot;a&quot; of type &quot;int&quot;</em>) because it infers a (too) narrow parameter type of <code>int</code>.</p>
+<p>We infer <code>Unknown | Literal[0]</code> instead, which does not raise any diagnostic. We <em>also</em> wouldn't raise a diagnostic if you were to call <code>f(2.0, &quot;foo&quot;)</code>, but you can always achieve this by annotating your function parameter appropriately (e.g. as <code>float</code>). You can opt into more safety.</p>
+<p>On the other hand of the spectrum, consider this non-crashing — but obviously error-prone — program:</p>
+<pre><code class="language-py">def f(name, age=None):
+    # lots of code
+    print(f&quot;Next year, {name} will turn {age+1}&quot;)
+
+f(&quot;Max&quot;, 20)
+</code></pre>
+<p>mypy does not raise any diagnostic here, because it infers a (too) wide parameter type of <code>Any</code> for <code>age</code>.</p>
+<p>We infer <code>Unknown | NoneType</code> instead. The meaning of this type is: an unknown set of Python objects, but <em>at least as large as</em> the set represented by <code>NoneType</code> (i.e. <code>{None}</code>). This allows us to issue a <em>Operator <code>+</code> not supported</em> diagnostic (not yet but eventually; only works for operators like <code>in</code> so far). In other words: if we see <code>age=None</code>, we say: we don't know what kind of objects can be passed in for the <code>age</code> parameter, but you are clearly showing us that <code>None</code> is one possibility, so we better make sure that all operations on <code>age</code> are compatible with <code>NoneType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:22 on 2024-12-06 17:39</div>
+            <div class="timeline-body"><p>I couldn't say it better than @sharkdp did, in terms of explaining what this type means and why we need it.</p>
+<p>I understand the real issue here is that users who haven't gotten such a good explanation will likely be confused by these types, because other type checkers don't use them much. I'm not yet sure how to reconcile this. It may be that we can find a more intuitive display notation, or it may be that this is just something we have to address via documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-06 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:58 on 2024-12-06 17:43</div>
+            <div class="timeline-body"><p>We can. The reason I didn't yet is because I haven't implemented the behavior we want for that (including a diagnostic) yet in this PR. But even if I don't do the diagnostic yet in this PR, it makes sense to add a test for the type inference behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-06 17:44</div>
+            <div class="timeline-body"><p>Ok, I don't feel strongly. It seems like in some cases it offers more clarity with no real downside.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-06 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:22 on 2024-12-06 17:58</div>
+            <div class="timeline-body"><p>Yeah. I just see myself struggling with it and am worried that people will accept that Red Knot shows these weird inferred types and maybe even understand why but without fully understanding what it means</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-06 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Why are we calling <code>definition_expression_ty</code> over <code>infer_standalone_expression</code>?</p>
+</blockquote>
+<p>Because parameter default values are not marked as standalone expressions in the semantic index builder. We minimize the expressions that are marked as standalone expressions, to reduce ingredient counts. In this case we don't need them to be standalone expressions, we can use <code>definition_expression_ty</code> to find the right scope, infer that scope, and pull the expression type out.</p>
+<blockquote>
+<p>Do we need to merge the diagnostics from the <code>definition_expression_ty</code> ?</p>
+</blockquote>
+<p>No, in fact we shouldn't. Function parameter definitions are a little odd, in that the definition is part of the function body scope (it defines a symbol in the function body), but the expressions whose type we need here (the annotation and the default) are not part of the function body scope, they are part of the outer scope (or possibly two different outer scopes: the defaults are always in the scope the function is defined in, the annotations might be in the intervening type-parameters scope, for a generic function.) Part of the functionality of <code>definition_expression_ty</code> is that it can handle inferring expressions that are in some other scope. But we shouldn't try to merge diagnostics that belong to a different scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-06 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-06 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>these are great improvements and not nits!</p>
+</blockquote>
+<p>I think it's fair to say that adding backticks to a TODO comment is indeed a nit 😆 If that's not a nit, I don't know what would be. But I don't mind some nits :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-06 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 18:22</div>
+            <div class="timeline-body"><p>It's not clear to me that this is an improvement. I find it weird to call the common-case parameter <code>NonVariadicParameter</code>: defining it by what it isn't, even though it's the much more common case, and variadic parameters are the unusual case.</p>
+<p>And similarly, I think the default assumption for &quot;variadic&quot; is &quot;a variable-length list of items&quot; (not a keyword mapping), so again I find it just as clear to just call that <code>VariadicParameter</code> and emphasize the unusual case of the variadic keyword parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 18:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I find it weird to call the common-case parameter <code>NonVariadicParameter</code>: defining it by what it isn't, even though it's the much more common case, and variadic parameters are the unusual case.</p>
+</blockquote>
+<p>I agree <code>NonVariadicParameter</code> isn't a great name, but it still feels better to me than <code>ParameterWithDefault</code>, considering that most <code>ParameterWithDefault</code>s don't have defaults.</p>
+<blockquote>
+<p>And similarly, I think the default assumption for &quot;variadic&quot; is &quot;a variable-length list of items&quot; (not a keyword mapping)</p>
+</blockquote>
+<p>To me &quot;variadic&quot; could well refer to either! I don't agree there's a default assumption there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-06 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-06 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 18:29</div>
+            <div class="timeline-body"><p>Anyway, these are nitpicks — I obviously don't feel strongly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-06 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 18:44</div>
+            <div class="timeline-body"><p>I can switch to <code>VariadicPositionalParameter</code>.</p>
+<p>How do you feel about simply <code>Parameter</code> for the normal-parameter case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-06 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:94 on 2024-12-06 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>How do you feel about simply <code>Parameter</code> for the normal-parameter case?</p>
+</blockquote>
+<p>Works for me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-06 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-06 18:55</div>
+            <div class="timeline-body"><p>I realized here that <code>definition_expression_ty</code> is kind of over-powered for this use case, since in these cases we know for sure that the expression is not in the same scope as the definition. So I've instead introduced an <code>expression_ty</code> that just looks up the right scope for the expression, infers that scope, and pulls out the expression type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-06 20:55</div>
+            <div class="timeline-body"><p>Going to go ahead and merge this rather than wait until Monday. I did make some significant changes in response to review; happy to push a follow-up PR if there are comments on the new changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-06 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-06 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-06 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-09 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-09 06:58</div>
+            <div class="timeline-body"><p>Out of curiosity, is there a use-case for having <code>expression_ty</code> as a standalone function instead of adding it as a method on <code>TypeInference</code>? For the latter, we could add an assert to make sure that the expression is not from the same scope as the one that's currently being inferred which is available via the <code>self.scope</code> method:</p>
+<p>https://github.com/astral-sh/ruff/blob/56a631a86891167ad1af8c10ae3751976bbeca6d/crates/red_knot_python_semantic/src/types/infer.rs#L393-L395</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-09 15:39</div>
+            <div class="timeline-body"><p>That's a good idea, I'll put up a PR for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-09 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-09 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1052 on 2024-12-09 16:00</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/14879</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

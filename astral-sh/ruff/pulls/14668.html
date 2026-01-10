@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: support narrowing for bool(E) - astral-sh/ruff #14668</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: support narrowing for bool(E)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14668">#14668</a>
+        opened by <a href="https://github.com/connorskees">@connorskees</a>
+        on 2024-11-29 06:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/connorskees">@connorskees</a> on 2024-11-29 06:01</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/ruff/issues/14547 by delegating narrowing to <code>E</code> for <code>bool(E)</code> where <code>E</code> is some expression.</p>
+<p>This change does not include other builtin class constructors which should also work in this position, like <code>int(..)</code> or <code>float(..)</code>, as the original issue does not mention these. It should be easy enough to add checks for these as well if we want to.</p>
+<p>I don't see a lot of markdown tests for malformed input, maybe there's a better place for the no args and too many args cases to go?</p>
+<p>I did see after the fact that it looks like this task was intended for a new hire.. my apologies. I got here from https://github.com/astral-sh/ruff/issues/13694, which is marked help-wanted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @connorskees on 2024-11-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @connorskees on 2024-11-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @connorskees on 2024-11-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @connorskees on 2024-11-29 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-29 06:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-29 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-29 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-11-29 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:309 on 2024-11-29 13:20</div>
+            <div class="timeline-body"><p>I think this test does not (yet) do what you intended. We do not have narrowing support for <code>if x: …</code>, so even if you would get rid of the argument length check, we wouldn't see any narrowing here. This could be fixed by using <code>bool(x is not None, 5)</code> instead.</p>
+<p>On the other hand, the test does not go far enough, because you currently <em>do</em> perform narrowing for illegal <code>bool</code> calls like <code>bool(x is not None, y=5)</code> with a keyword argument. I think we would eventually issue a diagnostic for this call (in call signature checking, not here), but we should probably not narrow in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/connorskees">@connorskees</a> reviewed on 2024-11-29 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/connorskees">@connorskees</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:309 on 2024-11-29 18:40</div>
+            <div class="timeline-body"><p>oh great catch. i've updated the tests to properly fail without this change applied, and added one for kwargs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:284 on 2024-12-02 08:01</div>
+            <div class="timeline-body"><p>The tests here are not really related to the other tests in this file, which are concerned with more intricate narrowing paths involving Boolean expressions. Can we please move this section to a new file, maybe <code>mdtest/bool-call.md</code>?</p>
+<pre><code class="language-suggestion"># Narrowing for `bool(..)` checks
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 08:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:304 on 2024-12-02 08:08</div>
+            <div class="timeline-body"><p><code>bool()</code> is <code>False</code>, which makes the body of this unreachable. Existing type checkers do not issue diagnostics in unreachable code blocks (i.e. would not yield any <code>reveal_type</code> results here).</p>
+<p>Maybe we could change it to <code>if not bool()</code>, but also, I'm not really sure if this test adds a lot of value. Like what would be a reasonable scenario (code change) where this would fail? So maybe we can just remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:388 on 2024-12-02 08:14</div>
+            <div class="timeline-body"><p>This is neither the type of <code>expr_call</code>, nor the type of <code>expression</code>, so the name is slightly confusing. Maybe rename it to</p>
+<pre><code class="language-suggestion">        let callable_ty = inference.expression_ty(expr_call.func.scoped_expression_id(self.db, scope));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/connorskees">@connorskees</a> reviewed on 2024-12-02 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/connorskees">@connorskees</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:304 on 2024-12-02 16:17</div>
+            <div class="timeline-body"><p>Mostly thinking about a scenario in which we assume <code>bool</code> is called with at least one argument, and do something like <code>&amp;expr_call.arguments.args[0]</code> without checking that <code>.len() &gt;= 1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/connorskees">@connorskees</a> reviewed on 2024-12-02 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/connorskees">@connorskees</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:304 on 2024-12-02 16:29</div>
+            <div class="timeline-body"><p>But happy to remove if we think it's redundant or not useful code coverage!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-02 18:40</div>
+            <div class="timeline-body"><p>Just a note for future: this issue was assigned to me, and not marked &quot;help wanted&quot;, because I created it specifically as a ramp-up task for someone joining the Astral team this week :) It's totally fine that you took it on (thanks for the contribution!), but in future it's best to check if an issue is assigned to someone before starting work on it, and if so, comment on the issue to check if you can take it over without duplicating someone's work-in-progress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-02 19:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/boolean.md</code>:304 on 2024-12-02 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Mostly thinking about a scenario in which we assume <code>bool</code> is called with at least one argument, and do something like <code>&amp;expr_call.arguments.args[0]</code> without checking that <code>.len() &gt;= 1</code></p>
+</blockquote>
+<p>That leads to a panic in the Rust code, but it would not lead to a test failure here (even if that panic would not show up for some reason).</p>
+<p>Anyway, I'm okay with the <code>not bool()</code> test now. Thanks for the update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/bool-call.md</code>:30 on 2024-12-02 20:54</div>
+            <div class="timeline-body"><p>This isn't critical, but it just means one less thing to think about in the PR that adds call checking (because it will already be marked that this should be a diagnostic):</p>
+<pre><code class="language-suggestion">if bool(x is not None, 5):  # TODO diagnostic
+    reveal_type(x)  # revealed: Literal[1] | None
+
+# invalid invocation, too many kwargs
+reveal_type(x)  # revealed: Literal[1] | None
+if bool(x is not None, y=5):  # TODO diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:431 on 2024-12-02 21:02</div>
+            <div class="timeline-body"><p>This match statement becomes a bit odd, in that we match on a set of conditions specific to constraint functions like <code>isinstance</code>, and then check a totally different case in the catch-all arm.</p>
+<p>I think it would be clearer if we rework this so that we just match on <code>callable_ty</code> itself, and make the first arm match on <code>Type::FunctionLiteral</code>, with the &quot;is known&quot; and &quot;is a constraint function&quot; checks moved into the <code>if</code> guard of that arm. Then this branch can, in parallel fashion, match on <code>Type::ClassLiteral</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-02 21:03</div>
+            <div class="timeline-body"><p>Looks good, thank you! I think we can make the <code>match</code> statement a bit clearer / more parallel here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:429 on 2024-12-03 02:52</div>
+            <div class="timeline-body"><p>if we capture the <code>ClassLiteralType</code> here, we can avoid the <code>callable_ty.into_class_literal()</code> below, and the need for handling <code>Option</code> from it. We already know we have a class literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-03 02:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-03 03:04</div>
+            <div class="timeline-body"><p>Looks great, thank you! Merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-03 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-03 03:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

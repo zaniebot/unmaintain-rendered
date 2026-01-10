@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add `typing.Any` as a spelling for the Any type - astral-sh/ruff #14742</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add <code>typing.Any</code> as a spelling for the Any type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14742">#14742</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-02 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-02 19:50</div>
+            <div class="timeline-body"><p>We already had a representation for the Any type, which we would use e.g. for expressions without type annotations.  We now recognize <code>typing.Any</code> as a way to refer to this type explicitly.  Like other special forms, this is tracked correctly through aliasing, and isn't confused with local definitions that happen to have the same name.</p>
+<p>Closes #14544</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-02 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_vendored/vendor/typeshed/stdlib/typing.pyi</code>:200 on 2024-12-02 19:52</div>
+            <div class="timeline-body"><p>I needed this to get the <code>try_from_module_and_symbol</code> logic to kick in and handle the <code>typing.Any</code> reference as a special case.  I'm assuming this isn't kosher, though, since it's a direct edit to a vendored file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:70 on 2024-12-02 20:37</div>
+            <div class="timeline-body"><p>Another useful way to verify that we don't have the actual <code>Any</code> type here is to try to assign some other type to the name (e.g. <code>x = &quot;foo&quot;</code> as in the above tests) and verify that that does emit an invalid-assignment diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-02 20:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1959 on 2024-12-02 20:38</div>
+            <div class="timeline-body"><p>When we adjust this PR to use unmodified typeshed, this will instead return <code>KnownClass::Object</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_vendored/vendor/typeshed/stdlib/typing.pyi</code>:200 on 2024-12-02 20:39</div>
+            <div class="timeline-body"><p>Yeah, we'll have to instead add the logic for detecting <code>Any</code> into <code>infer_assignment_definition</code>, without the &quot;annotated as <code>_SpecialForm</code>&quot; condition that is checked in <code>infer_annotated_assignment_definition</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-02 20:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2024-12-02 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2024-12-02 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2024-12-02 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2024-12-02 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-02 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_vendored/vendor/typeshed/stdlib/typing.pyi</code>:200 on 2024-12-02 21:13</div>
+            <div class="timeline-body"><p>My first stab at this checked whether the file containing the definition was <code>vendored://stdlib/typing.pyi</code>.  I ended up switching to something more like the existing <code>_SpecialForm</code> detection, which uses <code>file_to_module</code> and <code>try_from_module_and_symbol</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-02 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1959 on 2024-12-02 22:25</div>
+            <div class="timeline-body"><p>I would be inclined to leave out this comment, since a) it's not the only KnownInstance which isn't defined as <code>_SpecialForm</code>, b) the fact that it isn't an instance of <code>_SpecialForm</code> is self-evident here, and c) it's unlikely to be changed to be an instance of <code>_SpecialForm</code>.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1980 on 2024-12-02 22:28</div>
+            <div class="timeline-body"><p>While <code>Any</code> is available in <code>typing_extensions</code>, it is a simple unconditional re-export from <code>typing</code>; there is no Python version in which it is actually defined in <code>typing_extensions</code> (unlike the other symbols here.) (This is because it is the oldest of these special forms, and has always existed in the <code>typing</code> module.) So we don't ever need to recognize it from a <em>definition</em> in <code>typing_extensions</code>; if someone imports it from <code>typing_extensions</code>, they're still getting the type from <code>typing</code> module.</p>
+<pre><code class="language-suggestion">            (&quot;typing&quot;, &quot;Any&quot;) =&gt; Some(Self::Any),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1679 on 2024-12-02 22:31</div>
+            <div class="timeline-body"><p>I'd also be inclined to leave out this comment, since I think typeshed is unlikely to change in this area (there's no strong motivation for the change, and it could cause issues for other type checkers). If typeshed were to change, our tests would alert us to the problem.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:380 on 2024-12-02 22:34</div>
+            <div class="timeline-body"><p>It's under-specified, and perhaps unfortunate, but the typing spec does actually permit inheriting from <code>Any</code>: https://typing.readthedocs.io/en/latest/spec/special-types.html#any</p>
+<p>And this is used in typeshed (e.g. for <code>unittest.mock.Mock</code>): https://github.com/python/typeshed/blob/main/stdlib/unittest/mock.pyi#L109</p>
+<p>This is already supported by the <code>ClassBase</code> enum: we should return <code>Some(Self::Any)</code> instead of <code>None</code> for <code>KnownInstanceType::Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-02 22:37</div>
+            <div class="timeline-body"><p>This is excellent, thank you!!</p>
+<p>A few suggested changes on non-obvious subtleties.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1959 on 2024-12-03 14:01</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1679 on 2024-12-03 14:02</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1980 on 2024-12-03 14:02</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:380 on 2024-12-03 19:57</div>
+            <div class="timeline-body"><p>I've added some tests for subclasses; see below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:67 on 2024-12-03 19:58</div>
+            <div class="timeline-body"><p>Is this what we want the revealed class to be?  Or maybe <code>Subclass | Any</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:62 on 2024-12-03 20:00</div>
+            <div class="timeline-body"><p>I think I've updated the inference logic correctly to treat instances of <code>Subclass</code> as if they were <code>Any</code> instead of <code>Instance(Subclass)</code>.  These lines both got assignment errors before the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-03 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:52 on 2024-12-03 20:23</div>
+            <div class="timeline-body"><p>Sorry, I should have been clearer in my comment about the scope of this PR. I was only intending that we'd return the right <code>ClassBase</code> variant when building the MRO, and leave any other updates to the behavior of inheriting-Any as a separate project.</p>
+<p>I think the most basic test we can add for this here would just be a test that <code>Subclass.__mro__</code> includes <code>Any/Unknown</code> when it inherits <code>Any</code> explicitly, similar to existing tests in <code>mro.md</code>. (That test could live either here or in <code>mro.md</code>.)</p>
+<p>I've commented below on the semantics that we will want for inheriting-Any, but that doesn't mean I think we should implement those in this PR. Since you've already written some tests, I think it would be reasonable (rather than deleting them) to just update the tests to reflect the current behavior, add TODO comments to reflect the future desired semantics, and leave it like that for now.</p>
+<p>If you're interested in implementing more of this behavior as a follow-up PR, that's great! But I'd like to get your first PR landed sooner :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:67 on 2024-12-03 20:29</div>
+            <div class="timeline-body"><p>I think it should be just <code>Subclass</code> -- the fact that <code>Subclass</code> has <code>Any</code> in its MRO is an aspect of the type, but doesn't need to be part of its display.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:62 on 2024-12-03 20:33</div>
+            <div class="timeline-body"><p>I think this comment, and the line <code>x: Subclass = 1</code>, are not quite right; that latter assignment should be an error. <code>Subclass</code> is not equivalent to <code>Any</code>; it's a distinct class, which has an unknown base class. There is no &quot;materialization&quot; (using the term from the typing spec, to mean &quot;replacing Any with a concrete static type&quot;) of the unknown base class that could possibly result in <code>1</code> being an instance of <code>Subclass</code>.</p>
+<p>The second test line here is correct; since <code>Subclass</code> inherits from an unknown type, that unknown type <em>could</em> be (could materialize to) <code>int</code> or a subclass of <code>int</code>, therefore we should allow the assignment <code>y: int = Subclass()</code>.</p>
+<p>You can see that both <a href="https://pyright-play.net/?enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQMYA2AhgM61QDKArgEYAURcAlAFwlRBUBHVpkAHryZsoAXigBGEnCmp88lh25kgA">pyright</a> and <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=63d4f40219fb0072ebd811c6ae7937db">mypy</a> agree with this, via their online playgrounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:62 on 2024-12-03 20:38</div>
+            <div class="timeline-body"><p>I don't think we want to make that change; <code>Subclass</code> should still have the type <code>Instance(Subclass)</code>, not the type <code>Any</code>. Our representation of the class <code>Subclass</code> will have <code>Any</code> in its method resolution order (MRO), which will impact how we treat it in some cases. For example, it should be assignable to any other non-final type, since it might be a subclass of that type, as mentioned below, and accessing an unknown attribute on it should give an attribute type of <code>Any</code> (the unknown base type might have that attribute, with some unknown type). But these are cases that we will implement in e.g. <code>Type::is_assignable_to</code> and <code>Type::member</code>, not by making the subclass of Any equivalent to Any.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1366 on 2024-12-03 20:44</div>
+            <div class="timeline-body"><p>It's awesome that you found the right spot for this and figured out how to do it, but (as described above) I don't think this is quite the behavior we'll want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1535 on 2024-12-03 20:45</div>
+            <div class="timeline-body"><p>Similarly here, I don't think this is the behavior we want -- an instance of a class that inherits <code>Any</code> should still just be an <code>Instance</code> type of that class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2667 on 2024-12-03 20:46</div>
+            <div class="timeline-body"><p>This seems likely useful in a future PR when we do want to implement some of the special handling for classes that inherit <code>Any</code>, I'd leave it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-03 20:48</div>
+            <div class="timeline-body"><p>This is quite impressive for your first PR! Nice work.</p>
+<p>Unfortunately I wasn't clear about the semantics of inheriting Any (because I wasn't actually expecting you to go ahead and implement those semantics in this PR!), so I think we'll need to revert a couple of the changes here. I would suggest leaving the semantics of inheriting Any to a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-03 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:62 on 2024-12-03 20:51</div>
+            <div class="timeline-body"><p>Just for future reference, not because it's relevant to this PR: one place where I think mypy and pyright get it wrong is that they also allow the assignment <code>x: Fin = Sub()</code> in <a href="https://pyright-play.net/?enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcANFMKgIYA2AULQMbWUDOLUAygK4BGAFETgBKAFy0oEqAlYt6AAQooajZmygAxVGMlSZ9AB4jOvKAF4oARlpwjqfOe78htAF5HNKM8af1aQA">this code sample</a>. Because <code>Fin</code> is a final class, it can have no subclasses, therefore the unknown base class of <code>Sub</code> can't materialize to <code>Fin</code>, therefore I don't think that assignment should be allowed. But this is for future: we don't even have support for final classes in red-knot at all yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1366 on 2024-12-03 21:29</div>
+            <div class="timeline-body"><p>Reverted</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1535 on 2024-12-03 21:29</div>
+            <div class="timeline-body"><p>Reverted</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:52 on 2024-12-03 21:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I was only intending that we'd return the right <code>ClassBase</code> variant when building the MRO, and leave any other updates to the behavior of inheriting-Any as a separate project.</p>
+</blockquote>
+<p>Ha, whoops!</p>
+<blockquote>
+<p>I think the most basic test we can add for this here would just be a test that <code>Subclass.__mro__</code> includes <code>Any/Unknown</code> when it inherits <code>Any</code> explicitly, similar to existing tests in <code>mro.md</code>. (That test could live either here or in <code>mro.md</code>.)</p>
+</blockquote>
+<p>Done</p>
+<blockquote>
+<p>I think it would be reasonable (rather than deleting them) to just update the tests to reflect the current behavior, add TODO comments to reflect the future desired semantics, and leave it like that for now.</p>
+</blockquote>
+<p>Done</p>
+<blockquote>
+<p>I've commented below on the semantics that we will want for inheriting-Any</p>
+</blockquote>
+<p>Ahh, I misunderstood the intented use case in the spec — thought it was introducing a special case where the subclass should be treated exactly like <code>Any</code>.  Your explanation makes more sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:67 on 2024-12-03 21:37</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-03 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:52 on 2024-12-03 22:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The spec allows you to define subclasses of `Any`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:67 on 2024-12-03 22:09</div>
+            <div class="timeline-body"><p>The more-detailed comment above is great, but we usually use this format for TODOs in mdtests, right next to the specific change that should happen, just so it's extra-clear to future-us updating the test.</p>
+<pre><code class="language-suggestion">TODO: no diagnostic
+x: Subclass = 1  # error: [invalid-assignment]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-03 22:11</div>
+            <div class="timeline-body"><p>Looks excellent! Two very small wording nits. Feel free to merge, and congrats on landing your first red-knot PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:67 on 2024-12-04 14:48</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/any.md</code>:52 on 2024-12-04 14:48</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2024-12-04 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2024-12-04 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-04 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 14:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

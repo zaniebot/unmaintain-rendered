@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use salsa accumulators for diagnostics - astral-sh/ruff #14760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use salsa accumulators for diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14760">#14760</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-03 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 17:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a reimplementation of https://github.com/astral-sh/ruff/pull/14116 now that Salsa <a href="https://github.com/salsa-rs/salsa/pull/615">salsa accumulators are cheaper</a> (close to &quot;free&quot; for queries without diagnostics).</p>
+<p>The main benefit of salsa accumulators is that they're an easy way to emit a diagnostic from anywhere inside a salsa query, and salsa takes care to deduplicate diagnostics if the same query is called multiple times.</p>
+<h2>Performance</h2>
+<p>This still significantly regresses the incremental performance. I created another <a href="https://github.com/salsa-rs/salsa/pull/622">salsa PR</a> to reduce the regression to 9%. I don't think we can do much better except reducing the number of inputs by using <a href="https://github.com/salsa-rs/salsa/issues/598">coarse-grained</a> salsa dependencies because:</p>
+<ul>
+<li>Salsa currently tracks reads on a per &quot;field&quot; level for salsa structs. This very fine-grained tracking costs us here because the accumulator has to iterate and resolve all of them to know if they have any accumulated values. The coarse-grained salsa feature will help with this (and reduce the overhead in other places as well)</li>
+<li>We only check 4 files (plus standard library files that are all unchanged and have no diagnostics). The regression would be less proportionally if there were more files without diagnostics.</li>
+<li>The diagnostics are from the largest file and, to make it worse, from the module scope, which has the most definitions.</li>
+</ul>
+<p>Considering this, I'm still leaning towards migrating to salsa accumulators because of what they unlock: We can now emit diagnostics from any part of the code. This includes the module resolver (e.g. emit a warning if we find an invalid <code>pth</code> file?)</p>
+<h2>Other changes</h2>
+<p>This PR upgrades Salsa to a version with &quot;cheap&quot; accumulators. The new salsa version now requires that <code>Db</code> structs implement <code>Clone</code> for its parallel db support (which doesn't seem to work yet).</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-12-03 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-03 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-12-03 17:55</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-accumulators">CodSpeed Performance Report</a></h2>
+<h3>Merging #14760 will <strong>degrade performances by 10.43%</strong></h3>
+<p><sub>Comparing <code>micha/salsa-accumulators</code> (35f3815) with <code>main</code> (1685d95)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>micha/salsa-accumulators</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 4 ms | 4.4 ms | -10.43% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-03 18:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:81 on 2024-12-04 11:43</div>
+            <div class="timeline-body"><p>is <code>report</code> the best verb here? It feels to me like we're adding a diagnostic to be reported later, rather than reporting it to the user immediately. Maybe this could be called <code>CompileDiagnostic::add()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:238 on 2024-12-04 11:44</div>
+            <div class="timeline-body"><p>similarly here, <code>add_type_diagnostic</code> would be a more natural name for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-04 11:47</div>
+            <div class="timeline-body"><p>The use of <code>report_</code> everywhere makes me feel like I'm reading the pyright codebase haha. But in most cases it seems like it probably is the best verb to use. Still, there's a couple of places where I think we could use some better names:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 13:36</div>
+            <div class="timeline-body"><p>Hmm, I'm looking into suppressions right now, specifically how we'd recognize unused suppression comments.
+We could ignore inline and file-level suppression comments when deciding whether or not to emit a diagnostic and then filter them out as part of a post-processing step. The diagnostics would then allow us to &quot;account&quot; for the seen suppressions and list comments without any suppressions. However, this has the downside that more files have accumulated values, meaning the performance regression remains relevant for more files.</p>
+<p>Another alternative to emitting the diagnostic is to emit a <code>Suppressed</code> accumulated value. That's cheaper because it can be a more lightweight value (and suppressing a diagnostic can be used to work-around a bug in the diagnostic generation), but it has the same downside as using the diagnostic accumulator: Collecting all values requires an extra traversal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_test/src/lib.rs</code>:105 on 2024-12-04 15:02</div>
+            <div class="timeline-body"><p>Only tangentially related: do we have a feeling for how many unrelated-file diagnostics we generate typically? If this would be a large fraction of all diagnostics, we should probably detect that earlier?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-04 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-04 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:105 on 2024-12-04 15:17</div>
+            <div class="timeline-body"><p>This could be any number of diagnostics and salsa doesn't provide a way to detect this earlier.</p>
+<p>Salsa accumulators work by traversing the entire dependency tree of a query. In our case, this is <code>check_file</code>. <code>check_file</code> can branch out into arbitrary files when resolving imports (and checking those files in turn). The only way for us to truncate this earlier is by not using accumulators because salsa doesn't know about the file boundaries.</p>
+<p>I don't think this is very terrible because the CLI uses <code>check_workspace</code> to get <em>all</em> diagnostics. The LSP uses <code>check_file</code> today but I don't think it should. The wasm playground uses <code>check_file</code>... this is probably fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/string_annotation.rs</code>:11 on 2024-12-04 15:32</div>
+            <div class="timeline-body"><p>Minor: Something like</p>
+<pre><code class="language-suggestion">struct StringAnnotationParseError;
+type AnnotationParseResult = Result&lt;Parsed&lt;ModExpression&gt;, StringAnnotationParseError&gt;;
+</code></pre>
+<p>would maybe make <code>match</code>es at the call sites of this function a bit easier to understand</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-04 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-04 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:207 on 2024-12-04 15:46</div>
+            <div class="timeline-body"><p>A few questions:</p>
+<ul>
+<li>Do we really want an unstable sort here? Two different diagnostics could compare equal according to the ordering defined here if they refer to the same range, or even just the same range start.</li>
+<li>Why do we order by file and then by the path of the file? Can multiple files refer to the same path?</li>
+<li>If performance is not a major concern here, we could potentially do something like<pre><code class="language-rs">diagnostics.sort_unstable_by_key(|diagnostic| {
+    let file = diagnostic.file();
+    let path = file.path(db).as_str();
+    let range_start = diagnostic.range().unwrap_or_default().start();
+    (file, path, range_start)
+});
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-04 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:207 on 2024-12-04 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Why do we order by file and then by the path of the file? Can multiple files refer to the same path?</p>
+</blockquote>
+<p>Oh, that's just wrong. The idea was to short-cut if the files are identical.</p>
+<blockquote>
+<p>Do we really want an unstable sort here? Two different diagnostics could compare equal according to the ordering defined here if they refer to the same range, or even just the same range start.</p>
+</blockquote>
+<p>I don't think it's important for us to preserve the original order if there are multiple diagnostics at the same line, for as long as the order is deterministic (Running Red Knot multiple times should give you the same result). We should probably include the rule code as well as disambiguator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-04 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:207 on 2024-12-04 16:20</div>
+            <div class="timeline-body"><blockquote>
+<p>for as long as the order is deterministic</p>
+</blockquote>
+<p>Exactly, that was my concern.</p>
+<blockquote>
+<p>We should probably include the rule code as well as disambiguator</p>
+</blockquote>
+<p>:+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-12-05 04:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2024-12-10 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-30 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

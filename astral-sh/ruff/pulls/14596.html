@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Handle non-finite decimals in `verbose-decimal-constructor (FURB157)` - astral-sh/ruff #14596</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Handle non-finite decimals in <code>verbose-decimal-constructor (FURB157)</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14596">#14596</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-11-26 02:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-26 02:53</div>
+            <div class="timeline-body"><p>This PR extends the Decimal parsing used in <a href="https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/">verbose-decimal-constructor (FURB157)</a> to better handle non-finite <code>Decimal</code> objects, avoiding some false negatives.</p>
+<p>Closes #14587</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-26 03:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-26 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB157.py</code>:50 on 2024-11-26 08:27</div>
+            <div class="timeline-body"><p>I would prefer an explanatory comment here rather than a riddle :laughing:</p>
+<p>I suspect that the importance is the missing <code>-</code> sign but the existing comment leaves me wondering if there's more to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:159 on 2024-11-26 08:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                &amp;normalized_float_string,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:176 on 2024-11-26 08:31</div>
+            <div class="timeline-body"><p>Unrelated to your fix: To avoid an allocation in many cases, it might be worth trying an exact match first before calling <code>to_lowercase</code>.</p>
+<pre><code class="language-rust">let trimmed = float.value.to_str().trim();
+
+if is_inf_infinity_or_nan(trimmed) {
+	return;
+}
+
+let normalized_float_string = trimmed.to_lowercase();
+
+if is_inf_infinity_or_nan(&amp;normalized_flaot_string) {
+	return;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-26 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-11-26 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:176 on 2024-11-26 16:37</div>
+            <div class="timeline-body"><p>Maybe I'm misunderstanding but I think we have to allocate anyway: we only get to escape early here if <code>float.value</code> is <em>not</em> inf, infinity, or nan (after trimming and lowercasing). So if we first checked that the trimmed version wasn't &quot;nan&quot; etc., we would still have to rule out the case where it's &quot;NaN&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-11-26 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:159 on 2024-11-26 16:45</div>
+            <div class="timeline-body"><p>actually had to revert that - type mismatch (<code>matches</code> doesn't let you compare <code>&amp;String</code> and <code>&amp;str</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-11-26 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:176 on 2024-11-26 17:01</div>
+            <div class="timeline-body"><p>Yes, it's just that we do it less often. I guess the overall idea is to spell out all common variations so that the rule can short-circuit for almost all valid-cases and only allocates for uncommon spellings (e.g. <code>nAn</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:159 on 2024-11-27 11:48</div>
+            <div class="timeline-body"><p>I'm personally fine with <code>.as_str()</code>, but in case it's helpful @dylwil3, the way to make this compile would be to do this:</p>
+<pre><code class="language-suggestion">                &amp;*normalized_float_string,
+</code></pre>
+<p>What that's saying to Rust is:</p>
+<ol>
+<li>First dereference the <code>normalized_float_string</code> variable (the <code>*</code> dereferences things), converting the type from <code>String</code> to <code>str</code>. (A <code>String</code> is a smart pointer, where the pointer points to some underlying data of type <code>str</code>).</li>
+<li>And then borrow it again, converting the type from <code>str</code> to <code>&amp;str</code></li>
+</ol>
+<p>Something that comes up a lot in Ruff's linter rules is situations where you have a <code>&amp;Box&lt;Expr&gt;</code>, but you need an <code>&amp;Expr</code> to be able to match on it. One way to get from a <code>&amp;Box&lt;Expr&gt;</code> to an <code>&amp;Expr</code> is to use <code>as_ref()</code>, because there's this convenient implementation for <code>Box</code> in the Rust standard library that will take care of the conversion for you: https://doc.rust-lang.org/std/boxed/struct.Box.html#impl-AsRef%3CT%3E-for-Box%3CT,+A%3E. But another way of doing that is to use the invocation <code>&amp;**var</code> (where <code>var</code> has type <code>&amp;Box&lt;Expr&gt;</code>): what that does is:</p>
+<ul>
+<li>Dereference <code>var</code> once, converting the type from <code>&amp;Box&lt;Expr&gt;</code> to <code>Box&lt;Expr&gt;</code>.</li>
+<li>Dereference <code>var</code> <em>again</em>, converting the type from <code>Box&lt;Expr&gt;</code> to <code>Expr</code>. (<code>Box</code> is a smart pointer, just like <code>String</code>, so dereferencing the variable gets you from the pointer to the underlying data that the pointer is pointing to.)</li>
+<li>And then borrow <code>var</code>, converting the type from <code>Expr</code> to <code>&amp;Expr</code>.</li>
+</ul>
+<p>The <code>&amp;*</code> and <code>&amp;**</code> stuff can get some getting used to, but some people prefer it as it's a bit more explicit than some alternative idioms. I think that's more true with the <code>.as_ref()</code> situation than the <code>.as_str()</code> situation, though -- a <code>.as_ref()</code> call could really return anything (you have to lookup the implementation to know exactly), whereas I think it's fairly obvious from an <code>as_str</code> call what it's returning.</p>
+<p>(Sorry if you already know some of this, just thought it might be helpful! It took me a while to figure some of this out when I was new to Rust.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-11-29 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB157.py</code>:51 on 2024-11-29 18:03</div>
+            <div class="timeline-body"><p>Typo: <code>Deimcal</code> → <code>Decimal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-01 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:176 on 2024-12-01 20:24</div>
+            <div class="timeline-body"><p>Ok, I think the latest commit avoids an allocation for this check in all cases - let me know if you think it's a bit too awkward or if there's a better way 😄 I wanted to avoid using a regex or any other heavy machinery since it seemed a bit overpowered for this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2024-12-03 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:176 on 2024-12-03 00:13</div>
+            <div class="timeline-body"><p>(Gonna merge this in to ever-so-slightly ease your code review burden... if you wake up in a cold sweat I'll make a followup PR 😄 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2024-12-03 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-12-03 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-03 00:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

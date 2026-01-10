@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Rename and rework the `CoreStdlibModule` enum - astral-sh/ruff #15071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Rename and rework the <code>CoreStdlibModule</code> enum</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15071">#15071</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-12-19 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-19 19:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR does several things:</p>
+<ul>
+<li>Renames the <code>CoreStdlibModule</code> enum to <code>KnownModule</code>, since it is a parallel enum to <code>KnownClass</code>, <code>KnownFunction</code> and <code>KnownInstanceType</code></li>
+<li>Moves the enum from <code>stdlib.rs</code> to <code>module_resolver::module.rs</code>. This allows it to be stored as a field on <code>ModuleInner</code> objects, and retrieved using a getter method from <code>Module</code> objects. This in turn means that we can then add <code>known()</code> and <code>is_known()</code> methods to the <code>Module</code> struct, which allows us to query whether a given <code>Module</code> represents a known module in much the same way we already do using <code>FunctionType::is_known</code> and <code>Class::is_known</code>.</li>
+</ul>
+<p>These changes have several goals:</p>
+<ul>
+<li>Unify the API of the various <code>Known*</code> enums</li>
+<li>Put in one place the code required to check whether a <code>Module</code> really represents a specific module from the standard library. We had the same checks written out in several places, which was error-prone, since there are several things that needed to be checked and some are quite subtle. (One recent example: https://github.com/astral-sh/ruff/pull/15019#discussion_r1892793699.)</li>
+<li>Make our API less stringly typed, and therefore less error-prone (the changes in <code>definition.rs</code> are an example)</li>
+<li>Exploit some micro-optimisation opportunities in a few places</li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_python_semantic</code>. No new tests added -- this should be a pure refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-12-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-12-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2024-12-19 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-19 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2754 on 2024-12-19 19:32</div>
+            <div class="timeline-body"><p>This is functionally the same, but in the <code>try_from*()</code> methods on the other <code>Known*</code> enums, we delay the <code>file_to_module()</code> call as much as possible, as it's probably much more expensive than <code>match</code>ing on the value of a string. This PR does the same for this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-19 19:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2363 on 2024-12-19 20:05</div>
+            <div class="timeline-body"><p>nit: I would expect a <code>Symbol</code> or similar to be passed in, based on this name; I think <code>try_from_file_and_name</code> would be clearer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2669 on 2024-12-19 20:07</div>
+            <div class="timeline-body"><p>Oh, I see we already had the <code>*_and_symbol</code> method naming pattern here, where &quot;symbol&quot; meant &quot;name&quot;... that doesn't really change my opinion of it, though :) It's not wrong, I think in the context of our codebase it's just unnecessarily confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-19 20:09</div>
+            <div class="timeline-body"><p>This is beautiful, what a nice simplification and unification of concepts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-19 20:10</div>
+            <div class="timeline-body"><p>1% speedup on the incremental benchmark... who knows if that's real, but certainly better than a slowdown whatever the case 😆 https://codspeed.io/astral-sh/ruff/branches/alex%2Fknown-module</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-12-19 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-19 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-19 20:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

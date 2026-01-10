@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Understand `Annotated` - astral-sh/ruff #14950</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Understand <code>Annotated</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14950">#14950</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-13 01:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-13 01:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14922.</p>
+<h2>Test Plan</h2>
+<p>Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2024-12-13 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2024-12-13 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-12-13 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2024-12-13 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-13 03:51</div>
+            <div class="timeline-body"><p>Alright, I'm out of ideas for now. What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:3 on 2024-12-13 05:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`Annotated` attaches arbitrary metadata to a given type.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 05:48</div>
+            <div class="timeline-body"><p>I see that pyright just defaults to <code>Any</code> and doesn't emit a diagnostic here, but mypy does. I don't see any support for pyright's behavior in the typing spec, so I would suggest that bare Annotated should be an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:77 on 2024-12-13 05:52</div>
+            <div class="timeline-body"><p>If we don't emit a diagnostic on bare <code>Annotated</code> in an annotation, it would suggest that this also should be treated implicitly as just inheriting <code>Any</code>, with no error. But I don't like that; I prefer erroring here, and always erroring on bare <code>Annotated</code>, as mentioned above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:37 on 2024-12-13 05:57</div>
+            <div class="timeline-body"><p>How about a test with too many (3+) type parameters?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4831 on 2024-12-13 05:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                if elts.len() != 2 {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4845 on 2024-12-13 06:00</div>
+            <div class="timeline-body"><p>We currently have a requirement that we store a type for every expression (in order to support hover in an LSP). I suspect the problem you're running into is that you never infer or store a type for the second or subsequent parameters. (You store a type for the overall tuple expression, but not for the individual expressions in second+ positions, or any possible sub-expressions of those, etc.) I think you will need to infer the first as a type expression (as you already do, using <code>self.infer_type_expression</code>), infer the rest of the parameters as value expressions (using <code>self.infer_expression</code>), and then return the type of the first and ignore the rest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 06:01</div>
+            <div class="timeline-body"><p>Thanks for working on this! Sorry about the bad experience, our expression coverage and the way it manifests in hard-to-debug errors is a known pain point we want to improve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-13 07:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:37 on 2024-12-13 08:30</div>
+            <div class="timeline-body"><p>Annotated accepts an <em>arbitrary</em> number of metadata elements after the first argument, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4831 on 2024-12-13 08:31</div>
+            <div class="timeline-body"><p>I don't think this is correct, per my comment above — you need at least 2 arguments to <code>Annotated</code>, but there's otherwise no restrictions. See e.g. the second bullet point at https://docs.python.org/3/library/typing.html#typing.Annotated, under &quot;Details of the syntax&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:37 on 2024-12-13 08:33</div>
+            <div class="timeline-body"><p>We should add more tests for it though, for sure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4825 on 2024-12-13 12:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // Pyright also does this. Mypy doesn't; it falls back to `Any` instead.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4845 on 2024-12-13 12:22</div>
+            <div class="timeline-body"><p>(FYI, this is the same thing that caused a panic in the first version of https://github.com/astral-sh/ruff/pull/14858/, @InSyncWithFoo)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-13 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 12:23</div>
+            <div class="timeline-body"><p>The conversion is done in <code>Type::in_type_expression()</code>, but this has access to neither <code>.diagnostics</code> nor any <code>Expr</code>s. That method itself is called in three places within <code>TypeInferenceBuilder</code>, but it is not possible to emit a diagnostic based on the return value alone. Should I put a TODO there for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-13 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:77 on 2024-12-13 12:24</div>
+            <div class="timeline-body"><p>This is a runtime error, so I think it should always be reported, regardless of whether a diagnostic is emitted for <code>x: Annotated</code> or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:327 on 2024-12-13 12:32</div>
+            <div class="timeline-body"><p>It would be nice to avoid adding more TODO comments to this file. Can you add a short description of this check, similar to the one here:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3a64b44b7ab8742f4fe3630cd9751104d9f78d2/crates/red_knot_python_semantic/src/types/diagnostic.rs#L60-L77</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:26 on 2024-12-13 12:46</div>
+            <div class="timeline-body"><p>you've added tests for very exotic kinds of metadata here, but I think we're still missing a simple test that's easy to read and understand, which demonstrates that we allow an arbitrary number of metadata elements without emitting a diagnostic or panicking. Just something like this:</p>
+<pre><code class="language-py">def _(x: Annotated[int, &quot;arbitrary&quot;, &quot;metadata&quot;, &quot;elements&quot;, &quot;are&quot;, &quot;fine&quot;]):
+    reveal_type(x)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-13 12:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:28 on 2024-12-13 12:56</div>
+            <div class="timeline-body"><p>Why should we emit an error on this? This works fine at runtime, on Python 3.9 and Python 3.13:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Annotated
+&gt;&gt;&gt; def f(x: Annotated[int, (foo := b&quot;SyntaxError: named expression cannot be used within an annotation&quot;)]): ...
+&gt;&gt;&gt;
+</code></pre>
+<p>I'm not sure I understand what the value of this test is. If there's a syntax error that we're not detecting, that's either a bug in the parser or it's related to https://github.com/astral-sh/ruff/issues/11934. Neither is really something we need to test directly here. I think I would just delete this test; it seems confusing to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-13 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:28 on 2024-12-13 13:03</div>
+            <div class="timeline-body"><p>I guess I have been living too much with 3.14. Replaced with a better one in which the metadata is also a type expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:348 on 2024-12-13 13:16</div>
+            <div class="timeline-body"><p>It actually checks for invalid <em>type arguments</em> to <code>Annotated</code> :-) Special forms <em>have</em> type parameters; they <em>accept</em> type arguments</p>
+<pre><code class="language-suggestion">declare_lint! {
+    /// ## What it does
+    /// Checks for invalid arguments to `typing.Annotated`.
+    ///
+    /// ## Why is this bad?
+    /// `Annotated` expects at least two arguments.
+    /// Otherwise, it will raise a runtime error.
+    ///
+    /// ## Example
+    ///
+    /// ```python
+    /// x: Annotated[int]
+    /// ```
+    ///
+    /// Use instead:
+    ///
+    /// ```python
+    /// x: Annotated[int, GreaterThan(42)]
+    /// ```
+    pub(crate) static INVALID_ANNOTATED_ARGUMENTS = {
+        summary: &quot;detects invalid arguments to Annotated&quot;,
+        status: LintStatus::preview(&quot;1.0.0&quot;),
+        default_level: Level::Error,
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4819 on 2024-12-13 13:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let mut report_invalid_arguments = || {
+                    self.diagnostics.add_lint(
+                        &amp;INVALID_ANNOTATED_ARGUMENTS,
+                        subscript.into(),
+                        format_args!(
+                            &quot;Special form `{}` expected at least 2 arguments (one type and at least one metadata element)&quot;,
+                            known_instance.repr(self.db)
+                        ),
+                    );
+                };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4823 on 2024-12-13 13:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // `Annotated[]` with less than two arguments is an error at runtime.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4843 on 2024-12-13 13:18</div>
+            <div class="timeline-body"><p>we could use much more descriptive variable names here:</p>
+<pre><code class="language-suggestion">                let [type_expr, metadata @ ..] = &amp;elts[..] else {
+                    self.infer_type_expression(parameters);
+                    return Type::Unknown;
+                };
+
+                for element in metadata {
+                    self.infer_expression(element);
+                }
+
+                let ty = self.infer_type_expression(type_expr);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:48 on 2024-12-13 13:48</div>
+            <div class="timeline-body"><p>it's easy to miss that there's an assertion here when reading this; it gets a little lost in the multiline descriptive comment:</p>
+<pre><code class="language-suggestion">def _(x: Annotated[int]):  # error: [invalid-annotated-parameter]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:27 on 2024-12-13 13:49</div>
+            <div class="timeline-body"><p>this is a <em>correct</em> spelling, but it's <a href="https://library.bc.edu/answerwall/2019/08/15/is-parameterization-or-parametrization-correct-when-describing-which-parameters-describe-a-statistical-model/">much less common</a> than &quot;parameterize&quot;</p>
+<pre><code class="language-suggestion">It is invalid to parameterize `Annotated` with less than two arguments.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:54 on 2024-12-13 13:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Correctly parameterized
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:69 on 2024-12-13 13:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Not parameterized
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:330 on 2024-12-13 13:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Otherwise, it will raise `TypeError` at runtime.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:342 on 2024-12-13 13:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// ```python
+    /// from typing import Annotated
+    ///
+    /// x: Annotated[int]
+    /// ```
+    ///
+    /// Use instead:
+    ///
+    /// ```python
+    /// from typing import Annotated
+    ///
+    /// x: Annotated[int, &quot;important metadata&quot;]
+    /// ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4838 on 2024-12-13 13:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let ast::Expr::Tuple(ast::ExprTuple { elts: arguments, .. }) = parameters else {
+                    report_invalid_arguments();
+
+                    // `Annotated[]` with less than two arguments is an error at runtime.
+                    // However, we still treat `Annotated[T]` as `T` here for the purpose of
+                    // giving better diagnostics later on.
+                    // Pyright also does this. Mypy doesn't; it falls back to `Any` instead.
+                    return self.infer_type_expression(parameters);
+                };
+
+                if arguments.len() &lt; 2 {
+                    report_invalid_arguments();
+                }
+
+                let [type_expr, metadata @ ..] = &amp;arguments[..] else {
+                    self.infer_type_expression(parameters);
+                    return Type::Unknown;
+                };
+</code></pre>
+<p>Ideally we'd also rename the <code>let parameters = &amp;*subscript.slice;</code> assignment on line 4807 to something like <code>let arguments_slice = &amp;*subscript.slice;</code>. You don't have to do that in this PR, though, if you don't want to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4831 on 2024-12-13 14:08</div>
+            <div class="timeline-body"><p>Whoops, sorry for the noise! Missed that in reading the spec. Shows how much I've actually had occasion to use <code>Annotated</code> 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:37 on 2024-12-13 14:09</div>
+            <div class="timeline-body"><p>Oops, my mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-13 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:27 on 2024-12-13 14:13</div>
+            <div class="timeline-body"><p>Done. Also renamed the two in <code>literal_string.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:27 on 2024-12-13 14:19</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 14:32</div>
+            <div class="timeline-body"><p>There are two ways to solve this TODO. One way would be to change <code>Type::in_type_expression</code> so that it returns a <code>Result</code>, where the error tells you what kind of diagnostic needs to be emitted if it's not a valid type expression. The other would be to move <code>Type::in_type_expression</code> so that it's a method on <code>TypeInferenceBuilder</code> rather than a method on <code>Type</code>, since the type inference builder has access to diagnostics. Either would be do the job; they both have advantages and disadvantages. Interested in hearing @carljm's thoughts on what he'd prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 14:52</div>
+            <div class="timeline-body"><p>Moving it to <code>TypeInferenceBuilder</code> seems easy, but we currently roughly maintain a split where methods on <code>TypeInferenceBuilder</code> accept AST nodes as input, not types; type-level operations go on <code>Type</code> and in <code>types.rs</code>. I think I'd prefer to maintain that?</p>
+<p>I think there's a third option, which might be simplest: have <code>in_type_expression</code> take as argument <code>&amp;mut self.diagnostics</code> when called from <code>TypeInferenceBuilder</code>. This looks like the direction we might be heading with #14956 anyway, and would be easy to convert to that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there's a third option, which might be simplest: have <code>in_type_expression</code> take as argument <code>&amp;self.diagnostics</code> when called from <code>TypeInferenceBuilder</code>.</p>
+</blockquote>
+<p>I wondered about that, but it felt a little ugly to have a method on <code>Type</code> mutate the state of an argument passed in like that :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 14:58</div>
+            <div class="timeline-body"><p>I think this might just be something we have to accept, that type operations can add diagnostics to the current inference context? I'm not sure it's nicer if every call to <code>in_type_expression</code> has to look like <code>some_type.in_type_expression(db).unwrap_with_diagnostic(&amp;mut self.diagnostics)</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 15:01</div>
+            <div class="timeline-body"><p>Yes, fair enough. @InSyncWithFoo, can you make that change, then? <code>Type::in_type_expression</code> needs to accept an additional argument, of type <code>&amp;mut TypeCheckDiagnostics</code>, so that it can emit diagnostics if the type isn't valid in a type expression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 15:02</div>
+            <div class="timeline-body"><p>Oh, I've forgotten a key point, though -- reporting a diagnostic also requires a node (to report it on the right range). Having <code>Type::in_type_expression</code> also take an AST node is just as much a boundary-violation as having methods on <code>TypeInferenceBuilder</code> take types. So I feel like returning a <code>Result</code> is probably best, or at least most in line with our current structure. Though I'm not certain whether holding this boundary will be sustainable long-term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 15:04</div>
+            <div class="timeline-body"><p>In this case it feels complicated enough that I'm okay leaving the TODO here for now and accepting the PR as-is, if you are!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 15:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md</code>:33 on 2024-12-13 15:05</div>
+            <div class="timeline-body"><p>Yes, I think that's fine. We need to sort out our strategy here, and I'll be working on that as part of call signature checking anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-13 15:06</div>
+            <div class="timeline-body"><p>LGTM, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-12-13 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1798 on 2024-12-13 15:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            # TODO should emit a diagnostic
+            Type::KnownInstance(KnownInstanceType::Annotated) =&gt; Type::Unknown,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 15:15</div>
+            <div class="timeline-body"><p>I'm not sure if we'll really want dedicated separate rules for invalid parameterization of each separate special form? Pyright and mypy both seem to lump these all together, pyright into <code>reportInvalidTypeForm</code> and mypy into <code>valid-type</code>. That would correspond to our <code>INVALID_TYPE_FORM</code>, but we also already have <code>INVALID_TYPE_PARAMETER</code> which is more specific. I would be inclined to just use <code>INVALID_TYPE_PARAMETER</code> and not create a new rule for this.</p>
+<p>I guess we do have the precedent of <code>INVALID_LITERAL_PARAMETER</code>, but tbh I'd be inclined to remove that in favor of a more general rule.</p>
+<p>@AlexWaygood I haven't reviewed the full discussion history of the PR; is a dedicated rule for this something you asked for in review? What do you think about just using <code>INVALID_TYPE_PARAMETER</code> instead?</p>
+<p>We can also leave this for a later cleanup/rationalization of rules. (For instance, I like that this correctly uses the term &quot;argument&quot; instead of &quot;parameter&quot;, I think we should fix that in other similar rules.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-13 15:20</div>
+            <div class="timeline-body"><p>Looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-13 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 15:24</div>
+            <div class="timeline-body"><p>I left review comments on the name of the dedicated rule and the docs for it, but no, I didn't specifically ask for having a dedicated rule. Having a more general rule sounds fine to me. But it should be <code>INVALID_TYPE_ARGUMENTS</code> rather than <code>INVALID_TYPE_PARAMETER</code>, I think -- the <em>arguments to the parameters</em> are where the invalidity is (as you yourself note!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 15:48</div>
+            <div class="timeline-body"><p>Ok, I think at the very least we should roll all three of <code>INVALID_ANNOTATED_ARGUMENTS</code>, <code>INVALID_LITERAL_PARAMETER</code>, and <code>INVALID_TYPE_PARAMETER</code> into a single rule <code>INVALID_TYPE_ARGUMENTS</code>.</p>
+<p>I think a good case can be made that we should go one step further and just roll all of it into the single rule <code>INVALID_TYPE_FORM</code>, like mypy and pyright do. But I don't feel strongly about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 16:18</div>
+            <div class="timeline-body"><p>Ok, taking that thumbs-up as not-an-objection to the &quot;step further&quot;, I'm going to suggest that that is in fact what we should do (roll everything into <code>INVALID_TYPE_FORM</code>). I just have a hard time imagining that someone wants to globally suppress &quot;wrong type parameters&quot; as an error class, but not other invalid type forms. And mypy and pyright's behavior suggests there hasn't been demand for this.</p>
+<p>@InSyncWithFoo are you up for doing this in this PR? I'd probably prefer that, just so we don't add a new rule and then immediately remove it in another PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-13 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 16:29</div>
+            <div class="timeline-body"><p>You must be asking the wrong person, because I sure am.</p>
+<p>Two additional notes, though:</p>
+<ol>
+<li>We might want to differentiate diagnostics for runtime errors and for type-checking-only. <code>Annotated[int]</code> is a runtime error, but <code>Literal[object()]</code> isn't.</li>
+<li>I think the rules should be ordered alphabetically, if only for human-searchability.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-13 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-13 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:347 on 2024-12-13 17:30</div>
+            <div class="timeline-body"><p>Definitely no objection to ordering rules alphabetically!</p>
+<p>Differentiating between diagnostics for things that cause a runtime exception vs things that don't is interesting. In some cases I think that's useful. When it comes to valid vs invalid uses of <code>typing</code> module special forms I think it's less useful, because how much &quot;runtime error checking&quot; is done by special forms in <code>typing</code> module is very arbitrary and ad-hoc, based mostly on what an implementer felt like doing and was easy to do. Often these behaviors are changed or relaxed if someone can present a good case for wanting to experiment in static analysis with some meaning for some currently-erroring form. So I don't think it's a useful distinction in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:254 on 2024-12-13 17:39</div>
+            <div class="timeline-body"><p>This is one way to get rid of TODOs!  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-13 17:40</div>
+            <div class="timeline-body"><p>Looks good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-12-13 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-13 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-13 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

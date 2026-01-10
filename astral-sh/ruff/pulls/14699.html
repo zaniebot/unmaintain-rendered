@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `pytest-parametrize-names-wrong-type (PT006)` to edit both `argnames` and `argvalues` if both of them are single-element tuples/lists - astral-sh/ruff #14699</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>pytest-parametrize-names-wrong-type (PT006)</code> to edit both <code>argnames</code> and <code>argvalues</code> if both of them are single-element tuples/lists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14699">#14699</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2024-12-01 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2024-12-01 13:42</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Close #11243. Fix <code>pytest-parametrize-names-wrong-type (PT006)</code> to edit both <code>argnames</code> and <code>argvalues</code> if both of them are single-element tuples/lists.</p>
+<pre><code class="language-python"># Before fix
+@pytest.mark.parametrize((&quot;x&quot;,), [(1,), (2,)])
+def test_foo(x):
+    ...
+
+# After fix:
+@pytest.mark.parametrize(&quot;x&quot;, [1, 2])
+def test_foo(x):
+    ...
+</code></pre>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>New test cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-02 00:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 01:28</div>
+            <div class="timeline-body"><p>I'm sure you're right, but can you expand on why that's a problem? (Should we not be raising a diagnostic at all?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-02 11:57</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the comment!</p>
+<blockquote>
+<p>Should we not be raising a diagnostic at all?</p>
+</blockquote>
+<p>This is another option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-02 12:00</div>
+            <div class="timeline-body"><p>I just found https://github.com/astral-sh/ruff/issues/11243. Should we unpack each item in <code>argvalues</code> as a fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 13:34</div>
+            <div class="timeline-body"><p>In this case, would <em>this</em> be correct?</p>
+<pre><code>@pytest.mark.parametrize(&quot;x,&quot;, [(1,), (2,)])
+</code></pre>
+<p>With the comma inside the string? I don't know enough about pytest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-02 13:41</div>
+            <div class="timeline-body"><p>@charliermarsh Let me check.</p>
+<hr />
+<pre><code class="language-python">import pytest
+
+
+@pytest.mark.parametrize(&quot;x,&quot;, [(1,), (2,)])
+def test_foo(x):
+    assert isinstance(x, int)
+</code></pre>
+<pre><code>_____________________________________________________________________________________________________ test_foo[x0] ______________________________________________________________________________________________________
+
+x = (1,)
+
+    @pytest.mark.parametrize(&quot;x,&quot;, [(1,), (2,)])
+    def test_foo(x):
+&gt;       assert isinstance(x, int)
+E       assert False
+E        +  where False = isinstance((1,), int)
+
+a.py:6: AssertionError
+_____________________________________________________________________________________________________ test_foo[x1] ______________________________________________________________________________________________________
+
+x = (2,)
+
+    @pytest.mark.parametrize(&quot;x,&quot;, [(1,), (2,)])
+    def test_foo(x):
+&gt;       assert isinstance(x, int)
+E       assert False
+E        +  where False = isinstance((2,), int)
+
+a.py:6: AssertionError
+</code></pre>
+<p><code>@pytest.mark.parametrize(&quot;x,&quot;, [(1,), (2,)])</code> is equivalent to <code>@pytest.mark.parametrize(&quot;x&quot;, [(1,), (2,)])</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 10:04</div>
+            <div class="timeline-body"><p>Source of the relevant pytest code</p>
+<p>https://github.com/pytest-dev/pytest/blob/9d4f36d87dae9a968fb527e2cb87e8a507b0beb3/src/_pytest/mark/structures.py#L124-L135</p>
+<p>According to the rule. How should a user rewrite your example?</p>
+<pre><code>@pytest.mark.parametrize((&quot;x&quot;,), [(1,), (2,)])
+                       # ^^^^^^
+def test_foo(x):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-12-03 10:37</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<pre><code class="language-python">@pytest.mark.parametrize((&quot;x&quot;,), [(1,), (2,)])
+def test_foo(x):
+    ...
+</code></pre>
+<p>should be rewritten to:</p>
+<pre><code class="language-python">@pytest.mark.parametrize(&quot;x&quot;, [1, 2])
+def test_foo(x):
+    ...
+
+# I'd prefer this style because I don't need to wonder what x is (tuple vs. int)
+</code></pre>
+<p>Both <code>argnames</code> and items in <code>argvalues</code> need to be fixed. PT006 only fixes <code>argnames</code> now.</p>
+<p>(I implemented a fix to fix <code>argvalues</code> as well but didn't push it yet).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `pytest-parametrize-names-wrong-type (PT006)` not to suggest a fix if both `argnames` and `argvalues` are single-element sequences" to "Fix `pytest-parametrize-names-wrong-type (PT006)` to edit `argnames` and `argvalues` as a fix" by @harupy on 2024-12-03 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `pytest-parametrize-names-wrong-type (PT006)` to edit `argnames` and `argvalues` as a fix" to "Fix `pytest-parametrize-names-wrong-type (PT006)` to edit both `argnames` and `argvalues` if both of them are single-element tuples/lists" by @harupy on 2024-12-03 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 08:21</div>
+            <div class="timeline-body"><blockquote>
+<p>(I implemented a fix to fix argvalues as well but didn't push it yet).</p>
+</blockquote>
+<p>That sounds great. I'll have a look when you push the change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-04 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-12-04 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-04 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:729 on 2024-12-04 08:56</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<pre><code class="language-suggestion">    diagnostic.set_fix(Fix::unsafe_edits(
+</code></pre>
+<p>Should <code>unsafe_edits</code> be used in case <code>argvalues</code> contains comments?</p>
+<pre><code class="language-python">pytest.mark.parametrize(
+    &quot;param&quot;,
+    [
+        (
+            # hello
+            1,
+        ),
+        (2,),
+    ],
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-04 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:729 on 2024-12-04 09:09</div>
+            <div class="timeline-body"><p>If the comment gets removed, then yes, the fix should be marked as unsafe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-04 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:729 on 2024-12-04 11:00</div>
+            <div class="timeline-body"><p>Got it. I'll make this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @harupy on 2024-12-04 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-04 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:744 on 2024-12-04 14:35</div>
+            <div class="timeline-body"><p>Should I add a test to ensure this doesn't conflict with PT007 which may also edit <code>argvalues</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:744 on 2024-12-05 07:49</div>
+            <div class="timeline-body"><p>This sounds like a great idea if we're concerned about whether the rules play nicely together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:718 on 2024-12-05 07:53</div>
+            <div class="timeline-body"><p>Can we extend the rule documentation with when the fix is unsafe? That would also help me understand why we changed the fix to unsafe :) If it's because of possible comments, then we should change the fix to use <code>checker.comment_ranges().has_comments(range)</code> to test if the edited range contains comments and only set the fix to unsafe if that's the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:737 on 2024-12-05 07:56</div>
+            <div class="timeline-body"><p>What does it mean if <code>elts</code> contain more than one element? Is it possible? Should we error or not provide a fix in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-05 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:737 on 2024-12-05 11:48</div>
+            <div class="timeline-body"><p>That's possible. That would make <code>pytest.mark.parametrize</code> throw. A fix should not be provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-05 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-05 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:718 on 2024-12-05 11:59</div>
+            <div class="timeline-body"><p>It's because of possible comments. I'll use has_comments to determine safety</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @harupy on 2024-12-05 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pytest_style/PT006.py</code>:158 on 2024-12-06 12:02</div>
+            <div class="timeline-body"><p>Maybe a fix should not be provided in this case because the fix would hide the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-06 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-06 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:744 on 2024-12-06 13:48</div>
+            <div class="timeline-body"><p>@MichaReiser Manually confirmed PT006 and PT007 don't conflicts:</p>
+<pre><code class="language-python">&gt; cargo run -p ruff -- check --no-cache --select PT007,PT006 a.py --unsafe-fixes --fix
+--- a.py
++++ a.py
+@@ -1,6 +1,6 @@
+ import pytest
+ 
+ 
+-@pytest.mark.parametrize((&quot;param&quot;,), [[1], [2], [3]])
++@pytest.mark.parametrize(&quot;param&quot;, [1, 2, 3])
+ def test_foo(param):
+     ...
+
+Would fix 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:683 on 2024-12-06 16:37</div>
+            <div class="timeline-body"><p>Nit: I suggest moving this method after <code>handle_single_name</code>. It eases the reading flow. I start with <code>check_names</code>, then jump to <code>handle_single_name</code>, and then keep reading this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-06 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:737 on 2024-12-06 16:38</div>
+            <div class="timeline-body"><p>Would you mind adding a a test for this and handle it appropriately (by bailing to create a fix)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-06 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-07 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:683 on 2024-12-07 02:29</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @harupy on 2024-12-07 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-07 04:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:737 on 2024-12-07 04:38</div>
+            <div class="timeline-body"><p>Added!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2024-12-07 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:744 on 2024-12-07 04:39</div>
+            <div class="timeline-body"><p>Added a test case for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-09 08:58</div>
+            <div class="timeline-body"><p>This is great. Thank you for following it thourgh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-09 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-09 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-09 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

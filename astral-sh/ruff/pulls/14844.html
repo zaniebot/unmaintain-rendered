@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run zizmor in CI, and fix most warnings - astral-sh/ruff #14844</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run zizmor in CI, and fix most warnings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14844">#14844</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-12-08 23:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-08 23:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A <a href="https://github.com/advisories/GHSA-7x29-qqmq-v6qc">recent exploit</a> brought attention to how easy it can be for attackers to use template expansion in GitHub Actions workflows to inject arbitrary code into a repository. That vulnerability <a href="https://blog.yossarian.net/2024/12/06/zizmor-ultralytics-injection">would have been caught by the zizmor linter</a>, which looks for potential security vulnerabilities in GitHub Actions workflows. This PR adds <a href="https://github.com/woodruffw/zizmor">zizmor</a> as a pre-commit hook and fixes the high- and medium-severity warnings flagged by the tool.</p>
+<p>All the warnings fixed in this PR are related to this zizmor check: https://woodruffw.github.io/zizmor/audits/#artipacked. The summary of the check is that <code>actions/checkout</code> will by default persist git configuration for the duration of the workflow, which can be insecure. It's unnecessary unless you actually need to do things with <code>git</code> later on in the workflow. None of our workflows do except for <code>publish-docs.yml</code> and <code>sync-typeshed.yml</code>, so I set <code>persist-credentials: true</code> for those two but <code>persist-credentials: false</code> for all other uses of <code>actions/checkout</code>.</p>
+<p>Unfortunately there are several warnings in <code>release.yml</code>, including four high-severity warnings. However, this is a generated workflow file, so I have deliberately excluded this file from the check. These are the findings in <code>release.yml</code>:</p>
+<details>
+<summary>release.yml findings</summary>
+
+<pre><code>warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:62:9
+   |
+62 |         - uses: actions/checkout@v4
+   |  _________-
+63 | |         with:
+64 | |           submodules: recursive
+   | |_______________________________- does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+   --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:124:9
+    |
+124 |         - uses: actions/checkout@v4
+    |  _________-
+125 | |         with:
+126 | |           submodules: recursive
+    | |_______________________________- does not set persist-credentials: false
+    |
+    = note: audit confidence → Low
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+   --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:174:9
+    |
+174 |         - uses: actions/checkout@v4
+    |  _________-
+175 | |         with:
+176 | |           submodules: recursive
+    | |_______________________________- does not set persist-credentials: false
+    |
+    = note: audit confidence → Low
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+   --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:249:9
+    |
+249 |         - uses: actions/checkout@v4
+    |  _________-
+250 | |         with:
+251 | |           submodules: recursive
+252 | |       # Create a GitHub Release while uploading all files to it
+    | |_______________________________________________________________- does not set persist-credentials: false
+    |
+    = note: audit confidence → Low
+
+error[excessive-permissions]: overly broad workflow or job-level permissions
+  --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:17:1
+   |
+17 | / permissions:
+18 | |   &quot;contents&quot;: &quot;write&quot;
+...  |
+39 | | # If there's a prerelease-style suffix to the version, then the release(s)
+40 | | # will be marked as a prerelease.
+   | |_________________________________^ contents: write is overly broad at the workflow level
+   |
+   = note: audit confidence → High
+
+error[template-injection]: code injection via template expansion
+  --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:80:9
+   |
+80 |          - id: plan
+   |   _________^
+81 |  |         run: |
+   |  |_________^
+82 | ||           dist ${{ (inputs.tag &amp;&amp; inputs.tag != 'dry-run' &amp;&amp; format('host --steps=create --tag={0}', inputs.tag)) || 'plan' }} --out...
+83 | ||           echo &quot;dist ran successfully&quot;
+84 | ||           cat plan-dist-manifest.json
+85 | ||           echo &quot;manifest=$(jq -c &quot;.&quot; plan-dist-manifest.json)&quot; &gt;&gt; &quot;$GITHUB_OUTPUT&quot;
+   | ||__________________________________________________________________________________^ this step
+   | ||__________________________________________________________________________________^ inputs.tag may expand into attacker-controllable code
+   |
+   = note: audit confidence → Low
+
+error[template-injection]: code injection via template expansion
+  --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:80:9
+   |
+80 |          - id: plan
+   |   _________^
+81 |  |         run: |
+   |  |_________^
+82 | ||           dist ${{ (inputs.tag &amp;&amp; inputs.tag != 'dry-run' &amp;&amp; format('host --steps=create --tag={0}', inputs.tag)) || 'plan' }} --out...
+83 | ||           echo &quot;dist ran successfully&quot;
+84 | ||           cat plan-dist-manifest.json
+85 | ||           echo &quot;manifest=$(jq -c &quot;.&quot; plan-dist-manifest.json)&quot; &gt;&gt; &quot;$GITHUB_OUTPUT&quot;
+   | ||__________________________________________________________________________________^ this step
+   | ||__________________________________________________________________________________^ inputs.tag may expand into attacker-controllable code
+   |
+   = note: audit confidence → Low
+
+error[template-injection]: code injection via template expansion
+  --&gt; /Users/alexw/dev/ruff/.github/workflows/release.yml:80:9
+   |
+80 |          - id: plan
+   |   _________^
+81 |  |         run: |
+   |  |_________^
+82 | ||           dist ${{ (inputs.tag &amp;&amp; inputs.tag != 'dry-run' &amp;&amp; format('host --steps=create --tag={0}', inputs.tag)) || 'plan' }} --out...
+83 | ||           echo &quot;dist ran successfully&quot;
+84 | ||           cat plan-dist-manifest.json
+85 | ||           echo &quot;manifest=$(jq -c &quot;.&quot; plan-dist-manifest.json)&quot; &gt;&gt; &quot;$GITHUB_OUTPUT&quot;
+   | ||__________________________________________________________________________________^ this step
+   | ||__________________________________________________________________________________^ inputs.tag may expand into attacker-controllable code
+   |
+   = note: audit confidence → Low
+</code></pre>
+</details>
+
+<h2>Test Plan</h2>
+<p><code>uvx pre-commit run -a</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2024-12-08 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @AlexWaygood on 2024-12-08 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.pre-commit-config.yaml</code>:99 on 2024-12-08 23:53</div>
+            <div class="timeline-body"><p>I know we prefer to keep configuration in separate files rather than putting it in pre-commit, but it doesn't seem possible to specify these in zizmor's configuration file right now (https://woodruffw.github.io/zizmor/configuration/#settings)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.pre-commit-config.yaml</code>:104 on 2024-12-08 23:54</div>
+            <div class="timeline-body"><p>This is just some more extra linting for our workflows. It's unrelated to the other changes in the PR. It doesn't have any quarrels with any of our workflows currently, but I figured it might be a good idea to add it as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-08 23:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-08 23:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-09 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-12-09 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-09 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-09 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hugovk">@hugovk</a> reviewed on 2024-12-10 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hugovk">@hugovk</a> on <code>.pre-commit-config.yaml</code>:99 on 2024-12-10 08:40</div>
+            <div class="timeline-body"><p>I noticed this too. Tip: open an issue for zizmor and I bet William will implement it :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

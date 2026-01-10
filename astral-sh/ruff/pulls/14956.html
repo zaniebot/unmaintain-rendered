@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce `InferContext` - astral-sh/ruff #14956</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce <code>InferContext</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14956">#14956</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-13 11:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-13 11:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'm currently on the fence about landing the #14760 PR because it's unclear how we'd support tracking used and unused suppression comments in a performant way:</p>
+<ul>
+<li>Salsa adds an &quot;untracked&quot; dependency to every query reading accumulated values. This has the effect that the query re-runs on every revision. For example, a possible future query <code>unused_suppression_comments(db, file)</code> would re-run on every incremental change and for every file. I don't expect the operation itself to be expensive, but it all adds up in a project with 100k+ files</li>
+<li>Salsa collects the accumulated values by traversing the entire query dependency graph. It can skip over sub-graphs if it is known that they contain no accumulated values. This makes accumulators a great tool for when they are rare; diagnostics are a good example. Unfortunately, suppressions are more common, and they often appear in many different files, making the &quot;skip over subgraphs&quot; optimization less effective.</li>
+</ul>
+<p>Because of that, I want to wait to adopt salsa accumulators for type check diagnostics (we could start using them for other diagnostics) until we have very specific reasons that justify regressing incremental check performance.</p>
+<p>This  PR does a &quot;small&quot; refactor that brings us closer to what I have in #14760 but without using accumulators. To emit a diagnostic, a method needs:</p>
+<ul>
+<li>Access to the db</li>
+<li>Access to the currently checked file</li>
+</ul>
+<p>This PR introduces a new <code>InferContext</code> that holds on to the db, the current file, and the reported diagnostics. It replaces the <code>TypeCheckDiagnosticsBuilder</code>. We pass the <code>InferContext</code> instead of the <code>db</code> to methods that <em>might</em> emit diagnostics. This simplifies some of the <code>Outcome</code> methods, which can now be called with a context instead of a <code>db</code> and the diagnostics builder. Having the <code>db</code> and the file on a single type like this would also be useful when using accumulators.</p>
+<p>This PR doesn't solve the issue that the <code>Outcome</code> types feel somewhat complicated nor that it can be annoying when you need to report a <code>Diagnostic,</code> but you don't have access to an <code>InferContext</code> (or the file). However, I also believe that accumulators won't solve these problems because:</p>
+<ul>
+<li>Even with accumulators, it's necessary to have a reference to the file that's being checked. The struggle would be to get a reference to that file rather than getting a reference to <code>InferContext</code>.</li>
+<li>Users of the <code>HasTy</code> trait (e.g., a linter) don't want to bother getting the <code>File</code> when calling <code>Type::return_ty</code> because they aren't interested in the created diagnostics. They just want to know what calling the current expression would return (and if it even is a callable). This is what the different methods of <code>Outcome</code> enable today. I can ask for the return type without needing extra data that's only relevant for emitting a diagnostic.</li>
+</ul>
+<p>A shortcoming of this approach is that it is now a bit confusing when to pass <code>db</code> and when an <code>InferContext</code>. An option is that we'd make the <code>file</code> on <code>InferContext</code> optional (it won't collect any diagnostics if <code>None</code>) and change all methods on <code>Type</code> to take <code>InferContext</code> as the first argument instead of a <code>db</code>. I'm interested in your opinion on this.</p>
+<p>Accumulators are definitely harder to use incorrectly because they remove the need to merge the diagnostics explicitly and there's no risk that we accidentally merge the diagnostics twice, resulting in duplicated diagnostics. I still value performance more over making our life slightly easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-13 11:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-13 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Introduce `TyContext`" to "Introduce `InferContext`" by @MichaReiser on 2024-12-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-13 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-13 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-13 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-13 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:43 on 2024-12-13 19:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            defused: DropBomb::new(&quot;`InferContext` need to be explicitly consumed by calling `::finish` to prevent accidental loss of diagnostics.&quot;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:34 on 2024-12-13 19:03</div>
+            <div class="timeline-body"><p>minor nit: the name <code>defused</code> confused me at first, because initially this is not defused! It's only defused after <code>finish()</code>. Would have been clearer to me if it were named <code>bomb</code> or <code>drop_bomb</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-13 19:07</div>
+            <div class="timeline-body"><p>Thank you, this looks great to me! Even though it doesn't solve the problem of reporting diagnostics across the Type / TypeInferenceBuilder boundary, because of needing a node/location, it still looks like a clear improvement in API, and the DropBomb will help prevent dropping diagnostics by accident.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-13 19:13</div>
+            <div class="timeline-body"><blockquote>
+<p>A shortcoming of this approach is that it is now a bit confusing when to pass <code>db</code> and when an <code>InferContext</code>. An option is that we'd make the <code>file</code> on <code>InferContext</code> optional (it won't collect any diagnostics if <code>None</code>) and change all methods on <code>Type</code> to take <code>InferContext</code> as the first argument instead of a <code>db</code>. I'm interested in your opinion on this.</p>
+</blockquote>
+<p>I feel like the direction we were heading in the discussion this morning is to continue returning outcome/result types from <code>Type</code> operations, and keep nodes/locations in <code>TypeInferenceBuilder</code> (and sometimes passed into methods on those outcome/result types, which can then emit diagnostics.)</p>
+<p>I think this direction makes sense. I don't want to be passing, or to require, nodes/locations  everywhere in <code>Type</code> methods. This means we can't emit diagnostics in arbitrary places in <code>Type</code> methods, either.</p>
+<p>Given that approach, I don't think it's too hard to understand where to pass Db vs InferContext. <code>Type</code> methods should only require a <code>Db</code>. <code>InferContext</code> should only be used where we need to emit diagnostics, which will generally just be in a few methods on result/outcome types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-18 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-18 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-18 12:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

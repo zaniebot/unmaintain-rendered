@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add infrastructure to declare lints - astral-sh/ruff #14873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add infrastructure to declare lints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14873">#14873</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-09 14:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-09 14:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is the second PR  out of three that adds support for enabling/disabling lint rules in Red Knot. You may want to take a look at the <a href="https://github.com/astral-sh/ruff/pull/14869">first PR</a> in this stack to familiarize yourself with the used terminology.</p>
+<p>This PR adds a new syntax to define a lint:</p>
+<pre><code class="language-rust">declare_lint! {
+    /// ## What it does
+    /// Checks for references to names that are not defined.
+    ///
+    /// ## Why is this bad?
+    /// Using an undefined variable will raise a `NameError` at runtime.
+    ///
+    /// ## Example
+    ///
+    /// ```python
+    /// print(x)  # NameError: name 'x' is not defined
+    /// ```
+    pub(crate) static UNRESOLVED_REFERENCE = {
+        summary: &quot;detects references to names that are not defined&quot;,
+        status: LintStatus::preview(&quot;1.0.0&quot;),
+        default_level: Level::Warn,
+    }
+}
+</code></pre>
+<p>A lint has a name and metadata about its status (preview, stable, removed, deprecated), the default diagnostic level (unless the configuration changes), and documentation. I use a macro here to derive the kebab-case name and extract the documentation automatically.</p>
+<p>This PR doesn't yet add any mechanism to discover all known lints. This will be added in the next and last PR in this stack.</p>
+<h2>Documentation</h2>
+<p>I documented some rules but then decided that it's probably not my best use of time if I document all of them now (it also means that I play catch-up with all of you forever). That's why I left some rules undocumented (marked with TODO)</p>
+<h2>Where is the best place to define all lints?</h2>
+<p>I'm not sure. I think what I have in this PR is fine but I also don't love it because most lints are in a single place but not all of them. If you have ideas, let me know.</p>
+<h2>Why is the message not part of the lint, unlike Ruff's <code>Violation</code></h2>
+<p>I understand that the main motivation for defining <code>message</code> on <code>Violation</code> in Ruff is to remove the need to repeat the same message over and over again. I'm not sure if this is an actual problem. Most rules only emit a diagnostic in a single place and they commonly use different messages if they emit diagnostics in different code paths, requiring extra fields on the <code>Violation</code> struct.</p>
+<p>That's why I'm not convinced that there's an actual need for it and there are alternatives that can reduce the repetition when creating a diagnostic:</p>
+<ul>
+<li>Create a helper function. We already do this in red knot with the <code>add_xy</code> methods</li>
+<li>Create a custom <code>Diagnostic</code> implementation that tailors the entire diagnostic and pre-codes e.g. the message</li>
+</ul>
+<p>Avoiding an extra field on the <code>Violation</code> also removes the need to allocate intermediate strings as it is commonly the place in Ruff. Instead, Red Knot can use a borrowed string with <code>format_args</code></p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-09 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-09 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-09 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-09 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-09 14:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:119 on 2024-12-10 00:34</div>
+            <div class="timeline-body"><p>Is it the version it was added, or the version it became stable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:152 on 2024-12-10 00:35</div>
+            <div class="timeline-body"><p>This is just so we can give more useful error messages on user configurations referencing the rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:74 on 2024-12-10 00:38</div>
+            <div class="timeline-body"><p>This says &quot;leading and trailing whitespace removed&quot;, but that doesn't describe the behavior, it only removes a single leading space. I assume this is because the doc comments we get from the macro parser have a leading space on every line (the space between <code>///</code> and the text)?</p>
+<p>Removing all leading whitespace from each line (as the wording currently implies) would be bad, as it would break many kinds of Markdown formatting.</p>
+<pre><code class="language-suggestion">    /// Returns the documentation line by line with one leading space and all trailing whitespace removed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:34 on 2024-12-10 00:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Checks for references to names that are possibly not defined.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:48 on 2024-12-10 00:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects references to possibly undefined names&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:68 on 2024-12-10 00:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects iteration over an object that is not iterable&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:86 on 2024-12-10 00:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Checks for subscripting objects that do not support subscripting.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:96 on 2024-12-10 00:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects subscripting objects that do not support subscripting&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:317 on 2024-12-10 00:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects binary, unary, or comparison expressions where the operands don't support the operator&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:357 on 2024-12-10 00:47</div>
+            <div class="timeline-body"><p>Currently this diagnostic is only emitted for <code>type[]</code> but it is intended to be more general.</p>
+<pre><code class="language-suggestion">    /// Checks for invalid type expressions.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-10 00:49</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:152 on 2024-12-10 07:34</div>
+            <div class="timeline-body"><p>The main use case I have in mind is the reference documentation. It would be nice if we can list when rules were added/stablized/deprecated/removed. Another use case is for us. One thing that's somewhat involved today is to find all rule changes that were made since version X. With this information available it becomes possible to build a command into <code>ruff_dev</code> that lists all rule changes since version X.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-10 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:24 on 2024-12-10 08:15</div>
+            <div class="timeline-body"><p>Do we want this to be part of a release binary? Having potentially hundreds of <code>&quot;crates/red_knot_python_semantic/src/types/diagnostic.rs:123&quot;</code> strings in the <code>.rodata</code> section seems like a bit of a waste?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 10:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:24 on 2024-12-10 10:31</div>
+            <div class="timeline-body"><p>This is as good point. I consider it fairly small compared to e.g. the documentation of every rule and all vendored stubs but I don't mind gating it behind a feature that we only activate when generating the reference documentation if you think it's worth doing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-10 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:24 on 2024-12-10 10:56</div>
+            <div class="timeline-body"><blockquote>
+<p>consider it fairly small compared to e.g. the documentation of every rule</p>
+</blockquote>
+<p>Right. For 1000 lints, it would be ~ 100 KiB, so feel free to ignore it :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:74 on 2024-12-10 11:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume this is because the doc comments we get from the macro parser have a leading space on every line (the space between /// and the text)?</p>
+</blockquote>
+<p>Yes, this is the reason. We could remove the whitespace if we convert the macro to a proc-macro but I find proc-macros harder to maintain (and read), so I opted to do this at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:24 on 2024-12-10 11:10</div>
+            <div class="timeline-body"><p>I could change it to two fields: <code>file</code> and <code>line</code> to possibly safe some space for the <code>:</code> and line number :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:24 on 2024-12-10 12:25</div>
+            <div class="timeline-body"><p>I'd also expect LTO to remove the data if it isn't referenced anywhere... But I haven't verified if LTO is capable of doing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-10 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-10 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-10 16:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

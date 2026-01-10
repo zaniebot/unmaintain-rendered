@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip panda rules if panda module hasn't been seen - astral-sh/ruff #14671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip panda rules if panda module hasn't been seen</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14671">#14671</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-11-29 07:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 07:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Issues about <code>PD011</code> and other panda rules triggering on non-panda code are frequent:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/14669</li>
+<li>https://github.com/astral-sh/ruff/issues/14508</li>
+<li>https://github.com/astral-sh/ruff/issues/6432</li>
+<li>https://github.com/astral-sh/ruff/issues/11235</li>
+<li>https://github.com/astral-sh/ruff/issues/8846</li>
+<li>https://github.com/astral-sh/ruff/issues/11858</li>
+<li>https://github.com/astral-sh/ruff/issues/13495</li>
+<li>https://github.com/astral-sh/ruff/issues/3807</li>
+<li>https://github.com/astral-sh/ruff/issues/14301</li>
+</ul>
+<p>There are probably more. At this point, I consider the rule harmful to the majority of users.</p>
+<p>This PR adds an <code>seen_module</code> check for all panda rules. This likely results in more false negatives, but I consider
+this is the better outcome, considering how many users the rules confused in the past.</p>
+<p>A proper fix requires type inference</p>
+<h2>Test Plan</h2>
+<p>I verified that the following code snippet doesn't trigger a pandas violation anymore, unless I change the import to <code>pandas</code></p>
+<pre><code class="language-py">import polars as pl
+
+pl_df = pl.DataFrame([{&quot;a&quot;: 1, &quot;b&quot;: 2}, {&quot;a&quot;: 3, &quot;b&quot;: 4}])
+pl_df.pivot(on=&quot;a&quot;, values=&quot;b&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-29 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-29 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-29 07:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -98 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -27 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py#L192'>providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py:192:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py#L348'>providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py:348:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/drill/hooks/test_drill.py#L103'>providers/tests/apache/drill/hooks/test_drill.py:103:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/druid/hooks/test_druid.py#L456'>providers/tests/apache/druid/hooks/test_druid.py:456:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L120'>providers/tests/apache/impala/hooks/test_impala.py:120:33:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L121'>providers/tests/apache/impala/hooks/test_impala.py:121:33:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/pinot/hooks/test_pinot.py#L274'>providers/tests/apache/pinot/hooks/test_pinot.py:274:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L118'>providers/tests/elasticsearch/hooks/test_elasticsearch.py:118:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L119'>providers/tests/elasticsearch/hooks/test_elasticsearch.py:119:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L112'>providers/tests/google/suite/hooks/test_sheets.py:112:28:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L134'>providers/tests/google/suite/hooks/test_sheets.py:134:25:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L162'>providers/tests/google/suite/hooks/test_sheets.py:162:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L192'>providers/tests/google/suite/hooks/test_sheets.py:192:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 14 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -11 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/superset/db_engine_specs/clickhouse.py#L174'>superset/db_engine_specs/clickhouse.py:174:23:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L363'>tests/integration_tests/model_tests.py:363:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L366'>tests/integration_tests/model_tests.py:366:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L373'>tests/integration_tests/model_tests.py:373:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L376'>tests/integration_tests/model_tests.py:376:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L491'>tests/integration_tests/model_tests.py:491:22:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L493'>tests/integration_tests/model_tests.py:493:22:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/columnar_reader_test.py#L123'>tests/unit_tests/commands/databases/columnar_reader_test.py:123:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/columnar_reader_test.py#L196'>tests/unit_tests/commands/databases/columnar_reader_test.py:196:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/csv_reader_test.py#L255'>tests/unit_tests/commands/databases/csv_reader_test.py:255:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 2 additional changes omitted for rule PD011
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -56 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/plotting/periodic_shells.py#L46'>examples/plotting/periodic_shells.py:46:29:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/stats/density.py#L29'>examples/topics/stats/density.py:29:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L517'>tests/unit/bokeh/test_client_server.py:517:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L518'>tests/unit/bokeh/test_client_server.py:518:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L519'>tests/unit/bokeh/test_client_server.py:519:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L520'>tests/unit/bokeh/test_client_server.py:520:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L521'>tests/unit/bokeh/test_client_server.py:521:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L533'>tests/unit/bokeh/test_client_server.py:533:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L544'>tests/unit/bokeh/test_client_server.py:544:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L545'>tests/unit/bokeh/test_client_server.py:545:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L546'>tests/unit/bokeh/test_client_server.py:546:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L547'>tests/unit/bokeh/test_client_server.py:547:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L548'>tests/unit/bokeh/test_client_server.py:548:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L565'>tests/unit/bokeh/test_client_server.py:565:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L585'>tests/unit/bokeh/test_client_server.py:585:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L586'>tests/unit/bokeh/test_client_server.py:586:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L587'>tests/unit/bokeh/test_client_server.py:587:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L588'>tests/unit/bokeh/test_client_server.py:588:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L589'>tests/unit/bokeh/test_client_server.py:589:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L601'>tests/unit/bokeh/test_client_server.py:601:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L617'>tests/unit/bokeh/test_client_server.py:617:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L618'>tests/unit/bokeh/test_client_server.py:618:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L619'>tests/unit/bokeh/test_client_server.py:619:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L620'>tests/unit/bokeh/test_client_server.py:620:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L621'>tests/unit/bokeh/test_client_server.py:621:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L633'>tests/unit/bokeh/test_client_server.py:633:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L644'>tests/unit/bokeh/test_client_server.py:644:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L645'>tests/unit/bokeh/test_client_server.py:645:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+0 -4 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/record.py#L306'>src/latch/registry/record.py:306:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/record.py#L309'>src/latch/registry/record.py:309:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/utils.py#L438'>src/latch/registry/utils.py:438:19:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch_cli/services/get_params.py#L330'>src/latch_cli/services/get_params.py:330:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PD011 | 94 | 0 | 94 | 0 | 0 |
+| PD009 | 4 | 0 | 4 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -98 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -27 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py#L192'>providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py:192:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py#L348'>providers/src/airflow/providers/google/cloud/hooks/vertex_ai/generative_model.py:348:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/drill/hooks/test_drill.py#L103'>providers/tests/apache/drill/hooks/test_drill.py:103:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/druid/hooks/test_druid.py#L456'>providers/tests/apache/druid/hooks/test_druid.py:456:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L120'>providers/tests/apache/impala/hooks/test_impala.py:120:33:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L121'>providers/tests/apache/impala/hooks/test_impala.py:121:33:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/pinot/hooks/test_pinot.py#L274'>providers/tests/apache/pinot/hooks/test_pinot.py:274:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L118'>providers/tests/elasticsearch/hooks/test_elasticsearch.py:118:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L119'>providers/tests/elasticsearch/hooks/test_elasticsearch.py:119:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L112'>providers/tests/google/suite/hooks/test_sheets.py:112:28:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L134'>providers/tests/google/suite/hooks/test_sheets.py:134:25:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L162'>providers/tests/google/suite/hooks/test_sheets.py:162:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/google/suite/hooks/test_sheets.py#L192'>providers/tests/google/suite/hooks/test_sheets.py:192:31:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 14 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -11 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/superset/db_engine_specs/clickhouse.py#L174'>superset/db_engine_specs/clickhouse.py:174:23:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L363'>tests/integration_tests/model_tests.py:363:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L366'>tests/integration_tests/model_tests.py:366:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L373'>tests/integration_tests/model_tests.py:373:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L376'>tests/integration_tests/model_tests.py:376:20:</a> PD009 Use `.iloc` instead of `.iat`. If speed is important, use NumPy.
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L491'>tests/integration_tests/model_tests.py:491:22:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/integration_tests/model_tests.py#L493'>tests/integration_tests/model_tests.py:493:22:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/columnar_reader_test.py#L123'>tests/unit_tests/commands/databases/columnar_reader_test.py:123:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/columnar_reader_test.py#L196'>tests/unit_tests/commands/databases/columnar_reader_test.py:196:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/apache/superset/blob/dbcb473040b7e8ef1d41a81ba594387b66c04ebe/tests/unit_tests/commands/databases/csv_reader_test.py#L255'>tests/unit_tests/commands/databases/csv_reader_test.py:255:21:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 2 additional changes omitted for rule PD011
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -56 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/plotting/periodic_shells.py#L46'>examples/plotting/periodic_shells.py:46:29:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/stats/density.py#L29'>examples/topics/stats/density.py:29:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L517'>tests/unit/bokeh/test_client_server.py:517:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L518'>tests/unit/bokeh/test_client_server.py:518:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L519'>tests/unit/bokeh/test_client_server.py:519:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L520'>tests/unit/bokeh/test_client_server.py:520:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L521'>tests/unit/bokeh/test_client_server.py:521:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L533'>tests/unit/bokeh/test_client_server.py:533:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L544'>tests/unit/bokeh/test_client_server.py:544:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L545'>tests/unit/bokeh/test_client_server.py:545:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L546'>tests/unit/bokeh/test_client_server.py:546:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L547'>tests/unit/bokeh/test_client_server.py:547:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L548'>tests/unit/bokeh/test_client_server.py:548:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L565'>tests/unit/bokeh/test_client_server.py:565:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L585'>tests/unit/bokeh/test_client_server.py:585:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L586'>tests/unit/bokeh/test_client_server.py:586:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L587'>tests/unit/bokeh/test_client_server.py:587:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L588'>tests/unit/bokeh/test_client_server.py:588:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L589'>tests/unit/bokeh/test_client_server.py:589:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L601'>tests/unit/bokeh/test_client_server.py:601:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L617'>tests/unit/bokeh/test_client_server.py:617:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L618'>tests/unit/bokeh/test_client_server.py:618:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L619'>tests/unit/bokeh/test_client_server.py:619:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L620'>tests/unit/bokeh/test_client_server.py:620:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L621'>tests/unit/bokeh/test_client_server.py:621:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L633'>tests/unit/bokeh/test_client_server.py:633:53:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L644'>tests/unit/bokeh/test_client_server.py:644:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_client_server.py#L645'>tests/unit/bokeh/test_client_server.py:645:17:</a> PD011 Use `.to_numpy()` instead of `.values`
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+0 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/record.py#L306'>src/latch/registry/record.py:306:12:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/record.py#L309'>src/latch/registry/record.py:309:16:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch/registry/utils.py#L438'>src/latch/registry/utils.py:438:19:</a> PD011 Use `.to_numpy()` instead of `.values`
+- <a href='https://github.com/latchbio/latch/blob/91eb9e17e4c745e4702a676b365a96f73eb09f5a/src/latch_cli/services/get_params.py#L330'>src/latch_cli/services/get_params.py:330:37:</a> PD011 Use `.to_numpy()` instead of `.values`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PD011 | 94 | 0 | 94 | 0 | 0 |
+| PD009 | 4 | 0 | 4 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 07:48</div>
+            <div class="timeline-body"><p>As expected, this increases false negatives but also reduces false positives. The airflow and bokeh are a mix of new false negatives and fewer false positives. Superset is almost exclusively more false-negatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-11-29 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-29 11:51</div>
+            <div class="timeline-body"><p>As someone who works a lot with pandas, spark, polars etc. I think this is the right trade-off for now.</p>
+<p>False positives are a reason to disable the rules completely.</p>
+<p>False negatives are mostly in test files or &quot;glue code&quot; where type annotations are missing. In production code it's more common to write pure functions that take DataFrames as input and output, and if these functions are typed then the rules apply.</p>
+<p>The rules can be expanded again when inference of DataFrame and Series types is possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 11:54</div>
+            <div class="timeline-body"><blockquote>
+<p>False negatives are mostly in test files or &quot;glue code&quot; where type annotations are missing. In production code it's more common to write pure functions that take DataFrames as input and output, and if these functions are typed then the rules apply.</p>
+</blockquote>
+<p>I'm just pointing out that this is currently not the case. It would require adding type inference support for panda data frames.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-29 12:26</div>
+            <div class="timeline-body"><p>Ah sorry, I meant that when functions are typed, <code>pandas</code> is also imported and thus the &quot;has seen module&quot; logic applies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:42</div>
+            <div class="timeline-body"><p>It's possible to think of heuristics we could use to avoid some of the new false negatives. For example, <a href="https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L108-L121">this function</a> is pretty clearly using pandas because the function name has <code>pandas</code> in it. Using heuristics like that has the downside that it makes the rule harder to understand for users, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 12:48</div>
+            <div class="timeline-body"><p>@AlexWaygood I don't think this is worth special casing because it only helps in a few limited cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-29 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood I don't think this is worth special casing because it only helps in a few limited cases.</p>
+</blockquote>
+<p>It would actually get rid of seven new false negatives on <code>airflow</code> highlighted by the ecosystem check:</p>
+<ul>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/drill/hooks/test_drill.py#L103</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/druid/hooks/test_druid.py#L456</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L120</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/impala/hooks/test_impala.py#L121</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/apache/pinot/hooks/test_pinot.py#L274</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L118</li>
+<li>https://github.com/apache/airflow/blob/fdd353a03e4b058fff834b611880c2475abfac61/providers/tests/elasticsearch/hooks/test_elasticsearch.py#L119</li>
+</ul>
+<p>But no others. So, agreed that it probably isn't worth special-casing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-11-29 13:00</div>
+            <div class="timeline-body"><p>This change makes sense to me.</p>
+<p>There are also some other libraries that the pandas docs specifically calls out as either being <code>pandas</code> plugins/extensions, or as making heavy use of <code>pandas</code>. Possibly we could also emit these lints if one of those has been imported: https://pandas.pydata.org/community/ecosystem.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 21:32</div>
+            <div class="timeline-body"><p>I like the idea but I'll leave it as is for now. I'm not sure how I feel about adding that many modules. Let's see if it comes up in user reports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-29 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-29 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-29 21:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:55 UTC
+    </footer>
+</body>
+</html>

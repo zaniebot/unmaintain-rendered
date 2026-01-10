@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Also remove `self` and `cls`'s annotation (`PYI034`) - astral-sh/ruff #14801</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Also remove <code>self</code> and <code>cls</code>'s annotation (<code>PYI034</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14801">#14801</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-12-06 00:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-06 00:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #14421.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2024-12-06 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-06 00:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-06 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:180 on 2024-12-06 12:32</div>
+            <div class="timeline-body"><p>I think even in stub contexts, this could lead to false positives where we say conclude that a class is not generic even though it actually is, and then incorrectly apply an autofix based on that conclusion. That's because the <code>is_old_style_typevar_like</code> function doesn't recognise typevars declared in other files as being typevars: I don't think it would understand <code>typing.AnyStr</code>, for example. It's pretty rare in typeshed for stubs to use typevars imported from other files (other than <code>AnyStr</code>), but I've seen it done much more in other stubs. I definitely don't think we can safely assume that a symbol isn't a typevar just because it's been imported from another module.</p>
+<p>Rather than <code>is_old_style_typevar_like</code> and <code>is_generic</code> functions, I think we actually need <code>could_be_old_style_typevar_like</code> and <code>could_be_generic</code> functions. <code>could_be_old_style_typevar_like</code> would return <code>true</code> if it can trace the binding to a TypeVar declaration in the same module, but it would also return <code>true</code> if the symbol comes from any other module. <code>could_be_generic</code> would have exactly the same implementation you have now, but it would use <code>could_be_old_style_typevar_like</code> instead of <code>is_typevar_like</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:224 on 2024-12-06 17:11</div>
+            <div class="timeline-body"><p>this should return <code>true</code> because the binding <em>might</em> refer to a TypeVar if there are no bindings (it could be imported via a <code>*</code> import) or multiple bindings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:220 on 2024-12-06 17:12</div>
+            <div class="timeline-body"><p>What about something like this?</p>
+<pre><code class="language-py"># a.pyi
+from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+</code></pre>
+<pre><code class="language-py"># b.pyi
+import a
+
+class Foo:
+    def __enter__(self: a.T) -&gt; a.T: ...
+</code></pre>
+<p>I think you need to handle attribute expressions here as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:181 on 2024-12-06 17:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// A class is considered generic if at least one of its direct bases
+/// is subscripted with a `TypeVar`-like,
+/// or if it is defined using PEP 695 syntax.
+/// Therefore, a class *might* be generic if it uses PEP-695 syntax
+/// or at least one of its direct bases is a subscript expression that
+/// is subscripted with an object that *might* be a `TypeVar`-like.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-06 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2024-12-06 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:224 on 2024-12-06 17:48</div>
+            <div class="timeline-body"><p>@AlexWaygood Changing this to <code>true</code> messes up the tests. I'm not sure why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-12-06 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2024-12-06 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-09 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-09 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-12-09 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-09 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-09 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>

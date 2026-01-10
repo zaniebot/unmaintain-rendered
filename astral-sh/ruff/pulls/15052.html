@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for unpacking union types - astral-sh/ruff #15052</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for unpacking union types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15052">#15052</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-12-19 07:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-19 07:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Refer: https://github.com/astral-sh/ruff/issues/13773#issuecomment-2548020368</p>
+<p>This PR adds support for unpacking union types.</p>
+<p>Unpacking a union type requires us to first distribute the types for all the targets that are involved in an unpacking. For example, if there are two targets and a union type that needs to be unpacked, each target will get a type from each element in the union type.</p>
+<p>For example, if the type is <code>tuple[int, int] | tuple[int, str]</code> and the target has two elements <code>(a, b)</code>, then</p>
+<ul>
+<li>The type of <code>a</code> will be a union of <code>int</code> and <code>int</code> which are at index 0 in the first and second tuple respectively which resolves to an <code>int</code>.</li>
+<li>Similarly, the type of <code>b</code> will be a union of <code>int</code> and <code>str</code> which are at index 1 in the first and second tuple respectively which will be <code>int | str</code>.</li>
+</ul>
+<h3>Refactors</h3>
+<p>There are couple of refactors that are added in this PR:</p>
+<ul>
+<li>Add a <code>debug_assertion</code> to validate that the unpack target is a list or a tuple</li>
+<li>Add a separate method to handle starred expression</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Update <code>unpacking.md</code> with additional test cases that uses union types. This is done using parameter type hints style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-12-19 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-19 07:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:45 on 2024-12-20 04:27</div>
+            <div class="timeline-body"><p>Refactor 1: Add a debug assertion to make sure that the target is a list or a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:139 on 2024-12-20 04:28</div>
+            <div class="timeline-body"><p>Refactor 2: Move the logic that handles starred expression to a separate method mainly to split the main unpacking function and to avoid being a distraction to the main logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:78 on 2024-12-20 04:29</div>
+            <div class="timeline-body"><p>This is the main entry point that handles the union type. For a union type, we need to apply the logic for each subtype in it.</p>
+<p>I want to spend some time to avoid the nested vectors but this is not a hot path so I'd be fine moving with this as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:114 on 2024-12-20 04:31</div>
+            <div class="timeline-body"><p>The core logic for unpacking that</p>
+<ol>
+<li>If it's a tuple type, handle starred expression and then add each type to the relevant target</li>
+<li>Or, check if it's an iterable / literal string and push the type to each target</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:127 on 2024-12-20 04:32</div>
+            <div class="timeline-body"><p>At the end, we'll union the types for each target and call the function recursively to handle any nested unpacking and update the targets mapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-20 04:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-12-20 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-12-20 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-12-20 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-12-20 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2024-12-20 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:317 on 2024-12-20 04:35</div>
+            <div class="timeline-body"><p>I'm pretty sure this will immediately simplify to just <code>tuple[int, int]</code>, so it's not really testing unpacking of a union, just union simplification, but that's fine; it's still relevant to test the overall behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:310 on 2024-12-20 04:36</div>
+            <div class="timeline-body"><p>We should probably have some tests of what happens when one element of the union is the wrong length?</p>
+<p>And some tests for unions like <code>tuple[int, str] | IterableOfBytes()</code> where <code>IterableOfBytes</code> is a type that defines <code>__iter__</code> etc so that iterating it returns some type.</p>
+<p>And maybe some tests for nested unpacking involving unions (I mean like where we have <code>a, (b, c) = ...</code> and unions on the RHS.)</p>
+<p>Unpacking unions when there are starred elements on the LHS?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:119 on 2024-12-20 04:45</div>
+            <div class="timeline-body"><p>Safety comment here to note that we initialized <code>target_types</code> based on len of <code>elts</code>, so this can't panic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:137 on 2024-12-20 04:47</div>
+            <div class="timeline-body"><p>Would <code>targets</code> be a clearer name for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-20 04:49</div>
+            <div class="timeline-body"><p>Looks good, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-20 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:210 on 2024-12-20 06:57</div>
+            <div class="timeline-body"><p>Nit: It should be enough to only pass <code>scope</code> because you can get to the file by calling <code>scope.file(db)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:79 on 2024-12-20 07:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        union_ty.elements(self.db())
+                    }
+                    _ =&gt; std::slice::from_ref(&amp;value_ty),
+                };
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-20 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:97 on 2024-12-20 07:11</div>
+            <div class="timeline-body"><p>Will we run into duplicate diagnostic problems if we add diagnostics here (because unpack is called multiple times) or is it guaranteed that unpack is only called once?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-20 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-12-20 07:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-20 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:137 on 2024-12-20 10:08</div>
+            <div class="timeline-body"><p>Yeah, I think that's better, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:97 on 2024-12-20 10:11</div>
+            <div class="timeline-body"><p>I don't think we should get duplicate diagnostics because of the <code>first</code> flag:</p>
+<p>https://github.com/astral-sh/ruff/blob/92928560f8587995003eaf2ec0730f1deb802287/crates/red_knot_python_semantic/src/types/infer.rs#L1863-L1868</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-20 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-20 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:310 on 2024-12-20 10:52</div>
+            <div class="timeline-body"><p>Added these test cases:</p>
+<ul>
+<li>Nested tuple types</li>
+<li>Starred expressions</li>
+<li>Tuple size mismatch</li>
+<li>Union of custom iterator with a tuple type</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-20 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:78 on 2024-12-20 10:58</div>
+            <div class="timeline-body"><p>I actually started with having a vector of <code>UnionBuilder</code> but the builder takes ownership of itself when adding the type which isn't possible without multiple pop and push to get the ownership of the builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-12-20 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-12-20 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-20 11:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Typed diagnostic id - astral-sh/ruff #14869</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Typed diagnostic id</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14869">#14869</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-12-09 13:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-09 13:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR introduces a structured <code>DiagnosticId</code> instead of using a plain <code>&amp;'static str</code>. It is the first of three in a stack that implements a basic rules infrastructure for Red Knot.</p>
+<p><code>DiagnosticId</code> is an enum over all known diagnostic codes. A closed enum reduces the risk of accidentally introducing two identical diagnostic codes. It also opens the possibility of generating reference documentation from the enum in the future (not part of this PR).</p>
+<p>The enum isn't <em>fully closed</em> because it uses a <code>&amp;'static str</code> for lint names. This is because we want the flexibility to define lints in different crates, and all names are only known in <code>red_knot_linter</code> or above. Still, lower-level crates must already reference the lint names to emit diagnostics. We could define all lint-names in <code>DiagnosticId</code> but I decided against it because:</p>
+<ul>
+<li>We probably want to share the <code>DiagnosticId</code> type between Ruff and Red Knot to avoid extra complexity in the diagnostic crate, and both tools use different lint names.</li>
+<li>Lints require a lot of extra metadata beyond just the name. That's why I think defining them close to their implementation is important.</li>
+</ul>
+<p>In the long term, we may also want to support plugins, which would make it impossible to know all lint names at compile time. The next PR in the stack introduces extra syntax for defining lints.</p>
+<p>A closed enum does have a few disadvantages:</p>
+<ul>
+<li>rustc can't help us detect unused diagnostic codes because the enum is public</li>
+<li>Adding a new diagnostic in the workspace crate now requires changes to at least two crates: It requires changing the workspace crate to add the diagnostic and the <code>ruff_db</code> crate to define the diagnostic ID. I consider this an acceptable trade. We may want to move <code>DiagnosticId</code> to its own crate or into a shared <code>red_knot_diagnostic</code> crate.</li>
+</ul>
+<h2>Preventing duplicate diagnostic identifiers</h2>
+<p>One goal of this PR is to make it harder to introduce ambiguous diagnostic IDs, which is achieved by defining a closed enum. However, the enum isn't fully &quot;closed&quot; because it doesn't explicitly list the IDs for all lint rules. That leaves the possibility that a lint rule and a diagnostic ID share the same name.</p>
+<p>I made the names unambiguous in this PR by separating them into different namespaces by using <code>lint/&lt;rule&gt;</code> for lint rule codes. I don't mind the <code>lint</code> prefix in a <em>Ruff next</em> context, but it is a bit weird for a standalone type checker. I'd like to not overfocus on this for now because I see a few different options:</p>
+<ul>
+<li>We remove the <code>lint</code> prefix and add a unit test in a top-level crate that iterates over all known lint rules and diagnostic IDs to ensure the names are non-overlapping.</li>
+<li>We only render <code>[lint]</code> as the error code and add a note to the diagnostic mentioning the lint rule. This is similar to clippy and has the advantage that the header line remains short (<code>lint/some-long-rule-name</code> is very long ;))</li>
+<li>Any other form of adjusting the diagnostic rendering to make the distinction clear</li>
+</ul>
+<p>I think we can defer this decision for now because the <code>DiagnosticId</code> contains all the relevant information to change the rendering accordingly.</p>
+<h2>Why <code>Lint</code> and not <code>LintRule</code></h2>
+<p>I see three kinds of diagnostics in Red Knot:</p>
+<ul>
+<li>Non-suppressable: Reveal type, IO errors, configuration errors, etc. (any <code>DiagnosticId</code>)</li>
+<li>Lints: code-related diagnostics that are suppressable.</li>
+<li>Lint rules: The same as lints, but they can be enabled or disabled in the configuration. The majority of lints in Red Knot and the Ruff linter.</li>
+</ul>
+<p>Our current implementation doesn't distinguish between lints and Lint rules because we aren't aware of a suppressible code-related lint that can't be configured in the configuration. The only lint that comes to my mind is maybe <code>division-by-zero</code> if we're 99.99% sure that it is always right. However, I want to keep the door open to making this distinction in the future if it proves useful.</p>
+<p>Another reason why I chose lint over lint rule (or just rule) is that I want to leave room for a future lint rule and lint phase concept:</p>
+<ul>
+<li>lint is the <em>what</em>: a specific code smell, pattern, or violation</li>
+<li>the lint rule is the <em>how</em>: I could see a future  <code>LintRule</code> trait in <code>red_knot_python_linter</code> that provides the necessary hooks to run as part of the linter. A lint rule produces diagnostics for exactly one lint. A lint rule differs from all lints in <code>red_knot_python_semantic</code> because they don't run as &quot;rules&quot; in the Ruff sense. Instead, they're a side-product of type inference.</li>
+<li>the lint phase is a different form of <em>how</em>: A lint phase can produce many different lints in a single pass. This is a somewhat common pattern in Ruff where running one analysis collects the necessary information for finding many different lints</li>
+<li>diagnostic is the <em>presentation</em>: Unlike a lint, the diagnostic isn't the what, but how a specific lint gets presented. I expect that many lints can use one generic <code>LintDiagnostic</code>, but a few lints might need more flexibility and implement their custom diagnostic rendering (at least custom <code>Diagnostic</code> implementation).</li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-09 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2024-12-09 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-12-09 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-09 13:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-12-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:69 on 2024-12-10 00:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Lints can be suppressed and some lints can be enabled or disabled in the configuration.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-12-10 00:18</div>
+            <div class="timeline-body"><p>Code looks good!</p>
+<p>My main question about this PR is the use of the term &quot;lint&quot; to encompass core type checker diagnostics. This was discussed extensively in the CLI proposal, without a clear resolution. I don't think this usage is wrong (Python type checkers really are linters, since they don't integrate with runtime), but I suspect that even if we use this terminology internally, we will need to be careful to avoid it in the UI, because I think existing mypy/pyright users will likely find it confusing to have type errors referred to as &quot;lints&quot;.</p>
+<p>But you said you don't want to over-focus on this now, and we can change it, so not a blocking issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 07:32</div>
+            <div class="timeline-body"><blockquote>
+<p>My main question about this PR is the use of the term &quot;lint&quot; to encompass core type checker diagnostics. This was discussed extensively in the CLI proposal, without a clear resolution. I don't think this usage is wrong (Python type checkers really are linters, since they don't integrate with runtime), but I suspect that even if we use this terminology internally, we will need to be careful to avoid it in the UI, because I think existing mypy/pyright users will likely find it confusing to have type errors referred to as &quot;lints&quot;.</p>
+</blockquote>
+<p>I agree. We should use the term rule as the user-facing term and I also intend to use it in code when the context only allows rules but not other lints. For example, the configuration only allows rule names, not arbitrary lints. One possible design is to define a <code>RuleName</code> struct that rejects non-rule lints during deserialization. I only want to avoid using the term <code>Rule</code> in contexts where something isn't guaranteed to be backed by a rule or isn't configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-10 07:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:114 on 2024-12-10 07:51</div>
+            <div class="timeline-body"><p>This seems to only be used in tests? We probably can't mark it <code>#[cfg(test)]</code>, because the <code>red_knot_test</code> infrastructure is not <code>#[cfg(test)]</code> either?</p>
+<p>But considering it's only used in tests, would it make sense to change the implementation to</p>
+<pre><code class="language-suggestion">    pub fn matches(&amp;self, name: &amp;str) -&gt; bool {
+        self.to_string() == name
+    }
+</code></pre>
+<p>to enforce consistency with the <code>Display</code> impl, which is not test-only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-12-10 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:110 on 2024-12-10 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to not overfocus</p>
+</blockquote>
+<p>Okay, just a minor stylistic preference then: I think I would prefer <code>lint:…</code> over <code>lint/…</code>, to make it visually distinct from the path names that are also on the same line:</p>
+<pre><code>error[lint:unresolved-import] /src/tomllib/_parser.py:7:29 Module `collections.abc` has no member `Iterable`
+</code></pre>
+<p>vs</p>
+<pre><code>error[lint/unresolved-import] /src/tomllib/_parser.py:7:29 Module `collections.abc` has no member `Iterable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2024-12-10 07:55</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:114 on 2024-12-10 10:18</div>
+            <div class="timeline-body"><p>I introduced a <code>as_str</code> method that returns a <code>Result</code> where it is <code>Ok</code> for all ids that don't belong to a sub category and <code>Err(DiagnosticIdAsStr::Category { category: &quot;lint&quot;, name })</code> for lints. this allows us to implement <code>Display</code> and <code>matches</code> without repeating the id strings and avoids unnecessary allocations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-12-10 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-10 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-10 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:104 on 2024-12-10 18:34</div>
+            <div class="timeline-body"><p>Would it make more sense to just return a <code>DiagnosticAsStr</code> type that implements <code>Display</code>? So, basically, a <code>DiagnosticAsStrError</code> like you have, but for all the variants. And in this case, you'd probably rename it to <code>display()</code> or some such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:104 on 2024-12-10 18:35</div>
+            <div class="timeline-body"><p>Another pattern I like for things like this is to bite the bullet on the alloc, but do it at construction time. Then you can have an <code>as_str()</code> method that unconditionally returns <code>&amp;str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-10 18:35</div>
+            <div class="timeline-body"><p>Makes sense to me at this point in my journey. :-) Thank you for tagging me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-12-10 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:104 on 2024-12-10 21:29</div>
+            <div class="timeline-body"><p>I introduced it to avoid repeating the variant to name matching code for the <code>matches</code> method. I think the easiest would be to just call <code>to_string()</code> in matches which I'm open to do when we have other use cases for it.</p>
+<p>Another solution is to have a macro that generates a <code>name</code> method for it.</p>
+<p>Overall, I don't have a very good understanding yet of how this type will be used, and I suggest we change it as we see fit.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:42:56 UTC
+    </footer>
+</body>
+</html>
