@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support help end escape command with priority - astral-sh/ruff #6272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support help end escape command with priority</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6272">#6272</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-08-02 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-02 12:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for help end escape command in the lexer.</p>
+<h3>What are &quot;help end escape commands&quot;?</h3>
+<p>First, the escape commands are special IPython syntax which enhances the functionality for the IPython REPL. There are 9 types of escape kinds which are recognized by the tokens which are present at the start of the command (<code>?</code>, <code>??</code>, <code>!</code>, <code>!!</code>, etc.).</p>
+<p>Here, the help command is using either the <code>?</code> or <code>??</code> token at the start (<code>?str.replace</code> for example). Those 2 tokens are also supported when they're at the end of the command (<code>str.replace?</code>), but the other tokens aren't supported in that position.</p>
+<p>There are mainly two types of help end escape commands:</p>
+<ol>
+<li>Ending with either <code>?</code> or <code>??</code>, but it also starts with one of the escape tokens (<code>%matplotlib?</code>)</li>
+<li>On the other hand, there's a stricter version for (1) which doesn't start with any escape tokens (<code>str.replace?</code>)</li>
+</ol>
+<p>This PR adds support for (1) while (2) will be supported in the parser.</p>
+<h3>Priority</h3>
+<p>Now, if the command starts and ends with an escape token, how do we decide the kind of this command? This is where priority comes into picture. This is simple as there's only one priority where <code>?</code>/<code>??</code> at the end takes priority over any other escape token and all of the other tokens are at the same priority. Remember that only <code>?</code>/<code>??</code> at the end is considered valid.</p>
+<p>This is mainly useful in the case where someone would want to invoke the help command on the magic command itself. For example, in <code>%matplotlib?</code> the help command takes priority which means that we want help for the <code>matplotlib</code> magic function instead of calling the magic function itself.</p>
+<h3>Specification</h3>
+<p>Here's where things get a bit tricky. What if there are question mark tokens at both ends. How do we decide if it's <code>Help</code> (<code>?</code>) kind or <code>Help2</code> (<code>??</code>) kind?</p>
+<p>|     | Magic       | Value     | Kind    |
+| --- | ---         | ---       | ---     |
+| 1   | <code>?foo?</code>     | <code>foo</code>     | <code>Help</code>  |
+| 2   | <code>??foo?</code>    | <code>foo</code>     | <code>Help</code>  |
+| 3   | <code>?foo??</code>    | <code>foo</code>     | <code>Help2</code> |
+| 4   | <code>??foo??</code>   | <code>foo</code>     | <code>Help2</code> |
+| 5   | <code>???foo??</code>  | <code>foo</code>     | <code>Help2</code> |
+| 6   | <code>??foo???</code>  | <code>foo???</code>  | <code>Help2</code> |
+| 7   | <code>???foo???</code> | <code>?foo???</code> | <code>Help2</code> |</p>
+<p>Looking at the above table:</p>
+<ul>
+<li>The question mark tokens on the right takes priority over the ones on the left but only if the number of question mark on the right is 1 or 2.</li>
+<li>If there are more than 2 question mark tokens on the right side, then the left side is used to determine the same.</li>
+<li>If the right side is used to determine the kind, then all of the question marks and whitespaces on the left side are ignored in the <code>value</code>, but if it’s the other way around, then all of the extra question marks are part of the <code>value</code>.</li>
+</ul>
+<h3>References</h3>
+<ul>
+<li>IPython implementation using the regex: https://github.com/ipython/ipython/blob/292e3a23459ca965b8c1bfe2c3707044c510209a/IPython/core/inputtransformer2.py#L454-L462</li>
+<li>Priorities: https://github.com/ipython/ipython/blob/292e3a23459ca965b8c1bfe2c3707044c510209a/IPython/core/inputtransformer2.py#L466-L469</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Add a bunch of test cases for the lexer and verify that it matches the behavior of
+IPython transformer.</p>
+<p>resolves: #6357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-02 12:31</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6272</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6272" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6358</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6358" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6272?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-02 13:10</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.09ms     4.9 MB/sec    1.00      8.2±0.06ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1634.8±23.16µs    10.2 MB/sec    1.00  1623.0±12.67µs    10.3 MB/sec
+formatter/numpy/globals.py                 1.00    184.2±4.99µs    16.0 MB/sec    1.00    184.7±5.06µs    16.0 MB/sec
+formatter/pydantic/types.py                1.01      3.5±0.07ms     7.3 MB/sec    1.00      3.4±0.04ms     7.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.3±0.02ms     4.0 MB/sec    1.04     10.7±0.02ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01    384.5±0.68µs     7.7 MB/sec    1.00    379.8±2.41µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      4.7±0.01ms     5.4 MB/sec    1.03      4.9±0.04ms     5.2 MB/sec
+linter/default-rules/large/dataset.py      1.04      5.4±0.01ms     7.6 MB/sec    1.00      5.2±0.01ms     7.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1150.4±3.38µs    14.5 MB/sec    1.00  1139.0±27.45µs    14.6 MB/sec
+linter/default-rules/numpy/globals.py      1.03    132.2±2.70µs    22.3 MB/sec    1.00    128.3±5.37µs    23.0 MB/sec
+linter/default-rules/pydantic/types.py     1.03      2.4±0.00ms    10.6 MB/sec    1.00      2.3±0.01ms    10.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.7±0.07ms     4.2 MB/sec    1.02      9.9±0.27ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1886.6±21.04µs     8.8 MB/sec    1.01  1911.5±33.78µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.00   214.6±10.47µs    13.7 MB/sec    1.01   217.9±12.76µs    13.5 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.06ms     6.2 MB/sec    1.02      4.2±0.08ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.7±0.29ms     3.2 MB/sec    1.02     13.0±0.15ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.04ms     4.8 MB/sec    1.00      3.4±0.04ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    433.2±4.91µs     6.8 MB/sec    1.00    431.1±5.32µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.08ms     4.4 MB/sec    1.03      6.0±0.07ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.03      6.9±0.07ms     5.9 MB/sec    1.00      6.6±0.06ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03  1424.2±21.64µs    11.7 MB/sec    1.00  1379.7±14.09µs    12.1 MB/sec
+linter/default-rules/numpy/globals.py      1.02    165.2±2.92µs    17.9 MB/sec    1.00    162.3±3.76µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.06ms     8.4 MB/sec    1.00      3.0±0.08ms     8.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-02 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1415 on 2023-08-02 14:14</div>
+            <div class="timeline-body"><p>For reference, the IPython transformer will transform the above code as the below where <code>pinfo</code> and <code>pinfo2</code> corresponds to <code>Help</code> and <code>Help2</code> magic kind:</p>
+<pre><code class="language-python">get_ipython().run_line_magic('pinfo', 'foo')
+get_ipython().run_line_magic('pinfo', 'foo')
+get_ipython().run_line_magic('pinfo2', '   foo  ?')
+get_ipython().run_line_magic('pinfo2', 'foo')
+get_ipython().run_line_magic('pinfo2', 'foo')
+get_ipython().run_line_magic('pinfo', 'foo')
+get_ipython().run_line_magic('pinfo2', 'foo')
+get_ipython().run_line_magic('pinfo2', 'foo???')
+get_ipython().run_line_magic('pinfo2', '?foo???')
+get_ipython().run_line_magic('pinfo', 'foo')
+get_ipython().run_line_magic('pinfo2', ' ?')
+get_ipython().run_line_magic('pinfo', '%foo')
+get_ipython().run_line_magic('pinfo2', '%foo')
+
+# This is the only difference between IPython transformers and our lexer where
+# our lexer will emit this as cell magic (`%%`) command
+get_ipython().run_line_magic('%foo???', '')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-08-02 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-08-02 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-08-03 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:434 on 2023-08-03 08:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // Check if it's a help magic command. The help magic
+                    // command takes priority over any other magic command.
+</code></pre>
+<p>What I understand here is that it could now be either, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1442 on 2023-08-03 08:35</div>
+            <div class="timeline-body"><p>What's the expected output for <code>????</code> or any other double question sequence without any content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:431 on 2023-08-03 08:43</div>
+            <div class="timeline-body"><p>Would it make sense to have a branch for <code>?</code> to avoid the reverse inspection of the just lexed string?</p>
+<pre><code>			`'?' =&gt; {
+				let mut question_count = 1u32;
+				while self.cursor.eat_char('?') {
+					question_count += 1;
+				}
+
+				if self.cursor.first == '\n' | '\r' | EOF_CHAR {
+					// Decide whether to include the `?` 
+
+					// magic help
+				} else {
+					// Never mind
+					value.reserve(question_count);
+					for 0..question_count {
+						value.push('?');
+					}
+				}
+			}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 08:43</div>
+            <div class="timeline-body"><p>I have a few general questions before I feel comfortable reviewing this PR:</p>
+<blockquote>
+<p>In general,</p>
+</blockquote>
+<ul>
+<li>The number of question mark on the right side determine if it’s a Help
+or Help2 and if there are more than 2 question mark tokens on the right
+side, then the left side is used to determine the same.</li>
+<li>If the right side is used to determine the kind, then all of the question
+marks on the left side are ignored in the value, but if it’s the other
+way around, then all of the extra question marks are part of the value.</li>
+</ul>
+<p>What happens if both left and right have more than two question mark tokens? Is it then always assumed to be <code>Help2</code> command?</p>
+<p>I understand that magic help commands must always start with a question mark. I wonder if we could use this information to avoid the <em>look behind</em> after lexing a magic command to verify whether it is a help command. What I'm thinking of is to create a new <code>lex_magic_help(left_kind)</code> method that you call when the left is either a <code>?</code> or <code>??</code>. The <code>LeftKind</code> is either <code>Help</code>, or <code>Help2</code> depending on the number of question marks (we can factor out some of the shared magc logic).</p>
+<p>Now, here is where things become unclear to me.  Is <code>?magic blabla</code> a regular magic command (not a help command)?</p>
+<p>The implementation can then store the offset before any additional left <code>?</code> tokens and call <code>self.cursor.eat_while(|c| c == '?')</code>, before starting with the real magic lexing. We can later sue that offset to decide whether we want to include the <code>?</code> int he</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:446 on 2023-08-03 09:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        [Some('?'), Some(c), _] if c != '?' &amp;&amp; !c.is_whitespace() =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-03 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:434 on 2023-08-03 13:33</div>
+            <div class="timeline-body"><p>I think this comment is a bit unclear. The official terminology for the help command is &quot;Dynamic object introspection&quot;. I'm trying to say if <code>%foo?</code> is actually a help command (<code>?</code>) (which it is). <code>?</code> takes priority over any other magic tokens. So, if we're lexing a magic command (as it started with a magic token) but it ended with either <code>?</code> or <code>??</code>, then the latter takes precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-03 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1442 on 2023-08-03 13:37</div>
+            <div class="timeline-body"><p>Oh I tested this locally but didn't add it in the test case. We transform it to the way IPython does. Note that the first two <code>?</code> is consumed by <code>MagicKind</code>:</p>
+<pre><code class="language-rust">Tok::MagicCommand {
+    value: &quot;??&quot;.to_string(),
+    kind: MagicKind::Help2,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-03 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-03 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:431 on 2023-08-03 13:46</div>
+            <div class="timeline-body"><p>My initial implementation used a branch method but the way I was doing it required some state variables, etc. This implementation looks actually reasonable. Let me check, I think this could be doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:434 on 2023-08-04 02:38</div>
+            <div class="timeline-body"><p>1 because the first char is already <code>?</code>, so we'll bump it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:444 on 2023-08-04 02:38</div>
+            <div class="timeline-body"><p>This is for the special case of having only question marks without any content (<code>????</code>). Help end magic command is only valid if it's preceded by non question mark / whitespace token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-04 02:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-08-04 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:471 on 2023-08-04 06:06</div>
+            <div class="timeline-body"><p>Nit: We should use <code>is_python_whitespace</code> here. Python only allows a subset of the unicode whitespace characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:444 on 2023-08-04 06:09</div>
+            <div class="timeline-body"><p>I would look at the last character in <code>value</code> to avoid having to write a state variable with every character (in addition to updating the vector).</p>
+<pre><code class="language-suggestion">                        || value.last().is_some_and(|c| !is_python_whitespace(c))
+                        || !matches!(self.cursor.first(), '\n' | '\r' | EOF_CHAR)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:442 on 2023-08-04 06:13</div>
+            <div class="timeline-body"><p>If I understand this correctly, then it is about lexing out all starting question marks?</p>
+<p>Would it make sense to add the logic for eating all leading quotes at the top of <code>lex_magical_command</code>?</p>
+<pre><code class="language-rust">self.cursor.eat_while(|c| c == '?');
+</code></pre>
+<p>We could even move it to the <code>lex_magical_command</code>'s call-site where we matched the <code>?</code> if we only need to eat over th leading <code>?</code>when the start token is a <code>?</code>. So the question is, do we also need to eat over the <code>?</code> for <code>%??abc??</code> or is this invalid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1415 on 2023-08-04 06:15</div>
+            <div class="timeline-body"><p>What about <code>%?foo??</code> or <code>%???</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-04 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-04 06:16</div>
+            <div class="timeline-body"><p>We're almost there. I've a proposal on simplifying the <code>?</code> branch, but it depends on the exact semantics of help commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:442 on 2023-08-05 00:54</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand this correctly, then it is about lexing out all starting question marks?</p>
+</blockquote>
+<p>No, this is about lexing the <em>ending</em> question marks if present. The terminology is <a href="https://github.com/ipython/ipython/blob/292e3a23459ca965b8c1bfe2c3707044c510209a/IPython/core/inputtransformer2.py#L465">&quot;help end&quot;</a> magic command to avoid confusion but if you think this is unclear we can rename it?.</p>
+<blockquote>
+<p>Would it make sense to add the logic for eating all leading quotes at the top of <code>lex_magical_command</code>?</p>
+</blockquote>
+<p>I don't think so because we only need to consume it if the magic command has <code>?</code> tokens (either 1 or 2) at the end. We won't know this until the cursor is at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-05 00:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-05 01:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1415 on 2023-08-05 01:14</div>
+            <div class="timeline-body"><p>Oh this is interesting and weird. Let me recap and get the semantics verified from the official implementation:</p>
+<ul>
+<li>Only 1 or 2 question marks at the end are valid and considered otherwise whichever token is present at the start is used to determine the <code>MagicKind</code></li>
+<li>If there are 1 or 2 question marks at the end, only the <code>%</code>/<code>%%</code> token is <em>included</em> in the command value, other magic kind tokens are ignored. But the magic kind will still be <code>Help</code>/<code>Help2</code> as it's still a priority:<ul>
+<li><code>%foo?</code> -&gt; (<code>%foo</code>, <code>Help</code>)</li>
+<li><code>!foo?</code> -&gt; (<code>foo</code>, <code>Help</code>)</li>
+<li><code>/foo?</code> -&gt; (<code>foo</code>, <code>Help</code>)</li>
+</ul>
+</li>
+<li>Now, here's where things get weird. Looking at your example and remembering that the implementation is a regex:<ul>
+<li><code>%?foo??</code> is a help command with value <code>foo</code>. Here, as <code>%</code> is followed by <code>?</code> it's ignored. On this note, any question mark in the middle will make every character on and before that position being ignored i.e., <code>%foo?bar?</code> will be a help command with value <code>bar</code> (again, remember it's a regex with captures).</li>
+<li><code>%???</code> is a magic command (<code>%</code>) as there are more than 2 question marks at the end</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1415 on 2023-08-05 01:17</div>
+            <div class="timeline-body"><p>My main question / concern is what is the correct implementation and should we follow the IPython implementation to the mark? If so, we'll have to make a few small changes to account for the above points.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-05 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/Cargo.toml</code>:18 on 2023-08-07 08:01</div>
+            <div class="timeline-body"><p>Is the new dependency required because <code>is_python_whitespace</code> is now in <code>ruff_python_trivia</code>? It may make sense just to copy over the function (private) to avoid cyclic dependencies (ruff_python_trivia has a dev dependency on ruff_python_parser)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:443 on 2023-08-07 08:18</div>
+            <div class="timeline-body"><p>Does this mean that <code>??abc ??\n</code> is a magic command and not a magic help?</p>
+<p>Nit:</p>
+<pre><code class="language-suggestion">                        || value.chars().last().map_or(true, is_python_whitespace)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:457 on 2023-08-07 08:31</div>
+            <div class="timeline-body"><p>Nit: Can we add a <code>as_str</code> method to <code>MagicKind</code> to avoid the potential allocation of <code>to_string</code> (I don't know if the compiler is able to see through the whole <code>format!</code> logic to know that it returns a static <code>str</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:434 on 2023-08-07 08:37</div>
+            <div class="timeline-body"><p>Lt's use a <code>u32</code> here, just to be safe</p>
+<pre><code class="language-suggestion">                    self.cursor.bump();
+                    let mut question_count = 1u32;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1415 on 2023-08-07 08:41</div>
+            <div class="timeline-body"><p>My examples are probably purely artificial. We can decide to ignore them until they get reported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-07 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-07 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:441 on 2023-08-07 08:42</div>
+            <div class="timeline-body"><p>It took me a very long time to understand this part (I even had to make code changes). It may be helpful to add an inline comment with a few code examples of what we're solving here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-07 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:443 on 2023-08-07 13:45</div>
+            <div class="timeline-body"><p>Help command (<code>?</code> / <code>??</code>) are just a specific kind of escape command[^1] so they both are the help command just that as there's a whitespace before the ending <code>??</code>, the prefixed question marks are used to determine the kind of escape command. This is how it's parsed in IPython as well because the ending question marks are parsed using regex which <a href="https://github.com/ipython/ipython/blob/292e3a23459ca965b8c1bfe2c3707044c510209a/IPython/core/inputtransformer2.py#L457-L459">isn't allowing any whitespace before the ending question marks</a>.</p>
+<p>[^1]: I'm going to make some updates into the terminology used across to avoid any future confusion, mainly rename <code>MagicCommand</code> to <code>EscapeCommand</code> so that <code>MagicKind::Magic</code> isn't confusing. This also how it's named in <a href="https://github.com/ipython/ipython/blob/292e3a23459ca965b8c1bfe2c3707044c510209a/IPython/core/inputtransformer2.py#L329-L346">IPython codebase</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-07 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:441 on 2023-08-07 13:45</div>
+            <div class="timeline-body"><p>Oh sorry that this was unclear. I'll add some additional comments, references and examples to make it understandable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support Help magic command with priority" to "Support help end escape command with priority" by @dhruvmanila on 2023-08-07 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-08-07 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-08-07 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

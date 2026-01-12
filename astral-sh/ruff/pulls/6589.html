@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use single lookup for leading, dangling, and trailing comments - astral-sh/ruff #6589</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use single lookup for leading, dangling, and trailing comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6589">#6589</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-15 05:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-15 05:48</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This is a preparation PR for https://github.com/astral-sh/ruff/pull/6561. The <code>fmt: skip</code> support requires looking up the trailing comments to determine whether a node is suppressed or not. However, looking up the comments for a node isn't free and we would now perform 6 comment lookups for every statement:</p>
+<ul>
+<li>The leading and trailing comments each once to test if the node falls into a suppressed range</li>
+<li>Once to determine whether the statement is suppressed by a trailing comment.</li>
+<li>Once to format the leading comments</li>
+<li>Once to format the dangling comments</li>
+<li>Once to format the trailing comments</li>
+</ul>
+<p>This is a lot. This PR reduces the number of lookups to 2 (or 3 if the dangling comment formatting is handled by the node):</p>
+<ul>
+<li>Once to test the range suppression comments</li>
+<li>Once to test the trailing suppresseion comment and format the leading, dangling, and trailing comments.</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Performance</h2>
+<p>This results in a small performance improvement</p>
+<pre><code>Gnuplot not found, using plotters backend
+formatter/numpy/globals.py
+                        time:   [38.282 µs 38.439 µs 38.579 µs]
+                        thrpt:  [76.484 MiB/s 76.761 MiB/s 77.077 MiB/s]
+                 change:
+                        time:   [-2.6719% -2.2332% -1.8094%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.8427% +2.2842% +2.7452%]
+                        Performance has improved.
+formatter/pydantic/types.py
+                        time:   [801.74 µs 802.72 µs 803.74 µs]
+                        thrpt:  [31.731 MiB/s 31.771 MiB/s 31.810 MiB/s]
+                 change:
+                        time:   [-0.0133% +0.4071% +0.8294%] (p = 0.06 &gt; 0.05)
+                        thrpt:  [-0.8226% -0.4055% +0.0133%]
+                        No change in performance detected.
+Found 6 outliers among 100 measurements (6.00%)
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+formatter/numpy/ctypeslib.py
+                        time:   [395.65 µs 396.25 µs 396.95 µs]
+                        thrpt:  [41.948 MiB/s 42.021 MiB/s 42.086 MiB/s]
+                 change:
+                        time:   [-1.8160% -1.4214% -1.0641%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.0755% +1.4419% +1.8496%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+formatter/large/dataset.py
+                        time:   [2.0272 ms 2.0319 ms 2.0380 ms]
+                        thrpt:  [19.962 MiB/s 20.022 MiB/s 20.069 MiB/s]
+                 change:
+                        time:   [+0.4893% +0.9936% +1.4942%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.4722% -0.9838% -0.4869%]
+                        Change within noise threshold.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-15 05:48</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6589</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6589" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6561</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6561" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6593</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6593" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6589?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-08-15 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-15 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-15 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-15 06:30</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      3.9±0.03ms    10.4 MB/sec    1.00      3.9±0.03ms    10.5 MB/sec
+formatter/numpy/ctypeslib.py               1.02    780.5±2.85µs    21.3 MB/sec    1.00   767.9±34.81µs    21.7 MB/sec
+formatter/numpy/globals.py                 1.04     78.9±0.37µs    37.4 MB/sec    1.00     76.2±1.47µs    38.7 MB/sec
+formatter/pydantic/types.py                1.03  1574.7±28.52µs    16.2 MB/sec    1.00   1526.5±6.92µs    16.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.3±0.02ms     4.0 MB/sec    1.00     10.3±0.03ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.01ms     6.0 MB/sec    1.00      2.8±0.02ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    396.9±0.46µs     7.4 MB/sec    1.00    393.4±0.59µs     7.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.4±0.04ms     4.8 MB/sec    1.00      5.4±0.02ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.5±0.02ms     7.4 MB/sec    1.00      5.5±0.02ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1217.6±1.38µs    13.7 MB/sec    1.00   1209.9±2.79µs    13.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    141.5±0.33µs    20.9 MB/sec    1.00    141.0±0.30µs    20.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.01ms    10.3 MB/sec    1.00      2.5±0.01ms    10.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      4.2±0.01ms     9.8 MB/sec    1.00      4.1±0.02ms    10.0 MB/sec
+formatter/numpy/ctypeslib.py               1.02    790.6±9.06µs    21.1 MB/sec    1.00   778.4±23.75µs    21.4 MB/sec
+formatter/numpy/globals.py                 1.03     81.1±0.46µs    36.4 MB/sec    1.00     78.5±1.10µs    37.6 MB/sec
+formatter/pydantic/types.py                1.03  1632.1±24.20µs    15.6 MB/sec    1.00  1590.9±17.52µs    16.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.6±0.05ms     3.2 MB/sec    1.00     12.6±0.07ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.02ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    370.5±5.06µs     8.0 MB/sec    1.00    368.5±8.38µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.6±0.02ms     3.9 MB/sec    1.00      6.5±0.02ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.0±0.04ms     5.8 MB/sec    1.00      6.9±0.03ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1452.3±5.78µs    11.5 MB/sec    1.00   1440.4±6.11µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    150.9±1.23µs    19.6 MB/sec    1.00    150.8±1.98µs    19.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.02ms     8.2 MB/sec    1.00      3.1±0.03ms     8.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-15 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-15 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-15 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-15 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

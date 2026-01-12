@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break global and nonlocal statements over continuation lines - astral-sh/ruff #6172</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Break global and nonlocal statements over continuation lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6172">#6172</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-29 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-29 13:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Builds on #6170 to break <code>global</code> and <code>nonlocal</code> statements, such that we get:</p>
+<pre><code class="language-python">def f():
+    global \
+        analyze_featuremap_layer, \
+        analyze_featuremapcompression_layer, \
+        analyze_latencies_post, \
+        analyze_motions_layer, \
+        analyze_size_model
+</code></pre>
+<p>Instead of:</p>
+<pre><code class="language-python">def f():
+    global analyze_featuremap_layer, analyze_featuremapcompression_layer, analyze_latencies_post, analyze_motions_layer, analyze_size_model
+</code></pre>
+<p>Notably, we avoid applying this formatting if the statement ends in a comment. Otherwise, the comment would <em>need</em> to be placed after the last item, like:</p>
+<pre><code class="language-python">def f():
+    global \
+        analyze_featuremap_layer, \
+        analyze_featuremapcompression_layer, \
+        analyze_latencies_post, \
+        analyze_motions_layer, \
+        analyze_size_model  # noqa
+</code></pre>
+<p>To me, this seems wrong (and would break the <code># noqa</code> comment). Ideally, the items would be parenthesized, and the comment would be on the inner parenthesis, like:</p>
+<pre><code class="language-python">def f():
+    global (  # noqa
+        analyze_featuremap_layer,
+        analyze_featuremapcompression_layer,
+        analyze_latencies_post,
+        analyze_motions_layer,
+        analyze_size_model
+    )
+</code></pre>
+<p>But that's not valid syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-07-29 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-07-29 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-07-29 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-29 13:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.05ms     4.9 MB/sec    1.02      8.4±0.18ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1656.7±47.79µs    10.1 MB/sec    1.00  1652.9±28.64µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.00    181.2±2.85µs    16.3 MB/sec    1.01    182.3±2.01µs    16.2 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.07ms     7.2 MB/sec    1.01      3.6±0.08ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     11.0±0.12ms     3.7 MB/sec    1.00     10.9±0.13ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.00ms     6.0 MB/sec    1.00      2.8±0.00ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    380.2±0.70µs     7.8 MB/sec    1.00    381.0±1.54µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      4.9±0.05ms     5.2 MB/sec    1.03      5.1±0.14ms     5.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.8±0.06ms     7.0 MB/sec    1.00      5.7±0.05ms     7.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1202.8±7.03µs    13.8 MB/sec    1.00   1195.7±7.66µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.01    133.8±0.31µs    22.0 MB/sec    1.00    132.9±0.36µs    22.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.6±0.03ms    10.0 MB/sec    1.00      2.5±0.05ms    10.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.9±0.16ms     4.1 MB/sec    1.01     10.0±0.16ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1922.9±41.65µs     8.7 MB/sec    1.00  1926.6±43.58µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00    199.1±4.77µs    14.8 MB/sec    1.03   204.8±14.59µs    14.4 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.13ms     6.0 MB/sec    1.01      4.3±0.11ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.6±0.31ms     3.0 MB/sec    1.00     13.4±0.18ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.06ms     4.6 MB/sec    1.01      3.6±0.11ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.01   377.3±14.16µs     7.8 MB/sec    1.00   372.8±11.62µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.10ms     4.2 MB/sec    1.00      6.1±0.12ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.10ms     5.5 MB/sec    1.00      7.4±0.11ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1490.3±36.17µs    11.2 MB/sec    1.00  1481.1±27.52µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.02    150.2±6.47µs    19.6 MB/sec    1.00    147.3±3.95µs    20.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.05ms     7.9 MB/sec    1.00      3.2±0.05ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-31 10:47</div>
+            <div class="timeline-body"><p>Looks good. It may now be worth factoring the shared logic into a shared <code>Format*</code> utility where you pass the <code>keyword</code> text and the <code>names</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-31 13:04</div>
+            <div class="timeline-body"><p>We should lobby for</p>
+<pre><code class="language-python">def f():
+    global (  # noqa
+        analyze_featuremap_layer,
+        analyze_featuremapcompression_layer,
+        analyze_latencies_post,
+        analyze_motions_layer,
+        analyze_size_model
+    )
+</code></pre>
+<p>to become valid python syntax. It's inconsistent that some nodes aren't allowed parentheses, while expressions might be wrapped in an arbitrary number of them.</p>
+<blockquote>
+<p>To me, this seems wrong (and would break the # noqa comment).</p>
+</blockquote>
+<p>This is currently a pervasive problem in the formatter. I'm not sure if special casing here is worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-31 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-02 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-02 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-02 19:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

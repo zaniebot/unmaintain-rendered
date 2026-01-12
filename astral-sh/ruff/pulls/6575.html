@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expand expressions to include parentheses in E712 - astral-sh/ruff #6575</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expand expressions to include parentheses in E712</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6575">#6575</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-14 22:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 22:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR exposes our <code>is_expression_parenthesized</code> logic such that we can use it to expand expressions when autofixing to include their parenthesized ranges.</p>
+<p>This solution has a few drawbacks: (1) we need to compute parenthesized ranges in more places, which also relies on backwards lexing; and (2) we need to make use of this in any relevant fixes.</p>
+<p>However, I still think it's worth pursuing. On (1), the implementation is very contained, so IMO we can easily swap this out for a more performant solution in the future if needed. On (2), this improves correctness and fixes some bad syntax errors detected by fuzzing, which means it has value even if it's not as robust as an <em>actual</em> <code>ParenthesizedExpression</code> node in the AST itself.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/4925.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> with new cases that previously failed the fuzzer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-14 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-14 22:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.36ms    10.9 MB/sec    1.00      3.7±0.22ms    10.9 MB/sec
+formatter/numpy/ctypeslib.py               1.01   759.7±51.26µs    21.9 MB/sec    1.00   749.3±54.89µs    22.2 MB/sec
+formatter/numpy/globals.py                 1.00     74.5±6.51µs    39.6 MB/sec    1.09     81.2±6.26µs    36.3 MB/sec
+formatter/pydantic/types.py                1.00  1466.0±91.30µs    17.4 MB/sec    1.05  1535.1±92.96µs    16.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.44ms     3.3 MB/sec    1.00     12.4±0.65ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      3.4±0.16ms     5.0 MB/sec    1.00      3.2±0.13ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.03   486.3±32.16µs     6.1 MB/sec    1.00   472.0±22.25µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.31ms     3.9 MB/sec    1.01      6.6±0.23ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.4±0.26ms     6.3 MB/sec    1.03      6.7±0.38ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1407.0±77.20µs    11.8 MB/sec    1.02  1429.3±54.88µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   173.9±10.42µs    17.0 MB/sec    1.02    178.1±8.45µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.14ms     8.7 MB/sec    1.01      3.0±0.14ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.05ms    10.9 MB/sec    1.01      3.7±0.09ms    10.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   734.6±10.42µs    22.7 MB/sec    1.01    741.6±9.03µs    22.5 MB/sec
+formatter/numpy/globals.py                 1.00     76.0±0.87µs    38.8 MB/sec    1.02     77.9±2.21µs    37.9 MB/sec
+formatter/pydantic/types.py                1.00  1511.2±19.27µs    16.9 MB/sec    1.01  1524.3±19.95µs    16.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.0±0.12ms     3.1 MB/sec    1.01     13.1±0.18ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.02ms     4.6 MB/sec    1.02      3.7±0.05ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00    376.4±7.02µs     7.8 MB/sec    1.02    382.4±8.43µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.13ms     3.7 MB/sec    1.01      6.9±0.12ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.05ms     5.7 MB/sec    1.02      7.2±0.07ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1487.5±13.47µs    11.2 MB/sec    1.01  1505.4±20.22µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    150.4±1.75µs    19.6 MB/sec    1.03    154.2±1.61µs    19.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.03ms     8.0 MB/sec    1.03      3.3±0.06ms     7.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-14 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:39 on 2023-08-16 18:36</div>
+            <div class="timeline-body"><p>This implementation can return false-positives, for example, it returns <code>true</code> in the following case:</p>
+<pre><code>call(a)
+</code></pre>
+<p>We handle this inside of the formatter by using a different implementation for this case. I think this is rather a footgun. Should we change the API to require passing in a parent node, so that it can correctly handle call expressions too (we won't be able to re-use the logic with the formatter because the formatter doesn't know the parent node)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:11 on 2023-08-16 18:37</div>
+            <div class="timeline-body"><p>Is the expression read anywhere? Would be nice to have the <code>ExpressionRef</code> that I started introducing once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:39 on 2023-08-16 22:42</div>
+            <div class="timeline-body"><p>Yeah I can fix this. Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:11 on 2023-08-16 22:42</div>
+            <div class="timeline-body"><p>No, only the range. Should I add <code>ExpressionRef</code>? (<code>AnyExpressionRef</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:11 on 2023-08-16 22:42</div>
+            <div class="timeline-body"><p>I guess <code>AnyExpressionRef</code> is redundant and <code>ExpressionRef</code> is more appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:11 on 2023-08-16 22:44</div>
+            <div class="timeline-body"><p>Dug up the old PR (https://github.com/astral-sh/ruff/pull/5644), I can reintroduce it separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-17 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-17 00:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:9 on 2023-08-17 00:58</div>
+            <div class="timeline-body"><p>I got rid of the struct in favor of a simple function that returns <code>Option</code>. I've gone back and forth on it a little bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:20 on 2023-08-17 05:40</div>
+            <div class="timeline-body"><p><code>parameters</code> shouldn't be a problem (or we have one in the formatter) because the parameter isn't an expression, it's a <code>Parameter</code> node and the default expression is guaranteed to be preceded by a name, making it unambiguous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/parenthesize.rs</code>:21 on 2023-08-17 05:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        parent.end() - TextSize::new(1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-17 05:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-17 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-17 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-17 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

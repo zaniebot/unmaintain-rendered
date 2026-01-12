@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indent statements in suppressed ranges - astral-sh/ruff #6507</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Indent statements in suppressed ranges</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6507">#6507</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-11 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-11 17:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR implements logic to fix up the indentation of suppressed statement ranges to prevent that formatting the following file results in a syntax error:</p>
+<pre><code class="language-python">if True:
+  pass
+  # fmt: off
+  print(&quot;test&quot;)
+
+# Before
+if True:
+    pass
+  # fmt: off
+  print(&quot;test&quot;)
+
+# After this PR
+if True:
+    pass
+    # fmt: off
+    print(&quot;test&quot;)
+
+</code></pre>
+<ul>
+<li>The relative indent of nested statements remains unchanged.</li>
+<li>Indentations of parenthesized expressions remain unchanged. Users have to fix these indents up manually. This is to align the <code>fmt: skip</code> and <code>fmt: off</code> behavior (re-indents the statement, but not its content)</li>
+</ul>
+<p>It may be a bit surprising that this PR also changes the indentation of comments. This is necessary to avoid that a comment getting associated with a different node after formatting once, if the indentation sequence changed:</p>
+<p>For example, if we format the following with an indent of 4 spaces:</p>
+<pre><code class="language-python"># fmt: off
+def test():
+  pass
+
+  # It is necessary to indent comments because the following fmt: on comment because it otherwise becomes a trailing comment
+  # of the `test` function if the &quot;proper&quot; indentation is larger than 2 spaces.
+  # fmt: on
+
+disabled +  formatting;
+</code></pre>
+<p>The output without re-indenting comments would be:</p>
+<pre><code class="language-python"># fmt: off
+def test():
+	pass
+
+  # It is necessary to indent comments because the following fmt: on comment because it otherwise becomes a trailing comment
+  # of the `test` function if the &quot;proper&quot; indentation is larger than 2 spaces.
+  # fmt: on
+
+disabled +  formatting;
+</code></pre>
+<p>This results in an instability because the end of body comments of <code>test</code> now have a smaller indentation than <code>pass</code>, resulting in the formatter associating these as trailing comments of the function <code>test</code> rather than the <code>pass</code> statement. Now, <code>fmt: on</code> suddenly re-enables formatting of <code>disabled + formatting;</code></p>
+<p>The re-formatting of comments and statements may be controversial inside of a <code>fmt: off..fmt: on</code> region but the benefits of being able to format files with suppressed ranges rather than just failing if the indentations end up miss matching outweighs the maybe surprising behavior mainly because it results in no chance if the statements are correctly indented.</p>
+<h2>Test Plan</h2>
+<p>I added new test cases, including test cases with mixed indentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-11 17:13</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6443</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6443" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6452</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6452" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6477</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6477" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6507</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6507" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6561</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6561" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6507?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:110 on 2023-08-11 17:14</div>
+            <div class="timeline-body"><p>This was an awkward bug. The form feed character has a width of 0, but we need to print it. I hope this won't hurt performance much (one more field to track and write)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-11 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-11 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-11 17:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.5±0.06ms     8.9 MB/sec    1.00      4.6±0.06ms     8.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00    889.4±6.43µs    18.7 MB/sec    1.01    898.5±4.05µs    18.5 MB/sec
+formatter/numpy/globals.py                 1.00     90.2±0.64µs    32.7 MB/sec    1.06     95.6±5.45µs    30.9 MB/sec
+formatter/pydantic/types.py                1.00  1781.8±28.44µs    14.3 MB/sec    1.02   1809.1±6.54µs    14.1 MB/sec
+linter/all-rules/large/dataset.py          1.02     13.0±0.45ms     3.1 MB/sec    1.00     12.6±0.09ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.04ms     5.0 MB/sec    1.00      3.3±0.03ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    473.1±8.17µs     6.2 MB/sec    1.00    470.2±0.72µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.17ms     3.9 MB/sec    1.02      6.6±0.52ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.09ms     6.2 MB/sec    1.02      6.7±0.04ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1430.4±13.88µs    11.6 MB/sec    1.02   1455.6±4.67µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    168.6±1.16µs    17.5 MB/sec    1.00    169.1±0.44µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.04ms     8.7 MB/sec    1.01      3.0±0.02ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      4.2±0.05ms     9.6 MB/sec    1.00      4.2±0.05ms     9.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   796.0±10.80µs    20.9 MB/sec    1.00   793.3±14.85µs    21.0 MB/sec
+formatter/numpy/globals.py                 1.00     82.0±2.03µs    36.0 MB/sec    1.00     81.8±1.96µs    36.1 MB/sec
+formatter/pydantic/types.py                1.01  1678.5±31.20µs    15.2 MB/sec    1.00  1664.2±27.01µs    15.3 MB/sec
+linter/all-rules/large/dataset.py          1.02     13.0±0.17ms     3.1 MB/sec    1.00     12.7±0.12ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.6±0.03ms     4.6 MB/sec    1.00      3.5±0.07ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.02    372.1±9.55µs     7.9 MB/sec    1.00    364.5±7.95µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.6±0.07ms     3.8 MB/sec    1.00      6.5±0.06ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.06ms     5.8 MB/sec    1.00      7.0±0.11ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1468.5±37.67µs    11.3 MB/sec    1.00  1448.9±20.34µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.04    151.4±3.68µs    19.5 MB/sec    1.00    145.3±3.18µs    20.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.04ms     8.1 MB/sec    1.00      3.1±0.02ms     8.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-08-14 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-14 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-08-14 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/fmt_on_off/.editorconfig</code>:3 on 2023-08-14 12:56</div>
+            <div class="timeline-body"><p>that's neat, do we want that for the entire formatter fixtures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:111 on 2023-08-14 12:58</div>
+            <div class="timeline-body"><p>can this value be something except 0 or &gt;0?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:605 on 2023-08-14 13:00</div>
+            <div class="timeline-body"><p>There's already an <code>Indentation</code> in ruff_python_parser, do we want to give this one a different name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:618 on 2023-08-14 13:05</div>
+            <div class="timeline-body"><p>i'd have gone for .take_while.count</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:613 on 2023-08-14 13:06</div>
+            <div class="timeline-body"><p>you taught me about <code>is_python_whitespace</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:677 on 2023-08-14 13:23</div>
+            <div class="timeline-body"><p>i like the docstring solution of only stripping the shared leading indentation, through docstring we would also already have the utils for that, except for own line comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:794 on 2023-08-14 13:46</div>
+            <div class="timeline-body"><p>what would that content be and how do we know whether it contains newlines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-14 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:618 on 2023-08-14 13:56</div>
+            <div class="timeline-body"><p>I had that initially but clippy loves to complain about a possible truncation. So I ended up changing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:613 on 2023-08-14 13:57</div>
+            <div class="timeline-body"><p>This is intentionally different because we don't want to trim any form-feed characters (see the <code>form_feed.py</code> test case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:677 on 2023-08-14 14:25</div>
+            <div class="timeline-body"><p>I would like that too. But we would need to track two different indentations:</p>
+<ul>
+<li>One to strip before statements</li>
+<li>The shared leading indentation, for comments</li>
+</ul>
+<p>It may otherwise result in invalid code if a comment has less indentation than the statements. I think we consider introducing this complexity if we get reports that our fmt: off breaks the intended formatting (or e.g. test if the entire suite is disabled, and if so, don't fix up the indent)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:609 on 2023-08-14 14:28</div>
+            <div class="timeline-body"><p>How does this implementation handle multi-statement lines? Like <code>x = 1; import os</code>. Or, is that not relevant since you can't have a comment <em>within</em> a multi-statement line (and so the <code>first_suppressed</code> is guaranteed to be at the start of a logical line)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:844 on 2023-08-14 14:31</div>
+            <div class="timeline-body"><p>Off-topic: do you have a general preference between <code>&lt;T: Ranged&gt;</code> and <code>where T: Ranged</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-14 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:609 on 2023-08-14 14:33</div>
+            <div class="timeline-body"><p>This is an interesting case. This works because the <code>fmt: off</code> comment must be an own line comment. Meaning either the whole multiline statement gets formatted or suppressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:844 on 2023-08-14 14:34</div>
+            <div class="timeline-body"><p>Uhm, not consciously. I generally avoid using <code>impl</code> (but there are exceptions), and lean towards <code>where</code> because I find them more readable when more complicated constraints become necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-14 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/fmt_on_off/indent.py</code>:40 on 2023-08-14 14:50</div>
+            <div class="timeline-body"><p>Could you add a multi line string test case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-14 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:613 on 2023-08-14 14:55</div>
+            <div class="timeline-body"><p>could you add a comment about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/fmt_on_off/.editorconfig</code>:3 on 2023-08-14 15:50</div>
+            <div class="timeline-body"><p>Maybe. Let me move it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:111 on 2023-08-14 15:52</div>
+            <div class="timeline-body"><p>No. It's a u32 and must be a zero or a positive number. But I should probably revert this change. It's unrelated. I only changed it because I first changed the printer to differentiate between no-content and a line width zero-width content. But I now opted to not make this change, so I should not change the printer here (I'm pretty sure LLVM compiles this down to the same code anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:794 on 2023-08-14 16:00</div>
+            <div class="timeline-body"><p>I extended the comment to mention what content it is and changed <code>contains_newlines</code> to always be <code>No</code> because the lexer would otherwise return a <code>Newline</code> token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-14 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/verbatim.rs</code>:605 on 2023-08-14 16:07</div>
+            <div class="timeline-body"><p>Do you have a recommendation? I wasn't able to come up with a good name.</p>
+<p>I'm not too concerned about the naming conflict, considering that this is a private type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-15 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-15 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-15 06:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

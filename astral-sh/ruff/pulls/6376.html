@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `parenthesized_with_dangling_comments` in arguments formatter - astral-sh/ruff #6376</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>parenthesized_with_dangling_comments</code> in arguments formatter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6376">#6376</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-06 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-06 15:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes an instability whereby this:</p>
+<pre><code class="language-python">def get_recent_deployments(threshold_days: int) -&gt; Set[str]:
+    # Returns a list of deployments not older than threshold days
+    # including `/root/zulip` directory if it exists.
+    recent = set()
+    threshold_date = datetime.datetime.now() - datetime.timedelta(  # noqa: DTZ005
+        days=threshold_days
+    )
+</code></pre>
+<p>Was being formatted as:</p>
+<pre><code class="language-python">def get_recent_deployments(threshold_days: int) -&gt; Set[str]:
+    # Returns a list of deployments not older than threshold days
+    # including `/root/zulip` directory if it exists.
+    recent = set()
+    threshold_date = (
+        datetime.datetime.now()
+        - datetime.timedelta(days=threshold_days)  # noqa: DTZ005
+    )
+</code></pre>
+<p>Which was in turn being formatted as:</p>
+<pre><code class="language-python">def get_recent_deployments(threshold_days: int) -&gt; Set[str]:
+    # Returns a list of deployments not older than threshold days
+    # including `/root/zulip` directory if it exists.
+    recent = set()
+    threshold_date = (
+        datetime.datetime.now() - datetime.timedelta(days=threshold_days)  # noqa: DTZ005
+    )
+</code></pre>
+<p>The second-to-third formattings still differs from Black because we aren't taking the line suffix into account when splitting (https://github.com/astral-sh/ruff/issues/6377), but the first formatting is correct and should be unchanged (i.e., the first-to-second formattings is incorrect, and fixed here).</p>
+<h2>Test Plan</h2>
+<p><code>cargo run --bin ruff_dev -- format-dev --stability-check ../zulip</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-06 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-06 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:103 on 2023-08-06 15:49</div>
+            <div class="timeline-body"><p>@konstin - Is this still applicable? I can't tell what it applies to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-06 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-06 16:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04     10.0±0.31ms     4.1 MB/sec    1.00      9.6±0.29ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1964.7±58.68µs     8.5 MB/sec    1.00  1920.5±69.43µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.14   248.9±30.77µs    11.9 MB/sec    1.00   218.8±12.44µs    13.5 MB/sec
+formatter/pydantic/types.py                1.04      4.2±0.17ms     6.1 MB/sec    1.00      4.1±0.13ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.05     13.1±0.28ms     3.1 MB/sec    1.00     12.5±0.35ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      3.5±0.10ms     4.8 MB/sec    1.00      3.3±0.10ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   479.9±23.80µs     6.1 MB/sec    1.00   479.1±32.34µs     6.2 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.8±0.16ms     4.4 MB/sec    1.00      5.8±0.20ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.04      6.8±0.18ms     6.0 MB/sec    1.00      6.5±0.24ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.07  1455.3±33.06µs    11.4 MB/sec    1.00  1364.5±43.67µs    12.2 MB/sec
+linter/default-rules/numpy/globals.py      1.03    174.9±5.25µs    16.9 MB/sec    1.00    169.5±6.86µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.06      3.0±0.08ms     8.5 MB/sec    1.00      2.8±0.10ms     9.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.9±0.16ms     4.1 MB/sec    1.00      9.8±0.09ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1891.7±16.66µs     8.8 MB/sec    1.01  1901.2±39.51µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.01    216.0±7.03µs    13.7 MB/sec    1.00    212.9±4.75µs    13.9 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.05ms     6.2 MB/sec    1.01      4.1±0.06ms     6.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.09ms     3.3 MB/sec    1.00     12.4±0.10ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.03ms     4.9 MB/sec    1.00      3.4±0.03ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    426.6±5.13µs     6.9 MB/sec    1.00    427.1±6.47µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.05ms     4.4 MB/sec    1.00      5.7±0.06ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.7±0.10ms     6.0 MB/sec    1.00      6.6±0.04ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1390.9±14.61µs    12.0 MB/sec    1.00  1380.9±13.75µs    12.1 MB/sec
+linter/default-rules/numpy/globals.py      1.01    161.7±9.39µs    18.2 MB/sec    1.00    160.1±2.04µs    18.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.03ms     8.5 MB/sec    1.00      3.0±0.03ms     8.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-07 02:48</div>
+            <div class="timeline-body"><p>The next stability failure (i.e., the reason this PR is still failing) is fixed in https://github.com/astral-sh/ruff/pull/6380.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:109 on 2023-08-07 07:55</div>
+            <div class="timeline-body"><p>Nit: Can we change the builder to <code>parenthesized(&quot;(&quot;, &amp;group(&amp;all_arguments)), &quot;)&quot;).with_dangling_comments(dangling_comments)</code> to be more in line with how other builders work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-07 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:103 on 2023-08-07 08:20</div>
+            <div class="timeline-body"><p>i don't think think so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:109 on 2023-08-07 08:22</div>
+            <div class="timeline-body"><p>i'm thinking about <code>parenthesized</code> and <code>parenthesized_without_dangling_comments</code> since the latter should be the exception</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-07 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:109 on 2023-08-07 13:43</div>
+            <div class="timeline-body"><p>I will handle separately since it would be unrelated to this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 13:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

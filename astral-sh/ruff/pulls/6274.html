@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add formatter support for call and class definition `Arguments` - astral-sh/ruff #6274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add formatter support for call and class definition <code>Arguments</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6274">#6274</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-02 13:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 13:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR leverages the <code>Arguments</code> AST node introduced in #6259 in the formatter, which ensures that we correctly handle trailing comments in calls, like:</p>
+<pre><code class="language-python">f(
+  1,
+  # comment
+)
+
+pass
+</code></pre>
+<p>(Previously, this was treated as a leading comment on <code>pass</code>.)</p>
+<p>This also allows us to unify the argument handling across calls and class definitions.</p>
+<h2>Test Plan</h2>
+<p>A bunch of new fixture tests, plus improved Black compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-02 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-02 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-02 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/builders.rs</code>:255 on 2023-08-02 13:59</div>
+            <div class="timeline-body"><p>We don't want these to break, IIUC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-02 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:79 on 2023-08-02 13:59</div>
+            <div class="timeline-body"><p>We get all of this for free now, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-02 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:19 on 2023-08-02 13:59</div>
+            <div class="timeline-body"><p>This is largely moved from <code>expr_call</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-02 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 14:21</div>
+            <div class="timeline-body"><p>Looking into ecosystem failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-02 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 14:30</div>
+            <div class="timeline-body"><p>(Need to fix a few things.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-02 14:41</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.5±0.05ms     4.8 MB/sec    1.01      8.6±0.07ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1661.0±36.23µs    10.0 MB/sec    1.00  1646.3±14.92µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.00    172.1±4.74µs    17.1 MB/sec    1.02    174.7±5.03µs    16.9 MB/sec
+formatter/pydantic/types.py                1.00      3.6±0.09ms     7.0 MB/sec    1.00      3.6±0.06ms     7.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.6±0.09ms     3.5 MB/sec    1.00     11.6±0.10ms     3.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.0±0.02ms     5.6 MB/sec    1.00      3.0±0.02ms     5.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    319.1±2.21µs     9.2 MB/sec    1.00    318.5±1.63µs     9.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.2±0.06ms     4.9 MB/sec    1.00      5.2±0.04ms     4.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.2±0.05ms     6.6 MB/sec    1.00      6.1±0.03ms     6.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1215.2±6.93µs    13.7 MB/sec    1.00   1215.8±4.55µs    13.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    120.7±0.24µs    24.5 MB/sec    1.00    121.0±0.31µs    24.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.7±0.01ms     9.6 MB/sec    1.00      2.7±0.02ms     9.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      9.9±0.07ms     4.1 MB/sec     1.00      9.9±0.08ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1929.6±100.51µs     8.6 MB/sec    1.00  1925.1±26.59µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.02    215.8±5.35µs    13.7 MB/sec     1.00    212.2±4.75µs    13.9 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.04ms     6.1 MB/sec     1.00      4.2±0.07ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.3±0.07ms     3.1 MB/sec     1.00     13.3±0.14ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.03ms     4.7 MB/sec     1.00      3.5±0.02ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    435.1±5.88µs     6.8 MB/sec     1.00    435.7±7.83µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.07ms     4.2 MB/sec     1.00      6.0±0.07ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.04ms     5.6 MB/sec     1.01      7.3±0.05ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1494.5±18.35µs    11.1 MB/sec     1.00  1493.1±20.33µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.6±2.49µs    17.4 MB/sec     1.01    171.0±2.51µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.03ms     8.0 MB/sec     1.00      3.2±0.02ms     8.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-02 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-02 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-02 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-02 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:862 on 2023-08-03 07:07</div>
+            <div class="timeline-body"><p>Nit: This seems unrelated to this PR. I think it would have been good to split out the decorators handling from this otherwise pure refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:127 on 2023-08-03 07:07</div>
+            <div class="timeline-body"><p>This should not have been moved. It belongs to <code>ExprCall</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:44 on 2023-08-03 07:10</div>
+            <div class="timeline-body"><p>Nit: I find this name confusing. I would expect it to take an iterator as input (or something stateful that is after positioned after the trailing trivia). How about <code>after_trailing_trivia</code>?</p>
+<p>Related: There's a <code>token.kind().is_triva</code> method to avoid listing all trivia kinds.</p>
+<p>Related 2: I think the method should return</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:83 on 2023-08-03 07:13</div>
+            <div class="timeline-body"><p>Nit: Add a <code>arguments.is_empty()</code> helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:61 on 2023-08-03 07:14</div>
+            <div class="timeline-body"><p>Same: I think this change should have been a separate PR because it goes beyond the refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 07:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:90 on 2023-08-03 07:16</div>
+            <div class="timeline-body"><p>I think this is the first usage where another node formats a node's dangling comments. I also don't understand the reason for it from the comment above because all examples in the comment above have parentheses, but the point here seems to be to remove the parentheses.</p>
+<p>Why not move this into <code>Arguments</code>? It removes the need for querying the dangling comments here (we only have to do it in arguments) and is more in line of what we do elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1191 on 2023-08-03 07:33</div>
+            <div class="timeline-body"><p>Nit: A more generalized implementation of this could be:</p>
+<pre><code class="language-rust">if comment.line_position().is_end_of_line() {
+    let mut lexer = SimpleTokenizer::new(
+        locator.contents(),
+        TextRange::new(comment.enclosing_node().start(), comment.start()),
+    )
+    .skip_trivia()
+    .skip_while(|t| {
+        matches!(
+            t.kind(),
+            SimpleTokenKind::LParen | SimpleTokenKind::LBrace | SimpleTokenKind::LBracket
+        )
+    });
+
+    if lexer.next().is_none() {
+        return CommentPlacement::dangling(comment.enclosing_node(), comment);
+    }
+}
+
+CommentPlacement::Default(comment)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:61 on 2023-08-03 13:29</div>
+            <div class="timeline-body"><p>To me this is squarely part of the PR and the desired refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:83 on 2023-08-03 13:30</div>
+            <div class="timeline-body"><p>Good call, I believe this now exists on main but didn't at the time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:44 on 2023-08-03 13:30</div>
+            <div class="timeline-body"><p>(FWIW: all of this code already existed for functions and was not being applied to classes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:862 on 2023-08-03 13:31</div>
+            <div class="timeline-body"><p>You're right that it'd be better as its own PR but I deemed it tolerable to include it here. All of this code already existed for functions and was missing from classes, so it was no net-new behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:90 on 2023-08-03 13:33</div>
+            <div class="timeline-body"><p>This is important: we need to handle the arguments dangling comments, but we don't want to render the arguments.</p>
+<p>Given:</p>
+<pre><code class="language-python">class C( # foo
+  ): pass
+</code></pre>
+<p>We want:</p>
+<pre><code class="language-python">class C:  # foo
+  pass
+</code></pre>
+<p>We're <em>removing</em> the arguments node entirely, and moving its comments onto the class identifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:90 on 2023-08-03 13:35</div>
+            <div class="timeline-body"><p>I could handle it in placement instead of here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:90 on 2023-08-03 13:50</div>
+            <div class="timeline-body"><p>That might be easier to understand if it is easy enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1191 on 2023-08-03 15:20</div>
+            <div class="timeline-body"><p>cc @charliermarsh are we going to use this to consolidate the Arguements / TypeParams implementations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-08-03 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1191 on 2023-08-03 15:23</div>
+            <div class="timeline-body"><p>I can do another pass on this and consolidate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:44 on 2023-08-03 16:11</div>
+            <div class="timeline-body"><p>What was &quot;Related 2&quot; here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1191 on 2023-08-03 19:57</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/6315</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:44 on 2023-08-03 20:07</div>
+            <div class="timeline-body"><p>Whoops. That I was unsure if it should return an option</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:44 on 2023-08-03 20:09</div>
+            <div class="timeline-body"><p>:joy:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimate expected `VecBuffer` size - astral-sh/ruff #6612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Estimate expected <code>VecBuffer</code> size</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6612">#6612</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-16 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 11:02</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR changes the <code>format</code> function to reserve <code>source.len() / 2</code> elements in the <code>VecBuffer</code> instead of relying on Rust's generic &quot;double the vec when you run out of space&quot; heuristic. Rust's heuristic still applies if the estimate is too low.</p>
+<p>I tried to play scientist, but you all probably have more experience in gathering statistics than I. Please point out any mistakes that I made ;)</p>
+<p>I added a simple print statement to log the buffer length after formatting and the source code length and ran our ecosystem check (<a href="https://gist.github.com/MichaReiser/988ab62d0db109cf3e8be67e9a7a2b7c">raw CSV</a>). I then used my very limited Python skills to <a href="https://gist.github.com/MichaReiser/988ab62d0db109cf3e8be67e9a7a2b7c#file-generate-py">generate a histogram</a> (luckily, there are many blog posts explaining on how to do that).</p>
+<p><img src="https://raw.githubusercontent.com/gist/MichaReiser/988ab62d0db109cf3e8be67e9a7a2b7c/raw/504d907052bd38af64b1e9441aab041a6d3fd155/distribution.svg" alt="Histogram showing the number of files with a certain buffer/source ratio" /></p>
+<p>The histogram shows the ratio of $\frac{buffer-length}{sourcecode-length}$.</p>
+<p>What I understand from the histogram is that a ratio of 0.5 is the most common and a good guess. There are still many files where this is underestimated, but this is fine because Rust will grow the Vec to double its size when it runs out of space.</p>
+<p>I have no idea why there's a peak around 0.1...</p>
+<h2>Test Plan</h2>
+<pre><code>formatter/numpy/globals.py
+                        time:   [37.415 µs 37.468 µs 37.523 µs]
+                        thrpt:  [78.637 MiB/s 78.751 MiB/s 78.862 MiB/s]
+                 change:
+                        time:   [-5.6859% -5.2827% -4.8477%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+5.0946% +5.5773% +6.0287%]
+                        Performance has improved.
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) high mild
+  8 (8.00%) high severe
+formatter/pydantic/types.py
+                        time:   [772.68 µs 775.05 µs 777.91 µs]
+                        thrpt:  [32.784 MiB/s 32.905 MiB/s 33.006 MiB/s]
+                 change:
+                        time:   [-3.6234% -3.0237% -2.3473%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+2.4037% +3.1179% +3.7597%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+formatter/numpy/ctypeslib.py
+                        time:   [387.98 µs 388.20 µs 388.44 µs]
+                        thrpt:  [42.867 MiB/s 42.893 MiB/s 42.917 MiB/s]
+                 change:
+                        time:   [-3.6028% -3.3383% -3.0706%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+3.1678% +3.4535% +3.7374%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+Benchmarking formatter/large/dataset.py: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 10.0s, enable flat sampling, or reduce sample count to 40.
+formatter/large/dataset.py
+                        time:   [1.9642 ms 1.9661 ms 1.9682 ms]
+                        thrpt:  [20.670 MiB/s 20.692 MiB/s 20.712 MiB/s]
+                 change:
+                        time:   [-3.1729% -3.0335% -2.8740%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+2.9591% +3.1284% +3.2769%]
+                        Performance has improved.
+Found 13 outliers among 100 measurements (13.00%)
+  7 (7.00%) high mild
+  6 (6.00%) high severe
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 11:02</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6612</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6612" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6612?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-08-16 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 11:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      4.3±0.07ms     9.4 MB/sec    1.00      4.2±0.06ms     9.6 MB/sec
+formatter/numpy/ctypeslib.py               1.02   892.8±11.85µs    18.7 MB/sec    1.00   878.9±13.99µs    18.9 MB/sec
+formatter/numpy/globals.py                 1.01     92.4±1.39µs    31.9 MB/sec    1.00     91.5±1.31µs    32.3 MB/sec
+formatter/pydantic/types.py                1.00  1747.1±21.82µs    14.6 MB/sec    1.01  1760.8±14.57µs    14.5 MB/sec
+linter/all-rules/large/dataset.py          1.02     12.6±0.14ms     3.2 MB/sec    1.00     12.4±0.15ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.03ms     5.1 MB/sec    1.00      3.3±0.04ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01    466.5±5.15µs     6.3 MB/sec    1.00    463.6±5.60µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.08ms     4.0 MB/sec    1.00      6.3±0.08ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.5±0.06ms     6.2 MB/sec    1.00      6.4±0.06ms     6.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1440.0±11.50µs    11.6 MB/sec    1.00   1433.5±7.82µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.01    166.5±2.44µs    17.7 MB/sec    1.00    165.7±2.23µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.9±0.02ms     8.7 MB/sec    1.00      2.9±0.04ms     8.8 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.1±0.19ms     8.0 MB/sec    1.02      5.2±0.28ms     7.8 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1034.0±58.98µs    16.1 MB/sec    1.00  1019.1±56.30µs    16.3 MB/sec
+formatter/numpy/globals.py                 1.01    107.9±6.54µs    27.4 MB/sec    1.00    107.0±6.97µs    27.6 MB/sec
+formatter/pydantic/types.py                1.00      2.1±0.10ms    12.3 MB/sec    1.00      2.1±0.09ms    12.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.9±0.37ms     2.6 MB/sec    1.00     16.0±0.39ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.4±0.28ms     3.8 MB/sec    1.00      4.3±0.13ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   545.3±27.31µs     5.4 MB/sec    1.02   553.6±32.23µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.2±0.28ms     3.1 MB/sec    1.00      8.2±0.27ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.7±0.27ms     4.7 MB/sec    1.01      8.8±0.25ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1815.9±56.35µs     9.2 MB/sec    1.01  1840.4±73.74µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00   216.6±10.61µs    13.6 MB/sec    1.03   223.5±18.25µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.12ms     6.6 MB/sec    1.02      3.9±0.20ms     6.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-16 13:00</div>
+            <div class="timeline-body"><p>Nice, good science :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-16 13:00</div>
+            <div class="timeline-body"><p>Cute graph</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_formatter/src/lib.rs</code>:784 on 2023-08-16 13:03</div>
+            <div class="timeline-body"><p>Does this mean we were already using the source code length as the heuristic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/lib.rs</code>:784 on 2023-08-16 13:14</div>
+            <div class="timeline-body"><p>Lol must be... I must have accidentally committed this when playing around with the <code>Printer.state.buffer</code> size :hand_over_mouth:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-16 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-16 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-16 13:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

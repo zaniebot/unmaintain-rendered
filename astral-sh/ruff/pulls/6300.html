@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make formatter ecosystem check failure output better understandable - astral-sh/ruff #6300</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make formatter ecosystem check failure output better understandable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6300">#6300</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-08-03 08:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-08-03 08:28</div>
+            <div class="timeline-body"><p><strong>Summary</strong> Prompted by https://github.com/astral-sh/ruff/pull/6257#issuecomment-1661308410, it tried to make the ecosystem script output on failure better understandable. All log messages are now written to a file, which is printed on error. Running locally progress is still shown.</p>
+<p>Looking through the log output i saw that we currently log syntax errors in input, which is confusing because they aren't actual errors, but we don't check that these files don't change due to parser regressions or improvements. I added <code>--files-with-errors</code> to catch that.</p>
+<p><strong>Test Plan</strong> CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2023-08-03 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-08-03 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-03 08:54</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.11ms     4.9 MB/sec    1.00      8.3±0.05ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1636.6±16.06µs    10.2 MB/sec    1.00  1643.5±26.59µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.02    185.0±6.66µs    16.0 MB/sec    1.00    181.2±2.05µs    16.3 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.06ms     7.2 MB/sec    1.00      3.5±0.05ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.9±0.04ms     3.7 MB/sec    1.01     11.0±0.05ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.02ms     5.9 MB/sec    1.00      2.8±0.01ms     5.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    381.0±2.81µs     7.7 MB/sec    1.00    381.4±0.85µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      4.9±0.04ms     5.2 MB/sec    1.00      4.9±0.04ms     5.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.7±0.03ms     7.1 MB/sec    1.00      5.7±0.02ms     7.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1203.3±18.53µs    13.8 MB/sec    1.00   1192.5±4.27µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    131.6±1.75µs    22.4 MB/sec    1.00    130.4±0.30µs    22.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.5±0.01ms    10.0 MB/sec    1.00      2.5±0.01ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.8±0.58ms     3.8 MB/sec    1.00     10.8±0.47ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.10ms     8.0 MB/sec    1.01      2.1±0.12ms     8.0 MB/sec
+formatter/numpy/globals.py                 1.03   246.0±17.39µs    12.0 MB/sec    1.00   239.3±17.07µs    12.3 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.23ms     5.6 MB/sec    1.00      4.6±0.25ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.02     15.1±0.49ms     2.7 MB/sec    1.00     14.9±0.37ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.17ms     4.2 MB/sec    1.00      4.0±0.19ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01   502.3±24.40µs     5.9 MB/sec    1.00   498.1±23.90µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.03      6.9±0.40ms     3.7 MB/sec    1.00      6.7±0.29ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.2±0.34ms     4.9 MB/sec    1.00      8.2±0.31ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1655.6±57.85µs    10.1 MB/sec    1.01  1664.9±77.29µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.02    202.4±9.82µs    14.6 MB/sec    1.00    198.9±9.25µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.14ms     7.1 MB/sec    1.00      3.6±0.18ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-08-03 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-03 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-08-03 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-08-03 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-03 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

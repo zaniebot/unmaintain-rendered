@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>format ExprJoinedStr - astral-sh/ruff #5932</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>format ExprJoinedStr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5932">#5932</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-07-20 22:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-20 22:24</div>
+            <div class="timeline-body"><p>reuses most of the (constant) string formatting, adding ability to skip changing quote style, if that would require escaping quotes inside formatted values which isn't allowed (in py &lt; 3.12)</p>
+<p>fixes #5913</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-20 22:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.1±0.26ms     4.0 MB/sec    1.01     10.2±0.35ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1986.8±66.24µs     8.4 MB/sec    1.02      2.0±0.12ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.00   225.8±19.42µs    13.1 MB/sec    1.00    225.3±7.48µs    13.1 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.11ms     6.0 MB/sec    1.01      4.3±0.17ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.9±0.22ms     2.9 MB/sec    1.02     14.1±0.29ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.07ms     4.8 MB/sec    1.02      3.5±0.08ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   487.3±17.97µs     6.1 MB/sec    1.02   499.2±26.02µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.18ms     4.0 MB/sec    1.02      6.4±0.27ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.17ms     5.5 MB/sec    1.03      7.6±0.15ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1545.6±56.34µs    10.8 MB/sec    1.02  1581.0±62.14µs    10.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.0±6.65µs    16.4 MB/sec    1.04   186.7±11.27µs    15.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.10ms     7.8 MB/sec    1.03      3.4±0.10ms     7.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.1±0.09ms     4.0 MB/sec    1.11     11.2±0.11ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1939.5±18.75µs     8.6 MB/sec    1.10      2.1±0.04ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00    211.9±4.02µs    13.9 MB/sec    1.07    227.3±5.91µs    13.0 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.05ms     6.0 MB/sec    1.11      4.7±0.07ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.6±0.11ms     3.0 MB/sec    1.00     13.6±0.12ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.6±0.05ms     4.6 MB/sec    1.00      3.6±0.03ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    436.6±5.10µs     6.8 MB/sec    1.00    438.5±7.65µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.09ms     4.2 MB/sec    1.00      6.1±0.08ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.05ms     5.4 MB/sec    1.00      7.5±0.10ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1524.8±14.55µs    10.9 MB/sec    1.00  1531.8±26.14µs    10.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    171.2±2.34µs    17.2 MB/sec    1.00    171.1±2.54µs    17.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.03ms     7.8 MB/sec    1.00      3.3±0.03ms     7.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:29 on 2023-07-21 07:08</div>
+            <div class="timeline-body"><p>You can use <code>f.join()</code> to join elements without a separator (assuming that's what we need). We should look into how black splits long fstrings (best to include examples where the f-string is used directly in an ExpressionStatement and once where it is inside of parentheses).</p>
+<p>Does python allow comments inside of string expressions or is this only a JavaScript madness?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 07:08</div>
+            <div class="timeline-body"><p>Would it be possible to re-use <code>FormatStringPart</code> and add a new field of type <code>StringKind</code> that has two variants <code>Default</code> and <code>FString</code> where the <code>FString</code> variant stores the quotes used by the <code>FString</code>?</p>
+<p>Re-using <code>FormatStringPart</code> has the benefit that it normalizes the string content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-21 07:09</div>
+            <div class="timeline-body"><p>Wow. Thanks for being so bold in tackling an as complicated formatting as f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:29 on 2023-07-21 07:33</div>
+            <div class="timeline-body"><pre><code>&gt;&gt;&gt; f'asd{#foo}'
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    f'asd{#foo}'
+                ^
+SyntaxError: f-string expression part cannot include '#'
+</code></pre>
+<p>at least not i py3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 08:01</div>
+            <div class="timeline-body"><p>maybe i'm misunderstanding your suggestion, but <code>FormatStringPart</code> formats &quot;entire&quot; strings. here we only need the string &quot;decorations&quot;, (prefixes and quotes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:29 on 2023-07-21 08:03</div>
+            <div class="timeline-body"><p>atm i'm (or maybe this isn't the best approach?) focused on getting the test suite to run, ie on producing output that's 1) valid python and 2) stable</p>
+<p>(thanks for <code>f.join()</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-21 08:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 08:16</div>
+            <div class="timeline-body"><p>Oh I see. I think copy-pasting is fine. The <em>hard</em> part is hidden behind <code>StringPrefix</code> and <code>StringQuotes</code>. Will it be necessary to determine the preferred quotes as well or do f-string always use the configured quote style?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 08:26</div>
+            <div class="timeline-body"><blockquote>
+<p>The hard part is hidden</p>
+</blockquote>
+<p>👍</p>
+<blockquote>
+<p>Will it be necessary to determine the preferred quotes as well or do f-string always use the configured quote style?</p>
+</blockquote>
+<p>sorry i don't understand your question</p>
+<p>possibly related: where i left this pr last night was with nested quotes outstanding. i haven't yet looked at how this is is handled in regular strings, but i suspect we need something similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 08:41</div>
+            <div class="timeline-body"><p>oh, interesting. this is about to change with python 3.12 (scheduled for this October) https://peps.python.org/pep-0701/ after which _any valid python expression can be used, so in particular, using the same quotes becomes ok</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-21 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 09:09</div>
+            <div class="timeline-body"><blockquote>
+<p>sorry i don't understand your question</p>
+</blockquote>
+<p>Black prefers using <code>&quot;</code> over <code>'</code> but not if changing the quotes would require more escape sequences:</p>
+<pre><code>'abcd' -&gt; &quot;abcd&quot;
+'Hy &quot;Micha&quot;' -&gt; remains unchanged, because &quot;Hy \&quot;Micha\&quot;&quot;` is worse 
+</code></pre>
+<p>The question is. Does this also apply to strings and if so, does it apply to the whole string or only to individual parts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-21 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 09:22</div>
+            <div class="timeline-body"><blockquote>
+<p>oh, interesting. this is about to change with python 3.12 (scheduled for this October) https://peps.python.org/pep-0701/ after which _any valid python expression can be used, so in particular, using the same quotes becomes ok</p>
+</blockquote>
+<p>I'd start with the pre 3.12 syntax first (and an assertion that quotes match the older expectations). We can add support for 3.12 in a second step, where we also need to check the python version the user has set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 10:19</div>
+            <div class="timeline-body"><blockquote>
+<p>start with the pre 3.12 syntax first</p>
+</blockquote>
+<p>yep makes sense and already the plan</p>
+<blockquote>
+<p>Does this also apply to strings and if so, does it apply to the whole string or only to individual parts?</p>
+</blockquote>
+<p>do you mean _f -strings?</p>
+<p>my understanding so far is that pre 3.12, it works exactly the same because from a quoting perspective the contained FormattedValues don't change things (i.e. the quote rules can be treated as if there are no curly brackets in the f-string. what i'm trying to figure out atm is how to implement this since, unlike regular strings, the inner strings (inside curlies) don't &quot;know&quot; that they are contained in outer strings. i've only just started looking at it, but ideas are welcome</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-21 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 12:01</div>
+            <div class="timeline-body"><blockquote>
+<p>do you mean _f -strings?</p>
+</blockquote>
+<p>yes, I meant f-strings. Grammarly enjoys removing the <code>f-</code> from f-string.</p>
+<blockquote>
+<p>my understanding so far is that pre 3.12, it works exactly the same because from a quoting perspective the contained FormattedValues don't change things</p>
+</blockquote>
+<p>Does that mean that Black computes the most common quote across all string parts and then normalizes each part?</p>
+<blockquote>
+<p>what i'm trying to figure out atm is how to implement this since, unlike regular strings, the inner strings (inside curlies) don't &quot;know&quot; that they are contained in outer strings. i've only just started looking at it, but ideas are welcome</p>
+</blockquote>
+<p>You can implement <code>FormatRuleWithOptions</code> on <code>FormatExprConstant</code>  and pass down a custom option (layout) telling it it is inside an  f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2023-07-21 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 12:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Does that mean that Black computes the most common quote across all string parts and then normalizes each part</p>
+</blockquote>
+<p>from some more testing:</p>
+<pre><code>&gt;&gt;&gt;  f&quot;{'\&quot;'}&quot;
+SyntaxError: f-string expression part cannot include a backslash
+</code></pre>
+<p>maybe this means we can't normalize at all (and don't need to)</p>
+<blockquote>
+<p>You can implement FormatRuleWithOptions on FormatExprConstant</p>
+</blockquote>
+<p>ah yes. thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 13:59</div>
+            <div class="timeline-body"><p>actually maybe this isn't enough (unless i'm missing something). because the nested string might not be the _immediate child, e.g. in <code>f&quot;{foo('')}&quot;</code> .  could we set something in the <code>PyFormatContext</code> while inside f-strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 15:02</div>
+            <div class="timeline-body"><p>We could, as a last resort, I try to avoid the context when I can because:</p>
+<ul>
+<li>You need to be extremely careful to correctly restore to the previous value (even if an error occurred)</li>
+<li>It complicates error recovery (needs to be snapshotted). This isn't something we do today, but may want to do in the future (requires an error-resilient parser)</li>
+<li>I find it much harder to reason about: Who sets the value? Who reads the value? Is it still used?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-21 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-21 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-21 15:52</div>
+            <div class="timeline-body"><p>what's the alternative? add an attribute to all expressions that contain other expressions and make sure it's propagated during formatting? will try that out too if you think that's got legs? also open to other ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-24 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-24 07:45</div>
+            <div class="timeline-body"><p>Yeah, we could pass something like an <code>ExpressionContext</code>, that also stores the group id from <code>NodeLevel::Expression</code> or whether it is parenthesized. I considered exploring this at some point to see how cumbersome it is/if it improves readability. It wouldn't be necessary to route the context through to all expressions. It is only necessary to pass it through to expressions that contain child expressions or nodes that are e.g. strings that explicitly need the information</p>
+<p>I would recommend exploring this in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-24 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-24 08:36</div>
+            <div class="timeline-body"><p>sure, will take a look (might come back here and ask for more pointers)</p>
+<p>also (in case it ends up related), the &quot;no backslashes inside f-strings&quot; is slightly more subtle than i originally noticed. it's only <code>ExprFormattedValue</code>s that can't have backslashes. (i.e. <code>f&quot; \' {foo}&quot;</code> is ok) so i think this means the string normalisation now needs to know if there are quotes inside any contained <code>FormattedValue</code>s since we can't change the outer quotes if that would require escaping inside a formatted value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-27 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-27 10:28</div>
+            <div class="timeline-body"><p>ok, back to looking at this, could you elaborate on the suggestions of passing an <code>ExpressionContext</code> please? not sure i quite understand what you had in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-29 08:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-29 08:46</div>
+            <div class="timeline-body"><p>Let's go with your initial proposed context-based implementation and see how it turns out. We still have the option to refactor later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-29 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-29 13:38</div>
+            <div class="timeline-body"><p>oki</p>
+<p>related to this, i think i also need to walk all children of some expressions to see if any of them are <code>FormattedValue</code>s with quotes inside of them (which we can't escape, so we can't change outside quotes). do we have any helpers to walk expressions and all their children?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-30 07:20</div>
+            <div class="timeline-body"><p>oh. not sure how i managed to miss this, but black <a href="https://github.com/psf/black/issues/567">doesn't (yet) format expressions inside f-strings</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-30 14:28</div>
+            <div class="timeline-body"><p>so this approach works.. not sure what we think of it though</p>
+<p>note that <code>FormattedValue</code> isn't used at all with this impl and none of my related refactorings are needed (though i think we still want them). That will all be needed when we decide to start formatting things inside formatted values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @davidszotten on 2023-07-30 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @davidszotten on 2023-07-31 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:40 on 2023-07-31 11:52</div>
+            <div class="timeline-body"><p>Nit: To avoid iterating over the string twice</p>
+<pre><code class="language-suggestion">                        string_content.contains(['&quot;', '\''])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:26 on 2023-07-31 11:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Copy, Clone)]
+enum Quoting {
+    CanChange,
+    Preserve,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-31 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-31 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-31 12:04</div>
+            <div class="timeline-body"><p>Not a very good one... You must implement your own <code>PreorderVisitor</code>. I would love to have a <code>children(node)</code> method that returns an iterator. That method would probably need to allocate a stack internally to queue the next children but it is so much more ergonomic than having to implement a visitor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/expr_joined_str.rs</code>:18 on 2023-07-31 12:59</div>
+            <div class="timeline-body"><p>note that this wasn't needed in the end. immediate children is enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:40 on 2023-07-31 13:00</div>
+            <div class="timeline-body"><p>ah thanks, was hoping something like this existed but couldn't find it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:26 on 2023-07-31 13:00</div>
+            <div class="timeline-body"><p>open to better names (of the enum) btw, there are lots of related things around quoting behaviour</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-31 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:26 on 2023-07-31 13:56</div>
+            <div class="timeline-body"><p>I like <code>Preserve</code> and tried to come up with a better name than <code>CanChange</code> but failed. I thought about <code>Normalize</code> to align with <code>normalize_string</code> but this isn't disabling normalization, it only affects the quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:26 on 2023-07-31 13:58</div>
+            <div class="timeline-body"><p>i meant more to replace <code>Quoting</code> (since we already have <code>StringQuotes</code> and <code>QuoteStyle</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-31 14:50</div>
+            <div class="timeline-body"><p>hey @konstin did your recent ecosystem test pr also change (fix) it failing on errors? it looks like the most recently merged pr after that https://github.com/astral-sh/ruff/pull/6152 fails the checks (i was trying to figure out why i'm failing after rebasing onto main)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-31 16:29</div>
+            <div class="timeline-body"><p>yes, sorry, fixed in https://github.com/astral-sh/ruff/pull/6202. Part of the problem is that i forgot to make the formatter ecosystem checks required for merging (but i don't think github properly shows in the PR UI that we could still merge your PR even with that check failing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:26 on 2023-08-01 06:23</div>
+            <div class="timeline-body"><p>I think it's fine. The use is very local and it conveys way more information than a plain boolean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 06:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-01 06:26</div>
+            <div class="timeline-body"><p>This is awesome. Are you interested in looking into &quot;proper&quot; f-string formatting? It isn't as high a priority to us as increasing coverage on other nodes (see <a href="https://github.com/astral-sh/ruff/issues/6203">August goals</a>), but it would be a real differentiator to black</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-01 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-01 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-01 06:48</div>
+            <div class="timeline-body"><blockquote>
+<p>looking into &quot;proper&quot; f-string formatting</p>
+</blockquote>
+<p>sure. do we need some mechanism to opt out of this behaviour for all the tests that are comparing to black?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-01 07:03</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>looking into &quot;proper&quot; f-string formatting</p>
+</blockquote>
+<p>sure. do we need some mechanism to opt out of this behaviour for all the tests that are comparing to black?</p>
+</blockquote>
+<p>Are you expecting many differences? If not, then I don't think it's worth bothering. We can otherwise make it an option on<code> PyFormatOptions</code> which we already support loading for tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-01 19:06</div>
+            <div class="timeline-body"><p>i thought i'd seen a bunch but maybe i'm misremembering</p>
+<p>i started looking (maybe we can make an issue to have these discussions there instead) and came across something to run by you:</p>
+<p>currently <code>f&quot;{{&quot;</code> is parsed as</p>
+<pre><code>ExprJoinedStr {values: [Constant(ExprConstant {
+    value: Str(
+        &quot;{&quot;,
+</code></pre>
+<p>ie the escaped curly is rendered into the constant. is that what we want? if so i guess we need special handling when rendering to reproduce the escaping. or do we want to parse as something closer to the source and store the string <code>&quot;{{&quot;</code> instead?</p>
+<p>do we do anything corresponding for regular string escapes like <code>'\&quot;'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-03 09:12</div>
+            <div class="timeline-body"><p>A discussion would be good because I tend to not look at merged PRs and the discussion also goes beyond of what this PR addressed.</p>
+<p>Generally, it is very common for ASTs to undo string escapes, because the goal is to represent the semantic of the program and not the representation of the program in the source (this is different to a CST that preserves the code as is).</p>
+<p>You can see that Ruff's parser removes the escape sequences of quotes too: <a href="https://play.ruff.rs/?secondary=AST#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksuflJmPicWqpZQpWi1YWEBPWNFbF5CSiKuHA9uanpmSOisPwoGJS4GjwAFroAHKu9PORFnLZNYAAsvcWl5UJsogCiMRdQAGKQbC1QW5ooPPIDxJx4upAADtIAMwARhcN1E+Fg0AA1ihVhhoLh0ls+HhBGBQBBRDJARh+JwPpkeIRBrp8HBirFRMRCP9-pliMQMOIpLIlBoMRTYFTbpBafTGcz0rhZsTSbh+BpyZSUNSoHBEEgiq9EZpEbhpDKeXK+WMMrMiPBZB0eNJ-uhtcU2ABfXpQ2HwjBkJFoQm6LHYyBLJRoHBodAYHgSf4sziZMoZLXnbFegD0wf+ENjUDjCkUCZDydjkDjAbkceISwkj1jz1EWCWKCwMKD5sD8SwKH+aNwVpQtvt0LhCI4GjIKCUHr5bRSUkIWwosywioxTE7uQdPedXF4-AxntEHG4fAE+LSBumxDODEYC8h3adOBDmSrAh+AmHOcVyDDZWws4wSEJSwwcOkSAZJgHKSEkPBcrK55QEuV4IICygaEsJ6blAKKcE26jaH8BghJwYQAMJwdICFIQAOqRxAmAY5EGPh5FhORlFhCE5FoMABw2gYGCsexNphN42ZQBI-AYHUajfHsuguFBkAwQiAyKBIxDSnQKGQBI0BaCqygLHMSSLCsdDSRAdqLpeCIAI6EAgiQbnquDTKKGBWTZVB-GgCCEFOgnqYQa6ObMLm2e5nnefKYgIFgx46RoznWcFdARV5lA+dAcgIJwmBUDOFq6DwiiEB2Jldo6CInPgT5evqmQYEMEhuTGKaQEYGlwoJohGNAxBumU7VQEYmT-NCTZ9c1dQlGg1Dyh142wGgRgBhSfngaNRh1SgRirQosCFZttxnsVZmlUGmWyJwIYZCtql8i6uDqCU0B8HIsznf8l0YgCShgVNN1IqKwH-JwHo2jJcl1ha2BVjWUqVTS+XoSe3K8jm8QoCGHwSAg4iUHOtyiGagMLKW2LllABW4Hw9UYCg22EI9gYusU2DQkyDWnuF5OU7MNNwHTiSYAGOCKI9GRzgdYCmRex0aO8iQJLD0EdGUD61dA9W4ym-WjTLPBy+U02oTrevExApN9AUtRK62qvqxUoPmfiIbTFghLadgeAzshfIvsqEjLdwMx5QVRUSyVy6vZd7u4M9FMPnZz7TF1bMoaI-yul1fz-Ggo2AkoijIJn0A54gPCwNIAB08QMlQH3-DoBv8oOZAZG2iXEI+DcFMQGRQgXiU8BVDe4JIgJ-LgSYNxpPBDTZ0xkH8TujVPM+l5wZDl4CK+Z7wo08DC-CJIofx7znCDQootewDnSIlJnbYN3AWzhn8j+jUsZ8IHInAoEgH1LHIJsJb22OoCWyHxjzSBStdHMdQEiklmGnTIFMqzFAxPlQq4VEFq3eMoPYNsqDg32JAEkQ0siYKUNg+GeDaYEIJkQo8+s+RYPqlQ2YNDmT52VHQ4+dIUoc2gJwVB90rLhlmFPSsokMjZDxlAAAQknS4WgmwtgfKNRRyjWyjQAGq8xQJcRQ+cj4NwAPIAGV9GGNGgASWMRYqRDdLjR3DHgeqFM7FGJkfySKcIeCVwMVI-a-DBEENHMIrgNVxG-nwFI5o4UNKKFrIgsCKC2boJDpLaCDsOgkEDCBVxV1MR6gPDVdMKger4IgjqGSgjLoK1khkDCSBhahjgCoVB7ZwrRMUBhb4Cw1ABQ6XyXpGh+kzGpkona3x0STC9NeMgYyuqOzeooApSNdQ5mIENV2eAgzCwDrpa8Gkg4YL5EBAYzpZDcLoGkzpDTZjdxWV+H8IlijK2mXQNZ4UZxM2KPeJ6+xPl8i6RhHgCAgxwRmaIGE6QkB3TqBfD4iCzSQqgNC5Ad1ljhkwEi6M7M+RothXMSKcBJFzQGCi82wsVTp0UJgOewtFC4pyDmTI0J-lLPehgM5R9EpEBWSgj4oLmYIFQYwllKARGZDHMsgpzLZks3abEvkOABBbApmLcKpTGgar5OkOYMxmQDi6fsOVUwDWInwIfDlKyMQYBBOFAKhr3ioCSIQjELhbndMDMULBiQKWvOtty6RmtZITngaNY8NK6VrwZVqTuSwsUYBxaNeFx4k1KGRQ3RAM5YCkoDEfQJQzqytg3CDQ6OIsAzgHHUjSWlrykK0ISXFYIZIWn+AiOqMNoFVWKbMdaGsmrFB4AAVQnp4xISgAAi6KI3vFHfhBVu9ByKGnbChdXUfohqHaOgAsljPyZDx3LtXbgPd2ND0hq6tIXAWBTFzrHZe4g16sAABVj0zobtu-4b7jyTsekXBuFJuDwPUc2TRWa8AaB3TXaAMsl6aUnZwfAFVC05iwAqlh78BbVgyCLC+-rUToUw1jFkOHhagvw80Vt0h-RUDNFAwpOZqqzE-gMRAuktjEFrIc767ZqMeSivR-YalmOkaFnhnVOYGRwQGGaMTuGKNi2ozBeOXpQky1FMoKKdty1QEBI5L2CclQYA0hodC8hdFuuDYO-Ko0yDSGCqhr0tbnTCxvSg3QIIABMcTNL3RJIMDEAA2XzWkOQYgAKyhepYkfJkXjKh1yICOkGhhYBjqXCZs6hTTnVmATLtYA1m2hADaSIZXICkQAOSQCAA">Playground</a>. I assume this happens inside of <code>parse_string</code> because the lexer isn't performing this operation (But I think it would be more appropriate for the lexer to perform this, but that requires Python's 3.12 f string parsing)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

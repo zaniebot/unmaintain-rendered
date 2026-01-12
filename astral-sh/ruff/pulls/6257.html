@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix formatting of `lambda` star arguments - astral-sh/ruff #6257</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix formatting of <code>lambda</code> star arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6257">#6257</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2023-08-01 21:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-01 21:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, the ruff formatter was removing the star argument of <code>lambda</code> expressions when formatting.</p>
+<p>Given the following code snippet</p>
+<pre><code class="language-python">lambda *a: ()
+lambda **b: ()
+</code></pre>
+<p>it would be formatted to</p>
+<pre><code class="language-python">lambda: ()
+lambda: ()
+</code></pre>
+<p>We fix this by checking for the presence of <code>args</code>, <code>vararg</code> or <code>kwarg</code> in the <code>lambda</code> expression, before we were only checking for the presence of <code>args</code>.</p>
+<p>Fixes #5894</p>
+<h2>Test Plan</h2>
+<p>Add new tests cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-01 21:36</div>
+            <div class="timeline-body"><p>I don't know why the <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__power_op_spacing.py.snap</code> file got deleted. I didn't touch that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-01 22:06</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.04ms     4.9 MB/sec    1.00      8.3±0.11ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1639.0±22.78µs    10.2 MB/sec    1.00  1636.6±19.38µs    10.2 MB/sec
+formatter/numpy/globals.py                 1.00    183.1±5.38µs    16.1 MB/sec    1.01    184.6±6.74µs    16.0 MB/sec
+formatter/pydantic/types.py                1.01      3.6±0.10ms     7.1 MB/sec    1.00      3.6±0.09ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.0±0.15ms     3.7 MB/sec    1.01     11.1±0.08ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.02ms     6.0 MB/sec    1.00      2.8±0.01ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    379.3±1.25µs     7.8 MB/sec    1.00    379.4±0.90µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      4.9±0.08ms     5.2 MB/sec    1.00      4.9±0.05ms     5.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.8±0.06ms     7.1 MB/sec    1.01      5.8±0.12ms     7.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1196.7±7.88µs    13.9 MB/sec    1.00   1194.2±2.93µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    132.5±0.56µs    22.3 MB/sec    1.00    132.0±0.20µs    22.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.04ms    10.1 MB/sec    1.00      2.5±0.01ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.2±0.26ms     3.3 MB/sec    1.01     12.3±0.31ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.4±0.09ms     7.0 MB/sec    1.00      2.4±0.07ms     7.0 MB/sec
+formatter/numpy/globals.py                 1.00   259.8±12.06µs    11.4 MB/sec    1.03   267.6±15.16µs    11.0 MB/sec
+formatter/pydantic/types.py                1.00      5.2±0.13ms     4.9 MB/sec    1.02      5.3±0.16ms     4.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     16.9±0.35ms     2.4 MB/sec    1.00     16.7±0.31ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.10ms     3.8 MB/sec    1.02      4.4±0.12ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.02   544.8±46.87µs     5.4 MB/sec    1.00   532.2±15.64µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.5±0.40ms     3.4 MB/sec    1.00      7.5±0.24ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.9±0.19ms     4.6 MB/sec    1.01      9.0±0.18ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1820.0±46.74µs     9.1 MB/sec    1.01  1832.3±41.94µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.4±6.72µs    14.5 MB/sec    1.02    207.0±5.51µs    14.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.08ms     6.5 MB/sec    1.01      3.9±0.10ms     6.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 00:45</div>
+            <div class="timeline-body"><p>Deleted is good! Deleted means exact compatibility with Black on that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-02 01:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Deleted is good! Deleted means exact compatibility with Black on that file.</p>
+</blockquote>
+<p>Ah nice! Do you know why the CI is failing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-08-02 04:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/lambda.py</code>:79 on 2023-08-02 04:05</div>
+            <div class="timeline-body"><p>Unfortunately you can do disturbing things like insert a comment between the star and the parameter. We'll probably want test coverage for cases like this:</p>
+<pre><code class="language-python">(
+    lambda
+    *
+    # test
+    x: print(x)
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 04:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah nice! Do you know why the CI is failing?</p>
+</blockquote>
+<p>Hm I'm not sure if this panic is relevant?</p>
+<blockquote>
+<p>thread '<unnamed>' panicked at 'SimpleToken { kind: Star, range: 26869..26870 }', crates/ruff_python_formatter/src/other/parameters.rs:353:13</p>
+</blockquote>
+<p>but it detected a stability error</p>
+<blockquote>
+<p>2023-08-01T21:41:00.271553Z  INFO Found 1 stability errors in 2011 files (similarity index 0.759) in 86.13s</p>
+</blockquote>
+<p>@konstin is probably best to direct you to debug that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2023-08-02 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/lambda.py</code>:79 on 2023-08-02 12:45</div>
+            <div class="timeline-body"><p>OMG!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 18:52</div>
+            <div class="timeline-body"><p>I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-02 18:55</div>
+            <div class="timeline-body"><p>fwiw i have improving the script on my agenda for tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:23</div>
+            <div class="timeline-body"><p>Looks like it was an unrelated bug in our handling of (e.g.) <code>lambda *, x: 1</code>. It was masked before, since we didn't handle arguments at all in those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-02 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-02 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-02 20:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

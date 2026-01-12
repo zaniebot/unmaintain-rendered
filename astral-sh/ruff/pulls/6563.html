@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for multi-character operator tokens to `SimpleTokenizer` - astral-sh/ruff #6563</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for multi-character operator tokens to <code>SimpleTokenizer</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6563">#6563</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-14 16:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 16:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Allows for proper lexing of tokens like <code>-&gt;</code>.</p>
+<p>The main challenge is to ensure that our forward and backwards representations are the same for cases like <code>===</code>. Specifically, we want that to lex as <code>==</code> followed by <code>=</code> regardless of whether it's a forwards or backwards lex. To do so, we identify the range of the sequential characters (the full span of <code>===</code>), lex it forwards, then return the last token.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-14 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:559 on 2023-08-14 16:14</div>
+            <div class="timeline-body"><p>These are copied over from the &quot;full&quot; lexer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @charliermarsh on 2023-08-14 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-14 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 16:27</div>
+            <div class="timeline-body"><p>Need to look into formatter failures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-14 16:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      4.2±0.18ms     9.6 MB/sec     1.01      4.3±0.30ms     9.5 MB/sec
+formatter/numpy/ctypeslib.py               1.05   859.1±33.90µs    19.4 MB/sec     1.00   814.5±41.11µs    20.4 MB/sec
+formatter/numpy/globals.py                 1.06     88.6±4.94µs    33.3 MB/sec     1.00    83.6±11.12µs    35.3 MB/sec
+formatter/pydantic/types.py                1.05  1638.0±104.77µs    15.6 MB/sec    1.00  1556.0±50.58µs    16.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.8±0.43ms     3.5 MB/sec     1.06     12.4±0.42ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.1±0.10ms     5.3 MB/sec     1.05      3.3±0.14ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01   455.8±19.80µs     6.5 MB/sec     1.00   451.4±18.88µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.17ms     4.2 MB/sec     1.02      6.2±0.26ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.04      6.3±0.32ms     6.5 MB/sec     1.00      6.0±0.14ms     6.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1377.6±75.83µs    12.1 MB/sec     1.04  1427.6±55.64µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.02    174.8±7.33µs    16.9 MB/sec     1.00    170.8±9.14µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.7±0.14ms     9.3 MB/sec     1.03      2.8±0.14ms     9.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.3±0.07ms     9.4 MB/sec    1.04      4.5±0.09ms     9.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   848.0±22.77µs    19.6 MB/sec    1.01   860.4±13.92µs    19.4 MB/sec
+formatter/numpy/globals.py                 1.00     85.7±1.89µs    34.4 MB/sec    1.02     87.4±2.45µs    33.8 MB/sec
+formatter/pydantic/types.py                1.00  1692.7±29.28µs    15.1 MB/sec    1.03  1739.6±58.66µs    14.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.7±0.17ms     3.2 MB/sec    1.00     12.6±0.14ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.03ms     4.8 MB/sec    1.00      3.5±0.03ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    437.4±5.98µs     6.7 MB/sec    1.00    438.5±4.26µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.09ms     3.9 MB/sec    1.00      6.5±0.08ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.09ms     5.8 MB/sec    1.00      6.9±0.08ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1478.0±12.91µs    11.3 MB/sec    1.00  1482.7±18.35µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.8±2.63µs    16.9 MB/sec    1.01    175.8±2.23µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.08ms     8.1 MB/sec    1.00      3.1±0.03ms     8.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-14 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-14 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:720 on 2023-08-15 07:22</div>
+            <div class="timeline-body"><p>Identifiers are the most common tokens. It can make sense to have an extra branch at the top that handles identifiers (similar to lexer)</p>
+<pre><code>c if is_ascii_identifier_start(c) =&gt; self.lex_identifier(c)?,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:873 on 2023-08-15 07:24</div>
+            <div class="timeline-body"><p>Naming this <code>cursor</code> is confusing because it is the lexer. Rename to <code>forward_lexer</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:132 on 2023-08-15 07:26</div>
+            <div class="timeline-body"><p>These (and some others like <code>:</code>, <code>!</code>) are never ambiguous. We can return the first token right away when backward lexing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-08-15 07:28</div>
+            <div class="timeline-body"><p>What's the motivation for supporting all tokens? The very intention of the <code>SimpleTokenizer</code> was to <strong>not</strong> support everything.</p>
+<p>We should avoid the backward, forward lexing for tokens that do not require it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 12:51</div>
+            <div class="timeline-body"><p>The motivation is unchanged from https://github.com/astral-sh/ruff/pull/6518: the <code>SimpleTokenizer</code> should be capable of lexing all contents <em>between</em> any two AST nodes, and so it should support any tokens that can appear between nodes. This PR is a reaction to your suggestion to lex <code>-&gt;</code> as a single node (https://github.com/astral-sh/ruff/pull/6518#pullrequestreview-1576202408), and it felt strange to me to special-case <code>-&gt;</code> when that thinking applies equally to <code>**</code>, <code>!=</code>, etc., so I included all of those tokens here.</p>
+<p>How do you want to proceed? I don't feel strongly about merging, it doesn't enable any new use-cases since we already support those tokens (they're just lexed as individual characters, not composite tokens). This does lead to some oddities, e.g., it's a bit odd that we use the <code>SimpleTokenizer</code> to identify <code>**</code> by looking for two <code>*</code> tokens in the formatter -- but again, this doesn't enable us to lex anything we couldn't lex before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-15 13:14</div>
+            <div class="timeline-body"><blockquote>
+<p>The motivation is unchanged from #6518: the <code>SimpleTokenizer</code> should be capable of lexing all contents <em>between</em> any two AST nodes, and so it should support any tokens that can appear between nodes. This PR is a reaction to your suggestion to lex <code>-&gt;</code> as a single node (<a href="https://github.com/astral-sh/ruff/pull/6518#pullrequestreview-1576202408">#6518 (review)</a>), and it felt strange to me to special-case <code>-&gt;</code> when that thinking applies equally to <code>**</code>, <code>!=</code>, etc., so I included all of those tokens here.</p>
+<p>How do you want to proceed? I don't feel strongly about merging, it doesn't enable any new use-cases since we already support those tokens (they're just lexed as individual characters, not composite tokens). This does lead to some oddities, e.g., it's a bit odd that we use the <code>SimpleTokenizer</code> to identify <code>**</code> by looking for two <code>*</code> tokens in the formatter -- but again, this doesn't enable us to lex anything we couldn't lex before.</p>
+</blockquote>
+<p>Thanks for the explanation and sorry, I forgot about that. That makes sense. It means we need to be able to lex all operators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-16 03:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 04:09</div>
+            <div class="timeline-body"><p>No prob! Updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-16 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-16 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-16 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-16 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace dynamic implicit concatenation detection with parser flag - astral-sh/ruff #6513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace dynamic implicit concatenation detection with parser flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6513">#6513</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-11 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 20:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In https://github.com/astral-sh/ruff/pull/6512, we added a flag to the AST to mark implicitly-concatenated string expressions. This PR makes use of that flag to remove the <code>is_implicit_concatenation</code> method.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-11 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-11 20:17</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04      3.9±0.03ms    10.5 MB/sec    1.00      3.7±0.02ms    10.9 MB/sec
+formatter/numpy/ctypeslib.py               1.03    749.6±6.04µs    22.2 MB/sec    1.00   730.0±15.85µs    22.8 MB/sec
+formatter/numpy/globals.py                 1.03     76.8±0.76µs    38.4 MB/sec    1.00     74.9±0.74µs    39.4 MB/sec
+formatter/pydantic/types.py                1.04  1540.9±11.61µs    16.6 MB/sec    1.00  1486.3±11.07µs    17.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.7±0.05ms     3.8 MB/sec    1.00     10.6±0.07ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.9±0.00ms     5.7 MB/sec    1.00      2.9±0.02ms     5.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    329.4±0.95µs     9.0 MB/sec    1.00    327.3±1.66µs     9.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.5±0.02ms     4.6 MB/sec    1.00      5.5±0.02ms     4.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.7±0.02ms     7.2 MB/sec    1.00      5.6±0.02ms     7.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1201.7±2.06µs    13.9 MB/sec    1.00   1190.2±5.35µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    124.9±0.53µs    23.6 MB/sec    1.01    126.2±0.27µs    23.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.5±0.01ms    10.0 MB/sec    1.00      2.5±0.02ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      4.3±0.09ms     9.4 MB/sec    1.00      4.3±0.06ms     9.6 MB/sec
+formatter/numpy/ctypeslib.py               1.02   839.8±10.78µs    19.8 MB/sec    1.00   822.1±12.85µs    20.3 MB/sec
+formatter/numpy/globals.py                 1.04     86.5±1.81µs    34.1 MB/sec    1.00     83.5±1.79µs    35.3 MB/sec
+formatter/pydantic/types.py                1.02  1741.8±29.46µs    14.6 MB/sec    1.00  1703.1±43.37µs    15.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.0±0.16ms     3.1 MB/sec    1.00     12.9±0.14ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.6±0.06ms     4.6 MB/sec    1.00      3.5±0.04ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    443.8±7.85µs     6.6 MB/sec    1.00    441.8±8.72µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.8±0.14ms     3.8 MB/sec    1.00      6.7±0.07ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.07ms     5.8 MB/sec    1.01      7.0±0.08ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1499.8±16.12µs    11.1 MB/sec    1.00  1490.9±16.91µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.0±3.91µs    17.0 MB/sec    1.00    174.3±3.03µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.2 MB/sec    1.02      3.2±0.04ms     8.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-12 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-14 08:42</div>
+            <div class="timeline-body"><p>Can you rebase on main to get the latest benchmark numbers? I now excluded the parse and lex times, so we should get a better picture of the cost relative to the formatting time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 14:24</div>
+            <div class="timeline-body"><p>@MichaReiser - Updated, but the change seems the same? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-14 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-14 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-14 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

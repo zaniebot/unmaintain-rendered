@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect tab width in line-length heuristic - astral-sh/ruff #6491</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect tab width in line-length heuristic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6491">#6491</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-11 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 01:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In https://github.com/astral-sh/ruff/pull/5811, I suggested that we add a heuristic to the overlong-lines check such that if the line had fewer bytes than the character limit, we return early -- the idea being that a single byte per character was the &quot;worst case&quot;. I overlooked that this isn't true for tabs -- with tabs, the &quot;worst case&quot; scenario is that every byte is a tab, which can have a width greater than 1.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6425.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> with a new fixture borrowed from the issue, plus manual testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-11 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-11 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-11 02:02</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.07ms     4.9 MB/sec    1.00      8.3±0.08ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1631.0±10.40µs    10.2 MB/sec    1.01  1643.7±31.18µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.01    185.8±5.07µs    15.9 MB/sec    1.00    184.2±2.15µs    16.0 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.08ms     7.3 MB/sec    1.01      3.5±0.05ms     7.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.5±0.15ms     3.9 MB/sec    1.02     10.7±0.16ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.02ms     6.0 MB/sec    1.02      2.8±0.02ms     5.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    387.4±0.87µs     7.6 MB/sec    1.03    398.0±3.31µs     7.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.5±0.07ms     4.6 MB/sec    1.00      5.5±0.10ms     4.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.3±0.05ms     7.6 MB/sec    1.04      5.6±0.04ms     7.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1146.4±6.31µs    14.5 MB/sec    1.06   1215.4±9.44µs    13.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    133.2±3.37µs    22.2 MB/sec    1.07    142.7±0.89µs    20.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.4±0.02ms    10.7 MB/sec    1.03      2.5±0.01ms    10.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.01     12.9±0.55ms     3.2 MB/sec     1.00     12.8±0.51ms     3.2 MB/sec
+formatter/numpy/ctypeslib.py               1.03      2.5±0.19ms     6.6 MB/sec     1.00      2.5±0.15ms     6.7 MB/sec
+formatter/numpy/globals.py                 1.00   279.4±20.93µs    10.6 MB/sec     1.03   287.2±44.60µs    10.3 MB/sec
+formatter/pydantic/types.py                1.00      5.4±0.28ms     4.7 MB/sec     1.01      5.4±0.23ms     4.7 MB/sec
+linter/all-rules/large/dataset.py          1.03     17.4±0.49ms     2.3 MB/sec     1.00     16.8±0.58ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.6±0.23ms     3.6 MB/sec     1.00      4.6±0.21ms     3.6 MB/sec
+linter/all-rules/numpy/globals.py          1.03   593.6±50.93µs     5.0 MB/sec     1.00   578.1±26.33µs     5.1 MB/sec
+linter/all-rules/pydantic/types.py         1.04      9.2±0.40ms     2.8 MB/sec     1.00      8.8±0.32ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.04      9.5±0.40ms     4.3 MB/sec     1.00      9.1±0.36ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1960.4±100.15µs     8.5 MB/sec    1.00  1919.4±67.60µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   241.2±14.20µs    12.2 MB/sec     1.01   243.4±20.64µs    12.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.2±0.41ms     6.1 MB/sec     1.00      4.1±0.30ms     6.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-11 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-11 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-11 02:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

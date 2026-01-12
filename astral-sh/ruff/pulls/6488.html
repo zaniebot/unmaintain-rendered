@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid breaking call chains unnecessarily - astral-sh/ruff #6488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid breaking call chains unnecessarily</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6488">#6488</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-10 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 21:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR attempts to fix the formatting of the following expression:</p>
+<pre><code class="language-python">max_message_id = (
+    Message.objects.filter(recipient=recipient).order_by(&quot;id&quot;).reverse()[0].id
+)
+</code></pre>
+<p>Specifically, Black preserves <em>that</em> formatting, while we do:</p>
+<pre><code class="language-python">max_message_id = (
+    Message.objects.filter(recipient=recipient)
+    .order_by(&quot;id&quot;)
+    .reverse()[0]
+    .id
+)
+</code></pre>
+<p>The fix here is to add a group around the entire call chain.</p>
+<h2>Test Plan</h2>
+<p>Before:</p>
+<ul>
+<li><code>zulip</code>: 0.99702</li>
+<li><code>django</code>: 0.99784</li>
+<li><code>warehouse</code>: 0.99585</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99470</li>
+<li><code>cpython</code>: 0.75989</li>
+<li><code>typeshed</code>: 0.74853</li>
+</ul>
+<p>After:</p>
+<ul>
+<li><code>zulip</code>: 0.99703</li>
+<li><code>django</code>: 0.99791</li>
+<li><code>warehouse</code>: 0.99586</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99470</li>
+<li><code>cpython</code>: 0.75989</li>
+<li><code>typeshed</code>: 0.74853</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-10 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-10 22:23</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.1±0.02ms     5.0 MB/sec    1.00      8.2±0.02ms     5.0 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1659.5±48.69µs    10.0 MB/sec    1.00  1637.0±19.45µs    10.2 MB/sec
+formatter/numpy/globals.py                 1.00    188.0±5.93µs    15.7 MB/sec    1.00    187.7±4.44µs    15.7 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.09ms     7.3 MB/sec    1.01      3.5±0.11ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.2±0.02ms     4.0 MB/sec    1.01     10.3±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.01ms     6.0 MB/sec    1.01      2.8±0.00ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    392.0±0.74µs     7.5 MB/sec    1.01    396.0±0.77µs     7.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.3±0.04ms     4.8 MB/sec    1.01      5.4±0.01ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.4±0.01ms     7.5 MB/sec    1.00      5.4±0.01ms     7.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1198.6±15.62µs    13.9 MB/sec    1.00   1192.8±5.69µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    142.0±2.37µs    20.8 MB/sec    1.01    144.0±4.32µs    20.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.03ms    10.4 MB/sec    1.00      2.4±0.04ms    10.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01     10.5±0.15ms     3.9 MB/sec    1.00     10.3±0.19ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1984.3±28.59µs     8.4 MB/sec    1.00  1943.0±24.07µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.02    219.0±4.28µs    13.5 MB/sec    1.00    213.6±6.36µs    13.8 MB/sec
+formatter/pydantic/types.py                1.01      4.4±0.07ms     5.8 MB/sec    1.00      4.3±0.07ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.2±0.24ms     3.1 MB/sec    1.03     13.5±0.21ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.03ms     4.7 MB/sec    1.02      3.6±0.05ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    447.8±7.83µs     6.6 MB/sec    1.01    451.8±7.93µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.13ms     3.7 MB/sec    1.00      6.9±0.08ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.08ms     5.7 MB/sec    1.01      7.2±0.07ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1514.2±20.94µs    11.0 MB/sec    1.00  1513.1±18.79µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    176.4±3.57µs    16.7 MB/sec    1.01    179.0±4.69µs    16.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     7.9 MB/sec    1.00      3.2±0.04ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-11 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-11 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-11 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_attribute.rs</code>:38 on 2023-08-11 00:12</div>
+            <div class="timeline-body"><p>(This is purely indenting the existing body in a <code>format_with</code>. No changes in the indented body.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-08-11 05:46</div>
+            <div class="timeline-body"><p>Please update your test plan with the similarity index. It is otherwise hard to judge if this is an incorrect special case or indeed the expected behavior</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 06:04</div>
+            <div class="timeline-body"><p>Every time I do this manually, a little part of me dies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-11 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 06:07</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-11 06:42</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<p>Yeah, the process is cumbersome especially because you need to manually delete text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/expr_attribute.rs</code>:145 on 2023-08-11 10:46</div>
+            <div class="timeline-body"><p>nit: you can use <code>==</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/parentheses/call_chains.py</code>:159 on 2023-08-11 10:56</div>
+            <div class="timeline-body"><p>This works but i'd like to have it be part of the tests</p>
+<pre><code class="language-suggestion">)
+
+max_message_id = (
+    Message.objects.filter(recipient=recipient).order_by(&quot;id&quot;).reverse()[0].id()
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-11 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 13:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, the process is cumbersome especially because you need to manually delete text.</p>
+</blockquote>
+<p>Also because I have to go find another PR on main to find the baseline, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-11 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-11 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-11 13:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid panic with positional-only arguments in `PYI019` - astral-sh/ruff #6350</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid panic with positional-only arguments in <code>PYI019</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6350">#6350</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-04 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 18:19</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Previously, failed on methods like:</p>
+<pre><code class="language-python">@classmethod
+def bad_posonly_class_method(cls: type[_S], /) -&gt; _S: ...  # PYI019
+</code></pre>
+<p>Since we check if there are any positional-only or non-positional arguments, but then do an unsafe access on <code>parameters.args</code>.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6349.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> (verified that <code>main</code> panics on the new fixtures)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-04 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-04 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-04 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-04 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-04 18:40</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.02     10.2±0.51ms     4.0 MB/sec     1.00     10.0±0.45ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1979.4±160.53µs     8.4 MB/sec    1.01      2.0±0.12ms     8.3 MB/sec
+formatter/numpy/globals.py                 1.00    222.2±9.82µs    13.3 MB/sec     1.05   232.7±13.18µs    12.7 MB/sec
+formatter/pydantic/types.py                1.00      3.9±0.17ms     6.5 MB/sec     1.10      4.3±0.17ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.02     13.9±0.37ms     2.9 MB/sec     1.00     13.6±0.49ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.06ms     4.9 MB/sec     1.01      3.4±0.09ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.05   506.7±28.62µs     5.8 MB/sec     1.00   482.9±26.98µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.4±0.38ms     4.0 MB/sec     1.00      6.2±0.27ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.4±0.27ms     6.4 MB/sec     1.01      6.4±0.21ms     6.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1389.8±121.31µs    12.0 MB/sec    1.03  1433.3±94.63µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.5±8.78µs    18.4 MB/sec     1.09    174.3±6.25µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.14ms     9.2 MB/sec     1.05      2.9±0.08ms     8.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.08ms     4.2 MB/sec    1.00      9.8±0.13ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1898.0±30.08µs     8.8 MB/sec    1.01  1908.5±36.09µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.00    213.5±4.63µs    13.8 MB/sec    1.01    215.2±8.25µs    13.7 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.06ms     6.2 MB/sec    1.01      4.1±0.09ms     6.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.4±0.18ms     3.0 MB/sec    1.00     13.3±0.21ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.05ms     4.8 MB/sec    1.00      3.5±0.05ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01   431.9±27.10µs     6.8 MB/sec    1.00    428.5±5.92µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.09ms     4.2 MB/sec    1.00      6.1±0.11ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.8±0.10ms     6.0 MB/sec    1.00      6.7±0.10ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1401.3±24.77µs    11.9 MB/sec    1.00  1385.0±28.54µs    12.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.0±3.11µs    18.4 MB/sec    1.00    159.6±4.62µs    18.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.06ms     8.4 MB/sec    1.00      3.0±0.05ms     8.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

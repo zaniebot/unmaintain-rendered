@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixup comment handling on opening parenthesis in function definition - astral-sh/ruff #6381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixup comment handling on opening parenthesis in function definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6381">#6381</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-07 02:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-07 02:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I noticed some deviations in how we treat dangling comments that hug the opening parenthesis for function definitions.</p>
+<p>For example, given:</p>
+<pre><code class="language-python">def f(  # first
+    # second
+):  # third
+    ...
+</code></pre>
+<p>We currently format as:</p>
+<pre><code class="language-python">def f(
+      # first
+    # second
+):  # third
+    ...
+</code></pre>
+<p>This PR adds the proper opening-parenthesis dangling comment handling for function parameters. Specifically, as with all other parenthesized nodes, we now detect that dangling comment in <code>placement.rs</code> and handle it in <code>parameters.rs</code>. We have to take some care in that file, since we have multiple &quot;kinds&quot; of dangling comments, but I added a bunch of test cases that we now format identically to Black.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>Before:</p>
+<ul>
+<li><code>zulip</code>: 0.99388</li>
+<li><code>django</code>: 0.99784</li>
+<li><code>warehouse</code>: 0.99504</li>
+<li><code>transformers</code>: 0.99404</li>
+<li><code>cpython</code>: 0.75913</li>
+<li><code>typeshed</code>: 0.74364</li>
+</ul>
+<p>After:</p>
+<ul>
+<li><code>zulip</code>: 0.99386</li>
+<li><code>django</code>: 0.99784</li>
+<li><code>warehouse</code>: 0.99504</li>
+<li><code>transformers</code>: 0.99404</li>
+<li><code>cpython</code>: 0.75913</li>
+<li><code>typeshed</code>: 0.74409</li>
+</ul>
+<p>Meaningful improvement on <code>typeshed</code>, minor decrease on <code>zulip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-07 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-07 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:259 on 2023-08-07 02:21</div>
+            <div class="timeline-body"><p>Now using the same utilities as all the other nodes (<code>parenthesized_with_dangling_comments</code>, <code>empty_parenthesized_with_dangling_comments</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 02:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-07 03:24</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.05     10.1±0.14ms     4.0 MB/sec    1.00      9.6±0.10ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1936.5±39.72µs     8.6 MB/sec    1.00   1905.4±8.72µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.03    218.2±4.03µs    13.5 MB/sec    1.00    212.3±2.92µs    13.9 MB/sec
+formatter/pydantic/types.py                1.03      4.2±0.09ms     6.1 MB/sec    1.00      4.1±0.03ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.1±0.09ms     3.4 MB/sec    1.01     12.2±0.14ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.06ms     5.3 MB/sec    1.03      3.2±0.02ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    446.5±5.44µs     6.6 MB/sec    1.01    450.6±5.71µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.5±0.05ms     4.6 MB/sec    1.00      5.5±0.09ms     4.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.3±0.06ms     6.5 MB/sec    1.02      6.4±0.05ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1345.4±10.46µs    12.4 MB/sec    1.01   1359.2±9.91µs    12.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    151.6±2.59µs    19.5 MB/sec    1.01    153.8±2.69µs    19.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.02ms     9.1 MB/sec    1.01      2.8±0.03ms     9.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.3±0.17ms     4.0 MB/sec    1.00     10.3±0.22ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1932.0±28.55µs     8.6 MB/sec    1.00  1923.8±45.98µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.01    215.3±6.71µs    13.7 MB/sec    1.00    214.2±8.63µs    13.8 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.15ms     5.9 MB/sec    1.00      4.3±0.08ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.4±0.27ms     3.0 MB/sec    1.00     13.3±0.32ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.6±0.08ms     4.6 MB/sec    1.00      3.6±0.10ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.03    440.1±7.47µs     6.7 MB/sec    1.00    427.7±6.90µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.1±0.15ms     4.2 MB/sec    1.00      6.0±0.15ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.1±0.12ms     5.7 MB/sec    1.00      7.0±0.16ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1440.2±22.81µs    11.6 MB/sec    1.00  1438.4±24.41µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.02    166.7±3.81µs    17.7 MB/sec    1.00    163.6±2.82µs    18.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.06ms     8.2 MB/sec    1.02      3.1±0.05ms     8.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:92 on 2023-08-07 07:41</div>
+            <div class="timeline-body"><p>Unrelated to this PR but just popped to my head (may be relevant for other places where we apply the same logic). What happens if we have:</p>
+<pre><code class="language-Python">call(( a # test
+)) 
+</code></pre>
+<p>I would expect this to be a comment of <code>a</code> and not a dangling arguments comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/function.py</code>:324 on 2023-08-07 07:45</div>
+            <div class="timeline-body"><p>Can you add a test with a trailing <code>(</code> comment and a slash argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:122 on 2023-08-07 07:46</div>
+            <div class="timeline-body"><p>Should we use <code>dangling[parenthesis_comments_end..]</code> here to aovid that a comment incorrectly gets formatted twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:77 on 2023-08-07 07:48</div>
+            <div class="timeline-body"><p>The <code>/</code> can never be the first argument. Would it be safe to test whether the comment is an <code>end_of_line</code> comment and starts before the first argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-07 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-07 07:54</div>
+            <div class="timeline-body"><p>Please update your test plan with the similarity index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:76 on 2023-08-07 08:11</div>
+            <div class="timeline-body"><p>it would be good to link https://github.com/astral-sh/ruff/issues/5247 here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:77 on 2023-08-07 08:16</div>
+            <div class="timeline-body"><p>you'd also have to check that the comment starts before the star if any because</p>
+<pre><code class="language-python">def f(
+    *, # comment
+    b
+): pass
+</code></pre>
+<p>is allowed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-07 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-07 11:18</div>
+            <div class="timeline-body"><p>This fixes an instability with zulip, can you add</p>
+<pre><code class="language-python">x = () - a(#
+b)
+</code></pre>
+<p>to the tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:77 on 2023-08-07 14:08</div>
+            <div class="timeline-body"><p>Yeah I originally wanted to do this, but it started to feel even more complicated because of the star and arguments cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-07 17:35</div>
+            <div class="timeline-body"><p>@konstin - That's a call though, this only touches function definitions, is it related?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-07 20:03</div>
+            <div class="timeline-body"><p>sorry, i got confused</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't expand groups for trailing end-of-line comments - astral-sh/ruff #6464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't expand groups for trailing end-of-line comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6464">#6464</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-09 23:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 23:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a PR where we need to align on desired behavior. Right now, we expand a group when writing a trailing end-of-line comment, so e.g., given:</p>
+<pre><code class="language-python">{
+    a: a  # a
+    for c in e  # for # c 
+}
+</code></pre>
+<p>We format this expression as:</p>
+<pre><code class="language-python">{
+    a: a  # a
+    for c in e  # for # c
+}
+</code></pre>
+<p>Black, meanwhile, doesn't let trailing end-of-line comments expand, so formats as:</p>
+<pre><code class="language-python">{a: a for c in e}  # a  # for # c
+</code></pre>
+<p>Looking through the snapshot diff, this seems to strictly improve Black compatibility (and our current behavior seems like a significant deviation). Even the changes in our own fixtures now better resemble Black as verified in the playground.</p>
+<p>I don't know that I have a super strong opinion on whether to use Black's behavior or our own, but I lead towards following Black's behavior by default.</p>
+<h2>Test Plan</h2>
+<p>Weird mix on the similarity scores -- some went down a little, some went up a little.</p>
+<p>Before:</p>
+<ul>
+<li><code>zulip</code>: 0.99702</li>
+<li><code>django</code>: 0.99784</li>
+<li><code>warehouse</code>: 0.99585</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99469</li>
+<li><code>cpython</code>: 0.75988</li>
+<li><code>typeshed</code>: 0.74853</li>
+</ul>
+<p>After:</p>
+<ul>
+<li><code>zulip</code>: 0.99696</li>
+<li><code>django</code>: 0.99785</li>
+<li><code>warehouse</code>: 0.99569</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99481</li>
+<li><code>cpython</code>: 0.75987</li>
+<li><code>typeshed</code>: 0.74842</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 23:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__compare.py.snap</code>:141 on 2023-08-09 23:35</div>
+            <div class="timeline-body"><p>(This now matches Black.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 23:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__dict_comp.py.snap</code>:131 on 2023-08-09 23:35</div>
+            <div class="timeline-body"><p>This now matches Black.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__comments2.py.snap</code>:343 on 2023-08-09 23:36</div>
+            <div class="timeline-body"><p>This is much closer to Black but still wrong due to the line suffixes not being included when determining the line length:</p>
+<pre><code class="language-python">lcomp = [
+    element for element in collection if element is not None  # yup  # yup  # right
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 23:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-09 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-09 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-09 23:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-10 00:09</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.3±0.42ms     4.4 MB/sec    1.00      9.3±0.50ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1885.6±83.89µs     8.8 MB/sec    1.00  1879.4±141.52µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.05   229.2±16.86µs    12.9 MB/sec    1.00   219.2±12.62µs    13.5 MB/sec
+formatter/pydantic/types.py                1.10      4.2±0.18ms     6.0 MB/sec    1.00      3.9±0.23ms     6.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.4±0.65ms     3.6 MB/sec    1.09     12.4±0.59ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.0±0.10ms     5.5 MB/sec    1.12      3.4±0.17ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   461.9±19.82µs     6.4 MB/sec    1.05   483.4±18.76µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.28ms     4.1 MB/sec    1.06      6.6±0.39ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.04      6.4±0.23ms     6.4 MB/sec    1.00      6.1±0.23ms     6.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1370.0±68.25µs    12.2 MB/sec    1.00  1345.0±86.95µs    12.4 MB/sec
+linter/default-rules/numpy/globals.py      1.03    168.5±9.33µs    17.5 MB/sec    1.00   162.8±11.67µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.12ms     8.6 MB/sec    1.01      3.0±0.15ms     8.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.9±0.03ms     4.1 MB/sec    1.00      9.9±0.04ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1879.9±7.87µs     8.9 MB/sec    1.01   1897.7±9.42µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    197.4±1.80µs    14.9 MB/sec    1.01    199.1±5.09µs    14.8 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.01ms     6.0 MB/sec    1.01      4.2±0.02ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.5±0.04ms     3.3 MB/sec    1.00     12.5±0.04ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.8 MB/sec    1.01      3.5±0.02ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    361.5±3.60µs     8.2 MB/sec    1.01    363.6±3.56µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.02ms     3.9 MB/sec    1.00      6.5±0.02ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.02ms     6.0 MB/sec    1.00      6.8±0.04ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1396.5±12.89µs    11.9 MB/sec    1.00   1399.4±7.36µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    143.0±1.17µs    20.6 MB/sec    1.00    143.7±3.45µs    20.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.02ms     8.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-10 06:01</div>
+            <div class="timeline-body"><p>Interesting to see this change in action.</p>
+<p>Our formatter goal is to have (close) Black parity for already formatted code, but we intentionally allow deviation for unformatted code (using Black and Ruff in the same project isn't a use case we want to support). I don't expect this change to help increase parity for already Black formatted code because Black already have moved all comments to the end of the line. That's why I'm surprised that it affects the similarity index at all (the overall change seems neutral). We'll have to manually investigate the changes before moving forward. I suspect these are accidental changes where we have a different comment placement, and the lines now happen to be short enough to place the comment in the same position as Black.</p>
+<p>The main question to me is whether the fewest vertical lines by collapsing comments improve readability and express the author's intentions. In my view, this isn't the case because comments are moved away from where I intentionally placed them:</p>
+<h3>Pragma comments</h3>
+<pre><code class="language-python">def test(
+	a, #  type-ignore
+	b
+):
+	pass
+</code></pre>
+<p>This now gets formatted as</p>
+<pre><code class="language-python">def test(a, b): #  type-ignore
+	pass
+</code></pre>
+<p>which not only suppresses typing errors for <code>a</code>, but also <code>b</code>. I now have to go back, expand the parameters and add a trailing comma after <code>b</code> if I want to keep the suppression specific to <code>a</code> (what I initially intended by adding the comment at the end of line <code>a</code>). This is a lot of work.</p>
+<p>The workaround with adding trailing commas only works in positions where they are supported. For example, the following doesn't work.</p>
+<pre><code class="language-python">(
+    call(has_type_error) # type-ignore
+    and another_call()
+)
+</code></pre>
+<p>gets formatted as</p>
+<pre><code class="language-python">(call(has_type_error) and another_call())  # type-ignore
+</code></pre>
+<p>which suppresses typing errors in <code>another_call</code> too. I doubt anyone would bother enough (until they have a bug because of the missed type checker error) to undo Black's change and add suppression comments:</p>
+<pre><code class="language-python"># This doesn't work, probably because we have collapsed comments
+(
+    call(has_type_error) # fmt: skip # type-ignore 
+    and another_call()
+)
+
+(
+    # fmt: off
+    call(has_type_error)  # type-ignore
+    # fmt: on
+    and another_call()
+)
+</code></pre>
+<p>Ruff won't be able to provide this escape hatch because it doesn't support suppression comments on the expression level (you would need to suppress the whole statement). And suppression comments are a net negative in my view.</p>
+<h3>Comment context</h3>
+<p>This is related to pragma comments. Moving comments too far means that the comments loos their context.</p>
+<pre><code class="language-python">call(
+	[], #  TODO fill in values
+	b,
+	[]
+)
+</code></pre>
+<p>gets formatted to</p>
+<pre><code class="language-python">call([], b, [])  #  TODO fill in values
+</code></pre>
+<p>It is now unclear if I have to fill in the values in the first or last list. Again, I can work around this by adding a trailing comma, but that's a lot of work to make the formatter respect my comment placement.</p>
+<p>Similar</p>
+<pre><code class="language-python">call(
+	[], # Empty because of X
+	c,
+	[], # Empty because of Y
+)
+</code></pre>
+<p>gets formatted as</p>
+<pre><code class="language-python">call([], c, [])  # Empty because of X  # Empty because of Y
+</code></pre>
+<p>Again, we have the context problem, but I also dislike collapsed comments <code># comment A # comment B</code> because they look strange. It also comes with problems where pragma comments stop working if tools don't support nested comments, as we've seen with Black's <code>fmt: skip</code> pragma comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-10 10:06</div>
+            <div class="timeline-body"><p>i'm not really opinionated either way, both styles have their advantages and disadvantages to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 15:58</div>
+            <div class="timeline-body"><p>We're not making this change, for now at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-11 15:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

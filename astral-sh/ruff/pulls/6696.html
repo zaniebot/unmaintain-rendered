@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `typing_extensions.TypeAlias` for PYI026 fixes on pre-3.10 - astral-sh/ruff #6696</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>typing_extensions.TypeAlias</code> for PYI026 fixes on pre-3.10</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6696">#6696</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-19 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 21:39</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/ruff/issues/6695.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-19 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a> reviewed on 2023-08-19 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Skylion007">@Skylion007</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 21:48</div>
+            <div class="timeline-body"><p>I wonder if it would be more useful to generalize this into a generic backport import helper.</p>
+<p>IE. something that would automatically downgrade typing.TypeAlias. Alternatively, I wonder if you could use the pyupgrade import rules logic here and always apply that rule, but only to this specific import. It would either be a NOOP or automatically fix the import if the import was moved to the typing module.</p>
+<p>That also has the added benefit of only having to maintain the version when a new import was introduced in one place (the pyupgrade rules).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a> reviewed on 2023-08-19 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Skylion007">@Skylion007</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 21:49</div>
+            <div class="timeline-body"><p>The logic could even be folded into the helper which inserts the import if you do it pyupgrade way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a> reviewed on 2023-08-19 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Skylion007">@Skylion007</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 21:54</div>
+            <div class="timeline-body"><pre><code>Note that, in some cases, it may be preferable to continue importing members from typing_extensions even after they're added to the Python standard library, as typing_extensions can backport bugfixes and optimizations from later Python versions. This rule thus avoids flagging imports from typing_extensions in such cases.
+</code></pre>
+<p>Seems like more reason to use the helper from this rule here: https://beta.ruff.rs/docs/rules/deprecated-import/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-19 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 21:55</div>
+            <div class="timeline-body"><p>Nice idea, I will look into it separately. There are a few other places where this would be useful, like <code>PYI019</code> which suggests <code>typing.Self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-19 21:57</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -2, 0 error(s))</p>
+<details><summary>typeshed (+0, -2)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/6a8d653a671925b0a3af61729ff8cf3f90c9c662/stdlib/builtins.pyi#L1666'>stdlib/builtins.pyi:1666:1:</a> PYI026 Use `typing.TypeAlias` for type alias, e.g., `_SupportsSomeKindOfPow: typing.TypeAlias = _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any]`
+- <a href='https://github.com/python/typeshed/blob/6a8d653a671925b0a3af61729ff8cf3f90c9c662/stdlib/builtins.pyi#L218'>stdlib/builtins.pyi:218:1:</a> PYI026 Use `typing.TypeAlias` for type alias, e.g., `_LiteralInteger: typing.TypeAlias = _PositiveInteger | _NegativeInteger | Literal[0]`
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PYI026 | 2 | 0 | 2 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      3.9±0.02ms    10.4 MB/sec    1.00      3.9±0.02ms    10.5 MB/sec
+formatter/numpy/ctypeslib.py               1.01    821.1±3.88µs    20.3 MB/sec    1.00    815.5±3.47µs    20.4 MB/sec
+formatter/numpy/globals.py                 1.00     85.7±0.46µs    34.4 MB/sec    1.00     85.4±0.42µs    34.6 MB/sec
+formatter/pydantic/types.py                1.04  1654.8±54.56µs    15.4 MB/sec    1.00  1589.8±18.72µs    16.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.2±0.04ms     3.3 MB/sec    1.02     12.5±0.39ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.1 MB/sec    1.00      3.3±0.04ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.04   484.5±27.63µs     6.1 MB/sec    1.00    465.6±1.25µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.4±0.03ms     4.0 MB/sec    1.00      6.3±0.02ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.5±0.02ms     6.2 MB/sec    1.00      6.5±0.04ms     6.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1450.3±21.12µs    11.5 MB/sec    1.00  1433.9±13.44µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.02    171.1±6.06µs    17.2 MB/sec    1.00    168.0±2.16µs    17.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.01ms     8.6 MB/sec    1.00      2.9±0.04ms     8.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      4.7±0.21ms     8.7 MB/sec     1.00      4.7±0.24ms     8.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   972.0±41.74µs    17.1 MB/sec     1.00   975.2±41.60µs    17.1 MB/sec
+formatter/numpy/globals.py                 1.00     98.4±5.11µs    30.0 MB/sec     1.06   104.7±17.17µs    28.2 MB/sec
+formatter/pydantic/types.py                1.01  1970.1±172.06µs    12.9 MB/sec    1.00  1959.3±123.97µs    13.0 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.4±0.52ms     2.5 MB/sec     1.00     16.1±0.51ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.5±0.19ms     3.7 MB/sec     1.00      4.4±0.19ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   552.5±21.74µs     5.3 MB/sec     1.04   575.6±38.97µs     5.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.4±0.31ms     3.0 MB/sec     1.00      8.4±0.37ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.0±0.24ms     4.5 MB/sec     1.00      8.9±0.30ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1901.9±75.79µs     8.8 MB/sec     1.01  1911.8±63.80µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   220.1±11.69µs    13.4 MB/sec     1.02   224.9±15.96µs    13.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.0±0.26ms     6.3 MB/sec     1.01      4.1±0.26ms     6.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-19 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 22:04</div>
+            <div class="timeline-body"><p>Yup agreed. (I did check if that applied to <code>TypeAlias</code> and it does not.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-19 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/mod.rs</code>:82 on 2023-08-19 22:07</div>
+            <div class="timeline-body"><p>Adding a TODO, I may look into it tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-19 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-19 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-19 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

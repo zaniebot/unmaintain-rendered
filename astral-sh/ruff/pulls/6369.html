@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove async AST node variants for `with`, `for`, and `def` - astral-sh/ruff #6369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove async AST node variants for <code>with</code>, <code>for</code>, and <code>def</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6369">#6369</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-05 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 22:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Per the suggestion in https://github.com/astral-sh/ruff/discussions/6183, this PR removes <code>AsyncWith</code>, <code>AsyncFor</code>, and <code>AsyncFunctionDef</code>, replacing them with an <code>is_async</code> field on the non-async variants of those structs. Unlike an interpreter, we <em>generally</em> have identical handling for these nodes, so separating them into distinct variants adds complexity from which we don't really benefit. This can be seen below, where we get to remove a <em>ton</em> of code related to adding generic <code>Any*</code> wrappers, and a ton of duplicate branches  for these cases.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> is unchanged, apart from parser snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-05 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 22:57</div>
+            <div class="timeline-body"><p>You love to see it:</p>
+<img width="146" alt="Screen Shot 2023-08-05 at 6 56 58 PM" src="https://github.com/astral-sh/ruff/assets/1309177/d53637d3-552a-4f0e-bcdd-4b01efc8be7c">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-05 23:26</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+4, -0, 0 error(s))</p>
+<details><summary>disnake (+1, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/634f25f3b92f0507b0b7a088b55ba891dd2fd758/disnake/ext/commands/context.py#L293'>disnake/ext/commands/context.py:293:9:</a> D402 First line should not be the function's signature
+</pre>
+
+</p>
+</details>
+<details><summary>airflow (+2, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/20e5c8a001a8b4b88c01fb9edd4a41f2eb9c5c5d/airflow/providers/http/hooks/http.py#L297'>airflow/providers/http/hooks/http.py:297:15:</a> PLR0915 Too many statements (56 > 50)
++ <a href='https://github.com/apache/airflow/blob/20e5c8a001a8b4b88c01fb9edd4a41f2eb9c5c5d/tests/providers/telegram/hooks/test_telegram.py#L35'>tests/providers/telegram/hooks/test_telegram.py:35:16:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+1, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/db3b9e4742d508a9e8e9561115972028f58312bd/zerver/management/commands/runtornado.py#L47'>zerver/management/commands/runtornado.py:47:9:</a> PLR0915 Too many statements (59 > 50)
+</pre>
+
+</p>
+</details>
+Rules changed: 3
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLR0915 | 2 | 2 | 0 |
+| D402 | 1 | 1 | 0 |
+| UP008 | 1 | 1 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.1±0.04ms     4.0 MB/sec    1.00     10.1±0.06ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.0±0.04ms     8.3 MB/sec    1.00      2.0±0.01ms     8.3 MB/sec
+formatter/numpy/globals.py                 1.00    226.4±2.63µs    13.0 MB/sec    1.00    227.1±3.18µs    13.0 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.02ms     6.0 MB/sec    1.01      4.3±0.04ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.6±0.02ms     3.2 MB/sec    1.00     12.6±0.03ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    471.7±0.81µs     6.3 MB/sec    1.00    469.2±2.37µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.00      5.8±0.03ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.5±0.03ms     6.2 MB/sec    1.01      6.6±0.02ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1396.1±2.09µs    11.9 MB/sec    1.01   1410.6±6.54µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.8±0.95µs    18.3 MB/sec    1.00    160.7±0.78µs    18.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.01ms     8.7 MB/sec    1.00      2.9±0.01ms     8.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.0±0.25ms     3.4 MB/sec    1.02     12.3±0.23ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.3±0.07ms     7.2 MB/sec    1.00      2.3±0.04ms     7.3 MB/sec
+formatter/numpy/globals.py                 1.00    251.5±5.57µs    11.7 MB/sec    1.02   257.3±13.26µs    11.5 MB/sec
+formatter/pydantic/types.py                1.01      5.1±0.11ms     5.0 MB/sec    1.00      5.1±0.09ms     5.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.4±0.27ms     2.6 MB/sec    1.02     15.7±0.28ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.0 MB/sec    1.03      4.3±0.09ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    506.0±8.76µs     5.8 MB/sec    1.02    514.9±8.31µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.12ms     3.7 MB/sec    1.04      7.2±0.14ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.17ms     4.9 MB/sec    1.01      8.3±0.11ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1695.6±29.45µs     9.8 MB/sec    1.01  1718.9±36.06µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    194.5±4.06µs    15.2 MB/sec    1.01    196.7±6.77µs    15.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.05ms     6.9 MB/sec    1.00      3.7±0.05ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-06 15:11</div>
+            <div class="timeline-body"><p>(The formatter stability error is happening on <code>main</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/analyze/statement.rs</code>:146 on 2023-08-07 06:50</div>
+            <div class="timeline-body"><p>Nit: Could we change these rules to accept the function statement to avoid passing standalone boolean values (OK as a separate PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:81 on 2023-08-07 06:54</div>
+            <div class="timeline-body"><p>Nit: I always get the impression that some part is missing from variables named <code>with_</code>. Why not <code>with_statement</code>?</p>
+<pre><code class="language-suggestion">    with_statetment &amp;ast::StmtWith,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/fix_with.rs</code>:17 on 2023-08-07 06:55</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    with_stmt: &amp;ast::StmtWith,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/redefined_loop_name.rs</code>:160 on 2023-08-07 06:57</div>
+            <div class="timeline-body"><p>Should this be gated to sync <code>With</code> statements only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/redefined_loop_name.rs</code>:216 on 2023-08-07 06:57</div>
+            <div class="timeline-body"><p>Should this be gated to sync <code>FunctionDef</code>s only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/yield_from_in_async_function.rs</code>:40 on 2023-08-07 06:59</div>
+            <div class="timeline-body"><p>Is the change from <code>is_async_function</code> to <code>in_async_context</code> intentional`?</p>
+<p>Should we rename the function to <code>yield_from_async_context</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-07 07:03</div>
+            <div class="timeline-body"><p>Nice, so much deleted code.</p>
+<p>How did you ensure we use <code>async: false</code> in all places that should only apply for sync functions/with/for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-08-07 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-07 07:38</div>
+            <div class="timeline-body"><p>:100:</p>
+<p>And the changes are much less invasive that i feared</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/analyze/statement.rs</code>:146 on 2023-08-07 16:12</div>
+            <div class="timeline-body"><p>Yes, I will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/redefined_loop_name.rs</code>:216 on 2023-08-07 16:13</div>
+            <div class="timeline-body"><p>No, this was just wrong before. I suspect we had this mistake in a bunch of places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-07 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>How did you ensure we use async: false in all places that should only apply for sync functions/with/for?</p>
+</blockquote>
+<p>I'm relying on our test coverage for this. It's definitely possible that we now accept async functions in some code paths in which we previously didn't. In some cases, I bet that's correct, and was previously incorrect; in some cases, it might be the opposite. The good news is that, at least for lint rules, we used the same match branch for the async and sync variants, and there are only a few specific rules that had special-casing for async-vs.-sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/yield_from_in_async_function.rs</code>:40 on 2023-08-07 16:24</div>
+            <div class="timeline-body"><p>Going to revert, either <em>could</em> be correct but I think limiting to async functions is closer to the original rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

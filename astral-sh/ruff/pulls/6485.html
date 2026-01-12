@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add general support for parenthesized comments on expressions - astral-sh/ruff #6485</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add general support for parenthesized comments on expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6485">#6485</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-10 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 21:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for parenthesized comments. A parenthesized comment is a comment that appears within a parenthesis, but not within the range of the expression enclosed by the parenthesis. For example, the comment here is a parenthesized comment:</p>
+<pre><code class="language-python">if (
+    # comment
+    True
+):
+    ...
+</code></pre>
+<p>The parentheses enclose the <code>True</code>, but the range of <code>True</code> doesn’t include the <code># comment</code>.</p>
+<p>There are at least two problems associated with parenthesized comments: (1) associating the comment with the correct (i.e., enclosed) node; and (2) formatting the comment correctly, once it has been associated with the enclosed node.</p>
+<p>The solution proposed here for (1) is to search for parentheses between preceding and following node, and use open and close parentheses to break ties, rather than always assigning to the preceding node.</p>
+<p>For (2), we handle these special parenthesized comments in <code>FormatExpr</code>. The biggest risk with this approach is that we forget some codepath that force-disables parenthesization (by passing in <code>Parentheses::Never</code>). I've audited all usages of that enum and added additional handling + test coverage for such cases.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6390.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> with new cases.</p>
+<p>Before:</p>
+<p>| project      | similarity index |
+|--------------|------------------|
+| build        | 0.75623          |
+| cpython      | 0.75472          |
+| django       | 0.99804          |
+| transformers | 0.99618          |
+| typeshed     | 0.74233          |
+| warehouse    | 0.99601          |
+| zulip        | 0.99727          |</p>
+<p>After:</p>
+<p>| project      | similarity index |
+|--------------|------------------|
+| build        | 0.75623          |
+| cpython      | 0.75472          |
+| django       | 0.99804          |
+| transformers | 0.99618          |
+| typeshed     | 0.74237          |
+| warehouse    | 0.99601          |
+| zulip        | 0.99727          |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 21:11</div>
+            <div class="timeline-body"><p>(Pushing for CI purposes; not ready for review.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-10 21:29</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.4±0.06ms     9.3 MB/sec    1.01      4.4±0.07ms     9.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   879.8±10.72µs    18.9 MB/sec    1.02   897.3±42.90µs    18.6 MB/sec
+formatter/numpy/globals.py                 1.01     92.0±7.62µs    32.1 MB/sec    1.00     90.8±6.12µs    32.5 MB/sec
+formatter/pydantic/types.py                1.00  1744.2±23.34µs    14.6 MB/sec    1.00  1750.3±25.85µs    14.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     12.1±0.11ms     3.4 MB/sec    1.00     12.0±0.09ms     3.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.04ms     5.2 MB/sec    1.01      3.2±0.04ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    460.6±4.41µs     6.4 MB/sec    1.00    460.7±6.09µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.06ms     4.1 MB/sec    1.00      6.2±0.07ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.4±0.05ms     6.4 MB/sec    1.00      6.4±0.05ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1395.0±16.61µs    11.9 MB/sec    1.01  1404.8±18.23µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00   175.7±11.43µs    16.8 MB/sec    1.00    175.3±8.65µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.04ms     8.9 MB/sec    1.01      2.9±0.03ms     8.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.0±0.15ms     8.2 MB/sec    1.02      5.1±0.14ms     8.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00   985.4±18.24µs    16.9 MB/sec    1.02  1008.0±44.24µs    16.5 MB/sec
+formatter/numpy/globals.py                 1.00    100.7±3.61µs    29.3 MB/sec    1.01    101.3±5.15µs    29.1 MB/sec
+formatter/pydantic/types.py                1.00  1978.6±39.85µs    12.9 MB/sec    1.01      2.0±0.06ms    12.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.3±0.34ms     2.7 MB/sec    1.00     15.3±0.27ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.07ms     4.0 MB/sec    1.00      4.1±0.09ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   520.4±12.55µs     5.7 MB/sec    1.00   518.0±12.28µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.9±0.17ms     3.2 MB/sec    1.00      7.9±0.22ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.4±0.18ms     4.8 MB/sec    1.00      8.4±0.15ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1783.5±53.44µs     9.3 MB/sec    1.00  1784.7±51.09µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.6±4.31µs    14.4 MB/sec    1.01    206.7±5.76µs    14.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.09ms     6.7 MB/sec    1.00      3.8±0.09ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-11 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:21 on 2023-08-11 06:11</div>
+            <div class="timeline-body"><p>This seems to be fundamental to the placement. Should this instead happen inside of the <code>Default</code> placement logic?</p>
+<p>https://github.com/astral-sh/ruff/blob/e2f7862404e1741a0c65fa716818e59282de161a/crates/ruff_python_formatter/src/comments/visitor.rs#L536-L544</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-11 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:114 on 2023-08-11 06:14</div>
+            <div class="timeline-body"><p>Nit: Maybe assign tokenizer to a variable. It took me a while to understand to what the opening <code>{</code> belong. I assumed you accidentally created an empty block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:21 on 2023-08-11 06:14</div>
+            <div class="timeline-body"><p>We can, though it will require that the comments builder now have access to at least the locator, perhaps more. Does this feel more fundamental to you than what we're doing in <code>handle_own_line_comment_around_body</code> and <code>handle_end_of_line_comment_around_body</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-11 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:116 on 2023-08-11 06:15</div>
+            <div class="timeline-body"><p>Isn't this always true because the <code>TextRange</code> is up to <code>comment.start()</code>. I think all you need is to test if there's any LParen token in the range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:114 on 2023-08-11 06:16</div>
+            <div class="timeline-body"><p>Can we limit the non-trivia tokens that we are comfortable skipping? I would assume that we only ever have to skip LParens, or are there other tokens?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:69 on 2023-08-11 06:20</div>
+            <div class="timeline-body"><p>Nit: We could restrict this to only run if <code>preceding</code> or <code>following</code> is an expression (or, because we have cases where the if header is the preceding, that is then followed by the first body statement)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-11 06:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:116 on 2023-08-11 07:19</div>
+            <div class="timeline-body"><p>i think you can <code>find</code> instead of <code>filter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-11 07:30</div>
+            <div class="timeline-body"><p>I like it! once ready you can run formatter tests with coverage and check if can delete other branch due to this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-12 03:40</div>
+            <div class="timeline-body"><p>(Please don't re-review for now. I'm breaking this into some smaller PRs that can be merged separately ahead of this larger change.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-14 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-14 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-14 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-14 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Experimental logic for handling parenthesized comments" to "Add general support for parenthesized comments on expressions" by @charliermarsh on 2023-08-14 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 17:23</div>
+            <div class="timeline-body"><p>Okay, I believe this is ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:21 on 2023-08-14 17:23</div>
+            <div class="timeline-body"><p>For clarity: this is now down with one <code>or_else</code> chain, with the new <code>handle_parenthesized_comment</code> coming first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:287 on 2023-08-14 17:24</div>
+            <div class="timeline-body"><p>This is no longer needed, and has been removed. It's handled as part of <code>handle_parenthesized_comment</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:800 on 2023-08-14 17:24</div>
+            <div class="timeline-body"><p>No longer needed, handled as part of <code>handle_parenthesized_comment</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:79 on 2023-08-14 17:25</div>
+            <div class="timeline-body"><p>Mildly annoyed by this but can always follow-up on it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:24 on 2023-08-14 17:41</div>
+            <div class="timeline-body"><p>i think this should become it's own function
+too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:30 on 2023-08-14 18:11</div>
+            <div class="timeline-body"><p>test coverage says this line is dead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:51 on 2023-08-14 18:12</div>
+            <div class="timeline-body"><p>you might have made this function unnecessary</p>
+<pre><code class="language-rust">    if comment.line_position().is_own_line() {
+        return CommentPlacement::Default(comment); // &lt;- test coverage says this line is dead
+    }
+
+    if comment.following_node().is_none() {
+        return CommentPlacement::Default(comment); // &lt;- test coverage says this line is dead
+    }
+
+    CommentPlacement::leading(starred, comment)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-14 18:17</div>
+            <div class="timeline-body"><p>looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:51 on 2023-08-14 19:04</div>
+            <div class="timeline-body"><p>It looks like the function is still necessary, otherwise it gets marked as a leading comment of the starred thing rather than a leading comment of the <code>Expr::Starred</code> itself. But the first two conditions aren't necessary, I don't think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-14 19:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:30 on 2023-08-14 19:05</div>
+            <div class="timeline-body"><p>Hmm, but removing this leads to a bunch of fixture changes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-15 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:21 on 2023-08-15 07:38</div>
+            <div class="timeline-body"><p>The main question is about the precedence. Does this new rule have a higher precedence than any other rule in <code>placement.rs</code>. If so, then what you have now is the correct approach. However, it means that custom rules cannot override the tigh-break logic. Or should this rule only be applied if there's no more specific rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:438 on 2023-08-15 07:41</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        match self.leading_comments(node) {
+        	[first, ..rest] if first.lin_position().is_end_of_line() =&gt; std::slice::from_ref(first),
+        	_ =&gt; &amp;[]
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:426 on 2023-08-15 07:41</div>
+            <div class="timeline-body"><p>Should this return an <code>Option&lt;&amp;SourceComment&gt;</code> instead, knowing that this can always be at most one comment?</p>
+<p>You can use <code>std::slice::from_ref(comment)</code> in the formatting code to get a slice from a single element.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:30 on 2023-08-15 07:43</div>
+            <div class="timeline-body"><p>Can we look into why it is still necessary? I would expect that we can remove all the open parentheses handling code. Or is it because these need to be attached as dangling rather than leading comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:22 on 2023-08-15 07:44</div>
+            <div class="timeline-body"><p>What did you change here? It's hard to understand the changes because of the added indent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:533 on 2023-08-15 07:47</div>
+            <div class="timeline-body"><p>Is there a case where the range may contain any tokens that the <code>SimpleTokenizer</code> doesn't understand and makes it return <code>Bogus</code> tokens? If so, how do we ensure that the formatting is consistent between cases where all tokens are supported by the <code>SimpleTokenizer</code> and cases where they are not? Should we bail as soon as we see a <code>Bogus</code> token (or add a debug assertion that we never see a bogus token?).</p>
+<p>Same applies for the trailing lexing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:121 on 2023-08-15 07:53</div>
+            <div class="timeline-body"><p>Nit: For a separate PR. Should we rename this method to <code>with_trailing_open_parentheses_comments</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:52 on 2023-08-15 07:56</div>
+            <div class="timeline-body"><p>Nit: Move to the end as it is an utility type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:79 on 2023-08-15 07:58</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">					let parentheses = if comments.has_leading_comments(return_annotation.as_ref()) {
+						Parentheses::Always
+					} else {
+						Parentheses::Never
+					};
+					
+					return_annotation.format().with_options(parentheses).fmt(f)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-15 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-15 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:30 on 2023-08-15 17:13</div>
+            <div class="timeline-body"><p>Yeah, these need to be attached as dangling. We want to format like:</p>
+<pre><code class="language-python">f(  # comment
+    a,
+)
+</code></pre>
+<p>Instead of:</p>
+<pre><code class="language-python">f(
+    # comment
+    a,
+)
+</code></pre>
+<p>Though in actuality, as of this PR, if we attach it as leading to <code>a</code>, it would now be rendered as a parenthesized comment on <code>a</code>, rather than on the arguments:</p>
+<pre><code class="language-python">f(
+    (  # comment
+        a
+    ),
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-15 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:22 on 2023-08-15 17:19</div>
+            <div class="timeline-body"><p><code>handle_parenthesized_comment</code> is the first branch, followed by an <code>or_else</code> with these two cases, followed by the existing <code>or_else</code> for the enclosed node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-15 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:533 on 2023-08-15 17:20</div>
+            <div class="timeline-body"><p>I don't believe so -- this is why I needed to extend the <code>SimpleTokenizer</code> to support all trivia that can appear between AST nodes. If it does return <code>Bogus</code>, that's a bug in the tokenizer. I'll add a debug assertion to that effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-15 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-15 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-15 18:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use dedicated AST nodes on `MemberKind` - astral-sh/ruff #6374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use dedicated AST nodes on <code>MemberKind</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6374">#6374</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-06 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-06 14:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR leverages the unified function definition node to add precise AST node types to <code>MemberKind</code>, which is used to power our docstring definition tracking (e.g., classes and functions, whether they're methods or functions or nested functions and so on, whether they have a docstring, etc.). It was painful to do this in the past because the function variants needed to support a union anyway, but storing precise nodes removes like a dozen panics.</p>
+<p>No behavior changes -- purely a refactor.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use dedicated AST nodes on MemberKind" to "Use dedicated AST nodes on `MemberKind`" by @charliermarsh on 2023-08-06 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-06 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/cast.rs</code>:5 on 2023-08-06 14:12</div>
+            <div class="timeline-body"><p>For example, these functions and all their usages are now removed! No more <code>panic!</code> to extract these fields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-06 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-06 14:13</div>
+            <div class="timeline-body"><p>(Not gonna request any reviewers, I know this is an improvement and it's a non-behavioral change.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/analyze/deferred_scopes.rs</code>:192 on 2023-08-07 07:07</div>
+            <div class="timeline-body"><p>Nit: this feels more difficult to understand than what we used to have. Furthermore, the check for <code>shadowed.kind.is_function_definition</code> and the <code>if let Stmt::FunctionDef(...) = ..</code> seem redundant. Do you see a way to remove the redundancy / simplify the API?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_annotations/helpers.rs</code>:35 on 2023-08-07 07:09</div>
+            <div class="timeline-body"><p>Nit: We have this pattern in multiple places. How about a <code>definition.is_function_or_method</code> helper function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-07 07:11</div>
+            <div class="timeline-body"><p>Where's the joy without any panics ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/analyze/deferred_scopes.rs</code>:192 on 2023-08-07 16:57</div>
+            <div class="timeline-body"><p>They're actually note quite redundant, because you can have bindings whose source statement is a function definition, but that aren't <em>themselves</em> function definitions (for example, function parameters). Trying to clean up a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-07 17:07</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.32ms     4.1 MB/sec    1.02     10.0±0.68ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1902.1±71.23µs     8.8 MB/sec    1.01  1930.0±58.59µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.04   217.0±12.75µs    13.6 MB/sec    1.00    209.7±8.92µs    14.1 MB/sec
+formatter/pydantic/types.py                1.01      4.1±0.08ms     6.3 MB/sec    1.00      4.0±0.15ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.0±0.24ms     3.4 MB/sec    1.11     13.4±0.57ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.06ms     5.2 MB/sec    1.08      3.5±0.12ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   465.2±14.94µs     6.3 MB/sec    1.06   494.4±30.93µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.22ms     4.4 MB/sec    1.04      6.0±0.19ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.3±0.15ms     6.5 MB/sec    1.14      7.1±0.39ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1382.2±45.16µs    12.0 MB/sec    1.06  1464.4±37.34µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    168.9±6.39µs    17.5 MB/sec    1.12   188.9±26.53µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.06ms     8.9 MB/sec    1.08      3.1±0.11ms     8.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.4±0.18ms     3.9 MB/sec    1.01     10.4±0.21ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1906.4±39.27µs     8.7 MB/sec    1.03  1957.5±40.61µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    212.7±7.41µs    13.9 MB/sec    1.01    215.2±8.02µs    13.7 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.08ms     6.0 MB/sec    1.01      4.3±0.07ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.9±0.19ms     3.2 MB/sec    1.02     13.2±0.19ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.08ms     4.7 MB/sec    1.01      3.6±0.05ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    427.0±5.88µs     6.9 MB/sec    1.02   435.5±19.39µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.10ms     4.3 MB/sec    1.02      6.1±0.16ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.07ms     5.9 MB/sec    1.01      6.9±0.08ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1430.1±26.93µs    11.6 MB/sec    1.01  1447.8±26.81µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    162.8±4.05µs    18.1 MB/sec    1.02    166.2±5.35µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.05ms     8.3 MB/sec    1.03      3.1±0.03ms     8.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_annotations/helpers.rs</code>:35 on 2023-08-07 17:08</div>
+            <div class="timeline-body"><p>Fixed, good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid cloning source code multiple times - astral-sh/ruff #6629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid cloning source code multiple times</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6629">#6629</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-16 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 19:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In working on https://github.com/astral-sh/ruff/pull/6628, I noticed that we clone the source code contents, potentially multiple times, prior to linting. The issue is that <code>SourceKind::Python</code> takes a <code>String</code>, so we first have to provide it with a <code>String</code>. In the stdin case, that means cloning. However, on top of this, we then have to clone <code>source_kind.contents()</code> because <code>SourceKind</code> gets mutated. So for stdin, we end up cloning twice. For non-stdin, we end up cloning once, but unnecessarily (since the <em>contents</em> don't get mutated, only the kind).</p>
+<p>This PR removes the <code>String</code> from <code>source_kind</code>, instead requiring that we parse it out elsewhere. It reduces the number of clones down to 1 for Jupyter Notebooks, and zero otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-16 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-08-16 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-16 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-08-16 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:525 on 2023-08-16 19:49</div>
+            <div class="timeline-body"><p>I find <code>Sources</code> a confusing name, because it only contains a single source file.</p>
+<p>Could we maybe marry this with our <code>SourceFile</code> implementation that also gives us cheap cloning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:560 on 2023-08-16 19:51</div>
+            <div class="timeline-body"><p>This is unrelated to this PR, is it possible to have a Jupyter notebook with a Pyi source type? I'm asking because I wonder if this should be a single union instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:543 on 2023-08-16 19:51</div>
+            <div class="timeline-body"><p>Nit: <code>Sources::try_fom_path</code> or <code>Sources::read_file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:569 on 2023-08-16 19:51</div>
+            <div class="timeline-body"><p>Nit: Sources::from_contents`</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:604 on 2023-08-16 19:55</div>
+            <div class="timeline-body"><p>Nit: <code>Diagnostics:from_io_error</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 19:59</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.0±0.16ms    10.3 MB/sec    1.04      4.1±0.20ms     9.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   818.3±39.71µs    20.3 MB/sec    1.00   814.7±38.52µs    20.4 MB/sec
+formatter/numpy/globals.py                 1.01     85.1±5.47µs    34.7 MB/sec    1.00     84.4±4.46µs    35.0 MB/sec
+formatter/pydantic/types.py                1.00  1632.6±80.37µs    15.6 MB/sec    1.05  1716.3±137.12µs    14.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.9±0.52ms     3.1 MB/sec    1.02     13.2±0.53ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.11ms     4.8 MB/sec    1.00      3.4±0.12ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   497.4±21.70µs     5.9 MB/sec    1.03   514.3±20.54µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.31ms     3.7 MB/sec    1.00      6.8±0.26ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.22ms     6.0 MB/sec    1.01      6.9±0.26ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1481.6±59.80µs    11.2 MB/sec    1.00  1461.6±55.76µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   185.1±10.97µs    15.9 MB/sec    1.02    188.6±8.34µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.14ms     8.4 MB/sec    1.00      3.1±0.11ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.1±0.05ms     9.9 MB/sec    1.01      4.2±0.10ms     9.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   820.6±17.11µs    20.3 MB/sec    1.00   819.4±11.63µs    20.3 MB/sec
+formatter/numpy/globals.py                 1.00     85.0±4.03µs    34.7 MB/sec    1.00     84.7±2.46µs    34.8 MB/sec
+formatter/pydantic/types.py                1.00  1658.8±26.36µs    15.4 MB/sec    1.01  1680.5±28.82µs    15.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     12.8±0.23ms     3.2 MB/sec    1.00     12.7±0.11ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.07ms     4.8 MB/sec    1.00      3.5±0.03ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   443.4±10.99µs     6.7 MB/sec    1.00    441.6±7.35µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.09ms     3.9 MB/sec    1.00      6.6±0.10ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.06ms     5.8 MB/sec    1.00      7.0±0.06ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1491.0±18.54µs    11.2 MB/sec    1.00  1481.3±25.24µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.01    177.3±4.66µs    16.6 MB/sec    1.00    175.9±6.45µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.2 MB/sec    1.00      3.1±0.05ms     8.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:00</div>
+            <div class="timeline-body"><p>Could we instead change <code>SourceKind</code> to:</p>
+<pre><code>enum SourceKind&lt;'a&gt; {
+	Python(&amp;'a str),
+	Notebook(Notebook)
+}
+
+impl SourceKind&lt;'_&gt; {
+	fn source_code(&amp;self) -&gt; &amp;str {
+		match self {
+			Self::Python(source) =&gt; source,
+			Self::Notebook(notebook) =&gt; notebook.contents()
+		}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-16 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 20:05</div>
+            <div class="timeline-body"><p>Nice, this should reduce memory usage quiet a bit and may even improve the cpython benchmark.</p>
+<p>The new solution still feels a bit awkward to me. Maybe it is because I don't understand the separation between <code>Sources</code>, <code>SourceType</code>, and <code>SourceKind</code> well enough. Maybe we don't have these abstractions right yet which makes this more complicated than it needs to be? Could it also help to avoid storing the <code>Notebook</code> contents twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:06</div>
+            <div class="timeline-body"><p>I'm using <code>source_code</code>here (or <code>source</code>) because I find <code>contents</code> a too generic term (I can't even tell from its name if it is a string)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:09</div>
+            <div class="timeline-body"><p>This was my instinct too. I tried it but it didn’t work, because the Diagnostics struct includes the SourceKind so that it can reconstruct the cell ranges when it reports diagnostics at the end. So we’d have to add lifetimes to Diagnostics and then keep all the source code in memory for the life of the program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 20:10</div>
+            <div class="timeline-body"><p>It feels awkward to me too, but I didn’t want to do anything more invasive. I want to see if we can remove the contents from Notebook, perhaps, which would make the responsibilities clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:560 on 2023-08-16 20:10</div>
+            <div class="timeline-body"><p>It’s not possible, no</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:23</div>
+            <div class="timeline-body"><p>Hmm I see. I have to take a closer look at this tomorrow. I wonder if <code>SourceKind</code> (or something similar) should be a trait and / or if we can structure these types differently to also avoid the overlap between <code>SourceKind</code> and <code>SourceType</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:26</div>
+            <div class="timeline-body"><p>Diagnostics only needs access to the <code>index</code> though, not the file contents, which may help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-16 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:589 on 2023-08-16 20:33</div>
+            <div class="timeline-body"><p>Yeah, it's another source mapping (the reverse after applying fixes). It would be nice to have a more formal concept for that rather than special casing jupyter notebooks in the <code>Emitter</code>. Because we'll have the same problem when linting markdown files: We need to map back the relative code block indices to the absolute file indices, potentially customizing the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 20:40</div>
+            <div class="timeline-body"><p>@MichaReiser - I made some improvements based on your suggestions but LMK how you want to proceed (e.g., whether you want to spend time on this, or want me to do so, or want to merge and revisit later).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-17 07:51</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6629</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6629" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6640</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6640" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6629?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-17 07:52</div>
+            <div class="timeline-body"><p>Thanks. I like the improvements and the improved naming.</p>
+<p>We should follow up on notebooks. I think it would be nice if <code>SourceKind</code> could store the source code as well, to avoid passing two arguments everywhere. However, I didn't manage to do that because of some lifetime issues when fixing notebooks (and updating notebook indices)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-08-17 19:40</div>
+            <div class="timeline-body"><p>Looks good! Thanks for doing this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-18 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-18 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-18 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

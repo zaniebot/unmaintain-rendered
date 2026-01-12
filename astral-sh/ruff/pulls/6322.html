@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid omitting parentheses for trailing attributes on call expressions - astral-sh/ruff #6322</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid omitting parentheses for trailing attributes on call expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6322">#6322</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-03 23:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 23:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies our <code>can_omit_optional_parentheses</code> rules to ensure that if we see a call followed by an attribute, we treat that as an attribute access rather than a splittable call expression.</p>
+<p>This in turn ensures that we wrap like:</p>
+<pre><code class="language-python">ct_match = aaaaaaaaaaact_id == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+)
+</code></pre>
+<p>For calls, but:</p>
+<pre><code class="language-python">ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+</code></pre>
+<p>For calls with trailing attribute accesses.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6065.</p>
+<h2>Test Plan</h2>
+<p>Similarity index before:</p>
+<ul>
+<li><code>zulip</code>: 0.99436</li>
+<li><code>django</code>: 0.99779</li>
+<li><code>warehouse</code>: 0.99504</li>
+<li><code>transformers</code>: 0.99403</li>
+<li><code>cpython</code>: 0.75912</li>
+<li><code>typeshed</code>: 0.72293</li>
+</ul>
+<p>And after:</p>
+<ul>
+<li><code>zulip</code>: 0.99436</li>
+<li><code>django</code>: 0.99780</li>
+<li><code>warehouse</code>: 0.99504</li>
+<li><code>transformers</code>: 0.99404</li>
+<li><code>cpython</code>: 0.75913</li>
+<li><code>typeshed</code>: 0.72293</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:443 on 2023-08-03 23:49</div>
+            <div class="timeline-body"><p>I'm guessing this is not the right solution, but it passes the new fixtures. Should this instead be in <code>expr_compare.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 23:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-03 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-04 00:17</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01     10.4±0.42ms     3.9 MB/sec    1.00     10.3±0.49ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.0±0.08ms     8.2 MB/sec    1.01      2.1±0.11ms     8.1 MB/sec
+formatter/numpy/globals.py                 1.01   235.8±13.71µs    12.5 MB/sec    1.00   234.5±11.59µs    12.6 MB/sec
+formatter/pydantic/types.py                1.03      4.4±0.22ms     5.8 MB/sec    1.00      4.3±0.20ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.2±0.33ms     2.9 MB/sec    1.05     14.9±0.43ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.13ms     4.6 MB/sec    1.02      3.7±0.13ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   506.6±21.17µs     5.8 MB/sec    1.04   526.4±25.39µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.4±0.66ms     4.0 MB/sec    1.05      6.7±0.16ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.17ms     5.8 MB/sec    1.03      7.2±0.22ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1500.9±40.38µs    11.1 MB/sec    1.00  1488.2±50.69µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00   183.3±10.29µs    16.1 MB/sec    1.00    182.6±8.51µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.10ms     8.1 MB/sec    1.02      3.2±0.20ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.2±0.17ms     4.0 MB/sec    1.00     10.2±0.83ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1928.0±33.78µs     8.6 MB/sec    1.00  1930.2±39.16µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00    218.2±4.82µs    13.5 MB/sec    1.01    221.4±9.21µs    13.3 MB/sec
+formatter/pydantic/types.py                1.02      4.3±0.11ms     6.0 MB/sec    1.00      4.2±0.07ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.9±0.21ms     3.2 MB/sec    1.05     13.6±0.26ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      3.6±0.08ms     4.7 MB/sec    1.00      3.4±0.05ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.05    437.0±7.94µs     6.8 MB/sec    1.00    417.7±7.62µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.15ms     4.3 MB/sec    1.02      6.1±0.11ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.9±0.11ms     5.9 MB/sec    1.00      6.8±0.09ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1411.1±28.46µs    11.8 MB/sec    1.00  1378.0±19.18µs    12.1 MB/sec
+linter/default-rules/numpy/globals.py      1.03    159.8±2.34µs    18.5 MB/sec    1.00    154.9±3.11µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.05ms     8.4 MB/sec    1.00      3.0±0.04ms     8.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:443 on 2023-08-04 06:18</div>
+            <div class="timeline-body"><p>The method here mirrors https://github.com/psf/black/blob/2fd9d8b339e1e2e1b93956c6d68b2b358b3fc29d/src/black/lines.py#L884-L966 I had a quick glance and don't seem to find this logic. But your change seems correct because the method returns <code>false</code> for the provided example. I recommend adding print statements to black's code base and then running the formatting on the code snipped to better understand what the underlying logic is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:443 on 2023-08-04 06:19</div>
+            <div class="timeline-body"><p>@konstin any chance this already gets fixed by your Call chain PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-08-04 06:31</div>
+            <div class="timeline-body"><p>This logic doesn't seem to be specific to compare operators. It also applies to boolean operators and, I assume for binary expressions too.</p>
+<pre><code class="language-python">def f():
+    return (
+        unicodedata.normalize(&quot;NFKC&quot;, s1).casefold()
+        == unicodedata.normalize(&quot;NFKC&quot;, s2).casefold()
+    )
+    return (
+        unicodedata.normalize(&quot;NFKC&quot;, s1).casefold()
+        and unicodedata.normalize(&quot;NFKC&quot;, s2).casefold()
+    )
+
+
+ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+
+ct_match = (
+    aaaaaaaaaaact_id and self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+
+ct_match = aaaaaaaaaaact_id == xyzaaaaaa
+
+ct_match = aaaaaaaaaaact_id and xyzaaaaaa
+
+
+ct_match = {aaaaaaaaaaaaaaaa} == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+
+ct_match = {aaaaaaaaaaaaaaaa} and self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+
+ct_match = (aaaaaaaaaaaaaaaa) == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+
+ct_match = (aaaaaaaaaaaaaaaa) and self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+</code></pre>
+<p>We need to spend more time understanding what black's doing to ensure we move closer. One way to assert this is to run the ecosystem checks on our selected projects and verify that either the similarity index increases or that diffing the Black/Ruff differences between the old and new Ruff versions introduces no regressions.</p>
+<p>I recommend you to debug Black's <a href="https://github.com/psf/black/blob/2fd9d8b339e1e2e1b93956c6d68b2b358b3fc29d/src/black/lines.py#L881-L963"><code>can_omit_invisible_parens</code></a>, <a href="https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/linegen.py#L999-L1079"><code>delimiter_split</code></a>, and <a href="https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/linegen.py#L551-L574"><code>rhs</code></a> to better understand what happening. It can also be useful to debug the selected <a href="https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/linegen.py#L610-L621">selected transformers</a>.</p>
+<ul>
+<li><code>rhs</code> -&gt; <code>in_parentheses_only_*</code> helpers</li>
+<li>delimiter` -&gt; Normal groups</li>
+</ul>
+<p>We can also hop on a call and do this together. It ca</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-04 07:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:443 on 2023-08-04 07:51</div>
+            <div class="timeline-body"><p>i don't think so, they should be independent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 13:46</div>
+            <div class="timeline-body"><p>Thank you! Will take a look at this again today and review the Black source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-04 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-08-04 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 00:38</div>
+            <div class="timeline-body"><p>I have deduced at least that our <code>max_priority_count</code> and <code>max_priority</code> are correct and consistent with Black. The issue seems to be this branch, which is returning <code>true</code> but doesn't do so in Black:</p>
+<pre><code class="language-rust">// Only use the layout if the first or last expression has parentheses of some sort.
+let first_parenthesized = visitor
+    .first
+    .is_some_and(|first| has_parentheses(first, visitor.source));
+let last_parenthesized = visitor
+    .last
+    .is_some_and(|last| has_parentheses(last, visitor.source));
+first_parenthesized || last_parenthesized
+</code></pre>
+<p>(Although in Black, this logic is split between a few branches, I think.)</p>
+<p>Continuing to dig in...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-05 07:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I have deduced at least that our <code>max_priority_count</code> and <code>max_priority</code> are correct and consistent with Black. The issue seems to be this branch, which is returning <code>true</code> but doesn't do so in Black:</p>
+<pre><code class="language-rust">// Only use the layout if the first or last expression has parentheses of some sort.
+let first_parenthesized = visitor
+    .first
+    .is_some_and(|first| has_parentheses(first, visitor.source));
+let last_parenthesized = visitor
+    .last
+    .is_some_and(|last| has_parentheses(last, visitor.source));
+first_parenthesized || last_parenthesized
+</code></pre>
+<p>(Although in Black, this logic is split between a few branches, I think.)</p>
+<p>Continuing to dig in...</p>
+</blockquote>
+<p>I think <code>last</code> incorrectly points to the <code>call</code> expression for</p>
+<pre><code class="language-python">ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+</code></pre>
+<p>rather than the attribute. This makes the above-mentioned path to return <code>true</code> because a call is parenthesized.</p>
+<p>Doing something like this seems to help (do we need to do the same for <code>Subscript</code>, similar to call?</p>
+<pre><code>Expr::Attribute(ast::ExprAttribute {
+                range: _,
+                value,
+                attr: _,
+                ctx: _,
+            }) =&gt; {
+                self.visit_expr(&amp;value);
+                if has_parentheses(value, self.source) {
+                    self.update_max_priority(OperatorPriority::Attribute);
+                }
+                self.last = Some(expr);
+                return;
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 15:52</div>
+            <div class="timeline-body"><p>Ohhh smart. I didn't realize that Black formatted these differently:</p>
+<pre><code class="language-python">ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+
+ct_match = aaaaaaaaaaact_id == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 16:01</div>
+            <div class="timeline-body"><p>It looks like on <code>main</code>, we already break this differently than Black (<a href="https://play.ruff.rs/?secondary=Format#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksuflJmPicWqpZQpWi1YWEBPWNFbF5CSiKuHA9uanpmSOisPwoGJS4GjwAFroAHKu9PORFnLZNYAAsvcWl5UJsovYAMleQbC1QW5ooPPIDxJx4upAADtIAzABGFwxXL4WDQADWKFWGGguHSWz4eEEYFAEFEMj+GH4nFemR4hEGunwcGKsVExEIPx+mWIxAw4iksiUGlRpNg5IuUCpNLpDPSuFmBKJuH4GhJZJQFKgcEQSCKTzhmjhuGkks50u5kDGGVmRHgsg6PGkP3QGuKbAAvr1wVCYRgyPC0HjdOiMZAlko0Dg0OgMDwJD9GZxMmUMurzhiPQB6QM-UHR0QxhSKONBxNJyAxv1yGPEJYSO7Rh6iLBLFBYSEB03++JYFA-ZG4C0oa22iHQ2EcDRkFBKN3atopKSELYUWZYOWopjtsGdh0cbh8ASD6OQJe8fgM3WZabEM4MRhz0R2rvYBBBzIVgSfVd0d2iOXIENlbDTjBIPFLDDQ6RIDJMFZSQkh4dkpRPKAzwdHA-mUDQlkPR8oERTgG3UbRvgMEJODCABhBA4NSRCAB0SOIEwDDIgw8LIsIyIosIQjItBgAOK0DAwFi2KtMJvEzTF+AwOo1A+PZdBcSDIGg2EBkUCRiAlB9tQkaAtEVZQFjmJJFhWOhJIgG153tWEAEdCAQRJUWQnVcGmIUMHMyyqG+NAEEICcBKgCRCC3ezZicqzXPczyZTEBAsAPTSNEciygrocKPMoLyYDkBBOEwKgpzNXQeEUQg20MjsTKKEp8DXD1d1mIYJBcqMsyMVToS80QjGgYgXTKFqoCMTIfghBtusgIw6hKNBqBlVrRtgNAjD9UlfLAoajBqlAjGWhRYAK9buWPIrjPPPg0FkTggwyJblPXJ1cHUEpoD4ORZlOn5ztRX4lFAibtWuoUgJ+Tg3StKSZJrM1sArKtxQqyk8rQw8OS5dd4hQINXgkBBxEoGduVEE1-oWYsMVLKB8twPhaowFBNsIe7-SdYpsAhek6qPMLSfJ2YqbgGnEkwP0cEUe6MhnPawCM08F1hDQXkSBJoagjoyjvDBVuxpMeqG6WeFl8pJpQrWdcJiBib6ApakV5sVegWqReByWcSDaYsDxDSL1wKckO1Z8FR8vyZly-LCrF4rz2e863cesm72sr3pnalnkNEH5nXa74fjQIa-iURRkDT6BM8QHhYGkAA6eJaSoN6fh0PXIGKcgMhbBLiFXWuCmIDJwVzhKeHK2vcEkP5vlwBNa9Unh+ss6YyG+R2hvHyei84MgS7+Re094IaeEhfhEkUb5t8zhAIUUKvYEz+ESjTlta7gLZQ2+O+hqWY+EDkTgUCQN6ljkI2xbtkqfwrKvAPNIZKl0PR1ASESWYydMhkwrMUVEeUCphTgdbF4yg9hWxtqDfYkBCT9SyGgpQGDYbYOplQPB3x9y621Og2q5DZiUIZDnBUeN8GEOSmzaAnAkG3XMqGWY49yzCQyNkHGUAABC8cACiWgGxNjvENeRijmxDQAGrcxQLIxQOd961wAPIAGVdH6KGgASUMWY8RtdZG4HfjnXAtUyY2IMZIuuEVoQ8DLno8Ru0eF8KocOARXBMgYBET+fA4jmhhVUooascDQKIJZigoO4soL2w6CQf0wEXEXTRNqKq8glAqE6jglmCN0m9D4edeW0kMjoSQILYMcAVBINbGFaJih0IfAWGofynTtR9I0AMmYlMFFbQ+CiSYHocASDIOM9qDsXqKAKVUsKxB+ouzwAGQW3BxQXikPnOgaSwqAQGI6WQHCA6oO1N03p4cvzLCEsUJWMy6AbO1FOBmxRbwPX2F89cDzZg8AQAGQiszRCQnSEgG6dRT6vDgSaKFUAYXIBui8xQmBkWRlZtqdFcK5gRTgGImaAxUWm0FoqFO2K5jL0FooPFOR1x7nupwR6KzXoYAufvBKRA1mINeGCxmCAkF0NZSgQRmQRyrIKSyuZTMOmxO+SiLYZMRZhVTCoCcmrtTpHpUKBkfZun7AVVMGYDJoD4D3lytZqIMCAjCv5Y1LxUBJDwaiFwXTGn+mKOgxIlK3mW15RI9W0kxwwKGgeWlmBp6MvVG3JYoYcVKBRbXBFB4MC4qGogKcsAyV+n3gE4ZlZmzWSBvtTEWApx9nqapdS8yiFaDxHi4EUkzQ-FhDVKGEDRDFNVmGrMxQeAAFVR4eMSEoAAIhi6NLxx14SVVvfsihZ1wqXe1L64aR3joALIY18sQydq7124APZjY94b2rSHdsYhdE7r3EFvVgAAKqeudtdd0-HfQead9184Zt4VtTIqjGzqNrogBYe7K7QGlvPNS07OD4HKiW9cWAlWMJfnzSsGQhanyDUiNCWGMaMlw4LMFBHmgdukL6KgJpwGFPXMUt+AwoMxS2MQas8z8ngU1DRtykUGP7BssU-meHKN6vXLSQiAwTRkYFvh22VaoB-GgjHJG-RCjSyFMoSKFQaP2U9uub2ES4NoRKVtUFtY1bDrykNMg0ggpoY9A2x0gt3aIN0ICAATHEtSt1CSDFRAANn8+pVkqIACs4WaWJF47oKLBlg65D+NSDQgs-T1OhI2dQxpTrWfxkpMAVTrQgCtJESrZRGr3XLGAAAvGAAw3JgDQDa+1jrnXoBWga41k4+AS5ayMDgMmoEjAcPoAgMgAArZgYA9xGCm7NsAJBxRze3OqhsJcjAxsSCXNAZBGAlwyiAMIIAgA">Ruff</a>, <a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADRAI5dAD2IimZxl1N_WlXr_Won_jHR0459liMGgqSxtGjU7K9xnyRQP2P9EtkHSrDKKSqfo6CEAF9uPoda_yay0XPHticc7Lg3m4fl2ImyPM8zHsHqjgAsMVdmiRr2obXjn01ZpBqulTX9cgcwicxkUVTF-GWp0sfjX53-CLNE-JrMbcxAy0uZe8nlNLUt83CecQAAAACnGWVgY12pGwABqgHSAQAAwNQty7HEZ_sCAAAAAARZWg==">Black</a>):</p>
+<pre><code class="language-python">ct_match = (
+    {aaaaaaaaaaaaaaaa} == self.get_content_type[obj, rel_obj, using, instance._state.db].id
+)
+</code></pre>
+<p>Is that covered in the same place, or elsewhere? I feel like it's elsewhere, since it's not about removing the optional parentheses, but about which expression we break (left-vs-right).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-05 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-05 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 16:15</div>
+            <div class="timeline-body"><p>It seems like Black prefers splitting the expression on the RHS of a binary operator, but will split the left if it can't (<a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AIbALRdAD2IimZxl1N_WlXr_Won_jHR0459liMGgqSxtGjU7K9xnyRQP2P9EtkHSrDKKSqfo6CEAF9uPoda_yay0XPHticc7Lg3m4fl2ImyPM8zHsHqjgAsMVdmiRr2obXjn36TRB6v_QvPcvW2NAfeNQQ7F_gemNTO6sToyemxASSojoPt2ydKu3L8igyKcmRYTPfUBlE51MPp6MyjErkIbEt5SbRiXvHN_pbaTZJTlzZFClvkk6RSAAAF7HZ3o3O1ZgAB0AGcBAAAgheUHLHEZ_sCAAAAAARZWg==">playground</a>), but hesitant to keep investigating this here because it seems separate and I know you've spent more time on binary operators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-05 16:42</div>
+            <div class="timeline-body"><p>Is it specific to subscript operations? It would be good to understand in depth which expressions we break differently.</p>
+<p>We implement a similar &quot;Prefer splitting parenthesized expressions before binary expression&quot; logic <a href="https://discord.com/channels/1039017663004942429/1136756271228399727/1136927427248001024">internal discord</a>. Or it is because our groups have the wrong hierarchy:</p>
+<ul>
+<li>group sequence: <code>group1, group2</code>: The right group expands before the left</li>
+<li>Group hierarchy: <code>group1(group2)</code>: The outer group expands before the inner.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 16:44</div>
+            <div class="timeline-body"><p>Not specific to subscripts, I'll look into the group hierarchy, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 16:46</div>
+            <div class="timeline-body"><p>(We do seem to have a &quot;group sequence&quot; as described above. Gonna keep looking into it, I need to understand this better -- but I do think it can be done separately from this PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-05 17:54</div>
+            <div class="timeline-body"><p>Separate PR makes sense. Can you include the similarity index changes in your test plan</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 19:13</div>
+            <div class="timeline-body"><p>Yes sir!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 19:23</div>
+            <div class="timeline-body"><p>Done, very small improvements in three projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 09:13</div>
+            <div class="timeline-body"><p>Can you test if we need the same for <code>Subscript</code>? Because it has the same pattern or is it not required because we never want to break subscripts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-07 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 15:55</div>
+            <div class="timeline-body"><p>I did look into this but perhaps I didn't understand what you're referencing. Are you referring to a subscript with a trailing attribute, like <code>foo[bar].baz</code>? Or a subscript following a function call, like <code>foo(bar)[baz]</code>? I believe I added test coverage for both, and both are consistent with Black.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-07 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 16:00</div>
+            <div class="timeline-body"><p>This PR fixes</p>
+<pre><code class="language-python">ct_match = aaaaaaaaaaact_id == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+)
+</code></pre>
+<p>Where the last item is a call chain. The fix was to correctly set <code>last</code> to the call because the callee is to the left of the call. This fixed  <code>has_parentheses</code> and <code>has_own_parentheses</code> to return <code>true</code>.</p>
+<p>Now, we have a similar situation with subscript where we visit the value to the left of the subscript. Meaning <code>a[b]</code> ends with the subscript and not the node <code>a</code> (the subscript should be last).</p>
+<p>Now, whether it should apply that layout is a different question, but it currently seems inconsistent because <code>has_parentheses</code> returns <code>true</code>, but we don't set the subscript to the last node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-07 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 16:02</div>
+            <div class="timeline-body"><p>Black output:</p>
+<pre><code class="language-python">ct_match = (
+    self.get_content_type[&quot;obj=rel_obj, using=instance._state.db&quot;] == aaaaaaaaaaact_id
+)
+
+ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type[&quot;obj=rel_obj, using=instance._state.db&quot;]
+)
+
+</code></pre>
+<p>So black prefers not to break subscripts. Can we remove the <code>Subscript</code> case from <code>has_own_parentheses</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 16:25</div>
+            <div class="timeline-body"><p>Will investigate, thank you for clarifying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-07 16:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:409 on 2023-08-07 16:46</div>
+            <div class="timeline-body"><p>We can merge this in the meantime. Maybe update the title?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid omitting parentheses for compare expressions with calls" to "Avoid omitting parentheses for trailing attributes on call expressions" by @charliermarsh on 2023-08-07 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 15:13</div>
+            <div class="timeline-body"><p>I'm realizing that this didn't actually fix the whole issue. Given</p>
+<pre><code class="language-python">def f():
+    return (
+        unicodedata.normalize(&quot;NFKC&quot;, s1).casefold()
+        == unicodedata.normalize(&quot;NFKC&quot;, s2).casefold()
+    )
+</code></pre>
+<p>That's stable formatting for Black, but we do:</p>
+<pre><code class="language-python">def f():
+    return unicodedata.normalize(&quot;NFKC&quot;, s1).casefold() == unicodedata.normalize(
+        &quot;NFKC&quot;, s2
+    ).casefold()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 15:20</div>
+            <div class="timeline-body"><p>It looks like Black treats these differently depending on whether the function call contains any arguments.</p>
+<p>https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AItAJ1dAD2IimZxl1N_WmXWfJWiTYLz4-Xr1ocavDZNy3yj_TrA725dHDb4iaUJISuadfhoT0sKHZLLk1QxHmGNY5xrrWDt1EKt5lq1gq5h7gVq9AKcRwEZ1BmvCk8Yz_Mr7D5lfjC0kkK4Ijl0mefy8pKhR554SYnrYdRZHw5TzgSkSgI8eJOYrTthc6A1exOcCkfWBuyxxInO8Zc12LdP7gAAAAAAIqEgVX6QfxMAAbkBrgQAADp5TWmxxGf7AgAAAAAEWVo=</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

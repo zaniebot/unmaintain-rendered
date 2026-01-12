@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow return type annotations to use their own parentheses - astral-sh/ruff #6436</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow return type annotations to use their own parentheses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6436">#6436</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-09 04:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 04:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies our logic for wrapping return type annotations. Previously, we <em>always</em> wrapped the annotation in parentheses if it expanded; however, Black only exhibits this behavior when the function parameters is empty (i.e., it doesn't and can't break). In other cases, it uses the normal parenthesization rules, allowing nodes to bring their own parentheses.</p>
+<p>For example, given:</p>
+<pre><code class="language-python">def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+]:
+    ...
+
+def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(x) -&gt; Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+]:
+    ...
+</code></pre>
+<p>Black will format as:</p>
+<pre><code class="language-python">def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; (
+    Set[
+        &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+    ]
+):
+    ...
+
+
+def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(
+    x,
+) -&gt; Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+]:
+    ...
+</code></pre>
+<p>Whereas, prior to this PR, Ruff would format as:</p>
+<pre><code class="language-python">def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; (
+    Set[
+        &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+    ]
+):
+    ...
+
+
+def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(
+    x,
+) -&gt; (
+    Set[
+        &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+    ]
+):
+    ...
+</code></pre>
+<p>Closes https://github.com/astral-sh/ruff/issues/6431.</p>
+<h2>Test Plan</h2>
+<p>Before:</p>
+<ul>
+<li><code>zulip</code>: 0.99702</li>
+<li><code>django</code>: 0.99784</li>
+<li><code>warehouse</code>: 0.99585</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99470</li>
+<li><code>cpython</code>: 0.75988</li>
+<li><code>typeshed</code>: 0.74853</li>
+</ul>
+<p>After:</p>
+<ul>
+<li><code>zulip</code>: 0.99724</li>
+<li><code>django</code>: 0.99791</li>
+<li><code>warehouse</code>: 0.99586</li>
+<li><code>build</code>: 0.75623</li>
+<li><code>transformers</code>: 0.99474</li>
+<li><code>cpython</code>: 0.75956</li>
+<li><code>typeshed</code>: 0.74857</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-09 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-09 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 04:19</div>
+            <div class="timeline-body"><p>This seems to do the right thing, but I'm already anticipating that I'm misunderstanding something around why / how Black makes it decisions, and the relationship to our grouping and parenthesization logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-09 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 04:26</div>
+            <div class="timeline-body"><p>(Looks like I have one failing stability test.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-09 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:72 on 2023-08-09 04:43</div>
+            <div class="timeline-body"><p>This is meant to capture &quot;Can the parameters break?&quot;. Like, semantically, it'd be nice if I could add a group around parameters and check if it breaks, but I don't think I can do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 04:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/parentheses.rs</code>:57 on 2023-08-09 04:44</div>
+            <div class="timeline-body"><p>I'm not sure how conservative we want to be in adding these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-09 05:25</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.6±0.33ms     4.2 MB/sec    1.00      9.6±0.30ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1876.6±62.75µs     8.9 MB/sec    1.00  1850.8±78.02µs     9.0 MB/sec
+formatter/numpy/globals.py                 1.02   218.5±12.49µs    13.5 MB/sec    1.00    213.3±8.63µs    13.8 MB/sec
+formatter/pydantic/types.py                1.02      4.1±0.19ms     6.3 MB/sec    1.00      4.0±0.14ms     6.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.5±0.29ms     3.3 MB/sec    1.02     12.7±0.28ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.12ms     4.9 MB/sec    1.00      3.3±0.09ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   479.2±14.32µs     6.2 MB/sec    1.02   487.2±17.72µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.16ms     3.9 MB/sec    1.02      6.6±0.17ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.5±0.14ms     6.2 MB/sec    1.04      6.8±0.18ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1426.6±34.31µs    11.7 MB/sec    1.03  1466.6±67.49µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.02    179.9±7.27µs    16.4 MB/sec    1.00    176.2±5.33µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.06ms     8.6 MB/sec    1.01      3.0±0.07ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00     11.6±0.64ms     3.5 MB/sec     1.03     12.0±0.72ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.13ms     8.1 MB/sec     1.14      2.3±0.09ms     7.1 MB/sec
+formatter/numpy/globals.py                 1.00   242.7±28.57µs    12.2 MB/sec     1.12   270.9±26.35µs    10.9 MB/sec
+formatter/pydantic/types.py                1.00      4.4±0.28ms     5.8 MB/sec     1.12      4.9±0.20ms     5.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.6±0.59ms     2.6 MB/sec     1.00     15.4±0.41ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.3±0.18ms     3.9 MB/sec     1.00      4.2±0.19ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.06   568.0±26.72µs     5.2 MB/sec     1.00   537.2±22.34µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.0±0.32ms     3.2 MB/sec     1.01      8.1±0.32ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.10      9.5±0.63ms     4.3 MB/sec     1.00      8.6±0.29ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1758.3±125.96µs     9.5 MB/sec    1.00  1761.2±62.14µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00   197.6±14.45µs    14.9 MB/sec     1.16   229.6±10.22µs    12.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.18ms     7.3 MB/sec     1.10      3.8±0.20ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/parentheses.rs</code>:57 on 2023-08-09 05:59</div>
+            <div class="timeline-body"><p>Could we use <code>parenthesize_if_expands</code> in <code>StmtFunctionDef</code> directly, as it seems to be a one-off requirement?</p>
+<p>Edit: The difference is that <code>maybe_parenthesize</code> respects <code>NeedsParentheses</code>. The <em>ignoring the expression's parenthesization requirements</em> is misleading because the point over <code>parenthesize_if_expands</code> is precisely that it respects <code>NeedsParentheses</code> when it returns <code>Always</code>. How about naming this variant <code>IfBreaksOrIfRequired</code> (I'm not super happy with it, because <code>IfRequired</code> is intended to be a subset of <code>IfBreaks</code>) or <code>IfBreaksIncludingNever</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:72 on 2023-08-09 06:01</div>
+            <div class="timeline-body"><p>You may be able to inspect the IR if you want. But I prefer AST based rules because they're easier understood</p>
+<pre><code class="language-rust">let mut recording = f.start_recording();
+
+write!(recording, [item.parameters.format()])?;
+
+let recorded = recording.stop();
+// now inspect the document
+recorded.iter().any(|element| ....)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-09 06:39</div>
+            <div class="timeline-body"><p>This is interesting and I wonder how intentional the behavior is. I tried to deduce the behavior from Black's source code. I  can confirm that the behavior is different if the function has no arguments, but I haven't yet found the place where the branching happens:</p>
+<ul>
+<li>Black uses <code>left_hand_split</code> for function definitions (rather than the usual <code>rhs</code>) [<a href="https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/linegen.py#L547-L548">source</a>]</li>
+<li>For empty: It forces the optional parentheses of the return type and applies the default transforms for parenthesized expressions (<code>delimiter_split</code>, <code>standalone_comment_split</code>, <code>rhs</code>). This matches <code>optional_parentheses</code></li>
+<li>Non empty: It splits after the <code>(</code> of the arguments and then applies the default transform for <em>unparenthesized</em> expressions (<code>rhs</code>, <code>hug_power_op</code>). This matches <code>mabye_parenthesize</code> with <code>Parenthesize::IfBreaks</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-09 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:205 on 2023-08-09 06:45</div>
+            <div class="timeline-body"><p>Is the path <code>OptionalParentheses::Multiline</code> ever taken? Doesn't it already pass the aboth multiline case (because <code>parenthesize != Parenthesize::IfRequired</code> is true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-09 06:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:68 on 2023-08-09 06:56</div>
+            <div class="timeline-body"><p>This is a nice win :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:205 on 2023-08-09 20:53</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-09 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/parentheses.rs</code>:57 on 2023-08-09 20:54</div>
+            <div class="timeline-body"><p>Tried to clarify, thank you...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 20:54</div>
+            <div class="timeline-body"><p>(I need to figure out the instability here, then will re-request a review.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 23:41</div>
+            <div class="timeline-body"><p>Having trouble with this, looking for help.</p>
+<p>Given:</p>
+<pre><code class="language-python">def double(a: int) -&gt; (
+    int # Hello
+):
+    return 2*a
+</code></pre>
+<p>We first format as:</p>
+<pre><code class="language-python">def double(
+    a: int
+) -&gt; int:  # Hello
+    return 2 * a
+</code></pre>
+<p>This is because we format <code># Hello</code> as a trailing end-of-line comment on the return annotation, which leads to an <code>expand_parent()</code>, since we always expand parents for trailing comments. But the expanded parent group is the entire parameters <em>and</em> return type, so the parameters breaks in that odd way, I guess?</p>
+<p>When we reformat, we get:</p>
+<pre><code class="language-python">def double(a: int) -&gt; int:  # Hello
+    return 2 * a
+</code></pre>
+<p>Since the <code># Hello</code> gets placed as a dangling comment on the function definition via <code>placement.rs</code>.</p>
+<p>Is there any way for me to avoid the breaking in the first format? (This <em>does</em> get fixed by https://github.com/astral-sh/ruff/pull/6464 since we don't incorrectly break, but perhaps we won't end up merging that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-10 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:164 on 2023-08-10 06:09</div>
+            <div class="timeline-body"><p>You want stacked diffs. I can't approve this PR now because I disagree with this change ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:204 on 2023-08-10 06:11</div>
+            <div class="timeline-body"><p>I think you still want an extra case for <code>Multiline</code> and <code>IfBreaksOrRequired</code> because parentheses are now omitted if <code>can_omit_optional_parentheses</code> returns <code>True</code>. Is is this what we want? Can we come up with a test case that expands over multiple lines and <code>can_omit_optional_parentheses</code> returns <code>True</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-08-10 06:12</div>
+            <div class="timeline-body"><p>Let's remove the comment formatting changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-10 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:164 on 2023-08-10 12:42</div>
+            <div class="timeline-body"><p>Sorry, the commits are correct, I just forgot to set the base branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 12:43</div>
+            <div class="timeline-body"><p>We can certainly remove the comment formatting changes, but it then requires coming up with a strategy for resolving the instability that I documented above, which either requires further deviating from Black or changing the groups in a way that I don’t fully understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-10 13:52</div>
+            <div class="timeline-body"><p>One option would be to group the <code>parameters</code> to revert to right to left breaking if we know that the right side has a trailing comment (it is guaranteed to break). Meaning, we then use our previous logic where we first expand the return type (which is guaranteed to expand because of the comment), and only then the parameters.</p>
+<pre><code class="language-rust">            let group_function_parameters = item
+                .returns
+                .as_deref()
+                .is_some_and(|return_type| comments.has_trailing_comments(return_type));
+
+            if group_function_parameters {
+                write!(f, [group(&amp;item.parameters.format())])?;
+            } else {
+                write!(f, [item.parameters.format()])?;
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-10 13:57</div>
+            <div class="timeline-body"><p>Never, this doesn't work (for the opposite reason):</p>
+<pre><code class="language-python">def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(
+    x, b, c, d
+) -&gt; (Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+] # test
+): 
+    ...
+
+# Pass 1
+def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(x, b, c, d) -&gt; Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+]:  # test
+    ...
+
+# Pass 2
+def xxxxxxxxxxxxxxxxxxxxxxxxxxxx(
+    x, b, c, d
+) -&gt; Set[
+    &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+]:  # test
+    ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-10 14:27</div>
+            <div class="timeline-body"><p>The easiest might be to group parameters if the return type doesn't have its own breakpoint and has a trailing comment. The list should be rather short because we know that we're in a return-type position. Rome has a similar function</p>
+<p>https://github.com/rome/tools/blob/2655264565608e29229490101f7abbfa89a35598/crates/rome_js_formatter/src/js/declarations/function_declaration.rs#L258-L297</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 15:45</div>
+            <div class="timeline-body"><p>(Trying this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-10 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:198 on 2023-08-10 16:51</div>
+            <div class="timeline-body"><p>Hmm, no, this needs to be more expansive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-10 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-10 16:59</div>
+            <div class="timeline-body"><p>Have you considered changing the definition of <code>IfRequired</code> instead?</p>
+<p>From a quick search, we use <code>IfRequired</code> for await, yield/yield from, and (async) with. We format</p>
+<pre><code class="language-python">with (x := 1):
+    pass
+
+def g():
+    yield (x := 1)
+
+async def f():
+    await (x := 1)
+</code></pre>
+<p>as</p>
+<pre><code class="language-python">with (x := 1):
+    pass
+
+
+def g():
+    yield x := 1
+
+
+async def f():
+    await x := 1
+</code></pre>
+<p>where <code>yield x := 1</code> and <code>await x := 1</code> are syntax errors. (Black keeps all the parentheses and doesn't introduce a syntax error)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-10 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:198 on 2023-08-10 17:00</div>
+            <div class="timeline-body"><p>I guess this will work for most real cases, but it's still unstable for code like:</p>
+<pre><code class="language-python">def double(a: int) -&gt; (
+    [int] # Hello
+):
+    return 2*a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 17:01</div>
+            <div class="timeline-body"><p>I'll take a look! I'm first trying to figure out how to fix this instability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-11 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 05:09</div>
+            <div class="timeline-body"><p>As a last resort, I suppose I could make this a dangling comment on the function, so that it always gets formatted after the <code>:</code> consistently. It would not be compatible with Black in all cases, but it would at least be stable, simple, and... <em>reasonable</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 05:13</div>
+            <div class="timeline-body"><p>Another deviation is that I could decide to <em>preserve</em> the parentheses if a trailing comment is present there, e.g., make this stable formatting:</p>
+<pre><code class="language-python">def double(
+    a: int
+) -&gt; (
+    int  # Hello
+):
+    pass
+</code></pre>
+<p>(I haven't looked into how difficult this would be, but I assume it would be easier than what I'm trying to do here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-11 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/function.py</code>:438 on 2023-08-11 07:18</div>
+            <div class="timeline-body"><p>This file is becoming massive. You may want to move some tests into a new file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-11 07:19</div>
+            <div class="timeline-body"><p>Can you push your latest change so that I can play with them myself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 13:16</div>
+            <div class="timeline-body"><p>I just pushed. If simpler, you can also remove the <code>should_group_parameters</code> to get the original behavior before that suggestion:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_formatter/src/statement/stmt_function_def.rs b/crates/ruff_python_formatter/src/statement/stmt_function_def.rs
+index d47825cc2..39025b11c 100644
+--- a/crates/ruff_python_formatter/src/statement/stmt_function_def.rs
++++ b/crates/ruff_python_formatter/src/statement/stmt_function_def.rs
+@@ -60,15 +60,7 @@ impl FormatNodeRule&lt;StmtFunctionDef&gt; for FormatStmtFunctionDef {
+         }
+ 
+         let format_inner = format_with(|f: &amp;mut PyFormatter| {
+-            if should_group_function_parameters(
+-                &amp;item.parameters,
+-                item.returns.as_deref(),
+-                f.context(),
+-            ) {
+-                write!(f, [group(&amp;item.parameters.format())])?;
+-            } else {
+-                write!(f, [item.parameters.format()])?;
+-            }
++            write!(f, [item.parameters.format()])?;
+ 
+             if let Some(return_annotation) = item.returns.as_ref() {
+                 write!(f, [space(), text(&quot;-&gt;&quot;), space()])?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 16:41</div>
+            <div class="timeline-body"><p>The current version deviates from Black, but it's at least stable... Specifically, we now preserve formatting like:</p>
+<pre><code class="language-python">def double(
+    a: int
+) -&gt; (
+    int  # Hello
+):
+    pass
+</code></pre>
+<p>I think this is <em>reasonable</em> but perhaps not ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:204 on 2023-08-11 16:45</div>
+            <div class="timeline-body"><p>You're right, good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-11 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-11 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:191 on 2023-08-11 16:53</div>
+            <div class="timeline-body"><p>This is a bit less DRY but I find it much easier to reason about the match when every <code>OptionalParentheses</code> has a single branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-11 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-11 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-11 16:59</div>
+            <div class="timeline-body"><p>I think this formatting is arguably more consistent for us, since we format this:</p>
+<pre><code class="language-python">def double(
+    a # comment
+):
+    return 2 * a
+</code></pre>
+<p>As:</p>
+<pre><code class="language-python">def double(
+    a,  # comment
+):
+    return 2 * a
+</code></pre>
+<p>That is, we don't push those out to after the function definition (unlike Black).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:73 on 2023-08-11 17:50</div>
+            <div class="timeline-body"><p>Nit: Would it be enough to test for leading and trailing comments only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-11 17:51</div>
+            <div class="timeline-body"><p>I like the outcome. It even preserves the authors comment choice:</p>
+<p>e.g. I understand that we would keep</p>
+<pre><code class="language-python">def test() -&gt; (
+	[a, b ]  # noqa: Ruf01
+): pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-11 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-11 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-11 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

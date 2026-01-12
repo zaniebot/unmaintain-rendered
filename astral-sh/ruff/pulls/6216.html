@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve end-of-line comments on import-from statements - astral-sh/ruff #6216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve end-of-line comments on import-from statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6216">#6216</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-01 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 01:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ensures that we keep comments at the end-of-line in cases like:</p>
+<pre><code class="language-python">from foo import (  # comment
+  bar,
+)
+</code></pre>
+<p>Closes https://github.com/astral-sh/ruff/issues/6067.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-01 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 01:19</div>
+            <div class="timeline-body"><p>We can probably generalize some of this for other container types (lists, sets, etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 01:30</div>
+            <div class="timeline-body"><p>(I'm looking into it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-01 01:40</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.3±0.07ms     4.9 MB/sec    1.00      8.2±0.13ms     5.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1644.0±36.70µs    10.1 MB/sec    1.00  1645.4±45.03µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.00    184.7±4.79µs    16.0 MB/sec    1.00    184.1±5.58µs    16.0 MB/sec
+formatter/pydantic/types.py                1.02      3.6±0.10ms     7.1 MB/sec    1.00      3.5±0.13ms     7.3 MB/sec
+linter/all-rules/large/dataset.py          1.02     11.4±0.20ms     3.6 MB/sec    1.00     11.1±0.10ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.8±0.04ms     5.9 MB/sec    1.00      2.8±0.03ms     5.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    383.6±0.87µs     7.7 MB/sec    1.00    384.0±0.51µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.02      5.1±0.10ms     5.0 MB/sec    1.00      5.0±0.07ms     5.1 MB/sec
+linter/default-rules/large/dataset.py      1.05      6.1±0.08ms     6.7 MB/sec    1.00      5.8±0.06ms     7.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1228.9±21.87µs    13.5 MB/sec    1.00  1212.1±17.84µs    13.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    134.1±0.98µs    22.0 MB/sec    1.00    133.9±0.82µs    22.0 MB/sec
+linter/default-rules/pydantic/types.py     1.03      2.6±0.05ms     9.6 MB/sec    1.00      2.6±0.06ms     9.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.10ms     4.1 MB/sec    1.02     10.0±0.14ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1934.6±63.54µs     8.6 MB/sec    1.00  1935.5±29.37µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00   216.0±10.87µs    13.7 MB/sec    1.00    215.1±6.97µs    13.7 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.06ms     6.0 MB/sec    1.03      4.3±0.09ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.4±0.14ms     3.0 MB/sec    1.03     13.8±0.29ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.05ms     4.7 MB/sec    1.01      3.6±0.07ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    433.1±5.26µs     6.8 MB/sec    1.00    435.1±7.13µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.07ms     4.2 MB/sec    1.01      6.1±0.09ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.11ms     5.5 MB/sec    1.04      7.6±0.13ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1489.5±25.78µs    11.2 MB/sec    1.03  1529.8±38.35µs    10.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    167.2±3.07µs    17.6 MB/sec    1.01    169.4±4.16µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     8.0 MB/sec    1.04      3.3±0.07ms     7.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-01 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 06:05</div>
+            <div class="timeline-body"><p>This comment confuses me. It says that the comment must be on the same line, but before the first member. But the snipped shows a comment that is after the second member. Which one is it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1147 on 2023-08-01 06:05</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        &amp;&amp; import_from
+            .names
+            .first()
+            .is_some_and(|name| comment.end() &lt; name.start())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 06:11</div>
+            <div class="timeline-body"><p>I'm a bit surprised that this isn't working by default. The default comment placement associates the comment with the most outer node:</p>
+<pre><code># comment
+a + b
+</code></pre>
+<p>The default placement associates the comment with the <code>ExpressionStatement</code> and not the <code>Expr::Name</code>, because that would expand the binary expression. The same should be true for trailing comments.</p>
+<p>I pasted the given example and the default placement logic does place the comment correctly:</p>
+<pre><code>[crates/ruff_python_formatter/src/lib.rs:316] formatted.context().comments().debug(formatted.context().source_code()) = {
+    Node {
+        kind: StmtImportFrom,
+        range: 1..20,
+        source: `from foo import bar`,
+    }: {
+        &quot;leading&quot;: [],
+        &quot;dangling&quot;: [],
+        &quot;trailing&quot;: [
+            SourceComment {
+                text: &quot;# comment&quot;,
+                position: EndOfLine,
+                formatted: true,
+            },
+        ],
+    },
+}
+</code></pre>
+<p>Could you update the example or remove the placement logic if it is unnecessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_import_from.rs</code>:42 on 2023-08-01 06:17</div>
+            <div class="timeline-body"><p>I would have expected the comments to be written right before the <code>names</code> to match the logic in <code>placement.rs</code>: The dangling comments are dangling comments after any possible opening parentheses, meaning they should come after the <code>*</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1143 on 2023-08-01 06:18</div>
+            <div class="timeline-body"><p>Does this work with line continuation?</p>
+<pre><code class="language-python">from a import \
+	( # comment
+		b,
+		c
+	)
+</code></pre>
+<p>It could make sense to search for any opening <code>(</code> parentheses instead and assert that the comment starts after the opening but before the start member. This may even be faster because the tokenizer only needs to eat over a few whitespace tokens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-08-01 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 07:30</div>
+            <div class="timeline-body"><p>For me, the current style (same as black's style) matches my expectations better:</p>
+<pre><code class="language-python">from a import b, dkasjhfaslhdflkjashdlfjkashldfkjahlsdkjfha, sdkfjhlasdfkjlhasdfkjhasdflkjhasd # c
+from a import b, dkasjhfaslhdflkjashdlfjkashldfkjahlsdkjfha, sdkfjhlasdfkjlhasdfkjhasdflkjhasd # c
+
+def f():
+    pass
+</code></pre>
+<p>into</p>
+<pre><code class="language-python">from a import (
+    b,
+    dkasjhfaslhdflkjashdlfjkashldfkjahlsdkjfha,
+    sdkfjhlasdfkjlhasdfkjhasdflkjhasd,
+)  # c
+from a import (
+    b,
+    dkasjhfaslhdflkjashdlfjkashldfkjahlsdkjfha,
+    sdkfjhlasdfkjlhasdfkjhasdflkjhasd,
+)  # c
+
+
+def f():
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 07:56</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">        CommentPlacement::dangling(import_from.into(), comment)
+</code></pre>
+<p>or without <code>.into()</code> after #6231.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-01 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 12:55</div>
+            <div class="timeline-body"><p>The comment is accurate. In order for this path to trigger, <code># comment</code> must be on the same line as the <code>import</code>, but before the first member. We want to trigger on:</p>
+<pre><code class="language-python">from foo import ( # bar
+ baz,
+)
+</code></pre>
+<p>But not:</p>
+<pre><code class="language-python">from foo import ( baz, # bar
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 12:58</div>
+            <div class="timeline-body"><p>The default logic does not work here. Given <code>from foo import bar  # comment</code>, we treat <code># comment</code> as a trailing comment on <code>from foo import bar</code>. However, that doesn't do the right thing.</p>
+<p>Given:</p>
+<pre><code class="language-python">from foo import bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar, bar  # comment
+</code></pre>
+<p><em>Without</em> this code, we format this as:</p>
+<pre><code class="language-python">from foo import (
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+)  # comment
+</code></pre>
+<p>Which is incorrect. We need to keep the <code># comment</code> attached to the <code>import</code>.</p>
+<p>Instead, we want to do:</p>
+<pre><code class="language-python">from foo import (  # comment
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+    bar,
+)
+</code></pre>
+<p>So we treat these comments as dangling and handle the placement in the statement formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 13:00</div>
+            <div class="timeline-body"><p>I'm still confused... Doesn't the comment show an example where it isn't the first member?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:00</div>
+            <div class="timeline-body"><p>I'm so confused, I swear I checked this last night and Black was putting the comment after the <code>from a import (</code>, but the playground is showing me otherwise now? This seems odd to me though, it means Black is erroneously moving the <code># noqa</code>, but I will revert it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 13:02</div>
+            <div class="timeline-body"><p>It looks like Black gets this wrong too so I will revert this: https://github.com/astral-sh/ruff/pull/6216#discussion_r1280603568. I thought I tested it yesterday but I must've been mixing up all the different cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 13:02</div>
+            <div class="timeline-body"><p>Can we update the method comment? Having an example that doesn't require any special handling seems misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:02</div>
+            <div class="timeline-body"><p>Candidly I think what Black is doing is wrong (the comment is on the import, not the member).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:02</div>
+            <div class="timeline-body"><p>Candidly I think what Black is doing is wrong (the comment is on the import, not the member).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 13:04</div>
+            <div class="timeline-body"><p>(I will clarify of course.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:05</div>
+            <div class="timeline-body"><p>For example, given:</p>
+<pre><code class="language-python">from foo import (  # comment
+  bar,
+  baz
+)
+</code></pre>
+<p>Black will then format as:</p>
+<pre><code class="language-python">from foo import bar, baz  # comment
+</code></pre>
+<p>Under Black's logic, if that import then breaks again by getting too long, it will move the comment:</p>
+<pre><code class="language-python">from foo import (
+  bar,
+  baz,
+)  # comment
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:06</div>
+            <div class="timeline-body"><p>I'm actually inclined to keep what we have here, but I'm definitely open to disagreement. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__import_from.py.snap</code>:80 on 2023-08-01 13:25</div>
+            <div class="timeline-body"><p>Eh, I will just revert it for now for simplicity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1147 on 2023-08-01 14:54</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/ruff/pull/6244">i like that</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-01 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 15:17</div>
+            <div class="timeline-body"><p>Yes, the comment shows the unformatted code for which we <em>don't</em> want to trigger the <code>if</code> condition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 15:18</div>
+            <div class="timeline-body"><p><code>to triggering on</code> should say <code>to avoid triggering on</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1151 on 2023-08-01 15:18</div>
+            <div class="timeline-body"><p>I'm just gonna revert for now, for simplicity, even though I think our behavior is slightly better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1138 on 2023-08-01 15:24</div>
+            <div class="timeline-body"><p>It should be much clearer now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1143 on 2023-08-01 15:33</div>
+            <div class="timeline-body"><p>Good suggestion, changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-01 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-01 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 15:33</div>
+            <div class="timeline-body"><p>Okay, hopefully good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1143 on 2023-08-01 16:39</div>
+            <div class="timeline-body"><p>Nit: I would love to remove the backward lexing if possible in the future. It kind of works, but I'm worried that we'll run into issues sooner or later (e.g. magic commands are interesting...) . Could we instead search forward from the end of the identifier (or the start of the statement if absent)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-01 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1143 on 2023-08-01 18:51</div>
+            <div class="timeline-body"><p>I think I figured out a solution that doesn't require lexing. If the comment is end-of-line, and <em>between</em> the start of the statement and the first member, it <em>has</em> to be immediately following the parenthesis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-01 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-01 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-01 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

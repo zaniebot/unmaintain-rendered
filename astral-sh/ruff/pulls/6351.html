@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use separate structs for expression and statement tracking - astral-sh/ruff #6351</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use separate structs for expression and statement tracking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6351">#6351</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-04 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 18:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the performance degradation introduced in https://github.com/astral-sh/ruff/pull/6345. Instead of using the generic <code>Nodes</code> structs, we now use separate <code>Statement</code> and <code>Expression</code> structs. Importantly, we can avoid tracking a bunch of state for expressions that we need for parents: we don't need to track reference-to-ID pointers (we just have no use-case for this -- I'd actually like to remove this from statements too, but we need it for branch detection right now), we don't need to track depth, etc.</p>
+<p>In my testing, this entirely removes the regression on all-rules, and gets us down to 2ms slower on the default rules (as a crude hyperfine benchmark, so this is within margin of error IMO).</p>
+<p>No behavioral changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-04 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-04 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-04 19:15</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03     10.1±0.44ms     4.0 MB/sec    1.00      9.8±0.30ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1846.7±96.06µs     9.0 MB/sec    1.02  1881.6±83.02µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00   216.3±11.89µs    13.6 MB/sec    1.02   220.9±15.12µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      3.9±0.15ms     6.6 MB/sec    1.00      3.9±0.15ms     6.6 MB/sec
+linter/all-rules/large/dataset.py          1.03     13.1±0.74ms     3.1 MB/sec    1.00     12.8±0.52ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.12ms     5.1 MB/sec    1.02      3.4±0.12ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   495.3±29.62µs     6.0 MB/sec    1.00   494.9±35.73µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.03      6.3±0.29ms     4.1 MB/sec    1.00      6.1±0.37ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.06      6.8±0.28ms     6.0 MB/sec    1.00      6.4±0.25ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.06  1418.1±65.61µs    11.7 MB/sec    1.00  1333.2±49.80µs    12.5 MB/sec
+linter/default-rules/numpy/globals.py      1.08    178.5±9.56µs    16.5 MB/sec    1.00    165.6±8.18µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.05      3.0±0.11ms     8.6 MB/sec    1.00      2.8±0.11ms     9.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.2±0.14ms     4.0 MB/sec    1.00     10.1±0.17ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1948.2±39.26µs     8.5 MB/sec    1.00  1922.7±23.46µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.01    218.2±9.50µs    13.5 MB/sec    1.00    217.1±8.95µs    13.6 MB/sec
+formatter/pydantic/types.py                1.01      4.2±0.06ms     6.0 MB/sec    1.00      4.2±0.06ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.1±0.19ms     3.1 MB/sec    1.01     13.2±0.16ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.07ms     4.7 MB/sec    1.01      3.6±0.04ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   435.4±11.61µs     6.8 MB/sec    1.00    433.6±6.36µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.10ms     4.3 MB/sec    1.02      6.1±0.08ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.09ms     5.9 MB/sec    1.02      7.0±0.09ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1423.5±20.05µs    11.7 MB/sec    1.00  1418.0±18.38µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.02    163.4±3.50µs    18.1 MB/sec    1.00    160.5±2.57µs    18.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.04ms     8.3 MB/sec    1.00      3.0±0.05ms     8.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/expressions.rs</code>:17 on 2023-08-05 08:06</div>
+            <div class="timeline-body"><p>The name here will conflict with <code>Expr</code> if we go ahead and rename it to <code>Expression</code>.</p>
+<p>Maybe <code>ExpressionWithParent</code>. The name doesn't seem as important as it is an internal type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:33 on 2023-08-05 08:11</div>
+            <div class="timeline-body"><p>Could we remove <code>RefEquality</code> if we use a <code>TextRange</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:69 on 2023-08-05 08:13</div>
+            <div class="timeline-body"><p>Nit: The <code>parent</code> and <code>parent_id</code> methods are asymetric in that one accepts a <code>StatementId</code> and the other <code>Stmt</code>. Are we back to <code>statement_parent</code> 😆 ? Or <code>resolve_parent</code> or require two steps: <code>statement_id(stmt)</code> and then call <code>parent</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:94 on 2023-08-05 08:15</div>
+            <div class="timeline-body"><p>Do we need the mutability (and indexing)? Same for <code>Expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:26 on 2023-08-05 08:16</div>
+            <div class="timeline-body"><p>Is this a frequent operation or could we compute the <code>depth</code> by counting the ancestor chain`?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-05 08:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:33 on 2023-08-07 14:59</div>
+            <div class="timeline-body"><p>I think so... I'll do this separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:69 on 2023-08-07 15:02</div>
+            <div class="timeline-body"><p>Haha. I will fix this in a follow-up since this API already exists on <code>Nodes</code> (now removed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:94 on 2023-08-07 15:02</div>
+            <div class="timeline-body"><p>No! Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-07 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/statements.rs</code>:26 on 2023-08-07 15:03</div>
+            <div class="timeline-body"><p>I will revisit in a follow-up PR, since this already exists on <code>Nodes</code> (now removed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-07 15:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

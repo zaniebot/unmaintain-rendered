@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Buffer::write_element` non-failable - astral-sh/ruff #6613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>Buffer::write_element</code> non-failable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6613">#6613</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-16 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 11:41</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR changes the <code>Buffer::write_element</code> return type from <code>FormatResult&lt;()&gt;</code> to <code>()</code> (void).</p>
+<p>Local benchmarks show that this improves performance significantly and the only possible error for <code>write_element</code> to fail is if <code>Vec</code> fails to allocate, which we don't need to handle.</p>
+<p>There's one downside to this. The reason why <code>Buffer::write_element</code> is that a wrapper <code>Buffer</code> (see the removed <code>PreambleBuffer</code>) can intercept the writing of an element and write additional content.
+This is a neat feature but wrapping <code>Buffer</code>s (especially if done recursively, e.g. in every Expression) comes with a significant performance penalty because each wrapping requires a dynamic dispatch call. That's why <code>Buffer</code>s haven't been used as much and are generally discouraged.</p>
+<p>There's a more performant solution for preambles today that didn't exist when the Buffer was introduced.</p>
+<ul>
+<li>Create a snapshot</li>
+<li>write the preamble</li>
+<li>perform a rollback if no content was written since the preamble</li>
+</ul>
+<p>However, this doesn't work for use cases where the preamble itself is expensive OR for cases where an element should be written as a response to another element (e.g. write a line break after each &quot;break_here&quot; text).</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<pre><code>Gnuplot not found, using plotters backend
+formatter/numpy/globals.py
+                        time:   [38.464 µs 38.507 µs 38.553 µs]
+                        thrpt:  [76.535 MiB/s 76.627 MiB/s 76.712 MiB/s]
+                 change:
+                        time:   [-4.3802% -4.2067% -4.0365%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+4.2063% +4.3914% +4.5809%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+formatter/pydantic/types.py
+                        time:   [769.99 µs 770.45 µs 771.00 µs]
+                        thrpt:  [33.078 MiB/s 33.102 MiB/s 33.121 MiB/s]
+                 change:
+                        time:   [-2.5591% -2.3013% -2.0730%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+2.1168% +2.3555% +2.6263%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+formatter/numpy/ctypeslib.py
+                        time:   [378.12 µs 378.37 µs 378.65 µs]
+                        thrpt:  [43.975 MiB/s 44.007 MiB/s 44.037 MiB/s]
+                 change:
+                        time:   [-2.0623% -1.7352% -1.4174%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.4378% +1.7659% +2.1057%]
+                        Performance has improved.
+Found 11 outliers among 100 measurements (11.00%)
+  2 (2.00%) high mild
+  9 (9.00%) high severe
+Benchmarking formatter/large/dataset.py: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 9.7s, enable flat sampling, or reduce sample count to 50.
+formatter/large/dataset.py
+                        time:   [1.9180 ms 1.9197 ms 1.9216 ms]
+                        thrpt:  [21.171 MiB/s 21.192 MiB/s 21.211 MiB/s]
+                 change:
+                        time:   [-2.0365% -1.8731% -1.7127%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.7426% +1.9089% +2.0788%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  4 (4.00%) high mild
+
+</code></pre>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 11:41</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6613</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6613" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6613?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-16 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-08-16 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-16 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 12:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03      3.7±0.02ms    11.0 MB/sec    1.00      3.6±0.03ms    11.3 MB/sec
+formatter/numpy/ctypeslib.py               1.01    759.4±3.85µs    21.9 MB/sec    1.00    749.5±3.47µs    22.2 MB/sec
+formatter/numpy/globals.py                 1.00     78.6±0.34µs    37.6 MB/sec    1.02     80.2±0.39µs    36.8 MB/sec
+formatter/pydantic/types.py                1.02   1498.3±8.70µs    17.0 MB/sec    1.00  1467.2±23.91µs    17.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.3±0.04ms     4.0 MB/sec    1.00     10.3±0.30ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.00ms     6.0 MB/sec    1.00      2.8±0.01ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    393.2±0.45µs     7.5 MB/sec    1.00    393.4±1.03µs     7.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.3±0.02ms     4.8 MB/sec    1.00      5.3±0.03ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.5±0.01ms     7.4 MB/sec    1.00      5.4±0.01ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1207.5±1.35µs    13.8 MB/sec    1.00   1204.5±4.99µs    13.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    141.6±0.28µs    20.8 MB/sec    1.00    141.6±0.39µs    20.8 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.5±0.01ms    10.3 MB/sec    1.00      2.5±0.01ms    10.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      5.0±0.17ms     8.2 MB/sec    1.00      4.9±0.18ms     8.2 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1008.0±54.99µs    16.5 MB/sec    1.00   992.6±44.39µs    16.8 MB/sec
+formatter/numpy/globals.py                 1.03    104.0±4.68µs    28.4 MB/sec    1.00    101.4±6.64µs    29.1 MB/sec
+formatter/pydantic/types.py                1.00      2.0±0.07ms    12.7 MB/sec    1.00  1997.4±78.68µs    12.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.5±0.26ms     2.6 MB/sec    1.00     15.5±0.26ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.14ms     3.9 MB/sec    1.00      4.2±0.08ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   535.6±21.51µs     5.5 MB/sec    1.00   530.6±18.95µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.0±0.17ms     3.2 MB/sec    1.00      8.0±0.17ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.14ms     4.8 MB/sec    1.00      8.4±0.11ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1790.2±43.80µs     9.3 MB/sec    1.00  1786.0±36.92µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.01    212.7±7.15µs    13.9 MB/sec    1.00   211.4±12.05µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.10ms     6.8 MB/sec    1.00      3.8±0.09ms     6.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-16 13:05</div>
+            <div class="timeline-body"><p>Nice! I'm surprised this is so expensive, did it surprise you or did you have intuition here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-16 13:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Nice! I'm surprised this is so expensive, did it surprise you or did you have intuition here?</p>
+</blockquote>
+<p>I had some intuition:</p>
+<ul>
+<li>Each <code>?</code> introduces a new branch. I don't know how many the branch predictor can predict correctly</li>
+<li>All our basic builders use <code>write_element</code> and we emit a lot of <code>source_position</code>, <code>text</code> and <code>group</code> elements.</li>
+<li>I can't find the blog post right now but the try operator (used to) can be slower than some hand written macros that perform the same (using an early return) . That's why I suspected that removing some of the hot branches may help performance.</li>
+</ul>
+<p>I'm mainly surprised that we can't see the same results on our benchmark runner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-16 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-16 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-16 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 13:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't find the blog post right now but the try operator (used to) can be slower than some hand written macros that perform the same (using an early return) . That's why I suspected that removing some of the hot branches may help performance.</p>
+</blockquote>
+<p>Ah yeah, I've seen this somewhere, maybe it's just an issue in the Rust repo...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

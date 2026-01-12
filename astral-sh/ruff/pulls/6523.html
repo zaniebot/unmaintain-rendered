@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>importer: skip whitespace between comments at start of file - astral-sh/ruff #6523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>importer: skip whitespace between comments at start of file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6523">#6523</a>
+        opened by <a href="https://github.com/durumu">@durumu</a>
+        on 2023-08-12 14:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/durumu">@durumu</a> on 2023-08-12 14:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When adding an import, such as when fixing <code>I002</code>, ruff doesn't skip whitespace between comments, but isort does. See this issue for more detail: https://github.com/astral-sh/ruff/issues/6504</p>
+<p>This change would fix that by skipping whitespace between comments in <code>Insertion.start_of_file()</code>.</p>
+<h2>Test Plan</h2>
+<p>I added a new test, <code>comments_and_newlines</code>, to verify this behavior. I also ran <code>cargo test</code> and no existing tests broke. That being said, this is technically a breaking change, as it's possible that someone was relying on the previous behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-12 14:50</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.5±0.06ms     4.8 MB/sec    1.00      8.4±0.03ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1637.4±2.16µs    10.2 MB/sec    1.00  1623.1±13.78µs    10.3 MB/sec
+formatter/numpy/globals.py                 1.00    172.8±0.42µs    17.1 MB/sec    1.00    172.0±0.47µs    17.2 MB/sec
+formatter/pydantic/types.py                1.01      3.6±0.01ms     7.1 MB/sec    1.00      3.5±0.02ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     10.6±0.02ms     3.8 MB/sec    1.00     10.5±0.03ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      2.9±0.01ms     5.7 MB/sec    1.00      2.9±0.00ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.05    333.2±2.21µs     8.9 MB/sec    1.00    318.1±0.91µs     9.3 MB/sec
+linter/all-rules/pydantic/types.py         1.13      5.5±0.02ms     4.6 MB/sec    1.00      4.9±0.01ms     5.2 MB/sec
+linter/default-rules/large/dataset.py      1.03      5.6±0.01ms     7.3 MB/sec    1.00      5.4±0.06ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.07   1190.4±2.18µs    14.0 MB/sec    1.00   1116.8±4.13µs    14.9 MB/sec
+linter/default-rules/numpy/globals.py      1.09    124.7±0.26µs    23.7 MB/sec    1.00    114.5±0.78µs    25.8 MB/sec
+linter/default-rules/pydantic/types.py     1.05      2.5±0.02ms    10.1 MB/sec    1.00      2.4±0.00ms    10.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02     10.0±0.04ms     4.1 MB/sec    1.00      9.8±0.04ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1909.0±13.01µs     8.7 MB/sec    1.00  1882.1±41.19µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    196.1±2.63µs    15.0 MB/sec    1.02    199.3±7.25µs    14.8 MB/sec
+formatter/pydantic/types.py                1.01      4.2±0.02ms     6.0 MB/sec    1.00      4.2±0.05ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.02     12.8±0.10ms     3.2 MB/sec    1.00     12.5±0.05ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.6±0.01ms     4.7 MB/sec    1.00      3.5±0.02ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.02    371.4±5.46µs     7.9 MB/sec    1.00    363.0±8.66µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.13      6.6±0.04ms     3.9 MB/sec    1.00      5.8±0.06ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.03      6.9±0.08ms     5.9 MB/sec    1.00      6.7±0.03ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04   1441.4±8.34µs    11.6 MB/sec    1.00   1380.9±8.20µs    12.1 MB/sec
+linter/default-rules/numpy/globals.py      1.04    148.3±1.39µs    19.9 MB/sec    1.00    143.2±1.45µs    20.6 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.1±0.02ms     8.2 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "importer: skip whitespace when checking for comments at start of file" to "importer: skip whitespace between comments at start of file" by @durumu on 2023-08-12 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-12 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer/insertion.rs</code>:76 on 2023-08-12 16:34</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python"># This is a comment
+
+# This is a comment about this specific import
+from sys import stdout
+</code></pre>
+<p>I guess we'd now do:</p>
+<pre><code class="language-python"># This is a comment
+
+# This is a comment about this specific import
+from __future__ import annotations
+from sys import stdout
+</code></pre>
+<p>I guess we arguably already had that problem, since given:</p>
+<pre><code class="language-python"># This is a comment about this specific import
+from sys import stdout
+</code></pre>
+<p>We already do:</p>
+<pre><code class="language-python"># This is a comment about this specific import
+from __future__ import annotations
+from sys import stdout
+</code></pre>
+<p>I suppose we could modify the logic to only skip comments if the comments are followed by a blank line but that may be surprising -- I'm not sure. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/durumu">@durumu</a> reviewed on 2023-08-12 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/durumu">@durumu</a> on <code>crates/ruff/src/importer/insertion.rs</code>:76 on 2023-08-12 20:23</div>
+            <div class="timeline-body"><p>That's a good point. For what it's worth, <code>isort -a &quot;from __future__ import annotations&quot;</code> seems to do the same thing:</p>
+<pre><code class="language-py"># This is a comment
+
+# Comment about this import
+from foo import bar
+</code></pre>
+<p>turns into:</p>
+<pre><code class="language-py"># This is a comment
+
+# Comment about this import
+from __future__ import annotations
+
+from foo import bar
+</code></pre>
+<p>That makes me inclined to think this case isn't too valuable to support. If we do want to support it, though, I do think your proposal of skipping comments if the comments are followed by a blank line is pretty reasonable and intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-12 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer/insertion.rs</code>:76 on 2023-08-12 20:37</div>
+            <div class="timeline-body"><p>Ok, thanks for looking into that. If <code>isort</code> has this behavior, then it seems reasonable to me to proceed as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-08-12 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-12 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-12 20:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

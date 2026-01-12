@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark trailing comments in parenthesized tests - astral-sh/ruff #6287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mark trailing comments in parenthesized tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6287">#6287</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-02 20:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 20:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This ensures that we treat <code># comment</code> as parenthesized in contexts like:</p>
+<pre><code class="language-python">while (
+    True
+    # comment
+):
+    pass
+</code></pre>
+<p>The same logic applies equally to <code>for</code>, <code>async for</code>, <code>if</code>, <code>with</code>, and <code>async with</code>. The general pattern is that you have an expression which precedes a colon-separated suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-02 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-02 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-08-02 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:96 on 2023-08-02 20:47</div>
+            <div class="timeline-body"><p>nit: I'm a bit biased towards <code>from</code> as I find it more readable although one could argue against it being verbose :)</p>
+<pre><code class="language-suggestion">        AnyNodeRef::StmtWhile(stmt_while) =&gt; {
+            handle_terminal_comment(comment, TerminalExpression::from(stmt_while), locator)
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:677 on 2023-08-02 20:49</div>
+            <div class="timeline-body"><p>Not required in this PR but just a thought that this might need to be generalized as a <code>match</code> statement is made up of <code>&amp;[MatchCase]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-08-02 20:50</div>
+            <div class="timeline-body"><p>Looks good! Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-02 21:09</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.7±0.07ms     4.2 MB/sec    1.01      9.8±0.07ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1936.9±20.62µs     8.6 MB/sec    1.00  1943.1±13.42µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00    214.9±2.67µs    13.7 MB/sec    1.00    215.0±0.91µs    13.7 MB/sec
+formatter/pydantic/types.py                1.01      4.2±0.06ms     6.1 MB/sec    1.00      4.2±0.04ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.1±0.11ms     3.1 MB/sec    1.00     13.2±0.07ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.02ms     5.0 MB/sec    1.01      3.4±0.02ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    457.2±1.07µs     6.5 MB/sec    1.01    460.1±5.95µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.02ms     4.3 MB/sec    1.01      6.0±0.03ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.04ms     6.0 MB/sec    1.01      6.8±0.03ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1424.4±8.95µs    11.7 MB/sec    1.00   1429.8±7.71µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.0±0.99µs    18.9 MB/sec    1.00    156.3±0.87µs    18.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.0±0.13ms     4.1 MB/sec    1.01     10.1±0.15ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1925.9±40.59µs     8.6 MB/sec    1.02  1961.8±19.47µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    213.1±4.66µs    13.8 MB/sec    1.02    217.4±5.56µs    13.6 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.09ms     6.0 MB/sec    1.02      4.3±0.12ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.5±0.19ms     3.0 MB/sec    1.00     13.5±0.18ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.04ms     4.7 MB/sec    1.00      3.6±0.06ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    439.3±9.04µs     6.7 MB/sec    1.00    439.3±8.29µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.2±0.14ms     4.1 MB/sec    1.00      6.1±0.09ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.3±0.15ms     5.6 MB/sec    1.00      7.3±0.08ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1505.0±24.07µs    11.1 MB/sec    1.00  1489.8±21.06µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.0±3.87µs    17.5 MB/sec    1.01    170.6±4.01µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     7.9 MB/sec    1.01      3.3±0.06ms     7.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:677 on 2023-08-03 07:55</div>
+            <div class="timeline-body"><p>It's confusing to me that a <code>Expression</code> has a body.</p>
+<p>The python specification uses the term <code>clause</code> for compound statement (&quot;sections&quot;):</p>
+<blockquote>
+<p>A compound statement consists of one or more ‘clauses.’ A clause consists of a header and a ‘suite.’ The clause headers of a particular compound statement are all at the same indentation level. Each clause header begins with a uniquely ident<a href="https://docs.python.org/3/reference/compound_stmts.html#if">if</a>ying keyword and ends with a colon. A suite is a group of statements controlled by a clause. A suite can be one or more semicolon-separated simple statements on the same line as the header, following the header’s colon, or it can be one or more indented statements on subsequent lines. Only the latter form of a suite can contain nested compound statements; the following is illegal, mostly because it wouldn’t be clear to which if clause a following <a href="https://docs.python.org/3/reference/compound_stmts.html#else">else</a> clause would belong:</p>
+</blockquote>
+<p><a href="https://docs.python.org/3/reference/compound_stmts.html#compound-statements">source</a></p>
+<p>We could name this trait <code>Clause</code> with a <code>header()</code> and <code>body()</code> method where <code>suite</code> returns a slice over <code>Self::BodyItem</code> where <code>BodyItem</code> must implement <code>AstNode</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:734 on 2023-08-03 07:56</div>
+            <div class="timeline-body"><p>This seems to address the first header. Do you know if it also solves the problem for the <code>orelse</code>, <code>elif</code>, <code>except</code>, <code>finally</code>, or, in case of match, of many sequence clauses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:760 on 2023-08-03 07:57</div>
+            <div class="timeline-body"><p>You don't want to use <code>find</code> here because <code>find</code> skips over all non Colon tokens:</p>
+<pre><code class="language-python">a + :b
+</code></pre>
+<p>Your implementation would return <code>:</code> because find finds the first element that matches. You want to use <code>next</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:750 on 2023-08-03 07:58</div>
+            <div class="timeline-body"><p>Can we restrict this logic to only apply for own line comments? End of line comments should be handled correctly by the default implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:754 on 2023-08-03 08:01</div>
+            <div class="timeline-body"><p>Nit: I don't have a strong preference but this is the same as testing</p>
+<pre><code class="language-rust">let Some((preceding, following)) = (comment.preceding_node(), comment.following_node()) else { return CommentPlacement::Default(comment) };
+
+if preceding.ptr_eq(clause.header()) &amp;&amp; clause.body().first().is_some_and(|first| following.ptr_eq(first)) {
+	...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:105 on 2023-08-03 08:42</div>
+            <div class="timeline-body"><p>You don't need <code>TerminalExpression</code>: 405740a8ee6da3b37e927d612e501b4caa114b6a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:760 on 2023-08-03 08:44</div>
+            <div class="timeline-body"><p>isn't that handled by making sure we're after the check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> requested changes on 2023-08-03 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:105 on 2023-08-03 09:05</div>
+            <div class="timeline-body"><p>I kind of like it (besides the name). It gives the <em>thing</em> a conceptual name rather than just passing, seemingly, unrelated expression and suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:760 on 2023-08-03 09:07</div>
+            <div class="timeline-body"><p>It probably works fine, but <code>next</code> is the proper method here to make sure this returns false if we made any wrong assumptions. It also is faster, because <code>find</code> performs a loop, which we don't need.</p>
+<p>The alternative is to remove the <code>skip_while</code> and just use the <code>find</code>. Which is probably fine, assuming we correctly considered all edge cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-03 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:105 on 2023-08-03 09:29</div>
+            <div class="timeline-body"><p>in that case you can remove the <code>From</code> impls and instead pass the values directly to the struct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-03 10:37</div>
+            <div class="timeline-body"><p>I just realize there's an entirely different solution that uses the existing helper instead of matching over them manually: https://github.com/astral-sh/ruff/compare/handling_trailing_own_line_comments_after_tests_wiht_parentheses (POC, code needs polishing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 13:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I just realize there's an entirely different solution that uses the existing helper instead of matching over them manually: https://github.com/astral-sh/ruff/compare/handling_trailing_own_line_comments_after_tests_wiht_parentheses (POC, code needs polishing)</p>
+</blockquote>
+<p>Thanks, I'll look into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:677 on 2023-08-03 16:05</div>
+            <div class="timeline-body"><p>I prefer your naming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-03 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-03 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 20:23</div>
+            <div class="timeline-body"><p>I went with @konstin's solution, which seems to handle the general case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:278 on 2023-08-03 20:26</div>
+            <div class="timeline-body"><p>This comment needs to be split</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-03 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-03 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:278 on 2023-08-03 20:34</div>
+            <div class="timeline-body"><p>Thx!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:105 on 2023-08-03 20:36</div>
+            <div class="timeline-body"><p>FWIW I kind of like this pattern with the struct, though agree it may be better to avoid the <code>from</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-03 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-03 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-03 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

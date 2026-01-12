@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Parameters` an optional field on `ExprLambda` - astral-sh/ruff #6669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>Parameters</code> an optional field on <code>ExprLambda</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6669">#6669</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-18 04:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 04:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a lambda doesn't contain any parameters, or any parameter <em>tokens</em> (like <code>*</code>), we can use <code>None</code> for the parameters. This feels like a better representation to me, since, e.g., what should the <code>TextRange</code> be for a non-existent set of parameters? It also allows us to remove several sites where we check if the <code>Parameters</code> is empty by seeing if it contains any arguments, so semantically, we're already trying to detect and model around this elsewhere.</p>
+<p>Changing this also fixes a number of issues with dangling comments in parameter-less lambdas, since those comments are now automatically marked as dangling on the lambda. (As-is, we were also doing something not-great whereby the lambda was responsible for formatting dangling comments on the parameters, which has been removed.)</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6646.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6647.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pie/rules/reimplemented_list_builtin.rs</code>:62 on 2023-08-18 04:36</div>
+            <div class="timeline-body"><p>Much better IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:881 on 2023-08-18 04:36</div>
+            <div class="timeline-body"><p>Also much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:245 on 2023-08-18 04:37</div>
+            <div class="timeline-body"><p>If the lambda does have parameters, and those parameters have dangling comments, they're now handled by the lambda directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:245 on 2023-08-18 04:38</div>
+            <div class="timeline-body"><p>If the lambda doesn't have parameters, and itself has dangling comments, those are formatted automatically by the lambda as &quot;standard&quot; dangling comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:167 on 2023-08-18 04:48</div>
+            <div class="timeline-body"><p>Calling <code>handle_bracketed_end_of_line_comment</code> here for lambda parameters (which are never parenthesized) triggered a debug assertion in that method. Similar to tuples, we should skip this check for unparenthesized cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-18 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-18 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 04:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:877 on 2023-08-18 04:49</div>
+            <div class="timeline-body"><p>All the changes in <code>crates/ruff</code> are fairly mechanical -- just reacting to the fact that this field is now optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_comprehensions/rules/unnecessary_map.rs</code>:252 on 2023-08-18 05:45</div>
+            <div class="timeline-body"><p>Would it make sense to only store existing parameters? Or is it important to know how many lambdas have a <code>None</code> parameter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:245 on 2023-08-18 05:49</div>
+            <div class="timeline-body"><p>Formatting dangling comments of another node can be problematic if we e.g. want to support suppression of any node, because it is impossible to <em>undo</em> the formatting that was done by the parent.</p>
+<p>Is there another way to get the desired formatting that leaves the dangling comment formatting inside of <code>Parameters</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_lambda.rs</code>:52 on 2023-08-18 05:50</div>
+            <div class="timeline-body"><p><i class='graphite__hidden'>[Re: lines 46 to 46]<br/></i></p>
+<p>This comment is no longer true.<span class='graphite__hidden'><br/><br/>See this comment inline on <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6669?utm_source=unchanged-line-comment">Graphite</a>.</span></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:685 on 2023-08-18 05:52</div>
+            <div class="timeline-body"><p>Nit: Unrelated to your PR. It would be nice if <code>slice</code> accepts <code>Into&lt;Ranged&gt;</code> but that probably requires moving <code>Ranged</code> to <code>ruff_text_size</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:685 on 2023-08-18 05:52</div>
+            <div class="timeline-body"><p>Nit: I find <code>Locator</code> for slicing a bit overkill:</p>
+<pre><code class="language-rust">&amp;source[parameters.range].starts_with('(')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:683 on 2023-08-18 05:53</div>
+            <div class="timeline-body"><p>Where is this used? Should it be moved closer to the file that is using it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-18 05:55</div>
+            <div class="timeline-body"><p>Looks good.</p>
+<p>The only thing that would be good is to avoid formatting dangling comments outside of Parameters. It breaks the concept of that a node formats the content inside of its range. There's no consequence of doing this here but e.g. doing this at the statement level breaks suppression comments and may set a bad precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:683 on 2023-08-18 13:41</div>
+            <div class="timeline-body"><p>It's used in <code>placement.rs</code>. I was torn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:685 on 2023-08-18 13:42</div>
+            <div class="timeline-body"><p>I might do this, I think <code>Ranged</code> <em>should</em> be in <code>ruff_text_size</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:245 on 2023-08-18 13:43</div>
+            <div class="timeline-body"><p>Hmm, but the point is that the parent only handles dangling comments if the parameters don't exist at all (are <code>None</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:245 on 2023-08-18 13:43</div>
+            <div class="timeline-body"><p>In other words, there's no longer any formatting of dangling comments on another node (whereas there was before).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/other/parameters.rs</code>:685 on 2023-08-18 15:01</div>
+            <div class="timeline-body"><p>@zanieb probably gonna do this per offline conversation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-18 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_lambda.rs</code>:52 on 2023-08-18 15:04</div>
+            <div class="timeline-body"><p>Hmm, it's pretty annoying that you have to go to graphite to see the commented lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_comprehensions/rules/unnecessary_map.rs</code>:252 on 2023-08-18 15:12</div>
+            <div class="timeline-body"><p>We need to know if there are <em>any</em> lambdas, i.e., whether this vector is non-empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-18 15:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:42 UTC
+    </footer>
+</body>
+</html>

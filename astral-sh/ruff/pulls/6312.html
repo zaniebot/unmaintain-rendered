@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor and rename `skip_trailing_trivia` - astral-sh/ruff #6312</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor and rename <code>skip_trailing_trivia</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6312">#6312</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-03 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 16:13</div>
+            <div class="timeline-body"><p>Based on feedback here: https://github.com/astral-sh/ruff/pull/6274#discussion_r1282747964.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:74 on 2023-08-03 16:14</div>
+            <div class="timeline-body"><p>Should this return <code>Option&lt;TextSize&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-03 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:83 on 2023-08-03 16:42</div>
+            <div class="timeline-body"><p>Nit: How about</p>
+<pre><code>token.kind == TokenKind::Newline || !token.kind.is_trivia()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:74 on 2023-08-03 16:46</div>
+            <div class="timeline-body"><p>I'm unsure, and maybe the name is still unclear. I thought about that too when commenting.</p>
+<p>This returns the position of the line end, or the start position of the next non-trivia token. The second case doesn't seem to matter for all usages.</p>
+<p>Since we don't know the answer, should we change the method to <code>lines_after_ignoring_trivia</code> or similar, because we have no need for the more generic case? This also allows counting the newline tokens (skip while not a new line and trivia, then take while newline, count)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 16:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-03 16:47</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      7.9±0.12ms     5.1 MB/sec    1.00      7.9±0.04ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1593.2±24.39µs    10.5 MB/sec    1.00  1593.6±23.21µs    10.4 MB/sec
+formatter/numpy/globals.py                 1.01    182.2±1.82µs    16.2 MB/sec    1.00    181.0±3.36µs    16.3 MB/sec
+formatter/pydantic/types.py                1.00      3.4±0.03ms     7.6 MB/sec    1.00      3.4±0.06ms     7.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.7±0.06ms     3.8 MB/sec    1.03     11.0±0.06ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.01      2.8±0.01ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    379.2±0.72µs     7.8 MB/sec    1.01    384.2±0.46µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      4.9±0.02ms     5.2 MB/sec    1.02      5.0±0.04ms     5.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.2±0.01ms     7.9 MB/sec    1.02      5.3±0.01ms     7.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1115.3±4.09µs    14.9 MB/sec    1.01  1129.5±17.60µs    14.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    125.3±1.50µs    23.6 MB/sec    1.01    127.0±3.41µs    23.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec    1.02      2.4±0.04ms    10.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.5±0.03ms     5.4 MB/sec    1.01      7.6±0.04ms     5.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1464.4±13.20µs    11.4 MB/sec    1.02   1488.4±7.60µs    11.2 MB/sec
+formatter/numpy/globals.py                 1.00    152.1±1.74µs    19.4 MB/sec    1.01    154.4±3.15µs    19.1 MB/sec
+formatter/pydantic/types.py                1.00      3.2±0.03ms     8.0 MB/sec    1.01      3.3±0.03ms     7.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     10.7±0.04ms     3.8 MB/sec    1.00     10.6±0.05ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    295.1±3.69µs    10.0 MB/sec    1.00    294.3±2.50µs    10.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      4.8±0.02ms     5.3 MB/sec    1.00      4.8±0.02ms     5.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.5±0.03ms     7.4 MB/sec    1.00      5.4±0.04ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1087.5±11.52µs    15.3 MB/sec    1.00   1073.6±6.34µs    15.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    112.0±0.82µs    26.3 MB/sec    1.00    112.0±0.82µs    26.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.4±0.02ms    10.7 MB/sec    1.00      2.4±0.01ms    10.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:73 on 2023-08-03 18:22</div>
+            <div class="timeline-body"><p>The docstring is kinda confusing, do we always know that there is no none-trivia before the newline, and what if there is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-03 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 20:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:73 on 2023-08-03 20:39</div>
+            <div class="timeline-body"><p>Haha didn't you write this!??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:74 on 2023-08-03 20:44</div>
+            <div class="timeline-body"><p>Ah I see, we always call <code>lines_after</code>. Ok, got it, will change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:73 on 2023-08-03 20:44</div>
+            <div class="timeline-body"><p>git blame says i'm innocent (but it could as well have been mine)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-03 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-03 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-03 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:55 on 2023-08-03 21:05</div>
+            <div class="timeline-body"><p>It seemed reasonable to me to rewrite this one too for consistency, but don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:84 on 2023-08-03 21:05</div>
+            <div class="timeline-body"><p>Awkward to cast to <code>u32</code>, but the other methods in this file return <code>u32</code>, and the format builders that take the return value as argument also expect <code>u32</code> 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-03 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:84 on 2023-08-03 21:09</div>
+            <div class="timeline-body"><p>rust is build around assuming everything is <code>usize</code> and doesn't expect our u32 optimizations, so i'm fine if a bunch of casting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-03 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:55 on 2023-08-04 06:00</div>
+            <div class="timeline-body"><p>I prefer the old implementation to keep it consistent with <code>lines_before</code>.</p>
+<p>Using the string-based approach also has the benefit that we can get away with much simpler code (<code>lines_after is 20 lines, </code>SimpleTokenizer` is a couple of hundred lines).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:84 on 2023-08-04 06:01</div>
+            <div class="timeline-body"><p>It may be worth adding a <code>SAFETY: ...</code> comment explaining why casting down is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-04 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-04 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:55 on 2023-08-04 13:17</div>
+            <div class="timeline-body"><p>Okay sounds good. Note that either way one of these three methods will be inconsistent with the others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-04 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-04 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-04 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>

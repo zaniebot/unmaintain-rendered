@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce an `Arguments` AST node for function calls and class definitions - astral-sh/ruff #6259</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce an <code>Arguments</code> AST node for function calls and class definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6259">#6259</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-01 22:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 22:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>Arguments</code> AST node, which we can use for function calls and class definitions.</p>
+<p>The <code>Arguments</code> node spans from the left (open) to right (close) parentheses inclusive.</p>
+<p>In the case of classes, the <code>Arguments</code> is an option, to differentiate between:</p>
+<pre><code class="language-python"># None
+class C: ...
+
+# Some, with empty vectors
+class C(): ...
+</code></pre>
+<p>In this PR, we don't really leverage this change (except that a few rules get much simpler, since we don't need to lex to find the start and end ranges of the parentheses, e.g., <code>crates/ruff/src/rules/pyupgrade/rules/lru_cache_without_parameters.rs</code>, <code>crates/ruff/src/rules/pyupgrade/rules/unnecessary_class_parentheses.rs</code>).</p>
+<p>In future PRs, this will be especially helpful for the formatter, since we can track comments enclosed on the node itself.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-01 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-08-01 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-08-01 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/redundant_open_modes.rs</code>:127 on 2023-08-01 22:49</div>
+            <div class="timeline-body"><p>I tended to favor destructuring to minimize code changes (i.e., we didn't have to change this method at all, only the <code>let</code> match here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/lru_cache_without_parameters.rs</code>:83 on 2023-08-01 22:49</div>
+            <div class="timeline-body"><p>This is an improvement (delete from left to right parens).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/unnecessary_class_parentheses.rs</code>:56 on 2023-08-01 22:50</div>
+            <div class="timeline-body"><p>This is way simpler (delete from left to right paren).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-01 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-01 22:59</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.4±0.11ms     4.9 MB/sec    1.00      8.3±0.06ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1634.6±14.00µs    10.2 MB/sec    1.00   1633.7±6.80µs    10.2 MB/sec
+formatter/numpy/globals.py                 1.01    182.9±1.78µs    16.1 MB/sec    1.00    181.9±0.93µs    16.2 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.10ms     7.2 MB/sec    1.01      3.6±0.09ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.02     11.4±0.11ms     3.6 MB/sec    1.00     11.2±0.16ms     3.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.01ms     5.9 MB/sec    1.00      2.8±0.03ms     5.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    385.6±0.95µs     7.7 MB/sec    1.00    385.3±0.82µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.0±0.05ms     5.1 MB/sec    1.00      5.0±0.09ms     5.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.8±0.03ms     7.0 MB/sec    1.00      5.8±0.06ms     7.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1202.7±2.86µs    13.8 MB/sec    1.00   1197.9±7.69µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.01    133.6±0.27µs    22.1 MB/sec    1.00    132.5±0.30µs    22.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.6±0.01ms    10.0 MB/sec    1.00      2.5±0.03ms    10.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02     10.0±0.07ms     4.1 MB/sec    1.00      9.9±0.07ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1934.6±19.59µs     8.6 MB/sec    1.00  1905.6±18.66µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.00    200.4±2.28µs    14.7 MB/sec    1.01    202.8±7.03µs    14.5 MB/sec
+formatter/pydantic/types.py                1.02      4.3±0.04ms     5.9 MB/sec    1.00      4.2±0.03ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.4±0.09ms     3.0 MB/sec    1.00     13.5±0.10ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.02ms     4.6 MB/sec    1.00      3.6±0.02ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    364.8±5.04µs     8.1 MB/sec    1.00    363.4±5.01µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.05ms     4.2 MB/sec    1.00      6.1±0.04ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.05ms     5.6 MB/sec    1.01      7.4±0.05ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1459.4±11.95µs    11.4 MB/sec    1.02  1485.6±14.38µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    145.8±3.77µs    20.2 MB/sec    1.00    146.2±1.60µs    20.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.03ms     7.9 MB/sec    1.00      3.2±0.02ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 00:44</div>
+            <div class="timeline-body"><p>(I am going to leverage these in the formatter in a separate change, to fix the trailing comment bug we have today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-08-02 03:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/flake8_builtins/rules/builtin_attribute_shadowing.rs</code>:85 on 2023-08-02 03:36</div>
+            <div class="timeline-body"><p>Well this is a little less pretty.. would it make sense to add a helper to <code>ClassDef</code> to retrieve or iterate over bases? (in a future pull request)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-02 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_builtins/rules/builtin_attribute_shadowing.rs</code>:85 on 2023-08-02 12:54</div>
+            <div class="timeline-body"><p>Yeah we can add a <code>bases</code> method. I can even do it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-02 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_builtins/rules/builtin_attribute_shadowing.rs</code>:85 on 2023-08-02 12:59</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-02 13:32</div>
+            <div class="timeline-body"><p>skimmed through it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-02 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-02 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-02 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:175 on 2023-08-03 06:54</div>
+            <div class="timeline-body"><p>Nit: We could return a <code>slice</code> here by using</p>
+<pre><code class="language-suggestion">    pub fn bases(&amp;self) -&gt; &amp;[Expr] {
+        match &amp;self.arguments {
+            Some(arguments) =&gt; &amp;arguments.args,
+            None =&gt; &amp;[],
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-03 06:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3006 on 2023-08-03 06:55</div>
+            <div class="timeline-body"><p>:eyes:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:175 on 2023-08-03 13:26</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-03 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:52:41 UTC
+    </footer>
+</body>
+</html>
