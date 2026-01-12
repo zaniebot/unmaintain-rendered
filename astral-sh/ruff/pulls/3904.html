@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce SourceFile to avoid cloning the message filename - astral-sh/ruff #3904</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce SourceFile to avoid cloning the message filename</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3904">#3904</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-04-07 10:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-07 10:02</div>
+            <div class="timeline-body"><p>This PR introduces a new <code>SourceFile</code> type that replaces <code>SourceCodeBuf</code>. It stores the filename and, optionally, the content of the file. <code>SourceFile</code> uses an <code>Arc</code> internally to make it cheap to clone.</p>
+<p>This change was <a href="https://github.com/charliermarsh/ruff/pull/3897#discussion_r1160290415">proposed</a> by @charliermarsh to avoid allocating a <code>String</code> with the <code>filename</code> for every <code>Message</code>.</p>
+<h2>Performance</h2>
+<p>This change significantly improves performance for projects with many diagnostics as we can see from the benchmarks that use <code>--select ALL</code>. For example, checking all rules with caching enabled improves from 470ms to 406ms</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./ruff-source-file &lt;cpython_path&gt; -e   </code> | 40.1 ± 2.4 | 35.4 | 45.4 | 1.00 |
+| <code>./ruff-main &lt;cpython_path&gt; -e   </code> | 41.8 ± 2.6 | 37.4 | 47.6 | 1.04 ± 0.09 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e --no-cache  </code> | 221.9 ± 8.2 | 211.2 | 236.9 | 5.53 ± 0.39 |
+| <code>./ruff-main &lt;cpython_path&gt; -e --no-cache  </code> | 221.5 ± 4.3 | 211.7 | 226.3 | 5.52 ± 0.35 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e  --select=ALL </code> | 405.8 ± 10.1 | 391.0 | 427.4 | 10.11 ± 0.66 |
+| <code>./ruff-main &lt;cpython_path&gt; -e  --select=ALL </code> | 469.5 ± 8.6 | 451.0 | 482.2 | 11.69 ± 0.74 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e --no-cache --select=ALL </code> | 739.1 ± 17.6 | 714.8 | 770.5 | 18.41 ± 1.20 |
+| <code>./ruff-main &lt;cpython_path&gt; -e --no-cache --select=ALL </code> | 796.1 ± 13.2 | 780.0 | 820.7 | 19.83 ± 1.25 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e   --show-source</code> | 85.9 ± 3.7 | 80.0 | 93.1 | 2.14 ± 0.16 |
+| <code>./ruff-main &lt;cpython_path&gt; -e   --show-source</code> | 87.5 ± 2.9 | 82.5 | 93.2 | 2.18 ± 0.15 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e --no-cache  --show-source</code> | 262.4 ± 6.0 | 253.2 | 272.0 | 6.54 ± 0.42 |
+| <code>./ruff-main &lt;cpython_path&gt; -e --no-cache  --show-source</code> | 267.3 ± 7.4 | 255.7 | 279.7 | 6.66 ± 0.44 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e  --select=ALL --show-source</code> | 1480.3 ± 22.2 | 1453.7 | 1516.0 | 36.87 ± 2.30 |
+| <code>./ruff-main &lt;cpython_path&gt; -e  --select=ALL --show-source</code> | 1551.0 ± 24.1 | 1499.7 | 1590.7 | 38.63 ± 2.42 |
+| <code>./ruff-source-file &lt;cpython_path&gt; -e --no-cache --select=ALL --show-source</code> | 1791.8 ± 25.6 | 1759.3 | 1845.3 | 44.63 ± 2.78 |
+| <code>./ruff-main &lt;cpython_path&gt; -e --no-cache --select=ALL --show-source</code> | 1851.4 ± 23.0 | 1816.1 | 1887.9 | 46.11 ± 2.86 |</p>
+<h2>Memory Usage</h2>
+<p>Memory usage reduced from ~813MB to ~686MB when running all rules without showing the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-07 10:02</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3895</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3895" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3896</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3896" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3897</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3897" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3901</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3901" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3904</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3904" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+* <strong>PR #3905</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3905" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #3906</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3906" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3904?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-04-07 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-07 10:15</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.06ms     2.4 MB/sec    1.01     17.1±0.10ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.01ms     3.9 MB/sec    1.00      4.3±0.01ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    548.9±0.85µs     5.4 MB/sec    1.00    549.9±1.21µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.01ms     3.5 MB/sec    1.01      7.3±0.02ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.6±0.02ms     4.7 MB/sec    1.01      8.7±0.02ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1953.6±3.25µs     8.5 MB/sec    1.00   1960.6±2.92µs     8.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    216.7±0.60µs    13.6 MB/sec    1.08   234.2±88.93µs    12.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.0±0.01ms     6.4 MB/sec    1.00      4.0±0.01ms     6.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.0±0.10ms     2.5 MB/sec    1.00     16.0±0.09ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.02ms     4.0 MB/sec    1.00      4.2±0.04ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    437.2±6.09µs     6.7 MB/sec    1.00    439.3±4.69µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.07ms     3.7 MB/sec    1.00      6.9±0.03ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.02ms     5.0 MB/sec    1.00      8.2±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1776.8±30.37µs     9.4 MB/sec    1.01   1788.9±9.98µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    186.1±2.91µs    15.9 MB/sec    1.01    187.4±4.94µs    15.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.8 MB/sec    1.00      3.8±0.03ms     6.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-04-07 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-07 18:45</div>
+            <div class="timeline-body"><p>Nice, thanks for looking into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-04-11 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-04-11 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-04-11 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-11 08:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:47 UTC
+    </footer>
+</body>
+</html>

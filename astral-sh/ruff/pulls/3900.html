@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement isort custom sections and ordering (#2419) - astral-sh/ruff #3900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement isort custom sections and ordering (#2419)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3900">#3900</a>
+        opened by <a href="https://github.com/hackedd">@hackedd</a>
+        on 2023-04-06 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hackedd">@hackedd</a> on 2023-04-06 13:06</div>
+            <div class="timeline-body"><p>Similar to some other people in #2419 I'm currently converting a Django project from flake8 + isort to use ruff. The isort settings currently contain (among other things):</p>
+<pre><code>known_django = django
+sections = FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER
+</code></pre>
+<p>With these changes, I can configure ruff to do the same grouping:</p>
+<pre><code class="language-toml">[tool.ruff.isort]
+section-order = [&quot;future&quot;, &quot;standard-library&quot;, &quot;third-party&quot;, &quot;django&quot;, &quot;first-party&quot;, &quot;local-folder&quot;]
+
+[tool.ruff.isort.sections]
+django = [&quot;django&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-06 13:17</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.1±0.03ms     2.7 MB/sec    1.00     15.1±0.02ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.01ms     4.4 MB/sec    1.00      3.8±0.00ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    418.9±1.67µs     7.0 MB/sec    1.00    417.1±1.32µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.5±0.01ms     3.9 MB/sec    1.00      6.4±0.01ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.01ms     5.1 MB/sec    1.00      7.8±0.01ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1758.9±2.44µs     9.5 MB/sec    1.00   1744.5±3.35µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    182.6±0.45µs    16.2 MB/sec    1.00    182.4±0.64µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.01ms     7.0 MB/sec    1.00      3.6±0.02ms     7.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     19.4±0.52ms     2.1 MB/sec    1.01     19.6±0.64ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.19ms     3.4 MB/sec    1.01      5.0±0.24ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.01   608.9±31.17µs     4.8 MB/sec    1.00   605.0±25.46µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.3±0.30ms     3.1 MB/sec    1.03      8.5±0.41ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.7±0.28ms     4.2 MB/sec    1.04     10.1±0.44ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.07ms     7.8 MB/sec    1.05      2.2±0.10ms     7.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    246.9±9.40µs    12.0 MB/sec    1.07   265.3±15.11µs    11.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.4±0.17ms     5.8 MB/sec    1.05      4.6±0.22ms     5.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-04-07 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/categorize.rs</code>:317 on 2023-04-11 06:32</div>
+            <div class="timeline-body"><p>Can a user configure a submodule so that it belongs to multiple sections? If so, what happens in that case?</p>
+<p>Can we change the configuration format/internal representation to make this impossible (e.g. have a <code>module</code> -&gt; <code>ImportSection</code> mapping)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/categorize.rs</code>:289 on 2023-04-11 06:38</div>
+            <div class="timeline-body"><p>Do the call sites need access to the &quot;full&quot; <code>ImportSection</code> with e.g. the custom name?</p>
+<p>If not, then we could introduce a <code>ImportSectionKind</code> enum that is copy and has no associated values:</p>
+<pre><code>#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum ImportSectionKind {
+	UserDefined,
+	KnownFirstParty,
+	KnownThirdParty,
+	KnownLocalFolder,
+	KnownStandardLibrary
+}
+
+// or 
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum ImportSectionKind {
+	UserDefined,
+	Known(ImportType)
+}
+</code></pre>
+<p>That would remove the need for <code>cloning</code> the <code>section</code> (which requires allocating and copying a string)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-11 06:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/mod.rs</code>:978 on 2023-04-11 09:06</div>
+            <div class="timeline-body"><p>You have to use  <code>assert_messages</code> after #3906 lands. It pretty prints the diagnostics instead of serializing them to yaml.</p>
+<pre><code class="language-suggestion">        assert_messages!(snapshot, diagnostics);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-11 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/mod.rs</code>:1010 on 2023-04-11 09:07</div>
+            <div class="timeline-body"><p>You have to use  <code>assert_messages</code> after #3906 lands. It pretty prints the diagnostics instead of serializing them to yaml.</p>
+<pre><code class="language-suggestion">        assert_messages!(snapshot, diagnostics);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-11 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hackedd">@hackedd</a> on <code>crates/ruff/src/rules/isort/categorize.rs</code>:317 on 2023-04-12 07:57</div>
+            <div class="timeline-body"><p>yes, just like there is currently nothing stopping a user from doing something like <code>extra-standard-library = [&quot;path&quot;]</code> and <code>known-first-party = [&quot;path&quot;]</code>. The first match found 'wins', and is the section that will be used. Configurations like that should probably result in an error or warning. Constructing a mapping sounds like a good idea, it would make this lookup  simpler and makes it easy to detect conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hackedd">@hackedd</a> reviewed on 2023-04-12 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hackedd">@hackedd</a> reviewed on 2023-04-12 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hackedd">@hackedd</a> on <code>crates/ruff/src/rules/isort/categorize.rs</code>:289 on 2023-04-12 08:03</div>
+            <div class="timeline-body"><p>The custom name is used during formatting, it determines the order of the sections within the block. It could probably be made to work with a smaller type for the section by mapping section names to IDs when the configuration is read, but I didn't think it would be worth the additional complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 20:55</div>
+            <div class="timeline-body"><p>This is really nice work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-13 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 21:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:47 UTC
+    </footer>
+</body>
+</html>

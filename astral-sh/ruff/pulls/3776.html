@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove star-import handling from `sys-exit-alias` - astral-sh/ruff #3776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove star-import handling from <code>sys-exit-alias</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3776">#3776</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-28 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 16:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Right now, if you do:</p>
+<pre><code class="language-py">from sys import *
+
+exit(1)
+</code></pre>
+<p>We'll avoid telling you to use sys.exit, since we hard-code handling of this specific case. But our star import handling is not very good -- and, for example, this will raise a lint error:</p>
+<pre><code class="language-py">from sys import *
+from os import *
+
+exit(1)  # PLR1722 [*] Use `sys.exit()` instead of `exit`
+</code></pre>
+<p>...for reasons that relate to implementation details.</p>
+<p>I want to remove this handling, since so much stuff doesn't work properly with star imports anyway, and I want to instead revisit holistically rather than try to handle this one case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-28 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-28 16:31</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.03     16.9±0.74ms     2.4 MB/sec    1.00     16.5±0.54ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      4.4±0.26ms     3.8 MB/sec    1.00      4.1±0.19ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.02   596.9±30.65µs     4.9 MB/sec    1.00   585.6±29.35µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.4±0.29ms     3.4 MB/sec    1.01      7.4±0.36ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.6±0.29ms     4.7 MB/sec    1.00      8.6±0.34ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1949.2±72.03µs     8.5 MB/sec    1.00  1875.8±86.15µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02   234.8±13.36µs    12.6 MB/sec    1.00   230.8±11.69µs    12.8 MB/sec
+linter/default-rules/pydantic/types.py     1.05      4.1±0.13ms     6.3 MB/sec    1.00      3.9±0.14ms     6.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.3±0.11ms     2.7 MB/sec    1.00     15.4±0.11ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.05ms     4.1 MB/sec    1.00      4.0±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    498.3±9.49µs     5.9 MB/sec    1.00    497.9±7.73µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.06ms     3.9 MB/sec    1.00      6.6±0.06ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.07ms     5.0 MB/sec    1.00      8.1±0.05ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1763.7±15.63µs     9.4 MB/sec    1.00  1770.4±15.97µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    193.3±2.45µs    15.3 MB/sec    1.01    195.0±4.52µs    15.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.03ms     6.9 MB/sec    1.00      3.7±0.04ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-29 07:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/sys_exit_alias.rs</code>:80 on 2023-03-29 07:02</div>
+            <div class="timeline-body"><p>Removing the special handling trades a false-negative to a false-positive. This is, in my view, the worse trade. Can we exit early if we see any star import? This has the advantage that we avoid the false-negative without introducing new false-positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-29 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/sys_exit_alias.rs</code>:80 on 2023-03-29 13:56</div>
+            <div class="timeline-body"><p>Yeah fair enough. The existing behavior is &quot;better&quot; and we can retain it to avoiding adding false positives here. My feeling was that it's somewhat random because so much of Ruff doesn't work if you use star imports.</p>
+<p>For example, if you do:</p>
+<pre><code class="language-py">from sys import *
+
+exit(1)
+</code></pre>
+<p>We do currently (prior to this PR) avoid raising <code>sys-exit-alias</code>, but in other rules, we consider <code>exit</code> to be the builtin <code>exit</code> and not <code>sys.exit</code> (i.e., it's special-cased here).</p>
+<p>If you do:</p>
+<pre><code class="language-py">from sys import *
+
+path
+</code></pre>
+<p>You get an undefined reference error, even though <code>sys.path</code> is a real export, since we don't know what those exports are.</p>
+<p>If you do:</p>
+<pre><code class="language-py">from sys import *
+from os import *
+
+exit(1)
+</code></pre>
+<p>Then suddenly we flag <code>sys-exit-alias</code> again because of limitations in the star-import model.</p>
+<p>So, I was left feeling like we need to redo the star handling more holistically, and that this felt like a strange thing to special-case given how much else is likely going wrong. But, it's not hard to retain this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-29 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-29 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-29 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-29 21:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:43 UTC
+    </footer>
+</body>
+</html>

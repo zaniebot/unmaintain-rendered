@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show settings path in `--show-settings` output - astral-sh/ruff #4199</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show settings path in <code>--show-settings</code> output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4199">#4199</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-05-03 03:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-03 03:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Create a new struct called <code>PyprojectConfig</code> which holds all the <code>pyproject.toml</code> configuration related information. This includes the discovery strategy used (<code>Fixed</code> or <code>Hierarchical</code>), the settings itself and absolute path to the <code>pyproject.toml</code> file.</p>
+<p>Using <code>PyprojectConfig::new</code> will try to resolve the given config path to absolute.</p>
+<h2>Test Plan</h2>
+<p><em><strong>Project structure:</strong></em></p>
+<pre><code>.
+├── pyproject.toml
+├── src
+│   └── ...
+└── test
+    ├── foo
+    │   └── __init__.py
+    └── pyproject.toml
+</code></pre>
+<details><summary><b>Using `--isolated` (no config path):</b></summary>
+<p>
+
+<pre><code class="language-console">$ ~/contributing/astral/ruff/target/debug/ruff check --show-settings --isolated . | head -n8  
+Resolved settings for: &quot;/Users/dhruv/playground/python/ruff-play/src/B031.py&quot;
+Settings {
+    rules: RuleTable {
+        enabled: {
+            MixedSpacesAndTabs,
+            MultipleImportsOnOneLine,
+            ModuleImportNotAtTopOfFile,
+            LineTooLong,
+</code></pre>
+</p>
+</details> 
+
+<details><summary><b>Using <code>--config pyproject.toml</code></b></summary>
+<p>
+
+<pre><code class="language-console">$ ~/contributing/astral/ruff/target/debug/ruff check --show-settings --config=pyproject.toml . | head -n8
+Resolved settings for: &quot;/Users/dhruv/playground/python/ruff-play/src/B031.py&quot;
+Settings path: &quot;/Users/dhruv/playground/python/ruff-play/pyproject.toml&quot;
+Settings {
+    rules: RuleTable {
+        enabled: {
+            UnnecessaryCallAroundSorted,
+            UnnecessaryCollectionCall,
+            UnnecessaryComprehension,
+</code></pre>
+</p>
+</details> 
+
+<details><summary><b>Using <code>--config ../pyproject.toml</code></b></summary>
+<p>
+
+<pre><code class="language-console">$ ~/contributing/astral/ruff/target/debug/ruff check --show-settings --config=../pyproject.toml . | head -n8 
+Resolved settings for: &quot;/Users/dhruv/playground/python/ruff-play/test/foo/__init__.py&quot;
+Settings path: &quot;/Users/dhruv/playground/python/ruff-play/pyproject.toml&quot;
+Settings {
+    rules: RuleTable {
+        enabled: {
+            UnnecessaryCallAroundSorted,
+            UnnecessaryCollectionCall,
+            UnnecessaryComprehension,
+</code></pre>
+</p>
+</details> 
+
+<details><summary><b>Using hierarchical strategy to find config file</b></summary>
+<p>
+
+<pre><code class="language-console">$ ~/contributing/astral/ruff/target/debug/ruff check --show-settings . | head -n8          
+Resolved settings for: &quot;/Users/dhruv/playground/python/ruff-play/src/B031.py&quot;
+Settings path: &quot;/Users/dhruv/playground/python/ruff-play/pyproject.toml&quot;
+Settings {
+    rules: RuleTable {
+        enabled: {
+            UnnecessaryCallAroundSorted,
+            UnnecessaryCollectionCall,
+            UnnecessaryComprehension,
+</code></pre>
+</p>
+</details> 
+
+<details><summary><b>No config file (commented out <code>[tool.ruff]</code> section)</b></summary>
+<p>
+
+<pre><code class="language-console">$ ~/contributing/astral/ruff/target/debug/ruff check --show-settings . | head -n8  
+Resolved settings for: &quot;/Users/dhruv/playground/python/ruff-play/src/B031.py&quot;
+Settings {
+    rules: RuleTable {
+        enabled: {
+            MixedSpacesAndTabs,
+            MultipleImportsOnOneLine,
+            ModuleImportNotAtTopOfFile,
+            LineTooLong,
+</code></pre>
+</p>
+</details> 
+
+<p>resolves: #3202</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-03 04:02</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     17.1±0.36ms     2.4 MB/sec    1.00     16.9±0.12ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.02ms     4.1 MB/sec    1.00      4.0±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    493.2±4.92µs     6.0 MB/sec    1.01    499.6±4.02µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.08ms     3.6 MB/sec    1.00      7.0±0.08ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.11ms     4.9 MB/sec    1.01      8.4±0.06ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1752.1±27.96µs     9.5 MB/sec    1.02   1790.3±7.83µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    191.2±8.17µs    15.4 MB/sec    1.04    199.4±5.22µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.09ms     7.0 MB/sec    1.03      3.7±0.08ms     6.8 MB/sec
+parser/large/dataset.py                    1.07      6.9±0.06ms     5.9 MB/sec    1.00      6.5±0.08ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.05  1324.6±14.54µs    12.6 MB/sec    1.00  1255.7±22.26µs    13.3 MB/sec
+parser/numpy/globals.py                    1.00    129.5±3.95µs    22.8 MB/sec    1.00    130.2±0.25µs    22.7 MB/sec
+parser/pydantic/types.py                   1.04      2.9±0.05ms     8.9 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.8±0.22ms     2.4 MB/sec    1.00     16.9±0.25ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.05ms     4.0 MB/sec    1.00      4.1±0.07ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    486.9±8.39µs     6.1 MB/sec    1.01   491.2±11.89µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.10ms     3.6 MB/sec    1.01      7.1±0.22ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.5±0.10ms     4.8 MB/sec    1.00      8.4±0.10ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1798.3±21.15µs     9.3 MB/sec    1.00  1791.3±18.77µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    199.5±3.12µs    14.8 MB/sec    1.03    205.4±5.39µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.7 MB/sec    1.00      3.8±0.06ms     6.7 MB/sec
+parser/large/dataset.py                    1.01      6.9±0.05ms     5.9 MB/sec    1.00      6.8±0.04ms     6.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1309.9±21.99µs    12.7 MB/sec    1.00  1303.8±15.94µs    12.8 MB/sec
+parser/numpy/globals.py                    1.01    133.1±1.84µs    22.2 MB/sec    1.00    132.3±2.00µs    22.3 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.03ms     8.7 MB/sec    1.00      2.9±0.05ms     8.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-03 09:19</div>
+            <div class="timeline-body"><p>Overall looks good to me. I personally would prefer to store the path on the <code>PyprojectDiscovery</code> rather than the <code>AllSettings</code> because the <code>path</code> isn't a setting. But that likely results in a larger change because it requires re-modelling <code>PyprojectDiscovery</code>:</p>
+<pre><code class="language-rust">struct PyprojectDiscovery {
+	strategy: PyprojectDiscoveryStrategy,
+	root_settings: AllSettings,
+	root_settings_path: Option&lt;PathBuf&gt;
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum PyprojectDiscoveryStrategy {
+	Fixed,
+	Hierarchical
+}
+</code></pre>
+<p>What's your take on this?</p>
+<p>Could you add a test plan to the PR summary showing the new output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-03 11:07</div>
+            <div class="timeline-body"><blockquote>
+<p>What's your take on this?</p>
+</blockquote>
+<p>This is a much better idea. At first I thought to add it as an additional element to the tuple itself but I think a struct is a better option for the long term.</p>
+<blockquote>
+<p>Could you add a test plan to the PR summary showing the new output?</p>
+</blockquote>
+<p>Yes, will add it.</p>
+<hr />
+<p>I'll make both the changes in the evening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-05-03 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-03 17:12</div>
+            <div class="timeline-body"><p>I've updated the code and PR description :)</p>
+<p>I'm getting <code>error: Broken pipe (os error 32)</code> when I'm piping it to the <code>head</code> command. Is it a bug or some problem in my shell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-04 06:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-04 06:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm getting <code>error: Broken pipe (os error 32)</code> when I'm piping it to the <code>head</code> command. Is it a bug or some problem in my shell?</p>
+</blockquote>
+<p>I experienced this in the past too when using <code>less</code> but haven't spent any time investigating why this is happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-05-04 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-04 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-04 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-04 14:19</div>
+            <div class="timeline-body"><p>I think this is related: https://github.com/rust-lang/rust/issues/46016</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:51 UTC
+    </footer>
+</body>
+</html>

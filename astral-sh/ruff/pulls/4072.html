@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `in_boolean_test` to `Context` - astral-sh/ruff #4072</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>in_boolean_test</code> to <code>Context</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4072">#4072</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2023-04-23 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-23 21:19</div>
+            <div class="timeline-body"><p><code>Context.in_test</code> is <code>True</code> when boolean operations are checked to see if it is truthy.
+If boolean operations are inside other expressions that are not boolean operations, they are not <code>in_test</code>.</p>
+<pre><code class="language-python"># in_test
+assert  a or b
+if a or b: pass
+while a or b: pass
+0 if a or b else 1
+[0 for a in range(10) for b in range(10) if a or b]
+{0 for a in range(10) for b in range(10) if a or b}
+{0: 0 for a in range(10) for b in range(10) if a or b}
+(0 for a in range(10) for b in range(10) if a or b)
+
+# not in_test
+a or b
+if f(a or b): pass
+while (a or b) == 1: pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-23 21:28</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.3±0.06ms     2.8 MB/sec    1.01     14.4±0.08ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.00ms     4.7 MB/sec    1.01      3.6±0.01ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    461.7±1.34µs     6.4 MB/sec    1.00    463.0±0.86µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.01ms     4.2 MB/sec    1.01      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.03ms     5.6 MB/sec    1.01      7.4±0.02ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1630.4±3.49µs    10.2 MB/sec    1.01   1648.4±2.57µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.4±0.45µs    16.4 MB/sec    1.01    181.6±0.76µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.00      3.3±0.00ms     7.6 MB/sec
+parser/large/dataset.py                    1.00      5.8±0.01ms     7.0 MB/sec    1.00      5.8±0.00ms     7.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1152.7±2.71µs    14.4 MB/sec    1.00   1155.8±1.47µs    14.4 MB/sec
+parser/numpy/globals.py                    1.00    114.6±0.52µs    25.7 MB/sec    1.00    114.6±0.52µs    25.8 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.00ms    10.1 MB/sec    1.00      2.5±0.01ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.7±0.20ms     2.4 MB/sec    1.01     16.9±0.23ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.07ms     3.8 MB/sec    1.01      4.4±0.06ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    533.9±8.25µs     5.5 MB/sec    1.01    540.8±6.65µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.08ms     3.6 MB/sec    1.01      7.2±0.07ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.08ms     4.8 MB/sec    1.02      8.7±0.04ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1889.5±38.69µs     8.8 MB/sec    1.01  1913.5±17.20µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    216.4±6.51µs    13.6 MB/sec    1.01    217.5±5.29µs    13.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.04ms     6.5 MB/sec    1.01      4.0±0.04ms     6.4 MB/sec
+parser/large/dataset.py                    1.00      6.8±0.03ms     6.0 MB/sec    1.00      6.8±0.07ms     5.9 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1301.2±18.66µs    12.8 MB/sec    1.00  1298.6±12.17µs    12.8 MB/sec
+parser/numpy/globals.py                    1.00    131.1±2.03µs    22.5 MB/sec    1.00    131.1±2.68µs    22.5 MB/sec
+parser/pydantic/types.py                   1.00      2.9±0.02ms     8.7 MB/sec    1.00      2.9±0.03ms     8.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add in_test to Context" to "Add `in_boolean_test` to `Context`" by @charliermarsh on 2023-04-24 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-24 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-24 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-24 05:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:50 UTC
+    </footer>
+</body>
+</html>

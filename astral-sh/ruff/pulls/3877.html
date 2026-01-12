@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add checks for `dataclass`es - astral-sh/ruff #3877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add checks for <code>dataclass</code>es</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3877">#3877</a>
+        opened by <a href="https://github.com/mosauter">@mosauter</a>
+        on 2023-04-04 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mosauter">@mosauter</a> on 2023-04-04 16:18</div>
+            <div class="timeline-body"><p>Adds checks specifically for <code>dataclass</code>es in combination with mutable defaults.</p>
+<pre><code class="language-python">@dataclass
+class A:
+    mutable_default: list[int] = [1, 2, 3]
+
+@dataclass
+class B:
+    even_more_dangerous: A = A()
+</code></pre>
+<p>It is quite closely related to the <code>flake8-bugbear</code> rules <code>B006</code> (<code>mutable-argument-default</code>) and <code>B008</code> (<code>function-call-in-default-argument</code>). As the original bugbear implementation doesn't really catch those errors in dataclasses (esp. the second <code>B</code> variant), I created the new errors under <code>RUF200</code> and <code>RUF201</code>.</p>
+<p>If you have some feedback in that regard it would be highly appreciated.</p>
+<p>Also I'm not that experienced with rust in general if you have feedback there, be happy to work that in as well :)</p>
+<p>Still working on:</p>
+<ul>
+<li>[x] testing</li>
+<li>[x] documentation</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-04 16:51</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+11, -0, 0 error(s))</p>
+<details><summary>airflow (+9, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ dev/breeze/src/airflow_breeze/params/build_prod_params.py:47:27: RUF009 Do not perform function call `get_airflow_extras` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/common_build_params.py:42:27: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/common_build_params.py:43:39: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/common_build_params.py:54:27: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/common_build_params.py:56:25: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/shell_params.py:70:27: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/shell_params.py:71:39: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/shell_params.py:87:27: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
++ dev/breeze/src/airflow_breeze/params/shell_params.py:89:25: RUF009 Do not perform function call `os.environ.get` in dataclass defaults
+</code></pre>
+</p>
+</details>
+<details><summary>scikit-build-core (+2, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ src/scikit_build_core/file_api/model/toolchains.py:41:27: RUF009 Do not perform function call `APIVersion` in dataclass defaults
++ tests/test_settings.py:23:17: RUF009 Do not perform function call `Path` in dataclass defaults
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.1±0.04ms     2.7 MB/sec    1.00     15.1±0.08ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.01ms     4.3 MB/sec    1.00      3.9±0.03ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    417.3±3.01µs     7.1 MB/sec    1.00    419.1±4.36µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.02ms     3.9 MB/sec    1.00      6.5±0.05ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.02ms     5.2 MB/sec    1.00      7.8±0.02ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1755.6±16.27µs     9.5 MB/sec    1.00   1740.5±2.65µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    182.0±0.53µs    16.2 MB/sec    1.00    182.1±0.55µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.02ms     7.0 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.0±0.28ms     2.5 MB/sec    1.00     15.8±0.16ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.1±0.08ms     4.0 MB/sec    1.00      4.0±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.02   498.5±10.04µs     5.9 MB/sec    1.00    487.2±6.05µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.8±0.08ms     3.8 MB/sec    1.00      6.7±0.05ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.08      8.7±0.53ms     4.7 MB/sec    1.00      8.0±0.04ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.05  1873.0±62.95µs     8.9 MB/sec    1.00  1778.2±38.86µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    192.9±5.92µs    15.3 MB/sec    1.01    194.2±4.42µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.8±0.10ms     6.7 MB/sec    1.00      3.7±0.04ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mosauter on 2023-04-06 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-04-06 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:141 on 2023-04-06 22:34</div>
+            <div class="timeline-body"><p>We can pass in <code>context: &amp;Context</code> here as <code>is_allowed_func(&amp;checker.ctx, ...)</code>. (We're trying to decouple as much code from <code>Checker</code> as we can, so it's preferred to use the underlying members that power semantic queries, like <code>Context</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:154 on 2023-04-06 22:36</div>
+            <div class="timeline-body"><p>Just for convenience, we'll often add a comment like:</p>
+<pre><code class="language-rust">/// RUF201
+pub fn function_call_in_dataclass_defaults(checker: &amp;mut Checker, body: &amp;[Stmt]) {
+  ...
+}
+</code></pre>
+<p>Makes it easy to grep for the rule implementation given a code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:185 on 2023-04-06 22:38</div>
+            <div class="timeline-body"><p>Since there's only one case here, you can write this as an <code>if let</code>:</p>
+<pre><code class="language-rust">pub fn mutable_dataclass_default(checker: &amp;mut Checker, body: &amp;[Stmt]) {
+    for statement in body {
+        if let StmtKind::Assign { value, .. }
+        | StmtKind::AnnAssign {
+            value: Some(value), ..
+        } = &amp;statement.node
+        {
+            if is_mutable_expr(value) {
+                checker
+                    .diagnostics
+                    .push(Diagnostic::new(MutableDataclassDefault, Range::from(value)));
+            }
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:200 on 2023-04-06 22:39</div>
+            <div class="timeline-body"><p>Unless I'm misreading, I think you can write this as:</p>
+<pre><code class="language-rust">pub fn is_dataclass(checker: &amp;Checker, decorator_list: &amp;[Expr]) -&gt; bool {
+    decorator_list.iter().any(|decorator| {
+        checker
+            .ctx
+            .resolve_call_path(map_callable(decorator))
+            .map_or(false, |call_path| {
+                call_path.as_slice() == [&quot;dataclasses&quot;, &quot;dataclass&quot;]
+            })
+    })
+}
+</code></pre>
+<p>Two things: (1) <code>decorator_list.iter().any</code> over manual iteration, and (2) we have a <code>map_callable</code> utility to handle the <code>if let ExprKind::Call { ... }</code> pattern here since it comes up often with decorators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/codes.rs</code>:704 on 2023-04-06 22:40</div>
+            <div class="timeline-body"><p>I think we should just make these <code>RUF008</code> and <code>RUF009</code>. The choice of codes within the <code>RUF</code> category doesn't have semantic meaning, so I'd rather stick to autoincrement until the point at which we make an explicit decision to do otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:819 on 2023-04-06 22:41</div>
+            <div class="timeline-body"><p>Marginal, but can we check if either of the relevant rules are enabled before doing this <code>is_dataclass</code> check, since this'll be more expensive (requires resolving all the decorators)? E.g.:</p>
+<pre><code class="language-rust">if self.settings.rules.any_enabled(...) {
+  if ruff:rules::is_dataclass(...) {
+    ...
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:143 on 2023-04-06 22:44</div>
+            <div class="timeline-body"><p>We may want to make this a setting, to allow users to allow certain functions here. But, we can wait on that, see if it's a real need that comes up in Issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 22:45</div>
+            <div class="timeline-body"><p>This looks great, I really appreciate the thoroughness of the work here. I left some comments but they're mostly minor changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 22:46</div>
+            <div class="timeline-body"><p>(Also, I'm sorry that I didn't reply when this was originally proposed as a draft.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:143 on 2023-04-07 08:37</div>
+            <div class="timeline-body"><p>I actually thought about that (mainly because the bugbear implementation has something similar), but I couldn't come up with something I would really want there. The only thing that is sensible in my mind at least, would be something like &quot;registering&quot; your <code>NamedTuples</code> as they are immutable or ignoring the error for one specific function.</p>
+<p>So yeah personally I did leave it as &quot;kinda prepared if necessary, but only if needed in the future&quot; :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:154 on 2023-04-07 08:37</div>
+            <div class="timeline-body"><p>done that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:200 on 2023-04-07 08:37</div>
+            <div class="timeline-body"><p>I knew something like that existed, thank you! Did replace both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:141 on 2023-04-07 08:39</div>
+            <div class="timeline-body"><p>I see, makes perfect sense. Changed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:185 on 2023-04-07 08:39</div>
+            <div class="timeline-body"><p>I actually experimented quite a bit, the syntax is still quite new to me. Somehow I did completely miss doing this, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/codes.rs</code>:704 on 2023-04-07 08:45</div>
+            <div class="timeline-body"><p>Makes sense to me. Actually I found it to be quite difficult to choose something right. Might just be because the &quot;new checks&quot; are extremely similar to the bugbear ones and one could certainly make a case for them just being the same.</p>
+<p>In the end I thought that matching the bugbear implementation and creating new ones is better. But at some point they probably should be combined (imho).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:819 on 2023-04-07 08:50</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mosauter">@mosauter</a> on 2023-04-07 08:53</div>
+            <div class="timeline-body"><p>And regarding the &quot;late&quot; reply, don't be sorry. I'm following the project for quite a while now and it was (and still is) amazing what you created here. So you absolutely deserve more than ... (looking it up) ... 1 day delay until answering :smile:</p>
+<p>(Also in retrospect, it wasn't ready for review at that point)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:143 on 2023-04-07 09:09</div>
+            <div class="timeline-body"><p>Well, now that I've revisited that thought, it could also match the <code>IMMUTABLE_FUNCS</code> from <a href="https://github.com/charliermarsh/ruff/blob/abaf0a198d9d2cebefd5c029bb271be1a3498f20/crates/ruff/src/rules/flake8_bugbear/rules/function_call_argument_default.rs#L33">here (function_call_argument_default.rs)</a> + the added dataclass-specific <code>dataclass.field</code> one.</p>
+<p>I'm not sure if you want to do that as it would probably mean exporting one or the other (or both) and having configuration options for two (very far apart) rule checkers in one of them; or duplicating the array on both sides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosauter">@mosauter</a> reviewed on 2023-04-07 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mosauter">@mosauter</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:143 on 2023-04-07 09:12</div>
+            <div class="timeline-body"><p>Also this would have implications for &quot;user-added&quot; things. As &quot;sharing&quot; the list would mean the user adds a to-ignore function to the flake8-bugbear-config and it gets ignored in the dataclass as well.</p>
+<p>Therefore I'm leaning more to a duplicate of the array at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-09 02:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/mutable_defaults_in_dataclass_fields.rs</code>:143 on 2023-04-09 02:44</div>
+            <div class="timeline-body"><p>I'm okay to skip for now. Let's see if it comes up. If you <em>do</em> feel like implementing, my gut reaction is just to duplicate for now, but there's not great precedent to follow (it's odd to have two different configuration options for what are really very similar rules, but we also tend to avoid sharing configuration across &quot;sub-linters&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-09 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-09 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-04-20 00:11</div>
+            <div class="timeline-body"><p>This new rule should respect the same exemptions for mutable defaults with immutable type annotations that B006 does (see <a href="https://github.com/charliermarsh/ruff/blob/v0.0.262/crates/ruff/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L169"><code>is_immutable_annotation</code></a> from #821). For example, this should be allowed:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Sequence
+
+@dataclass
+class A:
+    immutable_default: Sequence[int] = [1, 2, 3]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-20 03:30</div>
+            <div class="timeline-body"><p>Agreed, created a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-04-25 18:42</div>
+            <div class="timeline-body"><p>This check is likely to have a lot of false positives. If you have an immutable class, like <code>pathlib.Path</code>, this is just fine:</p>
+<pre><code class="language-python">@dataclasses.dataclass
+class Something:
+    dir: Path = Path(&quot;build&quot;)
+</code></pre>
+<p>However, these are now flagged as unsafe. This is also true for frozen dataclasses, named tuples, etc. Maybe some common immutable things could be tracked?</p>
+<p>(Both cases in the scikit-build-core ecosystem check above are just fine - one's a Path, and the other is a frozen dataclass).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-25 19:10</div>
+            <div class="timeline-body"><p>Will look into this - I agree those should be excluded, and we do exclude them in the bugbear-equivalent rules IIRC, so it may be a matter of extending that logic to this check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mosauter">@mosauter</a> on 2023-04-25 19:15</div>
+            <div class="timeline-body"><p>The code is set up similar or rather almost identically like the bugbear equivalent that allows at least for a <code>Path</code> and some others. If it's okay just to copy the list from there I could create a small PR for this one.</p>
+<p>But as far as I understood up until now Ruff cannot do a deep inspection into &quot;generic&quot; types. So determining that a &quot;call&quot; is a <code>dataclass</code> (or a <code>NamedTuple</code>) is not possible. (Again to my very limited understanding)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:46 UTC
+    </footer>
+</body>
+</html>

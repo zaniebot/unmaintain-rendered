@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix panic in pydocstyle D214 when docstring indentation is empty - astral-sh/ruff #4216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix panic in pydocstyle D214 when docstring indentation is empty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4216">#4216</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-05-04 05:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-04 05:41</div>
+            <div class="timeline-body"><p>Closes https://github.com/charliermarsh/ruff/issues/4194</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-04 05:44</div>
+            <div class="timeline-body"><p>Fix confirmed with regression test</p>
+<pre><code>$ git checkout main
+$ git cherry-pick 76ff675
+$ cargo test
+...
+thread 'rules::pydocstyle::tests::rules::d214_module' panicked at 'Prefer `Fix::deletion`', crates/ruff_diagnostics/src/edit.rs:41:9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-05-04 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/pydocstyle/mod.rs</code>:71 on 2023-05-04 05:47</div>
+            <div class="timeline-body"><p>What's up with the naming nomenclature for these files/tests? It's kind of chaotic and I did not see clear guidelines in the contributing docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-04 05:52</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pydocstyle/rules/sections.rs</code>:631 on 2023-05-04 07:21</div>
+            <div class="timeline-body"><p>Nit, we can use the same range for both fixes</p>
+<pre><code class="language-suggestion">                let content = whitespace::clean(docstring.indentation);
+                let fix_range = TextRange::at(context.range().start(), leading_space.text_len());
+                
+                diagnostic.set_fix(if content.is_empty() {
+                	Edit::range_deletion(fix_range)
+                } else {
+	                Edit::range_replacement(content, fix_range)
+                });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-04 07:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-05-04 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/pydocstyle/rules/sections.rs</code>:631 on 2023-05-04 15:25</div>
+            <div class="timeline-body"><p>Ah <code>range_deletion</code> makes sense here! Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-04 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pydocstyle/mod.rs</code>:71 on 2023-05-04 15:32</div>
+            <div class="timeline-body"><p>It's mostly path dependence. We started with <em>just</em> <code>D.py</code>, then added <code>sections.py</code> at some point when we needed some section-specific tests, and then we added a few cases that are specific to individual rules (like <code>D104/__init__.py</code>, which requires multiple files to test). Maybe we just rename this file to <code>module.py</code> to indicate that it's a test for module-level docstring behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-05-04 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/pydocstyle/mod.rs</code>:71 on 2023-05-04 15:37</div>
+            <div class="timeline-body"><p>🤷‍♀️ I don't have a strong preference. I named it this because it only contains D214 violations — maybe if we add more module-level docstring errors in it in the future it'd be renamed?</p>
+<p>Does the string argument after the path need to be unique?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-04 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pydocstyle/mod.rs</code>:71 on 2023-05-04 15:42</div>
+            <div class="timeline-body"><p>Yeah, IIRC the string argument has to be unique.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-04 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-04 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-04 18:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:52 UTC
+    </footer>
+</body>
+</html>

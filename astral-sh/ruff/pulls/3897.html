@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store source code on message - astral-sh/ruff #3897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Store source code on message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3897">#3897</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-04-06 10:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-06 10:18</div>
+            <div class="timeline-body"><p>This PR stores the whole source text on <code>Message</code> so that it becomes possible to build up a code frame with dynamic context or show a diff for the code changes.</p>
+<p>The PR introduces two new data structures</p>
+<ul>
+<li><code>SourceCode</code>: Similar to <code>Locator</code>. It stores a reference to the source text and a reference to a <code>LineIndex</code>. The difference to <code>Locator</code> is that the <code>LineIndex</code> is eagerly computed when creating the <code>SourceCode</code></li>
+<li><code>SourceCodeBuf</code>: A owned version of <code>SourceCode</code> that uses an <code>Arc&lt;str&gt;</code> for the source code to be cheaply cloneable.</li>
+</ul>
+<p><code>SourceCode</code> is used by both <code>SourceCodeBuf</code> and <code>Locator</code> to implement the &quot;resolution&quot; logic that is shared between all three structs.</p>
+<h2>Serialization</h2>
+<p>The <code>Message</code> serialization in ruff's cache skips over the <code>source</code> field when serializing the messages to avoid serializing the content <code>n</code> times. Instead, the serializer computes the unique contents using the file name and stores each content only once.</p>
+<h2>Benchmark</h2>
+<p>This change improves/regresses the runtime of some configurations slightly.</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e   </code> | 37.5 ± 1.9 | 33.6 | 40.9 | 1.00 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e   </code> | 37.6 ± 1.6 | 33.9 | 40.7 | 1.00 ± 0.07 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache  </code> | 209.1 ± 3.2 | 201.9 | 213.5 | 5.57 ± 0.29 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache  </code> | 212.2 ± 5.5 | 202.7 | 223.5 | 5.65 ± 0.32 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e  --select=ALL </code> | 439.5 ± 10.3 | 422.0 | 456.2 | 11.71 ± 0.64 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e  --select=ALL </code> | 431.3 ± 9.4 | 410.9 | 447.3 | 11.49 ± 0.62 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL </code> | 745.9 ± 14.2 | 722.4 | 768.2 | 19.87 ± 1.05 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL </code> | 749.6 ± 9.4 | 738.5 | 763.2 | 19.97 ± 1.02 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e   --show-source</code> | 66.9 ± 2.2 | 63.7 | 73.8 | 1.78 ± 0.11 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e   --show-source</code> | 66.4 ± 2.2 | 63.0 | 71.7 | 1.77 ± 0.11 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache  --show-source</code> | 234.1 ± 4.2 | 227.4 | 240.4 | 6.24 ± 0.33 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache  --show-source</code> | 235.9 ± 6.0 | 229.0 | 249.0 | 6.28 ± 0.35 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e  --select=ALL --show-source</code> | 1047.8 ± 16.1 | 1021.9 | 1073.2 | 27.91 ± 1.45 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e  --select=ALL --show-source</code> | 1041.8 ± 10.1 | 1024.6 | 1056.5 | 27.75 ± 1.40 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL --show-source</code> | 1359.4 ± 19.6 | 1334.5 | 1386.7 | 36.21 ± 1.87 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL --show-source</code> | 1358.1 ± 30.6 | 1335.4 | 1435.3 | 36.17 ± 1.97 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-06 10:18</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3895</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3895" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3896</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3896" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3897</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3897" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #3901</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3901" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3904</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3904" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #3905</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3905" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #3906</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3906" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3897?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-06 10:33</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.05ms     2.9 MB/sec    1.01     14.2±0.08ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.00      3.6±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    456.7±1.29µs     6.5 MB/sec    1.00    451.8±1.49µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.02ms     4.2 MB/sec    1.00      6.0±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.02ms     5.7 MB/sec    1.01      7.2±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1616.1±5.75µs    10.3 MB/sec    1.00   1620.4±5.21µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.01    180.5±0.44µs    16.4 MB/sec    1.00    178.9±0.50µs    16.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.00      3.3±0.00ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.4±0.56ms     2.2 MB/sec    1.02     18.9±0.59ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.06      4.9±0.17ms     3.4 MB/sec    1.00      4.6±0.18ms     3.6 MB/sec
+linter/all-rules/numpy/globals.py          1.02   583.5±21.62µs     5.1 MB/sec    1.00   569.6±26.61µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.03      8.1±0.17ms     3.2 MB/sec    1.00      7.8±0.25ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.6±0.24ms     4.3 MB/sec    1.00      9.5±0.27ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.1±0.10ms     7.9 MB/sec    1.00      2.1±0.09ms     8.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00   220.8±10.68µs    13.4 MB/sec    1.03   226.3±12.58µs    13.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.2±0.16ms     6.1 MB/sec    1.03      4.4±0.39ms     5.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-04-06 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/mod.rs</code>:53 on 2023-04-06 21:55</div>
+            <div class="timeline-body"><p>A bold rename!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/mod.rs</code>:174 on 2023-04-06 21:56</div>
+            <div class="timeline-body"><p>A bold rename!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/cache.rs</code>:117 on 2023-04-06 21:57</div>
+            <div class="timeline-body"><p>Why remove this generic? (Not objecting, looking to learn.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/grouped.rs</code>:117 on 2023-04-06 21:58</div>
+            <div class="timeline-body"><p>Imported here for shadowing, to avoid the need to alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-06 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/linter.rs</code>:374 on 2023-04-06 21:59</div>
+            <div class="timeline-body"><p>I wonder if we can apply some similar efficiency tricks to the path...? This also gets cloned and serialized once per diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-04-06 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-07 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/linter.rs</code>:374 on 2023-04-07 10:12</div>
+            <div class="timeline-body"><p>Good idea. See #3904 (I created a PR on top to minimize the time spent rebasing the stacked PRs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-07 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/mod.rs</code>:53 on 2023-04-07 10:14</div>
+            <div class="timeline-body"><p>😅 I don't feel too strongly about it. I just found that <code>after</code> works better with <code>TextRange::up_to</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-07 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/grouped.rs</code>:117 on 2023-04-07 10:16</div>
+            <div class="timeline-body"><p>Yeah. The alternative is to use <code>use std::fmt::{Write as WriteFmt}</code> at the top. I guess it was just easier to type it here than jumping to the top and manually at the use</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-07 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:117 on 2023-04-07 10:19</div>
+            <div class="timeline-body"><p>I can revert the change if you want.
+I experimented with reading the <code>source</code> in <code>get</code> instead of serializing it to the cache (because it seems a bit unnecessary) but then forgot to undo the change when I decided to not pursue this approach.</p>
+<p>The problems I ran into is are that <code>P</code> is not <code>Copy</code> and the constraint that <code>P</code> for <code>path</code> and <code>project_dir</code> must be of the same type was also too restricting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-07 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/mod.rs</code>:53 on 2023-04-07 13:21</div>
+            <div class="timeline-body"><p>Hah me neither. I had used <code>until</code> and <code>after</code> to mimic the iterator API but I genuinely don't feel strongly, trust you to do whatever makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-07 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/cache.rs</code>:117 on 2023-04-07 13:24</div>
+            <div class="timeline-body"><p>Don't feel strongly, up to you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfmengels">@jfmengels</a> on 2023-04-08 09:20</div>
+            <div class="timeline-body"><p>@MichaReiser Am I understanding correctly that this will also make it possible to use the errors cached on disk and displaying the source code without loading the file in memory at all?
+Maybe that's the primary intent of this PR, not sure I get the whole picture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-08 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser Am I understanding correctly that this will also make it possible to use the errors cached on disk and displaying the source code without loading the file in memory at all?</p>
+</blockquote>
+<p>Yes, depending on your definition of <em>loading the file in memory</em>. But you could argue that the old implementation did this more efficiently.</p>
+<p>Previously, <code>Message</code> only stored the source of the violating line. This has the advantage that a <code>Message</code> uses less space than storing the source code of the whole file. But it has a few disadvantages:</p>
+<ul>
+<li>Ruff supports different formats to output the Message: JSON, text, grouped, etc. Only serializing the violating line limits what the formatter can output. E.g. they can't render additional context lines before/after the violation because the source of these lines is unavailable.</li>
+<li>It limits formatters from rendering an inline diff with the code fix because the fix isn't necessary on the same line. We could include all the lines for every edit, but that means we're already getting closer to just including the source code.</li>
+</ul>
+<p>But our main reason for storing the whole source code on <code>Message</code> is that we want to transition to using byte offsets rather than <code>row/col</code> locations. But this imposes a problem when rendering <code>Message</code>s: We need to compute the line and column information because who wants to see byte offsets in diagnostics? To compute the row/column location we either need an index or... just use the source and recompute the position. That's why <code>Message</code> now stores the whole source code and we serialize it as part of the diagnostics. I don't love this... because it means that users we'll have two versions of every file with violations on their disk: The original, and once in our cache (same file as the diagnostics). I considered loading the file instead of duplicating the content into our cache but decided against it because:</p>
+<ul>
+<li>It's more complicated</li>
+<li>It requires reading another file</li>
+<li>We transform Jupyter notebooks before linting (concatenate all cells), meaning we would need to do that too, in a generic way</li>
+<li>Ideally, we would support other resources as source other than files. Maybe a file that you opened in your editor but has no disk representation yet, a file that you provided over STDIN, or the command line arguments...</li>
+<li>We only store the content for files with violations... there should only be a few files with violations for projects that have adopted ruff.</li>
+</ul>
+<p>So in a sense, yes, this architecture avoids opening the source file and loading its content. But only because it loads the content from the cache ;)</p>
+<p>How does elmreview cache diagnostics? Does it re-read the content from the original file when rendering the diagnostic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-04-11 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-04-11 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-04-11 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-11 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:46 UTC
+    </footer>
+</body>
+</html>

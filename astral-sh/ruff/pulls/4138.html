@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `ScopeStack` in favor of child-parent `ScopeId` pointers - astral-sh/ruff #4138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>ScopeStack</code> in favor of child-parent <code>ScopeId</code> pointers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4138">#4138</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-04-28 03:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-28 03:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently, we maintain a stack of <code>ScopeId</code> elements to track the current stack of scopes (module, function, etc.). This makes iteration and scope traversal very easy, but a common operation we perform is &quot;Save the current scope, so we can restore it later&quot; -- and with our current design, that operation becomes unnecessarily expensive, as we need to clone the entire vector of <code>ScopeId</code> elements in order to save our position in the stack.</p>
+<p>This PR instead migrates to a model in which we store the parent <code>ScopeId</code> on every scope, which in turn allows us to merely store the current <code>ScopeId</code> when saving and restoring the current scope.</p>
+<p>We could introduce a crate like <a href="https://docs.rs/indextree"><code>indextree</code></a> to help with this, and it may make sense to do so in the future, but for now, I've just implemented this tracking manually, since it's very straightforward.</p>
+<h2>Test Plan</h2>
+<p>This improves benchmark performance by a couple of percentage points:</p>
+<pre><code>❯ cargo benchmark --baseline=main
+    Finished bench [optimized] target(s) in 0.14s
+     Running benches/linter.rs (target/release/deps/linter-200959ba3da63cb3)
+linter/default-rules/numpy/globals.py
+                        time:   [72.278 µs 72.403 µs 72.539 µs]
+                        thrpt:  [40.677 MiB/s 40.753 MiB/s 40.824 MiB/s]
+                 change:
+                        time:   [-1.1862% -0.8772% -0.5622%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+0.5654% +0.8850% +1.2005%]
+                        Change within noise threshold.
+Found 11 outliers among 100 measurements (11.00%)
+  10 (10.00%) high mild
+  1 (1.00%) high severe
+linter/default-rules/pydantic/types.py
+                        time:   [1.4848 ms 1.4873 ms 1.4896 ms]
+                        thrpt:  [17.120 MiB/s 17.147 MiB/s 17.176 MiB/s]
+                 change:
+                        time:   [-1.8008% -1.3902% -0.9916%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.0015% +1.4098% +1.8338%]
+                        Change within noise threshold.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+linter/default-rules/numpy/ctypeslib.py
+                        time:   [684.87 µs 685.87 µs 686.82 µs]
+                        thrpt:  [24.244 MiB/s 24.277 MiB/s 24.313 MiB/s]
+                 change:
+                        time:   [-4.2976% -3.6049% -2.9363%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+3.0251% +3.7397% +4.4906%]
+                        Performance has improved.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+linter/default-rules/large/dataset.py
+                        time:   [3.4197 ms 3.4205 ms 3.4213 ms]
+                        thrpt:  [11.891 MiB/s 11.894 MiB/s 11.896 MiB/s]
+                 change:
+                        time:   [-1.8290% -1.5224% -1.2507%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.2666% +1.5460% +1.8631%]
+                        Performance has improved.
+Found 12 outliers among 100 measurements (12.00%)
+  6 (6.00%) low severe
+  4 (4.00%) low mild
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+
+linter/all-rules/numpy/globals.py
+                        time:   [144.15 µs 144.35 µs 144.56 µs]
+                        thrpt:  [20.411 MiB/s 20.441 MiB/s 20.469 MiB/s]
+                 change:
+                        time:   [-0.2085% +0.1292% +0.5449%] (p = 0.52 &gt; 0.05)
+                        thrpt:  [-0.5420% -0.1291% +0.2090%]
+                        No change in performance detected.
+Found 8 outliers among 100 measurements (8.00%)
+  7 (7.00%) high mild
+  1 (1.00%) high severe
+linter/all-rules/pydantic/types.py
+                        time:   [2.9117 ms 2.9158 ms 2.9199 ms]
+                        thrpt:  [8.7343 MiB/s 8.7465 MiB/s 8.7589 MiB/s]
+                 change:
+                        time:   [-1.2509% -0.7777% -0.3998%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+0.4014% +0.7838% +1.2668%]
+                        Change within noise threshold.
+linter/all-rules/numpy/ctypeslib.py
+                        time:   [1.6440 ms 1.6464 ms 1.6488 ms]
+                        thrpt:  [10.099 MiB/s 10.114 MiB/s 10.128 MiB/s]
+                 change:
+                        time:   [-1.0992% -0.8788% -0.6667%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+0.6712% +0.8866% +1.1114%]
+                        Change within noise threshold.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+linter/all-rules/large/dataset.py
+                        time:   [6.9923 ms 6.9971 ms 7.0015 ms]
+                        thrpt:  [5.8106 MiB/s 5.8143 MiB/s 5.8182 MiB/s]
+                 change:
+                        time:   [-1.6946% -1.4648% -1.2491%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.2649% +1.4866% +1.7239%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  5 (5.00%) low mild
+  2 (2.00%) high severe
+</code></pre>
+<p>I also experimented with a design in which we stored parallel vectors on <code>Scopes</code>: a vector of <code>Scope</code> structs, and a parallel vector of parent pointers (<code>ScopeId</code>). While I expected this to perform <em>better</em> (SoA vs. AoS), it actually performed worse in practice 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-28 03:59</div>
+            <div class="timeline-body"><p>(A couple things I want to clean up here but if anything seems way off base, feel free to flag it @MichaReiser.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-28 04:09</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.0±0.06ms     2.9 MB/sec    1.00     14.0±0.05ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    418.9±1.36µs     7.0 MB/sec    1.01    421.9±0.57µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.02ms     4.4 MB/sec    1.00      5.8±0.03ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.01ms     5.8 MB/sec    1.00      7.0±0.01ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1492.1±1.26µs    11.2 MB/sec    1.00   1489.1±2.34µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    167.8±0.24µs    17.6 MB/sec    1.00    167.8±1.77µs    17.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.2 MB/sec    1.00      3.1±0.00ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.6±0.01ms     7.3 MB/sec    1.08      6.0±0.01ms     6.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1073.3±0.68µs    15.5 MB/sec    1.07   1153.4±0.47µs    14.4 MB/sec
+parser/numpy/globals.py                    1.00    108.6±0.22µs    27.2 MB/sec    1.06    115.6±0.17µs    25.5 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    10.9 MB/sec    1.08      2.5±0.00ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.5±0.19ms     2.5 MB/sec    1.01     16.6±0.22ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.04ms     4.0 MB/sec    1.01      4.2±0.06ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    489.4±6.01µs     6.0 MB/sec    1.01   494.5±10.00µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.16ms     3.7 MB/sec    1.00      7.0±0.13ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.08ms     4.9 MB/sec    1.00      8.4±0.08ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1776.6±28.24µs     9.4 MB/sec    1.02  1804.9±21.99µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    200.6±3.43µs    14.7 MB/sec    1.02    205.2±6.35µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.04ms     6.8 MB/sec    1.01      3.8±0.06ms     6.7 MB/sec
+parser/large/dataset.py                    1.00      6.7±0.08ms     6.0 MB/sec    1.00      6.7±0.06ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1277.2±12.60µs    13.0 MB/sec    1.01  1292.0±27.90µs    12.9 MB/sec
+parser/numpy/globals.py                    1.00    131.0±2.21µs    22.5 MB/sec    1.01    131.9±2.15µs    22.4 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.04ms     9.0 MB/sec    1.00      2.9±0.03ms     8.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-04-28 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-28 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:394 on 2023-04-28 21:14</div>
+            <div class="timeline-body"><p>I removed this method since <code>scope_id</code> is still <code>pub</code>, and it's confusing (IMO) to have a getter for a public field.</p>
+<p>It's hard to use this method everywhere (same with some of the utilities, like <code>scopes</code>) because of the borrow checker semantics. Often, we borrow (e.g.) <code>self.ctx.scope_id</code>, then mutate <code>self.ctx.bindings</code> or something similar. The borrow checker is fine with that. But if we use <code>self.ctx.scope_id()</code>, we can't mutate other parts of <code>self.ctx</code>, since that's considered an immutable borrow of <code>self.ctx</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-28 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:215 on 2023-04-28 21:14</div>
+            <div class="timeline-body"><p>A bit odd to have two methods here, but sort of convenient...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/rules/undefined_local.rs</code>:22 on 2023-04-28 21:15</div>
+            <div class="timeline-body"><p>Refactored this a bit, it should also be more performant (previously, we created a <code>Vec</code> of <code>Scope</code> to pass in every time).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-28 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-28 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:4176 on 2023-04-28 21:15</div>
+            <div class="timeline-body"><p>(Renamed a variety of <code>_index</code> usages to <code>_id</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-04-28 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-29 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:394 on 2023-04-29 15:34</div>
+            <div class="timeline-body"><p>Hmm, <code>scope_id</code> shouldn't borrow because it's copied. I do see value in migrating towards getters to avoid our very loose APIs and long getter chains to context-specific data structures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:282 on 2023-04-29 15:36</div>
+            <div class="timeline-body"><p>I would expect that <code>scopes.ancestors</code> returns an <code>Iterator&lt;Item=&amp;Scope&gt;</code> and not an iterator over the scope ids (<code>ancestor_ids</code>?). Returning a <code>Scope</code> iterator would hide some of the <code>id</code> to scope mapping complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1699 on 2023-04-29 15:37</div>
+            <div class="timeline-body"><p>Is it still necessary to clone <code>parents</code> or can we even remove <code>parents</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:4848 on 2023-04-29 15:39</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyflakes/rules/undefined_local.rs</code>:23 on 2023-04-29 15:41</div>
+            <div class="timeline-body"><p>Nit: Create a <code>ctx.scope()</code> and <code>ctx.scope_mut()</code> methods that returns the current scope</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:215 on 2023-04-29 15:47</div>
+            <div class="timeline-body"><p>Nit: I would flip the two so that <code>ancestors</code> returns an iterator of <code>Scope</code>s and <code>ancestor_ids</code> returns the ids only.</p>
+<p>The <code>ids</code> operator may not be required because the <code>id</code> can be accessed by using <code>Scope.id()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-04-29 15:50</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>I have one question and one improvement suggestion:</p>
+<ul>
+<li>What's currently preventing us from removing <code>ctx.parents</code>?</li>
+<li>I think it should now be possible to remove <code>Scope.id</code> by:<ul>
+<li>Internally storing a <code>ScopeData</code> that matches today's <code>Scope</code> without the <code>id</code></li>
+<li>Create a <code>Scope</code> struct that references a <code>ScopeData</code> and stores the <code>id</code> with the scope</li>
+<li>The iterator constructs <code>Scope</code>s and uses the implicit <code>index</code> of the <code>Scope</code> as the <code>ScopeId</code>.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-29 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:394 on 2023-04-29 18:25</div>
+            <div class="timeline-body"><p>Oh, hmm, perhaps that does work here, I have to check. (It doesn't work in general for references, but you're right that I'd expect it to work with copies.)</p>
+<p>I don't disagree, but if we add / retain this, I think we should try to remove <code>pub</code> from the <code>scope_id</code> attribute. Otherwise, it's unclear which access pattern to use (and editor completion is confusing too).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-29 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1699 on 2023-04-29 22:03</div>
+            <div class="timeline-body"><p>I think we can remove <code>parents</code> soon, but it requires a similar approach. We do need to set the list of parents when we &quot;restore&quot; state, but we should be able to use IDs with parent pointers, just like with scopes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 22:13</div>
+            <div class="timeline-body"><p>I was able to remove <code>Scope.id</code>. We now use <code>ancestor_ids</code> in one place, so I'm tempted to just leave it as-is and not expose a <code>Scope.id()</code> method at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1699 on 2023-04-29 22:17</div>
+            <div class="timeline-body"><p>We may also want to consider using <code>indextree</code> for statements, to enable us to traverse up and get symbolic representations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-29 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 22:22</div>
+            <div class="timeline-body"><p>To clarify: separate <code>ScopeData</code> and <code>Scope</code> structs may be unnecessary, since we only need the ID at one call-site, so perhaps we just skip that abstraction for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-29 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-29 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-29 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 22:24</div>
+            <div class="timeline-body"><p>Biasing towards merging but always happy to handle follow-ups in new PRs :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-29 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1699 on 2023-04-29 23:11</div>
+            <div class="timeline-body"><p>(Ignore the <code>indextree</code> reference here, I think we can make improvements to parent tracking but that crate might end up being irrelevant.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `is_module_name()` and improve perf of `is_identifier()` - astral-sh/ruff #3795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>is_module_name()</code> and improve perf of <code>is_identifier()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3795">#3795</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2023-03-29 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-29 15:11</div>
+            <div class="timeline-body"><ul>
+<li>For <code>is_module_name()</code><ul>
+<li>Must not be a reserved keyword</li>
+<li>use is_ascii_lowercase() and is_ascii_digit()</li>
+</ul>
+</li>
+<li>Improve perf of <code>is_indentifier()</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_stdlib/src/identifiers.rs</code>:12 on 2023-03-29 15:23</div>
+            <div class="timeline-body"><p>Unrelated to this PR but this could be rewritten to</p>
+<pre><code class="language-suggestion">let mut chars = s.chars();
+
+if !s.next().map_or(false, |c| is.alphabetic() || c == '_') {
+	return false;
+}
+
+chars.all(|c| c.is_alphanumeric() || c == '_')
+</code></pre>
+<p>to avoid iterating over the first char twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_stdlib/src/identifiers.rs</code>:38 on 2023-03-29 15:24</div>
+            <div class="timeline-body"><p>NIT: It could make sense to duplicate the <code>is_identifier</code> logic to only iterate two times over the string, instead of 3 times (at least once to check if it is in the KWARGS list, once to test if it is an identifier, and once to test if it is a module)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-29 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_stdlib/src/identifiers.rs</code>:9 on 2023-03-29 15:27</div>
+            <div class="timeline-body"><p>Can we go through the usages of this method, and see if we're checking for <code>KWLIST</code> already at the call-sites? If so, can we then remove those extra checks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-29 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-29 16:45</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+1, -0, 0 error(s))</p>
+<details><summary>zulip (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ zerver/management/commands/import.py:1:1: N999 Invalid module name: 'import'
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     14.2±0.10ms     2.9 MB/sec    1.00     14.0±0.11ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.03ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    451.8±1.94µs     6.5 MB/sec    1.01    456.9±2.26µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.06ms     4.3 MB/sec    1.00      6.0±0.05ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.05ms     5.6 MB/sec    1.00      7.3±0.04ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1626.9±5.40µs    10.2 MB/sec    1.01   1637.5±4.37µs    10.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    182.0±0.33µs    16.2 MB/sec    1.01    184.1±2.67µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.02ms     7.6 MB/sec    1.00      3.4±0.02ms     7.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.1±0.53ms     2.3 MB/sec    1.00     18.1±0.47ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.7±0.13ms     3.6 MB/sec    1.02      4.8±0.23ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   577.4±26.31µs     5.1 MB/sec    1.02   590.6±33.34µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.8±0.24ms     3.3 MB/sec    1.00      7.8±0.23ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.5±0.44ms     4.3 MB/sec    1.01      9.5±0.30ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.09ms     8.1 MB/sec    1.02      2.1±0.10ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    244.4±8.81µs    12.1 MB/sec    1.08   263.9±15.92µs    11.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.3±0.14ms     6.0 MB/sec    1.06      4.5±0.33ms     5.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 17:20</div>
+            <div class="timeline-body"><p>Looking at the ecosystem checks, I'd forgotten that I think we shipped a strict version like this in the past and it caused a ton of problems (e.g. with Django migrations), we had to release a hotfix. Let me dig up the issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on <code>crates/ruff_python_stdlib/src/identifiers.rs</code>:9 on 2023-03-29 17:54</div>
+            <div class="timeline-body"><p><code>KWLIST</code> is used for converting named_tuple or typed_dict.
+Will remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> reviewed on 2023-03-29 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix is_module_name() and is_identifier()" to "Fix is_module_name() and improve perf of is_identifier()" by @JonathanPlasse on 2023-03-29 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-29 18:29</div>
+            <div class="timeline-body"><p>All the errors except one seem to be migrations. It could easily be ignored with <code>per-file-ignores</code>.
+The remaining error is with a file named <code>import.py</code> in <em>zulip</em>. This is not a valid module name and cannot be imported by other modules.
+For <code>is_module_name()</code>, the string must be valid ASCII as stated in <a href="https://peps.python.org/pep-0008/#ascii-compatibility">PEP8</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 18:30</div>
+            <div class="timeline-body"><p>I think I was mixing this up with the fact that we accidentally flagged modules like <code>__main__.py</code> and <code>__version.py__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-29 19:56</div>
+            <div class="timeline-body"><p>Woah, nice performance improvement. I'm surprised that it improves by so much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-29 20:02</div>
+            <div class="timeline-body"><p>Indeed, I was not expecting this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 22:24</div>
+            <div class="timeline-body"><p>My only hangup here is that I'm wondering if we should special-case migration files. If users are always going to end up ignoring them, it'd be nice for us to just &quot;do the right thing&quot; out of the box. At the same time, it's weird to allow what is actually an invalid module name. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-30 06:04</div>
+            <div class="timeline-body"><p>How could we avoid false negative if we ignore migration files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-30 11:35</div>
+            <div class="timeline-body"><p>Maybe we could start checking if the path contains a component called <code>migrations</code> and whether the filename starts with four digits? This should cover the django projects. alembic seems to use <code>versions/[0-9a-f]{12}(_.*)?.py</code>, but from a quick search i couldn't get the exact semantics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 13:14</div>
+            <div class="timeline-body"><p>I'm temped to say we just ignore anything in a <code>migrations</code> or <code>versions</code> subdirectory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 15:51</div>
+            <div class="timeline-body"><p>How bout: if <code>migrations</code> or <code>versions</code> is in the path, allow it to start with a number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-30 18:24</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 18:25</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pep8_naming/rules/invalid_module_name.rs</code>:69 on 2023-03-31 18:52</div>
+            <div class="timeline-body"><p>@JonathanPlasse - What do you think about this? It lets us keep the &quot;project convention&quot; logic out of <code>ruff_python_stdlib</code> (and keeps <code>is_module_name</code> simple since it doesn't rely on directory in any way)... but it does mean we have to check the name twice for valid migrations. However, the most common path is that a module has a valid name anyway, so it may not matter in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-31 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pep8_naming/rules/invalid_module_name.rs</code>:100 on 2023-03-31 18:52</div>
+            <div class="timeline-body"><p>(E.g., to me, this check is similar to the <code>is_module_file</code> check we already do here -- it feels more at-home in the rule than in the compliance utilities...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-31 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix is_module_name() and improve perf of is_identifier()" to "Fix `is_module_name()` and improve perf of `is_identifier()`" by @charliermarsh on 2023-03-31 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> reviewed on 2023-03-31 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on <code>crates/ruff/src/rules/pep8_naming/rules/invalid_module_name.rs</code>:69 on 2023-03-31 18:59</div>
+            <div class="timeline-body"><p>It is great. Good separation of concerns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pep8_naming/rules/invalid_module_name.rs</code>:70 on 2023-03-31 19:01</div>
+            <div class="timeline-body"><p>@JonathanPlasse - Tweaked it to do the check once like you had before, just separate functions now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-31 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on <code>crates/ruff/src/rules/pep8_naming/rules/invalid_module_name.rs</code>:70 on 2023-03-31 19:06</div>
+            <div class="timeline-body"><p>Great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> reviewed on 2023-03-31 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-31 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-31 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-31 19:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix `EM101`, `EM102`, `EM103` if possible - astral-sh/ruff #4123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix <code>EM101</code>, <code>EM102</code>, <code>EM103</code> if possible</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4123">#4123</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-04-26 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-26 19:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Generate an autofix for <code>EM101</code>, <code>EM102</code>, <code>EM103</code> if possible. This will avoid the autofix if the <code>msg</code> variable is bound in the current scope or the parent scope. Otherwise, it'll produce 2 edits for the fix:</p>
+<ol>
+<li>Insert the exception argument into a variable assignment before the <code>raise</code> statement. The variable name is <code>msg</code>.</li>
+<li>Replace the exception argument with the variable name.</li>
+</ol>
+<p><strong>Indentation</strong> is taken care using the helper function <a href="https://github.com/charliermarsh/ruff/blob/4356d8e1648588523aa8617d9deb631b63ca1c42/crates/ruff_python_ast/src/whitespace.rs#L7-L7"><code>ruff_python_ast::whitespace::indentation</code></a>
+<strong>Newline</strong> is taken from <a href="https://github.com/charliermarsh/ruff/blob/4356d8e1648588523aa8617d9deb631b63ca1c42/crates/ruff_python_ast/src/source_code/stylist.rs#L23-L23"><code>checker.stylist.line_ending</code></a></p>
+<p>fixes: #4103</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Autofix `EM001`, `EM002`, `EM003` if possible" to "Autofix `EM101`, `EM102`, `EM103` if possible" by @dhruvmanila on 2023-04-26 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-27 04:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/resources/test/fixtures/flake8_errmsg/EM.py</code>:47 on 2023-04-27 04:21</div>
+            <div class="timeline-body"><p>Can we ensure that we also properly handle non-indented statements? (We could even consider these unfixable, but the code <em>might</em> panic if we're unwrapping on indentation right now.)</p>
+<pre><code>if foo: raise RuntimeError(&quot;This is an example exception&quot;)
+if foo: x = 1; raise RuntimeError(&quot;This is an example exception&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-27 04:21</div>
+            <div class="timeline-body"><p>Looks great, just one question below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-04-27 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/resources/test/fixtures/flake8_errmsg/EM.py</code>:47 on 2023-04-27 04:36</div>
+            <div class="timeline-body"><p>Yes, it does panic.</p>
+<p>I think what we could do is to add the newline <em>before</em> the assignment statement (currently it's <em>after</em> the statement), but only if the indentation is not present. If the indentation is not present, then we'll use the default indentation (<code>checker.stylist.indentation</code>).</p>
+<p>I'll test this out, otherwise we could just make it unfixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-04-27 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/resources/test/fixtures/flake8_errmsg/EM.py</code>:47 on 2023-04-27 13:53</div>
+            <div class="timeline-body"><p>It's actually unfixable -- the logic might work for the first statement, but it'll fail when there are multiple statements on the same line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-27 14:08</div>
+            <div class="timeline-body"><p>Ecosystem checks can be found here: https://github.com/charliermarsh/ruff/actions/runs/4820598417/attempts/1#summary-13071431799</p>
+<p>They're just addition of the <code>[*]</code> prefix before the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-27 18:47</div>
+            <div class="timeline-body"><p>As a stretch, it would be nice to parenthesize expressions in cases like this (imagine the expression is actually multi-line):</p>
+<pre><code class="language-diff">+            msg = &quot;Some very long message&quot;
+             raise Exception(
+-                &quot;Some very long &quot;
+-                &quot;message&quot;
++                msg
+             )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-27 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_errmsg/rules.rs</code>:239 on 2023-04-27 18:48</div>
+            <div class="timeline-body"><p>@dhruvmanila - I'm not convinced that the change I made here is <em>clearer</em>, but it does mean that we avoid the &quot;invalid&quot; state of <code>fixable = false</code> with <code>indentation = &quot;&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-27 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-27 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-28 11:35</div>
+            <div class="timeline-body"><blockquote>
+<p>As a stretch, it would be nice to parenthesize expressions in cases like this (imagine the expression is actually multi-line):</p>
+</blockquote>
+<p>Do you mean to autofix it like so?</p>
+<pre><code class="language-diff">+msg = (
++    &quot;This is an example exception. &quot;
++    &quot;This message is very long &quot;
++    &quot;and spans multiple lines.&quot;
++)
+ raise Exception(
+-    &quot;This is an example exception. &quot;
+-    &quot;This message is very long &quot;
+-    &quot;and spans multiple lines.&quot;
++    msg
+ )
+</code></pre>
+<p>It could be but not with the help of AST. I think slicing the source code would work with <code>msg = {content}</code> as the replacement string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-04-28 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/flake8_errmsg/rules.rs</code>:239 on 2023-04-28 11:47</div>
+            <div class="timeline-body"><p>Ah, right. Yes, it would seem that the fixable property is dependent on whether the indentation is present or not. Maybe two variables might help but not the way I did it. 🤔</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/rules/flake8_errmsg/rules.rs b/crates/ruff/src/rules/flake8_errmsg/rules.rs
+index ac30f0d7..e828e416 100644
+--- a/crates/ruff/src/rules/flake8_errmsg/rules.rs
++++ b/crates/ruff/src/rules/flake8_errmsg/rules.rs
+@@ -229,20 +229,11 @@ pub fn string_in_exception(checker: &amp;mut Checker, stmt: &amp;Stmt, exc: &amp;Expr) {
+                 } =&gt; {
+                     if checker.settings.rules.enabled(Rule::RawStringInException) {
+                         if string.len() &gt; checker.settings.flake8_errmsg.max_string_length {
+-                            let indentation = whitespace::indentation(checker.locator, stmt)
+-                                .and_then(|indentation| {
+-                                    if checker.ctx.find_binding(&quot;msg&quot;).is_none() {
+-                                        Some(indentation)
+-                                    } else {
+-                                        None
+-                                    }
+-                                });
+-                            let mut diagnostic = Diagnostic::new(
+-                                RawStringInException {
+-                                    fixable: indentation.is_some(),
+-                                },
+-                                first.range(),
+-                            );
++                            let indentation = whitespace::indentation(checker.locator, stmt);
++                            let fixable = indentation
++                                .map_or(false, |_| checker.ctx.find_binding(&quot;msg&quot;).is_none());
++                            let mut diagnostic =
++                                Diagnostic::new(RawStringInException { fixable }, first.range());
+                             if let Some(indentation) = indentation {
+                                 if checker.patch(diagnostic.kind.rule()) {
+                                     diagnostic.set_fix(generate_fix(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-28 11:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:50 UTC
+    </footer>
+</body>
+</html>

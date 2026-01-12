@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf(pycodestyle): Remove regex captures - astral-sh/ruff #3735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf(pycodestyle): Remove regex captures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3735">#3735</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-26 00:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-26 00:29</div>
+            <div class="timeline-body"><p>From the regex documentation:</p>
+<blockquote>
+<p>Advice: Prefer in this order: is_match, find, captures.</p>
+</blockquote>
+<p><a href="https://github.com/rust-lang/regex/blob/master/PERFORMANCE.md#only-ask-for-what-you-need">source</a></p>
+<p>This PR removes our usages of <code>capture_iter</code> with <code>find_iter</code> and and implements the whitespace-testing manually.</p>
+<h2>Performance</h2>
+<ul>
+<li><code>no-logical</code>: pycode style rules disabled</li>
+<li><code>pr3715</code>: The base version with logical lines enabled</li>
+<li><code>pr3735</code>: This PR with logical lines enabled.</li>
+</ul>
+<pre><code>group                                      no-logical                             pr3735                                  pr3715
+-----                                      ----------                             -----                                  ------
+linter/all-rules/large/dataset.py          1.00      8.5±0.01ms     4.8 MB/sec    1.10      9.4±0.05ms     4.3 MB/sec    1.10      9.4±0.15ms     4.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.1±0.01ms     7.8 MB/sec    1.09      2.3±0.00ms     7.1 MB/sec    1.15      2.5±0.00ms     6.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    247.9±3.25µs    11.9 MB/sec    1.10    272.6±1.25µs    10.8 MB/sec    1.16    286.9±3.46µs    10.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      3.7±0.04ms     7.0 MB/sec    1.11      4.1±0.07ms     6.3 MB/sec    1.19      4.4±0.02ms     5.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      4.7±0.01ms     8.7 MB/sec    1.19      5.6±0.11ms     7.3 MB/sec    1.24      5.8±0.08ms     7.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00    999.5±5.57µs    16.7 MB/sec    1.22   1216.5±2.35µs    13.7 MB/sec    1.31  1304.4±16.73µs    12.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    101.0±0.41µs    29.2 MB/sec    1.36    137.5±1.36µs    21.5 MB/sec    1.44    145.7±1.31µs    20.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.1±0.01ms    11.9 MB/sec    1.19      2.5±0.06ms    10.0 MB/sec    1.26      2.7±0.03ms     9.5 MB/sec
+</code></pre>
+<p>We're getting closer, but a 36% regression for some cases is still heavy....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-26 00:29</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3714</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3714" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3715</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3735</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #3736</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3736" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3745</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3745" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #3757</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3757" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #3737</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3737" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-26 00:58</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.5±0.10ms     2.3 MB/sec    1.00     17.5±0.07ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.6±0.04ms     3.6 MB/sec    1.00      4.5±0.02ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    620.0±1.39µs     4.8 MB/sec    1.00    621.6±1.77µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.8±0.07ms     3.3 MB/sec    1.00      7.7±0.05ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.2±0.05ms     4.4 MB/sec    1.00      9.2±0.06ms     4.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.01ms     8.1 MB/sec    1.00      2.1±0.01ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    229.8±1.34µs    12.8 MB/sec    1.00    228.8±0.64µs    12.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.3±0.02ms     5.9 MB/sec    1.00      4.3±0.04ms     5.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     15.0±0.03ms     2.7 MB/sec    1.00     14.9±0.03ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.02ms     4.1 MB/sec    1.00      4.0±0.02ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.03    453.6±3.19µs     6.5 MB/sec    1.00    439.7±3.14µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.7±0.02ms     3.8 MB/sec    1.00      6.6±0.02ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.04      8.3±0.03ms     4.9 MB/sec    1.00      8.0±0.03ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1752.4±5.15µs     9.5 MB/sec    1.00   1722.7±8.36µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.06    185.1±1.48µs    15.9 MB/sec    1.00    174.4±3.12µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.8±0.02ms     6.7 MB/sec    1.00      3.7±0.02ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid using Regex captures" to "perf(pycodestyle): Remove regex captures" by @MichaReiser on 2023-03-26 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-26 11:16</div>
+            <div class="timeline-body"><p>The changes to the tests make sense to me, but I would appreciate it if someone more familiar with pycodestyle could review the changes, just to be sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-26 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-03-26 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-27 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:346 on 2023-03-27 15:06</div>
+            <div class="timeline-body"><p>Nit: <code>strinig</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/rules/mod.rs</code>:91 on 2023-03-27 15:07</div>
+            <div class="timeline-body"><p>Wonder whether we should find another home for this? Maybe <code>pycodestyle/whitespace.rs</code>? Or <code>pycodestyle/rules/helpers.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 15:10</div>
+            <div class="timeline-body"><p>So I guess the difference here is that <code>-</code> is considered an operator (as in <code>-1</code>), whereas before it wasn't? And thus, <code>x =            -1</code> is considered  <code>MultipleSpacesBeforeOperator</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:19 on 2023-03-27 15:11</div>
+            <div class="timeline-body"><p>Looks like it's triggering twice because we have two tabs here, which seems ok to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:6 on 2023-03-27 15:13</div>
+            <div class="timeline-body"><p>Confused why this one only triggers once, but row 12 triggers twice. In both cases we have two tabs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:11 on 2023-03-27 15:13</div>
+            <div class="timeline-body"><p>I think this one might be wrong because it's considering <code>False</code> to be a keyword.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E272_E27.py.snap</code>:11 on 2023-03-27 15:13</div>
+            <div class="timeline-body"><p>I think this one might be wrong, it's considering <code>False</code> to be a keyword.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 15:24</div>
+            <div class="timeline-body"><p>It'd be nice if we didn't flag this (any changes in these snapshots are deviations from pycodestyle, I think), but we could live with this if handling the <code>-</code> in <code>x = 1 - 2</code> vs. <code>x = -2</code> is hard or complicated. Either way, it'll be a lint error, it's just a question of whether it's &quot;spaces after the <code>=</code>&quot; or <code>&quot;spaces before the </code>-`&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 15:25</div>
+            <div class="timeline-body"><p>Ah yeah, I guess pycodestyle doesn't flag <code>x = -   2</code> as a lint error at all. That seems wrong. What you have here (treating <code>-</code> as an operator everywhere) may be better anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/mod.rs</code>:91 on 2023-03-27 15:49</div>
+            <div class="timeline-body"><p>I can put it into <code>whitespace</code> and potentially gate it to the feature.</p>
+<p>I prefer not to put code into <code>helpers</code>/<code>util</code> modules because they often end up being this huge pile of random things that you have a hard time finding in the future. I prefer to come up with a concrete concept where the code fits in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 15:58</div>
+            <div class="timeline-body"><p>Pycodestyle does report the error but as <code>MultipleSpacesAfterOperator</code> where the <code>=</code> is the operator</p>
+<pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E22.py:31:4: E222 multiple spaces after operator
+crates/ruff/resources/test/fixtures/pycodestyle/E22.py:32:4: E222 multiple spaces after operator
+</code></pre>
+<p>Let me have a look why we report it differently</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E272_E27.py.snap</code>:11 on 2023-03-27 15:59</div>
+            <div class="timeline-body"><p>Pylint seems to agree (<code>False</code> is a keyword, right?). Except that it should be multiple spaces after keyword and not before. Maybe we are now double-reporting the spaces?</p>
+<pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E27.py:4:9: E271 multiple spaces after keyword
+</code></pre>
+<p>The column numbers seem to be off-tough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:20 on 2023-03-27 16:01</div>
+            <div class="timeline-body"><p>Having two here seems correct but one should be after keyword:</p>
+<pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E27.py:12:5: E274 tab before keyword
+crates/ruff/resources/test/fixtures/pycodestyle/E27.py:12:10: E273 tab after keyword
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:11 on 2023-03-27 16:01</div>
+            <div class="timeline-body"><p>Again, should be after keyword and not before:</p>
+<pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E27.py:8:3: E271 multiple spaces after keyword
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:19 on 2023-03-27 16:01</div>
+            <div class="timeline-body"><pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E27.py:30:10: E273 tab after keyword
+</code></pre>
+<p>Same, should only trigger after keyword, not both</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 16:38</div>
+            <div class="timeline-body"><p>I have a fix for the token based implementation (stack on top of this stack). I have to look closer to understand what's causing the difference in the regex based implementations (only if I can figure it out quickly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E221_E22.py.snap</code>:117 on 2023-03-27 18:58</div>
+            <div class="timeline-body"><p>Ah yeah, if it's fixed upstream, then I don't feel strongly about debugging here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/rules/mod.rs</code>:91 on 2023-03-27 18:59</div>
+            <div class="timeline-body"><p>Embrace the helpers...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-27 19:00</div>
+            <div class="timeline-body"><p>I trust you to resolve any necessary issues based on discussion around the deviations, but just tag me if you want eyes on anything as you follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/mod.rs</code>:91 on 2023-03-27 21:06</div>
+            <div class="timeline-body"><p>I'll move this into <code>LogicalLines</code> in my top most PR (easier than dealing with all the merge conflicts). The idea is that the <code>LogicalLine</code> already has a <code>before_text</code> and I think it's only used to determine the Whitespace... so I'll add it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E274_E27.py.snap</code>:12 on 2023-03-27 21:06</div>
+            <div class="timeline-body"><p>I checked these numbers and they match pycodestyle</p>
+<pre><code>crates/ruff/resources/test/fixtures/pycodestyle/E27.py:28:2: E274 tab before keyword
+crates/ruff/resources/test/fixtures/pycodestyle/E27.py:30:5: E274 tab before keyword
+</code></pre>
+<p>The other tests are fixed (very hacky solution but the next PR replaces it anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-28 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-28 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-28 07:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:42 UTC
+    </footer>
+</body>
+</html>

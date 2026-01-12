@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support mutually exclusive branches for `B031` - astral-sh/ruff #3844</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support mutually exclusive branches for <code>B031</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3844">#3844</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-04-01 05:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-01 05:03</div>
+            <div class="timeline-body"><p>fixes: #3801</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-01 05:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.04     15.2±0.18ms     2.7 MB/sec    1.00     14.6±0.05ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.8±0.01ms     4.4 MB/sec    1.00      3.8±0.01ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    409.8±1.84µs     7.2 MB/sec    1.01    415.6±1.81µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.5±0.03ms     3.9 MB/sec    1.00      6.4±0.06ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.02ms     5.2 MB/sec    1.00      7.8±0.03ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1736.6±7.11µs     9.6 MB/sec    1.01   1750.4±2.65µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    181.2±0.89µs    16.3 MB/sec    1.01    183.2±0.50µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.00ms     7.0 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     16.1±0.14ms     2.5 MB/sec    1.00     15.7±0.17ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.05ms     4.0 MB/sec    1.00      4.1±0.05ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    495.5±7.28µs     6.0 MB/sec    1.01    499.2±7.28µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.8±0.09ms     3.7 MB/sec    1.00      6.7±0.12ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.2±0.06ms     4.9 MB/sec    1.00      8.2±0.07ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1802.4±20.99µs     9.2 MB/sec    1.00  1791.8±17.55µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.02    196.4±7.92µs    15.0 MB/sec    1.00    192.9±5.07µs    15.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.07ms     6.8 MB/sec    1.00      3.7±0.04ms     6.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-01 09:08</div>
+            <div class="timeline-body"><p>The recursive case is not handled correctly.</p>
+<pre><code class="language-python">for _section, section_items in itertools.groupby(items, key=lambda p: p[1]):
+    # Mutually exclusive branches shouldn't trigger the warning
+    if _section == &quot;greens&quot;:
+        collect_shop_items(shopper, section_items)
+        if _section == &quot;greens&quot;:
+            collect_shop_items(shopper, section_items)  # B031 false negative
+        elif _section == &quot;frozen items&quot;:
+            collect_shop_items(shopper, section_items)  # B031 false negative
+        else:
+            collect_shop_items(shopper, section_items)  # B031 false negative
+    elif _section == &quot;frozen items&quot;:
+        collect_shop_items(shopper, section_items)  # B031 false positive
+    else:
+        collect_shop_items(shopper, section_items)  # B031 false positive
+    # Now, it should detect
+    collect_shop_items(shopper, section_items)  # B031
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/resources/test/fixtures/flake8_bugbear/B031.py</code>:104 on 2023-04-01 14:20</div>
+            <div class="timeline-body"><p>We may be missing &quot;multiple usages within the same arm, top-level&quot;:</p>
+<pre><code class="language-py">for _section, section_items in itertools.groupby(items, key=lambda p: p[1]):
+    match _section:
+        case &quot;greens&quot;:
+            collect_shop_items(shopper, section_items)
+            collect_shop_items(shopper, section_items)
+</code></pre>
+<p>This seems like it should trigger B031, but doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-01 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-01 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_bugbear/rules/reuse_of_groupby_generator.rs</code>:69 on 2023-04-01 14:21</div>
+            <div class="timeline-body"><p>My intuition (without reading the code deeply) is that this might need to be handled as a stack, that we push and pop from as we enter and leave branchable code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-04-02 04:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/resources/test/fixtures/flake8_bugbear/B031.py</code>:104 on 2023-04-02 04:17</div>
+            <div class="timeline-body"><p>Yes, this should be triggered, let me take a look at that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-04-02 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/flake8_bugbear/rules/reuse_of_groupby_generator.rs</code>:69 on 2023-04-02 04:36</div>
+            <div class="timeline-body"><p>Yes, I'm thinking of using a stack but it's getting a bit complicated so might take some time to resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dhruvmanila on 2023-04-02 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-03 13:37</div>
+            <div class="timeline-body"><p>I'll give an explanation of the logic behind this in a couple of hours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-04-03 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-04 01:57</div>
+            <div class="timeline-body"><p><em><strong>Using the stack model:</strong></em></p>
+<p>A new stack element is pushed for every mutually exclusive statement (<code>if</code>/<code>match</code> statement, not <code>elif</code>/<code>else</code>/<code>case</code>) statements. This stack element is <code>Vec&lt;u8&gt;</code> where each number represents the count of group in individual branch. They're in the same order as that of branches or case blocks in case of <code>match</code> statements.</p>
+<p>Once we're out of a mutually exclusive statement, the final count will be the max value from every branch/case. This will be added to either the parent statement or the global count if there isn't any.</p>
+<p><img src="https://user-images.githubusercontent.com/67177269/229582657-b8f800dc-758c-45f4-8e1a-6717cb51e89f.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-04-04 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-04 02:27</div>
+            <div class="timeline-body"><p>Thank you! I continue to be so impressed by your contributions, really appreciate your help improving Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-04 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-04 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-04 03:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you! I continue to be so impressed by your contributions, really appreciate your help improving Ruff.</p>
+</blockquote>
+<p>Hey, thanks! I really enjoy contributing to the project :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-04 03:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:45 UTC
+    </footer>
+</body>
+</html>

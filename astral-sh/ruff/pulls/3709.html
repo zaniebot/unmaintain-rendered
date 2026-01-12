@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow diagnostics to generate multi-edit fixes - astral-sh/ruff #3709</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow diagnostics to generate multi-edit fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3709">#3709</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-24 03:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-24 03:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR extends the autofix API to support multiple edits by introducing a basic <code>Fix</code> struct:</p>
+<pre><code class="language-rust">pub struct Fix {
+    edits: Vec&lt;Edit&gt;,
+}
+</code></pre>
+<p>...and propagating those changes throughout the codebase.</p>
+<p>To demonstrate its usefulness, the <code>crates/ruff/src/rules/pyupgrade/rules/replace_stdout_stderr.rs</code> rule was also refactored to leverage this new API. (That rule needs to remove two keyword arguments, which may or may not be adjacent, and replace them with <code>capture_output=True</code>. Previously, this rule required that we included all intermediary content in the text edit. Now, we can model it as a replacement and a deletion.)</p>
+<p>There are a few changes that need to be made downstream, to tools that depend on our JSON API (namely, the playground and the LSP, the latter of which can be done in a backwards-compatible way).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-24 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-24 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:17 on 2023-03-24 04:15</div>
+            <div class="timeline-body"><p>There's some awkwardness to this struct... I wish these constraints were expressed in the type system (or, at least, a subset of them). It'd also be nice if we didn't require a <code>Vec</code> here at all. The vast majority of fixes will have exactly one edit. Others, in practice, will have a bounded number of edits (maybe two? three?).</p>
+<p>We could use <code>smallvec</code> to avoid heap allocations. I considered instead using an enum, like:</p>
+<pre><code class="language-rust">pub enum Fix {
+  One(Edit),
+  Two(Edit, Edit),
+  ...
+</code></pre>
+<p>...and so on.</p>
+<p>Would love feedback, this feels like a good learning opportunity for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-24 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-03-24 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-24 04:16</div>
+            <div class="timeline-body"><p>The test fixture updates have <em>intentionally</em> omitted for now, to keep this PR reviewable. (All test fixtures will change in a mechanical way, as we're moving from a single fix to a vector of fixes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-24 04:43</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.6±0.30ms     2.6 MB/sec    1.01     15.7±0.30ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.10ms     4.1 MB/sec    1.02      4.1±0.11ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   564.9±14.80µs     5.2 MB/sec    1.00   564.0±17.22µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.14ms     3.7 MB/sec    1.02      7.0±0.15ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.13ms     4.9 MB/sec    1.00      8.2±0.11ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1882.3±46.47µs     8.8 MB/sec    1.00  1869.1±39.64µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    209.5±6.30µs    14.1 MB/sec    1.00    209.1±7.25µs    14.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.08ms     6.5 MB/sec    1.00      3.9±0.10ms     6.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.04     15.8±0.21ms     2.6 MB/sec    1.00     15.2±0.18ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.2±0.07ms     4.0 MB/sec    1.00      4.1±0.05ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01    534.8±8.19µs     5.5 MB/sec    1.00    528.1±6.54µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.03      6.9±0.09ms     3.7 MB/sec    1.00      6.7±0.07ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.06      8.7±0.07ms     4.7 MB/sec    1.00      8.2±0.08ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1889.4±29.80µs     8.8 MB/sec    1.00  1808.3±26.49µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.02    208.4±6.66µs    14.2 MB/sec    1.00    203.5±7.27µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.05      4.0±0.05ms     6.4 MB/sec    1.00      3.8±0.06ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/Cargo.toml</code>:18 on 2023-03-24 07:54</div>
+            <div class="timeline-body"><p>Nit: I learned that you can write</p>
+<pre><code class="language-suggestion">ruff_diagnostics.path = &quot;../ruff_diagnostics&quot;
+ruff_python_ast.path = &quot;../ruff_python_ast&quot; 
+ruff_rustpython.path = &quot;../ruff_rustpython&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:17 on 2023-03-24 08:04</div>
+            <div class="timeline-body"><p>What's the motivation for enforcing that the edits are not empty? Does it simplify the consumption of edits downstream?</p>
+<p>I'm asking because <code>Fix::none</code> and the derived <code>Default</code> implementation generate empty fixes and the API provides an <code>is_none</code> function, making me believe this invariant isn't necessary (other than accidental creation of <code>Fix</code>es without any edits).</p>
+<p>We would need to profile to know whether it makes sense to use smallvec or an enum with <code>Empty</code>, <code>One</code> and <code>Many</code> variants. My intuition is that it shouldn't matter much for projects that have adopted Ruff because they normally have most issues fixed (a few issues from the now-edited files and ignored suppressions). It may be different for projects that run ruff the first time but using an enum instead of a <code>Vec</code> has additional costs when reading the values (an iterator needs to determine the right variant in every <code>next</code> call) and may be less optimized. This means we would be trading one cost for another.</p>
+<p>I think it could be more interesting to use a single edits <code>Vec</code> for all changes in a file and uses indices into that vec to get the edits of a single fix. But again, I don't this is necessary just now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:33 on 2023-03-24 08:05</div>
+            <div class="timeline-body"><p>This will panic on <code>Fix::default</code> and <code>Fix::none()</code>. It also isn't clear for a caller what to expect as the result of <code>fix.location()</code>. That's why I would change the method to</p>
+<pre><code class="language-suggestion">    pub fn first_location(&amp;self) -&gt; Option&lt;Location&gt; {
+        self.edits.first().copied()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:28 on 2023-03-24 08:06</div>
+            <div class="timeline-body"><p>Nit: I would prefer <code>Fix::is_empty()</code> and <code>Fix::empty()</code></p>
+<pre><code class="language-suggestion">    pub const fn empty() -&gt; Self {
+        Self::default()
+    }
+
+    pub const fn is_empty(&amp;self) -&gt; bool {
+        self.edits.is_empty()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:58 on 2023-03-24 08:07</div>
+            <div class="timeline-body"><p>Nit: If this is used frequently, then I recommend adding a</p>
+<pre><code>pub fn from_edit(edit: Edit) -&gt; Self {
+}
+</code></pre>
+<p>function to <code>Fix</code> to make it more explicit. I always find <code>From</code> implementations hard to discover.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:45 on 2023-03-24 08:08</div>
+            <div class="timeline-body"><p>Nit: We could implement <code>FromIter</code> so that it is possible to create a <code>Fix</code> from any <code>Iter&lt;Item=Edit&gt;</code> so that you can write</p>
+<pre><code class="language-rust">let fix: Fix = function_that_generates_edits().collect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-24 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_wasm/Cargo.toml</code>:18 on 2023-03-24 08:20</div>
+            <div class="timeline-body"><p>to me the string-or-braces-with-details style feels more intuitive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-24 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-24 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:33 on 2023-03-24 08:43</div>
+            <div class="timeline-body"><p>looking at crates/ruff/src/autofix/mod.rs, shouldn't location be a new location (min of all starts, max of all ends), or maybe even something defined by the rule that selects the whole expression that is fixed so that we don't combine potentially incorrect fixes on the same expression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-25 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:17 on 2023-03-25 16:23</div>
+            <div class="timeline-body"><p>All makes sense.</p>
+<p>I think I'm getting hung up on the <code>Option&lt;Vec&lt;...&gt;&gt;</code> thing, whereby using an empty <code>Vec</code> is seen as preferable to using <code>None</code>. Because of that convention, at the level above, I was going to use <code> Fix { edits: vec![] }</code> to represent &quot;no fix&quot;, rather than <code>None</code>. But that creates some awkwardness in the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-26 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-26 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-26 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fannheyward">@fannheyward</a> on 2023-04-13 05:21</div>
+            <div class="timeline-body"><p>@charliermarsh sorry to boring you on this, but this PR changes the <code>ruff --format=json</code> format, I think we should mention this in BREAKING_CHANGES.md.</p>
+<p>The reason I mention this is, coc-pyright uses ruff's fix info to fix codes, but the format has been changed in this PR, coc-pyright will change to the new output format.</p>
+<p>Thank you for your work on ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 16:39</div>
+            <div class="timeline-body"><p>@fannheyward - You're 100% right, I'm not sure how I missed that -- purely an oversight. I'll add it to <code>BREAKING_CHANGES.md</code>. Sorry about that, and thank you for supporting Ruff!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:41 UTC
+    </footer>
+</body>
+</html>

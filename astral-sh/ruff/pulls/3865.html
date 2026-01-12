@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce a `ruff_python_semantic` crate - astral-sh/ruff #3865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce a <code>ruff_python_semantic</code> crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3865">#3865</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-04-03 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-03 16:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR moves the following modules into a new <code>ruff_python_semantic</code> crate, to separate non-semantic AST responsibilities (<code>call_path.rs</code>, <code>newlines.rs</code>, etc.) from the semantic model, which will be captured in this crate:</p>
+<ul>
+<li><code>binding.rs</code></li>
+<li><code>scope.rs</code></li>
+<li><code>context.rs</code></li>
+</ul>
+<p>There are a few additional modules that were in <code>ruff_python_ast</code> and depend on <code>Context</code>, but aren't part of the &quot;semantic model&quot; per se. For example, <code>visibility.rs</code> determines the visibility (public, private) of a given binding, and also has utilities for checking whether the declaration is abstract, static, etc. None of this is captured by the AST, so it requires semantic analysis. For now, I included these under <code>ruff_python_semantic::analyze</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-04-03 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_stdlib/src/logging.rs</code>:25 on 2023-04-03 16:49</div>
+            <div class="timeline-body"><p>These are just definitions of types in the standard library, so they belong in <code>ruff_python_stdlib</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-03 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-03 17:03</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.4±0.63ms     2.6 MB/sec    1.00     15.3±0.48ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.09ms     4.1 MB/sec    1.01      4.1±0.15ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   494.9±17.96µs     6.0 MB/sec    1.05   519.0±12.26µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.25ms     3.9 MB/sec    1.07      7.0±0.16ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.27ms     5.2 MB/sec    1.04      8.2±0.21ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1766.8±68.22µs     9.4 MB/sec    1.04  1841.6±45.30µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.5±5.89µs    14.9 MB/sec    1.03    204.8±5.35µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.12ms     7.1 MB/sec    1.05      3.8±0.09ms     6.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     19.7±0.54ms     2.1 MB/sec    1.00     19.7±0.55ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.20ms     3.3 MB/sec    1.00      5.0±0.16ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.03   617.6±36.49µs     4.8 MB/sec    1.00   599.5±29.03µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.2±0.27ms     3.1 MB/sec    1.00      8.2±0.25ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.03     10.2±0.26ms     4.0 MB/sec    1.00      9.9±0.33ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.2±0.07ms     7.5 MB/sec    1.00      2.2±0.07ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   236.3±14.36µs    12.5 MB/sec    1.01   239.1±12.21µs    12.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.5±0.15ms     5.7 MB/sec    1.01      4.5±0.17ms     5.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-04-04 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-04 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-04 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-04 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:46 UTC
+    </footer>
+</body>
+</html>

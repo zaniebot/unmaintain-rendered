@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve top-of-file insertions for required imports - astral-sh/ruff #3779</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve top-of-file insertions for required imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3779">#3779</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-28 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 17:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Small refactor to our &quot;insert at top-of-file&quot; logic, to move more logic into a helper (which we'll reuse elsewhere in the future).</p>
+<p>The behavior is also a bit better in some strange cases. For example, given:</p>
+<pre><code class="language-py">&quot;&quot;&quot;My docstring&quot;&quot;&quot;; x = 1
+</code></pre>
+<p>We now modify to:</p>
+<pre><code class="language-py">&quot;&quot;&quot;My docstring&quot;&quot;&quot;; from __future__ import annotations; x = 1
+</code></pre>
+<p>Whereas before, we did:</p>
+<pre><code class="language-py">&quot;&quot;&quot;My docstring&quot;&quot;&quot;
+from __future__ import annotations; x = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-28 18:12</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.5±0.05ms     2.8 MB/sec    1.01     14.7±0.04ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.01ms     4.4 MB/sec    1.00      3.8±0.00ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    415.2±3.30µs     7.1 MB/sec    1.00    414.4±1.00µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.02ms     4.0 MB/sec    1.01      6.3±0.01ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.7±0.02ms     5.3 MB/sec    1.01      7.8±0.02ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1718.3±3.82µs     9.7 MB/sec    1.01   1731.2±3.46µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    179.6±0.40µs    16.4 MB/sec    1.02    182.3±1.52µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.01      3.6±0.01ms     7.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.5±0.09ms     2.6 MB/sec    1.00     15.5±0.07ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.02ms     4.0 MB/sec    1.00      4.1±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    434.4±3.46µs     6.8 MB/sec    1.00    436.2±4.31µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.7±0.03ms     3.8 MB/sec    1.00      6.7±0.03ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.02ms     5.0 MB/sec    1.00      8.1±0.02ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1774.0±15.78µs     9.4 MB/sec    1.00   1768.9±8.00µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    187.6±2.58µs    15.7 MB/sec    1.00   187.0±11.85µs    15.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.02ms     6.8 MB/sec    1.00      3.7±0.09ms     6.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/helpers.rs</code>:118 on 2023-03-29 06:49</div>
+            <div class="timeline-body"><p>Nit: <code>pub(crate)</code> or make it even private (specific to <code>isort</code>). we should avoid making things public because Rust's dead code analysis can only flag non-pub types as unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/helpers.rs</code>:122 on 2023-03-29 06:51</div>
+            <div class="timeline-body"><p>Nit: I prefer named structures over anonymous tuples because anonymous tuples require me to read the documentation to understand the fields' meaning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/helpers.rs</code>:127 on 2023-03-29 06:54</div>
+            <div class="timeline-body"><p>Feedback outside of this PR's scope: Lexing is expensive (it's probably fine here because we only lex very few tokens). Should we expose the tokens as part of <code>Locator</code> or <code>Stylist</code> (has a reference to all tokens) or some other struct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/isort/helpers.rs</code>:127 on 2023-03-29 06:56</div>
+            <div class="timeline-body"><p>What's the reason for using a <code>peekable</code> iterator. We only call <code>tokens.peek()</code> once and don't use the iterator any further after.</p>
+<pre><code class="language-suggestion">        let first_token = lexer::lex_located(locator.skip(location), Mode::Module, location)
+            .flatten()
+            .next();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-29 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-29 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/isort/helpers.rs</code>:127 on 2023-03-29 21:19</div>
+            <div class="timeline-body"><p>One problem here is that this requires <em>both</em> the AST and the token stream, so we can't use the &quot;original&quot; token stream (since it gets consumed when creating the AST).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-29 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-29 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-29 21:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:43 UTC
+    </footer>
+</body>
+</html>

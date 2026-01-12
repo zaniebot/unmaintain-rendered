@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf(pycodestyle): Reduce allocations when computing logical lines - astral-sh/ruff #3715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf(pycodestyle): Reduce allocations when computing logical lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3715">#3715</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-24 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-24 17:35</div>
+            <div class="timeline-body"><p>This PR refactors the logical lines computation that the pycodestyle rules use from using <code>O(lines)</code> allocations to <code>O(1)</code>.</p>
+<p>The current implementation allocates for every line:</p>
+<ul>
+<li>a <code>String</code> for the line's text</li>
+<li>a <code>Vec</code> for the logical-line text <code>offset</code> to <code>Location</code> mappings</li>
+<li>a <code>Vec</code> for the line's token</li>
+</ul>
+<p>This PR reduces the allocations by allocating a single <code>String</code> for the text, two Vec's for the mappings and tokens, and one <code>Vec</code> for storing the line-metadata. The implementation slices into the shared text, mappings, and tokens structures to get the <em>view</em> for a single line.</p>
+<p>Allocating the data structures for all lines has the advantage of reserving the containers with the right capacity because we know the number of tokens. This avoids the <em>guessing</em> of the old implementation that used some more-or-less arbitrary numbers for the tokens-capacity.</p>
+<h2>Performance</h2>
+<ul>
+<li><code>no-logical</code>: Logical lines feature disabled</li>
+<li><code>base-logical</code>: Logical lines feature enabled on main</li>
+<li><code>pr3715</code>: This branch</li>
+</ul>
+<pre><code>group                                      base-logical                           no-logical                             pr3715
+-----                                      ------------                           ----------                             ------
+linter/all-rules/large/dataset.py          1.15      9.8±0.02ms     4.2 MB/sec    1.00      8.5±0.01ms     4.8 MB/sec    1.10      9.4±0.15ms     4.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.14      2.4±0.04ms     6.8 MB/sec    1.00      2.1±0.01ms     7.8 MB/sec    1.15      2.5±0.00ms     6.8 MB/sec
+linter/all-rules/numpy/globals.py          1.21    301.1±1.97µs     9.8 MB/sec    1.00    247.9±3.25µs    11.9 MB/sec    1.16    286.9±3.46µs    10.3 MB/sec
+linter/all-rules/pydantic/types.py         1.19      4.4±0.03ms     5.8 MB/sec    1.00      3.7±0.04ms     7.0 MB/sec    1.19      4.4±0.02ms     5.9 MB/sec
+linter/default-rules/large/dataset.py      1.28      6.0±0.08ms     6.8 MB/sec    1.00      4.7±0.01ms     8.7 MB/sec    1.24      5.8±0.08ms     7.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.32   1317.7±3.83µs    12.6 MB/sec    1.00    999.5±5.57µs    16.7 MB/sec    1.31  1304.4±16.73µs    12.8 MB/sec
+linter/default-rules/numpy/globals.py      1.44    145.7±1.14µs    20.3 MB/sec    1.00    101.0±0.41µs    29.2 MB/sec    1.44    145.7±1.31µs    20.2 MB/sec
+linter/default-rules/pydantic/types.py     1.32      2.8±0.04ms     9.0 MB/sec    1.00      2.1±0.01ms    11.9 MB/sec    1.26      2.7±0.03ms     9.5 MB/sec
+</code></pre>
+<p>This change improves performance overall but the pycodestyle still add a significant overhead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-24 17:35</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3714</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3714" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3715</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #3735</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3736</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3736" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3745</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3745" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #3757</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3757" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #3737</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3737" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-24 18:04</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.05     19.9±0.89ms     2.0 MB/sec    1.00     18.9±0.51ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.0±0.28ms     3.3 MB/sec    1.00      4.9±0.25ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.05   661.1±28.12µs     4.5 MB/sec    1.00   631.3±34.91µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.05      8.8±0.45ms     2.9 MB/sec    1.00      8.3±0.44ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.2±0.32ms     4.0 MB/sec    1.00      9.9±0.28ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03      2.2±0.08ms     7.7 MB/sec    1.00      2.1±0.12ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    257.8±8.21µs    11.4 MB/sec    1.02   262.7±13.87µs    11.2 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.7±0.12ms     5.4 MB/sec    1.00      4.6±0.23ms     5.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     15.7±0.22ms     2.6 MB/sec    1.00     15.6±0.22ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.05ms     4.0 MB/sec    1.00      4.2±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    535.8±7.10µs     5.5 MB/sec    1.01    538.5±5.45µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.9±0.19ms     3.7 MB/sec    1.00      6.8±0.13ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.09ms     4.9 MB/sec    1.00      8.3±0.10ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1842.1±29.10µs     9.0 MB/sec    1.01  1851.6±17.13µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    201.5±2.79µs    14.6 MB/sec    1.00    201.3±5.35µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.05ms     6.6 MB/sec    1.00      3.9±0.05ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Logical lines performance improvements" to "perf(pycodestyle): Reduce allocations when computing logical lines" by @MichaReiser on 2023-03-26 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-26 10:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:110 on 2023-03-26 10:39</div>
+            <div class="timeline-body"><p>We can use <code>text.len()</code> to compute the offsets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-03-26 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-27 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @konstin on 2023-03-27 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:341 on 2023-03-27 15:03</div>
+            <div class="timeline-body"><p>I don't know if this TODO is still relevant, it looks like we <em>are</em> &quot;muting&quot; strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-27 15:04</div>
+            <div class="timeline-body"><p>This is stellar, I feel like I'm learning a lot even just from reading through your code here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:341 on 2023-03-27 15:47</div>
+            <div class="timeline-body"><p>It is necessary until we remove the regex handling (I think I commented the reason why it exists in one of the upper PRs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:61 on 2023-03-27 16:16</div>
+            <div class="timeline-body"><p>for my own understanding, does this mean that the comment consumes the newline after it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-03-27 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-27 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:341 on 2023-03-27 17:04</div>
+            <div class="timeline-body"><p>But, is this comment still relevant? We already do &quot;mute&quot; strings. So isn't the TODO resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:341 on 2023-03-27 21:17</div>
+            <div class="timeline-body"><p>It is still necessary (at least for this PR). I understood this is a TODO to avoid the muting :D. I'll leave it there because it will be gone soon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/logical_lines.rs</code>:61 on 2023-03-27 21:20</div>
+            <div class="timeline-body"><p>I think so... I don't really know to be honest. I only moved this code around.</p>
+<p>I remember that I tried removing the comment branch because I assumed that it isn't needed because there should be a new line token after, finishing the line. But some tests started failing. It may be worth looking into this again on the top branch.</p>
+<p>Yep, it seems to be the case that there's no <code>newline</code> token after <code>Comment</code> token:</p>
+<pre><code class="language-python">def f():
+  &quot;&quot;&quot;Docstring goes here.&quot;&quot;&quot;
+  # Comment goes here.
+  x = 1
+f()&quot;#;
+</code></pre>
+<p>Generates the following lines without the <code>Tok::Comment</code></p>
+<pre><code>[
+	&quot;def f():&quot;,
+	&quot;&quot;&quot;&quot;Docstring goes here.&quot;&quot;&quot;&quot;, 
+	&quot;x = 1&quot;, 
+	&quot;f()&quot;
+]
+</code></pre>
+<p>Where the comment is missing (because comments don't get written to the text string)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-28 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-28 07:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate `ImportMap` from module path to imported dependencies - astral-sh/ruff #3243</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate <code>ImportMap</code> from module path to imported dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3243">#3243</a>
+        opened by <a href="https://github.com/chanman3388">@chanman3388</a>
+        on 2023-02-27 02:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-27 02:52</div>
+            <div class="timeline-body"><p>Related to #2914 amongst others.
+The tests will fail at the moment but I'd like to get some feedback on the architecture first.
+So I've gone the route of making a separate struct <code>ast::types::Import</code> to hold the information about an import. This includes expanding <code>ImportFrom</code> statements using <code>checkers::imports::check_import</code>.
+In addition to producing the diagnostics, this now returns a tuple of the diagnostics and a hashmap with an <code>Option&lt;PathBuf&gt;</code> as the key (will this ever be <code>None</code>?), and the value as a <code>Vec</code> of these new <code>Import</code> structs.
+Eventually one can retrieve a <code>Vec</code> of these hashmaps inside of <code>run.rs</code>.
+I haven't yet taken into account wildcard imports, or if a module has an <code>__all__</code> which exports the modules under different names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @chanman3388 on 2023-03-03 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-12 18:24</div>
+            <div class="timeline-body"><p>So now I have a hashmap of the paths to a vec of the imports (printed in a <code>println!</code> call) they require like so:</p>
+<pre><code>{
+    &quot;/home/chris/projects/pylint_exp/R0401/src/a.py&quot;: [
+        Import {
+            name: &quot;.b&quot;,
+            location: Location {
+                row: 1,
+                column: 14,
+            },
+            end_location: Location {
+                row: 1,
+                column: 15,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/f/a.py&quot;: [
+        Import {
+            name: &quot;src.g.a&quot;,
+            location: Location {
+                row: 1,
+                column: 18,
+            },
+            end_location: Location {
+                row: 1,
+                column: 24,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/f/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/g/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/j/a.py&quot;: [
+        Import {
+            name: &quot;src.a&quot;,
+            location: Location {
+                row: 1,
+                column: 16,
+            },
+            end_location: Location {
+                row: 1,
+                column: 17,
+            },
+        },
+        Import {
+            name: &quot;src.b&quot;,
+            location: Location {
+                row: 1,
+                column: 19,
+            },
+            end_location: Location {
+                row: 1,
+                column: 20,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/c/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/g/a.py&quot;: [
+        Import {
+            name: &quot;src.e.a&quot;,
+            location: Location {
+                row: 1,
+                column: 0,
+            },
+            end_location: Location {
+                row: 1,
+                column: 14,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/d/a.py&quot;: [
+        Import {
+            name: &quot;src.c.a&quot;,
+            location: Location {
+                row: 1,
+                column: 0,
+            },
+            end_location: Location {
+                row: 1,
+                column: 14,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/j/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/b.py&quot;: [
+        Import {
+            name: &quot;.a&quot;,
+            location: Location {
+                row: 1,
+                column: 14,
+            },
+            end_location: Location {
+                row: 1,
+                column: 15,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/e/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/d/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/c/a.py&quot;: [
+        Import {
+            name: &quot;src.d.a&quot;,
+            location: Location {
+                row: 1,
+                column: 18,
+            },
+            end_location: Location {
+                row: 1,
+                column: 19,
+            },
+        },
+    ],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/__init__.py&quot;: [],
+    &quot;/home/chris/projects/pylint_exp/R0401/src/e/a.py&quot;: [
+        Import {
+            name: &quot;src.f.a&quot;,
+            location: Location {
+                row: 1,
+                column: 0,
+            },
+            end_location: Location {
+                row: 1,
+                column: 14,
+            },
+        },
+    ],
+}
+</code></pre>
+<p>For a file structure like this:</p>
+<pre><code>src
+├── __init__.py
+├── a.py  (from . import b)
+├── b.py  (from . import a)
+├── c
+│   ├── __init__.py
+│   └── a.py  (from src.d import a)
+├── d
+│   ├── __init__.py
+│   └── a.py  (import src.c.a)
+├── e
+│   ├── __init__.py
+│   └── a.py  (import src.f.a)
+├── f
+│   ├── __init__.py
+│   └── a.py  (from src.g import a as b)
+├── g
+│   ├── __init__.py
+│   └── a.py  (import src.e.a)
+└── j
+    ├── __init__.py
+    └── a.py  (from src import a, b)
+</code></pre>
+<p>So, I still need to fix relative imports, but I'd like feedback on whether the implementation makes any sense.
+I don't believe I've done anything like reporting what modules are exported yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-12 18:32</div>
+            <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @chanman3388 on 2023-03-15 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-15 00:43</div>
+            <div class="timeline-body"><p>TODO: Still need to figure out a way to expand relative imports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-15 02:11</div>
+            <div class="timeline-body"><p>Great! I'll try to give this a thorough review tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:29 on 2023-03-15 08:05</div>
+            <div class="timeline-body"><p><code>FxHashMap&lt;PathBuf, Vec&lt;Import&gt;&gt;</code> is now used in many places. Can we introduce a new-type that gives it a name and abstracts a way the internal data structure</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, Default)]
+struct Imports {
+	inner: FxHashMap&lt;PathBuf, Vec&lt;Import&gt;&gt;
+}
+
+impl Imports {
+	pub fn insert(...) {}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:67 on 2023-03-15 08:06</div>
+            <div class="timeline-body"><p>Not specific to this PR: @charliermarsh it seems that it is guaranteed that location is always set. Can we introduce a helper function / extension method that calls the <code>unwrap</code> rather than sprinkling the unwraps all over our code base?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-15 08:07</div>
+            <div class="timeline-body"><p>Nit: Does this work</p>
+<pre><code class="language-suggestion">                                module.unwrap_or_default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:88 on 2023-03-15 08:07</div>
+            <div class="timeline-body"><p>Is it necessary to call <code>collect</code> here? <code>extend</code> should be fine with an <code>Iter</code> argument</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:90 on 2023-03-15 08:08</div>
+            <div class="timeline-body"><p>Nit: Can we add a small comment explaining what guarantees that there should only be import statements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/imports.rs</code>:95 on 2023-03-15 08:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/linter.rs</code>:70 on 2023-03-15 08:09</div>
+            <div class="timeline-body"><p>Can you explain why the lifetime annotation is necessary? We aren't using it in any return type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/linter.rs</code>:55 on 2023-03-15 08:10</div>
+            <div class="timeline-body"><p>These type seem to be somewhat common too. It could make sense to wrap them in a newtype-wrapper to avoid exposing internals (and it gives you the possibility to implement additional methods on them)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:135 on 2023-03-15 08:12</div>
+            <div class="timeline-body"><p>Is this a todo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:29 on 2023-03-15 19:01</div>
+            <div class="timeline-body"><p>Sure, I'll look into doing this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-15 19:01</div>
+            <div class="timeline-body"><p>I'll give it a go</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/linter.rs</code>:70 on 2023-03-15 19:03</div>
+            <div class="timeline-body"><p>I think this is probably a hangover from when I was trying to make the imports work on a <code>&amp;Path</code> rather than a <code>PathBuf</code>, so yes I will need to get rid of these</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:135 on 2023-03-15 19:03</div>
+            <div class="timeline-body"><p>Yes it is, I'll edit the comment appropriately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-15 19:23</div>
+            <div class="timeline-body"><p>Hm, I think that as the <code>Default</code> trait isn't implement for <code>std::string::String</code> we can't <em>just</em> do this, but I can do something similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:88 on 2023-03-15 19:25</div>
+            <div class="timeline-body"><p>I'll have a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/linter.rs</code>:55 on 2023-03-15 20:20</div>
+            <div class="timeline-body"><p>I <em>think</em> <code>DiagnosticsAndImports</code> is only used in <code>linter.rs</code> whereas <code>MessagesAndImports</code> is used in both <code>ruff_cli/src/cache.rs</code> and <code>linter.rs</code>. Would you still like me to wrap these up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/linter.rs</code>:55 on 2023-03-15 20:47</div>
+            <div class="timeline-body"><p>Up to you. I prefer to wrap all public (it sounds as if you can make one of them private)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:145 on 2023-03-15 22:18</div>
+            <div class="timeline-body"><p>Will get rid of this once everything is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-15 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2366 on 2023-03-16 08:07</div>
+            <div class="timeline-body"><p>Is this a todo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-17 08:03</div>
+            <div class="timeline-body"><p>LGTM. Thank you for working on this. I'll leave this to @charliermarsh for merging because I'm still learning the code base.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-18 09:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2366 on 2023-03-18 09:57</div>
+            <div class="timeline-body"><p>Good spot, I think this was actually for another piece of functionality I was looking to implement. Maybe for <code>assignment-from-none</code>? At any rate, it's not meant to be here, I'll get rid of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-18 10:04</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.3±0.17ms     2.8 MB/sec    1.02     14.6±0.06ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.04ms     4.7 MB/sec    1.02      3.6±0.02ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    454.5±0.85µs     6.5 MB/sec    1.01    460.5±1.50µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.01ms     4.2 MB/sec    1.03      6.2±0.13ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.03ms     5.6 MB/sec    1.03      7.4±0.07ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1617.9±1.75µs    10.3 MB/sec    1.03   1659.4±2.54µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    179.8±1.36µs    16.4 MB/sec    1.02    183.0±2.24µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.00ms     7.6 MB/sec    1.02      3.4±0.02ms     7.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     20.8±0.57ms  2000.3 KB/sec    1.00     20.8±0.67ms  2007.4 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.4±0.21ms     3.1 MB/sec    1.00      5.3±0.19ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01   627.6±23.27µs     4.7 MB/sec    1.00   621.9±30.12µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.8±0.34ms     2.9 MB/sec    1.01      8.8±0.31ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.01     10.7±0.38ms     3.8 MB/sec    1.00     10.6±0.29ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.4±0.10ms     7.1 MB/sec    1.00      2.3±0.11ms     7.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00   249.4±15.44µs    11.8 MB/sec    1.00   250.3±13.55µs    11.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.9±0.20ms     5.2 MB/sec    1.00      4.8±0.22ms     5.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-18 11:35</div>
+            <div class="timeline-body"><p>With regards to relative imports, if I have the time I'll try have a bash at this tomorrow, I think I can use the <code>level</code> information from the import to derive what the full path would be for relative import lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-19 14:38</div>
+            <div class="timeline-body"><p>So <strong>hopefully</strong> I've managed the relative import thing. Would like to test further, but for now if I have the following file structure:</p>
+<pre><code>grand
+├── __init__.py
+├── a.py (from .parent.child import a; from .parent import a; from grand.parent.child import b)
+└── parent
+    ├── __init__.py
+    ├── a.py (from .child import a,b; from .. import a)
+    └── child
+        ├── __init__.py
+        ├── a.py (from ..import a; from ... import a)
+        └── b.py (from . import a)
+</code></pre>
+<p>I get the following imports out:</p>
+<pre><code>Imports {
+    inner: {
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/__init__.py&quot;: [],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/parent/__init__.py&quot;: [],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/parent/child/__init__.py&quot;: [],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/parent/a.py&quot;: [
+            Import {
+                name: &quot;grand.child.a&quot;,
+                location: Location {
+                    row: 2,
+                    column: 19,
+                },
+                end_location: Location {
+                    row: 2,
+                    column: 20,
+                },
+            },
+            Import {
+                name: &quot;grand.child.b&quot;,
+                location: Location {
+                    row: 2,
+                    column: 22,
+                },
+                end_location: Location {
+                    row: 2,
+                    column: 23,
+                },
+            },
+            Import {
+                name: &quot;grand.a&quot;,
+                location: Location {
+                    row: 3,
+                    column: 15,
+                },
+                end_location: Location {
+                    row: 3,
+                    column: 16,
+                },
+            },
+        ],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/parent/child/a.py&quot;: [
+            Import {
+                name: &quot;grand.a&quot;,
+                location: Location {
+                    row: 2,
+                    column: 15,
+                },
+                end_location: Location {
+                    row: 2,
+                    column: 16,
+                },
+            },
+            Import {
+                name: &quot;grand.a&quot;,
+                location: Location {
+                    row: 3,
+                    column: 16,
+                },
+                end_location: Location {
+                    row: 3,
+                    column: 17,
+                },
+            },
+        ],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/a.py&quot;: [
+            Import {
+                name: &quot;grand.parent.child.a&quot;,
+                location: Location {
+                    row: 2,
+                    column: 26,
+                },
+                end_location: Location {
+                    row: 2,
+                    column: 27,
+                },
+            },
+            Import {
+                name: &quot;grand.parent.a&quot;,
+                location: Location {
+                    row: 3,
+                    column: 20,
+                },
+                end_location: Location {
+                    row: 3,
+                    column: 21,
+                },
+            },
+            Import {
+                name: &quot;grand.parent.child.b&quot;,
+                location: Location {
+                    row: 4,
+                    column: 25,
+                },
+                end_location: Location {
+                    row: 4,
+                    column: 26,
+                },
+            },
+        ],
+        &quot;/home/chris/projects/pylint_exp/R0401/grand/parent/child/b.py&quot;: [
+            Import {
+                name: &quot;grand.a&quot;,
+                location: Location {
+                    row: 2,
+                    column: 14,
+                },
+                end_location: Location {
+                    row: 2,
+                    column: 15,
+                },
+            },
+        ],
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-19 17:55</div>
+            <div class="timeline-body"><p>@MichaReiser Sorry I've made some new changes now to deal with resolution of relative imports, would you mind giving it the once over again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/imports.rs</code>:85 on 2023-03-19 19:31</div>
+            <div class="timeline-body"><p><code>import os, sys</code> is valid, so this <em>can</em> have multiple entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/imports.rs</code>:87 on 2023-03-19 19:31</div>
+            <div class="timeline-body"><p>I think we should introduce lifetimes to avoid the need to clone names. The AST will outlive all of this stuff, so it should be possible to just take references.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-19 19:36</div>
+            <div class="timeline-body"><p>Can we reuse <code>crates/ruff_python_ast/src/helpers.rs#to_module_path</code> for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/imports.rs</code>:67 on 2023-03-19 19:37</div>
+            <div class="timeline-body"><p>Yeah for context, the Python AST treats end locations as optional. In RustPython, though, we always provide them (and <code>Expr::new</code> <em>requires</em> them). So the <em>interface</em> mirrors CPython, but they <em>are</em> guaranteed in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/types.rs</code>:136 on 2023-03-19 19:38</div>
+            <div class="timeline-body"><p>Can we look at, or reuse, or share logic with <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs#fix_banned_relative_import</code>? I believe it's solving the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-19 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/types.rs</code>:85 on 2023-03-19 19:47</div>
+            <div class="timeline-body"><p>Have we looked ahead to what the needs will be for lint rules that will rely on this, like cyclic imports? It looks like this is a string representation of the module (e.g., <code>import foo</code> =&gt; <code>&quot;foo&quot;</code>). Will we need to translate it to a <em>file path</em> at all? Do we have the information we need about the containing package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-19 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:87 on 2023-03-19 21:39</div>
+            <div class="timeline-body"><p>I guess that would depend on how we want this to look. If we can make whatever it is we get from relative/from imports to be the same type then it should be doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-19 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:87 on 2023-03-19 21:43</div>
+            <div class="timeline-body"><p>Forgot to mention, the AST does outlive <em>this</em> stuff, but the tokens only exist until the end of the various functions inside of <code>linter.rs</code>, if we want the locations and names to live past this they must be owned, at least to the best of my current understanding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-19 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-19 21:44</div>
+            <div class="timeline-body"><p>I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-19 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff_python_ast/src/types.rs</code>:85 on 2023-03-19 22:00</div>
+            <div class="timeline-body"><p>Very happy for others to chime in here, I'm most familiar with pylint as that's what I use on my day job, I ran through the list of items from #970, and honestly I think this is only useful for <code>cyclic-import R0401</code>.
+One could also use the logic used to report the imports for <code>import-self (W0406)</code> I reckon, but that doesn't need knowledge of other imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-19 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/checkers/imports.rs</code>:81 on 2023-03-19 22:01</div>
+            <div class="timeline-body"><p>My only qualm with using it is that it returns me a <code>Vec&lt;String&gt;</code> whereas here we're using <code>Vec&lt;&amp;str&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 02:34</div>
+            <div class="timeline-body"><p>High-level question: should we first try to draft the cyclic imports PR that leverages this extracted metadata, prior to merging? Implementing that diagnostic may point out things we need to include here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-21 11:29</div>
+            <div class="timeline-body"><blockquote>
+<p>High-level question: should we first try to draft the cyclic imports PR that leverages this extracted metadata, prior to merging? Implementing that diagnostic may point out things we need to include here.</p>
+</blockquote>
+<p>Seems like a sensible idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-24 01:49</div>
+            <div class="timeline-body"><p>So on the grand/parent/child example I have above, pylint throws the following out:</p>
+<pre><code>************* Module grand.parent.child.__init__
+grand/parent/child/__init__.py:1:0: R0401: Cyclic import (grand.parent.a -&gt; grand.parent.child.a) (cyclic-import)
+grand/parent/child/__init__.py:1:0: R0401: Cyclic import (grand.a -&gt; grand.parent.child.a -&gt; grand.parent.a) (cyclic-import)
+grand/parent/child/__init__.py:1:0: R0401: Cyclic import (grand.a -&gt; grand.parent.child.a) (cyclic-import)
+grand/parent/child/__init__.py:1:0: R0401: Cyclic import (grand.a -&gt; grand.parent.a) (cyclic-import)
+grand/parent/child/__init__.py:1:0: R0401: Cyclic import (grand.a -&gt; grand.parent.child.b -&gt; grand.parent.child.a -&gt; grand.parent.a) (cyclic-import)
+</code></pre>
+<p>I'm still tweaking the cycle detection, it's not quite there yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-25 15:01</div>
+            <div class="timeline-body"><p>Interestingly this detects an extra cycle (correctly) compared to pylint, not sure why this would be the case, I've only briefly looked at pylint's implementation. I haven't yet done the same logic as all the other rules yet, that is to say, it's permanently on.</p>
+<p>Here is the example output.</p>
+<pre><code>grand/a.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+grand/a.py:2:27: PLR0401 Cyclic import (grand.a -&gt; grand.parent.child.a -&gt; grand.parent.a)
+grand/a.py:2:27: PLR0401 Cyclic import (grand.a -&gt; grand.parent.child.a)
+grand/a.py:2:27: PLR0401 Cyclic import (grand.a -&gt; grand.parent.a)
+grand/a.py:2:27: PLR0401 Cyclic import (grand.a -&gt; grand.parent.child.b -&gt; grand.parent.child.a -&gt; grand.parent.a)
+grand/a.py:2:27: PLR0401 Cyclic import (grand.a -&gt; grand.parent.child.b -&gt; grand.parent.child.a)
+grand/parent/a.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+grand/parent/a.py:2:20: PLR0401 Cyclic import (grand.parent.a -&gt; grand.a -&gt; grand.parent.child.a)
+grand/parent/a.py:2:20: PLR0401 Cyclic import (grand.parent.a -&gt; grand.a)
+grand/parent/a.py:2:20: PLR0401 Cyclic import (grand.parent.a -&gt; grand.a -&gt; grand.parent.child.b -&gt; grand.parent.child.a)
+grand/parent/child/a.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+grand/parent/child/a.py:2:16: PLR0401 Cyclic import (grand.parent.child.a -&gt; grand.parent.a -&gt; grand.a)
+grand/parent/child/a.py:2:16: PLR0401 Cyclic import (grand.parent.child.a -&gt; grand.parent.a -&gt; grand.a -&gt; grand.parent.child.b)
+grand/parent/child/a.py:2:16: PLR0401 Cyclic import (grand.parent.child.a -&gt; grand.a)
+grand/parent/child/a.py:2:16: PLR0401 Cyclic import (grand.parent.child.a -&gt; grand.a -&gt; grand.parent.child.b)
+grand/parent/child/b.py:2:15: PLR0401 Cyclic import (grand.parent.child.b -&gt; grand.parent.child.a -&gt; grand.parent.a -&gt; grand.a)
+grand/parent/child/b.py:2:15: PLR0401 Cyclic import (grand.parent.child.b -&gt; grand.parent.child.a -&gt; grand.a)
+</code></pre>
+<p>Note: here I am missing a cycle that <em>is</em> detected by pylint, that was due to how I fully resolved <code>ImportFrom</code> statements which should now be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-25 20:01</div>
+            <div class="timeline-body"><p>One thing I want to ask, for the moment I've made it such that in each module the cyclic import is present, there's a <code>Diagnostic</code>/<code>Message</code> for each one. I could make it more efficient by not doing this, but I kind of feel like it should be reported in each one. Thoughts @charliermarsh?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-25 22:40</div>
+            <div class="timeline-body"><p>@chanman3388 - Yeah I think it's okay to flag once per file per module.</p>
+<p>As a heads up, I might ask that we carve the actual cycle detection and rule out into a separate PR, so that they're independently reviewable and mergable. (The cycle-detection PR would mark this branch as its upstream.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @chanman3388 on 2023-03-28 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @chanman3388 on 2023-03-29 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-29 21:41</div>
+            <div class="timeline-body"><p>So this time, I believe it's ready. I didn't need the module mappings in the end.
+Here is the implementation of the cyclic imports rule.
+https://github.com/chanman3388/ruff/pull/1
+I still need to add a fixture for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-30 02:28</div>
+            <div class="timeline-body"><p>@charliermarsh Something I wasn't sure upon, what did you mean by &quot;The cycle-detection PR would mark this branch as its upstream&quot; exactly? I've made a PR which merged in the cyclic import detection rule implementation in my own fork, but that naturally won't show here.
+I've linked it in my previous message so others can look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 13:31</div>
+            <div class="timeline-body"><p>@chanman3388 - Ah sorry, I was suggesting that you create a second PR in Ruff for the cyclic import rule, and mark <code>chanman3388:report_imports</code> as the upstream branch in GitHub. But, I don't think you can make a PR in Ruff against an upstream branch in a separate fork, so what you've done (creating a separate PR in your fork and linking to it for now) seems like the right thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-03-30 19:58</div>
+            <div class="timeline-body"><p>Another question I had was related to fixtures. I think fixtures only work on file paths rather than directories? I think we'd need more plumbing if we wanted to test this feature via the current method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 20:35</div>
+            <div class="timeline-body"><p>I think you're right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:65 on 2023-03-30 21:58</div>
+            <div class="timeline-body"><p>Why did this need to be boxed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-30 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-03-30 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:65 on 2023-03-30 22:40</div>
+            <div class="timeline-body"><p>Clippy said the type was too large and suggested boxing it. It was a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-04-01 01:29</div>
+            <div class="timeline-body"><p>@charliermarsh what else would you like see on this PR? Should we implement the feature for fixtures to also be directories separately? There some more small changes I'd like to cherry pick from the rule implementation PR. I think for now I'll have to just unit test it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-03 17:21</div>
+            <div class="timeline-body"><p>@chanman3388 - I think this is reasonable as far as the scope of the PR goes. I just need to find a bit of time to do a final pass on it and some benchmarking before I'd be able to merge.</p>
+<p>Heads up that I may also iterate a bit on the exact model and execution flow we use here over time as we expand the need to resolve imports. (For example, Pyright does a pass collecting and resolving all imports prior to traversing the AST for semantic analysis. Right now, we're going in the opposite order.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-04-03 22:04</div>
+            <div class="timeline-body"><blockquote>
+<p>@chanman3388 - I think this is reasonable as far as the scope of the PR goes. I just need to find a bit of time to do a final pass on it and some benchmarking before I'd be able to merge.</p>
+<p>Heads up that I may also iterate a bit on the exact model and execution flow we use here over time as we expand the need to resolve imports. (For example, Pyright does a pass collecting and resolving all imports prior to traversing the AST for semantic analysis. Right now, we're going in the opposite order.)</p>
+</blockquote>
+<p>No problem, I had some minor improvement where I used an <code>Rc&lt;String&gt;</code> instead of the module name. I also saw an interesting crate which we might find useful? https://github.com/xfbs/imstr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Report imports" to "Generate `ImportMap` from module path to imported dependencies" by @charliermarsh on 2023-04-04 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-04 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-04 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-04 03:36</div>
+            <div class="timeline-body"><p>Thanks @chanman3388 for all your work here! I made a few small touch-ups, mostly just renaming a few of the structs and moving them into new modules. Let me know if you have any questions or run into any issues as you rebase the cycle detection work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:41 UTC
+    </footer>
+</body>
+</html>

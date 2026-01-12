@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check for parenthesis in implicit str concat in `PT006` - astral-sh/ruff #3955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check for parenthesis in implicit str concat in <code>PT006</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3955">#3955</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-04-13 07:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-13 07:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The parenthesis aren't part of the AST, so we'll use the lexer. Using the tokens, we'll check if there's a pair of parenthesis present before the first argument. The first argument ends at the first comma, so we can short-circuit.</p>
+<p><strong>Note</strong>: The logic is simple and works only if the name node is a constant string value which is true due to the <code>match</code> statement.</p>
+<p>The range needs to be computed, even if the fix is not required, to show the correct location in diagnostic. Here, the parenthesis are part of the diagnostic location:</p>
+<pre><code class="language-python">PT006.py:54:26: PT006 [*] Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
+   |
+54 | @pytest.mark.parametrize((&quot;param1, &quot; &quot;param2, &quot; &quot;param3&quot;), [(1, 2, 3), (4, 5, 6)])
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ PT006
+55 | def test_implicit_str_concat_with_parens(param1, param2, param3):
+56 |     ...
+   |
+   = help: Use a `tuple` for parameter names
+</code></pre>
+<p>fixes: #2918</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-13 07:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.07ms     2.9 MB/sec    1.00     14.2±0.06ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.6±0.03ms     4.6 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.02    466.3±3.82µs     6.3 MB/sec    1.00    456.9±0.98µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.1±0.04ms     4.2 MB/sec    1.00      6.0±0.03ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.2±0.02ms     5.6 MB/sec    1.00      7.2±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1643.9±3.36µs    10.1 MB/sec    1.00   1617.4±9.19µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.02    182.0±0.44µs    16.2 MB/sec    1.00    179.1±0.44µs    16.5 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.4±0.01ms     7.6 MB/sec    1.00      3.3±0.00ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.1±0.12ms     2.5 MB/sec    1.00     16.1±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.02ms     4.0 MB/sec    1.00      4.2±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    440.3±7.96µs     6.7 MB/sec    1.00    434.3±5.24µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.03ms     3.7 MB/sec    1.00      6.9±0.03ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.10ms     4.9 MB/sec    1.03      8.4±0.37ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1787.0±22.01µs     9.3 MB/sec    1.08  1935.5±174.27µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    185.2±2.20µs    15.9 MB/sec    1.00    185.9±3.71µs    15.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.01ms     6.8 MB/sec    1.04      3.9±0.42ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 17:51</div>
+            <div class="timeline-body"><p>Nice idea :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-13 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-13 18:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Nice idea :)</p>
+</blockquote>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-14 01:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:48 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add allowed-confusable settings - astral-sh/ruff #1059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add allowed-confusable settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1059">#1059</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2022-12-05 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-12-05 13:35</div>
+            <div class="timeline-body"><ul>
+<li>Related to #1040</li>
+</ul>
+<blockquote>
+<p><strong>Warning</strong>: The settings work when running manually, but they are ignored during the tests.
+What did I do wrong?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 15:13</div>
+            <div class="timeline-body"><p>To fix your warning, you have to add a dedicated test case that tweaks the settings -- here's an example from <code>isort/mod.rs</code>:</p>
+<pre><code class="language-rust">#[test_case(Path::new(&quot;combine_as_imports.py&quot;))]
+fn combine_as_imports(path: &amp;Path) -&gt; Result&lt;()&gt; {
+    let snapshot = format!(&quot;combine_as_imports_{}&quot;, path.to_string_lossy());
+    let mut checks = test_path(
+        Path::new(&quot;./resources/test/fixtures/isort&quot;)
+            .join(path)
+            .as_path(),
+        &amp;Settings {
+            isort: isort::settings::Settings {
+                combine_as_imports: true,
+                ..isort::settings::Settings::default()
+            },
+            src: vec![Path::new(&quot;resources/test/fixtures/isort&quot;).to_path_buf()],
+            ..Settings::for_rule(CheckCode::I001)
+        },
+        true,
+    )?;
+    checks.sort_by_key(|check| check.location);
+    insta::assert_yaml_snapshot!(snapshot, checks);
+    Ok(())
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 17:17</div>
+            <div class="timeline-body"><p>I'll go ahead and add the test + merge so this can make the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-05 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-05 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-30 19:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:40 UTC
+    </footer>
+</body>
+</html>

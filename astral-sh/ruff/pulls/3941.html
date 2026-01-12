@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `pyright: ignore` comments - astral-sh/ruff #3941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support <code>pyright: ignore</code> comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3941">#3941</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-04-12 02:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-12 02:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables us to flag Pyright's ignore comments (e.g., <code>x: int = &quot;str&quot;  # pyright: ignore [reportGeneralTypeIssues]</code>). Previously, we only supported Mypy-style <code># type: ignore</code> comments.</p>
+<p>A couple observations from this work:</p>
+<ol>
+<li>Previously, we considered <code># type: ignore [specificCode]</code> to (wrongly) be an error. Mypy and Pyright allow you to include whitespace between the <code>ignore</code> and the opening bracket. In Pyright, that actually seems to be the common convention, so it's important to support.</li>
+<li>On that front: I found the relevant regexes in Mypy and based the work on those.</li>
+<li>Interestingly, Pyright <em>does</em> respect <code># type: ignore</code> comments, but it treats <em>any</em> <code># type: ignore</code> as a blanket ignore (so <code># type: ignore[specificCode]</code> is treated as equivalent to <code># type: ignore</code>, as far as I can tell). I'm guessing that this is because <code># type: ignore</code> codes are mapped to Mypy's registry, but Pyright still wants to respect the user intent). This doesn't really impact us, just an observation :)</li>
+</ol>
+<p>Closes #3935.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-12 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-12 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-12 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-12 03:16</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -5, 0 error(s))</p>
+<details><summary>bokeh (+0, -5)</summary>
+<p>
+
+<pre><code class="language-diff">- src/bokeh/protocol/__init__.py:131:65: PGH003 Use specific rule codes when ignoring type issues
+- tests/unit/bokeh/document/test_callbacks__document.py:114:38: PGH003 Use specific rule codes when ignoring type issues
+- tests/unit/bokeh/document/test_callbacks__document.py:134:30: PGH003 Use specific rule codes when ignoring type issues
+- tests/unit/bokeh/document/test_callbacks__document.py:304:42: PGH003 Use specific rule codes when ignoring type issues
+- tests/unit/bokeh/document/test_callbacks__document.py:424:22: PGH003 Use specific rule codes when ignoring type issues
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.3±0.55ms     2.2 MB/sec    1.01     18.5±0.53ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.6±0.22ms     3.6 MB/sec    1.02      4.7±0.23ms     3.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00   589.4±25.54µs     5.0 MB/sec    1.02   599.9±25.40µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.1±0.35ms     3.2 MB/sec    1.00      8.1±0.35ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.1±0.23ms     4.5 MB/sec    1.03      9.4±0.34ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1987.1±60.96µs     8.4 MB/sec    1.05      2.1±0.11ms     8.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00   240.3±12.09µs    12.3 MB/sec    1.04   249.1±13.73µs    11.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.2±0.19ms     6.0 MB/sec    1.01      4.3±0.17ms     6.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.8±0.24ms     2.4 MB/sec    1.02     17.2±1.57ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.07ms     3.9 MB/sec    1.00      4.2±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    501.6±8.06µs     5.9 MB/sec    1.00    503.5±7.67µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.13ms     3.6 MB/sec    1.00      7.0±0.15ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.6±0.10ms     4.7 MB/sec    1.00      8.4±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1848.5±25.75µs     9.0 MB/sec    1.00  1854.9±31.31µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    196.1±4.12µs    15.0 MB/sec    1.02    200.8±5.06µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.06ms     6.6 MB/sec    1.00      3.8±0.07ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:48 UTC
+    </footer>
+</body>
+</html>

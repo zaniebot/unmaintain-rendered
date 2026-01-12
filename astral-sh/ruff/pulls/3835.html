@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When checking module visibility, don't check entire ancestry - astral-sh/ruff #3835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>When checking module visibility, don't check entire ancestry</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3835">#3835</a>
+        opened by <a href="https://github.com/Hnasar">@Hnasar</a>
+        on 2023-03-31 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Hnasar">@Hnasar</a> on 2023-03-31 20:48</div>
+            <div class="timeline-body"><p>When checking module visibility, don't check entire ancestry</p>
+<p>I have a network system mounted on a directory that starts with an underscore, e.g. /mnt/_foo/home/timothy/ projects/my_package/foo.py`</p>
+<p>I found that ruff wasn't showing lints for undocumented public classes, functions or modules in foo.py.</p>
+<p>When checking for module visibility, we should stop after the module path. (In ruff, unlike pydocstyle, the module visibility overrides any
+class or function visibility.)</p>
+<p>This should fix the bug where an unrelated parent directory affects the visibility checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-31 21:00</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+8, -0, 0 error(s))</p>
+<details><summary>bokeh (+8, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ tests/unit/bokeh/_testing/util/test_env.py:1:1: D100 Missing docstring in public module
++ tests/unit/bokeh/_testing/util/test_env.py:45:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:51:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:66:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:73:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:80:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:87:5: D103 Missing docstring in public function
++ tests/unit/bokeh/_testing/util/test_env.py:94:5: D103 Missing docstring in public function
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.03     15.1±0.04ms     2.7 MB/sec    1.00     14.7±0.06ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.8±0.00ms     4.4 MB/sec    1.00      3.8±0.01ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    414.4±1.81µs     7.1 MB/sec    1.00    412.4±1.65µs     7.2 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.5±0.04ms     3.9 MB/sec    1.00      6.3±0.01ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.0±0.05ms     5.1 MB/sec    1.00      7.8±0.02ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1761.0±7.13µs     9.5 MB/sec    1.00   1732.5±7.66µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.02    185.1±1.66µs    15.9 MB/sec    1.00    180.9±0.40µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.7±0.01ms     7.0 MB/sec    1.00      3.6±0.00ms     7.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     20.9±0.43ms  1992.7 KB/sec    1.00     20.8±0.41ms  2006.3 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.4±0.24ms     3.1 MB/sec    1.00      5.3±0.13ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.02   660.2±31.01µs     4.5 MB/sec    1.00   650.1±31.62µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.02      9.1±0.26ms     2.8 MB/sec    1.00      8.9±0.23ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.7±0.21ms     3.8 MB/sec    1.00     10.5±0.19ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.3±0.07ms     7.1 MB/sec    1.00      2.3±0.11ms     7.2 MB/sec
+linter/default-rules/numpy/globals.py      1.05   278.0±24.35µs    10.6 MB/sec    1.00   265.5±12.32µs    11.1 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.9±0.12ms     5.2 MB/sec    1.00      4.8±0.15ms     5.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-01 03:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/visibility.rs</code>:133 on 2023-04-01 03:47</div>
+            <div class="timeline-body"><p>I think we may be able to look at <code>module_path</code> here rather than <code>Path</code>:</p>
+<pre><code class="language-rust">/// Create a module path from a (package, path) pair.
+///
+/// For example, if the package is `foo/bar` and the path is `foo/bar/baz.py`,
+/// the call path is `[&quot;baz&quot;]`.
+pub fn to_module_path(package: &amp;Path, path: &amp;Path) -&gt; Option&lt;Vec&lt;String&gt;&gt; {
+  ...
+}
+</code></pre>
+<p>(The only caller of this already has <code>module_path</code> in scope.)</p>
+<p>I think that would solve the same problem, but would use our centralized module detection logic rather than implementing additional <code>__init__.py</code> checks here. Can you take a look and see if that works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-01 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hnasar">@Hnasar</a> reviewed on 2023-04-02 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hnasar">@Hnasar</a> on <code>crates/ruff_python_ast/src/visibility.rs</code>:133 on 2023-04-02 21:46</div>
+            <div class="timeline-body"><p>Thanks for the review! I refactored it to take <code>module_path</code> reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visibility.rs</code>:133 on 2023-04-03 07:17</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">pub fn module_visibility(module_path: Option&lt;&amp;[String]&gt;, path: &amp;Path) -&gt; Visibility {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-03 07:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hnasar">@Hnasar</a> on <code>crates/ruff_python_ast/src/visibility.rs</code>:133 on 2023-04-03 12:35</div>
+            <div class="timeline-body"><p>Thanks for the review! Changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hnasar">@Hnasar</a> reviewed on 2023-04-03 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-04-03 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-03 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-04 22:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:45 UTC
+    </footer>
+</body>
+</html>

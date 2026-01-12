@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add import name resolution to `Context` - astral-sh/ruff #3777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add import name resolution to <code>Context</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3777">#3777</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-28 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 16:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Right now, we make heavy use of <code>resolve_call_path</code>, which takes an expression as input and resolves it to a fully qualified import name, if possible.</p>
+<p>For example, given:</p>
+<pre><code class="language-python">from sys import version_info as python_version
+print(python_version)
+</code></pre>
+<p>...then <code>resolve_call_path(${python_version})</code> would resolve to <code>sys.version_info</code>.</p>
+<p>This PR implements the reverse lookup: given an import name, can we find a binding in the current scope that maps to that import name? E.g., if we want to insert a reference to <code>sys.version</code>, can we write a function that returns <code>python_version</code>?</p>
+<p>This method is implemented here as <code>resolve_binding</code>. It builds on logic that already existed in <code>crates/ruff/src/rules/pylint/rules/sys_exit_alias.rs</code>, but (1) generalizes it such that any module can tap into it, and (2) fixes at least one bug. I've also modified an additional rule (<code>crates/ruff/src/rules/pyupgrade/rules/lru_cache_with_maxsize_none.rs</code>) to make use of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-28 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/resources/test/fixtures/pylint/sys_exit_alias_3.py</code>:16 on 2023-03-28 16:50</div>
+            <div class="timeline-body"><p>The existing version of <code>resolve_binding</code> in <code>sys_exit_alias</code> didn't take into account that bindings might be overridden. We now avoid trying to fix this (since the <code>exit</code> in <code>from sys import exit</code> (out-of-view, on Line 1) is overridden here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-28 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/context.rs</code>:237 on 2023-03-28 16:51</div>
+            <div class="timeline-body"><p>This whole thing has the potential to be pretty slow.</p>
+<p>We have to iterate over all bindings in scope (to find candidates), then iterate over the scopes we passed over to ensure that the candidates weren't overridden at a lower level. I'm sure we could make this much faster, but it'd require different bookkeeping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-28 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-28 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/context.rs</code>:231 on 2023-03-28 16:54</div>
+            <div class="timeline-body"><p>We could track these as we go for the common case (e.g., for each scope we pass over, check if <code>sys</code> is overridden, and just make a note of it to avoid this nested loop). However, that wouldn't catch aliased imports (we can't know which aliased imports might be overridden in advance, since we don't know how they're aliased ahead-of-time!). I'd guess aliased imports are much less common, so maybe that's a trivial and helpful optimization?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-28 17:01</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.50ms     2.4 MB/sec    1.01     17.2±0.45ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.10ms     3.9 MB/sec    1.01      4.3±0.10ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01   574.9±20.78µs     5.1 MB/sec    1.00   570.8±19.71µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.4±0.25ms     3.4 MB/sec    1.00      7.3±0.21ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.7±0.15ms     4.7 MB/sec    1.02      8.9±0.22ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1945.3±49.34µs     8.6 MB/sec    1.01  1960.5±58.26µs     8.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00   237.5±12.68µs    12.4 MB/sec    1.02   241.1±13.08µs    12.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.1±0.10ms     6.3 MB/sec    1.01      4.1±0.12ms     6.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.1±0.36ms     2.5 MB/sec    1.00     16.2±0.37ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.07ms     4.0 MB/sec    1.00      4.1±0.07ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01   504.0±11.78µs     5.9 MB/sec    1.00    497.8±8.55µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.14ms     3.8 MB/sec    1.00      6.8±0.12ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.12ms     4.9 MB/sec    1.00      8.3±0.12ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1799.6±27.67µs     9.3 MB/sec    1.01  1825.3±29.33µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.01    195.7±5.14µs    15.1 MB/sec    1.00    194.3±5.40µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.08ms     6.6 MB/sec    1.00      3.8±0.08ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-28 17:48</div>
+            <div class="timeline-body"><p>Glad to see my code reused and improved :smiley:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 17:58</div>
+            <div class="timeline-body"><p>👏 👏 👏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:141 on 2023-03-29 08:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Resolves the [`Expr`] to a fully-qualified symbol-name, if `value` resolves to an imported symbol.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:220 on 2023-03-29 08:17</div>
+            <div class="timeline-body"><p>Nit: change the visibility to <code>pub(crate)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:220 on 2023-03-29 09:44</div>
+            <div class="timeline-body"><p>The way I think about this method is that it does two things:</p>
+<ul>
+<li>Resolves the local symbol for a module with the given full qualified name or its parent module.</li>
+<li>Return the full qualified name to access that module member in the local context.</li>
+</ul>
+<p>I recommend renaming the method because it doesn't return a binding nor is it a generic implementation that returns any binding. I'm struggling with naming because the method does two things but I was thinking about <code>resolve_qualified_import_name</code></p>
+<p>I wonder how an API would look like that splits the responsibility, but that's probably too much work just now without building more of the semantic model infrastructure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:225 on 2023-03-29 09:45</div>
+            <div class="timeline-body"><p>Nit: You can directly iterate over the bindings</p>
+<pre><code class="language-suggestion">            scope.binding().iter().find_map(|binding| match binding.kind {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:231 on 2023-03-29 09:51</div>
+            <div class="timeline-body"><p>I think what we have here is &quot;fine&quot; for now but we should invest into building a full semantic model as part of the parsing or syntax traversal, and then use it to answer these kind of questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:220 on 2023-03-29 09:53</div>
+            <div class="timeline-body"><p>Nit: You could avoid allocating in some cases by returning <code>Option&lt;Cow&lt;str&gt;&gt;</code>, but I don't know if its worth here or if it would be better to return an <code>enum</code> instead that then has a method to get the full qualified name of the local symbol referencing the import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-29 09:53</div>
+            <div class="timeline-body"><p>This looks good to me to unblock some work, but I think we want to take a more holistic approach to solve semantic analysis / symbol table in the future to better balance performance with the full power of a symbol table and to enable cross file analysis.</p>
+<p>I think our ultimate goal should be to have a semantic model that exposes rich information about symbols and lets us:</p>
+<ul>
+<li>resolve the symbol for a reference</li>
+<li>get all references of a symbol</li>
+<li>get all symbols for a scope</li>
+<li>get all declarations/definitions of a symbol.</li>
+<li>get all members of a symbol (class members)</li>
+<li>get all exports/imports of a module (similar to getting all members of a symbol)</li>
+</ul>
+<p>Similar to what the semantic model of <a href="https://github.com/Boshen/oxc/tree/main/crates/oxc_semantic">oxc</a>, <a href="https://github.com/rome/tools/blob/main/crates/rome_js_semantic/src/semantic_model/model.rs">rome</a>, or <a href="https://basarat.gitbook.io/typescript/overview/binder">TypeScript</a> offer.</p>
+<p>Our own parser would allow us to build the semantic model (or the scope table at least) while parsing or building the AST. But it may still be required to split ruff into multiple passes:</p>
+<ul>
+<li>syntax lints</li>
+<li>semantic lints</li>
+<li>project/solution lints</li>
+</ul>
+<h2>Terminology</h2>
+<p>I noticed is that we have a different understanding of the terms <em>symbol</em> and <em>binding</em> that I think is worth clarifying. Let me explain my understanding and then try to align on a shared terminology.</p>
+<p>I'll use the following code for  my explanation:</p>
+<pre><code class="language-python">import sys
+
+class Test:
+	class_field = 1
+	
+	def __init__(self):
+		self.a = 10
+
+	def class_method():
+		pass
+
+	def method(self):
+		pass
+
+def f():
+	pass
+
+a = 10
+a = a + 2
+
+test = new Test()
+test.a = 2
+</code></pre>
+<h3>Symbols</h3>
+<p>A symbol is the unique combination of a &quot;name&quot; and its scope. For example, <code>a</code> in <code>a + 2</code> references the variable <code>a</code> from the local scope, whereas <code>test.a</code> references the class instance symbol <code>a</code> of <code>Test</code>.</p>
+<p>Every symbol has a name that uniquely identifies it in the current scope: Examples are <code>a</code>, <code>test</code>, <code>Test</code>, <code>sys</code>.</p>
+<p>A symbol can have a full qualified name. For example: the full qualified name of the member <code>exit</code> on <code>sys</code> is <code>sys.exit</code>.</p>
+<h3>Definition/Declaration</h3>
+<p>A declaration is the expression or statement that <em>creates</em> the new symbol. <code>class Test</code> is the declaration for the <code>Test</code> symbol, or <code>a = 10</code> declares the variable <code>a</code>.</p>
+<p>A symbol can have zero to 1 or many definition/declarations.</p>
+<ul>
+<li>0: global or undeclared symbol</li>
+<li>1: Most common: Symbol with a declaration in source code or a definition in a typing declaration file.</li>
+<li>Many:<ul>
+<li>symbol defined in a typing declaration file AND declared in a python file.</li>
+</ul>
+</li>
+</ul>
+<h3>References / Uses</h3>
+<p>Read or write access to a symbol after its declaration. This can be a function call (lookup of the function), variable or member assignments, or normal variables.</p>
+<p>Examples:</p>
+<ul>
+<li><code>a = a + 2</code>: References the <code>a</code> symbol</li>
+<li><code>new Test()</code>: References the <code>Test</code> and, implicitly, the <code>__init__</code> symbol</li>
+<li><code>test.a = 3</code>: References the <code>test</code> and the <code>Test.a</code> symbol</li>
+</ul>
+<p>It can be useful to track whether it's a read or write a reference, e.g., to recommend renaming a supposedly constant to a non-constant if there are any write references.</p>
+<h3>Binding</h3>
+<p>The part I struggle most with explaining and have only found little reference is <em>Binding</em>.</p>
+<p>I think that a <em>binding</em> is the combination of a <em>Symbol</em> with its value (or metadata). In our case the <em>Binding</em> is the symbol table entry that stores the mapping from symbol to its declarations and references.</p>
+<p>For example, <code>a</code> is a binding. It has one declaration <code>a = 10</code>, and two references: <code>a</code>, and
+a = a + 2`</p>
+<h3>Scope</h3>
+<p>Implements the encapsulation of symbols: symbols are only visible to child scopes and shadowing overrides variables from the outer scope.</p>
+<h3>Symbol Table</h3>
+<p>Stores the symbols of a program. A question here is if symbols with members (e.g. classes) have their own symbol table/ implement symbol table too, or if that's implemented on top of scopes.</p>
+<h3>Semantic model</h3>
+<p>Contaisn the symbol table but may also give access to type information.</p>
+<p>Stores the symbols for a program</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 13:26</div>
+            <div class="timeline-body"><p>This is extremely helpful. I'd love to keep pushing on improving the semantic model. (A good example of something that we couldn't do right now is: &quot;rename a variable&quot; (even within a single file).)</p>
+<p>Let me throw out a few more examples to make sure we're aligned on terminology:</p>
+<pre><code class="language-py">from sys import exit
+from sys import exit as foo
+</code></pre>
+<p>This would introduce two symbols (<code>exit</code> and <code>foo</code>). I <em>think</em> they'd have the same &quot;fully-qualified name&quot;? And they are references to the same underlying &quot;thing&quot; in <code>sys</code>, though I'm not certain what that thing should be called. I think it's a symbol in <code>sys</code>.</p>
+<pre><code class="language-py">a = 10
+a = a + 2
+</code></pre>
+<p>In this case, it's just <em>one</em> symbol (<code>a</code>) even though it's rebound, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-29 13:44</div>
+            <div class="timeline-body"><blockquote>
+<p>This would introduce two symbols (exit and foo). I think they'd have the same &quot;fully-qualified name&quot;? And they are references to the same underlying &quot;thing&quot; in sys, though I'm not certain what that thing should be called. I think it's a symbol in sys.</p>
+</blockquote>
+<p>This is a great question, and I don't have a particularly good answer for it. It would be interesting to look at other tools.</p>
+<p>I understand that there are multiple symbols at play.</p>
+<ul>
+<li>One <code>external</code> symbol <code>sys</code> for the module</li>
+<li>The module <code>sys</code> has one member <code>exit</code></li>
+<li>The local symbol <code>exit</code> is an alias for the <code>exit</code> member of <code>sys</code>.</li>
+<li>The local symbol <code>foo</code> is an alias for the <code>exit</code> member of <code>sys</code>.</li>
+</ul>
+<p>So yes, both <code>exit</code> and <code>foo</code> point to the same external symbol. But I'm not sure how to best represent this relationship.</p>
+<blockquote>
+<p>In this case, it's just one symbol (a) even though it's rebound, right?</p>
+</blockquote>
+<p>Yes, depending on the definition, <code>a</code> as two or three references: one read, and one or two writes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 18:36</div>
+            <div class="timeline-body"><p>In this framing, would you agree that the <em>key</em> to the <code>scope.values</code> hash table is the &quot;symbol&quot;, and the value is the &quot;binding&quot; (<code>Binding</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-29 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/context.rs</code>:220 on 2023-03-29 21:35</div>
+            <div class="timeline-body"><p>It's not <code>pub(crate)</code> though, we need to access this from <code>ruff</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/context.rs</code>:225 on 2023-03-29 21:38</div>
+            <div class="timeline-body"><p><code>binding</code> iterates over (name, <code>BindingId</code>) pairs, so we still have to do this lookup I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-29 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement symbol-to-binding resolution for `Context`" to "Add import name resolution to `Context`" by @charliermarsh on 2023-03-29 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-29 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-29 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-29 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-30 06:32</div>
+            <div class="timeline-body"><blockquote>
+<p>In this framing, would you agree that the <em>key</em> to the <code>scope.values</code> hash table is the &quot;symbol&quot;, and the value is the &quot;binding&quot; (<code>Binding</code>)?</p>
+</blockquote>
+<p>Not sure. In my mind the binding is the association of a &quot;name&quot; (Symbol) to its location (if you emit bytecode) or metadata (static analyzer). But I think that's a detail and calling the metadata <code>Binding</code> is fine (especially if it has a back reference to the symbol)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:43 UTC
+    </footer>
+</body>
+</html>

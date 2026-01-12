@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `memchr` to speedup newline search on x86 - astral-sh/ruff #3985</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>memchr</code> to speedup newline search on x86</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3985">#3985</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-04-16 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-16 10:37</div>
+            <div class="timeline-body"><p>Use <code>memchr</code> to find the newline characters in strings. I expect this to improve performance on X86 processors because <code>memchr</code> uses <code>SIMD</code> internally.</p>
+<pre>group                                      bytes                                  bytes-logical                          memchr                                 memchr-logical
+-----                                      -----                                  -------------                          ------                                 --------------
+linter/all-rules/large/dataset.py          1.02      8.6±0.08ms     4.7 MB/sec    1.06      8.9±0.17ms     4.6 MB/sec<span style="color:#26A269"><b>    1.00      8.4±0.08ms     4.9 MB/sec</b></span>    1.04      8.7±0.13ms     4.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      2.0±0.07ms     8.3 MB/sec    1.08      2.1±0.03ms     7.9 MB/sec<span style="color:#26A269"><b>    1.00  1957.1±37.12µs     8.5 MB/sec</b></span>    1.04      2.0±0.04ms     8.2 MB/sec
+linter/all-rules/numpy/globals.py          1.05    220.7±4.63µs    13.4 MB/sec    1.11    232.3±4.36µs    12.7 MB/sec<span style="color:#26A269"><b>    1.00    209.3±2.68µs    14.1 MB/sec</b></span>    1.07    223.2±1.44µs    13.2 MB/sec
+linter/all-rules/pydantic/types.py<span style="color:#26A269"><b>         1.00      3.5±0.04ms     7.3 MB/sec</b></span>    1.08      3.8±0.03ms     6.7 MB/sec    1.00      3.5±0.01ms     7.3 MB/sec    1.04      3.7±0.10ms     7.0 MB/sec
+linter/default-rules/large/dataset.py      1.03      4.3±0.07ms     9.5 MB/sec    1.11      4.6±0.08ms     8.8 MB/sec<span style="color:#26A269"><b>    1.00      4.2±0.07ms     9.7 MB/sec</b></span>    1.09      4.5±0.03ms     9.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00    870.1±5.69µs    19.1 MB/sec    1.10   956.6±10.45µs    17.4 MB/sec<span style="color:#26A269"><b>    1.00   866.6±19.79µs    19.2 MB/sec</b></span>    1.12    972.7±2.62µs    17.1 MB/sec
+linter/default-rules/numpy/globals.py      1.03     95.9±0.72µs    30.8 MB/sec    1.13    105.4±1.49µs    28.0 MB/sec<span style="color:#26A269"><b>    1.00     93.3±0.54µs    31.6 MB/sec</b></span>    1.09    101.7±1.74µs    29.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01  1883.0±10.58µs    13.5 MB/sec    1.13      2.1±0.03ms    12.2 MB/sec<span style="color:#26A269"><b>    1.00  1855.8±20.37µs    13.7 MB/sec</b></span>    1.12      2.1±0.00ms    12.3 MB/sec
+</pre>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-16 10:37</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3990</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3990" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3931</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3931" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #3985</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3985" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #4022</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4022" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4120</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4120" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #4121</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4121" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3985?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-16 11:07</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.9±0.07ms     2.4 MB/sec    1.00     16.8±0.10ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.0±0.02ms     4.2 MB/sec    1.00      4.0±0.04ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01    496.2±6.52µs     5.9 MB/sec    1.00    491.2±0.91µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.0±0.03ms     3.7 MB/sec    1.00      6.9±0.03ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.03ms     4.9 MB/sec    1.00      8.3±0.03ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1785.4±4.26µs     9.3 MB/sec    1.00  1792.9±12.81µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    202.2±4.03µs    14.6 MB/sec    1.00    202.7±4.65µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec    1.00      3.7±0.01ms     6.8 MB/sec
+parser/large/dataset.py                    1.02      6.6±0.04ms     6.1 MB/sec    1.00      6.5±0.03ms     6.2 MB/sec
+parser/numpy/ctypeslib.py                  1.02   1290.0±5.98µs    12.9 MB/sec    1.00   1268.6±0.92µs    13.1 MB/sec
+parser/numpy/globals.py                    1.02    130.9±0.44µs    22.5 MB/sec    1.00    128.8±0.65µs    22.9 MB/sec
+parser/pydantic/types.py                   1.02      2.8±0.00ms     9.1 MB/sec    1.00      2.8±0.02ms     9.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     24.2±0.55ms  1720.8 KB/sec    1.00     23.7±0.60ms  1759.1 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      6.0±0.34ms     2.8 MB/sec    1.00      5.7±0.14ms     2.9 MB/sec
+linter/all-rules/numpy/globals.py          1.02   676.4±32.15µs     4.4 MB/sec    1.00   663.6±31.65µs     4.4 MB/sec
+linter/all-rules/pydantic/types.py         1.01     10.0±0.32ms     2.5 MB/sec    1.00     10.0±0.36ms     2.6 MB/sec
+linter/default-rules/large/dataset.py      1.01     12.1±0.35ms     3.4 MB/sec    1.00     11.9±0.29ms     3.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.5±0.08ms     6.6 MB/sec    1.00      2.5±0.13ms     6.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   295.5±15.18µs    10.0 MB/sec    1.01   299.0±21.64µs     9.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      5.4±0.18ms     4.8 MB/sec    1.00      5.4±0.18ms     4.8 MB/sec
+parser/large/dataset.py                    1.00      9.5±0.32ms     4.3 MB/sec    1.01      9.6±0.24ms     4.2 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1856.6±59.69µs     9.0 MB/sec    1.00  1841.1±92.16µs     9.0 MB/sec
+parser/numpy/globals.py                    1.01    189.4±8.41µs    15.6 MB/sec    1.00   187.9±10.09µs    15.7 MB/sec
+parser/pydantic/types.py                   1.01      4.1±0.18ms     6.2 MB/sec    1.00      4.0±0.13ms     6.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/newlines.rs</code>:59 on 2023-04-20 03:27</div>
+            <div class="timeline-body"><p>Nit: SAFETY</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/Cargo.toml</code>:16 on 2023-04-20 03:27</div>
+            <div class="timeline-body"><p>Nit: I think we tend to alphabetize here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-04-20 03:28</div>
+            <div class="timeline-body"><p>(Needs to be rebased but I reviewed the new commits individually.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-04-20 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/gitlab.rs</code>:117 on 2023-04-20 03:28</div>
+            <div class="timeline-body"><p>Is this unrelated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/gitlab.rs</code>:117 on 2023-04-26 19:00</div>
+            <div class="timeline-body"><p>Whoops, that should have been part of #3931 . It ensures that fingerprints remain the same for as long as the line stays on the same line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-26 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-26 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/Cargo.toml</code>:16 on 2023-04-26 19:01</div>
+            <div class="timeline-body"><p>I think I tried to alphabetize... Let me use CLion, it knows the alphabet better than I.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-04-26 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-04-26 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-04-26 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-04-26 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-04-26 19:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:29:49 UTC
+    </footer>
+</body>
+</html>
