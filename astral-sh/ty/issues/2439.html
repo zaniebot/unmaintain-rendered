@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Todo type - astral-sh/ty #2439</title>
+    <title>Emit diagnostic when specializing a non-generic class - astral-sh/ty #2439</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>@Todo type</h1>
+    <h1>Emit diagnostic when specializing a non-generic class</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -62,10 +62,50 @@
 <p>yeah, SA is defined as <code>import sqlalchemy as sa</code>.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:47</div>
+            <div class="timeline-body"><p>In debug build, it gives me the <code>@Todo(specialized non-generic class)</code> type:</p>
+<pre><code class="language-py">import typing as t
+
+import sqlalchemy as sa
+
+def _(x: sa.Sequence[sa.RowMapping[str, t.Any]]):
+    # revealed: @Todo(specialized non-generic class)
+    reveal_type(x)
+</code></pre>
+<p>mypy and Pyright both error on the annotation:</p>
+<pre><code>mypy: &quot;Sequence&quot; expects no type arguments, but 1 given  [type-arg]
+mypy: &quot;RowMapping&quot; expects no type arguments, but 2 given  [type-arg]
+Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInvalidTypeArguments]
+</code></pre>
+<p>ty doesn't raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it's marked as TODO:</p>
+<p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L730-L732</p>
+<p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L1066-L1068</p>
+<p>I don't see any open issues for this so we can use this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "@Todo type" to "Emit diagnostic when specializing a non-generic class" by @dhruvmanila on 2026-01-12 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @dhruvmanila on 2026-01-12 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2026-01-12 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @dhruvmanila on 2026-01-12 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2026-01-12 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @dhruvmanila on 2026-01-12 05:48</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 02:26:57 UTC
+        Synced at 2026-01-12 06:57:20 UTC
     </footer>
 </body>
 </html>
