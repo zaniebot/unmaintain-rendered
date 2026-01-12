@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore end-of-line file exemption comments - astral-sh/ruff #6160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore end-of-line file exemption comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6160">#6160</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-28 18:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 18:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR protects against code like:</p>
+<pre><code class="language-python">from typing import Optional
+
+import bar  # ruff: noqa
+import baz
+
+class Foo:
+    x: Optional[str] = None
+</code></pre>
+<p>In which the user wrote <code># ruff: noqa</code> to ignore a specific error, not realizing that it was a file-level exemption that thus turned off all lint rules.</p>
+<p>Specifically, if a <code># ruff: noqa</code> directive is not at the start of a line, we now ignore it and warn, since this is almost certainly a mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-07-28 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-07-28 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-28 18:51</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.0±0.16ms     4.1 MB/sec    1.01     10.1±0.21ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1968.3±34.29µs     8.5 MB/sec    1.00  1971.8±30.26µs     8.4 MB/sec
+formatter/numpy/globals.py                 1.00    214.9±2.61µs    13.7 MB/sec    1.00    214.9±2.02µs    13.7 MB/sec
+formatter/pydantic/types.py                1.01      4.3±0.04ms     6.0 MB/sec    1.00      4.2±0.06ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.3±0.09ms     3.1 MB/sec    1.00     13.3±0.10ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     5.0 MB/sec    1.01      3.4±0.02ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    453.2±1.03µs     6.5 MB/sec    1.01    456.7±0.82µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.07ms     4.3 MB/sec    1.01      6.0±0.08ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.04ms     5.7 MB/sec    1.01      7.2±0.04ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1488.9±38.70µs    11.2 MB/sec    1.00   1489.2±5.57µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    163.8±0.41µs    18.0 MB/sec    1.00    163.9±2.21µs    18.0 MB/sec
+linter/default-rules/pydantic/types.py     1.33      4.2±1.10ms     6.1 MB/sec    1.00      3.2±0.03ms     8.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03     11.6±0.32ms     3.5 MB/sec    1.00     11.3±0.27ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.03      2.2±0.08ms     7.4 MB/sec    1.00      2.2±0.09ms     7.6 MB/sec
+formatter/numpy/globals.py                 1.00   243.0±16.26µs    12.1 MB/sec    1.02   248.6±14.05µs    11.9 MB/sec
+formatter/pydantic/types.py                1.04      4.9±0.18ms     5.2 MB/sec    1.00      4.8±0.19ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.3±0.38ms     2.7 MB/sec    1.01     15.4±0.43ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.1±0.23ms     4.0 MB/sec    1.00      4.0±0.13ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.05   503.3±24.56µs     5.9 MB/sec    1.00   480.7±19.96µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.9±0.19ms     3.7 MB/sec    1.00      6.8±0.22ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.22ms     4.8 MB/sec    1.01      8.5±0.23ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1707.8±54.16µs     9.8 MB/sec    1.00  1710.0±64.83µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.03    196.5±9.12µs    15.0 MB/sec    1.00    190.3±8.94µs    15.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.11ms     6.9 MB/sec    1.00      3.7±0.10ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-28 20:20</div>
+            <div class="timeline-body"><p>Do we not have tests for this behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/noqa.rs</code>:253 on 2023-07-28 21:11</div>
+            <div class="timeline-body"><p>Could we use indentation_at_offset here? It is okay if it is Some, None means the directive is not an own line comment. Or would that be confusing</p>
+<p>Nit: it's a bit unfortunate that line_start first does a backwards scan finding the start of the line, just to do a forward scan right after</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/noqa.rs</code>:263 on 2023-07-28 21:12</div>
+            <div class="timeline-body"><p>We should at an explanation why it is unexpected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-28 21:14</div>
+            <div class="timeline-body"><p>Nice quality of life improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-29 00:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we not have tests for this behavior?</p>
+</blockquote>
+<p>We have tests for <code># ruff: noqa</code> more broadly, but I doubt we have one that puts a <code># ruff: noqa</code> at the end of a line, since that's the mistake we're trying to catch here :) I will add another test for that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-29 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-29 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-29 00:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:59:05 UTC
+    </footer>
+</body>
+</html>

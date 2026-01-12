@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add `DebugText` for self-documenting f-strings - astral-sh/ruff #6167</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add <code>DebugText</code> for self-documenting f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6167">#6167</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-07-29 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-29 08:08</div>
+            <div class="timeline-body"><p>instead of modelling self-documenting f-strings (<code>f&quot;{ foo= }&quot;</code>) as a (simplified)
+<code>Constant(&quot;foo=&quot;)</code> followed by a <code>FormattedValue(Expr(&quot;x&quot;))</code>, instead model this case with a <code>DebugText(leading, trailing)</code> attribute on the <code>FormattedValue</code> so that we don't have to synthesize nodes (which results in siblings with overlapping ranges). We need to be able to preserve the whitespace for self-documenting f-strings, as well as reproduce the source (eg unparse, format).</p>
+<p>Fixes #5970</p>
+<h2>Test Plan</h2>
+<p>Existing snapshots, a few more tests. More needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-29 08:20</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.9±0.29ms     3.7 MB/sec    1.12     12.3±0.44ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.06ms     7.9 MB/sec    1.08      2.3±0.09ms     7.3 MB/sec
+formatter/numpy/globals.py                 1.00    232.3±7.64µs    12.7 MB/sec    1.05   244.1±15.98µs    12.1 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.16ms     5.5 MB/sec    1.09      5.0±0.16ms     5.1 MB/sec
+linter/all-rules/large/dataset.py          1.05     15.0±0.49ms     2.7 MB/sec    1.00     14.4±1.06ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.7±0.11ms     4.4 MB/sec    1.00      3.6±0.08ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00   497.5±21.62µs     5.9 MB/sec    1.02   506.9±12.18µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.6±0.28ms     3.9 MB/sec    1.00      6.6±0.27ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.17      8.8±0.22ms     4.6 MB/sec    1.00      7.5±0.21ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.17  1797.2±47.89µs     9.3 MB/sec    1.00  1538.0±44.55µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.05    198.3±4.90µs    14.9 MB/sec    1.00    188.8±6.29µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.14      3.9±0.07ms     6.6 MB/sec    1.00      3.4±0.08ms     7.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.07     13.5±0.58ms     3.0 MB/sec    1.00     12.6±0.72ms     3.2 MB/sec
+formatter/numpy/ctypeslib.py               1.10      2.6±0.11ms     6.3 MB/sec    1.00      2.4±0.11ms     7.0 MB/sec
+formatter/numpy/globals.py                 1.10   303.7±35.09µs     9.7 MB/sec    1.00   276.5±29.94µs    10.7 MB/sec
+formatter/pydantic/types.py                1.16      6.1±0.39ms     4.2 MB/sec    1.00      5.2±0.22ms     4.9 MB/sec
+linter/all-rules/large/dataset.py          1.14     20.5±1.08ms  2028.8 KB/sec    1.00     18.0±0.83ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.13      5.3±0.31ms     3.2 MB/sec    1.00      4.7±0.23ms     3.6 MB/sec
+linter/all-rules/numpy/globals.py          1.07   621.3±29.97µs     4.7 MB/sec    1.00   578.5±30.42µs     5.1 MB/sec
+linter/all-rules/pydantic/types.py         1.13      9.0±0.39ms     2.8 MB/sec    1.00      8.0±0.38ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.13     10.9±0.67ms     3.7 MB/sec    1.00      9.7±0.49ms     4.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.07      2.1±0.10ms     7.8 MB/sec    1.00  1986.2±168.05µs     8.4 MB/sec
+linter/default-rules/numpy/globals.py      1.07   248.3±13.84µs    11.9 MB/sec    1.00   232.9±17.70µs    12.7 MB/sec
+linter/default-rules/pydantic/types.py     1.11      4.8±0.38ms     5.3 MB/sec    1.00      4.3±0.27ms     5.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2023-07-29 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-07-29 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1789 on 2023-07-29 08:54</div>
+            <div class="timeline-body"><p>Would you mind adding a test case with a format specification?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-07-29 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-29 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-29 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-07-29 11:20</div>
+            <div class="timeline-body"><p>note that we are removing the <code>Repr</code> setting here (implied by the self-doc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-29 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/string.rs</code>:321 on 2023-07-29 11:22</div>
+            <div class="timeline-body"><p>this feels a little hacky but was my best idea. suggestions welcome</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-29 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-07-29 20:07</div>
+            <div class="timeline-body"><p>Could you explain your reasoning for removing it in more detail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-30 06:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-07-30 06:55</div>
+            <div class="timeline-body"><p>now that we are explicitly modelling self-documenting formatted values we can use <code>conversion</code> for _explicit conversions only (this one was implicit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-31 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-07-31 10:12</div>
+            <div class="timeline-body"><p>I think keeping <code>Repr</code> here is important. I understand that the default conversion for non-debug strings is <code>Conversion::Str</code>, but it is <code>Repr</code> for debug strings. I think it would be error-prone to not set <code>Conversion::Repr</code> because it requires all downstream code to correctly default to <code>Str</code> and <code>Repr</code> whether it is a debug string or not.</p>
+<p>My long-term preference would be to remove <code>Conversion::None</code> altogether and set it to the node's conversion. This makes the AST easier to use without having to remember conversions. This would require changing <code>unparse</code> to omit the <code>Conversion</code> when it is the default for that string type. I think that's fine because it means we only deal with the defaults at the input/output boundaries. I added it to the list of possible AST improvements https://github.com/astral-sh/ruff/discussions/6183#discussioncomment-6591993</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-07-31 10:21</div>
+            <div class="timeline-body"><p>i guess we could change it for an <code>Option&lt;ConversionFlag&gt;</code> but surely we want to track any flags set in the source?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:595 on 2023-07-31 10:22</div>
+            <div class="timeline-body"><p>Would it be possible to store a reference to a debug text instead of defining an extra <code>DebugText</code> node?</p>
+<pre><code class="language-suggestion">    debug_text: Option&lt;&amp;'a DebugText&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:614 on 2023-07-31 10:22</div>
+            <div class="timeline-body"><p>See comment above</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:929 on 2023-07-31 10:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1388 on 2023-07-31 10:24</div>
+            <div class="timeline-body"><p>Nit: I find <code>Option&lt;&amp;ref&gt;</code> more <em>natural</em> than passing a reference to an option (except if the option is mutable).</p>
+<pre><code class="language-suggestion">        debug_text: Option&lt;&amp;DebugText&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:321 on 2023-07-31 10:31</div>
+            <div class="timeline-body"><p>Which part do you find hacky?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:233 on 2023-07-31 10:32</div>
+            <div class="timeline-body"><p>I like it that we now use the text ranges to get <code>leading</code> and <code>before_eq</code>. Would it be possible also to use text ranges to extract <code>trailing</code>? It would reduce 2 string allocations for each self-documenting string (one for <code>trailing_seq</code>, and one for formatting <code>trailing</code> in debug text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-31 10:33</div>
+            <div class="timeline-body"><p>This is great!</p>
+<p>I would like to hear your opinion on keeping <code>Conversion::Repr</code> for debug strings to ease downstream use and we may be able to speed this up a bit (the whole module requires a rework but we can start somewhere).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1789 on 2023-07-31 15:51</div>
+            <div class="timeline-body"><p>If possible, an additional test case to mix both conversion and format specification would be nice as well: <code>f&quot;{a=!r:0.05f}&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-07-31 16:25</div>
+            <div class="timeline-body"><p>This is good! Thanks for working on this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/string.rs</code>:233 on 2023-07-31 20:47</div>
+            <div class="timeline-body"><p>i think so. we'd need to store the <code>=</code> and any trailing spaces inside <code>expression</code> which is a bit odd but doable if we just track where the actual expression ends. will push something with what i mean (and maybe you have ideas for how to improve that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/string.rs</code>:321 on 2023-07-31 20:47</div>
+            <div class="timeline-body"><p>pulling slices out of <code>expression</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-07-31 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/string.rs</code>:328 on 2023-07-31 20:48</div>
+            <div class="timeline-body"><p>Could we store references into the source here rather than allocating new strings? i guess many more things would need to change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_fstring_self_doc_trailing_space.snap</code>:34 on 2023-08-01 05:50</div>
+            <div class="timeline-body"><p><code>Option&lt;ConversionFlag&gt;</code> is similar to what we have today:</p>
+<ul>
+<li><code>Conversion::None</code> -&gt; <code>None</code></li>
+<li><code>Conversion::Repr</code> -&gt; <code>Some(ConversionFlags::Repr)</code></li>
+<li><code>Conversion::Str</code> -&gt; <code>Some(ConversionFlags::Str)</code></li>
+</ul>
+<blockquote>
+<p>i guess we could change it for an Option<ConversionFlag> but surely we want to track any flags set in the source?</p>
+</blockquote>
+<p>Yeah, let's keep it the way it is. Knowing the conversion specified in the source would be helpful if we e.g. want to lint for unnecessary conversion specifiers.</p>
+<p>We could add a method on <code>FormattedValue</code> that returns the <em>used</em> conversion at runtime which always returns a none <code>None</code> value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 05:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 05:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:328 on 2023-08-01 05:53</div>
+            <div class="timeline-body"><p>I played around with an ast that uses <code>Cow&lt;'source, str&gt;</code> for all string fields. I spent about 2h fixing lifetime issues and run out of patience. The problem is that every node must be parametrized by the source lifetime.</p>
+<p>We may still want to do this because using a bump allocator for the AST nodes would also require a new lifetime. Something to explore in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-01 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:321 on 2023-08-01 05:54</div>
+            <div class="timeline-body"><p>I think it's fine. I ultimately want to re-write this entire file and use <code>Cursor</code> and use string slices from the source text directly everywhere. But @dhruvmanila may make this whole code redundant before when implementing the 3.12 F-string changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-01 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-01 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-01 05:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:59:05 UTC
+    </footer>
+</body>
+</html>
