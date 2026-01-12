@@ -476,10 +476,71 @@ https://github.com/astral-sh/ruff/blob/b2b9d91859f2abc017e35d22f01696f141f6f5b1/
         <div class="timeline-entry">
             <div class="event">Review requested from @ntBre by @leandrobbraga on 2026-01-11 15:04</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs</code>:170 on 2026-01-12 21:22</div>
+            <div class="timeline-body"><p>I think we should be able to use <a href="https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_linter/src/checkers/ast/mod.rs#L3538"><code>try_set_fix</code></a> here, which will automatically log this error if it fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs</code>:13 on 2026-01-12 21:24</div>
+            <div class="timeline-body"><p>I think this was actually okay before the latest revision since the rule may be used without <code>--fix</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py</code>:32 on 2026-01-12 21:31</div>
+            <div class="timeline-body"><p>Can we add an end-of-line comment too? And maybe one after the deleted element, just to check which comments get deleted.</p>
+<pre><code class="language-suggestion">    &quot;B&quot;,  # 2
+    # 3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs</code>:10 on 2026-01-12 21:32</div>
+            <div class="timeline-body"><p>tiny nit:</p>
+<pre><code class="language-suggestion">use rustc_hash::{FxBuildHasher, FxHashSet};
+
+use ruff_diagnostics::{Applicability, Fix};
+use ruff_macros::{ViolationMetadata, derive_message_formats};
+use ruff_python_ast as ast;
+use ruff_text_size::Ranged;
+
+use crate::checkers::ast::Checker;
+use crate::fix::edits;
+use crate::{FixAvailability, Violation};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs</code>:154 on 2026-01-12 21:36</div>
+            <div class="timeline-body"><p>Let's add a test for a case like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs</code>:158 on 2026-01-12 21:38</div>
+            <div class="timeline-body"><p>tiny nit:</p>
+<pre><code class="language-suggestion">            let mut diagnostic = checker.report_diagnostic(DuplicateEntryInDunderAll, expr);
+</code></pre>
+<p><code>expr</code> implements <code>Ranged</code>, which should make it a valid argument on its own, as long as I'm not missing another reference to <code>range</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs</code>:157 on 2026-01-12 21:40</div>
+            <div class="timeline-body"><p>Yes, removing that comment is okay. That's what makes the fix unsafe, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-12 21:45</div>
+            <div class="timeline-body"><p>Thank you! This is looking great. I just had a few more very small nits, and a couple of suggestions about additional tests (but I think they'll be handled well already).</p>
+<p>I also think it might be worth manually testing the CLI to make sure cases with multiple deletions in the same assignment are fixed correctly. I think they should be, but we have a mechanism to <a href="https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_diagnostics/src/fix.rs#L168"><code>isolate</code></a> fixes if we need it. I think just testing something like:</p>
+<pre><code class="language-shell">$ cargo run -p ruff -- check --preview --select RUF069 --fix - &lt;&lt;&lt;'__all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]'
+</code></pre>
+<p>should work. If it <em>doesn't</em> work, we should add an actual CLI test, but I think it's okay as long as the manual test works as expected.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:18 UTC
+        Synced at 2026-01-12 22:27:05 UTC
     </footer>
 </body>
 </html>

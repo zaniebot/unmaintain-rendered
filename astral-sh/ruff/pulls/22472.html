@@ -14,7 +14,7 @@
     <h1>[pyflakes] Fix F823 false positive with submodule import shadowing</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ruff/pull/22472">#22472</a>
         opened by <a href="https://github.com/bxff">@bxff</a>
         on 2026-01-09 04:57
@@ -71,10 +71,32 @@ def myfunc() -&gt; None:
             <div class="timeline-body"><p>This seems like a bug in the upstream rule. Given that this always raises <code>UnboundLocalError</code>, why shouldn’t the <code>undefined-local</code> rule detect it?</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-12 22:16</div>
+            <div class="timeline-body"><p>I'll go ahead and close this for now since Ruff is correctly flagging a runtime error. Thank you for working on this and checking the behavior of the upstream linter!</p>
+<p>As I commented on the issue, I think this could be a good use for a <a href="https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_linter/src/checkers/ast/mod.rs#L3560"><code>secondary_annotation</code></a> on the diagnostic pointing to the local assignment that shadows the global binding. I'm picturing something like this:</p>
+<pre><code>F823 Local variable `pwndbg` referenced before assignment
+ --&gt; repro.py:7:8
+  |
+6 | def myfunc() -&gt; None:
+7 |     if pwndbg.dbg.is_gdblib_available():
+  |        ^^^^^^
+8 |         import pwndbg.gdblib.functions
+  |                ------ This binding makes `pwndbg` a local variable
+9 |         _ = pwndbg.gdblib.functions.functions
+  |
+</code></pre>
+<p>We could even include a <code>help</code> line via the fix title that says something like <code>consider declaring `pwndbg` as `global` or `nonlocal` </code>, in line with the example in the documentation.</p>
+<p>Just mentioning in case you'd be interested in working on that instead :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2026-01-12 22:16</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:51 UTC
+        Synced at 2026-01-12 22:27:07 UTC
     </footer>
 </body>
 </html>

@@ -104,10 +104,52 @@ UnboundLocalError: cannot access local variable 'pwndbg' where it is not associa
 <p>This was surprising to me too, but the local <code>import pwndbg...</code> makes the <code>pwndbg</code> reference within the function a local variable reference, which is then used before its definition. There's even a <a href="https://docs.python.org/3/faq/programming.html#why-am-i-getting-an-unboundlocalerror-when-the-variable-has-a-value">Python FAQ</a> entry on this topic, although they use an assignment rather than an import in the example.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k4lizen">@k4lizen</a> on 2026-01-12 21:32</div>
+            <div class="timeline-body"><p>ou damn my bad, I thought this was fine at runtime. if theres a way for ruff to detect this case and maybe point to an explanation of whats going on that would be nice, but in general I'm fine with closing this issue.</p>
+<p>i'm not sure what @dscorbett meant by this</p>
+<blockquote>
+<p>This seems like a bug in the upstream rule.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k4lizen">@k4lizen</a> on 2026-01-12 21:34</div>
+            <div class="timeline-body"><p>as an aside, do you know what the valid/intended way is to achieve what i'm trying to do here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-12 21:55</div>
+            <div class="timeline-body"><p>No worries at all, this was also confusing to me! I'll change the label to <code>diagnostics</code>, this could be an interesting use for a sub-diagnostic if it doesn't add too much complexity to the rule.</p>
+<p>I think dscorbett was referring to the PR summary, which compared Ruff's implementation to pyflakes. I don't think you mentioned pyflakes, but the PR author checked the upstream tool to see if it also flagged this code.</p>
+<blockquote>
+<p>as an aside, do you know what the valid/intended way is to achieve what i'm trying to do here?</p>
+</blockquote>
+<p>I think if you declare <code>pwndbg</code> as <code>global</code> within the function, you can get the behavior you want:</p>
+<pre><code class="language-diff"> def myfunc() -&gt; None:
++    global pwndbg
+     # note that dbg is an object in the pwndbg module
+     if pwndbg.dbg.is_gdblib_available():
+         import pwndbg.gdblib.functions
+</code></pre>
+<p>I'm getting a different attribute error in that case, but I think that should work in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @ntBre on 2026-01-12 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2026-01-12 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k4lizen">@k4lizen</a> on 2026-01-12 22:04</div>
+            <div class="timeline-body"><p>yup, can confirm that works, thanks!</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 21:27:13 UTC
+        Synced at 2026-01-12 22:26:04 UTC
     </footer>
 </body>
 </html>
