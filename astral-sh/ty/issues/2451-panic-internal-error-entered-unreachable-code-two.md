@@ -2,16 +2,16 @@
 number: 2451
 title: "[panic] internal error: entered unreachable code: Two equal, normalized intersections should share the same Salsa ID"
 type: issue
-state: open
+state: closed
 author: yilei
 labels:
   - bug
   - fatal
 assignees: []
 created_at: 2026-01-11T21:00:10Z
-updated_at: 2026-01-12T00:38:01Z
+updated_at: 2026-01-12T13:37:14Z
 url: https://github.com/astral-sh/ty/issues/2451
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T14:02:46Z
 ```
 
 # [panic] internal error: entered unreachable code: Two equal, normalized intersections should share the same Salsa ID
@@ -125,5 +125,15 @@ _Added to milestone `Pre-stable 1` by @AlexWaygood on 2026-01-11 21:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-12 00:38_
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 13:35_
+
+---
+
+_Comment by @charliermarsh on 2026-01-12 13:37_
+
+Thank you! Fixed in the next release.
 
 ---

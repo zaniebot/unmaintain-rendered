@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: zsol/jj-uqkrrrxxkqvw
 created_at: 2026-01-12T10:51:14Z
-updated_at: 2026-01-12T12:18:45Z
+updated_at: 2026-01-12T13:27:22Z
 url: https://github.com/astral-sh/uv/pull/17414
-synced_at: 2026-01-12T13:00:12Z
+synced_at: 2026-01-12T14:04:56Z
 ```
 
 # Re-enable pyx integration tests
@@ -29,5 +29,11 @@ the publishing tests attached to this PR should be green, and they should publis
 ---
 
 _Marked ready for review by @zsol on 2026-01-12 12:18_
+
+---
+
+_@konstin approved on 2026-01-12 13:27_
+
+LGTM, do you want someone to review from the pyx side?
 
 ---

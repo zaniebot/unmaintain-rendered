@@ -11,9 +11,9 @@ draft: true
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2025-10-19T12:30:22Z
+updated_at: 2026-01-12T13:53:34Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T14:04:51Z
 ```
 
 # Clear the env vars for tests
@@ -107,5 +107,9 @@ Purely offering an alternative approach as I'm maybe misunderstanding the goal o
 This way you have a list of all the env vars you should remove, and all the ones you should keep supporting rather than clearing them all and spend significant amount of time figuring out which one to proxy / add back to satisfy all build environments.
 
 e.g. `#[test_allow_override]` similar to attr_hidden for testing, with an additional exposed helper method like `EnvVars::list` to get all the test and non-test enablement ones. It also from my perspective would make it easier for contributions as there's less sources of truth.
+
+---
+
+_Renamed from "Clear the env vars for tests" to "Clear known env vars for tests" by @konstin on 2026-01-12 13:53_
 
 ---

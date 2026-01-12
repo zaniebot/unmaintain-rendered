@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-10-04T17:11:52Z
-updated_at: 2026-01-12T12:15:54Z
+updated_at: 2026-01-12T13:17:31Z
 url: https://github.com/astral-sh/ty/issues/1307
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T14:02:46Z
 ```
 
 # Truncate type display for long unions in some situations
@@ -60,5 +60,25 @@ _Comment by @AlexWaygood on 2026-01-12 12:11_
 You can use `reveal_type` to see the full type -- does that work for you?
 
 I'm not necessarily opposed to adding `--output-format=verbose`, but it's good to avoid too much complexity in our configuration where possible
+
+---
+
+_Comment by @adamjstewart on 2026-01-12 13:11_
+
+`reveal_type` works for the actual type, not the expected type. Although I guess I could throw the expected type hint class in...
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 13:16_
+
+> I'm not necessarily opposed to adding --output-format=verbose, but it's good to avoid too much complexity in our configuration where possible
+
+I'd prefer to use `-v` instead. We've other diagnostics that output more verbose information when running `ty check -v`. It avoids introducing a new concept.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 13:17_
+
+That works for me
 
 ---

@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-17T20:40:20Z
-updated_at: 2026-01-10T09:03:48Z
+updated_at: 2026-01-12T13:01:33Z
 url: https://github.com/astral-sh/ty/issues/2034
-synced_at: 2026-01-10T11:36:34Z
+synced_at: 2026-01-12T14:02:46Z
 ```
 
 # Server: Project in nested directory
@@ -171,5 +171,13 @@ We're considering doing something along the line for the editor use case but it'
 That's why finding the proper solution takes a bit more time. The only solution I can offer you now is to have a `ty.toml` at the root of your project just for IDE purposes. I know it isn't great but, it has been working well for us in pyx, our internal project using ty. 
 
 
+
+---
+
+_Comment by @alita-moore on 2026-01-12 13:01_
+
+I currently handle this by using Poetry in each workspace package to install dependencies into a local `.venv` at the package root. I use the `python-envy` VS Code extension to auto-switch contexts, and `ty` handles the interpreter switching instantly.
+
+The trade-off is maintaining multiple `.lock` files, but I need that flexibility because `uv` workspaces force a single dependency version across the whole monorepo even if packages don't interact. My ideal solution would be `uv` using a single root lock file to manage the whole repo, but automatically provisioning and syncing individual `.venv` directories inside each package folder with the correct linked packages.
 
 ---

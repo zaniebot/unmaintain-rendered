@@ -2,18 +2,19 @@
 number: 22509
 title: "[ty] Avoid panic for comparison on synthesized variants"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - bug
   - ty
 assignees: []
+merged: true
 base: main
 head: charlie/pan
 created_at: 2026-01-11T22:23:59Z
-updated_at: 2026-01-12T08:01:39Z
+updated_at: 2026-01-12T13:35:58Z
 url: https://github.com/astral-sh/ruff/pull/22509
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T14:03:35Z
 ```
 
 # [ty] Avoid panic for comparison on synthesized variants
@@ -66,15 +67,6 @@ _Comment by @astral-sh-bot[bot] on 2026-01-11 22:26_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 48 diagnostics
-
 prefect (https://github.com/PrefectHQ/prefect)
 - src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
 + src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
@@ -93,10 +85,18 @@ prefect (https://github.com/PrefectHQ/prefect)
 + Found 5368 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- Found 1826 diagnostics
++ Found 1827 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5169 diagnostics
++ Found 5170 diagnostics
 
 
 ```
@@ -130,7 +130,7 @@ _Review requested from @dcreager by @charliermarsh on 2026-01-12 00:38_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:884 on 2026-01-12 08:01_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:892 on 2026-01-12 08:01_
 
 Can you add a note to the doc-comment like this one?
 
@@ -143,5 +143,17 @@ Same for `TypedDictType` above
 _@AlexWaygood approved on 2026-01-12 08:01_
 
 Nice, thanks!
+
+---
+
+_Merged by @charliermarsh on 2026-01-12 13:35_
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 13:35_
+
+---
+
+_Branch deleted on 2026-01-12 13:35_
 
 ---

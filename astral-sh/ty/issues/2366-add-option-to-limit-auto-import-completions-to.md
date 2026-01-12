@@ -9,9 +9,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-06T14:47:54Z
-updated_at: 2026-01-11T06:17:11Z
+updated_at: 2026-01-12T13:14:17Z
 url: https://github.com/astral-sh/ty/issues/2366
-synced_at: 2026-01-11T06:53:31Z
+synced_at: 2026-01-12T14:02:46Z
 ```
 
 # Add option to limit auto-import completions to direct dependencies
@@ -105,5 +105,27 @@ Are those common? I don't think those are particularly idiomatic in the Python e
 _Comment by @toppk on 2026-01-11 06:17_
 
 Sorry to add more suggestions here (especially since I've only started to test ty, and havent' actually switch my LSP to it just yet), but I'm wondering if this direct dependency will ignore python default packages, for example typing.  Also, if the user has an existing from randompackage import Foo, would auto-import of Bar look inside randompackage even if it was not a direct dependency?    
+
+---
+
+_Comment by @BurntSushi on 2026-01-12 13:12_
+
+> but I'm wondering if this direct dependency will ignore python default packages, for example typing.
+
+No. Since the stdlib is an implicit but direct dependency. It's always available.
+
+> Also, if the user has an existing from randompackage import Foo, would auto-import of Bar look inside randompackage even if it was not a direct dependency?
+
+That's a good question. I think I would assume not, but I'd be curious as to why `randompackage` isn't a direct dependency yet is being imported from directly.
+
+Keep in mind that I think we'd only have this behavior when a `pyproject.toml` is present.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 13:14_
+
+> That's a good question. I think I would assume not, but I'd be curious as to why `randompackage` isn't a direct dependency yet is being imported from directly.
+
+Right, that's a bit of an antipattern
 
 ---

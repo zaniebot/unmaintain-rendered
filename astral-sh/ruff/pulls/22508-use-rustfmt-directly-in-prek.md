@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/rustfmt
 created_at: 2026-01-11T19:44:36Z
-updated_at: 2026-01-12T08:07:23Z
+updated_at: 2026-01-12T13:51:07Z
 url: https://github.com/astral-sh/ruff/pull/22508
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T14:03:35Z
 ```
 
 # Use rustfmt directly in prek
@@ -92,8 +92,16 @@ _@MichaReiser reviewed on 2026-01-12 08:07_
 
 ---
 
-_Review comment by @MichaReiser on `.github/workflows/ci.yaml`:797 on 2026-01-12 08:07_
+_Review comment by @MichaReiser on `.github/workflows/ci.yaml`:794 on 2026-01-12 08:07_
 
 Can we remove the `rust-cache` step?
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2026-01-12 13:50_
+
+---
+
+_@MichaReiser approved on 2026-01-12 13:51_
 
 ---
