@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always generate fixes - astral-sh/ruff #4239</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Always generate fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4239">#4239</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-05-05 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-05 09:51</div>
+            <div class="timeline-body"><p>This PR removes <code>autofx</code> and instead always generates the fixes. This allows us to rely on <code>fix.is_empty</code> (or <code>fix.is_some</code> after #4198) to determine whether a violation is fixable.</p>
+<p>This will also allow us to always render the fix suggestions in the future.</p>
+<p>I fixed a few violations that incorrectly returned an autofix title even when the violation wasn't fixable or the other way around.</p>
+<h2>Are you sure?</h2>
+<p>Not entirely. Having the functionality to conditionally generate <code>Fix</code>es seems useful. For example, we could avoid generating fixes when we've seen a suppression comment, or if we've seen a large number of <code>Diagnostic</code>s and aren't running in verbose mode. I think we can still support this by consistently using <code>checker.patch</code> or refactor our rules into two:</p>
+<ul>
+<li>Part 1: Generates the <code>Violations</code></li>
+<li>Part 2: Creates the fixes (code actions) when necessary</li>
+</ul>
+<p>This would have the added advantage that code authors don't need to know when to emit fixes (not as today) and are instead guided by the infrastructure/API.</p>
+<h2>Performance</h2>
+<p>This change slightly regresses performance for projects with many (500k) diagnostics.</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache  </code> | 220.9 ± 3.2 | 216.8 | 226.8 | 1.15 ± 0.03 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache  </code> | 221.1 ± 3.5 | 216.3 | 226.5 | 1.15 ± 0.03 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL </code> | 1544.1 ± 27.6 | 1492.2 | 1586.2 | 8.04 ± 0.23 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL </code> | 1482.7 ± 22.2 | 1454.3 | 1529.2 | 7.72 ± 0.21 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache   -s</code> | 192.1 ± 4.4 | 185.0 | 200.0 | 1.00 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache   -s</code> | 193.7 ± 10.2 | 187.3 | 228.7 | 1.01 ± 0.06 |
+| <code>./target/release/ruff ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL  -s</code> | 1302.3 ± 25.2 | 1262.6 | 1334.4 | 6.78 ± 0.20 |
+| <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL  -s</code> | 1241.5 ± 20.3 | 1220.6 | 1280.7 | 6.46 ± 0.18 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-05 09:51</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #4239</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4239" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #4245</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4245" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #4191</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4191" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4192</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4192" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4193</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4193" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4239?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2023-05-05 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-05 10:24</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.7±0.95ms     2.2 MB/sec    1.02     19.1±0.57ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.18ms     3.9 MB/sec    1.06      4.5±0.29ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.02   564.2±31.20µs     5.2 MB/sec    1.00   553.9±19.50µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.6±0.27ms     3.4 MB/sec    1.00      7.5±0.27ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.1±0.41ms     4.5 MB/sec    1.03      9.4±0.35ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1918.4±58.12µs     8.7 MB/sec    1.02  1965.9±90.87µs     8.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    226.4±9.84µs    13.0 MB/sec    1.03   234.0±10.16µs    12.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.14ms     6.6 MB/sec    1.07      4.1±0.14ms     6.2 MB/sec
+parser/large/dataset.py                    1.02      7.2±0.15ms     5.7 MB/sec    1.00      7.0±0.25ms     5.8 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1418.7±53.10µs    11.7 MB/sec    1.00  1387.0±57.77µs    12.0 MB/sec
+parser/numpy/globals.py                    1.03    137.2±5.73µs    21.5 MB/sec    1.00    133.7±5.04µs    22.1 MB/sec
+parser/pydantic/types.py                   1.00      3.1±0.10ms     8.3 MB/sec    1.00      3.1±0.12ms     8.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.5±0.09ms     2.5 MB/sec    1.00     16.5±0.05ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.03ms     3.9 MB/sec    1.00      4.2±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    431.2±3.50µs     6.8 MB/sec    1.00    430.6±7.69µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.02ms     3.6 MB/sec    1.00      7.1±0.02ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.03ms     4.8 MB/sec    1.00      8.4±0.03ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1780.2±7.94µs     9.4 MB/sec    1.01   1799.6±8.15µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    191.6±1.28µs    15.4 MB/sec    1.02   195.6±14.79µs    15.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec    1.00      3.8±0.02ms     6.7 MB/sec
+parser/large/dataset.py                    1.00      6.8±0.03ms     6.0 MB/sec    1.00      6.8±0.02ms     6.0 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1294.2±6.58µs    12.9 MB/sec    1.00   1281.7±9.87µs    13.0 MB/sec
+parser/numpy/globals.py                    1.01    134.1±0.92µs    22.0 MB/sec    1.00    132.5±0.84µs    22.3 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.01ms     8.9 MB/sec    1.00      2.8±0.01ms     9.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-05 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/test.rs</code>:148 on 2023-05-05 12:04</div>
+            <div class="timeline-body"><p>This should help us in the future to keep the metadata up to date</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-05-05 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-08 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-08 08:20</div>
+            <div class="timeline-body"><p>I manually checked bokeh with <code>--select ALL</code> which generates a lot of fixes and got only insignificant differences in the benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-05-09 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/format_literals.rs</code>:20 on 2023-05-09 15:36</div>
+            <div class="timeline-body"><p>For all these rules that changed from <code>AlwaysAutofixableViolation</code> to <code>Violation</code>, should this not be <code>AutofixKind::Always</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-09 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-09 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:5 on 2023-05-09 15:37</div>
+            <div class="timeline-body"><p>Can this trait be removed entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-09 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/format_literals.rs</code>:20 on 2023-05-09 15:41</div>
+            <div class="timeline-body"><p>I only changed the rules to Violation, because they don't always provide a fix (I found out about this by the added assertions in the tests). That's why Sometimes is correct(or we have to change the implementation to always emit a fix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-09 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_pytest_style/rules/parametrize.rs</code>:5 on 2023-05-09 15:41</div>
+            <div class="timeline-body"><p>We still need it for fixes that always generate an autofix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-05-09 15:44</div>
+            <div class="timeline-body"><p>I'm also torn on this but ultimately it seems like the right change.</p>
+<p>The current state of affairs leads to some confusing user experiences, since in some cases we can't know for sure whether an issue is fixable unless we try to fix it. Similarly, we rely on the rule-level fixability rather than checking whether &quot;This violation has a fix&quot;, which causes problems like in #3273 (which I believe is closed with this issue).</p>
+<p>While there is a performance hit, it's within the realm of &quot;reasonable&quot;, and most projects have fewer diagnostics anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-09 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/format_literals.rs</code>:20 on 2023-05-09 15:45</div>
+            <div class="timeline-body"><p>Ahh right right. I didn't realize that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-09 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>The current state of affairs leads to some confusing user experiences, since in some cases we can't know for sure whether an issue is fixable unless we try to fix it. Similarly, we rely on the rule-level fixability rather than checking whether &quot;This violation has a fix&quot;, which causes problems like in https://github.com/charliermarsh/ruff/issues/3273 (which I believe is closed with this issue).</p>
+</blockquote>
+<p>I think we should always generate fixes if we want to display fixes in some way (that includes a fixable indicator). We could decide to not generate fixes if we don't need them at all. E.g, when running with <code>--add-noqa</code> because we then never render nor use the fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-05-10 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-10 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-10 07:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:57:15 UTC
+    </footer>
+</body>
+</html>

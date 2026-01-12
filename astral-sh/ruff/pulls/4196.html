@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Flynt static string join transform as FLY002 - astral-sh/ruff #4196</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement Flynt static string join transform as FLY002</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4196">#4196</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-05-02 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2023-05-02 20:10</div>
+            <div class="timeline-body"><p>Refs https://github.com/charliermarsh/ruff/issues/2102 (being one half of it).</p>
+<p>I removed the concatenation feature (FLY001) from this PR because I found tricky corner cases that were kind of tough to gracefully handle, so this PR concentrates on turning <code>&quot;x&quot;.join([a, &quot;foo&quot;, b])</code> to <code>f&quot;{a}xfoox{b}&quot;</code>.</p>
+<ul>
+<li><del><code>&quot;{'Finally'}, &quot; + f&quot;{greeting}&quot; + f&quot;{subject}&quot;</code> causes an autofix syntax error, but I'm not quite sure what's happening in particular – what's the easiest way of seeing the autofixed-but-broken code?</del> That's dealt with by #4201 and #4202 :)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-02 20:28</div>
+            <div class="timeline-body"><p>Sadly the best way to debug is to print out <code>transformed</code> where you see the <code>{}: Autofix introduced a syntax error. Reverting all changes.</code> error logging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-02 20:36</div>
+            <div class="timeline-body"><p>We should change it to print the syntax-erroring code in debug mode, since I find myself doing this a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-02 21:03</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+34, -0, 0 error(s))</p>
+<details><summary>airflow (+25, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/api/auth/backend/kerberos_auth.py:150:60: FLY002 [*] Consider `f&quot;negotiate {ctx.kerberos_token}&quot;` instead of string join
++ airflow/providers/amazon/aws/log/s3_task_handler.py:203:23: FLY002 [*] Consider `f&quot;{old_log}\n{log}&quot;` instead of string join
++ airflow/providers/cncf/kubernetes/decorators/kubernetes.py:103:13: FLY002 [*] Consider `f&quot;{write_local_script_file_cmd} &amp;&amp; {write_local_input_file_cmd} &amp;&amp; {make_xcom_dir_cmd} &amp;&amp; {exec_python_cmd}&quot;` instead of string join
++ airflow/providers/google/cloud/log/gcs_task_handler.py:243:19: FLY002 [*] Consider `f&quot;{old_log}\n{log}&quot;` instead of string join
++ airflow/providers/microsoft/azure/log/wasb_task_handler.py:238:19: FLY002 [*] Consider `f&quot;{old_log}\n{log}&quot;` instead of string join
++ airflow/settings.py:63:10: FLY002 [*] Consider `f&quot;  ____________       _____________\n ____    |__( )_________  __/__  /________      __\n____  /| |_  /__  ___/_  /_ __  /_  __ \\_ | /| / /\n___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /\n _/_/  |_/_/  /_/    /_/    /_/  \\____/____/|__/&quot;` instead of string join
++ airflow/www/views.py:1388:39: FLY002 [*] Consider `f&quot;{template_field}.{key}&quot;` instead of string join
++ airflow/www/views.py:1390:39: FLY002 [*] Consider `f&quot;{template_field}.{key}&quot;` instead of string join
++ airflow/www/views.py:1395:41: FLY002 [*] Consider `f&quot;{template_field}.{dict_keys}&quot;` instead of string join
++ airflow/www/views.py:496:23: FLY002 [*] Consider `f&quot;{key}.{sub_key}&quot;` instead of string join
++ tests/always/test_connection.py:106:49: FLY002 [*] Consider `f&quot;{key2.decode()},{key1.decode()}&quot;` instead of string join
++ tests/cli/commands/test_kubernetes_command.py:60:22: FLY002 [*] Consider `f&quot;dag_id,task_id,try_number,airflow_version&quot;` instead of string join
++ tests/cli/commands/test_rotate_fernet_key_command.py:100:38: FLY002 [*] Consider `f&quot;{fernet_key2.decode()},{fernet_key1.decode()}&quot;` instead of string join
++ tests/cli/commands/test_rotate_fernet_key_command.py:64:38: FLY002 [*] Consider `f&quot;{fernet_key2.decode()},{fernet_key1.decode()}&quot;` instead of string join
++ tests/dags/test_clear_subdag.py:32:16: FLY002 [*] Consider `f&quot;{dag_name}.{subdag_name}&quot;` instead of string join
++ tests/models/test_variable.py:87:49: FLY002 [*] Consider `f&quot;{key2.decode()},{key1.decode()}&quot;` instead of string join
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:250:59: FLY002 [*] Consider `f&quot;{real_timestamp} {log_message}&quot;` instead of string join
++ tests/providers/google/common/hooks/test_base_google.py:522:17: FLY002 [*] Consider `f&quot;https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/devstorage.read_only&quot;` instead of string join
++ tests/providers/google/common/hooks/test_base_google.py:589:17: FLY002 [*] Consider `f&quot;https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/devstorage.read_only&quot;` instead of string join
++ tests/utils/test_dot_renderer.py:181:38: FLY002 [*] Consider `f'digraph example_task_group {{\n\tgraph [label=example_task_group labelloc=t rankdir=LR]\n\tend [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=end shape=rectangle style=&quot;filled,rounded&quot;]\n\tsubgraph cluster_section_1 {{\n\t\tcolor=&quot;#000000&quot; fillcolor=&quot;#6495ed7f&quot; label=section_1 shape=rectangle style=filled\n\t\t&quot;section_1.upstream_join_id&quot; [color=&quot;#000000&quot; fillcolor=CornflowerBlue height=0.2 label=&quot;&quot; shape=circle style=&quot;filled,rounded&quot; width=0.2]\n\t\t&quot;section_1.downstream_join_id&quot; [color=&quot;#000000&quot; fillcolor=CornflowerBlue height=0.2 label=&quot;&quot; shape=circle style=&quot;filled,rounded&quot; width=0.2]\n\t\t&quot;section_1.task_1&quot; [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=task_1 shape=rectangle style=&quot;filled,rounded&quot;]\n\t\t&quot;section_1.task_2&quot; [color=&quot;#000000&quot; fillcolor=&quot;#f0ede4&quot; label=task_2 shape=rectangle style=&quot;filled,rounded&quot;]\n\t\t&quot;section_1.task_3&quot; [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=task_3 shape=rectangle style=&quot;filled,rounded&quot;]\n\t}}\n\tsubgraph cluster_section_2 {{\n\t\tcolor=&quot;#000000&quot; fillcolor=&quot;#6495ed7f&quot; label=section_2 shape=rectangle style=filled\n\t\t&quot;section_2.upstream_join_id&quot; [color=&quot;#000000&quot; fillcolor=CornflowerBlue height=0.2 label=&quot;&quot; shape=circle style=&quot;filled,rounded&quot; width=0.2]\n\t\t&quot;section_2.downstream_join_id&quot; [color=&quot;#000000&quot; fillcolor=CornflowerBlue height=0.2 label=&quot;&quot; shape=circle style=&quot;filled,rounded&quot; width=0.2]\n\t\tsubgraph &quot;cluster_section_2.inner_section_2&quot; {{\n\t\t\tcolor=&quot;#000000&quot; fillcolor=&quot;#6495ed7f&quot; label=inner_section_2 shape=rectangle style=filled\n\t\t\t&quot;section_2.inner_section_2.task_2&quot; [color=&quot;#000000&quot; fillcolor=&quot;#f0ede4&quot; label=task_2 shape=rectangle style=&quot;filled,rounded&quot;]\n\t\t\t&quot;section_2.inner_section_2.task_3&quot; [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=task_3 shape=rectangle style=&quot;filled,rounded&quot;]\n\t\t\t&quot;section_2.inner_section_2.task_4&quot; [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=task_4 shape=rectangle style=&quot;filled,rounded&quot;]\n\t\t}}\n\t\t&quot;section_2.task_1&quot; [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=task_1 shape=rectangle style=&quot;filled,rounded&quot;]\n\t}}\n\tstart [color=&quot;#000000&quot; fillcolor=&quot;#e8f7e4&quot; label=start shape=rectangle style=&quot;filled,rounded&quot;]\n\t&quot;section_1.downstream_join_id&quot; -&gt; &quot;section_2.upstream_join_id&quot;\n\t&quot;section_1.task_1&quot; -&gt; &quot;section_1.task_2&quot;\n\t&quot;section_1.task_1&quot; -&gt; &quot;section_1.task_3&quot;\n\t&quot;section_1.task_2&quot; -&gt; &quot;section_1.downstream_join_id&quot;\n\t&quot;section_1.task_3&quot; -&gt; &quot;section_1.downstream_join_id&quot;\n\t&quot;section_1.upstream_join_id&quot; -&gt; &quot;section_1.task_1&quot;\n\t&quot;section_2.downstream_join_id&quot; -&gt; end\n\t&quot;section_2.inner_section_2.task_2&quot; -&gt; &quot;section_2.inner_section_2.task_4&quot;\n\t&quot;section_2.inner_section_2.task_3&quot; -&gt; &quot;section_2.inner_section_2.task_4&quot;\n\t&quot;section_2.inner_section_2.task_4&quot; -&gt; &quot;section_2.downstream_join_id&quot;\n\t&quot;section_2.task_1&quot; -&gt; &quot;section_2.downstream_join_id&quot;\n\t&quot;section_2.upstream_join_id&quot; -&gt; &quot;section_2.inner_section_2.task_2&quot;\n\t&quot;section_2.upstream_join_id&quot; -&gt; &quot;section_2.inner_section_2.task_3&quot;\n\t&quot;section_2.upstream_join_id&quot; -&gt; &quot;section_2.task_1&quot;\n\tstart -&gt; &quot;section_1.upstream_join_id&quot;\n}}'` instead of string join
++ tests/utils/test_log_handlers.py:368:13: FLY002 [*] Consider `f&quot;airflow_version=.+?,dag_id=dag_for_testing_file_task_handler,kubernetes_executor=True,run_id=manual__2016-01-01T0000000000-2b88d1d57,task_id=task_for_testing_file_log_handler,try_number=2,airflow-worker&quot;` instead of string join
++ tests/utils/test_log_handlers.py:543:19: FLY002 [*] Consider `f&quot;[2022-11-16T00:05:54.278-0800] {{taskinstance.py:1258}} INFO - Starting attempt 1 of 1&quot;` instead of string join
++ tests/utils/test_log_handlers.py:548:19: FLY002 [*] Consider `f&quot;[2022-11-16T00:05:54.295-0800] {{taskinstance.py:1278}} INFO - Executing &lt;Task(TimeDeltaSensorAsync): wait&gt; on 2022-11-16 08:05:52.324532+00:00\n[2022-11-16T00:05:54.300-0800] {{standard_task_runner.py:55}} INFO - Started process 52536 to run task\n[2022-11-16T00:05:54.300-0800] {{standard_task_runner.py:55}} INFO - Started process 52536 to run task\n[2022-11-16T00:05:54.300-0800] {{standard_task_runner.py:55}} INFO - Started process 52536 to run task\n[2022-11-16T00:05:54.306-0800] {{standard_task_runner.py:82}} INFO - Running: ['airflow', 'tasks', 'run', 'simple_async_timedelta', 'wait', 'manual__2022-11-16T08:05:52.324532+00:00', '--job-id', '33648', '--raw', '--subdir', '/Users/dstandish/code/airflow/airflow/example_dags/example_time_delta_sensor_async.py', '--cfg-path', '/var/folders/7_/1xx0hqcs3txd7kqt0ngfdjth0000gn/T/tmp725r305n']\n[2022-11-16T00:05:54.309-0800] {{standard_task_runner.py:83}} INFO - Job 33648: Subtask wait&quot;` instead of string join
++ tests/utils/test_log_handlers.py:558:19: FLY002 [*] Consider `f&quot;[2022-11-16T00:05:54.457-0800] {{task_command.py:376}} INFO - Running &lt;TaskInstance: simple_async_timedelta.wait manual__2022-11-16T08:05:52.324532+00:00 [running]&gt; on host daniels-mbp-2.lan\n[2022-11-16T00:05:54.592-0800] {{taskinstance.py:1485}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER=airflow\nAIRFLOW_CTX_DAG_ID=simple_async_timedelta\nAIRFLOW_CTX_TASK_ID=wait\nAIRFLOW_CTX_EXECUTION_DATE=2022-11-16T08:05:52.324532+00:00\nAIRFLOW_CTX_TRY_NUMBER=1\nAIRFLOW_CTX_DAG_RUN_ID=manual__2022-11-16T08:05:52.324532+00:00\n[2022-11-16T00:05:54.604-0800] {{taskinstance.py:1360}} INFO - Pausing task as DEFERRED. dag_id=simple_async_timedelta, task_id=wait, execution_date=20221116T080552, start_date=20221116T080554&quot;` instead of string join
++ tests/utils/test_log_handlers.py:570:16: FLY002 [*] Consider `f&quot;[2022-11-16T00:05:54.278-0800] {{taskinstance.py:1258}} INFO - Starting attempt 1 of 1\n[2022-11-16T00:05:54.295-0800] {{taskinstance.py:1278}} INFO - Executing &lt;Task(TimeDeltaSensorAsync): wait&gt; on 2022-11-16 08:05:52.324532+00:00\n[2022-11-16T00:05:54.300-0800] {{standard_task_runner.py:55}} INFO - Started process 52536 to run task\n[2022-11-16T00:05:54.306-0800] {{standard_task_runner.py:82}} INFO - Running: ['airflow', 'tasks', 'run', 'simple_async_timedelta', 'wait', 'manual__2022-11-16T08:05:52.324532+00:00', '--job-id', '33648', '--raw', '--subdir', '/Users/dstandish/code/airflow/airflow/example_dags/example_time_delta_sensor_async.py', '--cfg-path', '/var/folders/7_/1xx0hqcs3txd7kqt0ngfdjth0000gn/T/tmp725r305n']\n[2022-11-16T00:05:54.309-0800] {{standard_task_runner.py:83}} INFO - Job 33648: Subtask wait\n[2022-11-16T00:05:54.457-0800] {{task_command.py:376}} INFO - Running &lt;TaskInstance: simple_async_timedelta.wait manual__2022-11-16T08:05:52.324532+00:00 [running]&gt; on host daniels-mbp-2.lan\n[2022-11-16T00:05:54.592-0800] {{taskinstance.py:1485}} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER=airflow\nAIRFLOW_CTX_DAG_ID=simple_async_timedelta\nAIRFLOW_CTX_TASK_ID=wait\nAIRFLOW_CTX_EXECUTION_DATE=2022-11-16T08:05:52.324532+00:00\nAIRFLOW_CTX_TRY_NUMBER=1\nAIRFLOW_CTX_DAG_RUN_ID=manual__2022-11-16T08:05:52.324532+00:00\n[2022-11-16T00:05:54.604-0800] {{taskinstance.py:1360}} INFO - Pausing task as DEFERRED. dag_id=simple_async_timedelta, task_id=wait, execution_date=20221116T080552, start_date=20221116T080554&quot;` instead of string join
+</code></pre>
+</p>
+</details>
+<details><summary>zulip (+9, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ zerver/lib/request.py:351:27: FLY002 [*] Consider `f&quot;{req_func.__module__}.{req_func.__name__}&quot;` instead of string join
++ zerver/lib/upload/local.py:239:37: FLY002 [*] Consider `f&quot;{emoji_path}.original&quot;` instead of string join
++ zerver/lib/upload/s3.py:449:13: FLY002 [*] Consider `f&quot;{emoji_path}.original&quot;` instead of string join
++ zerver/migrations/0149_realm_emoji_drop_unique_constraint.py:85:12: FLY002 [*] Consider `f&quot;{new_name}{image_ext}&quot;` instead of string join
++ zerver/tests/test_invite.py:479:26: FLY002 [*] Consider `f&quot;{cross_realm_bot_email},{legit_new_email}&quot;` instead of string join
++ zerver/tests/test_message_fetch.py:329:28: FLY002 [*] Consider `f&quot;{self.example_user('hamlet').email},{self.example_user('othello').email}&quot;` instead of string join
++ zerver/tests/test_message_fetch.py:342:22: FLY002 [*] Consider `f&quot;{self.example_user('cordelia').email},{self.example_user('othello').email}&quot;` instead of string join
++ zerver/tests/test_message_fetch.py:354:28: FLY002 [*] Consider `f&quot;{self.example_user('hamlet').email},{self.example_user('othello').email}&quot;` instead of string join
++ zerver/tests/test_message_fetch.py:369:22: FLY002 [*] Consider `f&quot;{self.example_user('cordelia').email},{self.example_user('othello').email}&quot;` instead of string join
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.0±0.04ms     2.9 MB/sec    1.00     14.0±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    423.5±0.83µs     7.0 MB/sec    1.00    421.1±1.07µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.01      5.9±0.09ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.01ms     5.9 MB/sec    1.02      7.1±0.01ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1490.6±2.78µs    11.2 MB/sec    1.01   1511.5±2.69µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    166.6±0.36µs    17.7 MB/sec    1.02    169.1±0.64µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.02      3.1±0.02ms     8.1 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.02ms     7.5 MB/sec    1.02      5.6±0.01ms     7.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1060.3±3.34µs    15.7 MB/sec    1.02   1079.0±0.86µs    15.4 MB/sec
+parser/numpy/globals.py                    1.00    108.0±0.18µs    27.3 MB/sec    1.02    110.0±1.95µs    26.8 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.0 MB/sec    1.02      2.4±0.01ms    10.8 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.7±0.11ms     2.4 MB/sec    1.01     16.8±0.14ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.02ms     3.9 MB/sec    1.00      4.3±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.02   439.4±29.07µs     6.7 MB/sec    1.00    430.4±5.33µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.07ms     3.6 MB/sec    1.01      7.2±0.08ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.05ms     4.8 MB/sec    1.02      8.6±0.05ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1802.8±13.54µs     9.2 MB/sec    1.01   1827.9±9.98µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    191.9±2.66µs    15.4 MB/sec    1.01    194.2±4.77µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.03ms     6.6 MB/sec    1.01      3.9±0.03ms     6.5 MB/sec
+parser/large/dataset.py                    1.00      7.0±0.04ms     5.8 MB/sec    1.00      7.0±0.02ms     5.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1322.1±9.67µs    12.6 MB/sec    1.00   1323.9±9.59µs    12.6 MB/sec
+parser/numpy/globals.py                    1.00    135.3±1.05µs    21.8 MB/sec    1.00    135.1±1.01µs    21.8 MB/sec
+parser/pydantic/types.py                   1.00      3.0±0.07ms     8.6 MB/sec    1.00      3.0±0.01ms     8.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-03 07:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Autofix introduced a syntax error. Revertin</p>
+</blockquote>
+<p>I made some changes to our test infra so that should help you narrow down the issue #4202</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement Flynt's static string join transforms" to "Implement Flynt static string join transform as FLY002" by @akx on 2023-05-04 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @akx on 2023-05-04 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2454 on 2023-05-04 14:28</div>
+            <div class="timeline-body"><p>Nit: use <code>else_if</code> to help the compiler if it isn't clever enough to determine that these two branches are mutually exclusive.</p>
+<pre><code class="language-suggestion">                            } else if attr == &quot;format&quot; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/rules/static_join_to_fstring.rs</code>:37 on 2023-05-04 14:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn build_fstring(joiner: &amp;str, joinees: &amp;[Expr]) -&gt; Option&lt;Expr&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:36 on 2023-05-04 14:32</div>
+            <div class="timeline-body"><p>Can we change the visibility of this functions (and other functions introduced by this PR) to <code>private</code> (remove the <code>pub</code>), <code>pub(super)</code>, or <code>pub(crate)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:36 on 2023-05-04 14:33</div>
+            <div class="timeline-body"><p>I recommend taking the <code>Expr</code> as a reference and cloning it on demand, or (a little more complicated) to return an <code>Option&lt;Cow&lt;Expr&gt;&gt;</code> to avoid cloning the <code>Expr</code> altogether.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/rules/static_join_to_fstring.rs</code>:52 on 2023-05-04 14:36</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">	let mut first = true;
+	
+    for expr in joinees {
+        if matches!(expr.node, ExprKind::JoinedStr { .. }) {
+            // Oops, already an f-string. We don't know how to handle those
+            // gracefully right now.
+            return None;
+        }
+        let elem = helpers::to_fstring_elem(expr.clone())?;
+        if !first {
+            fstring_elems.push(helpers::to_constant_string(joiner));
+        }
+        fstring_elems.push(elem);
+        first = false;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/rules/static_join_to_fstring.rs</code>:83 on 2023-05-04 14:37</div>
+            <div class="timeline-body"><p>Remove?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-04 14:38</div>
+            <div class="timeline-body"><p>Impressive work! I only have a few nit comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-05-05 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:36 on 2023-05-05 06:44</div>
+            <div class="timeline-body"><p>Sure thing. I'm still not 100% on the visibility rules for Rust, getting there 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-05 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:36 on 2023-05-05 06:57</div>
+            <div class="timeline-body"><p>Me neither. I always go with the lowest visibility and increase it until Rust stops complaining at me :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @akx on 2023-05-05 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-05 12:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-09 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-09 00:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:57:15 UTC
+    </footer>
+</body>
+</html>

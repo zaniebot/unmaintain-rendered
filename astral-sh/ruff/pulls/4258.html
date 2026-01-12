@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect insertion location when importing symbols - astral-sh/ruff #4258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect insertion location when importing symbols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4258">#4258</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-06 20:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-06 20:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, <code>Importer</code> would only track the most recently-seen top-level import statement, and would add any new imports <em>after</em> that statement. However, because we visit function bodies and other scopes in a deferred manner, then if there are top-level imports <em>below</em> a given function, we'll visit those imports, then visit the function body, then insert the new import <em>after</em> the function.</p>
+<p>This causes two problems: (1) it breaks the invariant, enforced in the fixer, that edits are <em>ordered</em>, since the import insertion can come <em>after</em> the edit that makes use of the symbol; and (2) in theory, this could lead to broken code, since a function could be called <em>before</em> we reach the import statement (since that statement comes later in the module).</p>
+<p>The fix here is to track all import statements, and return the last import statement <em>before</em> a given edit location.</p>
+<p>Closes #4208.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-06 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-06 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-06 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:22 on 2023-05-06 20:16</div>
+            <div class="timeline-body"><p>I opted to get rid of this and just do a full search. The number of imports is typically not huge, this operation is relatively rare, and we'd now have to track <code>FxHashMap&lt;&amp;'a str, Vec&lt;&amp;'a Stmt&gt;&gt;</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-06 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:79 on 2023-05-06 20:16</div>
+            <div class="timeline-body"><p>Hard to reason about whether this preliminary search is worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-06 20:28</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.6±0.02ms     2.8 MB/sec    1.00     14.6±0.03ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.00      3.6±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    361.7±1.01µs     8.2 MB/sec    1.01    364.3±1.21µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.01ms     4.2 MB/sec    1.00      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.01ms     5.5 MB/sec    1.00      7.4±0.01ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1542.2±3.48µs    10.8 MB/sec    1.00   1543.3±3.26µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.0±0.20µs    17.9 MB/sec    1.01    166.7±0.38µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.00      3.3±0.01ms     7.7 MB/sec
+parser/large/dataset.py                    1.00      5.9±0.00ms     6.9 MB/sec    1.00      5.9±0.00ms     6.9 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1153.4±8.53µs    14.4 MB/sec    1.00   1151.3±2.58µs    14.5 MB/sec
+parser/numpy/globals.py                    1.00    117.5±0.23µs    25.1 MB/sec    1.00    117.7±1.09µs    25.1 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.01ms    10.2 MB/sec    1.00      2.5±0.00ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.8±0.25ms     2.7 MB/sec    1.01     15.0±0.40ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.8±0.14ms     4.4 MB/sec    1.00      3.7±0.08ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.01   445.5±17.96µs     6.6 MB/sec    1.00   443.2±13.55µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.18ms     4.1 MB/sec    1.01      6.3±0.61ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.6±0.17ms     5.4 MB/sec    1.00      7.4±0.14ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1595.8±34.98µs    10.4 MB/sec    1.00  1597.6±48.59µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    178.9±5.65µs    16.5 MB/sec    1.01    181.5±5.82µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.08ms     7.6 MB/sec    1.00      3.3±0.07ms     7.7 MB/sec
+parser/large/dataset.py                    1.00      5.9±0.14ms     6.9 MB/sec    1.02      6.0±0.13ms     6.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1107.6±26.73µs    15.0 MB/sec    1.04  1146.6±34.91µs    14.5 MB/sec
+parser/numpy/globals.py                    1.00    113.5±3.13µs    26.0 MB/sec    1.03    116.7±3.81µs    25.3 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.07ms    10.3 MB/sec    1.04      2.6±0.11ms     9.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-06 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:79 on 2023-05-06 20:29</div>
+            <div class="timeline-body"><p>Probably not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-06 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer.rs</code>:79 on 2023-05-06 21:10</div>
+            <div class="timeline-body"><p>If we assume that in most file all imports are at the start of the file, just <code>if stmt.start() &gt; at { return false; }</code> in the find should be faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/isort/rules/add_required_imports.rs</code>:125 on 2023-05-06 21:14</div>
+            <div class="timeline-body"><p>Shouldn't this use the location of the first non-import statement, or do they need to be inserted even before the other imports?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-06 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-07 02:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/isort/rules/add_required_imports.rs</code>:125 on 2023-05-07 02:27</div>
+            <div class="timeline-body"><p>They should be inserted at the top of the file -- since it has to work with <code>__future__</code> imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-07 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-07 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-07 02:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:57:15 UTC
+    </footer>
+</body>
+</html>
