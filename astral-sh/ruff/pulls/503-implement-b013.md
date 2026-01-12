@@ -1,0 +1,34 @@
+```yaml
+number: 503
+title: Implement B013
+type: pull_request
+state: merged
+author: harupy
+labels: []
+assignees: []
+merged: true
+base: main
+head: B013
+created_at: 2022-10-29T11:53:43Z
+updated_at: 2022-10-29T19:36:29Z
+url: https://github.com/astral-sh/ruff/pull/503
+synced_at: 2026-01-12T05:48:45Z
+```
+
+# Implement B013
+
+---
+
+_Pull request opened by @harupy on 2022-10-29 11:53_
+
+See #389.
+
+---
+
+_Merged by @charliermarsh on 2022-10-29 19:36_
+
+---
+
+_Closed by @charliermarsh on 2022-10-29 19:36_
+
+---

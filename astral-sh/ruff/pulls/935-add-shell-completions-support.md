@@ -1,0 +1,307 @@
+```yaml
+number: 935
+title: Add shell completions support
+type: pull_request
+state: merged
+author: messense
+labels: []
+assignees: []
+merged: true
+base: main
+head: shell-complete
+created_at: 2022-11-28T04:21:54Z
+updated_at: 2022-11-28T05:34:13Z
+url: https://github.com/astral-sh/ruff/pull/935
+synced_at: 2026-01-12T05:48:46Z
+```
+
+# Add shell completions support
+
+---
+
+_Pull request opened by @messense on 2022-11-28 04:21_
+
+Can be used in Homebrew formula to generate shell completions, for example https://github.com/Homebrew/homebrew-core/blob/4c4619c1a5046fe134f761043f52f07f71dd2cab/Formula/maturin.rb#L26
+
+Ideally it should be a subcommand so [`generate_completions_from_executable`](https://rubydoc.brew.sh/Formula#generate_completions_from_executable-instance_method) can be used in formula, otherwise you may need to do it manually like https://github.com/Homebrew/homebrew-core/commit/377a1348a967aa7da8a90e264c92dc159b4b3aed due to `FILES` argument is always required.
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-11-28 04:44_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 04:52_
+
+Woah, nice. I wonder if `generate_completions_from_executable` will work here given that we don't yet support proper subcommands (so you have to run, e.g., `cargo run -- . --generate-shell-completion bash` -- notice the extra dot).
+
+---
+
+_Comment by @messense on 2022-11-28 04:57_
+
+```ruby
+generate_completions_from_executable(bin/"ruff", ".", shell_parameter_format: "--generate-shell-completion=")
+```
+
+I think this might work?
+
+---
+
+_Merged by @charliermarsh on 2022-11-28 04:59_
+
+---
+
+_Closed by @charliermarsh on 2022-11-28 04:59_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 04:59_
+
+Cool, will try. I do think adding subcommands is one of the breaking changes I want to make before bumping to `0.1.0`.
+
+---
+
+_Branch deleted on 2022-11-28 05:10_
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 05:20_
+
+@messense - I can submit that to `homebrew-core` tomorrow unless you were planning to?
+
+---
+
+_Comment by @messense on 2022-11-28 05:24_
+
+https://github.com/Homebrew/homebrew-core/pull/116810, I'll give it a try.
+
+---
+
+_Comment by @andersk on 2022-11-28 05:26_
+
+> (so you have to run, e.g., `cargo run -- . --generate-shell-completion bash` -- notice the extra dot).
+
+That’s easy to fix:
+
+- #937
+
+---
+
+_Comment by @messense on 2022-11-28 05:34_
+
+It works.
+
+```bash
+brew install --build-from-source --verbose ruff
+==> Downloading https://github.com/charliermarsh/ruff/archive/refs/tags/v0.0.142.tar.gz
+Already downloaded: /Users/messense/Library/Caches/Homebrew/downloads/ac027598c1c50d619d18d207e5dd6660bac8bf2b06568ab530e097e8960daf94--ruff-0.0.142.tar.gz
+==> Verifying checksum for 'ac027598c1c50d619d18d207e5dd6660bac8bf2b06568ab530e097e8960daf94--ruff-0.0.142.tar.gz'
+tar --extract --no-same-owner --file /Users/messense/Library/Caches/Homebrew/downloads/ac027598c1c50d619d18d207e5dd6660bac8bf2b06568ab530e097e8960daf94--ruff-0.0.142.tar.gz --directory /private/tmp/d20221128-46126-10zd5eh
+cp -pR /private/tmp/d20221128-46126-10zd5eh/ruff-0.0.142/. /private/tmp/ruff-20221128-46126-j5hyn0/ruff-0.0.142
+chmod -Rf +w /private/tmp/d20221128-46126-10zd5eh
+==> cargo install --no-default-features --locked --root /opt/homebrew/Cellar/ruff/0.0.142 --path .
+  Installing ruff v0.0.142 (/private/tmp/ruff-20221128-46126-j5hyn0/ruff-0.0.142)
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded clap_complete v4.0.6
+  Downloaded clap_complete_fig v4.0.2
+  Downloaded clap_complete_command v0.4.0
+   Compiling autocfg v1.1.0
+   Compiling libc v0.2.137
+   Compiling cfg-if v1.0.0
+   Compiling version_check v0.9.4
+   Compiling proc-macro2 v1.0.47
+   Compiling unicode-ident v1.0.5
+   Compiling quote v1.0.21
+   Compiling syn v1.0.103
+   Compiling siphasher v0.3.10
+   Compiling ppv-lite86 v0.2.17
+   Compiling memchr v2.5.0
+   Compiling ahash v0.7.6
+   Compiling once_cell v1.16.0
+   Compiling lock_api v0.4.9
+   Compiling getrandom v0.1.16
+   Compiling serde_derive v1.0.147
+   Compiling serde v1.0.147
+   Compiling getrandom v0.2.8
+   Compiling bitflags v1.3.2
+   Compiling aho-corasick v0.7.19
+   Compiling num-traits v0.2.15
+   Compiling regex-syntax v0.6.28
+   Compiling hashbrown v0.12.3
+   Compiling rand_core v0.5.1
+   Compiling static_assertions v1.1.0
+   Compiling num-integer v0.1.45
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling parking_lot_core v0.9.4
+   Compiling either v1.8.0
+   Compiling scopeguard v1.1.0
+   Compiling rand_pcg v0.2.1
+   Compiling rand_chacha v0.2.2
+   Compiling rand_core v0.6.4
+   Compiling dirs-sys-next v0.1.2
+   Compiling indexmap v1.9.1
+   Compiling proc-macro-error v1.0.4
+   Compiling phf_shared v0.10.0
+   Compiling anyhow v1.0.66
+   Compiling thiserror v1.0.37
+   Compiling crossbeam-utils v0.8.12
+   Compiling crunchy v0.2.2
+   Compiling log v0.4.17
+   Compiling heck v0.4.0
+   Compiling unic-char-range v0.9.0
+   Compiling lazy_static v1.4.0
+   Compiling unic-common v0.9.0
+   Compiling smallvec v1.10.0
+   Compiling unic-ucd-version v0.9.0
+   Compiling unic-char-property v0.9.0
+   Compiling rand_chacha v0.3.1
+   Compiling dirs-next v2.0.0
+   Compiling rand v0.7.3
+   Compiling memoffset v0.6.5
+   Compiling num-bigint v0.4.3
+   Compiling phf_shared v0.8.0
+   Compiling tiny-keccak v2.0.2
+   Compiling regex v1.7.0
+   Compiling parking_lot v0.12.1
+   Compiling rand v0.8.5
+   Compiling term v0.7.0
+   Compiling phf_generator v0.8.0
+   Compiling lexical-util v0.8.5
+   Compiling atty v0.2.14
+   Compiling crossbeam-epoch v0.9.11
+   Compiling fixedbitset v0.4.2
+   Compiling os_str_bytes v6.3.1
+   Compiling precomputed-hash v0.1.1
+   Compiling new_debug_unreachable v1.0.4
+   Compiling regex-automata v0.1.10
+   Compiling radium v0.7.0
+   Compiling bit-vec v0.6.3
+   Compiling clap_lex v0.3.0
+   Compiling bstr v0.2.17
+   Compiling itertools v0.10.5
+   Compiling bit-set v0.5.3
+   Compiling string_cache v0.8.4
+   Compiling lexical-parse-integer v0.8.6
+   Compiling petgraph v0.6.2
+   Compiling lalrpop-util v0.19.8
+   Compiling ena v0.14.0
+   Compiling phf_generator v0.10.0
+   Compiling phf_codegen v0.8.0
+   Compiling ascii-canvas v3.0.0
+   Compiling twox-hash v1.6.3
+   Compiling dirs-sys v0.3.7
+   Compiling nom v5.1.2
+   Compiling core-foundation-sys v0.8.3
+   Compiling unicode-xid v0.2.4
+   Compiling rayon-core v1.9.3
+   Compiling pico-args v0.4.2
+   Compiling termcolor v1.1.3
+   Compiling matches v0.1.9
+   Compiling strsim v0.10.0
+   Compiling diff v0.1.13
+   Compiling rustversion v1.0.9
+   Compiling lalrpop v0.19.8
+   Compiling unic-ucd-category v0.9.0
+   Compiling lz4_flex v0.9.5
+   Compiling unicode-linebreak v0.1.4
+   Compiling thiserror-impl v1.0.37
+   Compiling clap_derive v4.0.21
+   Compiling terminfo v0.7.3
+   Compiling phf_codegen v0.10.0
+   Compiling lexical-parse-float v0.8.5
+   Compiling hexf-parse v0.2.1
+   Compiling volatile v0.3.0
+   Compiling peg-runtime v0.8.1
+   Compiling clap v4.0.22
+   Compiling fnv v1.0.7
+   Compiling ascii v1.1.0
+   Compiling cfg-if v0.1.10
+   Compiling dirs v2.0.2
+   Compiling peg-macros v0.8.1
+   Compiling phf v0.8.0
+   Compiling crossbeam-deque v0.8.2
+   Compiling crossbeam-channel v0.5.6
+   Compiling clap_complete v4.0.6
+   Compiling num_cpus v1.14.0
+   Compiling fsevent-sys v2.0.1
+   Compiling rayon v1.5.3
+   Compiling annotate-snippets v0.6.1
+   Compiling fastrand v1.8.0
+   Compiling same-file v1.0.6
+   Compiling serde_json v1.0.87
+   Compiling remove_dir_all v0.5.3
+   Compiling unicode-width v0.1.10
+   Compiling tempfile v3.3.0
+   Compiling peg v0.8.1
+   Compiling walkdir v2.3.2
+   Compiling chic v1.2.2
+   Compiling fsevent v0.4.0
+   Compiling clap_complete_fig v4.0.2
+   Compiling num-complex v0.4.2
+   Compiling bincode v1.3.3
+   Compiling phf v0.10.1
+   Compiling iana-time-zone v0.1.53
+   Compiling strum_macros v0.24.3
+   Compiling libcst_derive v0.1.0 (https://github.com/charliermarsh/LibCST?rev=f2f0b7a487a8725d161fe8b3ed73a6758b21e177#f2f0b7a4)
+   Compiling unic-ucd-ident v0.9.0
+   Compiling unic-emoji-char v0.9.0
+   Compiling which v4.3.0
+   Compiling rustpython-common v0.0.0 (https://github.com/RustPython/RustPython.git?rev=f885db8c61514f069979861f6b3bd83292086231#f885db8c)
+   Compiling rustpython-compiler-core v0.1.2 (https://github.com/RustPython/RustPython.git?rev=f885db8c61514f069979861f6b3bd83292086231#f885db8c)
+   Compiling filetime v0.2.18
+   Compiling nix v0.24.2
+   Compiling path-dedot v3.0.18
+   Compiling joinery v2.1.0
+   Compiling rustpython-ast v0.1.0 (https://github.com/RustPython/RustPython.git?rev=f885db8c61514f069979861f6b3bd83292086231#f885db8c)
+   Compiling unicode_names2 v0.5.1
+   Compiling smawk v0.3.1
+   Compiling rustc-hash v1.1.0
+   Compiling itoa v1.0.4
+   Compiling ryu v1.0.11
+   Compiling paste v1.0.9
+   Compiling str_indices v0.4.0
+   Compiling yansi-term v0.1.2
+   Compiling annotate-snippets v0.9.1
+   Compiling ropey v1.5.0
+   Compiling textwrap v0.16.0
+   Compiling libcst v0.1.0 (https://github.com/charliermarsh/LibCST?rev=f2f0b7a487a8725d161fe8b3ed73a6758b21e177#f2f0b7a4)
+   Compiling titlecase v2.2.1
+   Compiling clearscreen v1.0.10
+   Compiling path-absolutize v3.0.14
+   Compiling strum v0.24.1
+   Compiling notify v4.0.17
+   Compiling chrono v0.4.22
+   Compiling toml v0.5.9
+   Compiling clap_complete_command v0.4.0
+   Compiling cachedir v0.3.0
+   Compiling globset v0.4.9
+   Compiling rustpython-parser v0.1.2 (https://github.com/RustPython/RustPython.git?rev=f885db8c61514f069979861f6b3bd83292086231#f885db8c)
+   Compiling fern v0.6.1
+   Compiling dirs v4.0.0
+   Compiling colored v2.0.0
+   Compiling common-path v1.0.0
+   Compiling nohash-hasher v0.2.0
+   Compiling ruff v0.0.142 (/private/tmp/ruff-20221128-46126-j5hyn0/ruff-0.0.142)
+    Finished release [optimized] target(s) in 1m 07s
+  Installing /opt/homebrew/Cellar/ruff/0.0.142/bin/ruff
+   Installed package `ruff v0.0.142 (/private/tmp/ruff-20221128-46126-j5hyn0/ruff-0.0.142)` (executable `ruff`)
+warning: be sure to add `/opt/homebrew/Cellar/ruff/0.0.142/bin` to your PATH to be able to run the installed binaries
+==> Cleaning
+==> Finishing up
+ln -s ../../Cellar/ruff/0.0.142/etc/bash_completion.d/ruff ruff
+ln -s ../Cellar/ruff/0.0.142/bin/ruff ruff
+ln -s ../../../Cellar/ruff/0.0.142/share/fish/vendor_completions.d/ruff.fish ruff.fish
+ln -s ../../../Cellar/ruff/0.0.142/share/zsh/site-functions/_ruff _ruff
+==> Caveats
+zsh completions have been installed to:
+  /opt/homebrew/share/zsh/site-functions
+==> Summary
+🍺  /opt/homebrew/Cellar/ruff/0.0.142: 10 files, 6.3MB, built in 1 minute 9 seconds
+==> Running `brew cleanup ruff`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+Removing: /Users/messense/Library/Caches/Homebrew/ruff--0.0.141.tar.gz... (320.6KB)
+```
+
+---

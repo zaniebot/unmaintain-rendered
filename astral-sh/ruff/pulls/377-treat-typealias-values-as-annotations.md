@@ -1,0 +1,38 @@
+```yaml
+number: 377
+title: Treat TypeAlias values as annotations
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/type-alias
+created_at: 2022-10-09T21:37:16Z
+updated_at: 2022-10-09T21:37:20Z
+url: https://github.com/astral-sh/ruff/pull/377
+synced_at: 2026-01-12T05:48:45Z
+```
+
+# Treat TypeAlias values as annotations
+
+---
+
+_Pull request opened by @charliermarsh on 2022-10-09 21:37_
+
+Resolves #376.
+
+---
+
+_Merged by @charliermarsh on 2022-10-09 21:37_
+
+---
+
+_Closed by @charliermarsh on 2022-10-09 21:37_
+
+---
+
+_Branch deleted on 2022-10-09 21:37_
+
+---
