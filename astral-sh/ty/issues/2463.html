@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty trips up on Union of TypedDicts - astral-sh/ty #2463</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty trips up on Union of TypedDicts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2463">#2463</a>
+        opened by <a href="https://github.com/adamjstewart">@adamjstewart</a>
+        on 2026-01-12 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2026-01-12 12:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a rather complex hierarchy of optionals, unions, typed dicts, and data classes (from <a href="https://github.com/Lightning-AI/pytorch-lightning/blob/2.6.0/src/lightning/pytorch/utilities/types.py">here</a> that I need to use for type hints:</p>
+<pre><code class="language-python">OptimizerLRScheduler = Optional[
+    Union[
+        Optimizer,
+        Sequence[Optimizer],
+        tuple[Sequence[Optimizer], Sequence[Union[LRSchedulerTypeUnion, LRSchedulerConfig]]],
+        OptimizerConfig,
+        OptimizerLRSchedulerConfig,
+        Sequence[OptimizerConfig],
+        Sequence[OptimizerLRSchedulerConfig],
+    ]
+]
+</code></pre>
+<p>The following code:</p>
+<pre><code class="language-python">from lightning.pytorch.utilities.types import OptimizerLRScheduler
+from torch.optim import Adam
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+def configure_optimizers() -&gt; OptimizerLRScheduler:
+    optimizer = Adam({})
+    scheduler = ReduceLROnPlateau(optimizer)
+    return {
+        'optimizer': optimizer,
+        'lr_scheduler': {'scheduler': scheduler},
+    }
+</code></pre>
+<p>results in an error:</p>
+<pre><code class="language-console">&gt; ty check test.py
+error[invalid-return-type]: Return type does not match returned value
+  --&gt; test.py:5:31
+   |
+ 3 |   from torch.optim.lr_scheduler import ReduceLROnPlateau
+ 4 |
+ 5 |   def configure_optimizers() -&gt; OptimizerLRScheduler:
+   |                                 -------------------- Expected `Optimizer | Sequence[Optimizer] | tuple[Sequence[Optimizer], Sequence[LRScheduler | LRSchedulerConfig]] | ... omitted 4 union elements` because of return type
+ 6 |       optimizer = Adam({})
+ 7 |       scheduler = ReduceLROnPlateau(optimizer)
+ 8 |       return {
+   |  ____________^
+ 9 | |         'optimizer': optimizer,
+10 | |         'lr_scheduler': {'scheduler': scheduler},
+11 | |     }
+   | |_____^ expected `Optimizer | Sequence[Optimizer] | tuple[Sequence[Optimizer], Sequence[LRScheduler | LRSchedulerConfig]] | ... omitted 4 union elements`, found `dict[Unknown | str, Unknown | Adam | dict[Unknown | str, Unknown | ReduceLROnPlateau]]`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>However, if I use a narrower type from that union:</p>
+<pre><code class="language-python">from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
+from torch.optim import Adam
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+def configure_optimizers() -&gt; OptimizerLRSchedulerConfig:
+    optimizer = Adam({})
+    scheduler = ReduceLROnPlateau(optimizer)
+    return {
+        'optimizer': optimizer,
+        'lr_scheduler': {'scheduler': scheduler},
+    }
+</code></pre>
+<p>Ty is happy:</p>
+<pre><code class="language-console">&gt; ty check test2.py 
+All checks passed!
+</code></pre>
+<p>I'm confused how something can satisfy type <code>Foo</code> but not <code>Optional[Union[Foo, ...]]</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.11</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 13:02:12 UTC
+    </footer>
+</body>
+</html>
