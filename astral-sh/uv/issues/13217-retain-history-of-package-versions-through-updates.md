@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-04-30T08:33:11Z
-updated_at: 2026-01-12T11:49:05Z
+updated_at: 2026-01-12T12:49:23Z
 url: https://github.com/astral-sh/uv/issues/13217
-synced_at: 2026-01-12T11:55:20Z
+synced_at: 2026-01-12T13:00:04Z
 ```
 
 # Retain history of package versions through updates
@@ -125,5 +125,11 @@ I can understand if this you think this is out of scope for uv.
 In this case please close both issues as not planned.
 
 (Even so I would be happy about this feature)
+
+---
+
+_Comment by @juhaszp95 on 2026-01-12 12:49_
+
+Thanks for this! Just a comment to say that although tracking this via git would be an obvious choice, I could also imagine a local, ever-increasing file (something like `uv.hist`, which has a history of states of this repo), which could serve as the base for both tracking state, as well as restoring state. It could be then left to the user to commit this to git if they wanted. I could even imagine this new file to be optional, i.e. when creating a new venv, one could specify the optional `--track-state` to track state.
 
 ---

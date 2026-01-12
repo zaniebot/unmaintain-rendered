@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-10-04T17:11:52Z
-updated_at: 2025-10-08T10:21:27Z
+updated_at: 2026-01-12T12:15:54Z
 url: https://github.com/astral-sh/ty/issues/1307
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T12:59:44Z
 ```
 
 # Truncate type display for long unions in some situations
@@ -46,5 +46,19 @@ _Label `diagnostics` added by @AlexWaygood on 2025-10-04 17:11_
 ---
 
 _Closed by @AlexWaygood on 2025-10-08 10:21_
+
+---
+
+_Comment by @adamjstewart on 2026-01-12 12:08_
+
+Would it be possible to add a `ty check --output-format=verbose` option to optionally see the full string? I have a case where the type I'm trying to use is near the end of the union type but I can't see it in the error message.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 12:11_
+
+You can use `reveal_type` to see the full type -- does that work for you?
+
+I'm not necessarily opposed to adding `--output-format=verbose`, but it's good to avoid too much complexity in our configuration where possible
 
 ---

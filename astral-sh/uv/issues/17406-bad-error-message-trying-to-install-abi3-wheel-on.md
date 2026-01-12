@@ -9,9 +9,9 @@ labels:
   - error messages
 assignees: []
 created_at: 2026-01-11T22:37:21Z
-updated_at: 2026-01-12T11:32:30Z
+updated_at: 2026-01-12T12:12:28Z
 url: https://github.com/astral-sh/uv/issues/17406
-synced_at: 2026-01-12T11:55:21Z
+synced_at: 2026-01-12T13:00:04Z
 ```
 
 # Bad error message trying to install abi3 wheel on a free threaded venv
@@ -90,5 +90,12 @@ That's a really bad error message, we should fix that
 _Comment by @nooscraft on 2026-01-12 11:13_
 
 I'm going to take this one
+
+---
+
+_Comment by @nooscraft on 2026-01-12 12:12_
+
+@konstin @zanieb - https://github.com/astral-sh/uv/pull/17415 
+please review, thanks
 
 ---

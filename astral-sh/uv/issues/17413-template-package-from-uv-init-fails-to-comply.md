@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-12T09:43:57Z
-updated_at: 2026-01-12T09:43:57Z
+updated_at: 2026-01-12T12:31:22Z
 url: https://github.com/astral-sh/uv/issues/17413
-synced_at: 2026-01-12T09:56:59Z
+synced_at: 2026-01-12T13:00:04Z
 ```
 
 # Template package from `uv init` fails to comply with RUF067
@@ -38,5 +38,17 @@ _No response_
 ---
 
 _Label `bug` added by @martimlobao on 2026-01-12 09:43_
+
+---
+
+_Comment by @my1e5 on 2026-01-12 12:31_
+
+Related:
+
+- https://github.com/astral-sh/uv/issues/8178
+
+Which advocates that
+
+> `__init__.py` should not contain general purpose code
 
 ---

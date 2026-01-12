@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-11T09:18:54Z
-updated_at: 2026-01-12T09:06:55Z
+updated_at: 2026-01-12T12:41:23Z
 url: https://github.com/astral-sh/ty/issues/2440
-synced_at: 2026-01-12T09:56:38Z
+synced_at: 2026-01-12T12:59:44Z
 ```
 
 # "Extract variable" refactor
@@ -36,5 +36,11 @@ _Renamed from "Feature: refactor into variable" to ""Extract variable" refactor"
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2026-01-12 09:06_
+
+---
+
+_Comment by @asukaminato0721 on 2026-01-12 12:41_
+
+https://github.com/facebook/pyrefly/commit/586e2c6257355dd91af806fa273612df44ec946f 
 
 ---

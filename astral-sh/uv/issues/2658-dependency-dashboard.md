@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-12T10:01:32Z
+updated_at: 2026-01-12T12:37:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T11:01:22Z
+synced_at: 2026-01-12T13:00:02Z
 ```
 
 # Dependency Dashboard
@@ -106,6 +106,7 @@ The following updates have been manually edited so Renovate will no longer make 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
+ - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
@@ -173,7 +174,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `embed-manifest 1.5.0`
  - `etcetera 0.11.0`
  - `fastrand 2.3.0`
- - `flate2 1.0.33`
+ - `flate2 1.0.33` → [Updates: `1.0.33`]
  - `fs-err 3.0.0` → [Updates: `3.0.0`]
  - `futures 0.3.30`
  - `glob 0.3.1`

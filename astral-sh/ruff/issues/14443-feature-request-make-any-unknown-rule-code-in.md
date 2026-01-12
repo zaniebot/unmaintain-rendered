@@ -6,12 +6,11 @@ state: open
 author: Avasam
 labels:
   - configuration
-  - needs-decision
 assignees: []
 created_at: 2024-11-18T20:10:32Z
-updated_at: 2024-11-19T23:57:41Z
+updated_at: 2026-01-12T12:36:46Z
 url: https://github.com/astral-sh/ruff/issues/14443
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T12:59:48Z
 ```
 
 # Feature request: Make *any* unknown rule code in "ignore" setting a warning, not an error
@@ -117,5 +116,35 @@ _Comment by @Avasam on 2024-11-19 15:57_
 _Comment by @MichaReiser on 2024-11-19 16:09_
 
 I'd like to keep it open because it demonstrates a useful use case. I'm just not sure if the proposed solution is the right one or if there's another way of solving the problem of using the same configuration across multiple ruff versions.
+
+---
+
+_Comment by @tuttle on 2026-01-12 12:32_
+
+We also use 
+
+```
+select = ["ALL"]
+ignore = [
+   ... list of not (yet) resolved rules ...
+]
+```
+
+
+One of our developers has **Auto update** set on **the Ruff extension to VSCode**, he added the new rule from ruff 0.14.11 to the ignore list, pushed and CI failed with **Unknown rule selector: RUF067** on our CI.
+
+It is convenient to have VSCode extensions up to date so the new ruff rules are used automatically, and the code base could become a bit better. But it collides with CI that uses locked package versions.
+
+We would for example welcome a ruff cmd line option `--warn-about-unknown-ignored-rules` or something like that which we would add to the CI.
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 12:36_
+
+The way we solved this in ty is by making unknown rules a normal diagnostic with a warning severity. 
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2026-01-12 12:36_
 
 ---

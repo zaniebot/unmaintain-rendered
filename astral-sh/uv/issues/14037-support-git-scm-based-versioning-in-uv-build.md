@@ -10,9 +10,9 @@ labels:
   - build-backend
 assignees: []
 created_at: 2025-06-14T09:25:44Z
-updated_at: 2026-01-12T04:33:18Z
+updated_at: 2026-01-12T12:06:49Z
 url: https://github.com/astral-sh/uv/issues/14037
-synced_at: 2026-01-12T06:55:09Z
+synced_at: 2026-01-12T13:00:04Z
 ```
 
 # Support Git scm-based versioning in `uv` build backend
@@ -83,5 +83,13 @@ It is blocking us from migrating our libraries to `uv_build`. I have also seen O
 _Comment by @mcarans on 2026-01-12 01:55_
 
 I'm surprised this feature is missing. I was in the process of trying to switch from Hatch to uv and did not expect this hurdle. Now I'm unsure about migrating and considering waiting until Git versioning is available. 
+
+---
+
+_Comment by @madig on 2026-01-12 12:06_
+
+> I'm surprised this feature is missing. I was in the process of trying to switch from Hatch to uv and did not expect this hurdle. Now I'm unsure about migrating and considering waiting until Git versioning is available.
+
+You can switch to uv and keep hatchling around as the build backend.
 
 ---

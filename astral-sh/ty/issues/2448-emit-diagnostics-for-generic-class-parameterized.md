@@ -8,9 +8,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2026-01-11T17:06:23Z
-updated_at: 2026-01-12T06:14:32Z
+updated_at: 2026-01-12T12:47:01Z
 url: https://github.com/astral-sh/ty/issues/2448
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T12:59:44Z
 ```
 
 # Emit diagnostics for generic class parameterized with a single-element tuple of types if the generic class accepts only a single type argument
@@ -87,5 +87,13 @@ _Label `diagnostics` removed by @dhruvmanila on 2026-01-12 06:13_
 ---
 
 _Label `needs-info` added by @dhruvmanila on 2026-01-12 06:14_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 12:43_
+
+The same issue was reported to mypy and the maintainers there made a similar argument to @dhruvmanila that `list[(int,)]` should be considered valid: https://github.com/python/mypy/issues/20563. It does at the very least seem "highly distasteful" to me, but I can see the consistency argument for allowing it 😆
+
+Pyrefly also got the same bug report, but the pyrefly maintainers haven't made a decision yet: https://github.com/facebook/pyrefly/issues/2063. Pyright, too -- https://github.com/microsoft/pyright/issues/11224 -- though the rationale given there for closing that issue doesn't seem to me to be accurate (`list[(int,)]` is not "the same" as `list[int]` -- they have very different ASTs, even if type checkers can reasonably choose to treat them differently.)
 
 ---

@@ -12,9 +12,9 @@ draft: true
 base: main
 head: alex/starred-tuples-2
 created_at: 2026-01-11T16:35:18Z
-updated_at: 2026-01-11T17:05:54Z
+updated_at: 2026-01-12T12:33:38Z
 url: https://github.com/astral-sh/ruff/pull/22503
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T12:59:59Z
 ```
 
 # [ty] Fix `@Todo` type for starred expressions
@@ -70,11 +70,6 @@ anyio (https://github.com/agronholm/anyio)
 - Found 93 diagnostics
 + Found 92 diagnostics
 
-pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
-+ pytest_robotframework/_internal/robot/utils.py:232:25: warning[redundant-cast] Value is already of type `list[object] | None`
-- Found 172 diagnostics
-+ Found 173 diagnostics
-
 spack (https://github.com/spack/spack)
 - lib/spack/spack/llnl/util/link_tree.py:116:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str, str]`, found `tuple[str, @Todo(StarredExpression)]`
 - lib/spack/spack/llnl/util/link_tree.py:151:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str, str]`, found `tuple[str, @Todo(StarredExpression)]`
@@ -82,10 +77,20 @@ spack (https://github.com/spack/spack)
 - Found 4318 diagnostics
 + Found 4315 diagnostics
 
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/_internal/robot/utils.py:232:25: warning[redundant-cast] Value is already of type `list[object] | None`
+- Found 172 diagnostics
++ Found 173 diagnostics
+
 black (https://github.com/psf/black)
 - src/black/cache.py:144:59: error[invalid-assignment] Object of type `dict[str | Unknown, tuple[@Todo(StarredExpression)] | Unknown]` is not assignable to `dict[str, tuple[int | float, int, str]]`
 - Found 54 diagnostics
 + Found 53 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ tests/test_downloaderslotssettings.py:44:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown | (str & ~AlwaysFalsy) | (dict[Unknown | str, Unknown | int] & ~AlwaysFalsy)` and value of type `list[Unknown]` on object of type `dict[str, list[int | float]]`
+- Found 1785 diagnostics
++ Found 1786 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 - src/_pytest/reports.py:302:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, int, str]`, found `tuple[@Todo(StarredExpression), str]`
@@ -93,22 +98,17 @@ pytest (https://github.com/pytest-dev/pytest)
 - Found 425 diagnostics
 + Found 423 diagnostics
 
-scrapy (https://github.com/scrapy/scrapy)
-+ tests/test_downloaderslotssettings.py:44:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown | (str & ~AlwaysFalsy) | (dict[Unknown | str, Unknown | int] & ~AlwaysFalsy)` and value of type `list[Unknown]` on object of type `dict[str, list[int | float]]`
-- Found 1785 diagnostics
-+ Found 1786 diagnostics
+mkosi (https://github.com/systemd/mkosi)
+- mkosi/__init__.py:4426:9: error[invalid-argument-type] Argument to function `run` is incorrect: Expected `Sequence[Path | str]`, found `list[Path | None | str | @Todo(StarredExpression)]`
++ mkosi/__init__.py:4426:9: error[invalid-argument-type] Argument to function `run` is incorrect: Expected `Sequence[Path | str]`, found `list[Path | None | str]`
 
 poetry (https://github.com/python-poetry/poetry)
 - src/poetry/utils/env/mock_env.py:34:28: error[invalid-assignment] Object of type `tuple[@Todo(StarredExpression), Literal["final"], Literal[0]]` is not assignable to `tuple[int, int, int] | tuple[int, int, int, str, int]`
 + src/poetry/utils/env/mock_env.py:34:28: error[invalid-assignment] Object of type `tuple[*tuple[int | str, ...], Literal["final"], Literal[0]]` is not assignable to `tuple[int, int, int] | tuple[int, int, int, str, int]`
 
-mkosi (https://github.com/systemd/mkosi)
-- mkosi/__init__.py:4426:9: error[invalid-argument-type] Argument to function `run` is incorrect: Expected `Sequence[Path | str]`, found `list[Path | None | str | @Todo(StarredExpression)]`
-+ mkosi/__init__.py:4426:9: error[invalid-argument-type] Argument to function `run` is incorrect: Expected `Sequence[Path | str]`, found `list[Path | None | str]`
-
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 
 vision (https://github.com/pytorch/vision)
 + test/test_datasets.py:698:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["trainval"]` and value of type `tuple[int, ...]` on object of type `dict[str, tuple[int, int, int] | tuple[int, int] | tuple[int]]`
@@ -126,9 +126,9 @@ discord.py (https://github.com/Rapptz/discord.py)
 - Found 548 diagnostics
 + Found 546 diagnostics
 
-sphinx (https://github.com/sphinx-doc/sphinx)
-- sphinx/ext/apidoc/_generate.py:43:21: error[unsupported-operator] Operator `+` is not supported between objects of type `Literal["__init__"]` and `Sized | @Todo(StarredExpression)`
-+ sphinx/ext/apidoc/_generate.py:43:21: error[unsupported-operator] Operator `+` is not supported between objects of type `Literal["__init__"]` and `Sized`
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
 
 pyodide (https://github.com/pyodide/pyodide)
 + pyodide-build/pyodide_build/recipe/graph_builder.py:167:13: error[no-matching-overload] No overload of function `run` matches arguments
@@ -136,9 +136,9 @@ pyodide (https://github.com/pyodide/pyodide)
 - Found 935 diagnostics
 + Found 937 diagnostics
 
-apprise (https://github.com/caronc/apprise)
-- tests/test_plugin_email.py:634:5: error[invalid-assignment] Object of type `tuple[@Todo(StarredExpression), @Todo(StarredExpression)]` is not assignable to attribute `EMAIL_TEMPLATES` of type `tuple[tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]`
-+ tests/test_plugin_email.py:634:5: error[invalid-assignment] Object of type `tuple[tuple[Literal["Testing Lookup"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]` is not assignable to attribute `EMAIL_TEMPLATES` of type `tuple[tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]`
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/ext/apidoc/_generate.py:43:21: error[unsupported-operator] Operator `+` is not supported between objects of type `Literal["__init__"]` and `Sized | @Todo(StarredExpression)`
++ sphinx/ext/apidoc/_generate.py:43:21: error[unsupported-operator] Operator `+` is not supported between objects of type `Literal["__init__"]` and `Sized`
 
 openlibrary (https://github.com/internetarchive/openlibrary)
 - openlibrary/i18n/__init__.py:209:13: error[invalid-assignment] Not enough values to unpack: Expected 6
@@ -149,9 +149,37 @@ openlibrary (https://github.com/internetarchive/openlibrary)
 - Found 1156 diagnostics
 + Found 1153 diagnostics
 
+apprise (https://github.com/caronc/apprise)
+- tests/test_plugin_email.py:634:5: error[invalid-assignment] Object of type `tuple[@Todo(StarredExpression), @Todo(StarredExpression)]` is not assignable to attribute `EMAIL_TEMPLATES` of type `tuple[tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]`
++ tests/test_plugin_email.py:634:5: error[invalid-assignment] Object of type `tuple[tuple[Literal["Testing Lookup"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]` is not assignable to attribute `EMAIL_TEMPLATES` of type `tuple[tuple[Literal["Google Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Yandex"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Hotmail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Outlook"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Microsoft Office 365"], Pattern[str], dict[Unknown | str, Unknown | int | str]], tuple[Literal["Yahoo Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Fast Mail Extended Addresses"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Zoho Mail"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["SendGrid"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["163.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Foxmail.com"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Comcast.net"], Pattern[str], dict[Unknown | str, Unknown | int | str | tuple[Unknown | str]]], tuple[Literal["Local Mail Server"], Pattern[str], dict[Unknown | str, Unknown | str | None]], tuple[Literal["Custom"], Pattern[str], dict[Unknown | str, Unknown | None]]]`
+
 strawberry (https://github.com/strawberry-graphql/strawberry)
 - strawberry/federation/schema.py:83:17: error[invalid-assignment] Object of type `list[@Todo(StarredExpression) | <NewType pseudo-class 'FederationAny'>]` is not assignable to `Iterable[type]`
 + strawberry/federation/schema.py:83:17: error[invalid-assignment] Object of type `list[type | <NewType pseudo-class 'FederationAny'>]` is not assignable to `Iterable[type]`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/internal/coverage/instrumentation_py3_11.py:338:46: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `Iterable[SupportsIndex] | SupportsBytes | Buffer`, found `list[bytes | Unknown]`
++ ddtrace/internal/coverage/instrumentation_py3_12.py:216:46: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `Iterable[SupportsIndex] | SupportsBytes | Buffer`, found `list[bytes | Unknown]`
+- Found 8473 diagnostics
++ Found 8475 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/prefect/blocks/core.py:86:33: error[invalid-assignment] Object of type `tuple[<class 'list'>, <class 'dict'>, <class 'tuple'>, *tuple[<special-form 'typing.Union'> | <class 'UnionType'>, ...]]` is not assignable to `tuple[type, ...]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5368 diagnostics
++ Found 5364 diagnostics
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
 + src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
@@ -163,52 +191,6 @@ altair (https://github.com/vega/altair)
 - Found 1061 diagnostics
 + Found 1060 diagnostics
 
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/blocks/core.py:86:33: error[invalid-assignment] Object of type `tuple[<class 'list'>, <class 'dict'>, <class 'tuple'>, *tuple[<special-form 'typing.Union'> | <class 'UnionType'>, ...]]` is not assignable to `tuple[type, ...]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-- Found 5363 diagnostics
-+ Found 5369 diagnostics
-
-dd-trace-py (https://github.com/DataDog/dd-trace-py)
-+ ddtrace/internal/coverage/instrumentation_py3_11.py:338:46: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `Iterable[SupportsIndex] | SupportsBytes | Buffer`, found `list[bytes | Unknown]`
-+ ddtrace/internal/coverage/instrumentation_py3_12.py:216:46: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `Iterable[SupportsIndex] | SupportsBytes | Buffer`, found `list[bytes | Unknown]`
-- Found 8472 diagnostics
-+ Found 8474 diagnostics
-
 jax (https://github.com/google/jax)
 - jax/_src/interpreters/ad.py:60:25: error[invalid-argument-type] Argument to function `annotate` is incorrect: Expected `tuple[AbstractValue] | None`, found `tuple[@Todo(StarredExpression), @Todo(StarredExpression)]`
 + jax/_src/interpreters/ad.py:60:25: error[invalid-argument-type] Argument to function `annotate` is incorrect: Expected `tuple[AbstractValue] | None`, found `tuple[AbstractValue | Unknown, ...]`
@@ -218,7 +200,7 @@ jax (https://github.com/google/jax)
 + jax/_src/pallas/fuser/block_spec.py:854:10: error[invalid-return-type] Return type does not match returned value: expected `Sequence[BlockSpec]`, found `list[NoBlockSpec | Unknown | BlockSpec]`
 - jax/_src/pallas/hlo_interpreter.py:399:33: error[invalid-argument-type] Argument to function `pad` is incorrect: Expected `Sequence[tuple[int, int, int]]`, found `list[tuple[@Todo(StarredExpression), int] | Unknown]`
 + jax/_src/pallas/hlo_interpreter.py:399:33: error[invalid-argument-type] Argument to function `pad` is incorrect: Expected `Sequence[tuple[int, int, int]]`, found `list[tuple[*tuple[int | Unknown, ...], int] | Unknown]`
-- jax/experimental/mosaic/gpu/utils.py:2035:10: error[invalid-return-type] Return type does not match returned value: expected `tuple[Unknown, Unknown, Unknown, Unknown]`, found `tuple[@Todo(StarredExpression), Unknown]`
+- jax/experimental/mosaic/gpu/utils.py:2043:10: error[invalid-return-type] Return type does not match returned value: expected `tuple[Unknown, Unknown, Unknown, Unknown]`, found `tuple[@Todo(StarredExpression), Unknown]`
 - jax/experimental/pallas/ops/gpu/all_gather_mgpu.py:91:6: error[unsupported-operator] Operator `%` is not supported between objects of type `@Todo(StarredExpression) | int` and `int | None`
 + jax/experimental/pallas/ops/gpu/all_gather_mgpu.py:91:6: error[unsupported-operator] Operator `%` is not supported between objects of type `int` and `int | None`
 - jax/experimental/pallas/ops/gpu/reduce_scatter_mgpu.py:106:6: error[unsupported-operator] Operator `%` is not supported between objects of type `Unknown | Literal[1]` and `int | None`
@@ -226,14 +208,6 @@ jax (https://github.com/google/jax)
 - jax/experimental/slab/slab.py:248:3: error[invalid-assignment] Not enough values to unpack: Expected 3
 - Found 2804 diagnostics
 + Found 2800 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
 
 bokeh (https://github.com/bokeh/bokeh)
 - src/bokeh/models/__init__.py:108:11: error[invalid-assignment] Object of type `tuple[Literal["Model"], @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression)]` is not assignable to `tuple[@Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression), @Todo(StarredExpression)]`
@@ -250,6 +224,15 @@ ibis (https://github.com/ibis-project/ibis)
 + ibis/expr/types/generic.py:384:29: error[invalid-argument-type] Argument is incorrect: Expected `tuple[ibis.expr.operations.core.Value[Unknown, Any], ...]`, found `tuple[Self@coalesce, *tuple[ibis.expr.types.generic.Value, ...]]`
 - ibis/expr/types/strings.py:1580:33: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Value[String, Any], ...]`, found `tuple[Self@concat, str | StringValue, @Todo(StarredExpression)]`
 + ibis/expr/types/strings.py:1580:33: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Value[String, Any], ...]`, found `tuple[Self@concat, str | StringValue, *tuple[str | StringValue, ...]]`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- Found 1826 diagnostics
++ Found 1827 diagnostics
 
 sympy (https://github.com/sympy/sympy)
 - sympy/parsing/latex/__init__.py:117:12: error[index-out-of-bounds] Index 3 is out of bounds for tuple `tuple[@Todo(StarredExpression), @Todo(StarredExpression)]` with length 2
@@ -270,11 +253,18 @@ sympy (https://github.com/sympy/sympy)
 
 rotki (https://github.com/rotki/rotki)
 - rotkehlchen/chain/arbitrum_one/modules/thegraph/balances.py:153:43: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `tuple[ChecksumAddress, ChecksumAddress, ChecksumAddress, ChecksumAddress, int]`, found `tuple[@Todo(StarredExpression), Any]`
-+ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-+ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- Found 2103 diagnostics
++ Found 2101 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5169 diagnostics
++ Found 5170 diagnostics
 
 core (https://github.com/home-assistant/core)
 - homeassistant/components/esphome/light.py:337:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[int, int, int, int]`, found `tuple[@Todo(StarredExpression), Unknown]`
@@ -290,8 +280,9 @@ core (https://github.com/home-assistant/core)
 - homeassistant/components/shelly/light.py:229:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[int, int, int, int]`, found `tuple[@Todo(StarredExpression), int]`
 - homeassistant/components/shelly/light.py:404:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[int, int, int, int]`, found `tuple[@Todo(StarredExpression), Unknown]`
 + homeassistant/components/zwave_js/discovery.py:1382:17: error[invalid-argument-type] Argument is incorrect: Expected `type[ZWaveBaseEntity]`, found `type`
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
 - Found 14503 diagnostics
-+ Found 14492 diagnostics
++ Found 14493 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 - scipy/interpolate/tests/test_bsplines.py:1807:9: error[invalid-assignment] Not enough values to unpack: Expected 4
@@ -301,8 +292,8 @@ scipy (https://github.com/scipy/scipy)
 - scipy/interpolate/tests/test_bsplines.py:1856:9: error[invalid-assignment] Not enough values to unpack: Expected 4
 - scipy/interpolate/tests/test_bsplines.py:1867:9: error[invalid-assignment] Not enough values to unpack: Expected 3
 - scipy/interpolate/tests/test_bsplines.py:1879:9: error[invalid-assignment] Not enough values to unpack: Expected 3
-- Found 8071 diagnostics
-+ Found 8064 diagnostics
+- Found 8081 diagnostics
++ Found 8074 diagnostics
 
 
 ```
@@ -332,18 +323,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-11 16:45_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `invalid-assignment` | 3 | 19 | 3 |
-| `invalid-return-type` | 0 | 17 | 4 |
+| `invalid-return-type` | 0 | 16 | 3 |
 | `invalid-argument-type` | 5 | 3 | 8 |
 | `index-out-of-bounds` | 0 | 13 | 0 |
 | `unused-ignore-comment` | 0 | 4 | 0 |
 | `unsupported-operator` | 0 | 0 | 3 |
 | `no-matching-overload` | 2 | 0 | 0 |
-| `type-assertion-failure` | 2 | 0 | 0 |
 | `redundant-cast` | 1 | 0 | 0 |
-| **Total** | **13** | **56** | **18** |
+| **Total** | **11** | **55** | **17** |
 
 
-**[Full report with detailed diff](https://49d7bd9f.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://49d7bd9f.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://965ac6ec.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://965ac6ec.ty-ecosystem-ext.pages.dev/timing))
 
 
 

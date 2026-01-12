@@ -2,16 +2,16 @@
 number: 2460
 title: "Incorrect type narrowing for `if type(x) == bool`"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
   - narrowing
 assignees: []
 created_at: 2026-01-12T11:30:20Z
-updated_at: 2026-01-12T11:30:20Z
+updated_at: 2026-01-12T12:26:49Z
 url: https://github.com/astral-sh/ty/issues/2460
-synced_at: 2026-01-12T11:55:00Z
+synced_at: 2026-01-12T12:59:44Z
 ```
 
 # Incorrect type narrowing for `if type(x) == bool`
@@ -47,5 +47,13 @@ _Label `bug` added by @AlexWaygood on 2026-01-12 11:30_
 ---
 
 _Label `narrowing` added by @AlexWaygood on 2026-01-12 11:30_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-12 12:16_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-12 12:26_
 
 ---

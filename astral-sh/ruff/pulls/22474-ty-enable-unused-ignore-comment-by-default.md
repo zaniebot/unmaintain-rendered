@@ -12,9 +12,9 @@ merged: true
 base: main
 head: micha/enable-unused-type-ignore
 created_at: 2026-01-09T09:28:59Z
-updated_at: 2026-01-12T10:57:51Z
+updated_at: 2026-01-12T12:15:31Z
 url: https://github.com/astral-sh/ruff/pull/22474
-synced_at: 2026-01-12T11:55:15Z
+synced_at: 2026-01-12T12:59:59Z
 ```
 
 # [ty] Enable `unused-ignore-comment` by default
@@ -738,5 +738,11 @@ _Renamed from "[ty] Enable `unused-type-ignore-comment` by default" to "[ty] Ena
 _Comment by @Dris101 on 2026-01-12 10:57_
 
 It's also `unused-type-ignore-comment` in the release notes for 0.0.11
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 12:15_
+
+Thanks, this is fixed in https://github.com/astral-sh/ty/releases/tag/0.0.11 and I've put up a PR for the changelog: https://github.com/astral-sh/ty/pull/2461
 
 ---

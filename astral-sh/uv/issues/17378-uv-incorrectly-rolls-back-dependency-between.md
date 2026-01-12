@@ -2,15 +2,15 @@
 number: 17378
 title: "`uv` incorrectly rolls back dependency between build-time and run-time"
 type: issue
-state: open
+state: closed
 author: AlexanderWells-diamond
 labels:
   - question
 assignees: []
 created_at: 2026-01-09T14:16:33Z
-updated_at: 2026-01-12T11:44:08Z
+updated_at: 2026-01-12T11:57:32Z
 url: https://github.com/astral-sh/uv/issues/17378
-synced_at: 2026-01-12T11:55:21Z
+synced_at: 2026-01-12T13:00:04Z
 ```
 
 # `uv` incorrectly rolls back dependency between build-time and run-time
@@ -226,5 +226,15 @@ Are you saying that adding ` tool.uv.extra-build-dependencies` with `match-runti
 _Comment by @konstin on 2026-01-12 11:44_
 
 `match-runtime = true` needs to be applied be the user and is built around `pyproject.toml` workflows, to be used with `uv sync` rather than with `uv pip install`. More concretely, for `match-runtime` to be applied, it needs to be in your `pyproject.toml`, it will be ignored in `pyproject.toml` files in the dependency tree.
+
+---
+
+_Comment by @AlexanderWells-diamond on 2026-01-12 11:57_
+
+Thank you for the information. As there's no bug here I'll close the issue. We'll add some docs to our repository telling our `uv` users they may need to add `match-runtime = true` to their configuration.
+
+---
+
+_Closed by @AlexanderWells-diamond on 2026-01-12 11:57_
 
 ---
