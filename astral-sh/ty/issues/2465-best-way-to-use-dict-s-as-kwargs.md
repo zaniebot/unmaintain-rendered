@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-12T13:27:08Z
-updated_at: 2026-01-12T13:43:03Z
+updated_at: 2026-01-12T14:13:05Z
 url: https://github.com/astral-sh/ty/issues/2465
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:03:21Z
 ```
 
 # Best way to use `dict`s as `kwargs`?
@@ -78,5 +78,17 @@ And we have https://github.com/astral-sh/ty/issues/1248 open to track not emitti
 ---
 
 _Closed by @AlexWaygood on 2026-01-12 13:43_
+
+---
+
+_Comment by @galah92 on 2026-01-12 14:12_
+
+Thank you. Note that `kw: dict[str, Any] = {"a": "hello", "b": 42}` seems to work for me already, no need for `cast`.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 14:13_
+
+Ah right, yeah, I forgot that we implemented that for invariant generics already 😆
 
 ---

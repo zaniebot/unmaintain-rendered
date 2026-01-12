@@ -2,7 +2,7 @@
 number: 2445
 title: "`types.ModuleType` attributes in the global namespace can have a different type rendered in the autocomplete tooltip to the one ty infers"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-11T13:41:14Z
-updated_at: 2026-01-12T00:38:00Z
+updated_at: 2026-01-12T14:20:34Z
 url: https://github.com/astral-sh/ty/issues/2445
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:03:21Z
 ```
 
 # `types.ModuleType` attributes in the global namespace can have a different type rendered in the autocomplete tooltip to the one ty infers
@@ -56,5 +56,9 @@ _Label `completions` added by @AlexWaygood on 2026-01-11 13:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-12 00:38_
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 14:20_
 
 ---

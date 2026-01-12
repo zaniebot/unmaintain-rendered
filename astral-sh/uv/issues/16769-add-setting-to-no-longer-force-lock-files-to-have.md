@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-18T16:56:03Z
-updated_at: 2025-12-02T13:45:15Z
+updated_at: 2026-01-12T14:42:00Z
 url: https://github.com/astral-sh/uv/issues/16769
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T15:03:42Z
 ```
 
 # Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux
@@ -108,5 +108,23 @@ But I suspect that this is because it's trying to open the file as writable, not
 https://github.com/astral-sh/uv/blob/main/crates/uv-fs/src/lib.rs#L822
 
 It's also tricky to "test" because this is just a warning now, uv doesn't fail if it can't get the lock. I'm not super comfortable with Rust, but I'm happy to test changes or take a stab at a PR. Seems like if uv doesn't need to write anything to the lock file, it shouldn't try to open it as writeable. That plus a 644 mode seems like it would be ideal.
+
+---
+
+_Comment by @ruttenb on 2026-01-12 14:23_
+
+Hey are there any updates with this issue?  Due to the security concern, this is blocking our use of this package.  Thanks!
+
+---
+
+_Comment by @konstin on 2026-01-12 14:24_
+
+We did change the permission: https://github.com/astral-sh/uv/pull/16845. Are you on the latest uv version?
+
+---
+
+_Comment by @ruttenb on 2026-01-12 14:41_
+
+I believe the most recent change updated the permissions to 666, but giving the world write permissions to these lock files is still a concern.  Above there were conversations about updating this to 644 which would resolve the security concern.
 
 ---

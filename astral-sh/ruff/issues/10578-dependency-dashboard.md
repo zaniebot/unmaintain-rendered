@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T10:28:59Z
+updated_at: 2026-01-12T14:00:23Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T11:01:07Z
+synced_at: 2026-01-12T15:03:25Z
 ```
 
 # Dependency Dashboard
@@ -70,7 +70,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
- - [ ] <!-- approvePr-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
+ - [ ] <!-- approvePr-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.3
  - [ ] <!-- approvePr-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- approvePr-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- approvePr-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
@@ -556,7 +556,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/ci.yaml (104)</summary>
+<details><summary>.github/workflows/ci.yaml (103)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -617,7 +617,6 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
  - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -1112,7 +1111,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`
  - `mdformat ==1.0.0`
- - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.2`]
+ - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.3`]
  - `mkdocs-llmstxt ==0.2.0` → [Updates: `==0.5.0`]
 
 </details>

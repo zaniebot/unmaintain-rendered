@@ -2,16 +2,17 @@
 number: 17414
 title: Re-enable pyx integration tests
 type: pull_request
-state: open
+state: merged
 author: zsol
 labels: []
 assignees: []
+merged: true
 base: main
 head: zsol/jj-uqkrrrxxkqvw
 created_at: 2026-01-12T10:51:14Z
-updated_at: 2026-01-12T13:27:22Z
+updated_at: 2026-01-12T14:35:46Z
 url: https://github.com/astral-sh/uv/pull/17414
-synced_at: 2026-01-12T14:04:56Z
+synced_at: 2026-01-12T15:03:50Z
 ```
 
 # Re-enable pyx integration tests
@@ -35,5 +36,23 @@ _Marked ready for review by @zsol on 2026-01-12 12:18_
 _@konstin approved on 2026-01-12 13:27_
 
 LGTM, do you want someone to review from the pyx side?
+
+---
+
+_Comment by @zsol on 2026-01-12 14:12_
+
+Nah, it should be fine :)
+
+---
+
+_Merged by @zsol on 2026-01-12 14:35_
+
+---
+
+_Closed by @zsol on 2026-01-12 14:35_
+
+---
+
+_Branch deleted on 2026-01-12 14:35_
 
 ---

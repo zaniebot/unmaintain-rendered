@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-10-23T13:20:11Z
-updated_at: 2026-01-09T04:51:37Z
+updated_at: 2026-01-12T14:37:30Z
 url: https://github.com/astral-sh/ty/issues/1417
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:03:21Z
 ```
 
 # Reconsider union truncation
@@ -45,5 +45,11 @@ _Label `server` added by @MichaReiser on 2025-11-14 08:30_
 ---
 
 _Added to milestone `Pre-stable 1` by @MichaReiser on 2025-12-31 15:34_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 14:37_
+
+https://github.com/astral-sh/ty/issues/1307#issuecomment-3738504694 suggests that we could disable union truncation by default in type display when `-v` has been specified, which seems reasonable.
 
 ---

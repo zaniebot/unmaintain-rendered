@@ -2,17 +2,18 @@
 number: 22508
 title: Use rustfmt directly in prek
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: charlie/rustfmt
 created_at: 2026-01-11T19:44:36Z
-updated_at: 2026-01-12T13:51:07Z
+updated_at: 2026-01-12T13:59:22Z
 url: https://github.com/astral-sh/ruff/pull/22508
-synced_at: 2026-01-12T14:03:35Z
+synced_at: 2026-01-12T15:03:37Z
 ```
 
 # Use rustfmt directly in prek
@@ -103,5 +104,17 @@ _Review requested from @MichaReiser by @charliermarsh on 2026-01-12 13:50_
 ---
 
 _@MichaReiser approved on 2026-01-12 13:51_
+
+---
+
+_Merged by @charliermarsh on 2026-01-12 13:59_
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 13:59_
+
+---
+
+_Branch deleted on 2026-01-12 13:59_
 
 ---

@@ -2,16 +2,16 @@
 number: 17380
 title: Update docs to fix torchvision version specifiers for CPU wheels
 type: pull_request
-state: open
+state: closed
 author: appleparan
 labels: []
 assignees: []
 base: main
 head: appleparan/fix-pytorch-docs
 created_at: 2026-01-09T14:56:30Z
-updated_at: 2026-01-12T13:28:41Z
+updated_at: 2026-01-12T14:50:58Z
 url: https://github.com/astral-sh/uv/pull/17380
-synced_at: 2026-01-12T14:04:56Z
+synced_at: 2026-01-12T15:03:50Z
 ```
 
 # Update docs to fix torchvision version specifiers for CPU wheels
@@ -124,5 +124,35 @@ _@charliermarsh reviewed on 2026-01-12 13:28_
 _Review comment by @charliermarsh on `docs/guides/integration/pytorch.md`:252 on 2026-01-12 13:28_
 
 I thought this was fixed in https://github.com/pytorch/test-infra/pull/7589, but perhaps there hasn't been a release since then?
+
+---
+
+_@appleparan reviewed on 2026-01-12 14:41_
+
+---
+
+_Review comment by @appleparan on `docs/guides/integration/pytorch.md`:252 on 2026-01-12 14:41_
+
+Agreed. I'm looking for build log for that.
+
+Note: [This](https://github.com/astral-sh/uv/issues/16685) should be closed also if this PR is closed
+
+
+---
+
+_@appleparan reviewed on 2026-01-12 14:48_
+
+---
+
+_Review comment by @appleparan on `docs/guides/integration/pytorch.md`:252 on 2026-01-12 14:48_
+
+@atalman said in [here](https://github.com/pytorch/vision/issues/9330#issuecomment-3718998124),
+> This is the same issue as: https://github.com/pytorch/vision/issues/9249 and its fix for the release 0.25.0 of torchvision.
+
+It's a temporary issue in 0.24.x, so I should close this PR.
+
+---
+
+_Closed by @appleparan on 2026-01-12 14:50_
 
 ---
