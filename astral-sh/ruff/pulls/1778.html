@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flake8_simplify : SIM401 - astral-sh/ruff #1778</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>flake8_simplify : SIM401</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1778">#1778</a>
+        opened by <a href="https://github.com/chammika-become">@chammika-become</a>
+        on 2023-01-11 03:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chammika-become">@chammika-become</a> on 2023-01-11 03:35</div>
+            <div class="timeline-body"><p>Ref #998</p>
+<ul>
+<li>Implements SIM401 with fix</li>
+<li>Added tests</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>only recognize simple ExprKind::Name variables in expr patterns for now</li>
+<li>bug-fix from reference implementation: check 3-conditions (dict-key, target-variable, dict-name) to be equal, <code>flake8_simplify</code> only test first two (only first in second pattern)</li>
+</ul>
+<p>@charliermarsh I would like to handle cases marked nice-to-have (they are handled in <code>flake8_simplify</code> by flattening the expr into strings). Appreciate, any pointers in improving helper <code>match_name_expr</code> for more complex exprs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-11 03:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/helpers.rs</code>:733 on 2023-01-11 03:50</div>
+            <div class="timeline-body"><p>Check out <code>src/ast/comparable.rs</code>!</p>
+<p>You can do:</p>
+<pre><code class="language-rs">let comparable_value: ComparableExpr = (&amp;expr).into();
+</code></pre>
+<p>Then you can compare two expressions ignoring their locations. It's like this function, but generalized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chammika-become">@chammika-become</a> reviewed on 2023-01-11 04:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chammika-become">@chammika-become</a> on <code>src/ast/helpers.rs</code>:733 on 2023-01-11 04:04</div>
+            <div class="timeline-body"><p>Oh! great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @chammika-become on 2023-01-11 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chammika-become">@chammika-become</a> on 2023-01-11 07:37</div>
+            <div class="timeline-body"><p>@charliermarsh please review.
+I am not entirely happy the way a new <code>match_comp_expr</code> turn out to be. I could get rid of this function, if I could directly convert <code>&amp;Located&lt;ExprKind&gt;</code> =&gt; <code>&amp;ComparableExpr</code> . For example,</p>
+<pre><code class="language-rust">// test_key : &amp;Box&lt;Located&lt;ExprKind&gt;&gt;
+ let test_key_comp: &amp;ComparableExpr = (&amp;test_key).into(); // &lt;= failed
+</code></pre>
+<p>Hope you can improve on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-12 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 00:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I wasn't able to remove that method entirely, but I was able to simplify it a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chammika-become">@chammika-become</a> on 2023-01-12 10:08</div>
+            <div class="timeline-body"><p>@charliermarsh some afterthought... we are not going to flag this at all if there are comments in the <code>stmt</code> ? If that's the case we can move <code>has_comments()</code> check all the way up to the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 15:40</div>
+            <div class="timeline-body"><p>@chammika-become - Yeah, it's really hard to preserve comments correctly since there are so many cases to handle (above the statement, below the statement, inline, etc.), so for now, I'm just skipping commented blocks when collapsing multi- to single-line statements. We do the same for the ternary-rewrite rule.</p>
+<p>I prefer keeping <code>has_comments</code> lower as its more computationally expensive (we have to re-tokenize the block).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:35 UTC
+    </footer>
+</body>
+</html>

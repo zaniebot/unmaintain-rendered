@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically remove duplicate dictionary keys - astral-sh/ruff #1710</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically remove duplicate dictionary keys</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1710">#1710</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-01-07 05:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 05:14</div>
+            <div class="timeline-body"><p>For now, to be safe, we're only removing keys with duplicate <em>values</em>.</p>
+<p>See: #1647.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-07 05:18</div>
+            <div class="timeline-body"><p>This is incorrect:</p>
+<pre><code class="language-diff">-d = {&quot;b&quot;: 2, &quot;a&quot;: 1, &quot;b&quot;: 2}
++d = {&quot;b&quot;: 2, &quot;a&quot;: 2}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:55 on 2023-01-07 05:29</div>
+            <div class="timeline-body"><p>I think this can maybe be reduced to a single case? But it's 12:30 so I'm gonna revisit in the morning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-07 05:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 05:32</div>
+            <div class="timeline-body"><p>This quadratic loop could be slow on a large dictionary. A <code>HashMap</code> would avoid that problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 05:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 05:36</div>
+            <div class="timeline-body"><p>Nice idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 05:37</div>
+            <div class="timeline-body"><p>Literally a leetcode problem and I failed it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 16:47</div>
+            <div class="timeline-body"><p>@andersk - Do you think it's important to avoid removing duplicate keys with non-identical values?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 17:17</div>
+            <div class="timeline-body"><p>If we do, it's hard to avoid quadratic time in pathological cases because values aren't hashable. As an alternative, I could stringify them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 19:44</div>
+            <div class="timeline-body"><p>We can make a wrapper type <code>struct ComparableExpr&lt;'a&gt;(&amp;'a Expr)</code> that has custom <code>impl</code>s of <code>Eq</code> and <code>Hashable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-07 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 20:08</div>
+            <div class="timeline-body"><p>I did start on that, but <code>f64</code> itself isn't hashable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-07 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 20:13</div>
+            <div class="timeline-body"><p>You can hash via <a href="https://doc.rust-lang.org/std/primitive.f64.html#method.to_bits"><code>f64::to_bits</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 20:14</div>
+            <div class="timeline-body"><p>Mmm ok, cool. I'll try that out. (Above, you're suggesting that <code>ComparableExpr</code> compares by ignoring the <code>Location</code> fields, right?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-07 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 20:16</div>
+            <div class="timeline-body"><p>Right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/repeated_keys.rs</code>:33 on 2023-01-07 21:15</div>
+            <div class="timeline-body"><p>This will come in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-07 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-07 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-07 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:34 UTC
+    </footer>
+</body>
+</html>

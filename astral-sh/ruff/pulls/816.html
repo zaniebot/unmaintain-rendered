@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add convert exit() to sys.exit() rule - astral-sh/ruff #816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add convert exit() to sys.exit() rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/816">#816</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2022-11-19 09:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-11-19 09:36</div>
+            <div class="timeline-body"><ul>
+<li>Close #787</li>
+<li>[x] Fix<ul>
+<li>[x] It fixes when<ul>
+<li>[x] <code>import sys</code></li>
+<li>[x] <code>import sys as sys2</code></li>
+<li>[x] ~<code>import sys.exit</code>~ does not work</li>
+<li>[x] <code>from sys import exit as exit2</code></li>
+</ul>
+</li>
+<li>[x] It does not fix when not it has to import <code>sys</code>. Is there an example of how to add an import while keeping it sorted if <code>I</code> is selected?<ul>
+<li>[x] Do not fix</li>
+<li>[x] Open a new issue to add this feature.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>[x] ~<code>exit()</code> is not detected inside functions. What did I do wrong? Is it <code>current_scope()</code> that is not enough? Do I need to iterate over every scope?~</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-19 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>It does not fix when not it has to import <code>sys</code>.</p>
+</blockquote>
+<p>Hmm, no, we don't do that anywhere yet. Let's try for that later, as it would require fixes with multiple edits that change multiple parts of the tree.</p>
+<blockquote>
+<p>exit() is not detected inside functions. What did I do wrong? Is it current_scope() that is not enough? Do I need to iterate over every scope?</p>
+</blockquote>
+<p>Yeah, yeah you have to iterate over every scope in reverse, like:</p>
+<pre><code class="language-rust">for scope_index in self.scope_stack.iter().rev() {
+    let scope = &amp;mut self.scopes[*scope_index];
+    ...
+}
+</code></pre>
+<p>We might want to add a <code>.current_scope()</code>-like method to <code>Checker</code> to expose that iterate to plugins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-11-19 21:50</div>
+            <div class="timeline-body"><p>@charliermarsh,</p>
+<blockquote>
+<blockquote>
+<p>It does not fix when not it has to import <code>sys</code>.</p>
+</blockquote>
+<p>Hmm, no, we don't do that anywhere yet. Let's try for that later, as it would require fixes with multiple edits that change multiple parts of the tree.</p>
+</blockquote>
+<p>Let's open an issue once this PR is merged.</p>
+<blockquote>
+<blockquote>
+<p>exit() is not detected inside functions. What did I do wrong? Is it current_scope() that is not enough? Do I need to iterate over every scope?</p>
+</blockquote>
+<p>Yeah, yeah you have to iterate over every scope in reverse, like:</p>
+<pre><code class="language-rust">for scope_index in self.scope_stack.iter().rev() {
+    let scope = &amp;mut self.scopes[*scope_index];
+    ...
+}
+</code></pre>
+<p>We might want to add a <code>.current_scope()</code>-like method to <code>Checker</code> to expose that iterate to plugins.</p>
+</blockquote>
+<p>I added <code>Checker.current_scopes()</code>. But, even if I iterate over every scope, it still does not work.
+Or maybe I made an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-20 15:35</div>
+            <div class="timeline-body"><p>@JonathanPlasse - I think your code is actually right! But the test case is a bit off. Right now, you have this:</p>
+<pre><code class="language-py">...
+
+def main():
+    exit(6)  # Is not detected
+
+...
+
+def exit(e):
+    print(e)
+
+...
+</code></pre>
+<p>So, you're re-defining <code>exit</code> at the bottom, and when the <code>main()</code> with <code>exit(6)</code> is evaluated, <code>exit</code> is no longer the built-in. If you remove the <code>def exit</code>, the error is picked up -- which matches Python's semantics.</p>
+<p>I think you'll need to split into a few different test files to evaluate all of those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-20 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/plugins/convert_sys_to_sys_exit.rs</code>:32 on 2022-11-20 15:36</div>
+            <div class="timeline-body"><p>Probably a bit hard to get right since also needs to take aliases into account... but could be useful beyond this rule if robust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> reviewed on 2022-11-20 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on <code>src/rules/plugins/convert_sys_to_sys_exit.rs</code>:32 on 2022-11-20 15:46</div>
+            <div class="timeline-body"><p>Do you mean alias as in <code>from a import b as alias</code> or <code>import a as alias</code>?
+If yes, it already does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-20 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/plugins/convert_sys_to_sys_exit.rs</code>:32 on 2022-11-20 15:52</div>
+            <div class="timeline-body"><p>Yeah, that's what I meant! Oh, very nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-20 18:39</div>
+            <div class="timeline-body"><p>@JonathanPlasse - Feel free to mark as &quot;ready for review&quot; when you're happy with this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-11-20 19:45</div>
+            <div class="timeline-body"><p>I am ready for review :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @JonathanPlasse on 2022-11-20 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-11-20 19:56</div>
+            <div class="timeline-body"><p>Is it possible to make a <code>pre-commit</code> release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2022-11-20 20:14</div>
+            <div class="timeline-body"><p>Is it normal that I have to specify <code>--fixable</code> in <code>ruff --fix --fixable RUF --select RUFF file.py</code> for the fix to work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-20 20:39</div>
+            <div class="timeline-body"><p>Great! Will review tonight!</p>
+<p>@JonathanPlasse - No, <code>--fixable</code> shouldn't be necessary. That's a bug, will PR, one sec...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-20 20:40</div>
+            <div class="timeline-body"><p>(Fixed in https://github.com/charliermarsh/ruff/pull/838.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-20 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-20 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-01 17:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:21 UTC
+    </footer>
+</body>
+</html>

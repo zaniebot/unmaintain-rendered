@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid erroneous Q002 error message for single-quote docstrings - astral-sh/ruff #1777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid erroneous Q002 error message for single-quote docstrings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1777">#1777</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-01-11 03:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-11 03:08</div>
+            <div class="timeline-body"><p>Fixes #1775. Before implementing your solution I thought of a slightly simpler one. However, it will let this function pass:</p>
+<pre><code>def double_inside_single(a):
+    'Double inside &quot;single &quot;'
+</code></pre>
+<p>If we want function to pass, my implementation works. But if we do not, then I can go with how you suggested I implemented this (I left how I would begin to handle it commented out). The bottom of the flake8-quotes documentation seems to suggest that this should pass:
+https://pypi.org/project/flake8-quotes/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-11 03:12</div>
+            <div class="timeline-body"><p>I went to check how flake8-quotes handles this, and it looks like out of the box they throw an error on what we are trying to fix.
+'''
+def double_inside_single(a):
+&quot;This is a test&quot;
+'''
+Results in:
+resources/test/fixtures/flake8_quotes/docstring_doubles_function.py:31:5: Q002 Single quote docstring found but double quotes preferred</p>
+<p>So I will leave it up to you to decide on the quotes inside quotes edge case I found above. After that I will add the test fix and we can merge this thing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 04:11</div>
+            <div class="timeline-body"><p>Okay I'm struggling to understand the originating plugin's logic but here's my guess.</p>
+<p>If you have <code>Double</code> enabled, these should be ok:</p>
+<pre><code class="language-py">def f():
+    &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+
+def f():
+    &quot;Docstring&quot;
+
+def f():
+    &quot;&quot;&quot;Doc'string&quot;&quot;&quot;
+
+def f():
+    &quot;Doc'string&quot;
+
+def f():
+    'Doc&quot;string'
+
+def f():
+    '''Doc&quot;string'''
+</code></pre>
+<p>And these should error:</p>
+<pre><code class="language-py">def f():
+    '''Docstring'''
+
+def f():
+    'Docstring'
+</code></pre>
+<p>If you have <code>Single</code> enabled, the reverse should be true. So all of these should be ok:</p>
+<pre><code class="language-py">def f():
+    '''Docstring'''
+
+def f():
+    'Docstring'
+
+def f():
+    '''Doc&quot;string'''
+
+def f():
+    'Doc&quot;string'
+
+def f():
+    &quot;Doc'string&quot;
+
+def f():
+    &quot;&quot;&quot;Doc'string&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 04:12</div>
+            <div class="timeline-body"><p>(I think we probably have the same bug as the library, because I copied the logic exactly.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-11 12:12</div>
+            <div class="timeline-body"><p>At first I made a complicated function:</p>
+<pre><code>fn contains_good_docstring(quote: &amp;Quote, raw_str: &amp;str) -&gt; bool {
+    match quote {
+        Quote::Single =&gt; raw_str.contains(&quot;'''&quot;) || raw_str.contains(&quot;'&quot;),
+        Quote::Double =&gt; raw_str.contains(&quot;\&quot;\&quot;\&quot;&quot;) || raw_str.contains('&quot;'),
+    }
+}
+</code></pre>
+<p>But now im realizing we simplify it to this:</p>
+<pre><code>fn contains_good_docstring(quote: &amp;Quote, raw_str: &amp;str) -&gt; bool {
+    match quote {
+        Quote::Single =&gt; raw_str.contains(&quot;'&quot;),
+        Quote::Double =&gt; raw_str.contains('&quot;'),
+    }
+}
+</code></pre>
+<p>And with this we can pretty much just take it back to the original function. But with a single character instead of triples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-11 12:16</div>
+            <div class="timeline-body"><p>Changes in! This should work as &quot;if single there needs to be a single quote SOMEWHERE, and if double there needs to be a double quote SOMEWHERE&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix q002" to "Avoid erroneous Q002 error message for single-quote docstrings" by @charliermarsh on 2023-01-12 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-12 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 01:12</div>
+            <div class="timeline-body"><p>@colin99d - If you're interested in a follow-up...</p>
+<p>If we <em>are</em> using a triple quote, I don't <em>think</em> we should allow you to invert the quote style. That is, if you're preferring <code>&quot;</code>, and you do this:</p>
+<pre><code class="language-py">def f():
+  '''This has a quote &quot; in it.'''
+</code></pre>
+<p>I think, perhaps, that should be considered a violation, since you can just do this:</p>
+<pre><code class="language-py">def f():
+  &quot;&quot;&quot;This has a quote &quot; in it.&quot;&quot;&quot;
+</code></pre>
+<p>So the flexibility we added here, IMO, should only apply when using single-quoted docstrings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-12 01:16</div>
+            <div class="timeline-body"><blockquote>
+<p>@colin99d - If you're interested in a follow-up...</p>
+<p>If we <em>are</em> using a triple quote, I don't <em>think</em> we should allow you to invert the quote style. That is, if you're preferring <code>&quot;</code>, and you do this:</p>
+<pre><code class="language-python">def f():
+  '''This has a quote &quot; in it.'''
+</code></pre>
+<p>I think, perhaps, that should be considered a violation, since you can just do this:</p>
+<pre><code class="language-python">def f():
+  &quot;&quot;&quot;This has a quote &quot; in it.&quot;&quot;&quot;
+</code></pre>
+<p>So the flexibility we added here, IMO, should only apply when using single-quoted docstrings.</p>
+</blockquote>
+<p>Makes sense to me! Thanks for the explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-12 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 01:18</div>
+            <div class="timeline-body"><p>Another way of looking at it is... what would Black convert?</p>
+<p>Black changes this to double quotes:</p>
+<pre><code class="language-py">def f():
+    '''Some &quot;docstring.'''
+</code></pre>
+<p>But not this:</p>
+<pre><code class="language-py">x = 'here is a quote &quot; inside'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-12 01:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Another way of looking at it is... what would Black convert?</p>
+<p>Black changes this to double quotes:</p>
+<pre><code class="language-python">def f():
+    '''Some &quot;docstring.'''
+</code></pre>
+<p>But not this:</p>
+<pre><code class="language-python">x = 'here is a quote &quot; inside'
+</code></pre>
+</blockquote>
+<p>From now on I will just let &quot;what would black do&quot; answer formatting ambiguity questions I have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-12 01:21</div>
+            <div class="timeline-body"><p>In our case, though, we also the opposite, if the user has <code>Quote::Single</code> set :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:35 UTC
+    </footer>
+</body>
+</html>

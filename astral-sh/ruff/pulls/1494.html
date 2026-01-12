@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop overriding locations for expressions within f-strings - astral-sh/ruff #1494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stop overriding locations for expressions within f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1494">#1494</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-12-31 04:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 04:10</div>
+            <div class="timeline-body"><p>https://github.com/RustPython/RustPython/pull/4384 fixed the location of <code>FormattedValue</code>. Now, expressions within f-strings should have the correct locations. Here's a quick demo.</p>
+<p>https://user-images.githubusercontent.com/17039389/210124329-b0c71bd5-3c9a-4b44-949a-9f774f56fac9.mov</p>
+<pre><code>&gt; cargo run -- --show-source --no-cache --select C,F a.py
+a.py:1:4: C408 Unnecessary `list` call (rewrite as a literal)
+  |
+1 | f&quot;{list()}&quot;
+  |    ^^^^^^ C408
+  |
+a.py:2:6: F821 Undefined name `x`
+  |
+2 | f&quot;{  x   }&quot;
+  |      ^ F821
+  |
+a.py:4:6: C408 Unnecessary `dict` call (rewrite as a literal)
+  |
+4 | f&quot;&quot;&quot;{dict()}&quot;&quot;&quot;
+  |      ^^^^^^ C408
+  |
+a.py:6:5: F821 Undefined name `x`
+  |
+6 | rf&quot;{x}&quot;
+  |     ^ F821
+  |
+a.py:8:7: F821 Undefined name `x`
+  |
+8 | rf&quot;&quot;&quot;{x}&quot;&quot;&quot;
+  |       ^ F821
+  |
+a.py:11:2: F821 Undefined name `x`
+   |
+11 | {x}
+   |  ^ F821
+   |
+a.py:14:6: F821 Undefined name `x`
+   |
+14 | f&quot;\n{x}&quot;
+   |      ^ F821
+   |
+a.py:16:10: F821 Undefined name `x`
+   |
+16 | f&quot;\u1234{x}&quot;
+   |          ^ F821
+   |
+a.py:18:6: F821 Undefined name `x`
+   |
+18 | f&quot;\\{x}&quot;
+   |      ^ F821
+   |
+a.py:20:14: F821 Undefined name `x`
+   |
+20 | f&quot;\\\\\\\\\\{x}&quot;
+   |              ^ F821
+   |
+a.py:23:2: F821 Undefined name `x`
+   |
+23 | {x}&quot;
+   |  ^ F821
+   |
+Found 11 error(s).
+2 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 04:14</div>
+            <div class="timeline-body"><p>What?!?!? Noooo way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 04:15</div>
+            <div class="timeline-body"><p>How the heck did you do this? That looks like a really impressive change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 04:20</div>
+            <div class="timeline-body"><p>What I did was the following:</p>
+<ol>
+<li>Use the right offset when parsing expressions within f-strings.</li>
+<li>Fix the lexer to preserve the original string to compute the right offset.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyupgrade/plugins/native_literals.rs</code>:56 on 2022-12-31 04:23</div>
+            <div class="timeline-body"><p><code>Tok::Bytes</code> has been removed. The new lexer only uses <code>Tok::String</code>.</p>
+<p>Old lexer:</p>
+<pre><code class="language-python"># Implicitly concatenated string
+b&quot;&quot; &quot;&quot;  # Tok::Bytes, Tok::String
+</code></pre>
+<p>New lexer:</p>
+<pre><code class="language-python">b&quot;&quot; &quot;&quot;   # Tok::String (with kind=Bytes), Tok::String (kind=String)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:27</div>
+            <div class="timeline-body"><p>Duplicate function arguments like <code>def f(a, a): pass</code> now yield <code>SyntaxError</code> ( https://github.com/RustPython/RustPython/pull/4380).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:27</div>
+            <div class="timeline-body"><img width="1100" alt="image" src="https://user-images.githubusercontent.com/17039389/210124730-2b25cdd2-d849-4fc3-988d-1786646379cc.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:29</div>
+            <div class="timeline-body"><p>Maybe we should remove F831 because it's never raised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:37</div>
+            <div class="timeline-body"><p>or we can just keep it as it's not harmful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-31 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:39</div>
+            <div class="timeline-body"><p>Ah yeah, we can remove in a separate PR.</p>
+<p>(Is this true in all Python versions 3.7+? If you know.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:42</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<pre><code class="language-shell">&gt; docker run python:3.7 python -c &quot;def f(a, a): pass&quot;
+  File &quot;&lt;string&gt;&quot;, line 1
+SyntaxError: duplicate argument 'a' in function definition
+
+&gt; docker run python:3.8 python -c &quot;def f(a, a): pass&quot;
+  File &quot;&lt;string&gt;&quot;, line 1
+SyntaxError: duplicate argument 'a' in function definition
+
+&gt; docker run python:3.9 python -c &quot;def f(a, a): pass&quot;
+  File &quot;&lt;string&gt;&quot;, line 1
+SyntaxError: duplicate argument 'a' in function definition
+
+&gt; docker run python:3.10 python -c &quot;def f(a, a): pass&quot;
+  File &quot;&lt;string&gt;&quot;, line 1
+SyntaxError: duplicate argument 'a' in function definition
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 04:43</div>
+            <div class="timeline-body"><p>This also seems to be a little bit faster...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-31 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-31 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 04:44</div>
+            <div class="timeline-body"><p>Honestly this makes me so happy. This is great. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/pyflakes/snapshots/ruff__pyflakes__tests__F831_F831.py.snap</code>:5 on 2022-12-31 04:49</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<blockquote>
+<p>we can remove in a separate PR.</p>
+</blockquote>
+<p>I'll file a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-31 04:49</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:29 UTC
+    </footer>
+</body>
+</html>

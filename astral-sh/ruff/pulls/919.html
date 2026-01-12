@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F50x implementation - astral-sh/ruff #919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F50x implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/919">#919</a>
+        opened by <a href="https://github.com/olliemath">@olliemath</a>
+        on 2022-11-27 02:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-27 02:57</div>
+            <div class="timeline-body"><p>Closes https://github.com/charliermarsh/ruff/issues/905</p>
+<p>This uses a vendored copy of <code>cformat.rs</code> from rustpython-vm to parse the format string. Then we perform our checks in a similar manner to the F52x checks.</p>
+<h3>Extensions?</h3>
+<p>I wrote a version of this code that looked inside splatted expressions like <code>{&quot;a&quot;: 1, **b, &quot;c&quot;: 2}</code> (which the interpreter parses identically to <code>{&quot;a&quot;: 1, **b, **{&quot;c&quot;: 2}}</code>. It could detect if e.g. <code>&quot;c&quot;</code> from the earlier example was unused in a format string, however it seemed overly complicated for such a small edge-case, which is not handled in pyflakes.</p>
+<p>Along with <code>CFormatString</code>, rustpython-vm provides a <code>CFormatBytes</code> that could easily be used to perform the same checks on <code>b&quot;...&quot; % ...</code> format expressions. On the other hand, I don't think this is super valuable: pyflakes doesn't provide it and without a lot of thought the error messages may look horrible (raw bytes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-27 04:52</div>
+            <div class="timeline-body"><p>This looks <em>great</em>! Anything else you want to do here or good to merge from your perspective?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:148 on 2022-11-27 04:53</div>
+            <div class="timeline-body"><p>We might be able to delay these <code>cloned</code> calls until the <code>else</code> block? Like make this <code>Vec&lt;&amp;str&gt;</code> and then call <code>cloned</code> when creating (e.g.) <code>CheckKind::PercentFormatMissingArgument</code>? Really minor though (and didn't try it myself).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-27 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-27 11:57</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks <em>great</em>! Anything else you want to do here or good to merge from your perspective?</p>
+</blockquote>
+<p>Right now the code picks up some issues pyflakes doesn't - I think the particular cases are useful, unless you'd prefer to have direct parity?</p>
+<p>The only one I'm unsure about is in F504, where we are able to detect this while pyflakes is not:</p>
+<pre><code class="language-python">&quot;%(a)d&quot; % {&quot;b&quot;: 1, **d}  # b is unused in the formatting - flagged by ruff
+</code></pre>
+<p>For the average user of ruff, I think the fact that the above is detected but the following is <em>not detected</em> violates the principal of least surprise:</p>
+<pre><code class="language-python">&quot;%(a)d&quot; % {**d, &quot;b&quot;: 1}  # b is unused in the formatting - not flagged by ruff
+</code></pre>
+<p>Because of the way this is parsed, we would have to check the keys 1 level down in any splatted dict literals to spot this.  What do you think of adding this extra check, or else giving up on splatted dicts entirely to keep the linting behaviour predictable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-27 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:148 on 2022-11-27 12:06</div>
+            <div class="timeline-body"><p>Yeah, that's possible - we actually get a <code>Vec&lt;&amp;String&gt;</code> and then put <code>missing.iter().map(|&amp;s| s.clone()).collect()</code> into the check.</p>
+<p>I had assumed (possibly naively) that <code>cloned</code> would have zero overhead if the filter produces an empty iterator (which is what the if/else block is checking), if that's the case it's probably simpler to keep cloned where it is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-27 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:148 on 2022-11-27 12:09</div>
+            <div class="timeline-body"><p>Unless the move is more about signalling intent than performance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:148 on 2022-11-27 14:48</div>
+            <div class="timeline-body"><p>Yeah I'm sure the difference is negligible if existent at all given that we're only cloning the empty <code>vec</code> anyway in that case. It's more about signaling intent, locally and broadly (&quot;clone as late as possible&quot;), but honestly don't feel strongly about changing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-27 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-27 14:54</div>
+            <div class="timeline-body"><p>Yeah I'd probably vote to ignore splatted dict literals given your reasoning above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:148 on 2022-11-28 00:08</div>
+            <div class="timeline-body"><p>Makes sense - I've moved cloning later in the 3 functions where it was clear how to do so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-28 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-28 00:09</div>
+            <div class="timeline-body"><p>Cool, so I've disabled the introspection of splatted dicts, which gives behaviour more consistent (both internally and with pyflakes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Draft: F50x implementation" to "F50x implementation" by @olliemath on 2022-11-28 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-28 00:09</div>
+            <div class="timeline-body"><p>I'd say this is good to go from my side if the pipeline passes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-28 00:10</div>
+            <div class="timeline-body"><p>Awesome, will merge tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-28 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-28 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-11-28 10:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyUpgrade: Replace pipes with `capture_output=True` - astral-sh/ruff #1415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyUpgrade: Replace pipes with <code>capture_output=True</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1415">#1415</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2022-12-28 01:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2022-12-28 01:04</div>
+            <div class="timeline-body"><p>Creating this PR for visibility. It will remain a draft until the following two issues are resolved:</p>
+<ul>
+<li>I am not sure how to avoid double counting errors, since there are two different ranges and two different fixes need to be applied.</li>
+<li>Currently the <code>autofix::Fix::deletion</code> seems to be leaving extra dangling commas and spaces. I am assuming this is my error, and will dig in for a fix.</li>
+</ul>
+<p>Update: Both of these fixed, lets get this merged.</p>
+<p>A part of #827</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-28 02:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/pyupgrade/UP022.py</code>:22 on 2022-12-28 02:11</div>
+            <div class="timeline-body"><p>Yeah this is a bit tricky, since the kwargs can be non-consecutive, and we need to fix it with a single edit operation (one <code>::replacement</code> call).</p>
+<p>I think the way to approach it would be:</p>
+<ul>
+<li>Find the first kwarg.</li>
+<li>Find the second kwarg.</li>
+<li>Find all content in-between (use <code>SourceCodeLocator</code> to slice the range between the two kwargs).</li>
+<li>Treat the fix as: replace (start of first kwarg through to end of second kwarg) with (<code>capture_output=True</code> + content between the two kwargs).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2022-12-28 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>resources/test/fixtures/pyupgrade/UP022.py</code>:22 on 2022-12-28 02:19</div>
+            <div class="timeline-body"><p>Perfect, I like this solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-28 02:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/pyupgrade/UP022.py</code>:22 on 2022-12-28 02:21</div>
+            <div class="timeline-body"><p>It'd be nice if we could support &quot;multi-fix edits&quot;, but it's kind of tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2022-12-28 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>resources/test/fixtures/pyupgrade/UP022.py</code>:22 on 2022-12-28 12:59</div>
+            <div class="timeline-body"><p>I figured it out using your solution, but we could just make a bunch of fix functions. Like replace_2_lines, or replace_1_delete_1. But for this specific case. I think what we have now is best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2022-12-28 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 16:04</div>
+            <div class="timeline-body"><p>Sweet, will review today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-28 16:15</div>
+            <div class="timeline-body"><p>May I suggest to include test cases from pyupgrade? https://github.com/asottile/pyupgrade/blob/main/tests/features/capture_output_test.py</p>
+<p>Examples I don't see covered:</p>
+<pre><code class="language-python">run([&quot;foo&quot;], stdout=None, stderr=PIPE)
+
+from foo import PIPE
+from subprocess import run
+subprocess.run([&quot;foo&quot;], stdout=PIPE, stderr=PIPE)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 16:23</div>
+            <div class="timeline-body"><p>(Oh, yes please, I forgot that we were including the pyupgrade test cases.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2022-12-28 16:24</div>
+            <div class="timeline-body"><p>I will add them for both of my PRs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 16:25</div>
+            <div class="timeline-body"><p>🙏 Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2022-12-28 16:31</div>
+            <div class="timeline-body"><p>She passed em flawlessly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-28 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-28 21:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:28 UTC
+    </footer>
+</body>
+</html>

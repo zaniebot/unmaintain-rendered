@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix PT004, PT005, PT024, and PT025 - astral-sh/ruff #1740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix PT004, PT005, PT024, and PT025</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1740">#1740</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-01-09 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2023-01-09 03:11</div>
+            <div class="timeline-body"><p>Autofix PT004, PT005, PT024, and PT025.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-09 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-09 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-09 20:05</div>
+            <div class="timeline-body"><p>@harupy autofixing <code>PT004</code> and <code>PT005</code> may be problematic because fixture names are used to perform dependency injection in pytest test functions.</p>
+<p>Consider:</p>
+<pre><code class="language-python">import pytest
+
+@pytest.fixture()
+def _my_fixture():
+    return 1
+
+
+def test_something(_my_fixture):
+    assert _my_fixture == 1
+</code></pre>
+<p><code>pytest</code> works fine:</p>
+<pre><code class="language-console">$ pytest test.py
+==================================================================================================================== test session starts =====================================================================================================================
+platform darwin -- Python 3.10.9, pytest-7.2.0, pluggy-1.0.0
+rootdir: /path/to/project
+collected 1 item                                                                                                                                                                                                                                             
+
+test.py .                                                                                                                                                                                                                                             [100%]
+
+===================================================================================================================== 1 passed in 0.01s ======================================================================================================================
+</code></pre>
+<p>but after fixing</p>
+<pre><code class="language-console">$ ruff --select PT005 test.py
+test.py:4:1: PT005 Fixture `_my_fixture` returns a value, remove leading underscore
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+
+$ ruff --fix --select PT005 test.py
+Found 1 error(s) (1 fixed, 0 remaining).
+</code></pre>
+<p>the fixture name no longer works:</p>
+<pre><code class="language-console">$ pytest test.py
+==================================================================================================================== test session starts =====================================================================================================================
+platform darwin -- Python 3.10.9, pytest-7.2.0, pluggy-1.0.0
+rootdir: /path/to/project
+collected 1 item                                                                                                                                                                                                                                             
+
+test.py E                                                                                                                                                                                                                                             [100%]
+
+=========================================================================================================================== ERRORS ===========================================================================================================================
+______________________________________________________________________________________________________________ ERROR at setup of test_something ______________________________________________________________________________________________________________
+file /path/to/project/test.py, line 8
+  def test_something(_my_fixture):
+E       fixture '_my_fixture' not found
+&gt;       available fixtures: cache, capfd, capfdbinary, caplog, capsys, capsysbinary, doctest_namespace, monkeypatch, my_fixture, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/path/to/project/test.py:8
+================================================================================================================== short test summary info ===================================================================================================================
+ERROR test.py::test_something
+====================================================================================================================== 1 error in 0.01s ======================================================================================================================
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:34 UTC
+    </footer>
+</body>
+</html>

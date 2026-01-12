@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve `SIM117` - astral-sh/ruff #1867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve <code>SIM117</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1867">#1867</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-01-14 07:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2023-01-14 07:50</div>
+            <div class="timeline-body"><p>This PR makes the following changes to improve <code>SIM117</code>:</p>
+<ul>
+<li>Avoid emitting <code>SIM117</code> multiple times within the same <code>with</code> statement:</li>
+<li>Adjust the error range.</li>
+</ul>
+<h2>Example</h2>
+<pre><code class="language-python">with A() as a:  # SIM117
+    with B() as b:
+        with C() as c:
+            print(&quot;hello&quot;)
+</code></pre>
+<h3>Current</h3>
+<pre><code>resources/test/fixtures/flake8_simplify/SIM117.py:5:1: SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+  |
+5 | / with A() as a:  # SIM117
+6 | |     with B() as b:
+7 | |         with C() as c:
+8 | |             print(&quot;hello&quot;)
+  | |__________________________^ SIM117
+  |
+
+resources/test/fixtures/flake8_simplify/SIM117.py:6:5: SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+  |
+6 |       with B() as b:
+  |  _____^
+7 | |         with C() as c:
+8 | |             print(&quot;hello&quot;)
+  | |__________________________^ SIM117
+  |
+</code></pre>
+<h3>Improved</h3>
+<pre><code>resources/test/fixtures/flake8_simplify/SIM117.py:5:1: SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+  |
+5 | / with A() as a:  # SIM117
+6 | |     with B() as b:
+7 | |         with C() as c:
+  | |______________________^ SIM117
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:9 on 2023-01-14 08:40</div>
+            <div class="timeline-body"><p>I think the return type here could be precised, since it will always return a <code>StmtKind::With</code> ... since rustpython_ast unfortunately doesn't define a struct for the fields of the <code>StmtKind::With</code> variant we'd have to define that struct ourselves ... but I think it would still be worth it for the additional clarity ... and then we could remove the weird looking <code>else { return }</code> in the <code>multiple_with_statements</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-14 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-14 10:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:16 on 2023-01-14 10:01</div>
+            <div class="timeline-body"><p>I think the following would be more idiomatic:</p>
+<pre><code class="language-rust">    let [StmtKind::With { items, body, .. }] = body else { return; };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-14 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/ast/helpers.rs</code>:625 on 2023-01-14 10:03</div>
+            <div class="timeline-body"><p>Doc comments should start with three slashes (<code>///</code>) and <code>Tok::Colon</code> and <code>Range</code> can be wrapped in [] so that rustdoc turns these references into links (you can check that with <code>cargo doc --no-deps --open</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/ast/helpers.rs</code>:625 on 2023-01-14 10:05</div>
+            <div class="timeline-body"><p>Thanks for the catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-14 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:25 on 2023-01-14 10:06</div>
+            <div class="timeline-body"><p>I think this signature has gotten complex enough to warrant a doc comment that explains what these various <code>Stmt</code>s should be. Or perhaps the parameter names could be clarified ... just <code>stmt</code>, <code>body</code> and <code>parent</code> aren't really clear: what kind of statement? body of what? parent of what?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:25 on 2023-01-14 10:10</div>
+            <div class="timeline-body"><p>can we rename variable names?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:16 on 2023-01-14 10:11</div>
+            <div class="timeline-body"><pre><code class="language-rust">    let [StmtKind::With { items, body, .. }] = body else { return; };
+</code></pre>
+<p>Does this really work? <code>body</code> is <code>&amp;[Stmt]</code>, not <code>&amp;[StmtKind]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:25 on 2023-01-14 10:13</div>
+            <div class="timeline-body"><p>Renamed the arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:16 on 2023-01-14 10:20</div>
+            <div class="timeline-body"><p>I think we could do:</p>
+<pre><code class="language-diff"> fn find_last_with(body: &amp;[Stmt]) -&gt; Option&lt;(&amp;Vec&lt;Withitem&gt;, &amp;Vec&lt;Stmt&gt;)&gt; {
+-    if body.len() != 1 {
++    let [stmt] = body else {
+         return None;
+-    }
+-    let StmtKind::With { items, body, .. } = &amp;body[0].node else {
++    };
++    let StmtKind::With { items, body, .. } = &amp;stmt.node else {
+         return None
+     };
+     find_last_with(body).or(Some((items, body)))
+     find_last_with(body).or(Some((items, body)))
+</code></pre>
+<p>but not sure if it't worth it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @not-my-profile by @harupy on 2023-01-14 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-14 10:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/rules/ast_with.rs</code>:16 on 2023-01-14 10:25</div>
+            <div class="timeline-body"><p>Ah right I missed the additional <code>Locate</code> nesting ... I think sth like the following should work:</p>
+<pre><code class="language-rs">    let [Locate { node: StmtKind::With { items, body, .. }, ..}] = body else { return; };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/ast/helpers.rs</code>:625 on 2023-01-14 10:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Tok::Colon and Range can be wrapped in [] so that rustdoc turns these references into links (you can check that with cargo doc --no-deps --open).</p>
+</blockquote>
+<p>I didn't know that. So if we wrap <code>Tok::Colon</code> and <code>Range</code> in <code>[]</code>, does rustdoc create links to RustPython's doc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2023-01-14 10:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-14 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-14 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:36 UTC
+    </footer>
+</body>
+</html>

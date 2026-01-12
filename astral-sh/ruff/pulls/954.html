@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grouped format implementation - astral-sh/ruff #954</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Grouped format implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/954">#954</a>
+        opened by <a href="https://github.com/hay-kot">@hay-kot</a>
+        on 2022-11-29 02:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hay-kot">@hay-kot</a> on 2022-11-29 02:22</div>
+            <div class="timeline-body"><p>This PR adds an additional option to the <code>--format</code> flag &quot;grouped&quot; which changes the output. Things to note</p>
+<ol>
+<li>I extracted the pre and post printing parts into their own functions</li>
+<li>This implementation relies on the diagnostic messages to be sorted by file</li>
+<li>I don't  know Rust that well so please let me know if anything needs fixing!</li>
+</ol>
+<p>Closes #948</p>
+<p><strong>Output Example</strong></p>
+<img width="590" alt="CleanShot 2022-11-28 at 21 33 41@2x" src="https://user-images.githubusercontent.com/64056131/204456148-4a9bba08-189d-4a34-8bbb-64cccd4eb14d.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @hay-kot on 2022-11-29 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "wip: basic grouped implementation" to "Grouped format implementation" by @hay-kot on 2022-11-29 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 18:01</div>
+            <div class="timeline-body"><p>Awesome, thank you! Will review today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2022-11-29 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-29 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:62 on 2022-11-29 22:27</div>
+            <div class="timeline-body"><p>Nit: small typo (<code>post_text</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-29 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:121 on 2022-11-29 22:28</div>
+            <div class="timeline-body"><p>I think this assumes that the messages are sorted by filename. Maybe slightly preferable to create a HashMap from filename to messages? That can also help us avoid the clones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-29 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:121 on 2022-11-29 22:31</div>
+            <div class="timeline-body"><p>Ehh... maybe this is simpler, actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 22:32</div>
+            <div class="timeline-body"><p>Looks good to me! I'm going to make some minor tweaks to the output formatting, then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hay-kot">@hay-kot</a> reviewed on 2022-11-29 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hay-kot">@hay-kot</a> on <code>src/printer.rs</code>:121 on 2022-11-29 22:45</div>
+            <div class="timeline-body"><p>I took a stab at a hashmap for the sake of it. I can't really make an educated guess on perf, but I think either is simple enough to understand. 🤷</p>
+<pre><code class="language-rust">let mut map = std::collections::HashMap::new();
+
+for message in &amp;diagnostics.messages {
+    map.entry(&amp;message.filename)
+        .or_insert_with(Vec::new)
+        .push(message);
+}
+
+for (filename, messages) in map {
+    println!(
+        &quot;\n{}:&quot;,
+        relativize_path(Path::new(&amp;filename)).bold().underline()
+    );
+    for message in messages {
+        println!(
+            &quot;    {}{}{} {}  {}&quot;,
+            message.location.row(),
+            &quot;:&quot;.cyan(),
+            message.location.column(),
+            message.kind.code().as_ref().red().bold(),
+            message.kind.body(),
+        );
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 22:50</div>
+            <div class="timeline-body"><p>(Namely, I'm going to change it to mirror ESLint's behavior, such that the <code>row:column</code> colon is always aligned, and there are always two spaces between each section.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-29 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-29 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 23:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 23:52</div>
+            <div class="timeline-body"><p>We should make <code>format</code> a supported option in <code>pyproject.toml</code> too.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:21 UTC
+    </footer>
+</body>
+</html>

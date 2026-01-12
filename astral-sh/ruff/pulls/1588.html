@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add autofix for SIM300 - astral-sh/ruff #1588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add autofix for SIM300</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1588">#1588</a>
+        opened by <a href="https://github.com/PedramNavid">@PedramNavid</a>
+        on 2023-01-03 07:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/PedramNavid">@PedramNavid</a> on 2023-01-03 07:42</div>
+            <div class="timeline-body"><p>I think this is right! I ran it locally on the test cases and it worked, but admittedly I wasn't really sure what I was doing when creating an Expr instance or even the values I used for SourceCodeGenerator.</p>
+<p>Here's an example of it working:</p>
+<pre><code class="language-python">&gt; cat test.py
+...
+# Line 9
+42 == x
+'foo' == yoda
+print('foo' == yoda)
+print(42 == x)
+
+def main():
+    print(&quot;hello world&quot;)
+    print('foo' == yoda)
+</code></pre>
+<p>One thing I can't figure out is why it doesn't show here that there are fixes possible. I'm expecting something like
+<code>4 potentially fixable with the --fix option.</code></p>
+<pre><code>cargo run test.py --no-cache --select SIM300
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff test.py --no-cache --select SIM300`
+test.py:9:1: SIM300 Use `42 == x` instead of `x == 42 (Yoda-conditions)`
+test.py:10:1: SIM300 Use `'foo' == yoda` instead of `yoda == 'foo' (Yoda-conditions)`
+test.py:11:7: SIM300 Use `'foo' == yoda` instead of `yoda == 'foo' (Yoda-conditions)`
+test.py:12:7: SIM300 Use `42 == x` instead of `x == 42 (Yoda-conditions)`
+test.py:16:11: SIM300 Use `'foo' == yoda` instead of `yoda == 'foo' (Yoda-conditions)`
+Found 5 error(s).
+</code></pre>
+<p>but when I run this</p>
+<pre><code>cargo run test.py --no-cache --select SIM300 --fix
+   
+Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff test.py --no-cache --select SIM300 --fix`
+Found 5 error(s) (5 fixed, 0 remaining).
+</code></pre>
+<p>It does fix the file.</p>
+<pre><code>...
+# Line 9
+x == 42
+yoda == 'foo'
+print(yoda == 'foo')
+print(x == 42)
+
+def main():
+    print(&quot;hello world&quot;)
+    print(yoda == 'foo')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:3597 on 2023-01-03 12:18</div>
+            <div class="timeline-body"><p>@PedramNavid - This was the missing piece. There's a separate <code>fixable</code> &quot;list&quot; that marks a check as fixable in the README. (Autofix will still &quot;work&quot; without this, but it won't appear in the README, on the CLI, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-03 12:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-03 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-03 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-03 12:19</div>
+            <div class="timeline-body"><p>Thanks Pedram :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:31 UTC
+    </footer>
+</body>
+</html>

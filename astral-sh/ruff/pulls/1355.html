@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update RustPython to use the correct `BinOp` location - astral-sh/ruff #1355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update RustPython to use the correct <code>BinOp</code> location</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1355">#1355</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-12-24 03:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-12-24 03:22</div>
+            <div class="timeline-body"><p>See https://github.com/RustPython/RustPython/pull/4348</p>
+<pre><code class="language-shell"># On main
+&gt; cargo run -- --show-source resources/test/fixtures/pyflakes/F504.py
+...
+resources/test/fixtures/pyflakes/F504.py:3:15: F504 '...' % ... has unused named argument(s): b
+  |
+3 | &quot;%(a)s %(c)s&quot; % {a: &quot;?&quot;, &quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  |               ^^^^^^^^^^^^^^^^^^^^ F504
+  |
+resources/test/fixtures/pyflakes/F504.py:8:9: F504 '...' % ... has unused named argument(s): b
+  |
+8 | &quot;%(a)s&quot; % {&quot;a&quot;: 1, r&quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  |         ^^^^^^^^^^^^^^^^^^^^^ F504
+  |
+resources/test/fixtures/pyflakes/F504.py:9:9: F504 '...' % ... has unused named argument(s): b
+  |
+9 | &quot;%(a)s&quot; % {'a': 1, u&quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  |         ^^^^^^^^^^^^^^^^^^^^^ F504
+  |
+Found 3 error(s).
+3 potentially fixable with the --fix option.
+</code></pre>
+<pre><code class="language-shell"># On this PR branch
+&gt; cargo run -- --show-source resources/test/fixtures/pyflakes/F504.py
+...
+resources/test/fixtures/pyflakes/F504.py:3:1: F504 '...' % ... has unused named argument(s): b
+  |
+3 | &quot;%(a)s %(c)s&quot; % {a: &quot;?&quot;, &quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ F504
+  |
+resources/test/fixtures/pyflakes/F504.py:8:1: F504 '...' % ... has unused named argument(s): b
+  |
+8 | &quot;%(a)s&quot; % {&quot;a&quot;: 1, r&quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ F504
+  |
+resources/test/fixtures/pyflakes/F504.py:9:1: F504 '...' % ... has unused named argument(s): b
+  |
+9 | &quot;%(a)s&quot; % {'a': 1, u&quot;b&quot;: &quot;!&quot;}  # F504 (&quot;b&quot; not used)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ F504
+  |
+Found 3 error(s).
+3 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update RustPython to use the correct BinOp location" to "Update RustPython to use the correct `BinOp` location" by @harupy on 2022-12-24 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-24 03:35</div>
+            <div class="timeline-body"><p>btw do we have a script or command in this repository that can update snapshots quickly?</p>
+<pre><code class="language-shell">&gt; cargo test
+# generates new snapshots if there are failed tests
+
+&gt; ???
+# Updates existing snapshots
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-24 03:57</div>
+            <div class="timeline-body"><p>Do you have <code>cargo-insta</code> installed? Have you tried running <code>cargo insta review</code>?</p>
+<p>https://crates.io/crates/cargo-insta</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-24 03:57</div>
+            <div class="timeline-body"><p>(Apologies if misunderstanding the question.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-24 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-24 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-24 04:04</div>
+            <div class="timeline-body"><p>@charliermarsh <code>cargo insta review</code> is what I've looking for. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-24 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-24 04:06</div>
+            <div class="timeline-body"><p>@harupy - Oh no!!! I wish you'd known about it before! I had no idea you were doing it manually. Hopefully it'll save you a <em>ton</em> of time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-24 04:08</div>
+            <div class="timeline-body"><p>I wrote this shell script and have been using it :)</p>
+<pre><code class="language-shell">for f in $(find . -name '*.snap.new'); do
+    new_f=$(echo $f | sed 's/\.snap\.new$/.snap/')
+    echo $new_f
+    cat $f | grep -v '^assertion_line' &gt; $new_f
+    rm $f
+done
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:27 UTC
+    </footer>
+</body>
+</html>

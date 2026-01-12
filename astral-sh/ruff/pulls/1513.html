@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use more precise error ranges for names - astral-sh/ruff #1513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use more precise error ranges for names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1513">#1513</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-12-31 15:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 15:21</div>
+            <div class="timeline-body"><p>Improves error ranges for the following rules:</p>
+<ul>
+<li>E741</li>
+<li>PLW0602</li>
+<li>PLE0117</li>
+</ul>
+<h3>Current</h3>
+<pre><code>&gt; cargo run -- --select PLW --no-cache --show-source resources/test/fixtures/pylint/global_variable_not_assigned.py --show-source
+resources/test/fixtures/pylint/global_variable_not_assigned.py:5:5: PLW0602 Using global for `x` but no assignment is done
+  |
+5 |     global x
+  |     ^^^^^^^^ PLW0602
+  |
+
+resources/test/fixtures/pylint/global_variable_not_assigned.py:9:5: PLW0602 Using global for `x` but no assignment is done
+  |
+9 |     global x
+  |     ^^^^^^^^ PLW0602
+  |
+
+Found 2 error(s).
+</code></pre>
+<h3>Fixed</h3>
+<pre><code>&gt; cargo run -- --select PLW --no-cache resources/test/fixtures/pylint/global_variable_not_assigned.py --show-source
+resources/test/fixtures/pylint/global_variable_not_assigned.py:5:12: PLW0602 Using global for `x` but no assignment is done
+  |
+5 |     global x
+  |            ^ PLW0602
+  |
+
+resources/test/fixtures/pylint/global_variable_not_assigned.py:9:12: PLW0602 Using global for `x` but no assignment is done
+  |
+9 |     global x
+  |            ^ PLW0602
+  |
+
+Found 2 error(s).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-31 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-31 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-01 04:28</div>
+            <div class="timeline-body"><p>What's the reasoning behind this range narrowing? The error is about using global, so I think including the <code>global</code> keyword in the range actually makes sense ... so I think I prefer the previous ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-01 04:58</div>
+            <div class="timeline-body"><p>@not-my-profile That makes sense. I'm happy to file a PR to revert the changes for PLW0602 and PLE0117.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-01 06:39</div>
+            <div class="timeline-body"><p>The range narrowing might make sense in the following case:</p>
+<pre><code class="language-python">def f():
+    global x, y, z
+    ^^^^^^^^^^^^^^
+    x = y = 1
+</code></pre>
+<p>vs.</p>
+<pre><code class="language-python">def f():
+    global x, y, z
+                 ^
+    x = y = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-01 07:23</div>
+            <div class="timeline-body"><p>Ah ok, yes that does make sense :) I assume ruff doesn't support multi-ranges?</p>
+<pre><code class="language-python">def f():
+    global x, y, z
+    ^^^^^^       ^
+    x = y = 1
+</code></pre>
+<p>Apparently <code>src/printer.rs</code> uses the <a href="https://crates.io/crates/annotate_snippets">annotate-snippets</a> library ... but I don't know if that library supports such annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 07:56</div>
+            <div class="timeline-body"><p>We don’t support multi-ranges right now. It could be useful but I’d need to think on it. It’s tricky because it doesn’t map well to the LSP schema.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:30 UTC
+    </footer>
+</body>
+</html>

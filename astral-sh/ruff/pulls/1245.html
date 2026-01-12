@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treat `extend-*` configuration options as &quot;always extended&quot; - astral-sh/ruff #1245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Treat <code>extend-*</code> configuration options as &quot;always extended&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1245">#1245</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-12-15 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 01:12</div>
+            <div class="timeline-body"><p>Now, every <code>--extend-ignore</code> and <code>--extend-select</code> pair is applied iteratively (rather than &quot;overriding&quot; the <code>--extend-ignore</code> and <code>--extend-select</code> of something else).</p>
+<p>This sounds complicated, but I think the semantics are more intuitive.</p>
+<p>As an example, say you have this in your <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;F&quot;]
+ignore = [&quot;F401&quot;]
+</code></pre>
+<p>Today, if you run <code>ruff /path/to/file.py --extend-select F401</code>, we won't actually detect <code>F401</code>, because <em>today</em>, it's treated as equivalent to:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;F&quot;, &quot;F401&quot;]
+ignore = [&quot;F401&quot;]
+</code></pre>
+<p>And ignores &quot;beat&quot; selects.</p>
+<p>As of this PR, the same setup <em>would</em> trigger <code>F401</code>, since we now resolve the first (select, ignore) pair, then apply the next (select, ignore) pair to the resolved codes, and so on.</p>
+<p>This is particularly useful with configuration extension via <code>extend</code>, as the child <code>pyproject.toml</code> can <em>always</em> enable and disable codes (whereas before, if a parent disabled a <em>specific</em> code, it was impossible for the child to re-enable it).</p>
+<p>Resolves #1216.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-15 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-15 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-15 01:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:25 UTC
+    </footer>
+</body>
+</html>

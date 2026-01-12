@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyflakes F632 Autofix - astral-sh/ruff #612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pyflakes F632 Autofix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/612">#612</a>
+        opened by <a href="https://github.com/squiddy">@squiddy</a>
+        on 2022-11-05 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-05 21:42</div>
+            <div class="timeline-body"><p>I haven't done much with Rust yet, so any feedback is appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 22:06</div>
+            <div class="timeline-body"><p>Awesome! Thank you for this. Will review tonight or tomorrow AM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-05 22:18</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>I've since found <code>SourceGenerator</code> and it might be better to use that instead of formatting the replacement code manually. I'll give it a try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 22:42</div>
+            <div class="timeline-body"><p>Yeah using SourceCodeGenerator would be preferable. Even better would be to try and implement the fix with LibCST since then we can preserve more of the original formatting. But it’s a little more involved and SourceCodeGenerator is good too. If you’re interested in the LibCST approach, you could look at how the flake8-comprehensions fixes are implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-05 22:46</div>
+            <div class="timeline-body"><p>Agreed, by the looks of it it is more involved, but I've dabbled with LibCST before so I'll give it a try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @squiddy on 2022-11-05 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-05 22:52</div>
+            <div class="timeline-body"><p>The strategy isn’t super well-documented but the basic idea is to extract the source code for the expression or statement, parse it with LibCST, modify the tree, then generate source code from the modified tree (and structure the fix as a replacement of the old source code with the new).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @squiddy on 2022-11-06 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-06 11:38</div>
+            <div class="timeline-body"><p>What's not clear to me currently is where to put code. I think in a different issue you mentioned you prefer more complex code into plugins. Are those supposed to be just an entrypoint and delegating to implementation in checks/fixes? Some trivial plugins just inline the logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-06 11:45</div>
+            <div class="timeline-body"><p>What you have here looks good / consistent with respect to code organization. “Checks” are typically small in size with no autofix. “Plugins” are typically more complex and/or benefit from direct access to the Checker to orchestrate autofixing. Some plugins call through to logic in “checks” but often I find that overkill.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-06 11:47</div>
+            <div class="timeline-body"><p>Thanks for the clarification.</p>
+<p>Amended the last commit to update the README to indicate this rule can be fixed automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-06 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/invalid_literal_comparisons.rs</code>:39 on 2022-11-06 11:47</div>
+            <div class="timeline-body"><p>Can this be accessed via checker.locator, rather than as an independent argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-06 11:48</div>
+            <div class="timeline-body"><p>Looks great! Am especially impressed if you haven’t done much Rust yet :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a> reviewed on 2022-11-06 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/pyflakes/plugins/invalid_literal_comparisons.rs</code>:39 on 2022-11-06 11:53</div>
+            <div class="timeline-body"><p>Oh, good catch. Took inspiration from some other plugin here, but checker.locator is nicer. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-06 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-06 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-06 11:58</div>
+            <div class="timeline-body"><p>Thank you for this! Pumped to have you as a contributor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-27 05:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:20 UTC
+    </footer>
+</body>
+</html>

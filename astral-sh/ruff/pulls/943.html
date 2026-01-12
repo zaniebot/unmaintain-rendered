@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(flake8_boolean_trap): add whitelist for dict methods - astral-sh/ruff #943</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(flake8_boolean_trap): add whitelist for dict methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/943">#943</a>
+        opened by <a href="https://github.com/pwoolvett">@pwoolvett</a>
+        on 2022-11-28 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pwoolvett">@pwoolvett</a> on 2022-11-28 16:16</div>
+            <div class="timeline-body"><p>This commit enables the skipping of FBT003 based on two conditions:</p>
+<ul>
+<li>function name must be explicitly whitelisted (for now, common dict methods). In the future, more could be added based on user requests.</li>
+<li>argument in function call must be one of the first two. The idea is to skip only things like <code>{}.get(False, &quot;default&quot;)</code> (for boolean keys) and <code>{}.get(key, True)</code> (for boolean defaults). Other method signature with a name in the whitelist can still potentially generate FBT003.</li>
+</ul>
+<p>fixes #893</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on 2022-11-28 16:16</div>
+            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/issues/893
+@obi-jerome,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-28 18:44</div>
+            <div class="timeline-body"><p>Upstream doesn’t raise FBT003 for method calls at all:</p>
+<p>https://github.com/pwoolvett/flake8_boolean_trap/blob/7783a47196411de1ca0d0670e9acf1be88829764/src/flake8_boolean_trap.py#L189</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:30 on 2022-11-28 20:50</div>
+            <div class="timeline-body"><p>Should it not be <em>exactly</em> the second argument, of two? Why &quot;one of the first two&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-28 20:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-28 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:30 on 2022-11-28 20:54</div>
+            <div class="timeline-body"><p>booleans can be used as keys, too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-28 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:30 on 2022-11-28 20:55</div>
+            <div class="timeline-body"><p>Oh right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:30 on 2022-11-28 20:56</div>
+            <div class="timeline-body"><p>I guess, as an exception, the first argument of <code>fromkeys</code> shouldn't be boolean given that it's always a tuple. That's fine though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-28 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-28 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-28 21:09</div>
+            <div class="timeline-body"><p>Consider the more inclusive term “allowlist”.</p>
+<p>If we’re going with this method name heuristic, some other candidates that come to mind are <code>set.add</code>, <code>list.append</code>, <code>set.discard</code>, <code>list.count</code>, <code>list.index</code>, <code>list.insert</code>, <code>list.remove</code>. There could be a lot of these, even before considering methods of custom classes. I think we should maybe start with upstream’s approach of ignoring method calls entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-28 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-28 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-28 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-28 21:17</div>
+            <div class="timeline-body"><p>Yeah, at least it's an independent check code so in theory can be opted out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-28 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-28 21:28</div>
+            <div class="timeline-body"><p>It’s not independent from the code used for non-method function calls.</p>
+<pre><code class="language-console">$ cat test.py
+def f(x):
+    pass
+
+
+f(True)
+[].append(True)
+
+$ flake8 test.py
+test.py:5:1: FBT003 do not use boolean positional args. Hint: in `f(..)`, refactor positional arg #0 to include its argument name
+
+$ ruff --select=FBT test.py
+Found 2 error(s).
+test.py:5:3: FBT003 Boolean positional value in function call
+test.py:6:11: FBT003 Boolean positional value in function call
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-28 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-28 21:35</div>
+            <div class="timeline-body"><p>Oh sorry, I misunderstood here. What do you think, @pwoolvett?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-28 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-28 22:31</div>
+            <div class="timeline-body"><p>My gut tells me many people will have fbt003 disabled. For it to be useful, we should have an explicit allowlist. Its not a pain to maintain, and prs are easy to merge: add test case with false positive and name to allowlist. list will grow and after a couple of iterations it should be stable. Dev will have to pay the price of potential false negatives, but its still better than no fbt003.</p>
+<ul>
+<li>Custom classes should be addressed by the dev when a bt is raised on codebase.</li>
+<li>For cases such as when a library emits a bt, eventually an option in the toml could be used to extend the allow list. But do note the main issue here is the signature for those stdlib methods explicitly disallows named arguments with the <code>/</code> token. Other cases are expected to be improved by the dev when possible by using named args.</li>
+<li>I have nothing against splitting func (fbt003)/methods (fbt004?), keeping comments above in mind.</li>
+</ul>
+<p>note: whatever is decided here will be implemented upstream eventually to keep them in sync.</p>
+<p>If you want to debate further, maybe discussions would be a better place, but i think theyre not ensbled...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:21 UTC
+    </footer>
+</body>
+</html>

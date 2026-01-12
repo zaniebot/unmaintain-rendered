@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add flake8-simplify SIM300 check for Yoda Conditions - astral-sh/ruff #1539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add flake8-simplify SIM300 check for Yoda Conditions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1539">#1539</a>
+        opened by <a href="https://github.com/PedramNavid">@PedramNavid</a>
+        on 2023-01-01 22:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/PedramNavid">@PedramNavid</a> on 2023-01-01 22:15</div>
+            <div class="timeline-body"><p>Adds a SIM300 Check for Yoda Conditions</p>
+<pre><code>resources/test/fixtures/flake8_simplify/SIM300.py:3:1: SIM300 Use `'yoda' == compare` instead of `compare == 'yoda' (Yoda-conditions)`
+resources/test/fixtures/flake8_simplify/SIM300.py:4:1: SIM300 Use `42 == age` instead of `age == 42 (Yoda-conditions)`
+Found 2 error(s).
+</code></pre>
+<p>Refs: https://github.com/charliermarsh/ruff/issues/998</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:4 on 2023-01-01 22:22</div>
+            <div class="timeline-body"><p>One condition that <code>flake8-simplify</code> seems to get wrong:</p>
+<pre><code class="language-py">&quot;yoda&quot; == &quot;yoda&quot;
+</code></pre>
+<p><code>flake8-simplify</code> gives me:</p>
+<pre><code>resources/test/fixtures/flake8_simplify/SIM300.py:10:1: SIM300 Use '&quot;yoda&quot; == &quot;yoda&quot;' instead of '&quot;yoda&quot; == &quot;yoda&quot;' (Yoda-conditions)
+</code></pre>
+<p>But we should probably avoid raising this in the event that both sides are constant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:3 on 2023-01-01 22:23</div>
+            <div class="timeline-body"><p>Couple other good test cases:</p>
+<ul>
+<li><code>x == y and 'yoda' == compare</code> (should raise)</li>
+<li><code>'yoda' == compare == 1</code> (shouldn't raise)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/yoda_conditions.rs</code>:8 on 2023-01-01 22:23</div>
+            <div class="timeline-body"><p>Mind just adding <code>/// SIM300</code> above this function? Helps a lot with grepping for rule implementations, since otherwise there's nothing tying this file to the check code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>CONTRIBUTING.md</code>:73 on 2023-01-01 22:24</div>
+            <div class="timeline-body"><p>I think this line might be repeated between here and the previous paragraph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-01 22:24</div>
+            <div class="timeline-body"><p>This looks great! Thank you for putting it together!</p>
+<p>Couple small things -- only behavior change would be catching the constant-constant case, if you agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PedramNavid">@PedramNavid</a> reviewed on 2023-01-01 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PedramNavid">@PedramNavid</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:4 on 2023-01-01 22:50</div>
+            <div class="timeline-body"><p>Oh good catch, I'll add another check. Might be worth creating an alert at some point when comparing constants with each other too. Can't think of any good reason to do it on purpose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-01 23:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:4 on 2023-01-01 23:00</div>
+            <div class="timeline-body"><p>Haha yeah the absurdity of that didn't even occur to me... I have my correctness hat on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-01 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-01 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 23:37</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 23:38</div>
+            <div class="timeline-body"><p>If you were interested in enabling autofix for this rule, you could take a look at the <code>compare</code> function in <code>src/pycodestyle/plugins.rs</code>, which demonstrates the use of <code>SourceCodeGenerator</code> to take a modified <code>AST</code> and generate Python source code from it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PedramNavid">@PedramNavid</a> on 2023-01-02 00:19</div>
+            <div class="timeline-body"><blockquote>
+<p>If you were interested in enabling autofix for this rule, you could take a look at the <code>compare</code> function in <code>src/pycodestyle/plugins.rs</code>, which demonstrates the use of <code>SourceCodeGenerator</code> to take a modified <code>AST</code> and generate Python source code from it.</p>
+</blockquote>
+<p>great next step. thanks for the hint i'll have a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-02 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenediktAllendorf">@BenediktAllendorf</a> on 2023-01-04 16:49</div>
+            <div class="timeline-body"><p>I was just writing an issue because I thought this check wanted me to use Yoda conditions, and thus it all didn't make sense to me. But now I think this is more of a communication thing, and I hope it's okay to address that here.</p>
+<p>First, I'm not sure if the description <code>Use left == right instead of right == left (Yoda-conditions)</code> is the best way to clarify what your code is generally supposed to look like according to this check.</p>
+<p>Second, <code>Use `42 == age` instead of `age == 42 (Yoda-conditions)` </code> (besides having the last tick at the wrong location) sounds like I should use that format (i.e., I should use Yoda-conditions), but I think the message is supposed to mean &quot;you are wrongly doing X instead of correctly doing Y&quot;?</p>
+<p>Maybe the message could be more along the line of:
+<code>Usage of Yoda-conditions is discouraged; use `age == 42` instead</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 17:08</div>
+            <div class="timeline-body"><p>Yeah this message was taken directly from <code>flake8-simplify</code> for simplicity (sorry for the pun). I'll tweak it a bit, I agree that it's suboptimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 21:05</div>
+            <div class="timeline-body"><p>(Fixed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenediktAllendorf">@BenediktAllendorf</a> on 2023-01-05 07:40</div>
+            <div class="timeline-body"><p>Thank you for your quick response! I'm very impressed by this tool and am looking forward to integrating it into our project(s) more and more!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:30 UTC
+    </footer>
+</body>
+</html>

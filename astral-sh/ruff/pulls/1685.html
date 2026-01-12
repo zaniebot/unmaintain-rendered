@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce Violation trait - astral-sh/ruff #1685</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce Violation trait</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1685">#1685</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-06 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 07:38</div>
+            <div class="timeline-body"><p>For every available rule registry.rs currently defines:</p>
+<ol>
+<li>A CheckCode variant to identify the rule.</li>
+<li>A CheckKind variant to represent violations of the rule.</li>
+<li>A mapping from the CheckCode variant to a placeholder CheckKind instance.</li>
+<li>A mapping from the CheckKind variant to CheckCode.</li>
+<li>A mapping from the CheckKind to a string description.</li>
+<li>A mapping from the CheckKind to a boolean indicating if autofix is available.</li>
+<li>A mapping from the CheckKind to a string describing the autofix if available.</li>
+</ol>
+<p>Since registry.rs defines all of this for every single rule and
+ruff has hundreds of rules, this results in the lines specific to
+a particular rule to be hundreds of lines apart, making the code
+cumbersome to read and edit.</p>
+<p>This commit introduces a new Violation trait so that the rule-specific
+details of the above steps 5.-7. can be defined next to the rule
+implementation. The idea is that once all CheckCode/CheckKind variants
+have been converted to this new approach then the steps 1.-4. in
+registry.rs could simply be generated via a declarative macro, e.g:</p>
+<pre><code>define_rule_mapping!(
+    E501 =&gt; pycodestyle::LineTooLong,
+    ...
+);</code></pre>
+<p>(where <code>pycodestyle::LineTooLong</code> would be a struct that implements the
+new Violation trait).</p>
+<p>The define_rule_mapping! macro would then take care of generating the
+CheckCode and CheckKind enums, as well as all of the implementations for
+the previously mentioned mappings, by simply calling the methods of the
+new Violation trait.</p>
+<p>There is another nice benefit from this approach: We want to introduce
+more thorough documentation for rules and we want the documentation of a
+rule to be defined close by the implementation (so that it's easier to
+check if they match and that they're less likely to become out of sync).
+Since these new Violation structs can be defined close by the
+implementation of a rule we can also use them as an anchor point for the
+documentation of a rule by simply adding the documentation in the form
+of a Rust doc comment to the struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @not-my-profile on 2023-01-06 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 11:20</div>
+            <div class="timeline-body"><p>I think that this new structure would also simplify contributions since you would no longer need a script (<code>scripts/add_check.py </code>) to generate the necessary boilerplate but could just copy some example code from <code>CONTRIBUTING.md</code> to some plugin file and add a single line to <code>registry.rs</code>.</p>
+<p>And the proposed <code>define_rule_mapping!</code> macro would also address #419.</p>
+<p>The conversion to the new structure would would require changes like the ones in my second commit for every single rule,  so this conversion would probably best be automated via a single-use Python script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 12:36</div>
+            <div class="timeline-body"><p>\cc @squiddy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 12:43</div>
+            <div class="timeline-body"><p>I think something like this based on traits and macros makes sense and is very likely where we should go (so as to get rid of the current approach in <code>registry.rs</code>, which is very unwieldy).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:974 on 2023-01-06 12:45</div>
+            <div class="timeline-body"><p>I'm feeling dumb but trying to wrap my head around why we still need the <code>CheckKind</code> enum at all in this world. I believe we do, but I'm trying to explain why to myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:1184 on 2023-01-06 12:46</div>
+            <div class="timeline-body"><p>So, the idea is that once we've migrated all checks, everything in this file could be generated via a macro (apart from the code-to-kind mapping)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:203 on 2023-01-06 12:46</div>
+            <div class="timeline-body"><p>We could almost certainly auto-generate these too for the initial migration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/registry.rs</code>:974 on 2023-01-06 14:54</div>
+            <div class="timeline-body"><p>We could get rid of it if we used boxed trait objects, i.e. <code>Box&lt;&amp;dyn Violation&gt;</code> ... method calls on trait objects come with some overhead and boxing requires a heap allocation ... but that overhead is probably negligible. The trait would however need to be changed to be <a href="https://doc.rust-lang.org/reference/items/traits.html#object-safety">object safe</a> which would mean it could no longer have <code>Serialize</code> or <code>DeserializeOwned</code> as supertraits because these traits aren't object-safe ... that could be worked around by using something like <a href="https://crates.io/crates/erased-serde">erased-serde</a>.</p>
+<p>As long as we don't need to use trait objects I think continuing to use an enum is easier. And since we can automatically generate the enum along with all necessary implementations via a macro it wouldn't be as annoying anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:974 on 2023-01-06 14:55</div>
+            <div class="timeline-body"><p>I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/registry.rs</code>:1184 on 2023-01-06 14:57</div>
+            <div class="timeline-body"><p>Yes that's very much the idea :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:203 on 2023-01-06 14:58</div>
+            <div class="timeline-body"><p>Yes that's what I meant by:</p>
+<blockquote>
+<p>this conversion would probably best be automated via a single-use Python script</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 15:03</div>
+            <div class="timeline-body"><p>Ok, great then I'll go ahead with attempting to write a Python script to convert everything in registry.rs to the new structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:162 on 2023-01-06 15:12</div>
+            <div class="timeline-body"><p>I think ideally <code>autofix_available</code> and <code>autofix_description</code> would be coupled. We enforce it with a test now. (e.g., <code>autofix_available</code> is effectively <code>autofix_description.is_some()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:162 on 2023-01-06 15:12</div>
+            <div class="timeline-body"><p>I think ideally <code>autofix_available</code> and <code>autofix_description</code> would be coupled. We enforce it with a test now. (e.g., <code>autofix_available</code> is effectively <code>autofix_description.is_some()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:203 on 2023-01-06 15:12</div>
+            <div class="timeline-body"><p>Ah sorry, I thought this was referring specifically to the code-to-kind mapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:152 on 2023-01-06 15:13</div>
+            <div class="timeline-body"><p>I think for now I'd prefer that these are still defined in <code>registry.rs</code>, even if they're defined as standalone structs that implement <code>Violation</code>. Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:162 on 2023-01-06 15:18</div>
+            <div class="timeline-body"><p>(I think GitHub glitched ... resolving this since the same comment is above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:203 on 2023-01-06 15:19</div>
+            <div class="timeline-body"><p>No worries :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:162 on 2023-01-06 15:22</div>
+            <div class="timeline-body"><p>Oh sorry, it said it failed the first time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:162 on 2023-01-06 15:37</div>
+            <div class="timeline-body"><p>Thanks for bringing that up! I agree. I think the best solution is to replace both trait methods with:</p>
+<pre><code class="language-rs">    fn autofix_formatter(&amp;self) -&gt; Option&lt;fn(&amp;Self) -&gt; String&gt; { None }
+</code></pre>
+<p>Since implementing that trait method however becomes a bit awkward since you need to define the formatter as an additional function, I think it would make sense to introduce another trait <code>AlwaysAutofixableViolation</code> that implements <code>Violation</code> via a blanket implementation ... I already implemented that, I'll force push it shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:152 on 2023-01-06 15:40</div>
+            <div class="timeline-body"><p>This would certainly simplify the conversion of <code>registry.rs</code> since then the conversion script wouldn't have to deal with editing multiple files / module visibility and adding imports. So yes I think for the initial conversion that makes sense ... nice idea, I didn't consider that.</p>
+<p>We can then gradually over time move the structs &amp; Violation impls to the other modules ... do you agree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:152 on 2023-01-06 16:18</div>
+            <div class="timeline-body"><p>I just realized that there is a slight drawback ... we have to make all the struct fields public because otherwise the other modules cannot construct the structs.</p>
+<p>And we still have to update every <code>Check::new</code> call to construct these new structs and call <code>.into()</code>. (but we have to do that in any case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:152 on 2023-01-06 22:41</div>
+            <div class="timeline-body"><p>Could we instead introduce a <code>registry.rs</code> in each plugin folder (like <code>flake8_simplify/registry.rs</code>), and define the checks for each plugin within that crate? Maybe make the fields <code>pub(crate)</code>? Or does that have the same issues?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 23:00</div>
+            <div class="timeline-body"><p>Alright ... I have implemented this in 10 commits ... the commit message of the 3rd commit contains the Python code I used to generate the new structs &amp; trait implementations (that code isn't exactly pretty but it works and it shouldn't really matter since nobody will ever run it again).</p>
+<p>I think this is ready for review ... (you probably want to look at this commit by commit) ... once reviewed somebody will have to perform these steps again since the main branch has now advanced a couple commits since I started the process. Redoing all of this is quite a hassle and only makes sense when this PR gets merged right after and all other PRs are put on hold in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-06 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/flake8_simplify/plugins/ast_bool_op.rs</code>:152 on 2023-01-06 23:22</div>
+            <div class="timeline-body"><p>I would prefer to deal with the moving of the new structs/impls to other modules in a followup PR ... this PR is already huge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 23:50</div>
+            <div class="timeline-body"><p>Sidenote 1: I didn't include the <code>summary</code> function in the <code>Violation</code> trait since I don't think having it makes sense ... I think the message should be a short error message and more thorough documentation IMO belongs in the docstring of the struct (which could then also be shown by e.g. <code>--explain</code> or a dedicated web app, see also #1467).</p>
+<p>Sidenote 2: I intentionally did not include a <code>category</code> function in the <code>Violation</code> trait since I think <code>CheckCode::category</code> is best generated completely automatically just based on the code prefixes (or probably <code>define_rule_mapping!</code>) via a proc macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 23:51</div>
+            <div class="timeline-body"><p>Great, I'll try to review this soon!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 23:52</div>
+            <div class="timeline-body"><p>(As for the merging: let's just aim to do a final rebase + force push to this branch once it's in a finished state, then merge without squashing, then I'm happy to be responsible for updating outstanding PRs. Does that sound good?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-06 23:54</div>
+            <div class="timeline-body"><p>Yes that sounds great :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 23:56</div>
+            <div class="timeline-body"><p>I promise not to squash :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violation.rs</code>:30 on 2023-01-07 00:27</div>
+            <div class="timeline-body"><p>Nit: should this be <code>autofix_message</code> or <code>fix_message</code>, for consistency with <code>message</code> (and with the docstring)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violation.rs</code>:42 on 2023-01-07 00:28</div>
+            <div class="timeline-body"><p>Is this name required to differ from <code>autofix_description</code>, to avoid a collision?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:1323 on 2023-01-07 00:29</div>
+            <div class="timeline-body"><p>I'm fine with removing <code>summary</code>. It really just existed for a few <code>flake8-bugbear</code> checks that had super long messages, and that I preserved verbatim by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violation.rs</code>:1 on 2023-01-07 00:30</div>
+            <div class="timeline-body"><p>Given the discussion in #1546, my understanding is that everywhere we used <code>Violation</code> in this PR should be called <code>Rule</code>, and that the <code>Check</code> struct should be renamed to violation. Is that right? Am I misunderstanding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:1 on 2023-01-07 00:31</div>
+            <div class="timeline-body"><p>We should do some light reformatting of this file prior to merging: put all the section headers (<code>// pycodestyle errors</code>) on their own lines, add a blank line before each <code>define_violation!(...)</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:861 on 2023-01-07 00:32</div>
+            <div class="timeline-body"><p>I think <code>MockReference</code>, <code>Branch</code>, etc. (the enums used as members on the <code>Violation</code> structs) should be moved out of this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:1211 on 2023-01-07 00:35</div>
+            <div class="timeline-body"><p>I'm having trouble commenting in the right spots due to the size of the PR, but do you think <code>lint_source</code> and <code>category</code> should eventually be part of the <code>Violation</code> trait? It might be hard to move <code>lint_source</code> right now because we need a way to go from &quot;enabled codes&quot; to &quot;sources of lint to invoke&quot;, and going from &quot;enabled code&quot; to <code>Violation</code> is an awkward operation (since it requires populating fields with placeholders -- although maybe this is doable now via associated functions?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 00:35</div>
+            <div class="timeline-body"><p>This looks really nice! I'm happy with the direction here. Thank you for all the work you put into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:30 on 2023-01-07 06:00</div>
+            <div class="timeline-body"><p>Good point. I think I favor <code>description</code> over <code>message</code> because &quot;message&quot; begs the question &quot;message to whom and about what?&quot; So I think I'd rather rename <code>message</code> to <code>description</code>, to have <code>description</code> and <code>autofix_description</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:42 on 2023-01-07 06:02</div>
+            <div class="timeline-body"><p>No that's not necessary, trait method calls can be qualified like <code>&lt;MyStruct as MyTrait&gt;.foobar()</code>. However since the function does something different, I really think it should be called something different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:1 on 2023-01-07 06:37</div>
+            <div class="timeline-body"><p>Yes I think you are misunderstanding.</p>
+<p>The <code>self</code> in the trait refers to a specific violation, so I think it makes sense to also name the trait <code>Violation</code>.
+This also means we cannot name the <code>Check</code> struct &quot;Violation&quot; as well since that would lead to <a href="https://doc.rust-lang.org/stable/error_codes/E0252.html">E0252</a>.</p>
+<p>I agree that <code>Check</code> should be renamed ... I am starting to think that <code>Diag</code> (short for Diagnostic) would make sense. I just elaborated a bit more in a comment on the issue: https://github.com/charliermarsh/ruff/issues/1546#issuecomment-1374393270</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violations.rs</code>:1 on 2023-01-07 06:44</div>
+            <div class="timeline-body"><p>Good point ... I can adapt the Python script of the third commit to take care of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/registry.rs</code>:861 on 2023-01-07 06:45</div>
+            <div class="timeline-body"><p>I agree but I'd like to leave moving stuff around between modules to followup PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 06:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:30 on 2023-01-07 06:53</div>
+            <div class="timeline-body"><p>Although looking at the Language Server Protocol it does have <code>Diagnostic.message</code> ... so message does probably make sense ... LSP also has <code>CodeAction.title</code> so we could name the second function <code>autofix_title</code>. WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/registry.rs</code>:1211 on 2023-01-07 07:08</div>
+            <div class="timeline-body"><p>Yes I think it probably makes sense to add <code>lint_source</code> to the <code>Violation</code> trait ... since the <code>lint_source</code> function has so few match arms, doing that manually in the future shouldn't pose any issues. And yes since the Violation trait isn't object-safe anyway we can easily add functions that don't take <code>&amp;self</code> and therefore can be called without instantiation.</p>
+<p>I don't like the name &quot;category&quot;, <a href="https://github.com/charliermarsh/ruff/issues/1546#issuecomment-1374397617">see my comment here</a>. I'd rather call the function <code>origin</code>. In any case that function can be completely autogenerated just based on the code prefixes, so I think it makes more sense to generate it via a proc macro instead of adding it to the trait.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-07 07:23</div>
+            <div class="timeline-body"><p>@charliermarsh I'm starting the rebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-01-07 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:30 on 2023-01-07 08:11</div>
+            <div class="timeline-body"><p>Changed to <code>autofix_title</code> ... I think it nicely emphasizes that the description should not be too detailed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @not-my-profile on 2023-01-07 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-07 16:05</div>
+            <div class="timeline-body"><p>Let me know when you want to merge this, then I can rebase the PR for a final time :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:861 on 2023-01-07 16:24</div>
+            <div class="timeline-body"><p>Ok, no prob.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violation.rs</code>:1 on 2023-01-07 16:26</div>
+            <div class="timeline-body"><p>Ah, right, ok. This makes sense. Does &quot;rule&quot; exist in the codebase at all then? Would a &quot;rule&quot; be the function that takes in the source code data (AST nodes, tokens, whatever) and generates diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violation.rs</code>:30 on 2023-01-07 16:31</div>
+            <div class="timeline-body"><p>Yeah that sounds reasonable. I'm happy to mirror the LSP conventions where they map nicely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/registry.rs</code>:1211 on 2023-01-07 16:31</div>
+            <div class="timeline-body"><p>Origin is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 16:32</div>
+            <div class="timeline-body"><p>Cool, let's just sort out the final semantics around Violation vs. Diagnostic vs. Rule, then hopefully we can get this merged some time this weekend (or whenever you're available, no pressure).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 16:33</div>
+            <div class="timeline-body"><p>(I also want to do a quick sanity check to ensure there are no major perf changes prior to merging. I don't expect any, but it's a large change and it's worth validating.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violation.rs</code>:1 on 2023-01-07 16:55</div>
+            <div class="timeline-body"><p>Yes I'd consider the functions that create the diagnostics to be the definitions of the rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 17:31</div>
+            <div class="timeline-body"><blockquote>
+<p>(I also want to do a quick sanity check to ensure there are no major perf changes prior to merging. I don't expect any, but it's a large change and it's worth validating.)</p>
+</blockquote>
+<p>No noticeable changes, as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:27 on 2023-01-07 17:36</div>
+            <div class="timeline-body"><p>Can these references be <code>Self</code> instead? It looks like it from my testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:49 on 2023-01-07 17:36</div>
+            <div class="timeline-body"><p>Similarly, can this be <code>let Self(length, limit) = self</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-01-07 17:39</div>
+            <div class="timeline-body"><p>Ok, this looks good to me.</p>
+<p>To articulate some of the outstanding work for future PRs:</p>
+<ul>
+<li>Move some structs out of <code>registry.rs</code>.</li>
+<li>Move some methods like <code>lint_source</code> off of <code>CheckCode</code>.</li>
+<li>Update the <code>CONTRIBUTING.md</code> to point to <code>violations.rs</code>.</li>
+<li>Rename <code>Check</code> to <code>Diagnostic</code>.</li>
+<li>Rename <code>CheckKind</code> to... something else.</li>
+<li>Get rid of or rename <code>Message</code>.</li>
+<li>Change <code>category()</code> to <code>origin()</code>.</li>
+<li>Remove the <code>checks</code> and <code>plugins</code> convention; replace with <code>rules</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violations.rs</code>:27 on 2023-01-07 18:32</div>
+            <div class="timeline-body"><p>Yes they can be. However I think it makes more sense to get rid of <code>placeholder</code> entirely instead. We only use it for documentation and I think it often does a very poor job at that e.g. <code>'...' % ... expected mapping but got sequence</code> or <code>... is banned: ...</code> really are not informative and looking at the placeholder message often is confusing since it's not clear what is part of the message and what is interpolated.</p>
+<p>I think as soon as we have a system where the rules can be documented via Rust doc comments on the structs we can look into getting rid of placeholder in favor of the new doc comments.</p>
+<p>So I think you can add &quot;Document rules via doc comments on violation structs&quot; to your list of things to do for future PRs :)</p>
+<p>If we still want to document the message format strings I think that's best achieved via a proc macro. In any case I don't think hand-written placeholder implementations make much sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-07 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/violations.rs</code>:49 on 2023-01-07 18:35</div>
+            <div class="timeline-body"><p>Yes that works. However I would rather have us establish the practice of using named fields instead e.g.</p>
+<pre><code class="language-rust">struct LineTooLong { length: usize, limit: usize }
+</code></pre>
+<p>in which case we could get rid of that <code>let</code> statement entirely and just use e.g. <code>self.length</code> and <code>self.limit</code>.</p>
+<p>(but again I think that's something for future PRs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:49 on 2023-01-07 18:42</div>
+            <div class="timeline-body"><p>I agree with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-07 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:27 on 2023-01-07 18:45</div>
+            <div class="timeline-body"><p>I agree. Though, of course, we do need the placeholders <em>for now</em> until we have an alternative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-07 18:53</div>
+            <div class="timeline-body"><p>I have time right now ... should I do the rebase now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 18:55</div>
+            <div class="timeline-body"><p>Go for it. I’m busy for a bit but will merge this next, then rebase any open PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-07 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-07 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 20:28</div>
+            <div class="timeline-body"><p>Having the violations defined in one struct like this is so much cleaner. It's a huge improvement.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-generate options in README from field attributes - astral-sh/ruff #1015</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-generate options in README from field attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1015">#1015</a>
+        opened by <a href="https://github.com/squiddy">@squiddy</a>
+        on 2022-12-03 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-03 20:31</div>
+            <div class="timeline-body"><p>This implements a proc macro to derive metadata from the structs that define all available options. I'm opening this pull request primarly to get feedback on whether this is a sensible approach.</p>
+<p><code>src/settings/options.rs</code> shows how the attributes are used to add additional information to options.
+<code>ruff_dev/src/generate_options.rs</code> shows how that is used to autogenerate the options in the readme.</p>
+<p>I'm using macros here mostly to learn about them (which is why the macro implementation is pretty rough), but also because I think they fit well here. And they might help us structuring all the lints better, similar to clippy does it?</p>
+<ul>
+<li>[x] macro: cleanup code</li>
+<li>[x] macro: proper error handling</li>
+<li>[x] doc: complete root options</li>
+<li>[x] doc: complete flake8_annotations</li>
+<li>[x] doc: complete flake8_bugbear</li>
+<li>[x] doc: complete flake8_quotes</li>
+<li>[x] doc: complete flake8_tidy_imports</li>
+<li>[x] doc: complete eisort</li>
+<li>[x] doc: complete mccabe</li>
+<li>[x] doc: complete pep8_naming</li>
+<li>[x] doc: complete pyupgrade</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP Auto-generate options in README from field attributes" to "Auto-generate options in README from field attributes" by @squiddy on 2022-12-03 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-03 21:56</div>
+            <div class="timeline-body"><p>This is really interesting! Learning a lot just from reading it (I'm not a macro expert by any means).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-03 22:01</div>
+            <div class="timeline-body"><p>I think this makes a lot of sense. I have some small nits on the code but I'd def encourage you to follow this through to its conclusion (e.g., we need to handle all the various <code>Options</code> structs, support multiple sections, and so on), and I'm happy to merge it as soon as it generates the existing docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-04 09:35</div>
+            <div class="timeline-body"><p>Thanks for the feedback.</p>
+<p>The macro code itself is still a mess, but I started attributing more options. Groups are also supported now. I'm quite confident in the output right now, the diff in the README is small. Most changes result from different line wrapping and the order of options being different in the struct vs. the README.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 14:54</div>
+            <div class="timeline-body"><p>If you want to focus on macro clean-up, I can commit to translating all of the remaining options to use that syntax once the PR is good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 14:54</div>
+            <div class="timeline-body"><p>(I don't mind the grunt work.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-04 15:28</div>
+            <div class="timeline-body"><p>Oh yeah, that would be great. Might also be a good opportunity to spot things that I could still improve.</p>
+<p>I think I made some good steps with the macro cleanup already (learning on the go), will push that later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-05 07:03</div>
+            <div class="timeline-body"><p>This is ready for a closer review. Cleaned up the macro as far as my current abilities go. I had some other ideas, but those are perhaps not necessary in this PR.</p>
+<p><strong>automated default and type</strong></p>
+<p>Given something like <code>Option&lt;bool&gt;</code> or <code>Option&lt;Vec&lt;Something&gt;&gt;</code>, automatically assume the default is <code>false</code> or <code>[]</code> - unless explicitely overriden.</p>
+<p><strong>parse default directly as tokens, not as a string</strong></p>
+<p>Instead of writing <code>default = &quot;`[]`&quot;</code> or <code>default = r#&quot;`&quot;text&quot;`&quot;#</code>, allow to just write <code>default = []</code> or <code>default = &quot;text&quot;</code>.</p>
+<p><strong>validate example</strong></p>
+<p>We already have a dependency on toml, so we could try to parse the example code to verify it's actually valid syntax.</p>
+<hr />
+<p>And perhaps a CI step to run those commands that update the README and ensure there is no diff, i.e. when adding options / lints make sure the PR already ran those commands?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @squiddy on 2022-12-05 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 15:12</div>
+            <div class="timeline-body"><p>Cool, will give this a full review and then hopefully merge today after converting the remaining options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 22:23</div>
+            <div class="timeline-body"><p>(Doing this now :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 00:14</div>
+            <div class="timeline-body"><p>Will finish this tonight. I'd like to tweak the ordering of the options. It'd be nice, too, if <code>per-file-ignores</code> could appear at the top, despite being at the bottom of the struct for dumb TOML reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eddyg">@eddyg</a> reviewed on 2022-12-06 03:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eddyg">@eddyg</a> on <code>src/settings/options.rs</code>:30 on 2022-12-06 03:06</div>
+            <div class="timeline-body"><p>Is the documentation for this option missing, or am I just not understanding this PR? 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-06 03:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/options.rs</code>:30 on 2022-12-06 03:08</div>
+            <div class="timeline-body"><p>The documentation for that option is missing, thank you :)</p>
+<p>(Bad rebase, it was added after.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eddyg">@eddyg</a> reviewed on 2022-12-06 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eddyg">@eddyg</a> on <code>README.md</code>:1299 on 2022-12-06 03:18</div>
+            <div class="timeline-body"><p>this should say:</p>
+<blockquote>
+<p>... and the asterisk-operator (U+2217)</p>
+</blockquote>
+<p>(assuming you want to use <code>&quot;*&quot;</code> and <code>&quot;∗&quot;</code> in the example) 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>README.md</code>:1299 on 2022-12-06 03:24</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-06 03:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-06 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-06 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-06 05:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:22 UTC
+    </footer>
+</body>
+</html>

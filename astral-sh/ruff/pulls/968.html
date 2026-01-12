@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add JUnit xml output format - astral-sh/ruff #968</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add JUnit xml output format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/968">#968</a>
+        opened by <a href="https://github.com/messense">@messense</a>
+        on 2022-11-30 04:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/messense">@messense</a> on 2022-11-30 04:39</div>
+            <div class="timeline-body"><p>Closes #963</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>Cargo.toml</code>:40 on 2022-11-30 04:39</div>
+            <div class="timeline-body"><p>https://github.com/nextest-rs/nextest/tree/main/quick-junit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2022-11-30 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-30 04:40</div>
+            <div class="timeline-body"><p>I'm not sure how to organize the output, needs more research, currently:</p>
+<pre><code class="language-bash">cargo run resources/test/fixtures/A001.py --format junit
+    Finished dev [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/ruff resources/test/fixtures/A001.py --format junit`
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites name=&quot;ruff&quot; tests=&quot;4&quot; failures=&quot;4&quot; errors=&quot;0&quot;&gt;
+    &lt;testsuite name=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; tests=&quot;4&quot; disabled=&quot;0&quot; errors=&quot;0&quot; failures=&quot;4&quot;&gt;
+        &lt;testcase name=&quot;Pyflakes&quot; file=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;1&quot;&gt;
+            &lt;failure message=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:1:8: `some` imported but unused&quot; type=&quot;F401&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;Pyflakes&quot; file=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;2&quot;&gt;
+            &lt;failure message=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:2:18: `some.other` imported but unused&quot; type=&quot;F401&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;Pyflakes&quot; file=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;5&quot;&gt;
+            &lt;failure message=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:5:12: Undefined name `annotation`&quot; type=&quot;F821&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;Pyflakes&quot; file=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;18&quot;&gt;
+            &lt;failure message=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:18:1: Local variable `ValueError` is assigned to but never used&quot; type=&quot;F841&quot;/&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+</code></pre>
+<p>Some questions:</p>
+<ul>
+<li><code>testsuites name=&quot;ruff&quot;</code> how should we fill <code>testsuites.name</code> value?</li>
+<li><code>testsuite name=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot;</code> how should we fill <code>testsuite.name</code> value?</li>
+<li><code>testcase name=&quot;Pyflakes&quot;</code> how should we fill <code>testcase.name</code> value?</li>
+<li><code>&lt;failure message=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:18:1: Local variable </code>ValueError<code> is assigned to but never used&quot; type=&quot;F841&quot;/&gt;</code> how should we fill the <code>failure.type</code> value?</li>
+<li>Should we make file names relative instead of absolute?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-30 04:47</div>
+            <div class="timeline-body"><p>References:</p>
+<ul>
+<li><a href="https://github.com/astj/flake8-formatter-junit-xml">flake8-formatter-junit-xml</a>: https://github.com/astj/flake8-formatter-junit-xml/blob/master/tests/expected.xml</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 04:53</div>
+            <div class="timeline-body"><p>This is great! I have to look into the conventions here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 04:54</div>
+            <div class="timeline-body"><p>Another reference: https://eslint.org/docs/latest/user-guide/formatters/#junit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 04:56</div>
+            <div class="timeline-body"><p>So for ESLint:</p>
+<ul>
+<li><code>testsuites</code> (name is empty)</li>
+<li><code>testsuite package=&quot;org.ruff&quot; name=&quot;/path/to/file.py&quot;</code></li>
+<li><code>testcase name=&quot;org.ruff.F841&quot; classname=&quot;/path/to/file&quot;</code> (maybe <code>path.to.module</code>?)</li>
+<li>They don't seem to use any failure type, just the message</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>src/commands.rs</code>:65 on 2022-11-30 04:59</div>
+            <div class="timeline-body"><p>I don't think it's useful to have <code>--explain</code> to output junit xml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2022-11-30 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-30 05:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/commands.rs</code>:65 on 2022-11-30 05:02</div>
+            <div class="timeline-body"><p>I agree, log some feedback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-30 05:16</div>
+            <div class="timeline-body"><pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites name=&quot;ruff&quot; tests=&quot;4&quot; failures=&quot;4&quot; errors=&quot;0&quot;&gt;
+    &lt;testsuite name=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; tests=&quot;4&quot; disabled=&quot;0&quot; errors=&quot;0&quot; failures=&quot;4&quot; package=&quot;org.ruff&quot;&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;1&quot; column=&quot;8&quot;&gt;
+            &lt;failure message=&quot;`some` imported but unused&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;2&quot; column=&quot;18&quot;&gt;
+            &lt;failure message=&quot;`some.other` imported but unused&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F821&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;5&quot; column=&quot;12&quot;&gt;
+            &lt;failure message=&quot;Undefined name `annotation`&quot;/&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F841&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; line=&quot;18&quot; column=&quot;1&quot;&gt;
+            &lt;failure message=&quot;Local variable `ValueError` is assigned to but never used&quot;/&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+</code></pre>
+<ul>
+<li>I guess <code>testsuites.name</code> is irrelevant, but <code>quick-junit</code> requires a name so give it <code>ruff</code>.</li>
+<li>Should we add <code>end_location</code> to <code>testcase</code>? <code>location</code> is already added as <code>line</code> and <code>column</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-30 05:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:122 on 2022-11-30 05:27</div>
+            <div class="timeline-body"><p>The ESLint version strips the <code>.js</code> suffix, so maybe we should do that? I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 05:28</div>
+            <div class="timeline-body"><p>I think it's fine to omit the end location.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2022-11-30 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>src/printer.rs</code>:122 on 2022-11-30 05:34</div>
+            <div class="timeline-body"><pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites name=&quot;ruff&quot; tests=&quot;4&quot; failures=&quot;4&quot; errors=&quot;0&quot;&gt;
+    &lt;testsuite name=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; tests=&quot;4&quot; disabled=&quot;0&quot; errors=&quot;0&quot; failures=&quot;4&quot; package=&quot;org.ruff&quot;&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;1&quot; column=&quot;8&quot;&gt;
+            &lt;failure message=&quot;`some` imported but unused&quot;&gt;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:1:8: `some` imported but unused&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;2&quot; column=&quot;18&quot;&gt;
+            &lt;failure message=&quot;`some.other` imported but unused&quot;&gt;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:2:18: `some.other` imported but unused&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F821&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;5&quot; column=&quot;12&quot;&gt;
+            &lt;failure message=&quot;Undefined name `annotation`&quot;&gt;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:5:12: Undefined name `annotation`&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F841&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;18&quot; column=&quot;1&quot;&gt;
+            &lt;failure message=&quot;Local variable `ValueError` is assigned to but never used&quot;&gt;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py:18:1: Local variable `ValueError` is assigned to but never used&lt;/failure&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @messense on 2022-11-30 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-30 05:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:122 on 2022-11-30 05:40</div>
+            <div class="timeline-body"><p>Can we omit the filename from the message, like in ESLint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2022-11-30 05:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>src/printer.rs</code>:122 on 2022-11-30 05:45</div>
+            <div class="timeline-body"><p>Done.</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites name=&quot;ruff&quot; tests=&quot;4&quot; failures=&quot;4&quot; errors=&quot;0&quot;&gt;
+    &lt;testsuite name=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001.py&quot; tests=&quot;4&quot; disabled=&quot;0&quot; errors=&quot;0&quot; failures=&quot;4&quot; package=&quot;org.ruff&quot;&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;1&quot; column=&quot;8&quot;&gt;
+            &lt;failure message=&quot;`some` imported but unused&quot;&gt;line 1, col 8, `some` imported but unused&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F401&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;2&quot; column=&quot;18&quot;&gt;
+            &lt;failure message=&quot;`some.other` imported but unused&quot;&gt;line 2, col 18, `some.other` imported but unused&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F821&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;5&quot; column=&quot;12&quot;&gt;
+            &lt;failure message=&quot;Undefined name `annotation`&quot;&gt;line 5, col 12, Undefined name `annotation`&lt;/failure&gt;
+        &lt;/testcase&gt;
+        &lt;testcase name=&quot;org.ruff.F841&quot; classname=&quot;/Users/messense/Projects/ruff/resources/test/fixtures/A001&quot; line=&quot;18&quot; column=&quot;1&quot;&gt;
+            &lt;failure message=&quot;Local variable `ValueError` is assigned to but never used&quot;&gt;line 18, col 1, Local variable `ValueError` is assigned to but never used&lt;/failure&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-30 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-30 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-30 05:47</div>
+            <div class="timeline-body"><p>Stellar, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-11-30 05:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:21 UTC
+    </footer>
+</body>
+</html>

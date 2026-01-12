@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `consider-merging-isinstance` - astral-sh/ruff #1009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>consider-merging-isinstance</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1009">#1009</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-12-03 08:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-12-03 08:49</div>
+            <div class="timeline-body"><p>#970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 08:56</div>
+            <div class="timeline-body"><img width="927" alt="image" src="https://user-images.githubusercontent.com/17039389/205432886-b54be501-b7c3-479a-a3d1-774732fb358a.png">
+
+<p>I'm not sure if this is intended, but the start location of a <code>BoolOp</code> expression is the start location of <code>or</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 08:57</div>
+            <div class="timeline-body"><p>RustPython's code:</p>
+<p>https://github.com/RustPython/RustPython/blob/18af44b7c7410c3448df1f3b080bd358e586d265/compiler/parser/python.lalrpop#L758</p>
+<pre><code>OrTest: ast::Expr = {
+    &lt;e1:AndTest&gt; &lt;location:@L&gt; &lt;e2:(&quot;or&quot; AndTest)*&gt; &lt;end_location:@R&gt; =&gt; {
+        if e2.is_empty() {
+            e1
+        } else {
+            let mut values = vec![e1];
+            values.extend(e2.into_iter().map(|e| e.1));
+            ast::Expr {
+                location,
+                end_location: Some(end_location),
+                custom: (),
+                node: ast::ExprKind::BoolOp { op: ast::Boolop::Or, values }
+            }
+        }
+    },
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:22 on 2022-12-03 09:01</div>
+            <div class="timeline-body"><p>In the current implementation, this line doesn't emit an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 09:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 09:23</div>
+            <div class="timeline-body"><p>Moving <code>&lt;location:@L&gt;</code> before <code>&lt;e1:AndTest&gt;</code> seems to work?</p>
+<p>https://github.com/harupy/RustPython/blob/3835575a831dafe48fa4ddbae895960a377f1227/compiler/parser/python.lalrpop#L759</p>
+<pre><code>OrTest: ast::Expr = {
+    &lt;location:@L&gt; &lt;e1:AndTest&gt; &lt;e2:(&quot;or&quot; AndTest)*&gt; &lt;end_location:@R&gt; =&gt; {
+    ^^^^^^^^^^^^^
+        if e2.is_empty() {
+            e1
+        } else {
+            let mut values = vec![e1];
+            values.extend(e2.into_iter().map(|e| e.1));
+            ast::Expr {
+                location,
+                end_location: Some(end_location),
+                custom: (),
+                node: ast::ExprKind::BoolOp { op: ast::Boolop::Or, values }
+            }
+        }
+    },
+};
+</code></pre>
+<img width="927" alt="image" src="https://user-images.githubusercontent.com/17039389/205433820-5679cb35-918d-4217-842b-d4bda29e03c1.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 09:39</div>
+            <div class="timeline-body"><pre><code class="language-python">import ast
+
+# Visitor to print out node locations
+class V(ast.NodeVisitor):
+    def visit_BoolOp(self, node: ast.BoolOp) -&gt; None:
+        print(
+            node.__class__.__name__,
+            (node.lineno, node.col_offset),
+            (node.end_lineno, node.end_col_offset),
+        )
+        self.generic_visit(node)
+
+V().visit(ast.parse(&quot;a or b or c&quot;))
+</code></pre>
+<p>prints out:</p>
+<pre><code>BoolOp (1, 0) (1, 11)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 15:00</div>
+            <div class="timeline-body"><p>Oh cool. Do you want to submit an upstream PR for this? Or I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-03 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-03 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:22 on 2022-12-03 15:35</div>
+            <div class="timeline-body"><p>Is that because the <code>and</code> is at the end? (Could we find subsequences of <code>or</code>s?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:22 on 2022-12-03 20:46</div>
+            <div class="timeline-body"><p>It's because <code>isinstance</code> is assigned to <code>infered_isinstance</code>. Can ruff handle this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-12-03 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:20 on 2022-12-03 20:47</div>
+            <div class="timeline-body"><p>Filed https://github.com/RustPython/RustPython/pull/4306.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/pylint/consider_merging_isinstance.py</code>:22 on 2022-12-03 21:27</div>
+            <div class="timeline-body"><p>Oh duh! No, not right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-03 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-03 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-03 21:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:22 UTC
+    </footer>
+</body>
+</html>

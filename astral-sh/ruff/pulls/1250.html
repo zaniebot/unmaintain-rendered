@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement PGH002 - deprecated use of logging.warn - astral-sh/ruff #1250</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement PGH002 - deprecated use of logging.warn</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1250">#1250</a>
+        opened by <a href="https://github.com/squiddy">@squiddy</a>
+        on 2022-12-15 19:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-15 19:38</div>
+            <div class="timeline-body"><p>Refs #980</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @squiddy on 2022-12-15 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-15 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pygrep_hooks/plugins.rs</code>:10 on 2022-12-15 20:36</div>
+            <div class="timeline-body"><p>Is it possible to write these instead using the <code>call_path</code> utilities? Like <code>let call_path = dealias_call_path(collect_call_paths(expr), import_aliases);</code> and such that we have elsewhere? These tend to do a better job of tracking aliased imports. (The downside is they might raise false-positives when you redefine <code>warn</code>, but that feels less important to me...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-15 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pygrep_hooks/plugins.rs</code>:53 on 2022-12-15 20:37</div>
+            <div class="timeline-body"><p>I think I'd find it easier to reason about the logic if we inverted all the cases -- so, instead of early-return, we moved this <code>add_check</code> into the few paths that <em>did</em> trigger the error (and made the cases, like, <code>if id == &quot;warn&quot;</code>, and so on).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-16 07:54</div>
+            <div class="timeline-body"><p>Thanks for the review. If you don't mind I'll followup on it either today or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a> reviewed on 2022-12-16 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/pygrep_hooks/plugins.rs</code>:53 on 2022-12-16 07:55</div>
+            <div class="timeline-body"><p>I was wondering about that in the beginning as well. Then I just made it work first but didn't reevaluate. Happy to change that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a> reviewed on 2022-12-16 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/pygrep_hooks/plugins.rs</code>:10 on 2022-12-16 08:33</div>
+            <div class="timeline-body"><p>I'm having problems understanding this one or rather, seeing how this helps readability.</p>
+<p>I would still have to handle at least two cases to lookup how something was imported.</p>
+<pre><code class="language-rust">let call_path = dealias_call_path(collect_call_paths(func), &amp;checker.import_aliases);
+    match &amp;call_path[..] {
+        [name] =&gt; ..,
+        [module, name] =&gt; ..,
+        _ =&gt; (),
+    }
+</code></pre>
+<p>Otherwise something like <code>from warnings import warn; warn(&quot;hello&quot;)</code> would trigger the check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-16 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pygrep_hooks/plugins.rs</code>:10 on 2022-12-16 16:36</div>
+            <div class="timeline-body"><p>Yeah, you <em>will</em> need a dedicated check for <code>log.warn</code> since that's not based on imports at all.</p>
+<p>But I think the check can be this? Unless I'm misunderstanding some of the intent:</p>
+<pre><code class="language-rs">let call_path = dealias_call_path(collect_call_paths(expr), import_aliases);
+
+if match_call_path(&amp;call_path, &quot;logging&quot;, &quot;warn&quot;) {
+  // Not ok
+} else if call_path == &amp;[&quot;log&quot;, &quot;warn&quot;] {
+  // Not ok
+}
+</code></pre>
+<p>This would avoid ever flagging on any form of <code>warnings.warn</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a> reviewed on 2022-12-17 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/pygrep_hooks/plugins.rs</code>:10 on 2022-12-17 09:10</div>
+            <div class="timeline-body"><p>Thank you, I didn't know about <code>match_call_path</code>. My confusion stem from the fact that just <code>dealias_call_path</code> would give me <code>[&quot;warn&quot;]</code>in some cases, which is not enough information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @squiddy on 2022-12-18 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-27 05:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:25 UTC
+    </footer>
+</body>
+</html>

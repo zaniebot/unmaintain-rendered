@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify SIM201, SIM202, SIM208 - astral-sh/ruff #1666</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify SIM201, SIM202, SIM208</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1666">#1666</a>
+        opened by <a href="https://github.com/chammika-become">@chammika-become</a>
+        on 2023-01-05 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chammika-become">@chammika-become</a> on 2023-01-05 17:35</div>
+            <div class="timeline-body"><p>Flake8 simplify #998</p>
+<p>SIM201, SIM202 and SIM208 is done here with fixes.</p>
+<p>Note: SIM203 == E713</p>
+<p>@charliermarsh Please let me know what changes are required to accept this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:107 on 2023-01-05 18:40</div>
+            <div class="timeline-body"><p>We have a helper called <code>create_expr</code> that you could use here, in <code>ast/helpers.rs</code>.We have a helper called <code>create_expr</code> that you could use here, in <code>ast/helpers.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:90 on 2023-01-05 18:40</div>
+            <div class="timeline-body"><p>Nit: remove space from <code>SIM 208</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:39 on 2023-01-05 18:43</div>
+            <div class="timeline-body"><p>I know it's a little tedious but we should avoid calling <code>.to_string()</code> on expressions and statements.</p>
+<p>Instead we should <em>either</em> grab them with <code>SourceCodeLocator</code> (<code>checker.locator</code>) or round-trip them with <code>SourceCodeGenerator</code> to ensure that they're in the proper style. I've been preferring the latter for the SIM checks. Like:</p>
+<pre><code class="language-rs">let mut generator = SourceCodeGenerator::new(
+    checker.style.indentation(),
+    checker.style.quote(),
+    checker.style.line_ending(),
+);
+generator.unparse_expr(&amp;left, 0);
+generator.generate()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:79 on 2023-01-05 18:44</div>
+            <div class="timeline-body"><p>Can we change this to a <code>match</code>, and log the error?</p>
+<p>We have this kind of pattern in the codebase, if you want to grep for some examples:</p>
+<pre><code class="language-rust">match fixes::fix_unnecessary_literal_set(locator, expr) {
+    Ok(fix) =&gt; {
+        check.amend(fix);
+    }
+    Err(e) =&gt; error!(&quot;Failed to generate fix: {e}&quot;),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:118 on 2023-01-05 18:44</div>
+            <div class="timeline-body"><p>Same here regarding logging the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:43 on 2023-01-05 18:44</div>
+            <div class="timeline-body"><p>Same here regarding logging the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-05 18:44</div>
+            <div class="timeline-body"><p>This looks great! Just some minor comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM201.py</code>:10 on 2023-01-05 18:44</div>
+            <div class="timeline-body"><p>What's <code>NG</code> stand for here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-05 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-05 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM201_2.py</code>:1 on 2023-01-05 18:45</div>
+            <div class="timeline-body"><p>Why is this special-cased? I'm assuming flake8-simplify special-cases it, just wondering what the reasoning is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 18:45</div>
+            <div class="timeline-body"><p>Thanks @chammika-become! Left a few comments. Heads up that I merged in <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chammika-become">@chammika-become</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:39 on 2023-01-06 10:51</div>
+            <div class="timeline-body"><p>Thanks, ended up moving above to <code>fn expr_with_style</code> and use it when generating styled <code>String</code>s for <code>Checks</code> and <code>Fixes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chammika-become">@chammika-become</a> reviewed on 2023-01-06 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chammika-become">@chammika-become</a> reviewed on 2023-01-06 10:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chammika-become">@chammika-become</a> on <code>src/flake8_simplify/plugins/unary_ops.rs</code>:79 on 2023-01-06 10:53</div>
+            <div class="timeline-body"><p>Done. Use the updated <code>compare</code> from the latest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chammika-become">@chammika-become</a> reviewed on 2023-01-06 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chammika-become">@chammika-become</a> on <code>resources/test/fixtures/flake8_simplify/SIM201.py</code>:10 on 2023-01-06 10:55</div>
+            <div class="timeline-body"><p>NG - Not Good cases.
+I will remove it if it's confusing, I am just used to NG as an opposite to OK.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chammika-become">@chammika-become</a> reviewed on 2023-01-06 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chammika-become">@chammika-become</a> on <code>resources/test/fixtures/flake8_simplify/SIM201_2.py</code>:1 on 2023-01-06 11:04</div>
+            <div class="timeline-body"><p>It's in <code>flake8_simplify</code>
+code : <a href="https://github.com/MartinThoma/flake8-simplify/blob/d3cb9556a5255969f83a8329df8f635da41f595d/flake8_simplify/rules/ast_unary_op.py#L24-L25">SIM201</a>
+test: <a href="https://github.com/MartinThoma/flake8-simplify/blob/d3cb9556a5255969f83a8329df8f635da41f595d/tests/test_200_rules.py#L10-L15">not in exception check</a></p>
+<p>I was wondering too, but implement it faithful to the original code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @chammika-become on 2023-01-06 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @chammika-become on 2023-01-06 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM201_2.py</code>:1 on 2023-01-06 15:39</div>
+            <div class="timeline-body"><p>Here's the PR that introduced it: https://github.com/MartinThoma/flake8-simplify/issues/13</p>
+<p>No context given, but probably correct to preserve it for compatibility as you did here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-06 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_simplify/SIM201.py</code>:10 on 2023-01-06 15:46</div>
+            <div class="timeline-body"><p>I changed it to <code>OK</code>, is that wrong? Since these cases are &quot;OK&quot;, in that they don't trigger errors? Let me now if I've misunderstood, and I'll correct in a follow-up commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-06 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-06 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 15:48</div>
+            <div class="timeline-body"><p>Thank you for this! Great PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TomFryers">@TomFryers</a> reviewed on 2023-01-06 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TomFryers">@TomFryers</a> on <code>resources/test/fixtures/flake8_simplify/SIM201_2.py</code>:1 on 2023-01-06 17:05</div>
+            <div class="timeline-body"><p>My guess would be that the reason to keep the <code>not</code> is to maintain the parallel <code>if not cond: raise ...</code> has to <code>assert cond</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:32 UTC
+    </footer>
+</body>
+</html>

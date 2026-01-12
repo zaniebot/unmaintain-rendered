@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `--stdin-filename` when resolving configuration files - astral-sh/ruff #1281</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>--stdin-filename</code> when resolving configuration files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1281">#1281</a>
+        opened by <a href="https://github.com/cdbrendel">@cdbrendel</a>
+        on 2022-12-18 20:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cdbrendel">@cdbrendel</a> on 2022-12-18 20:09</div>
+            <div class="timeline-body"><p>Currently, when <code>ruff</code> is called with  <code>--stdin-filename</code>, it does not use this value when searching for a configuration file:</p>
+<pre><code class="language-console">user@host ~/ $ tree
+.
+├── foo
+│   ├── bar.py
+│   └── pyproject.toml
+└── pyproject.toml
+</code></pre>
+<pre><code class="language-console">user@host ~/ $ cat /home/user/foo/bar.py | ruff --stdin-filename=/home/user/foo/bar.py -
+...
+# Uses /home/user/pyproject.toml (based on cwd /home/user), not the expected /home/user/foo/pyproject.toml
+</code></pre>
+<p>This is a non-trivial issue when using <code>ruff</code> with, for example, something like <a href="https://github.com/Carlosiano/null-ls.nvim">null-ls.nvim</a>, which passes files via stdin and correctly sets <code>--stdin-filename</code>, but does not set the current directory to the project directory before executing <code>ruff</code>.</p>
+<p>By contrast, when <code>black</code> receives a <code>--stdin-filename</code> flag, it uses it in the resolution of the project root (see <a href="https://github.com/psf/black/blob/cd9fef8bab3a39dfba494f1917e4158faba439f9/src/black/files.py#L43-L61">here</a>). So, <code>black</code> finds the expected project-local <code>pyproject.toml</code> in the example directory tree above:</p>
+<pre><code class="language-console">user@host ~/ $  cat /home/user/foo/bar.py | black --stdin-filename=/home/user/foo/bar.py -v -
+Identified `/home/user/foo` as project root containing a pyproject.toml. 
+...
+</code></pre>
+<p>This PR makes <code>ruff</code> find configuration files more like <code>black</code> does when <code>--stdin-filename</code> is passed. Apologies in advance if the current behavior of <code>ruff</code> is intended or if this PR is premature (and I won't be offended if this PR is rejected!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use `--stdin-filename` for resolving configuration files" to "Use `--stdin-filename` when resolving configuration files" by @cdbrendel on 2022-12-18 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cdbrendel on 2022-12-18 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-18 22:47</div>
+            <div class="timeline-body"><p>Total oversight, thank you for the fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-18 22:47</div>
+            <div class="timeline-body"><p>Will get this out tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdbrendel">@cdbrendel</a> on 2022-12-18 22:51</div>
+            <div class="timeline-body"><p>Great! Thanks for all your hard work  @charliermarsh :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-18 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-18 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-18 22:52</div>
+            <div class="timeline-body"><p>It's my pleasure! Hope you're enjoying Ruff :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-18 22:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:26 UTC
+    </footer>
+</body>
+</html>

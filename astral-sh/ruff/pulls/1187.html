@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade RustPython to fix end location of implicitly concatenated strings - astral-sh/ruff #1187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade RustPython to fix end location of implicitly concatenated strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1187">#1187</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-12-10 23:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-12-10 23:52</div>
+            <div class="timeline-body"><p>To include https://github.com/RustPython/RustPython/pull/4324, upgrade RustPython.</p>
+<h2>Before</h2>
+<pre><code>&gt; echo 'h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;' | cargo run -- --show-source -
+-:1:5: F541 f-string without any placeholders
+  |
+1 | h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;
+  |     ^^^ F541
+  |
+</code></pre>
+<h2>After</h2>
+<pre><code>&gt; echo 'h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;' | cargo run -- --show-source -
+-:1:5: F541 f-string without any placeholders
+  |
+1 | h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;
+  |     ^^^^^^^^^^^^ F541
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 00:07</div>
+            <div class="timeline-body"><p>Oh, awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 00:12</div>
+            <div class="timeline-body"><p>Very random, but the worst offender of this kind of thing is end-of-scope:</p>
+<pre><code class="language-py">def f():
+    x = 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+x = 2
+</code></pre>
+<p>For example, in this file, RustPython thinks that <code>f</code> ends at line 19!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-11 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-11 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-11 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-11 01:26</div>
+            <div class="timeline-body"><p>@charliermarsh What's the desired end location of <code>f</code>? Thats' the end of <code>x = 1</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 02:11</div>
+            <div class="timeline-body"><p>@harupy - Yeah I generally just defer to whatever CPython does:</p>
+<pre><code class="language-py">&gt;&gt;&gt; print(ast.dump(ast.parse(s), include_attributes=True))
+Module(body=[FunctionDef(name='f', args=arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]), body=[Assign(targets=[Name(id='x', ctx=Store(), lineno=2, col_offset=4, end_lineno=2, end_col_offset=5)], value=Constant(value=1, lineno=2, col_offset=8, end_lineno=2, end_col_offset=9), lineno=2, col_offset=4, end_lineno=2, end_col_offset=9)], decorator_list=[], lineno=1, col_offset=0, end_lineno=2, end_col_offset=9), Assign(targets=[Name(id='x', ctx=Store(), lineno=19, col_offset=0, end_lineno=19, end_col_offset=1)], value=Constant(value=2, lineno=19, col_offset=4, end_lineno=19, end_col_offset=5), lineno=19, col_offset=0, end_lineno=19, end_col_offset=5)], type_ignores=[])
+</code></pre>
+<p>So in this case, <code>f</code> starts on line 1, column 0, and ends at line 2, column 9.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:24 UTC
+    </footer>
+</body>
+</html>

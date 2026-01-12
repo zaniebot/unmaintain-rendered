@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply CLI options even when no pyproject.toml is found - astral-sh/ruff #1232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Apply CLI options even when no pyproject.toml is found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1232">#1232</a>
+        opened by <a href="https://github.com/cdbrendel">@cdbrendel</a>
+        on 2022-12-14 02:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cdbrendel">@cdbrendel</a> on 2022-12-14 02:48</div>
+            <div class="timeline-body"><p>Thanks for all your fantastic work on this remarkable tool!</p>
+<p>I've been having an issue that when there is no <code>pyproject.toml</code> found, command line options are ignored in lieu of the hard-coded defaults. For example, <code>foo.py</code> produces two F401 errors by default (good!), but when I try to specify <code>ruff</code> options via the CLI (<code>--select</code>, <code>--ignore</code>, etc.) they're not respected (bad!).</p>
+<pre><code class="language-python"># foo.py
+import os
+import sys
+</code></pre>
+<pre><code class="language-console">$ ruff --ignore=F401 foo.py
+Found 2 error(s).
+foo.py:1:8: F401 `os` imported but unused
+foo.py:2:8: F401 `sys` imported but unused
+2 potentially fixable with the --fix option.
+</code></pre>
+<p>I can make these command line options work if I put a <code>pyproject.toml</code> anywhere on the path, regardless of its content. I imagine the intended behavior is that options on the CLI should override defaults regardless of whether or not a <code>pyproject.toml</code> is found.</p>
+<p>From what I can tell, when a <code>pyproject.toml</code> is found, <code>ruff::resolve()</code> calls <code>Resolver::resolve_settings()</code>, which ultimately calls <code>Configuration::apply()</code>, which is responsible for joining the command line options:</p>
+<p>https://github.com/charliermarsh/ruff/blob/765d21c7b06e780fb91cbcc79909836883faf0dd/src/resolver.rs#L131-L133</p>
+<p>However, <code>Configuration::apply()</code> is not called unless a <code>pyproject.toml</code> is found. It looks like 9853b0728ba9289753cb3be984de75677a4713c6 removed the following lines which had been responsible for merging command line options with the default configuration:</p>
+<p>https://github.com/charliermarsh/ruff/blob/4bb6b4851a639d1855c7fb5d02ea53a074c9a178/src/main.rs#L93-L98</p>
+<p>This PR adds back this functionality, although my solution is a bit inelegant given the recent removal of this sort of logic from <code>main.rs</code>. Maybe a better fix would be to break the call to <code>Configuration::apply()</code> above out into a separate method that is called in all cases? Happy to work more on it if so.</p>
+<p>Either way, figured I'd offer the PR instead of just opening an issue. :) (Sorry for any silly issues; I'm a baby rustacean.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cdbrendel on 2022-12-14 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 03:52</div>
+            <div class="timeline-body"><p>D’oh, this was just a total oversight from a large refactor that went out recently, to change how settings are resolved. You’re totally right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-14 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-14 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 03:55</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 03:55</div>
+            <div class="timeline-body"><p>(I really appreciate the clarity and thoroughness of your PR summary too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdbrendel">@cdbrendel</a> on 2022-12-14 15:13</div>
+            <div class="timeline-body"><p>Thank you! Very kind of you to say. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-14 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:25 UTC
+    </footer>
+</body>
+</html>

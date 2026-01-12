@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewrite xml.etree.cElementTree to xml.etree.ElementTree - astral-sh/ruff #1426</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rewrite xml.etree.cElementTree to xml.etree.ElementTree</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1426">#1426</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2022-12-28 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2022-12-28 15:58</div>
+            <div class="timeline-body"><p>Another check for #827</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2022-12-28 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/pyupgrade/plugins/rewrite_c_element_tree.rs</code>:25 on 2022-12-28 16:12</div>
+            <div class="timeline-body"><p>I suppose it's a matter of preference, but both match arms, under certain conditions, assign exactly the same values to <code>range</code> and <code>selected_contents</code>.</p>
+<p>What do you think of this (didn't test it)?</p>
+<pre><code class="language-rust">    if match &amp;stmt.node {
+        StmtKind::Import { names } =&gt; {
+            let item = names.get(0).unwrap();
+            item.node.name == &quot;xml.etree.cElementTree&quot; &amp;&amp; item.node.asname.is_some()
+        }
+        StmtKind::ImportFrom { module, .. } =&gt; {
+            module == &amp;Some(&quot;xml.etree.cElementTree&quot;.to_string())
+        }
+        _ =&gt; false,
+    } {
+        let range = Range::from_located(stmt);
+        let mut check = Check::new(CheckKind::RewriteCElementTree, &amp;range);
+        if checker.patch(check.kind.code()) {
+            let content = checker.locator.slice_source_code_range(&amp;range).to_string();
+            check.amend(Fix::replacement(
+                content.replace(&quot;cElementTree&quot;, &quot;ElementTree&quot;),
+                stmt.location,
+                stmt.end_location.unwrap(),
+            ));
+        }
+        checker.add_check(check);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a> reviewed on 2022-12-28 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>src/pyupgrade/plugins/rewrite_c_element_tree.rs</code>:25 on 2022-12-28 19:13</div>
+            <div class="timeline-body"><p>I agree, this is much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2022-12-28 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2022-12-28 19:24</div>
+            <div class="timeline-body"><p>@squiddy good catch with adding in all tests, I found a couple issues in this PR. Everything is fixed now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-28 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-28 21:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:28 UTC
+    </footer>
+</body>
+</html>

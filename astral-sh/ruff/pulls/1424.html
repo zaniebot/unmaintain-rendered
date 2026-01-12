@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Support for GitLab CI Code Quality Report Format - astral-sh/ruff #1424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add Support for GitLab CI Code Quality Report Format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1424">#1424</a>
+        opened by <a href="https://github.com/saadmk11">@saadmk11</a>
+        on 2022-12-28 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/saadmk11">@saadmk11</a> on 2022-12-28 14:20</div>
+            <div class="timeline-body"><p>closes https://github.com/charliermarsh/ruff/issues/1298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 14:22</div>
+            <div class="timeline-body"><p>You rock, thank you for this. Are you able to test the output format against Gitlab in practice? (I don't use Gitlab so a little difficult for me to test.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/saadmk11">@saadmk11</a> reviewed on 2022-12-28 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/saadmk11">@saadmk11</a> on <code>src/printer.rs</code>:264 on 2022-12-28 14:26</div>
+            <div class="timeline-body"><p>Not sure if we should add <code>struct</code>'s to structure the JSON. It may be better to use struct's even if we will use it for just this one use-case. (I have recently started learning Rust)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saadmk11">@saadmk11</a> on 2022-12-28 14:28</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<h3>Workflow:</h3>
+<pre><code class="language-yaml">include:
+  - template: Code-Quality.gitlab-ci.yml
+
+
+code_quality:
+  image: python:3.10-slim
+  allow_failure: false
+  script:
+    - pip install ruff
+    - ruff . --format gitlab &gt; gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+</code></pre>
+<h3>Output:</h3>
+<p><img src="https://user-images.githubusercontent.com/24854406/209826948-ce744c20-0ae2-43f2-82bb-4fc567138864.png" alt="Screenshot from 2022-12-28 19-41-01" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/saadmk11">@saadmk11</a> reviewed on 2022-12-28 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/saadmk11">@saadmk11</a> on <code>src/settings/types.rs</code>:168 on 2022-12-28 14:32</div>
+            <div class="timeline-body"><p><code>default()</code> may not run anymore because it not used anywhere.
+<code>format: options.format.unwrap_or_default()</code> was removed from <code>src/settings/configuration.rs</code> on https://github.com/charliermarsh/ruff/pull/1219/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-28 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/types.rs</code>:168 on 2022-12-28 14:39</div>
+            <div class="timeline-body"><p>Ahh yeah, that actually seems like a bug to me. The unwrap step got moved to <code>src/settings/mod.rs</code> (<code>format: config.format.unwrap_or(SerializationFormat::Text)</code>), but should likely still use <code>default</code>. If you want to change that here, that'd be welcome; or as a separate PR, or I can handle it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-12-28 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/printer.rs</code>:264 on 2022-12-28 14:39</div>
+            <div class="timeline-body"><p>I think this is fine for now, since it's treated equivalently to the GitHub approach and colocated with that formatting anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/saadmk11">@saadmk11</a> on <code>src/settings/types.rs</code>:168 on 2022-12-28 14:40</div>
+            <div class="timeline-body"><p>Sure, I can add it here as they are closely related. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/saadmk11">@saadmk11</a> reviewed on 2022-12-28 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-28 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-28 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-28 15:10</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-28 16:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:38:28 UTC
+    </footer>
+</body>
+</html>
