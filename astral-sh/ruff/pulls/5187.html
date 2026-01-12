@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add rule documentation URL to JSON output - astral-sh/ruff #5187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add rule documentation URL to JSON output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5187">#5187</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-19 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 16:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I want to include URLs to the rule documentation in the LSP (the LSP has a native <code>code_description</code> field for this, which, if specified, causes the source to be rendered as a link to the docs). This PR exposes the URL to the documentation in the Ruff JSON output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-19 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-19 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-06-19 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/registry.rs</code>:355 on 2023-06-19 16:49</div>
+            <div class="timeline-body"><p>Does it make sense to use <code>env!(&quot;CARGO_PKG_HOMEPAGE&quot;)</code> here to have a single place to change the url? (could also be it's less confusing to have rust not depend on toml metadata)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 16:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        &quot;description_url&quot;: message.kind.rule().url(),
+</code></pre>
+<p>i'd add that this is a link</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-19 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 16:58</div>
+            <div class="timeline-body"><p>Hmm, torn -- I like adhering to the LSP schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 16:58</div>
+            <div class="timeline-body"><p>Oh, actually, it should be like this (which hopefully resolves this):</p>
+<pre><code class="language-ts">/**
+ * Structure to capture a description for an error code.
+ *
+ * @since 3.16.0
+ */
+export interface [CodeDescription](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#codeDescription) {
+	/**
+	 * An URI to open with more information about the diagnostic error.
+	 */
+	href: [URI](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#uri);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-19 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 17:00</div>
+            <div class="timeline-body"><p>oh sorry didn't realize there was a schema for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-19 17:11</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      6.2±0.01ms     6.5 MB/sec    1.00      6.2±0.01ms     6.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1307.7±4.95µs    12.7 MB/sec    1.00  1309.8±16.94µs    12.7 MB/sec
+formatter/numpy/globals.py                 1.01    127.3±0.27µs    23.2 MB/sec    1.00    126.7±1.21µs    23.3 MB/sec
+formatter/pydantic/types.py                1.01      2.6±0.01ms    10.0 MB/sec    1.00      2.5±0.01ms    10.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.2±0.05ms     3.1 MB/sec    1.00     13.2±0.03ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.00ms     5.1 MB/sec    1.00      3.3±0.01ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    411.3±0.86µs     7.2 MB/sec    1.00    413.1±1.68µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.01ms     4.5 MB/sec    1.00      5.7±0.01ms     4.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.1 MB/sec    1.00      6.7±0.01ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1435.3±2.44µs    11.6 MB/sec    1.01   1451.8±3.34µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    159.2±1.64µs    18.5 MB/sec    1.03    163.3±0.94µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.7±0.38ms     3.8 MB/sec    1.01     10.8±0.54ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.07ms     7.9 MB/sec    1.02      2.1±0.10ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00   213.7±13.63µs    13.8 MB/sec    1.01   215.4±25.23µs    13.7 MB/sec
+formatter/pydantic/types.py                1.06      4.3±0.19ms     5.9 MB/sec    1.00      4.1±0.24ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.04     23.6±1.05ms  1768.7 KB/sec    1.00     22.6±0.86ms  1842.7 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.3±0.39ms     3.1 MB/sec    1.06      5.6±0.22ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   649.5±35.64µs     4.5 MB/sec    1.01   657.1±34.17µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.3±0.59ms     2.7 MB/sec    1.03      9.6±0.41ms     2.7 MB/sec
+linter/default-rules/large/dataset.py      1.00     11.4±0.56ms     3.6 MB/sec    1.03     11.8±0.50ms     3.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.3±0.11ms     7.2 MB/sec    1.03      2.4±0.08ms     7.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00   266.9±10.47µs    11.1 MB/sec    1.03   276.1±11.51µs    10.7 MB/sec
+linter/default-rules/pydantic/types.py     1.01      5.1±0.31ms     5.0 MB/sec    1.00      5.1±0.21ms     5.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add URL to JSON output via `code_description`" to "Add rule documentation URL to JSON output" by @charliermarsh on 2023-06-19 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 20:57</div>
+            <div class="timeline-body"><p>Okay, you were right, changed my mind after Micha <em>also</em> brought this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/message/json.rs</code>:66 on 2023-06-19 20:57</div>
+            <div class="timeline-body"><p>Apparently Mitte calls this <code>url</code> so running with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-19 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-19 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-19 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-19 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

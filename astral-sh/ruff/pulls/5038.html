@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve `TypedDict` conversion logic for shadowed builtins and dunder methods - astral-sh/ruff #5038</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve <code>TypedDict</code> conversion logic for shadowed builtins and dunder methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5038">#5038</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-12 21:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 21:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR (1) avoids flagging <code>TypedDict</code> and <code>NamedTuple</code> conversions when attributes are dunder methods, like <code>__dict__</code>, and (2) avoids flagging the <code>A003</code> shadowed-attribute rule for <code>TypedDict</code> classes at all, where it doesn't really apply (since those attributes are only accessed via subscripting anyway).</p>
+<p>Closes #5027.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-12 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-12 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-12 21:41</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      7.0±0.35ms     5.8 MB/sec     1.00      6.9±0.37ms     5.9 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1494.8±104.30µs    11.1 MB/sec    1.00  1484.9±111.55µs    11.2 MB/sec
+formatter/numpy/globals.py                 1.00   146.2±14.47µs    20.2 MB/sec     1.00   146.1±12.46µs    20.2 MB/sec
+formatter/pydantic/types.py                1.00      2.9±0.24ms     8.8 MB/sec     1.03      3.0±0.20ms     8.5 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.9±0.89ms     2.6 MB/sec     1.00     15.8±0.87ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.19ms     4.5 MB/sec     1.01      3.7±0.21ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.05   503.5±29.44µs     5.9 MB/sec     1.00   478.0±31.39µs     6.2 MB/sec
+linter/all-rules/pydantic/types.py         1.05      7.0±0.45ms     3.7 MB/sec     1.00      6.6±0.33ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.37ms     5.4 MB/sec     1.00      7.5±0.37ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1648.7±112.04µs    10.1 MB/sec    1.00  1612.8±103.34µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00   190.8±14.23µs    15.5 MB/sec     1.00   190.2±12.52µs    15.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.15ms     7.6 MB/sec     1.02      3.4±0.19ms     7.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      7.9±0.09ms     5.1 MB/sec    1.00      7.8±0.09ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1605.2±24.78µs    10.4 MB/sec    1.00  1601.1±27.81µs    10.4 MB/sec
+formatter/numpy/globals.py                 1.00    151.2±4.13µs    19.5 MB/sec    1.01    152.7±6.40µs    19.3 MB/sec
+formatter/pydantic/types.py                1.00      3.2±0.04ms     8.0 MB/sec    1.00      3.2±0.06ms     7.9 MB/sec
+linter/all-rules/large/dataset.py          1.03     17.8±0.24ms     2.3 MB/sec    1.00     17.3±0.27ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.4±0.07ms     3.8 MB/sec    1.00      4.3±0.08ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01   514.3±13.49µs     5.7 MB/sec    1.00   508.2±11.29µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.6±0.12ms     3.4 MB/sec    1.00      7.5±0.19ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.06      9.1±0.13ms     4.5 MB/sec    1.00      8.5±0.13ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.05  1875.8±23.89µs     8.9 MB/sec    1.00  1782.9±39.15µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.03    204.9±3.84µs    14.4 MB/sec    1.00    199.0±4.51µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.04      4.0±0.06ms     6.4 MB/sec    1.00      3.8±0.07ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

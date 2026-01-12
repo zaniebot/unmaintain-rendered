@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use phf for confusables to reduce llvm lines - astral-sh/ruff #4926</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use phf for confusables to reduce llvm lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4926">#4926</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-06-07 12:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-06-07 12:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This replaces FxHashMap for the confusables with a perfect hash map from the <a href="https://github.com/rust-phf/rust-phf">phf crate</a> to reduce the generated llvm instructions.</p>
+<p>A perfect hash function is one that doesn't have any collisions. We can build one because we know all keys at compile time. This improves hashmap efficiency, even though this is likely not noticeable in our case (except someone has a large non-english crate to test on).</p>
+<p>The original hashmap contained a lot of duplicates, which i had to remove when phf_map complained, i did so by sorting the keys.</p>
+<p>The important part that it reduces the llvm instructions generated (#3808, <code>RUSTFLAGS=&quot;-Csymbol-mangling-version=v0&quot; cargo llvm-lines -p ruff --lib | head -20</code>):</p>
+<pre><code>  Lines                  Copies               Function name
+  -----                  ------               -------------
+  1740502                38973                (TOTAL)
+    27423 (1.6%,  1.6%)      1 (0.0%,  0.0%)  ruff[cef4c65d96248843]::rules::ruff::rules::confusables::CONFUSABLES::{closure#0}
+    10193 (0.6%,  2.2%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::codes::RuleCodePrefix&gt;::iter
+     8107 (0.5%,  2.6%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::codes::Rule&gt;::noqa_code
+     7345 (0.4%,  3.0%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::checkers::ast::Checker as ruff_python_ast[3778b140caf21545]::visitor::Visitor&gt;::visit_stmt
+     6412 (0.4%,  3.4%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[cef4c65d96248843]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::spanned::SpannedDeserializer&lt;toml_edit[7e3a6c5e67260672]::de::value::ValueDeserializer&gt;&gt;
+     6412 (0.4%,  3.8%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[cef4c65d96248843]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::table::TableMapAccess&gt;
+     6409 (0.4%,  4.2%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[cef4c65d96248843]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::datetime::DatetimeDeserializer&gt;
+     5696 (0.3%,  4.5%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::checkers::ast::Checker as ruff_python_ast[3778b140caf21545]::visitor::Visitor&gt;::visit_expr
+     4448 (0.3%,  4.7%)      1 (0.0%,  0.0%)  ruff[cef4c65d96248843]::flake8_to_ruff::converter::convert
+     3702 (0.2%,  4.9%)      1 (0.0%,  0.0%)  &lt;&amp;ruff[cef4c65d96248843]::registry::Linter as core[da82827a87f140f9]::iter::traits::collect::IntoIterator&gt;::into_iter
+     3349 (0.2%,  5.1%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::registry::Linter&gt;::code_for_rule
+     3132 (0.2%,  5.3%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::codes::Rule as core[da82827a87f140f9]::fmt::Debug&gt;::fmt
+     3130 (0.2%,  5.5%)      1 (0.0%,  0.0%)  &lt;&amp;str as core[da82827a87f140f9]::convert::From&lt;&amp;ruff[cef4c65d96248843]::codes::Rule&gt;&gt;::from
+     3130 (0.2%,  5.7%)      1 (0.0%,  0.0%)  &lt;&amp;str as core[da82827a87f140f9]::convert::From&lt;ruff[cef4c65d96248843]::codes::Rule&gt;&gt;::from
+     3130 (0.2%,  5.9%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::codes::Rule as core[da82827a87f140f9]::convert::AsRef&lt;str&gt;&gt;::as_ref
+     3128 (0.2%,  6.0%)      1 (0.0%,  0.0%)  &lt;ruff[cef4c65d96248843]::codes::RuleIter&gt;::get
+     2669 (0.2%,  6.2%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[cef4c65d96248843]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_seq::&lt;toml_edit[7e3a6c5e67260672]::de::array::ArraySeqAccess&gt;
+</code></pre>
+<p>After:</p>
+<pre><code>  Lines                  Copies               Function name
+  -----                  ------               -------------
+  1710487                38900                (TOTAL)
+    10193 (0.6%,  0.6%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::codes::RuleCodePrefix&gt;::iter
+     8107 (0.5%,  1.1%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::codes::Rule&gt;::noqa_code
+     7345 (0.4%,  1.5%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::checkers::ast::Checker as ruff_python_ast[5588cd60041c8605]::visitor::Visitor&gt;::visit_stmt
+     6412 (0.4%,  1.9%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[52408f46d2058296]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::spanned::SpannedDeserializer&lt;toml_edit[7e3a6c5e67260672]::de::value::ValueDeserializer&gt;&gt;
+     6412 (0.4%,  2.2%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[52408f46d2058296]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::table::TableMapAccess&gt;
+     6409 (0.4%,  2.6%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[52408f46d2058296]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_map::&lt;toml_edit[7e3a6c5e67260672]::de::datetime::DatetimeDeserializer&gt;
+     5696 (0.3%,  3.0%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::checkers::ast::Checker as ruff_python_ast[5588cd60041c8605]::visitor::Visitor&gt;::visit_expr
+     4448 (0.3%,  3.2%)      1 (0.0%,  0.0%)  ruff[52408f46d2058296]::flake8_to_ruff::converter::convert
+     3702 (0.2%,  3.4%)      1 (0.0%,  0.0%)  &lt;&amp;ruff[52408f46d2058296]::registry::Linter as core[da82827a87f140f9]::iter::traits::collect::IntoIterator&gt;::into_iter
+     3349 (0.2%,  3.6%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::registry::Linter&gt;::code_for_rule
+     3132 (0.2%,  3.8%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::codes::Rule as core[da82827a87f140f9]::fmt::Debug&gt;::fmt
+     3130 (0.2%,  4.0%)      1 (0.0%,  0.0%)  &lt;&amp;str as core[da82827a87f140f9]::convert::From&lt;&amp;ruff[52408f46d2058296]::codes::Rule&gt;&gt;::from
+     3130 (0.2%,  4.2%)      1 (0.0%,  0.0%)  &lt;&amp;str as core[da82827a87f140f9]::convert::From&lt;ruff[52408f46d2058296]::codes::Rule&gt;&gt;::from
+     3130 (0.2%,  4.4%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::codes::Rule as core[da82827a87f140f9]::convert::AsRef&lt;str&gt;&gt;::as_ref
+     3128 (0.2%,  4.5%)      1 (0.0%,  0.0%)  &lt;ruff[52408f46d2058296]::codes::RuleIter&gt;::get
+     2669 (0.2%,  4.7%)      1 (0.0%,  0.0%)  &lt;&lt;ruff[52408f46d2058296]::settings::options::Options as serde[d89b1b632568f5a3]::de::Deserialize&gt;::deserialize::__Visitor as serde[d89b1b632568f5a3]::de::Visitor&gt;::visit_seq::&lt;toml_edit[7e3a6c5e67260672]::de::array::ArraySeqAccess&gt;
+     2659 (0.2%,  4.9%)      1 (0.0%,  0.0%)  &lt;&amp;ruff[52408f46d2058296]::codes::Pylint as core[da82827a87f140f9]::iter::traits::collect::IntoIterator&gt;::into_iter
+</code></pre>
+<p>I'd assume this has a positive effect both on compile time and on runtime, but i don't know the actual effect on compile times and can't really measure.</p>
+<h2>Test plan</h2>
+<p>Check CI for any performance regressions.</p>
+<p>This should fix #3808 if we merge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-07 12:34</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #4926</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4926" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4926?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/confusables.rs</code>:1 on 2023-06-07 12:48</div>
+            <div class="timeline-body"><p>This file is autogenerated, so I think we need to update the generation script instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-07 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 12:48</div>
+            <div class="timeline-body"><p>Any way we can benchmark the effect on runtime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-07 12:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.5±0.02ms     7.4 MB/sec    1.08      5.9±0.03ms     6.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1087.1±3.82µs    15.3 MB/sec    1.14   1235.6±1.60µs    13.5 MB/sec
+formatter/numpy/globals.py                 1.00    120.6±0.15µs    24.5 MB/sec    1.17    141.1±0.14µs    20.9 MB/sec
+formatter/pydantic/types.py                1.00      2.4±0.01ms    10.6 MB/sec    1.09      2.6±0.02ms     9.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.2±0.09ms     2.9 MB/sec    1.00     14.1±0.07ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     5.0 MB/sec    1.01      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    410.9±0.54µs     7.2 MB/sec    1.02    417.9±0.41µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.00      5.9±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.0 MB/sec    1.01      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1452.0±3.96µs    11.5 MB/sec    1.02   1482.3±3.56µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    159.4±0.21µs    18.5 MB/sec    1.03    164.7±0.32µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.01      3.1±0.01ms     8.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.17      9.9±0.63ms     4.1 MB/sec    1.00      8.4±0.22ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.06  1823.8±93.03µs     9.1 MB/sec    1.00  1718.2±50.38µs     9.7 MB/sec
+formatter/numpy/globals.py                 1.01   204.0±17.18µs    14.5 MB/sec    1.00   201.8±10.87µs    14.6 MB/sec
+formatter/pydantic/types.py                1.14      4.2±0.33ms     6.0 MB/sec    1.00      3.7±0.14ms     6.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     21.5±0.69ms  1938.1 KB/sec    1.01     21.7±0.64ms  1924.1 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.3±0.15ms     3.2 MB/sec    1.03      5.4±0.19ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   608.9±22.10µs     4.8 MB/sec    1.02   622.2±18.80µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.6±0.22ms     3.0 MB/sec    1.04      9.0±0.28ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.3±0.34ms     4.0 MB/sec    1.00     10.0±0.25ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.09      2.3±0.10ms     7.3 MB/sec    1.00      2.1±0.06ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.16   286.9±23.36µs    10.3 MB/sec    1.00    248.1±7.93µs    11.9 MB/sec
+linter/default-rules/pydantic/types.py     1.15      5.2±0.48ms     4.9 MB/sec    1.00      4.6±0.12ms     5.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-07 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Any way we can benchmark the effect on runtime?</p>
+</blockquote>
+<p>The CI perf checks should pop up soon. I don't have experience with the phf crate, but a phf is expected to be faster because there are no collision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-07 12:52</div>
+            <div class="timeline-body"><blockquote>
+<p>This file is autogenerated, so I think we need to update the generation script instead.</p>
+</blockquote>
+<p>If we see that this is the right structure, i'll update <code>update_ambiguous_characters.py</code> to emit phf generation, if not i'll update it to not emit duplicates anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-06-07 12:54</div>
+            <div class="timeline-body"><p>Nice. Putting back in your queue to update the generation script (if it improves perf).</p>
+<p>You can also use <code>cargo bloat --bin ruff --release</code> to measure the estimated size</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-07 14:20</div>
+            <div class="timeline-body"><p>byte sizes of the assets (<code>ls -la</code>) | before | after | improvement
+---|---|---|---
+target/release/ruff | 15177064 | 14906664 | -270.4 kB
+target/wheels/ruff-0.0.271-py3-none-manylinux_2_34_x86_64.whl | 5801783 | 5729345 | -72.4 kB</p>
+<p>I want to use phf for this reason alone</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @konstin on 2023-06-07 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-07 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-06-07 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-06-08 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-06-08 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-08 06:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

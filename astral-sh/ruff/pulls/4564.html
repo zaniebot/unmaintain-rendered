@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce an `Analyzer` trait for generic, AST-oriented lint rules - astral-sh/ruff #4564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce an <code>Analyzer</code> trait for generic, AST-oriented lint rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4564">#4564</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-21 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 19:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a proposal (not expected to be merged -- only to facilitate discussion) for a design that would enable us to replace our ad-hoc AST rule interface with a standardized trait, <em>thereby</em> enabling us to remove all of the repetitive, imperative logic throughout the <code>Checker</code> that confirms the validity of and calls rules whenever relevant. Instead, we can collect the relevant set of rules for each AST node upfront, and iterate over those rules when we visit the relevant node.</p>
+<p>I looked at Rome's <code>Rule</code> and <code>RegistryRule</code> traits when designing this. There's a lot of nice stuff in that API, but this PR doesn't attempt to implement or support it all... Instead, this PR just introduces a simple <code>Analyzer</code> trait that looks like:</p>
+<pre><code class="language-rust">/// Trait for a lint rule that can be run on an AST node of type `T`.
+pub(crate) trait Analyzer&lt;T&gt;: Sized {
+    /// The [`Rule`] that this analyzer implements.
+    fn rule() -&gt; Rule;
+
+    /// Run the analyzer on the given node.
+    fn run(diagnostics: &amp;mut Vec&lt;Diagnostic&gt;, checker: &amp;RuleContext, node: &amp;T);
+}
+</code></pre>
+<p>Instead of implementing standalone functions, like <code>pub(crate) fn type_of_primitive(...)</code>, our violations can instead implement <code>Analyzer</code> on the relevant AST node kind.</p>
+<p>Further, similar to Rome's <code>RegistryRule</code>, we have an internal-only struct to enable us to invoke the rule as a generic function pointer:</p>
+<pre><code class="language-rust">/// Internal representation of a single [`Rule`] that can be run on an AST node of type `T`.
+pub(super) struct RegisteredRule&lt;T&gt; {
+    rule: Rule,
+    run: Executor&lt;T&gt;,
+}
+</code></pre>
+<p>In the <code>Checker</code>, we can then create vectors of rules by node type:</p>
+<pre><code class="language-rust">...
+call_rules: Vec&lt;RegisteredRule&lt;ast::ExprCall&gt;&gt;,
+...
+</code></pre>
+<p>I'm opening this early to get feedback, especially from @MichaReiser who has seen this done in Rome.</p>
+<p>A few misc. comments:</p>
+<ul>
+<li>We don't want to pass the full <code>&amp;mut Checker</code> to <code>Analyzer</code> (in fact, we can't, since the rules are now stored on <code>Checker</code> and represent an immutable borrow). So, instead, we pass the vector of diagnostics (which the rules mutate), and we have a new <code>RuleContext</code> struct that represents all the immutable state that rules can access. I think separating the mutable from immutable <code>Checker</code> state is a good thing to do regardless of whether we pursue this design.</li>
+<li>This PR doesn't attempt to create a <em>single</em> vector indexed by AST node type. We can try that, but the downside seems to be that you then need to have an unsafe cast within the rule executor? Like, you have <code>Vec&lt;Vec&lt;Rule&gt;&gt;</code>, and within <code>Rule</code>, you have to ensure that the node you're passed is of the right type, or panic? (In Rome: <code>&lt;R::Query as Queryable&gt;::unwrap_match(params.services, query_result);</code>.) The approach here <em>will</em> require that we curate a separate vector for each node kind, but... that doesn't bother me much. There may be other considerations I'm overlooking here.</li>
+<li>This PR doesn't attempt to split the rule behavior into multiple methods. Rome has a method to generate the diagnostic, then the code action, then the suppression action. We could introduce these eventually, nothing in this design prevents them or makes it more difficult to do so -- I see that as orthogonal to this work, and compatible with the current design.</li>
+<li>Our <code>RegisteredRule</code> is mostly empty, whereas in Rome, there's a lot of generic logic in there to help with suppressions and other functionality. That could be useful eventually. We could probably get away with omitting <code>RegisteredRule</code> right now and just using function pointers, but I think it's worth introducing the struct.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-21 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_django/rules/locals_in_render_function.rs</code>:47 on 2023-05-21 19:14</div>
+            <div class="timeline-body"><p>(The changes in the rule files can mostly be ignored.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_django/rules/locals_in_render_function.rs</code>:54 on 2023-05-21 19:14</div>
+            <div class="timeline-body"><p>(I would suggest inlining this logic and removing functions like <code>locals_in_render_function</code> entirely.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2675 on 2023-05-21 19:15</div>
+            <div class="timeline-body"><p>(Only applying this change to the <code>pyupgrade</code> and <code>flake8-django</code> <code>ast::ExprCall</code> rules.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_django/rules/locals_in_render_function.rs</code>:66 on 2023-05-21 19:17</div>
+            <div class="timeline-body"><p>We would / will need to change every rule to take the relevant AST node, rather than the individual fields-as-arguments, which is a good change IMO (and the thing that prohibited us from doing this earlier).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:10 on 2023-05-21 19:18</div>
+            <div class="timeline-body"><p>Including <code>Rule</code> as part of the trait lets us implement <code>enabled</code> below on <code>RegisteredRule</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:38 on 2023-05-21 19:19</div>
+            <div class="timeline-body"><p>One unsolved problem is that we have some &quot;lint rule functions&quot; that add diagnostics for multiple rules in a single pass, like <code>rules/flake8_annotations/rules.rs</code>. These wouldn't <em>really</em> fit into the paradigm of a &quot;each rule gets invoked for each instance of its relevant AST node&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-21 19:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     15.3±0.57ms     2.7 MB/sec    1.00     15.1±0.58ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.7±0.30ms     4.5 MB/sec    1.00      3.6±0.14ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.01   457.3±27.09µs     6.5 MB/sec    1.00   454.5±26.13µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.3±0.29ms     4.0 MB/sec    1.00      6.3±0.30ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.2±0.28ms     5.6 MB/sec    1.00      7.2±0.36ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1549.5±74.88µs    10.7 MB/sec    1.00  1538.0±60.67µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00   188.0±13.72µs    15.7 MB/sec    1.00   188.7±16.53µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.13ms     7.9 MB/sec    1.04      3.3±0.19ms     7.6 MB/sec
+parser/large/dataset.py                    1.00      5.8±0.25ms     7.1 MB/sec    1.03      5.9±0.36ms     6.9 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1119.8±50.28µs    14.9 MB/sec    1.05  1176.2±87.78µs    14.2 MB/sec
+parser/numpy/globals.py                    1.00    114.2±6.94µs    25.8 MB/sec    1.06   121.6±10.36µs    24.3 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.14ms    10.1 MB/sec    1.06      2.7±0.20ms     9.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.6±0.33ms     2.4 MB/sec    1.00     16.7±0.32ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.07ms     3.9 MB/sec    1.00      4.2±0.04ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    508.7±7.98µs     5.8 MB/sec    1.00    504.3±6.85µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.10ms     3.7 MB/sec    1.01      7.0±0.11ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.12ms     4.9 MB/sec    1.01      8.4±0.12ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1754.5±26.51µs     9.5 MB/sec    1.00  1749.6±18.17µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    194.0±3.24µs    15.2 MB/sec    1.04    201.8±6.37µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     7.0 MB/sec    1.03      3.8±0.06ms     6.8 MB/sec
+parser/large/dataset.py                    1.00      6.8±0.05ms     5.9 MB/sec    1.11      7.6±0.06ms     5.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1304.6±17.01µs    12.8 MB/sec    1.10  1436.8±23.25µs    11.6 MB/sec
+parser/numpy/globals.py                    1.00    134.4±1.97µs    22.0 MB/sec    1.07    143.6±3.03µs    20.6 MB/sec
+parser/pydantic/types.py                   1.00      2.9±0.03ms     8.8 MB/sec    1.10      3.2±0.03ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-21 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:38 on 2023-05-21 19:49</div>
+            <div class="timeline-body"><p><code>abstract_base_class</code> is a concrete example: it's a single function that adds violations for both <code>AbstractBaseClassWithoutAbstractMethod</code> and <code>EmptyMethodWithoutAbstractDecorator</code>, which have intertwined logic (they both rely on assessing whether a class has an abstract method).</p>
+<p>We could break those out into separate rules and just accept that we're doing re-computation between them. Or we could make this trait one-to-many, such that a single Analyzer can produce violations for multiple rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 08:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:13 on 2023-05-22 08:08</div>
+            <div class="timeline-body"><p>Nit: I would change the argument order:</p>
+<ul>
+<li><code>node</code> seems to be the most important, should come first</li>
+<li><code>checker</code> (we should rename this to <code>context</code>)</li>
+<li><code>diagnostics</code> last</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:14 on 2023-05-22 08:09</div>
+            <div class="timeline-body"><p>We should use this PR as a chance to abstract away the <code>diagnostics</code> vec. Rules should only ever have to push a new diagnostic. They don't need to inspect the diagnostics in any way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:91 on 2023-05-22 08:12</div>
+            <div class="timeline-body"><p>Could we add the diagnostics to the <code>RuleContext</code>? It may require an additional lifetime but it has the added benefit that the <code>run</code> method requires fewer arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:86 on 2023-05-22 08:13</div>
+            <div class="timeline-body"><p>Nit: Rename to <code>AnalyzerContext</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:87 on 2023-05-22 08:13</div>
+            <div class="timeline-body"><p>Nit: Should we hide the fields and instead expose accessor methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:1 on 2023-05-22 08:15</div>
+            <div class="timeline-body"><p>Nit: I prefer to name my files after the concept they solve rather than what the things are that I put in there. Doing so helps with encapsulation (use the lowest visibility), eases moving things around, and tends to be easier discoverable (I don't know that something is a trait by just reading the type name: Is <code>RuleContext</code> a trait? I don't know)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:10 on 2023-05-22 08:18</div>
+            <div class="timeline-body"><p>I don't mind this but I think I would favor renaming <code>Rule</code> to e.g. <code>RuleKind</code> and name this trait <code>Rule</code> instead (it's this trait that implements the logic). Ideally, we would move more metadata to this rule to avoid having <code>Violation</code>, <code>RuleKind</code> and <code>Rule</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/traits.rs</code>:38 on 2023-05-22 08:21</div>
+            <div class="timeline-body"><p>The way this is solved in Rome is that Rome differentiates between <code>Visitor</code>s (stateful) and <code>Rule</code>s (stateless). Rule's can depend on <code>Visitor</code>s by defining a custom <code>Queryable</code>. Rome then runs the <code>Visitor</code> first to extract the metadata and calls into the <code>Rule</code>s once the data is resolved (at least, that's how I remember it).</p>
+<p>I think it could be useful for Ruff to also support such a layered approach:</p>
+<ul>
+<li>Simple: Covers the majority of rules</li>
+<li>Custom: More involved, but provides more flexibility and allows further optimisations.</li>
+</ul>
+<p>I think a similar problem are rules that depend on some aggregated state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 08:28</div>
+            <div class="timeline-body"><p>I haven't reviewed it in full detail yet, but I overall like where this is going.</p>
+<p>How do you envision the relationship between <code>Violation</code> and the <code>Analyzer</code> trait. To me it seems that both define metadata about a rule. Could we unify them?</p>
+<p>I also think that it makes sense to spend some time evaluating how we want to support rules that track state (could be used to implement rules that use shared data and only differ by the emitted diagnostic).</p>
+<p>Ideally, we could use the new <code>Analyzer</code> trait for all kind of rules, including physical and logical lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-22 16:01</div>
+            <div class="timeline-body"><blockquote>
+<p>How do you envision the relationship between Violation and the Analyzer trait. To me it seems that both define metadata about a rule. Could we unify them?</p>
+</blockquote>
+<blockquote>
+<p>I also think that it makes sense to spend some time evaluating how we want to support rules that track state (could be used to implement rules that use shared data and only differ by the emitted diagnostic).</p>
+</blockquote>
+<blockquote>
+<p>Ideally, we could use the new Analyzer trait for all kind of rules, including physical and logical lines.</p>
+</blockquote>
+<p>To me all of these are intertwined, and I need to spend a bit more time fleshing out the answers... But, e.g., if we were to proceed with the above design <em>just</em> for AST-focused rules (for now), then I'd probably suggest removing <code>rule()</code> from <code>Analyzer</code>, and framing <code>Analyzer</code> as the rule <em>logic</em> (a trait for diagnostics that run over AST nodes), whereas <code>Violation</code> is the struct capturing the result for a diagnostic of a specific kind (generic to the source of the diagnostic).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 18:45</div>
+            <div class="timeline-body"><p>Closing for now, can always re-open when this gets picked back up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 18:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid running RUF100 rules when code contains syntax errors - astral-sh/ruff #4869</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid running RUF100 rules when code contains syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4869">#4869</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-05 17:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-05 17:22</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR turns off RUF100 for files that contain syntax errors. If a file contains a syntax error, then we're unable to run all rules over it, and so enforcing the validity of <code>noqa</code> directives becomes an invalid operation.</p>
+<p>Closes: #4849.</p>
+<h2>Test Plan</h2>
+<p>Copied over:</p>
+<pre><code class="language-py">def function(*):
+    &quot;&quot;&quot;Veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long.&quot;&quot;&quot;  # noqa: W505
+</code></pre>
+<p>Ran: <code>cargo run -p ruff_cli -- check foo.py -n --select E,W,RUF</code>:</p>
+<pre><code>foo.py:2:89: E501 Line too long (110 &gt; 88 characters)
+foo.py:2:99: RUF100 [*] Unused `noqa` directive (unused: `W505`)
+Found 2 errors.
+[*] 1 potentially fixable with the --fix option
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-05 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-05 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-05 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-05 17:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     13.8±0.11ms     2.9 MB/sec    1.00     13.8±0.06ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.0 MB/sec    1.00      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    412.6±0.29µs     7.2 MB/sec    1.00    411.8±0.95µs     7.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.02ms     4.4 MB/sec    1.02      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.1 MB/sec    1.01      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1448.9±7.88µs    11.5 MB/sec    1.01   1456.8±3.21µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.8±0.28µs    18.2 MB/sec    1.00    161.3±0.18µs    18.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.00ms     8.5 MB/sec    1.01      3.0±0.00ms     8.4 MB/sec
+parser/large/dataset.py                    1.00      5.2±0.00ms     7.8 MB/sec    1.00      5.2±0.01ms     7.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1025.0±0.42µs    16.2 MB/sec    1.00   1027.5±0.44µs    16.2 MB/sec
+parser/numpy/globals.py                    1.00    106.9±0.57µs    27.6 MB/sec    1.00    106.7±0.20µs    27.7 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.3 MB/sec    1.00      2.2±0.01ms    11.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     23.1±0.89ms  1800.3 KB/sec    1.00     23.0±0.78ms  1811.7 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.6±0.21ms     3.0 MB/sec    1.04      5.8±0.27ms     2.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   633.7±24.62µs     4.7 MB/sec    1.05   668.3±48.76µs     4.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.5±0.34ms     2.7 MB/sec    1.03      9.7±0.40ms     2.6 MB/sec
+linter/default-rules/large/dataset.py      1.01     11.3±0.41ms     3.6 MB/sec    1.00     11.2±0.40ms     3.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.3±0.10ms     7.2 MB/sec    1.00      2.3±0.07ms     7.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00   262.3±28.27µs    11.2 MB/sec    1.00   263.4±20.21µs    11.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.9±0.22ms     5.2 MB/sec    1.01      5.0±0.24ms     5.1 MB/sec
+parser/large/dataset.py                    1.00      8.6±0.31ms     4.8 MB/sec    1.02      8.8±0.43ms     4.6 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1623.4±89.06µs    10.3 MB/sec    1.00  1599.9±85.11µs    10.4 MB/sec
+parser/numpy/globals.py                    1.00    163.9±9.21µs    18.0 MB/sec    1.00    164.0±9.42µs    18.0 MB/sec
+parser/pydantic/types.py                   1.00      3.7±0.32ms     6.9 MB/sec    1.00      3.7±0.19ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

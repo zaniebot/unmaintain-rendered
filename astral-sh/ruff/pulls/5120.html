@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open cache files in parallel - astral-sh/ruff #5120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Open cache files in parallel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5120">#5120</a>
+        opened by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a>
+        on 2023-06-15 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-15 13:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is based on https://github.com/astral-sh/ruff/pull/5117.</p>
+<p>Open cache files in parallel (again).</p>
+<h2>Test Plan</h2>
+<p>Existing tests should keep working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @Thomasdezeeuw on 2023-06-15 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @Thomasdezeeuw on 2023-06-15 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-15 13:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.1±0.30ms     5.8 MB/sec    1.01      7.1±0.29ms     5.7 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1499.9±79.92µs    11.1 MB/sec    1.00  1484.0±67.92µs    11.2 MB/sec
+formatter/numpy/globals.py                 1.00   149.8±10.72µs    19.7 MB/sec    1.04   155.9±15.25µs    18.9 MB/sec
+formatter/pydantic/types.py                1.00      3.0±0.15ms     8.6 MB/sec    1.02      3.0±0.19ms     8.4 MB/sec
+linter/all-rules/large/dataset.py          1.01     14.7±0.48ms     2.8 MB/sec    1.00     14.6±0.50ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.14ms     4.5 MB/sec    1.01      3.7±0.21ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.02   497.9±30.36µs     5.9 MB/sec    1.00   487.2±22.89µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.25ms     3.9 MB/sec    1.01      6.6±0.23ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.31ms     5.5 MB/sec    1.01      7.5±0.44ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1639.6±84.02µs    10.2 MB/sec    1.00  1608.2±90.52µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   190.9±10.24µs    15.5 MB/sec    1.02   194.6±14.40µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.13ms     7.5 MB/sec    1.00      3.4±0.15ms     7.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.13     11.5±0.36ms     3.6 MB/sec    1.00     10.2±0.32ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.16      2.3±0.09ms     7.1 MB/sec    1.00      2.0±0.07ms     8.3 MB/sec
+formatter/numpy/globals.py                 1.14   238.8±10.23µs    12.4 MB/sec    1.00   209.8±11.26µs    14.1 MB/sec
+formatter/pydantic/types.py                1.16      4.9±0.18ms     5.2 MB/sec    1.00      4.3±0.18ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.04     19.8±0.61ms     2.1 MB/sec    1.00     19.1±0.71ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.2±0.13ms     3.2 MB/sec    1.04      5.4±0.26ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   666.7±27.83µs     4.4 MB/sec    1.01   676.0±58.82µs     4.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.9±0.28ms     2.9 MB/sec    1.03      9.2±0.28ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.5±0.36ms     3.9 MB/sec    1.00     10.6±0.41ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03      2.3±0.10ms     7.3 MB/sec    1.00      2.2±0.06ms     7.5 MB/sec
+linter/default-rules/numpy/globals.py      1.04   276.8±11.48µs    10.7 MB/sec    1.00   264.9±21.50µs    11.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.9±0.18ms     5.2 MB/sec    1.00      4.8±0.22ms     5.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Thomasdezeeuw on 2023-06-19 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Thomasdezeeuw on 2023-06-19 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 15:28</div>
+            <div class="timeline-body"><p>Do I understand this change correctly that it mainly opens the cache &quot;lazily&quot; and it's our parallel traversal of the files that make the cache loading <em>parallel</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-19 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Do I understand this change correctly that it mainly opens the cache &quot;lazily&quot; and it's our parallel traversal of the files that make the cache loading <em>parallel</em>?</p>
+</blockquote>
+<p>Initially this was true. But with the last commit I've simplified this because I didn't really like the code. Now the caches are opened in parallel, but no longer lazily. This allows us to avoid atomic/locks in reading from the cache (to synchronize the reading of the cache).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:318 on 2023-06-20 06:58</div>
+            <div class="timeline-body"><p>Have you considered using https://crates.io/crates/tempdir to ensure we always clean up the temp directory, including when the test succeeds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:360 on 2023-06-20 06:59</div>
+            <div class="timeline-body"><p>This is a fairly heavy integration test that can break for many reasons. Would it make sense to:</p>
+<ul>
+<li>use a smaller fixture directory</li>
+<li>Test the cache in isolation rather than depending on <code>lint_path</code> (calling the cache API directly)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:352 on 2023-06-20 07:00</div>
+            <div class="timeline-body"><p>Could we store the values of saved files in the cache and use it in the assertion on line 357?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:426 on 2023-06-20 07:03</div>
+            <div class="timeline-body"><p>Nit: It could make sense to move some of the shared setup code into a helper function that returns the created <code>Cache</code> or a wrapper object. This can help with readability</p>
+<p>Example:</p>
+<p>https://github.com/astral-sh/ruff/blob/4cc3cdba16846955a1b7a9f4abf7f83fddd26359/crates/ruff_python_formatter/src/comments/mod.rs#L434-L438</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:447 on 2023-06-20 07:05</div>
+            <div class="timeline-body"><p>Can we set the last modification time manually instead of falling back to a sleep here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:26 on 2023-06-20 07:07</div>
+            <div class="timeline-body"><p>Nit: Would it make sense to create newtype wrappers instead that implement <code>Deref</code> to enforce the difference statically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:31 on 2023-06-20 07:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// package. The on-disk representation is represented in [`PackageCache`] (and
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:44 on 2023-06-20 07:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// source files that still exist.
+</code></pre>
+<p>What's the meaning of <em>still exist</em>? That have not been deleted or that have been seen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-20 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:26 on 2023-06-20 08:27</div>
+            <div class="timeline-body"><p>We could I'm not sure it it's worth the maintenance burden though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:44 on 2023-06-20 08:32</div>
+            <div class="timeline-body"><p>I've improved the description, let me know if the new one is clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:318 on 2023-06-20 08:33</div>
+            <div class="timeline-body"><p>I usually try to minimize the dependencies used, but I'm perfectly happy switching to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:360 on 2023-06-20 08:37</div>
+            <div class="timeline-body"><p>I understand this test is a bit heavy compared to some of the other tests in the ruff_cli crate, but I would be hesitant to make it any weaker.  This is not only testing the caching stuff it's also testing the recreation of the diagnostics, which will be more complex if we switch to storing only a partial source for example.</p>
+<p>So I rather keep this integration test, but perhaps we can move it somewhere else (which would mean we need to make some of these functions public).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:352 on 2023-06-20 09:47</div>
+            <div class="timeline-body"><p>I've added commit 42f2bf17421d0086bc86e84c7c0ec562b232ce15 that checks the cached files a little more strictly, though it's a little brittle around dealing with parse errors (which we don't cache).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:426 on 2023-06-20 09:52</div>
+            <div class="timeline-body"><p>Agreed, I didn't bother with it because it's just four calls to <code>Cache::open</code>. Do you mind if I leave it for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:447 on 2023-06-20 09:54</div>
+            <div class="timeline-body"><p>It's not about setting the last modified time. For some reason that tmpfs on my system didn't sync/write/whatever the timestamp correctly. So when the loop below started and the file was rewritten (the &quot;File change&quot; test case below) the timestamp was the same as in the cache (and thus the cache was reused causing an error). I didn't really bother investigating it more than that though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> reviewed on 2023-06-20 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-20 10:18</div>
+            <div class="timeline-body"><p>I'm getting an error on the CI that the <code>jupyter/R.ipynb</code> is missing from the cache, but I can't reproduce it locally...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:372 on 2023-06-20 12:45</div>
+            <div class="timeline-body"><p>Nit. Can we use <code>assert_neq!(paths, [])</code>. Same for asserting the diagnostics, or the length</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-20 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> reviewed on 2023-06-20 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:372 on 2023-06-20 14:03</div>
+            <div class="timeline-body"><p>Not sure if they're is much added value, but I've made the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:447 on 2023-06-20 14:36</div>
+            <div class="timeline-body"><p>I've ended up removing this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> reviewed on 2023-06-20 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-06-20 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2023-06-20 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @konstin removed by @konstin on 2023-06-20 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Thomasdezeeuw on 2023-06-20 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Thomasdezeeuw on 2023-06-20 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-20 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

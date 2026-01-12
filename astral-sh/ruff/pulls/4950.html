@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option (`-o`/`--output-file`) to write output to a file - astral-sh/ruff #4950</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option (<code>-o</code>/<code>--output-file</code>) to write output to a file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4950">#4950</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-06-08 04:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-08 04:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A new CLI option (<code>-o</code>/<code>--output-file</code>) to write output to a file instead of stdout.</p>
+<p>Major change is to remove the lock acquired on stdout. The argument is that the output is buffered and thus the lock is acquired only when writing a block (8kb). As per the benchmark below there is a slight performance penalty.</p>
+<p>Reference: https://rustmagazine.org/issue-3/javascript-compiler/#printing-is-slow</p>
+<h2>Benchmarks</h2>
+<p><em>Output is truncated to only contain useful information:</em></p>
+<p>Command: <code>check --isolated --no-cache --select=ALL --show-source ./test-repos/cpython&quot;</code></p>
+<p>Latest HEAD (361d45f2b2f7e69d37d4e6d8270e448f72cae9a7) with and without the manual lock on stdout:</p>
+<pre><code class="language-console">Benchmark 1: With lock
+  Time (mean ± σ):      5.687 s ±  0.075 s    [User: 17.110 s, System: 0.486 s]
+  Range (min … max):    5.615 s …  5.860 s    10 runs
+
+Benchmark 2: Without lock
+  Time (mean ± σ):      5.719 s ±  0.064 s    [User: 17.095 s, System: 0.491 s]
+  Range (min … max):    5.640 s …  5.865 s    10 runs
+
+Summary
+  (1) ran 1.01 ± 0.02 times faster than (2)
+</code></pre>
+<p>This PR:</p>
+<pre><code class="language-console">Benchmark 1: This PR
+  Time (mean ± σ):      5.855 s ±  0.058 s    [User: 17.197 s, System: 0.491 s]
+  Range (min … max):    5.786 s …  5.987 s    10 runs
+ 
+Benchmark 2: Latest HEAD with lock
+  Time (mean ± σ):      5.645 s ±  0.033 s    [User: 16.922 s, System: 0.495 s]
+  Range (min … max):    5.600 s …  5.712 s    10 runs
+ 
+Summary
+  (2) ran 1.04 ± 0.01 times faster than (1)
+</code></pre>
+<h2>Test Plan</h2>
+<p>Run all of the commands which gives output with and without the <code>--output-file=ruff.out</code> option:</p>
+<ul>
+<li><code>--show-settings</code></li>
+<li><code>--show-files</code></li>
+<li><code>--show-fixes</code></li>
+<li><code>--diff</code></li>
+<li><code>--select=ALL</code></li>
+<li><code>--select=All --show-source</code></li>
+<li><code>--watch</code> (only stdout allowed)</li>
+</ul>
+<p>resolves: #4754</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-08 05:18</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.8±0.02ms     6.0 MB/sec    1.03      6.9±0.02ms     5.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1369.1±2.92µs    12.2 MB/sec    1.03   1406.0±1.71µs    11.8 MB/sec
+formatter/numpy/globals.py                 1.00    133.3±0.29µs    22.1 MB/sec    1.04    138.3±0.43µs    21.3 MB/sec
+formatter/pydantic/types.py                1.00      2.8±0.01ms     9.2 MB/sec    1.02      2.8±0.01ms     9.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.9±0.06ms     2.9 MB/sec    1.04     14.4±0.08ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.00ms     4.8 MB/sec    1.03      3.6±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    364.0±1.40µs     8.1 MB/sec    1.01    367.0±1.12µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.02ms     4.2 MB/sec    1.01      6.2±0.02ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.02ms     5.7 MB/sec    1.04      7.4±0.02ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1486.4±2.80µs    11.2 MB/sec    1.04   1540.7±3.16µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    159.5±0.21µs    18.5 MB/sec    1.04    165.2±0.12µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     7.9 MB/sec    1.04      3.3±0.02ms     7.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04     10.6±0.47ms     3.8 MB/sec    1.00     10.2±0.54ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.05      2.1±0.09ms     7.8 MB/sec    1.00      2.0±0.09ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.05   227.7±15.42µs    13.0 MB/sec    1.00   217.8±14.80µs    13.5 MB/sec
+formatter/pydantic/types.py                1.02      4.4±0.19ms     5.8 MB/sec    1.00      4.3±0.18ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     20.4±0.81ms  2047.1 KB/sec    1.03     20.9±0.74ms  1990.0 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.5±0.21ms     3.0 MB/sec    1.00      5.5±0.20ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.04   691.0±48.25µs     4.3 MB/sec    1.00   663.1±46.81µs     4.4 MB/sec
+linter/all-rules/pydantic/types.py         1.06      9.6±0.38ms     2.7 MB/sec    1.00      9.1±0.40ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.01     11.2±0.32ms     3.6 MB/sec    1.00     11.1±0.43ms     3.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.3±0.21ms     7.1 MB/sec    1.00      2.3±0.10ms     7.1 MB/sec
+linter/default-rules/numpy/globals.py      1.05   285.8±13.64µs    10.3 MB/sec    1.00   271.0±14.19µs    10.9 MB/sec
+linter/default-rules/pydantic/types.py     1.01      5.0±0.53ms     5.1 MB/sec    1.00      4.9±0.15ms     5.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/args.rs</code>:110 on 2023-06-08 09:49</div>
+            <div class="timeline-body"><p>This should make clear that the output means lint output, not e.g. the fixed code output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-08 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-06-08 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/args.rs</code>:110 on 2023-06-08 10:49</div>
+            <div class="timeline-body"><p>Can you expand on &quot;fixed code outout&quot;? Are you referring to the updated files on disk?</p>
+<p>Here, output comprises of everything that goes to stdout which includes the diagnostics, <code>--show-*</code> output, <code>--diff</code> output, statistics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/lib.rs</code>:181 on 2023-06-08 11:11</div>
+            <div class="timeline-body"><p>The output is now locked significantly longer than before. This can lead to unexpected behavior, e.g using <code>dbg</code> during this time won't work.</p>
+<p>We also need to be careful to drop this <code>writer</code> at the right time (e.g. only when entering the watch).</p>
+<p>What are your thoughts on instead defining our own <code>enum</code> that implements <code>Write</code> that has a <code>lock</code> operation (which is a no-op for files)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-08 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-08 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/args.rs</code>:110 on 2023-06-08 11:31</div>
+            <div class="timeline-body"><p>Yep, someone could assume <code>ruff --fix my_file.py -o my_file_fixed.py</code> would work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/lib.rs</code>:181 on 2023-06-08 18:14</div>
+            <div class="timeline-body"><p>Good point, I missed that. Defining our own <code>enum</code> is a good idea although I'm unable to understand what would the <code>lock</code> operation be like. Would it be an additional method implemented on the said <code>enum</code>? Acquiring a lock on every write seems unnecessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-06-08 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/lib.rs</code>:181 on 2023-06-08 20:18</div>
+            <div class="timeline-body"><p>The idea would be to have aon object similar to stout that has a lock object that then aquires the lock and releases it on drop.</p>
+<p>I can try to find the source in Rome tomorrow. I believe it used something similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-08 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/lib.rs</code>:181 on 2023-06-14 20:41</div>
+            <div class="timeline-body"><p>Where did we land on this @dhruvmanila?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-14 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-06-15 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/lib.rs</code>:181 on 2023-06-15 02:36</div>
+            <div class="timeline-body"><p>Sorry for letting this sit, I'll get on it today.</p>
+<p>As per our benchmarks the lock is giving us performance benefits so will be moving with Micha's idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-06-19 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/lib.rs</code>:86 on 2023-06-20 07:28</div>
+            <div class="timeline-body"><p>Do I understand the change correctly that you decided to remove the lock (I'm fine with that)?</p>
+<p>I think this solution is overkill without the lock. Instead, we can pass a <code>&amp;dyn Writer</code> to <code>Printer</code> because <code>Writer</code> already exposes all methods we need. Changing Printer to accept a <code>&amp;dyn Writer</code> avoids Rust generating two implementations of Printer, one for a file writer and one for the stdout writer (that would result in a lot of duplicated code). I doubt that this creates a significant performance hit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-20 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-06-20 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/lib.rs</code>:86 on 2023-06-20 10:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Do I understand the change correctly that you decided to remove the lock (I'm fine with that)?</p>
+</blockquote>
+<p>Yes.</p>
+<blockquote>
+<p>I think this solution is overkill without the lock. Instead, we can pass a <code>&amp;dyn Writer</code> to <code>Printer</code> because <code>Writer</code> already exposes all methods we need. Changing Printer to accept a <code>&amp;dyn Writer</code> avoids Rust generating two implementations of Printer, one for a file writer and one for the stdout writer (that would result in a lot of duplicated code). I doubt that this creates a significant performance hit.</p>
+</blockquote>
+<p>Yes, that makes sense. I'll update it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-06-20 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-20 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-20 16:18</div>
+            <div class="timeline-body"><p>Sorry for the back and forth and thanks for working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-20 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry for the back and forth and thanks for working on this.</p>
+</blockquote>
+<p>No problem at all! Thanks for being patient and answering all of my questions ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-06-20 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-06-20 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-20 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TalAmuyal">@TalAmuyal</a> on 2023-06-20 20:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

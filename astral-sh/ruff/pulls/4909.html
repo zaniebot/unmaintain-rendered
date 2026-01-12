@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-slots`] Add plugin, add `SLOT000`, `SLOT001` and `SLOT002` - astral-sh/ruff #4909</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-slots</code>] Add plugin, add <code>SLOT000</code>, <code>SLOT001</code> and <code>SLOT002</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4909">#4909</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-06-06 21:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-06-06 21:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds all rules from the <a href="https://github.com/python-formate/flake8-slots">flake8-slots</a> plugin.</p>
+<p>No autofixes yet but maybe a <code>Fix::suggested</code> autofix with a default <code>__slots__</code> val could be useful?</p>
+<h2>Test Plan</h2>
+<p>Added fixtures for all rules.</p>
+<p>I added a check for &quot;indirect&quot; subclassing in situations like:</p>
+<pre><code class="language-python">from collections import namedtuple 
+
+some_named_tuple = namedtuple(&quot;foo&quot;, [&quot;bar&quot;, &quot;bla&quot;])
+
+class Foo(some_named_tuple):
+    pass
+</code></pre>
+<p>As I imagined this would happen regularly. For completeness' sake it is arguable we should do this for <code>str</code> and <code>tuple</code> too in scenarios like:</p>
+<pre><code class="language-python">str_alias = str
+
+class Foo(str_alias):
+    pass
+</code></pre>
+<p>This will be more rare, left it out for now. Unsure if we have a convention for <code>base</code> checks across Ruff (e.g. do we <strong>always</strong> check for type aliases or <strong>never</strong> check for type aliases because XYZ). Happy to add the check to SLOT000 and SLOT001 and/or remove the check from SLOT002 depending on what is preferred.</p>
+<p>NOTE: If adding the check for the other subclasses makes sense. Maybe a general helper which combines some of the logic in <code>no_slots_in_namedtuple_subclass</code> and <code>is_indirect_namedtuple_subclass</code> and making it more generic so that it becomes something like: <code>fn is_indirect_subclass_of(expr: &amp;ExprName, subclass: [&amp;str]) -&gt; bool {}</code> might be useful.</p>
+<h2>Issue links</h2>
+<p>Closes: https://github.com/charliermarsh/ruff/issues/3873</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-slots] Add `SLOT000`, `SLOT001` and `SLOT002`" to "`[flake8-slots]` Add plugin, add `SLOT000`, `SLOT001` and `SLOT002`" by @qdegraaf on 2023-06-06 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-06 21:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+13, -0, 0 error(s))</p>
+<details><summary>airflow (+13, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/models/dagwarning.py:94:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/providers/amazon/aws/hooks/dms.py:26:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/providers/cncf/kubernetes/triggers/pod.py:33:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/providers/google/cloud/hooks/dataprep.py:47:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/providers/google/cloud/utils/dataform.py:31:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/serialization/enums.py:26:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/serialization/enums.py:35:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/log/file_task_handler.py:49:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/state.py:23:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/state.py:55:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/trigger_rule.py:23:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/types.py:47:7: SLOT000 Subclasses of `str` should define `__slots__`
++ airflow/utils/weight_rule.py:25:7: SLOT000 Subclasses of `str` should define `__slots__`
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.8±0.05ms     5.9 MB/sec    1.00      6.9±0.01ms     5.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1203.2±3.32µs    13.8 MB/sec    1.00   1207.3±3.85µs    13.8 MB/sec
+formatter/numpy/globals.py                 1.00    134.6±0.20µs    21.9 MB/sec    1.00    134.4±0.16µs    21.9 MB/sec
+formatter/pydantic/types.py                1.00      2.8±0.01ms     9.2 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.07ms     2.7 MB/sec    1.01     15.0±0.07ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.01      3.6±0.00ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    367.4±6.24µs     8.0 MB/sec    1.01    369.4±0.85µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.01ms     4.1 MB/sec    1.00      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.01ms     5.6 MB/sec    1.00      7.4±0.03ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1534.4±6.41µs    10.9 MB/sec    1.00   1536.3±4.75µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    163.7±0.25µs    18.0 MB/sec    1.01    165.8±0.20µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.00ms     7.8 MB/sec    1.01      3.3±0.01ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.7±0.05ms     5.3 MB/sec    1.02      7.8±0.03ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1343.8±11.66µs    12.4 MB/sec    1.02   1371.4±8.74µs    12.1 MB/sec
+formatter/numpy/globals.py                 1.00    152.9±1.70µs    19.3 MB/sec    1.02    155.5±7.93µs    19.0 MB/sec
+formatter/pydantic/types.py                1.00      3.1±0.02ms     8.1 MB/sec    1.03      3.2±0.07ms     7.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.5±0.09ms     2.5 MB/sec    1.00     16.5±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.03ms     3.9 MB/sec    1.01      4.3±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    430.7±4.77µs     6.9 MB/sec    1.00    432.3±5.08µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.03ms     3.6 MB/sec    1.00      7.1±0.03ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.03ms     4.9 MB/sec    1.00      8.3±0.04ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1721.4±8.36µs     9.7 MB/sec    1.01  1740.2±15.46µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    185.3±1.26µs    15.9 MB/sec    1.00    186.1±1.32µs    15.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.8 MB/sec    1.01      3.8±0.03ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-07 12:42</div>
+            <div class="timeline-body"><p>Nit: What's your reasoning for passing a callback here that extracts the identifier range rather than calling <code>identifier_range</code> internally in <code>no_slots_in_str_subclass</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_namedtuple_subclass.rs</code>:64 on 2023-06-07 12:43</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    if let [Expr::Name(ast::ExprName { id, .. })] = class.bases.as_slice() {
+        let scope = checker.semantic_model().scope();
+</code></pre>
+<p>Or, since you want to match on multiple ones:</p>
+<pre><code>match class.bases.as_slice() {
+	[Expr::Name(ast::ExprName { id, .. })] =&gt; {
+		...
+	},
+	[Expr::Call(ast::ExprCall { func, .. })] =&gt; {
+		...
+	},
+	_ =&gt; {
+		return; // or noop
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_str_subclass.rs</code>:56 on 2023-06-07 12:45</div>
+            <div class="timeline-body"><p>NIt</p>
+<pre><code class="language-suggestion">   let [Expr::Name(ast::ExprName { id, .. })] = &amp;class.bases.as_slice() else {
+        return;
+    };
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-07 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-06-07 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-07 12:55</div>
+            <div class="timeline-body"><p>It was a coin toss between that and passing in the <code>stmt</code> as an additional argument. I was hoping <code>identifier_range()</code> would accept the <code>class_def</code> object but that leads to: <code>expected &amp;Stmt, found &amp;StmtClassDef</code>. I saw the callback set-up and figured it is potentially cleaner to have all rules go:</p>
+<pre><code class="language-rust">rule_func(self, the_ast_object, callback)
+</code></pre>
+<p>rather than</p>
+<pre><code class="language-rust">rule_func(self, the_ast_object, potentially_another_ast_object)
+</code></pre>
+<p>But definitely a weak opinion, weakly held. So can change to passing in <code>stmt</code> if preferred (it does have the advantage of less complexity).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-07 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-07 12:56</div>
+            <div class="timeline-body"><p>Hmm I see. Yeah it's annoying that there's no way to <code>&amp;Stmt</code> from a specific Stmt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-06-07 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_namedtuple_subclass.rs</code>:64 on 2023-06-07 12:57</div>
+            <div class="timeline-body"><p>Ah that's nice! Really loving the extent to which those <code>if let</code>'s can check things in an implicit-but-transparent manner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-06-07 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-07 13:04</div>
+            <div class="timeline-body"><p>Yeah I was thinking some kind of helper/converter for that might be useful (especially if in the future as  more and more funcs will just take a reference to a whole specific Stmt object). Unsure how much work that is or whether it opens a bunch of doors we don't want to open, not too knowledgeable about internals yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-07 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-07 20:09</div>
+            <div class="timeline-body"><p>We have <code>AnyNodeRef</code> and <code>AnyNode</code> that can represent arbitrary nodes and you can convert from <code>Stmt</code> or <code>StmtClass</code> to either of those. We should probably start using those more widely but I don't consider this part of this PR's scope. CC: @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-06-07 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-09 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:827 on 2023-06-09 02:23</div>
+            <div class="timeline-body"><p>I think I prefer just passing in the <code>Stmt</code>, it's more consistent with how we solve this elsewhere (even if it's not ideal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_tuple_subclass.rs</code>:51 on 2023-06-09 02:25</div>
+            <div class="timeline-body"><p>I think the originating plugin checks all bases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-09 02:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-09 02:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_namedtuple_subclass.rs</code>:95 on 2023-06-09 02:25</div>
+            <div class="timeline-body"><p>Does the originating plugin do this? As far as I can tell, it doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-09 02:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_slots/rules/no_slots_in_namedtuple_subclass.rs</code>:95 on 2023-06-09 02:41</div>
+            <div class="timeline-body"><p>Gonna simplify for now to bias towards merging, but happy to revisit and we'll have it here in the Git history if we want to restore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`[flake8-slots]` Add plugin, add `SLOT000`, `SLOT001` and `SLOT002`" to "[`flake8-slots`] Add plugin, add `SLOT000`, `SLOT001` and `SLOT002`" by @charliermarsh on 2023-06-09 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-09 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-06-09 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-09 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-09 04:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

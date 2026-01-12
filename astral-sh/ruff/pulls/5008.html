@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve ruff_parse_simple to find UTF-8 violations - astral-sh/ruff #5008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve ruff_parse_simple to find UTF-8 violations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5008">#5008</a>
+        opened by <a href="https://github.com/addisoncrump">@addisoncrump</a>
+        on 2023-06-10 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-10 16:53</div>
+            <div class="timeline-body"><p>Improves the <code>ruff_parse_simple</code> fuzz harness by adding checks for parsed locations to ensure they all lie on UTF-8 character boundaries. This will allow for faster identification of issues like #5004.</p>
+<p>This also adds additional details for Apple M1 users and clarifies the importance of using <code>init-fuzzer.sh</code> (thanks for the feedback, @jasikpark :slightly_smiling_face:).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-10 17:05</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.5±0.26ms     4.8 MB/sec    1.00      8.4±0.29ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1745.7±57.59µs     9.5 MB/sec    1.01  1762.7±75.32µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.01    171.1±8.84µs    17.2 MB/sec    1.00    170.0±5.71µs    17.4 MB/sec
+formatter/pydantic/types.py                1.02      3.5±0.11ms     7.4 MB/sec    1.00      3.4±0.10ms     7.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.7±0.40ms     2.2 MB/sec    1.01     18.9±0.40ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.18ms     3.8 MB/sec    1.00      4.4±0.14ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01   550.9±20.58µs     5.4 MB/sec    1.00   547.8±16.07µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.8±0.23ms     3.3 MB/sec    1.00      7.8±0.20ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.1±0.19ms     4.5 MB/sec    1.00      9.0±0.23ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1911.1±42.84µs     8.7 MB/sec    1.00  1903.7±39.12µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.04   228.2±19.48µs    12.9 MB/sec    1.00    220.2±8.56µs    13.4 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.1±0.15ms     6.2 MB/sec    1.00      4.0±0.11ms     6.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.15      8.8±0.08ms     4.6 MB/sec    1.00      7.7±0.14ms     5.3 MB/sec
+formatter/numpy/ctypeslib.py               1.12  1746.5±19.31µs     9.5 MB/sec    1.00  1562.5±16.92µs    10.7 MB/sec
+formatter/numpy/globals.py                 1.05    163.7±4.60µs    18.0 MB/sec    1.00    156.2±5.47µs    18.9 MB/sec
+formatter/pydantic/types.py                1.11      3.6±0.04ms     7.2 MB/sec    1.00      3.2±0.06ms     7.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.5±0.16ms     2.5 MB/sec    1.04     17.2±0.37ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.05ms     4.0 MB/sec    1.04      4.4±0.16ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    496.4±7.52µs     5.9 MB/sec    1.01   499.4±10.19µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.07ms     3.6 MB/sec    1.06      7.5±0.29ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.12ms     4.8 MB/sec    1.00      8.4±0.12ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1779.5±30.44µs     9.4 MB/sec    1.01  1789.4±30.03µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    200.0±4.15µs    14.8 MB/sec    1.01    202.5±4.50µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.04ms     6.7 MB/sec    1.01      3.8±0.07ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-11 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>fuzz/fuzz_targets/ruff_parse_simple.rs</code>:34 on 2023-06-11 02:17</div>
+            <div class="timeline-body"><p>Do you mind elaborating a bit on what problem this is solving? Just trying to catch up on the relevant issue. It looks like we're detecting here whether the lexer is emitting tokens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2023-06-11 02:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_parse_simple.rs</code>:34 on 2023-06-11 02:38</div>
+            <div class="timeline-body"><p>Yes, and checking if the indices specified by those tokens are aligned on character boundaries. This was not the case for #5004 and led to panics in some cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2023-06-11 02:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_parse_simple.rs</code>:34 on 2023-06-11 02:43</div>
+            <div class="timeline-body"><p>As for why you'd do this: you can use this as a bit of an indirect way to detect miscomputed locations, as the fuzzer has the potential to inject the multi-byte UTF-8 chars at the miscomputed indices.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-12 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

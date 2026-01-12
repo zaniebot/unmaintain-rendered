@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track symbol deletions separately from bindings - astral-sh/ruff #4888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track symbol deletions separately from bindings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4888">#4888</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-06 01:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-06 01:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>#4746 revealed some subtle issues related to Python's handling of <code>nonlocal</code>. If you use <code>nonlocal</code>, and the non-local symbol isn't declared in the parent scope, Python raises a syntax error at parse time (!). However, I didn't realize that, for the purpose of declarations, Python will respect a <code>del</code> statement -- so this works fine:</p>
+<pre><code class="language-py">def f():
+    def g():
+        nonlocal x
+
+    del x
+</code></pre>
+<p>Previously, to determine whether the symbol was declared in the parent scope, we checked if the symbol was <em>bound</em> in the parent scope. But we don't create bindings for deletions, and in fact, we remove any existing bindings when we hit a deletion.</p>
+<p>This PR thus modifies <code>Scope</code> to track all deleted symbols, so that we can ask the scope whether the symbol should be considered &quot;declared&quot; for the purpose of <code>nonlocal</code> analysis.</p>
+<p>Closes #4746.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-06 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:27 on 2023-06-06 01:30</div>
+            <div class="timeline-body"><p>This might be a bit of a heavy-handed change just to fix this one semantic issue... E.g., we could instead track <code>deleted_names</code>, and make <code>declares</code> something like <code>self.has(name) || self.deletions.contains(name)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 01:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:27 on 2023-06-06 01:32</div>
+            <div class="timeline-body"><p>(We could also track <code>HashMap&lt;&amp;'a str, SymbolId&gt;</code>, and make <code>bindings: FxHashMap&lt;SymbolId, BindingId&gt;</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 01:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-06 02:08</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -1, 0 error(s))</p>
+<details><summary>airflow (+0, -1)</summary>
+<p>
+
+<pre><code class="language-diff">- tests/decorators/test_task_group.py:108:18: PLE0117 Nonlocal name `tgp` found without binding
+</code></pre>
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLE0117 | 1 | 0 | 1 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.10      6.5±0.02ms     6.3 MB/sec    1.00      5.9±0.02ms     6.9 MB/sec
+formatter/numpy/ctypeslib.py               1.07   1297.3±1.98µs    12.8 MB/sec    1.00   1211.6±2.78µs    13.7 MB/sec
+formatter/numpy/globals.py                 1.05    143.7±3.88µs    20.5 MB/sec    1.00    137.0±0.29µs    21.5 MB/sec
+formatter/pydantic/types.py                1.08      2.8±0.00ms     9.1 MB/sec    1.00      2.6±0.01ms     9.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     14.1±0.07ms     2.9 MB/sec    1.00     13.9±0.06ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     5.0 MB/sec    1.00      3.4±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    413.7±0.78µs     7.1 MB/sec    1.00    414.4±0.84µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.03ms     4.3 MB/sec    1.00      5.9±0.03ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.02ms     6.0 MB/sec    1.00      6.8±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1468.7±4.74µs    11.3 MB/sec    1.00   1461.3±4.81µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    163.5±0.44µs    18.0 MB/sec    1.00    161.7±0.25µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.00ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.6±0.27ms     4.7 MB/sec    1.00      8.5±0.24ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1732.9±63.90µs     9.6 MB/sec    1.01  1753.6±73.40µs     9.5 MB/sec
+formatter/numpy/globals.py                 1.00    196.5±9.47µs    15.0 MB/sec    1.00   196.7±13.69µs    15.0 MB/sec
+formatter/pydantic/types.py                1.00      3.8±0.10ms     6.8 MB/sec    1.01      3.8±0.15ms     6.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     20.6±0.49ms  2018.8 KB/sec    1.00     20.4±0.39ms  2038.6 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.14ms     3.3 MB/sec    1.00      5.1±0.17ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.02   604.7±24.19µs     4.9 MB/sec    1.00   595.1±22.40µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.6±0.24ms     3.0 MB/sec    1.00      8.6±0.27ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.1±0.23ms     4.0 MB/sec    1.00     10.1±0.25ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.2±0.18ms     7.7 MB/sec    1.00      2.1±0.08ms     7.8 MB/sec
+linter/default-rules/numpy/globals.py      1.01   243.5±11.40µs    12.1 MB/sec    1.00   241.9±12.28µs    12.2 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.6±0.24ms     5.5 MB/sec    1.00      4.5±0.16ms     5.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Boshen">@Boshen</a> reviewed on 2023-06-06 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Boshen">@Boshen</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:27 on 2023-06-06 06:41</div>
+            <div class="timeline-body"><p>I'm having a hard time comprehending the difference between a <code>declared_symbol</code> vs a <code>binding</code> based on their names and comments alone 🤯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-06 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:27 on 2023-06-06 13:39</div>
+            <div class="timeline-body"><p>I'm going to rewrite this to special-case deletions. I need to reconsider deletions more holistically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:77 on 2023-06-06 15:26</div>
+            <div class="timeline-body"><p>Would it make sense to instead <em>mark</em> the binding as deleted? I assume that causes some downstream problems because a lot of code freely access the bindings directly, so there isn't a good way for us to hide deleted bindings. I'm mainly asking because I'm a bit worried about registering all bindings in two separate <code>HashMaps</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:23 on 2023-06-06 15:29</div>
+            <div class="timeline-body"><p>How is <code>declared_symbols</code> different from <code>bindings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:23 on 2023-06-06 15:30</div>
+            <div class="timeline-body"><p>Would it make sense to instead track deleted <code>symbol</code>s, considering that deletions are rare (so that the vec is empty 99% of the cases)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-06 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:23 on 2023-06-06 16:56</div>
+            <div class="timeline-body"><p>Yes, I did that initially. I'm going to revert to that state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:23 on 2023-06-06 16:56</div>
+            <div class="timeline-body"><p>This is defined on the relevant method docstrings (<code>declares</code> vs. <code>has</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-06 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:77 on 2023-06-06 16:57</div>
+            <div class="timeline-body"><p>This actually isn't sufficient, because this needs to be considered valid (for the purpose of the <code>nonlocal</code> rule):</p>
+<pre><code class="language-py">def f():
+    del x
+
+    def g():
+        nonlocal x
+</code></pre>
+<p><code>del x</code> adds <code>x</code> to the symbol table, but doesn't bind it to the value (or something like that -- I don't have the terminology nailed down).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Track symbol declarations separately from bindings" to "Track symbol deletions separately from bindings" by @charliermarsh on 2023-06-06 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-06 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-06 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-06 18:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

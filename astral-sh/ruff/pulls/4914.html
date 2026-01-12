@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore if using infinite iterators in `B905` - astral-sh/ruff #4914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore if using infinite iterators in <code>B905</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4914">#4914</a>
+        opened by <a href="https://github.com/kyoto7250">@kyoto7250</a>
+        on 2023-06-07 02:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/kyoto7250">@kyoto7250</a> on 2023-06-07 02:32</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<pre><code class="language-python"># https://github.com/PyCQA/flake8-bugbear/issues/378
+from itertools import count
+
+
+for _, _ in zip(&quot;abc&quot;, count()):
+    pass
+</code></pre>
+<p><code>ruff</code> raises B905 warning.</p>
+<pre><code class="language-bash">$ ruff --select B905 x.py
+x.py:5:13: B905 `zip()` without an explicit `strict=` parameter
+Found 1 error.
+</code></pre>
+<p>but, if we add <code>strict=True</code>, this is invalid code.</p>
+<pre><code class="language-bash">ValueError: zip() argument 2 is longer than argument 1
+</code></pre>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>We don't need to warn if <code>zip</code> has itertools.count, cycle, repeat.</p>
+<p>I also added test cases.</p>
+<h2>Reference</h2>
+<ul>
+<li>https://docs.python.org/3/library/itertools.html</li>
+<li>https://github.com/PyCQA/flake8-bugbear/issues/378</li>
+<li>https://github.com/PyCQA/flake8-bugbear/pull/388</li>
+</ul>
+<p>This PR was created to have the same behavior as <code>flake8_bugbear</code>, but if an infinite iterator is used and <code>strict=True</code> is given, it may be better to issue a separate dedicated warning.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-07 02:43</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      5.6±0.02ms     7.3 MB/sec    1.00      5.5±0.01ms     7.4 MB/sec
+formatter/numpy/ctypeslib.py               1.02   1097.0±2.76µs    15.2 MB/sec    1.00   1079.8±1.38µs    15.4 MB/sec
+formatter/numpy/globals.py                 1.03    125.6±0.14µs    23.5 MB/sec    1.00    121.5±0.29µs    24.3 MB/sec
+formatter/pydantic/types.py                1.01      2.4±0.01ms    10.5 MB/sec    1.00      2.4±0.00ms    10.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.1±0.04ms     2.9 MB/sec    1.01     14.3±0.08ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    423.6±1.55µs     7.0 MB/sec    1.00    423.7±0.87µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.01ms     4.3 MB/sec    1.00      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.01ms     6.0 MB/sec    1.01      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1472.1±2.75µs    11.3 MB/sec    1.00   1465.4±2.28µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    164.7±0.24µs    17.9 MB/sec    1.00    162.8±0.80µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.00      3.1±0.00ms     8.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.10      7.3±0.06ms     5.5 MB/sec    1.00      6.7±0.05ms     6.1 MB/sec
+formatter/numpy/ctypeslib.py               1.09  1404.0±19.27µs    11.9 MB/sec    1.00  1292.1±17.33µs    12.9 MB/sec
+formatter/numpy/globals.py                 1.06    151.4±3.06µs    19.5 MB/sec    1.00    142.8±3.06µs    20.7 MB/sec
+formatter/pydantic/types.py                1.07      3.2±0.04ms     8.1 MB/sec    1.00      2.9±0.05ms     8.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     17.0±0.20ms     2.4 MB/sec    1.00     16.9±0.17ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.08ms     3.9 MB/sec    1.00      4.3±0.04ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   500.5±12.03µs     5.9 MB/sec    1.00    500.8±7.43µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.08ms     3.6 MB/sec    1.01      7.2±0.08ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.07ms     4.9 MB/sec    1.00      8.3±0.06ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1757.2±17.45µs     9.5 MB/sec    1.00  1752.7±19.99µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    201.5±4.22µs    14.6 MB/sec    1.00    202.0±7.75µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.03ms     6.8 MB/sec    1.00      3.7±0.04ms     6.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 03:07</div>
+            <div class="timeline-body"><p>Thanks! It looks like the bugbear PR also checks whether the <code>repeat</code> call has <code>times=None</code> (or is omitted): https://github.com/PyCQA/flake8-bugbear/pull/388/files#diff-21e991c5e10f0aca96647b43b4d0968e75c52cc2bceaacf0794f50ded872e49bR1184. Do you think that's worth adding? I don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kyoto7250">@kyoto7250</a> on 2023-06-07 03:14</div>
+            <div class="timeline-body"><p>I missed this conditional branch.</p>
+<p>The purpose is to match the behavior with bugbear, so I will add it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-08 01:59</div>
+            <div class="timeline-body"><p>Gonna adjust this real quick so I can include it in the upcoming release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-08 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-08 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kyoto7250">@kyoto7250</a> on 2023-06-08 02:33</div>
+            <div class="timeline-body"><p>I Understood, thanks for your work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

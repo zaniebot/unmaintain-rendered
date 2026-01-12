@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for global and nonlocal symbol renames - astral-sh/ruff #5134</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for global and nonlocal symbol renames</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5134">#5134</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-16 02:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 02:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In #5074, we introduced an abstraction to support local symbol renames (&quot;local&quot; here refers to &quot;within a module&quot;). However, that abstraction didn't support <code>global</code> and <code>nonlocal</code> symbols. This PR extends it to those cases.</p>
+<p>Broadly, there are considerations.</p>
+<p>First, if we're renaming a symbol in a scope in which it is declared <code>global</code> or <code>nonlocal</code>. For example, given:</p>
+<pre><code class="language-python">x = 1
+
+def foo():
+    global x
+</code></pre>
+<p>Then when renaming <code>x</code> in <code>foo</code>, we need to detect that it's <code>global</code> and instead perform the rename starting from the module scope.</p>
+<p>Second, when renaming a symbol, we need to determine the scopes in which it is declared <code>global</code> or <code>nonlocal</code>. This is effectively the inverse of the above: when renaming <code>x</code> in the module scope, we need to detect that we should <em>also</em> rename <code>x</code> in <code>foo</code>.</p>
+<p>To support these cases, the renaming algorithm was adjusted as follows:</p>
+<ul>
+<li>When we start a rename in a scope, determine whether the symbol is declared <code>global</code> or <code>nonlocal</code> by looking for a <code>global</code> or <code>nonlocal</code> binding. If it is, start the rename in the defining scope. (This requires storing the defining scope on the <code>nonlocal</code> binding, which is new.)</li>
+<li>We then perform the rename in the defining scope.</li>
+<li>We then check whether the symbol was declared as <code>global</code> or <code>nonlocal</code> in any scopes, and perform the rename in those scopes too. (Thankfully, this doesn't need to be done recursively.)</li>
+</ul>
+<p>Closes #5092.</p>
+<h2>Test Plan</h2>
+<p>Added some additional snapshot tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-16 02:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.9±0.02ms     5.9 MB/sec    1.01      6.9±0.02ms     5.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1408.6±22.44µs    11.8 MB/sec    1.00   1412.2±4.40µs    11.8 MB/sec
+formatter/numpy/globals.py                 1.00    139.2±0.67µs    21.2 MB/sec    1.00    138.9±0.57µs    21.3 MB/sec
+formatter/pydantic/types.py                1.00      2.8±0.01ms     9.1 MB/sec    1.01      2.8±0.02ms     9.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.1±0.08ms     2.9 MB/sec    1.02     14.4±0.05ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    370.4±0.67µs     8.0 MB/sec    1.01    372.9±0.98µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.06ms     4.2 MB/sec    1.02      6.2±0.03ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.05ms     5.7 MB/sec    1.02      7.3±0.03ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1501.6±4.21µs    11.1 MB/sec    1.02   1538.4±6.34µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    163.3±0.16µs    18.1 MB/sec    1.02    165.7±0.62µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.8 MB/sec    1.02      3.3±0.02ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      9.7±0.34ms     4.2 MB/sec    1.00      9.5±0.32ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1969.4±82.41µs     8.5 MB/sec    1.00  1933.6±113.85µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.01   190.8±11.68µs    15.5 MB/sec    1.00   189.0±11.00µs    15.6 MB/sec
+formatter/pydantic/types.py                1.01      4.0±0.18ms     6.4 MB/sec    1.00      3.9±0.17ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.9±0.69ms     2.0 MB/sec    1.01     20.1±0.54ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.2±0.21ms     3.2 MB/sec    1.00      5.2±0.18ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   618.6±29.03µs     4.8 MB/sec    1.01   622.7±32.89µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      9.0±0.48ms     2.8 MB/sec    1.00      8.9±0.38ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.3±0.33ms     4.0 MB/sec    1.00     10.1±0.34ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.2±0.09ms     7.7 MB/sec    1.00      2.1±0.10ms     7.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00   244.4±13.45µs    12.1 MB/sec    1.04   253.0±14.06µs    11.7 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.6±0.19ms     5.5 MB/sec    1.00      4.6±0.16ms     5.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-16 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-16 11:03</div>
+            <div class="timeline-body"><p>Code looks good as far as i can judge</p>
+<p>I found a fun new error while trying out semantics: <code>SyntaxError: name 'y' is used prior to global declaration</code></p>
+<pre><code class="language-python">y = 1
+def c():
+    y = 2
+    print(y)
+    global y
+    print(y)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-16 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-16 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-16 14:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

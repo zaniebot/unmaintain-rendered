@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix subprocess.run on Windows Python 3.7 - astral-sh/ruff #5220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix subprocess.run on Windows Python 3.7</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5220">#5220</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-06-20 17:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-06-20 17:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>From the <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen">subprocess docs</a>:</p>
+<blockquote>
+<p>Changed in version 3.6: args parameter accepts a path-like object if shell is False and a sequence containing path-like objects on POSIX.</p>
+<p>Changed in version 3.8: args parameter accepts a path-like object if shell is False and a sequence containing bytes and path-like objects on Windows.</p>
+</blockquote>
+<p>We want to support python 3.7 on windows, so we need to convert the <code>Path</code> into a <code>str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-06-20 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-20 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-20 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-20 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-20 18:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.3±0.02ms     6.5 MB/sec    1.00      6.3±0.02ms     6.5 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1334.3±1.97µs    12.5 MB/sec    1.00   1323.6±1.64µs    12.6 MB/sec
+formatter/numpy/globals.py                 1.00    130.4±0.19µs    22.6 MB/sec    1.00    131.0±0.22µs    22.5 MB/sec
+formatter/pydantic/types.py                1.00      2.6±0.01ms     9.8 MB/sec    1.00      2.6±0.02ms     9.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.9±0.04ms     3.2 MB/sec    1.00     12.8±0.02ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.00ms     5.1 MB/sec    1.00      3.2±0.00ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    422.0±0.74µs     7.0 MB/sec    1.00    421.0±1.78µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.01ms     4.5 MB/sec    1.00      5.7±0.01ms     4.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.5±0.02ms     6.2 MB/sec    1.00      6.5±0.02ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1445.5±2.30µs    11.5 MB/sec    1.00   1437.1±1.08µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    162.6±0.22µs    18.1 MB/sec    1.00    162.9±0.72µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.00ms     8.5 MB/sec    1.00      3.0±0.00ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.5±0.05ms     5.5 MB/sec    1.01      7.5±0.06ms     5.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1551.8±13.92µs    10.7 MB/sec    1.02  1582.8±85.84µs    10.5 MB/sec
+formatter/numpy/globals.py                 1.00    155.7±2.34µs    18.9 MB/sec    1.02    158.6±5.79µs    18.6 MB/sec
+formatter/pydantic/types.py                1.00      3.1±0.04ms     8.2 MB/sec    1.01      3.1±0.05ms     8.1 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.1±0.30ms     2.7 MB/sec    1.00     14.9±0.09ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.1±0.14ms     4.1 MB/sec    1.00      4.0±0.04ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01    497.6±9.61µs     5.9 MB/sec    1.00    494.6±6.08µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.7±0.14ms     3.8 MB/sec    1.00      6.7±0.05ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.8±0.05ms     5.2 MB/sec    1.00      7.8±0.03ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1683.4±13.77µs     9.9 MB/sec    1.00  1684.7±12.37µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    197.5±2.47µs    14.9 MB/sec    1.00    196.9±3.25µs    15.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.03ms     7.2 MB/sec    1.00      3.5±0.02ms     7.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

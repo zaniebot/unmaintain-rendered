@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make the release workflow more resilient - astral-sh/ruff #4728</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make the release workflow more resilient</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4728">#4728</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-05-30 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-05-30 15:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently, it is possible to create a tag and then have the release fail, which is a problem since we can't edit the tag (https://github.com/charliermarsh/ruff/issues/4468). This change the release process so that the tag is created inside the release workflow. This leaves as a failure mode that we have published to pypi but then creating the tag or GitHub release doesn't work, but in this case we can restart and the pypi upload is just skipped because we use the skip existing option.</p>
+<p>The release workflow is started by a workflow dispatch with the tag instead of creating the tag yourself. You can start the release workflow without a tag to do a dry run which does not publish an artifacts. You can optionally add a git sha to the workflow run and it will verify that the release runs on the mentioned commit.</p>
+<p>This also adds docs on how to release and a small style improvement for the maturin integration.</p>
+<h2>Test Plan</h2>
+<p>Testing is hard since we can't do real releases, i've tested a minimized workflow in a separate dummy repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @konstin on 2023-05-30 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-05-30 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-30 16:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.8±0.02ms     6.0 MB/sec    1.00      6.8±0.01ms     6.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1369.2±2.29µs    12.2 MB/sec    1.00   1367.8±3.93µs    12.2 MB/sec
+formatter/numpy/globals.py                 1.00    132.8±0.36µs    22.2 MB/sec    1.00    132.4±3.71µs    22.3 MB/sec
+formatter/pydantic/types.py                1.01      2.8±0.01ms     9.2 MB/sec    1.00      2.8±0.02ms     9.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.6±0.03ms     3.0 MB/sec    1.01     13.8±0.05ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.00ms     4.8 MB/sec    1.00      3.4±0.02ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    363.0±1.05µs     8.1 MB/sec    1.00    361.8±1.07µs     8.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.03ms     4.2 MB/sec    1.00      6.1±0.02ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.01ms     5.8 MB/sec    1.01      7.1±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1477.9±4.80µs    11.3 MB/sec    1.01   1487.2±2.56µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    158.3±0.46µs    18.6 MB/sec    1.00    158.4±0.21µs    18.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.0 MB/sec    1.00      3.2±0.01ms     7.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.6±0.36ms     4.8 MB/sec    1.01      8.6±0.46ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1732.4±88.51µs     9.6 MB/sec    1.02  1763.8±100.93µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.02   188.3±22.47µs    15.7 MB/sec    1.00   183.9±14.36µs    16.0 MB/sec
+formatter/pydantic/types.py                1.00      3.6±0.18ms     7.2 MB/sec    1.00      3.6±0.28ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.57ms     2.5 MB/sec    1.01     16.6±0.56ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.19ms     3.8 MB/sec    1.01      4.5±0.22ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01   556.5±33.41µs     5.3 MB/sec    1.00   550.2±38.77µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.5±0.42ms     3.4 MB/sec    1.02      7.6±0.38ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.9±0.47ms     4.6 MB/sec    1.00      8.8±0.33ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1881.4±88.33µs     8.9 MB/sec    1.00  1857.9±78.38µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00   231.8±13.48µs    12.7 MB/sec    1.00   230.9±13.43µs    12.8 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.1±0.30ms     6.3 MB/sec    1.00      4.0±0.21ms     6.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/release.yaml</code>:423 on 2023-05-30 20:22</div>
+            <div class="timeline-body"><p>Can we exit with an error message that tells the user what went wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>How_to_Release.md</code>:9 on 2023-05-30 20:24</div>
+            <div class="timeline-body"><p>Should it be possible to provide an optional commit to the release workflow that it then uses as the version to publish? This could be useful to retry a release after something has been merged. But we could also support this by reverting all changes and then releasing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-30 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-30 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/release.yaml</code>:423 on 2023-05-30 20:48</div>
+            <div class="timeline-body"><p>I'm printing the versions so you can compare, but otherwise it doesn't look like bash has an equivalent to <code>bail!(&quot;tag mismatch: {} {}&quot;, tag, version)</code> (https://stackoverflow.com/a/24597890/3549270)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-30 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/release.yaml</code>:423 on 2023-05-30 21:06</div>
+            <div class="timeline-body"><p>I think an echo would be useful, mentioning that some files still reference the old version (what happens if one of our rust dependencies use the same version number?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-31 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>How_to_Release.md</code>:9 on 2023-05-31 10:21</div>
+            <div class="timeline-body"><p>done through <code>git checkout</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-31 10:21</div>
+            <div class="timeline-body"><p>started a dry run: https://github.com/charliermarsh/ruff/actions/runs/5131675732</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-31 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>How_to_Release.md</code>:9 on 2023-05-31 11:17</div>
+            <div class="timeline-body"><p>This doesn't work like i would like it to, i reverted the change.</p>
+<p>The main problem with this is that we run the workflow on code from a different commit than the release.yml is from, and this could become really strange. I'd instead prefer to merge new changes to main and then run on those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-31 11:18</div>
+            <div class="timeline-body"><p><img src="https://github.com/charliermarsh/ruff/assets/6826232/2235e91a-5a01-4774-ac3c-8a81dcfb7cef" alt="image" /></p>
+<p>through the environment, we also get reports of failures from workflow triggers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:11 on 2023-06-02 14:58</div>
+            <div class="timeline-body"><p>I don't think this is used (at least, as far as I can tell).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:11 on 2023-06-02 14:58</div>
+            <div class="timeline-body"><p>Aren't we able to select a branch anyway in the UI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:7 on 2023-06-02 14:58</div>
+            <div class="timeline-body"><p>Nit: &quot;If omitted, will initiate a dry-run, skipping any upload steps.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:15 on 2023-06-02 14:59</div>
+            <div class="timeline-body"><p>I'd be fine to omit this and just do it manually, personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:406 on 2023-06-02 14:59</div>
+            <div class="timeline-body"><p>Nit: use the &quot;dry run&quot; terminology here for consistency, like &quot;If no tag was set, consider this a dry-run.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>How_to_Release.md</code>:1 on 2023-06-02 15:00</div>
+            <div class="timeline-body"><p><code>RELEASE.md</code> for title consistency? Or should we just put this in <code>CONTRIBUTING.md</code>, which is effectively our development guide? (It also includes benchmarking instructions, as an example.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/ci.yaml</code>:226 on 2023-06-02 15:00</div>
+            <div class="timeline-body"><p>What's the difference here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-02 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>How_to_Release.md</code>:21 on 2023-06-02 15:01</div>
+            <div class="timeline-body"><p>Does this also include promoting out of &quot;draft&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/release.yaml</code>:11 on 2023-06-05 06:54</div>
+            <div class="timeline-body"><p>This can be useful in cases where you want to re-run the release workflow on a specific commit. But you're right. We could create a branch pointing to that specific commit instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-05 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>How_to_Release.md</code>:9 on 2023-06-05 06:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">1. Run the release workflow with the version number (without starting `v`) as input. Make sure main has your
+</code></pre>
+<p>Nit: Rephrase to version number? I first thought I would need to create the tag myself and then provide its name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>How_to_Release.md</code>:17 on 2023-06-05 06:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">   1. Create and push the git tag (from pyproject.toml). We create the git tag only here
+      because we can't change it ([#4468](https://github.com/charliermarsh/ruff/issues/4468)), so
+      we want to make sure everything up to and including publishing to pypi worked.
+</code></pre>
+<p>Nit: Document the tag name? What does <em>from pyproject.toml</em> mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-05 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-13 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yaml</code>:226 on 2023-06-13 12:14</div>
+            <div class="timeline-body"><p>one works by bash globbing, the other is the pip-provided way if installing from a directory which abstract wheel naming and such away and also works if there are multiple wheels (pip selects the right one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2023-06-13 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-13 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/release.yaml</code>:11 on 2023-06-13 13:43</div>
+            <div class="timeline-body"><p>i've changed this to be an additional check you can opt in or ignore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-13 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/release.yaml</code>:15 on 2023-06-13 13:45</div>
+            <div class="timeline-body"><p>yes but i want tests for maturin updates :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-06-13 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-13 14:01</div>
+            <div class="timeline-body"><p>This is ready for another round of review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>RELEASING.md</code>:23 on 2023-06-20 17:17</div>
+            <div class="timeline-body"><p>Can we put this in <code>CONTRIBUTING.md</code>? There's already a small section there on releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-20 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-06-20 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-06-20 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-06-20 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-20 18:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:07 UTC
+    </footer>
+</body>
+</html>

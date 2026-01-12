@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abstract stylist to libcst style conversion - astral-sh/ruff #4749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Abstract stylist to libcst style conversion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4749">#4749</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-05-31 09:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-05-31 09:02</div>
+            <div class="timeline-body"><p>Replace all duplicate invocations of</p>
+<pre><code class="language-rust">let mut state = CodegenState {
+    default_newline: &amp;stylist.line_ending(),
+    default_indent: stylist.indentation(),
+    ..CodegenState::default()
+}
+tree.codegen(&amp;mut state);
+state.to_string()
+</code></pre>
+<p>with</p>
+<pre><code class="language-rust">tree.codegen_stylist(&amp;stylist)
+</code></pre>
+<p>No functional changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-31 09:21</div>
+            <div class="timeline-body"><p>Looks good to me. I don't know if it was intentional that the <code>ast</code> crate doesn't depend on the <code>cst</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-31 09:21</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.6±0.17ms     2.8 MB/sec    1.01     14.7±0.12ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.03ms     4.7 MB/sec    1.00      3.6±0.02ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    360.2±0.85µs     8.2 MB/sec    1.01    363.2±3.40µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.10ms     4.2 MB/sec    1.02      6.2±0.09ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.04ms     5.6 MB/sec    1.01      7.4±0.02ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1530.0±1.85µs    10.9 MB/sec    1.00   1534.9±3.45µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    164.5±0.59µs    17.9 MB/sec    1.00    164.9±1.70µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.8 MB/sec    1.01      3.3±0.00ms     7.7 MB/sec
+parser/large/dataset.py                    1.06      6.2±0.01ms     6.6 MB/sec    1.00      5.8±0.01ms     7.0 MB/sec
+parser/numpy/ctypeslib.py                  1.05  1196.8±26.64µs    13.9 MB/sec    1.00   1134.7±0.72µs    14.7 MB/sec
+parser/numpy/globals.py                    1.04    120.9±0.26µs    24.4 MB/sec    1.00    116.3±0.53µs    25.4 MB/sec
+parser/pydantic/types.py                   1.05      2.6±0.00ms     9.7 MB/sec    1.00      2.5±0.00ms    10.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.1±0.33ms     2.4 MB/sec    1.00     17.0±0.28ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.06ms     3.9 MB/sec    1.00      4.2±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   495.9±14.60µs     6.0 MB/sec    1.00    489.7±6.74µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.10ms     3.6 MB/sec    1.00      7.1±0.11ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.4±0.12ms     4.8 MB/sec    1.00      8.3±0.11ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1760.5±27.14µs     9.5 MB/sec    1.00  1767.2±20.64µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.4±3.84µs    14.9 MB/sec    1.00    198.5±5.82µs    14.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.7 MB/sec    1.00      3.8±0.20ms     6.8 MB/sec
+parser/large/dataset.py                    1.00      6.5±0.05ms     6.2 MB/sec    1.16      7.6±0.11ms     5.4 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1235.6±13.08µs    13.5 MB/sec    1.13  1399.6±23.15µs    11.9 MB/sec
+parser/numpy/globals.py                    1.00    126.5±2.13µs    23.3 MB/sec    1.11    139.9±6.79µs    21.1 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.03ms     9.1 MB/sec    1.13      3.2±0.04ms     8.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-31 09:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know if it was intentional that the ast crate doesn't depend on the cst crate.</p>
+</blockquote>
+<p>i already though about making this a free standing function in the ruff crate otherwise, @charliermarsh any preferences?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-05-31 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 15:23</div>
+            <div class="timeline-body"><p>It wasn't intentional but it is a heavy dependency. Should we make it a feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-01 07:00</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #4749</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4749" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #4777</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4777" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4749?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-01 07:01</div>
+            <div class="timeline-body"><p>To make this less hypothetical, this would be the alternative without the libcst dep: https://github.com/charliermarsh/ruff/pull/4777. If you want that version, you can merge it into this PR, if you don't want it you can close #4777 and merge this PR instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:17 on 2023-06-01 21:00</div>
+            <div class="timeline-body"><p>Does this just need a rebase? Why was this deleted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-06-01 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-01 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:17 on 2023-06-01 21:15</div>
+            <div class="timeline-body"><p>i think the rebase went wrong, i have to fix that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-02 14:48</div>
+            <div class="timeline-body"><p>Found a better solution that abstracts away more code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @konstin on 2023-06-02 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-02 14:54</div>
+            <div class="timeline-body"><p>Looks reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:16 on 2023-06-05 07:02</div>
+            <div class="timeline-body"><p>This seems to be sufficient</p>
+<pre><code class="language-suggestion">    fn codegen_stylist(&amp;self, stylist: &amp;'a Stylist) -&gt; String;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-05 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-06-05 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-06-05 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-05 07:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:07 UTC
+    </footer>
+</body>
+</html>

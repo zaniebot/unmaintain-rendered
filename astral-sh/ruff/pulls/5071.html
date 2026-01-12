@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `BindingKind` variants to represent deleted bindings - astral-sh/ruff #5071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>BindingKind</code> variants to represent deleted bindings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5071">#5071</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-14 02:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 02:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Our current mechanism for handling deletions (e.g., <code>del x</code>) is to remove the symbol from the scope's <code>bindings</code> table. This &quot;does the right thing&quot;, in that if we then reference a deleted symbol, we're able to determine that it's unbound -- but it causes a variety of problems, mostly in that it makes certain bindings and references unreachable after-the-fact.</p>
+<p>Consider:</p>
+<pre><code class="language-python">x = 1
+print(x)
+del x
+</code></pre>
+<p>If we analyze this code <em>after</em> running the semantic model over the AST, we'll have no way of knowing that <code>x</code> was ever introduced in the scope, much less that it was bound to a value, read, and then deleted -- because we effectively erased <code>x</code> from the model entirely when we hit the deletion.</p>
+<p>In practice, this will make it impossible for us to support local symbol renames. It also means that certain rules that we want to move out of the model-building phase and into the &quot;check dead scopes&quot; phase wouldn't work today, since we'll have lost important information about the source code.</p>
+<p>This PR introduces two new <code>BindingKind</code> variants to model deletions:</p>
+<ul>
+<li><code>BindingKind::Deletion</code>, which represents <code>x = 1; del x</code>.</li>
+<li><code>BindingKind::UnboundException</code>, which represents:</li>
+</ul>
+<pre><code class="language-python">try:
+  1 / 0
+except Exception as e:
+  pass
+</code></pre>
+<p>In the latter case, <code>e</code> gets unbound after the exception handler (assuming it's triggered), so we want to handle it similarly to a deletion.</p>
+<p>The main challenge here is auditing all of our existing <code>Binding</code> and <code>Scope</code> usages to understand whether they need to accommodate deletions or otherwise behave differently. If you look one commit back on this branch, you'll see that the code is littered with <code>NOTE(charlie)</code> comments that describe the reasoning behind changing (or not) each of those call sites. I've also augmented our test suite in preparation for this change over a few prior PRs.</p>
+<h3>Alternatives</h3>
+<p>As an alternative, I considered introducing a flag to <code>BindingFlags</code>, like <code>BindingFlags::UNBOUND</code>, and setting that at the appropriate time.</p>
+<p>This turned out to be a much more difficult change, because we tend to match on <code>BindingKind</code> all over the place (e.g., we have a bunch of code blocks that only run when a <code>BindingKind</code> is <code>BindingKind::Importation</code>). As a result, introducing these new <code>BindingKind</code> variants requires only a few changes at the client sites. Adding a flag would've required a much wider-reaching change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-14 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:196 on 2023-06-14 02:49</div>
+            <div class="timeline-body"><p>I decided to rename this. &quot;Unbound&quot; means something different. This method is used when autofixing, to check whether we can introduce a new symbol into a file -- so, e.g., if we're going to import <code>foo</code>, we want to make sure that <code>foo</code> wasn't defined in any scope, where it might conflict.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-14 02:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-14 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:42 on 2023-06-14 02:50</div>
+            <div class="timeline-body"><p>A nice side-effect: this is no longer necessary. Now that we add to the scope when we hit a deletion, we don't have to track deleted symbols separately -- since every deleted symbol will appear in <code>bindings</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-14 03:05</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.6±0.40ms     6.1 MB/sec    1.02      6.7±0.33ms     6.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1366.1±53.93µs    12.2 MB/sec    1.08  1476.6±155.60µs    11.3 MB/sec
+formatter/numpy/globals.py                 1.00    132.1±6.96µs    22.3 MB/sec    1.01    133.4±7.91µs    22.1 MB/sec
+formatter/pydantic/types.py                1.03      2.7±0.14ms     9.5 MB/sec    1.00      2.6±0.12ms     9.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.5±0.43ms     2.8 MB/sec    1.03     14.9±0.79ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      3.5±0.18ms     4.8 MB/sec    1.00      3.4±0.12ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   445.5±17.29µs     6.6 MB/sec    1.01   451.1±24.99µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.1±0.25ms     4.2 MB/sec    1.00      6.1±0.30ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.24ms     5.9 MB/sec    1.03      7.1±0.37ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1482.1±46.67µs    11.2 MB/sec    1.06  1565.3±68.00µs    10.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    170.6±7.23µs    17.3 MB/sec    1.07   182.8±10.95µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.13ms     8.0 MB/sec    1.05      3.3±0.11ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.7±0.08ms     5.3 MB/sec    1.07      8.3±0.07ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1574.9±20.76µs    10.6 MB/sec    1.06  1666.2±19.68µs    10.0 MB/sec
+formatter/numpy/globals.py                 1.00    151.6±2.56µs    19.5 MB/sec    1.07    162.5±7.45µs    18.2 MB/sec
+formatter/pydantic/types.py                1.00      3.1±0.04ms     8.1 MB/sec    1.07      3.4±0.05ms     7.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     16.4±0.13ms     2.5 MB/sec    1.00     16.3±0.09ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.04ms     4.0 MB/sec    1.00      4.2±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    504.3±5.60µs     5.9 MB/sec    1.00    499.0±6.52µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.05ms     3.6 MB/sec    1.00      7.1±0.06ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.3±0.06ms     4.9 MB/sec    1.00      8.2±0.06ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1763.9±17.69µs     9.4 MB/sec    1.00  1742.1±16.48µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.02    201.3±3.10µs    14.7 MB/sec    1.00    196.5±2.09µs    15.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.03ms     6.8 MB/sec    1.00      3.7±0.03ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boshen">@Boshen</a> on 2023-06-14 04:03</div>
+            <div class="timeline-body"><p>Is this some kind of lexical scoping?</p>
+<p>Is it viable to save the span an identifier covers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 04:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this some kind of lexical scoping?</p>
+</blockquote>
+<p>What do you mean exactly? Python uses lexical scoping and we support it in our semantic model. The challenge being articulated here is that Python supports three operations on names: load, store, and delete.</p>
+<pre><code class="language-python">def f():
+  x = 1  # Load
+  print(x)  # Store
+  del x  # Delete
+</code></pre>
+<p>After <code>del x</code>, <code>x</code> is unbound.</p>
+<p>We've been modeling deletions by removing the symbol from the binding table, which is... not great. It means that post-hoc analysis after the binding phase tends to get things wrong for code that makes use of deletions. This PR replaces deletions with a first-class concept.</p>
+<blockquote>
+<p>Is it viable to save the span an identifier covers?</p>
+</blockquote>
+<p>I believe we do this (assuming your &quot;span&quot; is what we call <code>TextRange</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boshen">@Boshen</a> on 2023-06-14 04:59</div>
+            <div class="timeline-body"><p>In your semantic model,</p>
+<p>is it possible to mark where <code>x</code> covers so we can determine if it's unbound?</p>
+<p>Given the example</p>
+<pre><code class="language-python">def f():
+  x = 1  # Load
+  print(x)  # Store
+  del x  # Delete
+  print(x)
+</code></pre>
+<p>x has a cover span from <code>x = 1</code> to <code>del x</code>. The final <code>x</code> in <code>print(x)</code> is not covered so it becomes an unresolved reference, thus you can report errors on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-14 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 13:27</div>
+            <div class="timeline-body"><p>@Boshen - Yeah! Ruff does handle that case correctly before and after this PR. I suspect we're not modeling it in an ideal way. We treat it as &quot;shadowing&quot;. So in:</p>
+<pre><code class="language-py">def f():
+  x = 1  # Load
+  x = 2  # Load
+</code></pre>
+<p>The <code>x = 2</code> &quot;shadows&quot; the <code>x = 1</code> binding. We apply the same treatment to deletions here -- <code>del x</code> shadows the <code>x = 1</code> assignment, in your example, and we treat deleted symbols as unbound when you try to load them.</p>
+<p>How does the &quot;cover span&quot; concept work? Is it based on ranges in the source code? I'm wondering how it would handle a case like:</p>
+<pre><code class="language-py">def f():
+  x = 1
+  x = x * 2
+</code></pre>
+<p>The <code>x = 1</code> assignment covers the <code>x = 1</code> snippet, as well as the <em>right-hand side</em> of the <code>x = x * 2</code> snippet. So it covers non-contiguous ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-14 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-14 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-14 13:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

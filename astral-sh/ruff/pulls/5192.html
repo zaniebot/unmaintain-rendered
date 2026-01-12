@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade RustPython - astral-sh/ruff #5192</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade RustPython</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5192">#5192</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-19 19:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 19:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR upgrade RustPython to pull in the changes to <code>Arguments</code> (zip defaults with their identifiers) and all the renames to <code>CmpOp</code> and friends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-19 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-19 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:202 on 2023-06-19 19:46</div>
+            <div class="timeline-body"><p>So many new dependencies. Are they all introduced because of the bigint library migration? Would it make sense for us to stay on numbigint for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1768 on 2023-06-19 19:47</div>
+            <div class="timeline-body"><p>Hmm another acronym with <code>def</code>. I should have catched that during the review. I guess that's fine for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_password_default.rs</code>:50 on 2023-06-19 19:49</div>
+            <div class="timeline-body"><p>What's the motivation for using <code>chain!</code> over <code>iter.chain</code>? I know we have a few use cases for <code>itertools</code> but I try to keep them to a minimum, in the hope, that we could someday remove the dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_boolean_trap/rules/check_positional_boolean_in_def.rs</code>:101 on 2023-06-19 19:51</div>
+            <div class="timeline-body"><p>Should we add some custom methods to <code>arguments</code> that allow you iterating over all arguments, over all defaults, etc? It feels very repetitive to have these <code>chain</code> calls sprinkled across the code base.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/unexpected_special_method_signature.rs</code>:164 on 2023-06-19 19:54</div>
+            <div class="timeline-body"><p>Can we change this to count the <code>mandatory</code> params directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:37 on 2023-06-19 19:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn visit_bool_op(&amp;mut self, boolop: &amp;'a BoolOp) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:43 on 2023-06-19 19:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn visit_unary_op(&amp;mut self, unaryop: &amp;'a UnaryOp) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:46 on 2023-06-19 19:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn visit_cmp_op(&amp;mut self, cmpop: &amp;'a CmpOp) {
+</code></pre>
+<p>Same for <code>walk_</code></p>
+<p>... and other visitor functions. Also applies to the preorder visitor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-19 19:59</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>This looks good to me. I am a bit concerned about all the new dependencies that the upgrade introduces and wonder if it could make sense to add helpers to <code>Arguments</code> to avoid the many <code>chain</code> in the user code (get all defaults, get all named arguments, get all positional arguments, get all arguments) etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:202 on 2023-06-19 20:05</div>
+            <div class="timeline-body"><p>I'm not sure, but we <em>are</em> staying on num-bigint, aren't we? I'm not using the malachite feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:202 on 2023-06-19 20:05</div>
+            <div class="timeline-body"><p>It does look like <code>block-buffer</code> comes from <code>malachite</code>. But does this actually affect the binary? I can also just remove the <code>malachite</code> stuff in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:202 on 2023-06-19 20:07</div>
+            <div class="timeline-body"><p>Oh, I think <code>rustpython_format</code> doesn't have this properly gated as a feature. I'll fix this separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_password_default.rs</code>:50 on 2023-06-19 20:07</div>
+            <div class="timeline-body"><p>I can change it to <code>iter.chain</code>. I just wanted to be consistent everywhere and this was more concise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-19 20:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:202 on 2023-06-19 20:27</div>
+            <div class="timeline-body"><p>Ok, fixed this. No new deps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1768 on 2023-06-19 20:28</div>
+            <div class="timeline-body"><p>Yeah don't love it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-19 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:202 on 2023-06-19 20:35</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_boolean_trap/rules/check_positional_boolean_in_def.rs</code>:101 on 2023-06-19 20:58</div>
+            <div class="timeline-body"><p>Yeah, maybe, I'm gonna punt it on now under &quot;leave it better&quot; (it's no worse than before).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-19 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-19 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-19 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

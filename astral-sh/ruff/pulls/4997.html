@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `RET504` to only enforce assignment-then-return pattern - astral-sh/ruff #4997</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor <code>RET504</code> to only enforce assignment-then-return pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4997">#4997</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-10 02:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-10 02:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>RET504</code> rule, which looks for unnecessary assignments before return statements, is a frequent source of issues (#4173, #4236, #4242, #1606, #2950). Over time, we've tried to refine the logic to handle more cases. For example, we now avoid analyzing any functions that contain any function calls or attribute assignments, since those operations can contain side effects (and so we mark them as a &quot;read&quot; on all variables in the function -- we could do a better job with code graph analysis to handle this limitation, but that'd be a more involved change.) We also avoid flagging any variables that are the target of multiple assignments. Ultimately, though, I'm not happy with the implementation -- we just can't do sufficiently reliable analysis of arbitrary code flow given the limited logic herein, and the existing logic is very hard to reason about and maintain.</p>
+<p>This PR refocuses the rule to only catch cases of the form:</p>
+<pre><code class="language-py">def f():
+    x = 1
+    return x
+</code></pre>
+<p>That is, we now only flag returns that are immediately preceded by an assignment to the returned variable. While this is more limiting, in some ways, it lets us flag more cases vis-a-vis the previous implementation, since we no longer &quot;fully eject&quot; when functions contain function calls and other effect-ful operations.</p>
+<p>Closes #4173.</p>
+<p>Closes #4236.</p>
+<p>Closes #4242.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-10 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-10 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-10 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-10 04:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track formatted comments - astral-sh/ruff #4979</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track formatted comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4979">#4979</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-06-09 06:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-09 06:18</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR removes the debug-only condition from <code>SourceComment::formatted</code> and now uses it to track whether a comment has already been formatted and,
+if so, skip it during the <code>leading</code>/<code>dangling</code>/<code>trailing</code> comments formatting. The motivation for this change is that it is sometimes necessary that
+the parent node formats the comments and we then need a way to prevent that the <code>FormatNodeRule</code> formats the same comments again. One such example
+is the boolean operation formatting:</p>
+<pre><code class="language-python">if (
+    self._proc is not None
+    # has the child process finished?
+    and self._returncode is None
+    # the child process has finished, but the
+    # transport hasn't been notified yet?
+    and self._proc.poll() is None
+):
+    pass
+</code></pre>
+<p>You can see that the leading comments of the right hand side must be formatted <strong>before</strong> the operator but the default comment formatting
+formats them <strong>after</strong>. Another use case is that the leading comments of a <code>*args</code> or <code>**kwargs</code> must be formatted before the <code>*</code> or <code>**</code>.</p>
+<p>The <code>*args</code> and <code>**kwargs</code> use case used a one-off solution so far which was easy enough to implement because it only applies to <code>Arg</code>. Doing the same
+with boolean operations isn't as straightforward because the <code>value</code> can be an arbitrary <code>Expr</code>.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p><code>cargo test</code> (the <code>*args</code> and <code>**kwargs</code> formatting still work as expected without any explicit handling)</p>
+<h2>Performance</h2>
+<p>I don't expect this to change performance much because the overhead is per comment and programs often only have few comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-09 06:18</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #4954</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4954" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4921</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4921" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4922</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4922" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4951</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4951" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #4961</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4961" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #4964</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4964" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #4979</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4979" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+* <strong>PR #4978</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4978" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4979?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Track formatted comment" to "Track formatted comments" by @MichaReiser on 2023-06-09 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-06-09 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autoformatter</span> added by @MichaReiser on 2023-06-09 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-09 06:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.0±0.04ms     5.8 MB/sec    1.02      7.2±0.11ms     5.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1416.9±2.37µs    11.8 MB/sec    1.01   1433.2±3.10µs    11.6 MB/sec
+formatter/numpy/globals.py                 1.00    139.3±0.21µs    21.2 MB/sec    1.01    141.0±0.28µs    20.9 MB/sec
+formatter/pydantic/types.py                1.00      2.9±0.02ms     8.9 MB/sec    1.01      2.9±0.01ms     8.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.3±0.15ms     2.7 MB/sec    1.00     15.3±0.19ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.04ms     4.6 MB/sec    1.00      3.7±0.10ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.01    370.0±1.10µs     8.0 MB/sec    1.00    367.2±1.46µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.4±0.12ms     4.0 MB/sec    1.00      6.3±0.10ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.6±0.06ms     5.4 MB/sec    1.00      7.4±0.08ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1569.8±3.63µs    10.6 MB/sec    1.00   1539.3±4.47µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.02    167.7±0.23µs    17.6 MB/sec    1.00    164.7±0.31µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.01ms     7.6 MB/sec    1.00      3.3±0.03ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.18      9.5±2.47ms     4.3 MB/sec     1.00      8.0±0.14ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.03  1682.3±187.10µs     9.9 MB/sec    1.00  1626.8±32.79µs    10.2 MB/sec
+formatter/numpy/globals.py                 1.00    153.7±4.08µs    19.2 MB/sec     1.01    154.7±6.50µs    19.1 MB/sec
+formatter/pydantic/types.py                1.00      3.2±0.06ms     7.9 MB/sec     1.01      3.3±0.05ms     7.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.0±0.31ms     2.3 MB/sec     1.00     18.0±0.26ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.08ms     3.8 MB/sec     1.00      4.4±0.08ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   514.8±12.64µs     5.7 MB/sec     1.00   514.2±10.72µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.5±0.16ms     3.4 MB/sec     1.00      7.5±0.14ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.03      9.0±0.66ms     4.5 MB/sec     1.00      8.7±0.13ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.06  1924.0±162.96µs     8.7 MB/sec    1.00  1818.8±29.21µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.06   217.6±48.57µs    13.6 MB/sec     1.00    204.8±8.10µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.08      4.2±0.60ms     6.1 MB/sec     1.00      3.9±0.06ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-06-09 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:119 on 2023-06-09 07:51</div>
+            <div class="timeline-body"><p>nit: you can use the normal import now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-09 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-06-09 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-06-09 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-09 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:44:08 UTC
+    </footer>
+</body>
+</html>
