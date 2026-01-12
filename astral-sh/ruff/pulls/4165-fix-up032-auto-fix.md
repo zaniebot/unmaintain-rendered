@@ -1,0 +1,84 @@
+```yaml
+number: 4165
+title: Fix UP032 auto-fix
+type: pull_request
+state: merged
+author: JonathanPlasse
+labels: []
+assignees: []
+merged: true
+base: main
+head: fix-up032-auto-fix
+created_at: 2023-04-30T19:40:29Z
+updated_at: 2023-04-30T21:03:15Z
+url: https://github.com/astral-sh/ruff/pull/4165
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Fix UP032 auto-fix
+
+---
+
+_Pull request opened by @JonathanPlasse on 2023-04-30 19:40_
+
+- Close #4078
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-30 19:51_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     14.0±0.06ms     2.9 MB/sec    1.00     13.8±0.03ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.01ms     4.9 MB/sec    1.00      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    422.3±0.57µs     7.0 MB/sec    1.00    417.0±0.52µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.8±0.01ms     4.4 MB/sec    1.00      5.8±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.0±0.02ms     5.8 MB/sec    1.00      6.9±0.01ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1498.7±1.74µs    11.1 MB/sec    1.00   1485.2±3.49µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    167.3±0.52µs    17.6 MB/sec    1.00    167.6±2.34µs    17.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.00ms     8.2 MB/sec    1.00      3.1±0.00ms     8.3 MB/sec
+parser/large/dataset.py                    1.01      5.5±0.01ms     7.4 MB/sec    1.00      5.5±0.00ms     7.4 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1074.5±1.31µs    15.5 MB/sec    1.00   1071.3±0.51µs    15.5 MB/sec
+parser/numpy/globals.py                    1.01    109.9±1.39µs    26.8 MB/sec    1.00    108.9±0.27µs    27.1 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    10.9 MB/sec    1.00      2.3±0.00ms    10.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     21.4±0.67ms  1946.1 KB/sec    1.01     21.6±0.86ms  1926.4 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      5.5±0.32ms     3.0 MB/sec    1.00      5.3±0.17ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.02   644.6±28.27µs     4.6 MB/sec    1.00   631.4±24.25µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.03      9.3±0.56ms     2.7 MB/sec    1.00      9.0±0.43ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.3±0.29ms     3.9 MB/sec    1.00     10.4±0.24ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.07ms     7.6 MB/sec    1.03      2.2±0.13ms     7.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   261.5±10.72µs    11.3 MB/sec    1.01   264.7±12.32µs    11.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.6±0.12ms     5.5 MB/sec    1.02      4.7±0.14ms     5.4 MB/sec
+parser/large/dataset.py                    1.02      8.6±0.20ms     4.7 MB/sec    1.00      8.4±0.18ms     4.8 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1643.8±38.40µs    10.1 MB/sec    1.00  1627.1±49.19µs    10.2 MB/sec
+parser/numpy/globals.py                    1.02    169.3±6.57µs    17.4 MB/sec    1.00    165.4±5.97µs    17.8 MB/sec
+parser/pydantic/types.py                   1.04      3.7±0.13ms     6.9 MB/sec    1.00      3.6±0.06ms     7.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-04-30 20:57_
+
+---
+
+_Closed by @charliermarsh on 2023-04-30 20:57_
+
+---
+
+_Branch deleted on 2023-04-30 21:03_
+
+---

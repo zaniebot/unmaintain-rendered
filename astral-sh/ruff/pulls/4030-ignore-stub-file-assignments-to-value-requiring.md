@@ -1,0 +1,219 @@
+```yaml
+number: 4030
+title: Ignore stub file assignments to value-requiring targets
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/pyi-all
+created_at: 2023-04-19T19:15:49Z
+updated_at: 2023-04-19T19:45:10Z
+url: https://github.com/astral-sh/ruff/pull/4030
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Ignore stub file assignments to value-requiring targets
+
+---
+
+_Pull request opened by @charliermarsh on 2023-04-19 19:15_
+
+## Summary
+
+`flake8-pyi` ignores assignments to targets that _require_ values, like `__all__`:
+
+```py
+# Don't flag this!
+__all__ = [...]
+```
+
+This PR implements those special-cases. As part of the change, I decided to fork the codepath for enforcing annotated vs. unannotated assignments, since the target types are different for those AST nodes, and other oddities were accumulating in the signatures.
+
+Closes #4009.
+
+---
+
+_Merged by @charliermarsh on 2023-04-19 19:26_
+
+---
+
+_Closed by @charliermarsh on 2023-04-19 19:26_
+
+---
+
+_Branch deleted on 2023-04-19 19:26_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-19 19:27_
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-19 19:29_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -102, 0 error(s))
+
+<details><summary>airflow (+0, -1)</summary>
+<p>
+
+```diff
+- airflow/decorators/__init__.pyi:40:11: PYI015 [*] Only simple default values allowed for assignments
+```
+
+</p>
+</details>
+<details><summary>typeshed (+0, -101)</summary>
+<p>
+
+```diff
+- stdlib/__future__.pyi:24:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/_collections_abc.pyi:34:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/_dummy_threading.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/_pydecimal.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/argparse.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/asyncio/events.pyi:19:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/asyncio/events.pyi:38:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/asyncio/tasks.pyi:16:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/base64.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/calendar.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/cgi.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/codecs.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/concurrent/futures/__init__.pyi:21:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/configparser.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/contextlib.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/csv.pyi:37:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/dataclasses.pyi:16:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/difflib.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/dis.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/doctest.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/email/utils.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/fileinput.pyi:11:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/functools.pyi:11:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/genericpath.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/gettext.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/hashlib.pyi:30:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/hashlib.pyi:8:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/http/client.pyi:11:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/importlib/abc.pyi:21:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/inspect.pyi:31:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/io.pyi:12:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/lib2to3/pgen2/tokenize.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/locale.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/logging/__init__.pyi:16:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/lzma.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/macpath.pyi:37:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/mailbox.pyi:14:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/mimetypes.pyi:6:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/multiprocessing/__init__.pyi:25:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/multiprocessing/dummy/__init__.pyi:20:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/multiprocessing/util.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/ntpath.pyi:48:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/opcode.pyi:4:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/operator.pyi:4:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/optparse.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/pickle.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/pkgutil.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/plistlib.pyi:12:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/plistlib.pyi:28:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/posixpath.pyi:21:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/random.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/re.pyi:13:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/resource.pyi:33:37: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/shutil.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/smtplib.pyi:13:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/statistics.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/string.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/subprocess.pyi:11:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/sysconfig.pyi:5:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tarfile.pyi:12:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tempfile.pyi:12:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/threading.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tkinter/__init__.pyi:13:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tkinter/filedialog.pyi:9:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tkinter/ttk.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/token.pyi:3:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/tokenize.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/traceback.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/turtle.pyi:6:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/types.pyi:22:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/typing.pyi:28:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/typing_extensions.pyi:40:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/unittest/__init__.pyi:38:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/unittest/mock.pyi:15:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/unittest/mock.pyi:33:15: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/urllib/parse.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/urllib/request.pyi:14:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/weakref.pyi:17:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/xml/etree/ElementTree.pyi:8:11: PYI015 [*] Only simple default values allowed for assignments
+- stdlib/zipfile.pyi:10:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/firebird/__init__.pyi:17:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/mssql/__init__.pyi:39:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/mysql/__init__.pyi:42:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/oracle/__init__.pyi:27:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/postgresql/__init__.pyi:48:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/sqlite/__init__.pyi:23:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/dialects/sybase/__init__.pyi:30:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/orm/interfaces.pyi:23:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/pool/__init__.pyi:13:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/sql/expression.pyi:80:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/SQLAlchemy/sqlalchemy/types.pyi:57:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/emoji/emoji/__init__.pyi:13:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/fpdf2/fpdf/__init__.pyi:14:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/mock/mock/mock.pyi:14:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/passlib/passlib/handlers/ldap_digests.pyi:7:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/passlib/passlib/utils/__init__.pyi:9:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/python-xlib/Xlib/ext/__init__.pyi:19:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/python-xlib/Xlib/keysymdef/__init__.pyi:23:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/redis/redis/__init__.pyi:4:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/redis/redis/asyncio/__init__.pyi:32:11: PYI015 [*] Only simple default values allowed for assignments
+- stubs/tqdm/tqdm/__init__.pyi:20:11: PYI015 [*] Only simple default values allowed for assignments
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.4±0.06ms     2.8 MB/sec    1.02     14.7±0.04ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.01      3.6±0.01ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    458.2±1.03µs     6.4 MB/sec    1.00    458.1±1.07µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.02ms     4.2 MB/sec    1.01      6.1±0.05ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.02ms     5.7 MB/sec    1.01      7.3±0.02ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1608.0±1.96µs    10.4 MB/sec    1.01  1626.9±13.12µs    10.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.5±1.22µs    16.9 MB/sec    1.01    176.3±0.60µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.01      3.3±0.00ms     7.6 MB/sec
+parser/large/dataset.py                    1.00      5.7±0.01ms     7.1 MB/sec    1.00      5.7±0.01ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1131.3±0.58µs    14.7 MB/sec    1.01   1141.3±0.79µs    14.6 MB/sec
+parser/numpy/globals.py                    1.00    113.9±0.20µs    25.9 MB/sec    1.00    113.7±0.17µs    25.9 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.00ms    10.3 MB/sec    1.01      2.5±0.00ms    10.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.0±0.29ms     2.7 MB/sec    1.00     14.9±0.33ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.07ms     4.7 MB/sec    1.02      3.6±0.14ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.02    397.2±7.02µs     7.4 MB/sec    1.00    387.5±3.05µs     7.6 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.2±0.18ms     4.1 MB/sec    1.00      6.1±0.08ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.6±0.11ms     5.3 MB/sec    1.00      7.6±0.11ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1569.4±16.54µs    10.6 MB/sec    1.01  1581.5±26.74µs    10.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    170.4±2.32µs    17.3 MB/sec    1.04    176.6±5.44µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.05ms     7.6 MB/sec    1.02      3.5±0.11ms     7.4 MB/sec
+parser/large/dataset.py                    1.01      6.3±0.08ms     6.5 MB/sec    1.00      6.2±0.04ms     6.6 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1160.4±10.80µs    14.3 MB/sec    1.00   1157.5±9.12µs    14.4 MB/sec
+parser/numpy/globals.py                    1.00    116.9±1.49µs    25.2 MB/sec    1.00    116.7±0.50µs    25.3 MB/sec
+parser/pydantic/types.py                   1.00      2.6±0.03ms     9.9 MB/sec    1.00      2.6±0.03ms     9.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

@@ -1,0 +1,91 @@
+```yaml
+number: 4142
+title: Document flake8-commas
+type: pull_request
+state: merged
+author: calumy
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: flake8-commas-docs
+created_at: 2023-04-28T22:21:23Z
+updated_at: 2023-04-29T08:53:21Z
+url: https://github.com/astral-sh/ruff/pull/4142
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Document flake8-commas
+
+---
+
+_Pull request opened by @calumy on 2023-04-28 22:21_
+
+Add documentation for the flake8-commas rules.
+
+Related to #2646.
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-28 22:36_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     13.8±0.04ms     2.9 MB/sec    1.00     13.8±0.05ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     5.0 MB/sec    1.00      3.4±0.02ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    422.9±1.14µs     7.0 MB/sec    1.00    422.6±1.94µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.02ms     4.4 MB/sec    1.00      5.8±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.01ms     5.9 MB/sec    1.00      6.9±0.01ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1489.5±1.51µs    11.2 MB/sec    1.00   1489.7±3.68µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    168.3±0.21µs    17.5 MB/sec    1.00    168.5±1.55µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.00ms     8.2 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.00ms     7.5 MB/sec    1.02      5.5±0.01ms     7.4 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1061.0±2.16µs    15.7 MB/sec    1.01   1072.6±0.73µs    15.5 MB/sec
+parser/numpy/globals.py                    1.00    107.7±0.44µs    27.4 MB/sec    1.01    109.1±0.14µs    27.0 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.1 MB/sec    1.01      2.3±0.00ms    10.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.03     17.0±0.56ms     2.4 MB/sec    1.00     16.5±0.16ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.2±0.07ms     4.0 MB/sec    1.00      4.1±0.08ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    491.1±4.78µs     6.0 MB/sec    1.00   493.5±11.53µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.0±0.11ms     3.6 MB/sec    1.00      7.0±0.09ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.06ms     4.9 MB/sec    1.01      8.4±0.11ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1770.0±16.71µs     9.4 MB/sec    1.01  1782.7±19.89µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    199.4±3.19µs    14.8 MB/sec    1.05   208.8±25.23µs    14.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.03ms     6.8 MB/sec    1.02      3.8±0.05ms     6.7 MB/sec
+parser/large/dataset.py                    1.00      6.8±0.05ms     5.9 MB/sec    1.03      7.1±0.65ms     5.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1300.6±13.88µs    12.8 MB/sec    1.04  1348.5±188.05µs    12.3 MB/sec
+parser/numpy/globals.py                    1.00    132.2±1.70µs    22.3 MB/sec    1.00    132.8±2.63µs    22.2 MB/sec
+parser/pydantic/types.py                   1.00      2.9±0.03ms     8.8 MB/sec    1.00      2.9±0.02ms     8.8 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-04-29 03:20_
+
+---
+
+_Merged by @charliermarsh on 2023-04-29 03:24_
+
+---
+
+_Closed by @charliermarsh on 2023-04-29 03:24_
+
+---
+
+_Branch deleted on 2023-04-29 08:53_
+
+---

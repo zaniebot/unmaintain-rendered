@@ -1,0 +1,455 @@
+```yaml
+number: 4176
+title: "Allow boolean parameters for `pytest.param`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/param
+created_at: 2023-05-02T01:01:12Z
+updated_at: 2023-05-02T01:31:51Z
+url: https://github.com/astral-sh/ruff/pull/4176
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Allow boolean parameters for `pytest.param`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-05-02 01:01_
+
+Closes #4172.
+
+---
+
+_Merged by @charliermarsh on 2023-05-02 01:07_
+
+---
+
+_Closed by @charliermarsh on 2023-05-02 01:07_
+
+---
+
+_Branch deleted on 2023-05-02 01:07_
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-02 01:15_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -362, 0 error(s))
+
+<details><summary>airflow (+0, -362)</summary>
+<p>
+
+```diff
+- dev/breeze/tests/test_selective_checks.py:1083:13: FBT003 Boolean positional value in function call
+- dev/breeze/tests/test_selective_checks.py:1090:13: FBT003 Boolean positional value in function call
+- dev/breeze/tests/test_selective_checks.py:1097:13: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:486:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:500:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:515:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:530:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:544:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:556:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:571:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:582:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:596:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:607:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:621:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:677:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:689:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:702:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:715:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:727:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:739:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:754:17: FBT003 Boolean positional value in function call
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:772:17: FBT003 Boolean positional value in function call
+- tests/dag_processing/test_processor.py:496:23: FBT003 Boolean positional value in function call
+- tests/dag_processing/test_processor.py:496:59: FBT003 Boolean positional value in function call
+- tests/executors/test_celery_executor.py:142:36: FBT003 Boolean positional value in function call
+- tests/executors/test_celery_executor.py:143:48: FBT003 Boolean positional value in function call
+- tests/executors/test_celery_executor.py:144:55: FBT003 Boolean positional value in function call
+- tests/executors/test_kubernetes_executor.py:242:31: FBT003 Boolean positional value in function call
+- tests/executors/test_kubernetes_executor.py:243:33: FBT003 Boolean positional value in function call
+- tests/executors/test_kubernetes_executor.py:244:31: FBT003 Boolean positional value in function call
+- tests/executors/test_kubernetes_executor.py:245:31: FBT003 Boolean positional value in function call
+- tests/integration/security/test_kerberos.py:57:26: FBT003 Boolean positional value in function call
+- tests/integration/security/test_kerberos.py:58:26: FBT003 Boolean positional value in function call
+- tests/jobs/test_local_task_job.py:855:33: FBT003 Boolean positional value in function call
+- tests/jobs/test_local_task_job.py:855:66: FBT003 Boolean positional value in function call
+- tests/models/test_dag.py:3350:26: FBT003 Boolean positional value in function call
+- tests/models/test_dag.py:3351:40: FBT003 Boolean positional value in function call
+- tests/models/test_dag.py:3352:62: FBT003 Boolean positional value in function call
+- tests/models/test_dag.py:3353:35: FBT003 Boolean positional value in function call
+- tests/models/test_dag.py:3354:51: FBT003 Boolean positional value in function call
+- tests/models/test_param.py:350:37: FBT003 Boolean positional value in function call
+- tests/models/test_param.py:351:32: FBT003 Boolean positional value in function call
+- tests/models/test_param.py:352:36: FBT003 Boolean positional value in function call
+- tests/models/test_serialized_dag.py:48:26: FBT003 Boolean positional value in function call
+- tests/models/test_serialized_dag.py:49:26: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1177:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1179:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1186:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1188:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1195:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1197:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1204:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1206:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1213:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1215:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1222:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1224:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1231:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1233:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1240:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1242:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1249:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1251:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1258:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1260:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1267:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1269:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1276:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:1278:17: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2182:36: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2183:35: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2184:28: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2185:28: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2186:50: FBT003 Boolean positional value in function call
+- tests/models/test_taskinstance.py:2187:50: FBT003 Boolean positional value in function call
+- tests/operators/test_python.py:260:34: FBT003 Boolean positional value in function call
+- tests/operators/test_python.py:261:26: FBT003 Boolean positional value in function call
+- tests/operators/test_python.py:261:32: FBT003 Boolean positional value in function call
+- tests/operators/test_python.py:262:26: FBT003 Boolean positional value in function call
+- tests/operators/test_python.py:262:33: FBT003 Boolean positional value in function call
+- tests/providers/amazon/aws/sensors/test_lambda_function.py:36:17: FBT003 Boolean positional value in function call
+- tests/providers/amazon/aws/sensors/test_lambda_function.py:37:17: FBT003 Boolean positional value in function call
+- tests/providers/amazon/aws/sensors/test_lambda_function.py:42:17: FBT003 Boolean positional value in function call
+- tests/providers/amazon/aws/sensors/test_lambda_function.py:43:17: FBT003 Boolean positional value in function call
+- tests/providers/amazon/aws/sensors/test_lambda_function.py:48:17: FBT003 Boolean positional value in function call
+- tests/providers/apache/beam/hooks/test_beam.py:151:37: FBT003 Boolean positional value in function call
+- tests/providers/apache/beam/hooks/test_beam.py:152:37: FBT003 Boolean positional value in function call
+- tests/providers/apache/beam/hooks/test_beam.py:153:30: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:408:45: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:411:42: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:415:42: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:416:53: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:417:67: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:418:72: FBT003 Boolean positional value in function call
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:419:72: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:107:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:108:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:118:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:119:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:129:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:130:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:140:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:141:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:151:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:152:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:162:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:163:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:63:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:64:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:74:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:75:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:85:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:86:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:96:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/hooks/test_sql.py:97:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:107:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:108:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:162:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:163:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:171:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:172:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:180:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:181:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:189:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:190:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:198:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:199:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:207:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:208:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:222:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:223:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:47:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:48:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:56:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:57:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:65:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:66:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:74:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:75:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:83:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:84:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:92:13: FBT003 Boolean positional value in function call
+- tests/providers/common/sql/operators/test_sql_execute.py:93:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:107:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:108:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:118:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:119:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:129:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:130:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:140:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:141:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:151:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:152:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:162:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:163:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:63:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:64:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:74:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:75:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:85:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:86:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:96:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/hooks/test_databricks_sql.py:97:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:100:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:101:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:158:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:159:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:166:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:167:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:174:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:175:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:182:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:183:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:190:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:191:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:201:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:202:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:209:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:210:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:217:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:218:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:225:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:226:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:40:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:41:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:49:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:50:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:58:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:59:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:67:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:68:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:76:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:77:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:85:13: FBT003 Boolean positional value in function call
+- tests/providers/databricks/operators/test_databricks_sql.py:86:13: FBT003 Boolean positional value in function call
+- tests/providers/docker/hooks/test_docker.py:70:33: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:108:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:109:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:124:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:125:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:140:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:141:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:156:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:157:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:176:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:177:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:192:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:193:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:208:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:209:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:224:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:225:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:76:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:77:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:92:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/hooks/test_sql.py:93:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:108:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:109:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:48:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:49:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:57:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:58:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:66:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:67:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:75:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:76:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:84:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:85:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:93:13: FBT003 Boolean positional value in function call
+- tests/providers/exasol/operators/test_exasol_sql.py:94:13: FBT003 Boolean positional value in function call
+- tests/providers/google/cloud/secrets/test_secret_manager.py:76:41: FBT003 Boolean positional value in function call
+- tests/providers/google/cloud/secrets/test_secret_manager.py:77:42: FBT003 Boolean positional value in function call
+- tests/providers/google/cloud/secrets/test_secret_manager.py:78:34: FBT003 Boolean positional value in function call
+- tests/providers/google/cloud/secrets/test_secret_manager.py:79:35: FBT003 Boolean positional value in function call
+- tests/providers/google/cloud/secrets/test_secret_manager.py:80:44: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:105:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:109:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:110:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:117:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:121:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:122:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:129:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:133:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:134:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:141:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:145:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:146:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:153:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:157:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:158:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:165:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:169:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:170:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:183:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:49:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:50:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:57:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:61:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:62:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:69:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:73:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:74:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:81:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:85:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:86:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:93:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:97:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/hooks/test_sql.py:98:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:38:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:39:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:47:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:48:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:56:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:57:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:65:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:66:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:74:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:75:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:83:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:84:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:98:13: FBT003 Boolean positional value in function call
+- tests/providers/snowflake/operators/test_snowflake_sql.py:99:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:100:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:101:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:102:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:109:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:110:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:111:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:116:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:117:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:118:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:125:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:126:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:127:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:132:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:133:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:134:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:141:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:142:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:143:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:148:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:149:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:150:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:22: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:28: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:35: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:48: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:55: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:155:61: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:22: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:28: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:34: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:47: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:54: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:158:60: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:161:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:162:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:163:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:168:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:169:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:170:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:177:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:178:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:179:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:184:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:185:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:186:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:192:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:193:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:194:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:199:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:200:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:201:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:207:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:208:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:209:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:214:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:215:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:216:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:93:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:94:13: FBT003 Boolean positional value in function call
+- tests/ti_deps/deps/test_prev_dagrun_dep.py:95:13: FBT003 Boolean positional value in function call
+- tests/timetables/test_interval_timetable.py:74:19: FBT003 Boolean positional value in function call
+- tests/timetables/test_interval_timetable.py:74:58: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:179:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:180:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:181:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:182:70: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:183:63: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:184:64: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:221:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:222:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:223:53: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:224:70: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:225:63: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:226:64: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:73:39: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:74:27: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:75:40: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:97:44: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:98:27: FBT003 Boolean positional value in function call
+- tests/utils/test_db_cleanup.py:99:45: FBT003 Boolean positional value in function call
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     14.0±0.06ms     2.9 MB/sec    1.00     13.9±0.05ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     5.0 MB/sec    1.00      3.4±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    419.0±0.83µs     7.0 MB/sec    1.00    419.9±0.67µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.00      5.8±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.03ms     5.9 MB/sec    1.00      6.9±0.02ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1485.6±9.43µs    11.2 MB/sec    1.00   1485.7±2.81µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    166.9±1.22µs    17.7 MB/sec    1.00    166.5±0.62µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.00      3.1±0.02ms     8.3 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.01ms     7.5 MB/sec    1.01      5.5±0.01ms     7.4 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1061.9±0.61µs    15.7 MB/sec    1.00   1066.7±2.37µs    15.6 MB/sec
+parser/numpy/globals.py                    1.00    108.2±0.86µs    27.3 MB/sec    1.00    108.2±0.27µs    27.3 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.0 MB/sec    1.00      2.3±0.00ms    11.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.03     21.9±0.88ms  1900.0 KB/sec    1.00     21.3±0.85ms  1957.3 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.3±0.26ms     3.1 MB/sec    1.01      5.4±0.21ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   640.2±60.34µs     4.6 MB/sec    1.00   641.6±37.48µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.01      9.0±0.38ms     2.8 MB/sec    1.00      8.9±0.38ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.9±0.41ms     3.7 MB/sec    1.00     10.9±0.41ms     3.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.4±0.14ms     7.0 MB/sec    1.00      2.3±0.09ms     7.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00   264.9±12.75µs    11.1 MB/sec    1.02   270.1±20.09µs    10.9 MB/sec
+linter/default-rules/pydantic/types.py     1.03      4.9±0.23ms     5.2 MB/sec    1.00      4.8±0.19ms     5.3 MB/sec
+parser/large/dataset.py                    1.01      8.7±0.25ms     4.7 MB/sec    1.00      8.6±0.27ms     4.7 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1684.7±79.33µs     9.9 MB/sec    1.00  1657.1±72.42µs    10.0 MB/sec
+parser/numpy/globals.py                    1.03    172.9±7.49µs    17.1 MB/sec    1.00    168.1±8.79µs    17.6 MB/sec
+parser/pydantic/types.py                   1.01      3.7±0.14ms     6.8 MB/sec    1.00      3.7±0.16ms     6.8 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

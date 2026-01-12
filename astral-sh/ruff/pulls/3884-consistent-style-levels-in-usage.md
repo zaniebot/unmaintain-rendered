@@ -1,0 +1,86 @@
+```yaml
+number: 3884
+title: Consistent Style/Levels in Usage 
+type: pull_request
+state: merged
+author: brucearctor
+labels: []
+assignees: []
+merged: true
+base: main
+head: usage-indent
+created_at: 2023-04-05T03:01:35Z
+updated_at: 2023-04-05T03:25:30Z
+url: https://github.com/astral-sh/ruff/pull/3884
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Consistent Style/Levels in Usage 
+
+---
+
+_Pull request opened by @brucearctor on 2023-04-05 03:01_
+
+<img width="201" alt="Screen Shot 2023-04-04 at 7 57 58 PM" src="https://user-images.githubusercontent.com/5032356/229970122-9592e885-0d31-4899-ba1c-cd9991779e02.png">
+
+I imagine it is desirable for pre-commit to be at the same 'level' or style as VS Code and GH Action?  
+
+---
+
+_Comment by @brucearctor on 2023-04-05 03:02_
+
+this is more relevant on the visuals of the docs/webpage created.  
+
+---
+
+_Comment by @charliermarsh on 2023-04-05 03:06_
+
+Oops, yes, thank you -- oversight.
+
+---
+
+_Merged by @charliermarsh on 2023-04-05 03:06_
+
+---
+
+_Closed by @charliermarsh on 2023-04-05 03:06_
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-05 03:14_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.6±0.34ms     2.6 MB/sec    1.01     15.7±0.49ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.15ms     4.2 MB/sec    1.00      3.9±0.14ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   517.3±40.56µs     5.7 MB/sec    1.00   519.9±37.39µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.25ms     3.8 MB/sec    1.02      6.9±0.32ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.6±0.16ms     5.4 MB/sec    1.01      7.7±0.19ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1716.9±51.43µs     9.7 MB/sec    1.03  1762.3±90.58µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.7±5.73µs    14.3 MB/sec    1.00    205.0±4.79µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.16ms     7.1 MB/sec    1.01      3.6±0.13ms     7.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     20.0±0.74ms     2.0 MB/sec    1.08     21.5±0.90ms  1936.5 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.5±0.41ms     3.1 MB/sec    1.01      5.5±0.25ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   613.9±41.76µs     4.8 MB/sec    1.07   655.8±67.87µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.8±0.48ms     2.9 MB/sec    1.05      9.2±0.39ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.4±0.44ms     3.9 MB/sec    1.05     10.9±0.39ms     3.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.11ms     7.5 MB/sec    1.09      2.4±0.11ms     6.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00   260.6±16.47µs    11.3 MB/sec    1.11   290.5±27.03µs    10.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.7±0.33ms     5.4 MB/sec    1.08      5.1±0.22ms     5.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

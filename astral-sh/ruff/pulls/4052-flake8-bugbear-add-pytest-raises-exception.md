@@ -1,0 +1,150 @@
+```yaml
+number: 4052
+title: "[`flake8-bugbear`] Add `pytest.raises(Exception)` support to B017"
+type: pull_request
+state: merged
+author: alanhdu
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: pytest-b017
+created_at: 2023-04-20T21:32:21Z
+updated_at: 2023-04-21T14:47:55Z
+url: https://github.com/astral-sh/ruff/pull/4052
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# [`flake8-bugbear`] Add `pytest.raises(Exception)` support to B017
+
+---
+
+_Pull request opened by @alanhdu on 2023-04-20 21:32_
+
+`pytest.raises(Exception)` has the same problem as `self.assertRaises(Exception)`, and so we should also raise a lint error when people use it. This matches the upstream flake8-bugbear behavior (see https://github.com/PyCQA/flake8-bugbear/issues/169).
+
+This makes `with pytest.raises(Exception)` a lint failure, although it leaves `pytest.raises(Exception, match="<REGEX>")` alone (since that corresponds to the `assertRaisesRegex`. 
+
+---
+
+_Review comment by @alanhdu on `crates/ruff/src/rules/flake8_bugbear/rules/assert_raises_exception.rs`:17 on 2023-04-20 21:33_
+
+This felt misleading, since the context manager form of `assertRaises` actually gives a lint error!
+
+---
+
+_@alanhdu reviewed on 2023-04-20 21:33_
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-20 21:43_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+22, -0, 0 error(s))
+
+<details><summary>airflow (+20, -0)</summary>
+<p>
+
+```diff
++ tests/jobs/test_scheduler_job.py:1696:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/hooks/test_base_aws.py:961:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/hooks/test_base_aws.py:966:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/hooks/test_ecs.py:146:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/hooks/test_glue_catalog.py:118:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/log/test_s3_task_handler.py:107:13: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/operators/test_athena.py:123:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/operators/test_athena.py:148:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/operators/test_athena.py:172:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/amazon/aws/operators/test_athena.py:195:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/apache/beam/hooks/test_beam.py:372:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/cloud/hooks/test_dataflow.py:1901:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/cloud/hooks/test_dataproc.py:1031:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/common/hooks/test_base_google.py:251:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/common/hooks/test_base_google.py:277:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/common/hooks/test_base_google.py:327:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/google/common/hooks/test_base_google.py:348:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/microsoft/azure/hooks/test_azure_synapse.py:174:13: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/mysql/transfers/test_s3_to_mysql.py:89:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/providers/ssh/hooks/test_ssh.py:943:9: B017 `pytest.raises(Exception)` should be considered evil
+```
+
+</p>
+</details>
+<details><summary>bokeh (+2, -0)</summary>
+<p>
+
+```diff
++ tests/unit/bokeh/io/test_state.py:86:9: B017 `pytest.raises(Exception)` should be considered evil
++ tests/unit/bokeh/io/test_state.py:88:9: B017 `pytest.raises(Exception)` should be considered evil
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.1±0.02ms     2.7 MB/sec    1.01     15.2±0.03ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.00ms     4.3 MB/sec    1.00      3.9±0.01ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    419.5±1.57µs     7.0 MB/sec    1.00    420.0±1.25µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.01ms     3.9 MB/sec    1.00      6.5±0.01ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.8±0.01ms     5.2 MB/sec    1.01      7.8±0.01ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1743.0±4.62µs     9.6 MB/sec    1.00   1746.7±2.00µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    182.6±0.29µs    16.2 MB/sec    1.01    184.3±0.39µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.00      3.6±0.00ms     7.1 MB/sec
+parser/large/dataset.py                    1.00      6.3±0.00ms     6.5 MB/sec    1.00      6.3±0.00ms     6.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1243.5±1.05µs    13.4 MB/sec    1.00   1239.4±0.88µs    13.4 MB/sec
+parser/numpy/globals.py                    1.00    125.3±0.33µs    23.5 MB/sec    1.01    126.5±0.28µs    23.3 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.00ms     9.4 MB/sec    1.00      2.7±0.00ms     9.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     19.1±0.53ms     2.1 MB/sec    1.03     19.6±0.56ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.22ms     3.3 MB/sec    1.01      5.1±0.20ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.03   610.0±23.18µs     4.8 MB/sec    1.00   593.5±20.07µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.03      8.5±0.34ms     3.0 MB/sec    1.00      8.3±0.34ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.1±0.33ms     4.0 MB/sec    1.00     10.2±0.52ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.3±0.09ms     7.3 MB/sec    1.00      2.2±0.25ms     7.5 MB/sec
+linter/default-rules/numpy/globals.py      1.03    228.7±9.12µs    12.9 MB/sec    1.00   223.0±11.30µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.03      4.5±0.19ms     5.7 MB/sec    1.00      4.4±0.13ms     5.8 MB/sec
+parser/large/dataset.py                    1.06      8.1±0.27ms     5.0 MB/sec    1.00      7.6±0.17ms     5.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1476.5±59.89µs    11.3 MB/sec    1.00  1478.4±32.23µs    11.3 MB/sec
+parser/numpy/globals.py                    1.00    150.0±5.20µs    19.7 MB/sec    1.01    151.3±4.36µs    19.5 MB/sec
+parser/pydantic/types.py                   1.00      3.3±0.13ms     7.7 MB/sec    1.01      3.4±0.12ms     7.6 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-04-21 03:34_
+
+---
+
+_Renamed from "Add pytest.raises(Exception) support to B017" to "[`flake8-bugbear`] Add `pytest.raises(Exception)` support to B017" by @charliermarsh on 2023-04-21 03:37_
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 03:38_
+
+Thank you!
+
+---
+
+_Merged by @charliermarsh on 2023-04-21 03:43_
+
+---
+
+_Closed by @charliermarsh on 2023-04-21 03:43_
+
+---
+
+_Branch deleted on 2023-04-21 14:47_
+
+---

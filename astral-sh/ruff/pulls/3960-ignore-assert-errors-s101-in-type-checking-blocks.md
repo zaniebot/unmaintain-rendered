@@ -1,0 +1,149 @@
+```yaml
+number: 3960
+title: "Ignore assert errors (S101) in `TYPE_CHECKING` blocks"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: charlie/assert-type-block
+created_at: 2023-04-13T17:23:08Z
+updated_at: 2023-04-13T18:27:53Z
+url: https://github.com/astral-sh/ruff/pull/3960
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Ignore assert errors (S101) in `TYPE_CHECKING` blocks
+
+---
+
+_Pull request opened by @charliermarsh on 2023-04-13 17:23_
+
+Closes #3958.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-04-13 17:23_
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-13 17:50_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -51, 0 error(s))
+
+<details><summary>airflow (+0, -50)</summary>
+<p>
+
+```diff
+- airflow/api/common/mark_tasks.py:231:21: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:111:13: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:127:13: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:135:13: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:136:13: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:144:13: S101 Use of `assert` detected
+- airflow/executors/dask_executor.py:88:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:106:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:528:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:622:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:649:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:650:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:651:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:652:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:653:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:654:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:738:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:769:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:879:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:908:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:934:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:948:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:977:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:978:13: S101 Use of `assert` detected
+- airflow/executors/kubernetes_executor.py:979:13: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:258:17: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:295:17: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:296:17: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:325:17: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:377:13: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:386:13: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:396:13: S101 Use of `assert` detected
+- airflow/executors/local_executor.py:397:13: S101 Use of `assert` detected
+- airflow/jobs/triggerer_job_runner.py:184:9: S101 Use of `assert` detected
+- airflow/models/baseoperator.py:1297:13: S101 Use of `assert` detected
+- airflow/models/expandinput.py:145:17: S101 Use of `assert` detected
+- airflow/models/skipmixin.py:190:13: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:1752:13: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:1947:13: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:2058:17: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:2637:17: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:512:25: S101 Use of `assert` detected
+- airflow/models/taskinstance.py:639:21: S101 Use of `assert` detected
+- airflow/providers/arangodb/hooks/arangodb.py:105:21: S101 Use of `assert` detected
+- airflow/providers/cncf/kubernetes/hooks/kubernetes.py:251:13: S101 Use of `assert` detected
+- airflow/providers/elasticsearch/log/es_task_handler.py:140:17: S101 Use of `assert` detected
+- airflow/providers/github/hooks/github.py:84:17: S101 Use of `assert` detected
+- airflow/providers/microsoft/azure/log/wasb_task_handler.py:97:13: S101 Use of `assert` detected
+- airflow/sensors/external_task.py:412:13: S101 Use of `assert` detected
+- airflow/utils/log/file_task_handler.py:243:21: S101 Use of `assert` detected
+```
+
+</p>
+</details>
+<details><summary>zulip (+0, -1)</summary>
+<p>
+
+```diff
+- zerver/management/commands/backup.py:60:21: S101 Use of `assert` detected
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.1±1.17ms     2.2 MB/sec    1.01     18.4±1.32ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.4±0.28ms     3.7 MB/sec    1.00      4.4±0.31ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   556.9±27.55µs     5.3 MB/sec    1.03   572.4±48.90µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.4±0.37ms     3.4 MB/sec    1.06      7.9±0.58ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.3±0.55ms     4.4 MB/sec    1.04      9.6±0.68ms     4.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.14ms     8.0 MB/sec    1.00      2.1±0.12ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00   229.9±13.37µs    12.8 MB/sec    1.01   232.7±14.10µs    12.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.2±0.25ms     6.0 MB/sec    1.02      4.3±0.30ms     5.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.17ms     2.5 MB/sec    1.01     16.5±0.15ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.05ms     3.9 MB/sec    1.01      4.3±0.08ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   441.9±12.28µs     6.7 MB/sec    1.00    441.9±6.44µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.12ms     3.7 MB/sec    1.02      7.1±0.13ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.06ms     4.9 MB/sec    1.01      8.4±0.07ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1793.0±18.66µs     9.3 MB/sec    1.02  1827.2±33.56µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    185.2±1.74µs    15.9 MB/sec    1.02    189.7±3.92µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.06ms     6.7 MB/sec    1.01      3.8±0.11ms     6.6 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-04-13 18:20_
+
+---
+
+_Closed by @charliermarsh on 2023-04-13 18:20_
+
+---
+
+_Branch deleted on 2023-04-13 18:20_
+
+---

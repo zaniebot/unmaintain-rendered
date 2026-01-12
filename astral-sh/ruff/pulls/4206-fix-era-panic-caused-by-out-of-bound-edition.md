@@ -1,0 +1,86 @@
+```yaml
+number: 4206
+title: Fix era panic caused by out of bound edition
+type: pull_request
+state: merged
+author: leiserfg
+labels: []
+assignees: []
+merged: true
+base: main
+head: fix-era-fixer
+created_at: 2023-05-03T13:32:48Z
+updated_at: 2023-05-03T14:00:33Z
+url: https://github.com/astral-sh/ruff/pull/4206
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Fix era panic caused by out of bound edition
+
+---
+
+_Pull request opened by @leiserfg on 2023-05-03 13:32_
+
+_No description provided._
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-03 13:43_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.05     18.3±0.63ms     2.2 MB/sec    1.00     17.4±0.78ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.08      4.4±0.20ms     3.8 MB/sec    1.00      4.1±0.18ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.06   543.0±21.03µs     5.4 MB/sec    1.00   510.6±19.73µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.05      7.6±0.23ms     3.4 MB/sec    1.00      7.2±0.30ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.08      9.2±0.27ms     4.4 MB/sec    1.00      8.5±0.23ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.07  1915.0±63.74µs     8.7 MB/sec    1.00  1782.0±73.70µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.05   230.6±11.61µs    12.8 MB/sec    1.00   219.5±12.40µs    13.4 MB/sec
+linter/default-rules/pydantic/types.py     1.10      4.2±0.15ms     6.1 MB/sec    1.00      3.8±0.14ms     6.7 MB/sec
+parser/large/dataset.py                    1.00      6.9±0.15ms     5.9 MB/sec    1.04      7.1±0.36ms     5.7 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1333.1±36.96µs    12.5 MB/sec    1.05  1399.1±51.89µs    11.9 MB/sec
+parser/numpy/globals.py                    1.01    131.9±5.98µs    22.4 MB/sec    1.00    131.0±8.03µs    22.5 MB/sec
+parser/pydantic/types.py                   1.00      3.0±0.10ms     8.6 MB/sec    1.01      3.0±0.12ms     8.5 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     19.7±0.61ms     2.1 MB/sec    1.10     21.6±2.12ms  1925.1 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.24ms     3.3 MB/sec    1.20      6.1±0.32ms     2.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01   617.5±28.10µs     4.8 MB/sec    1.00   614.3±22.77µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.2±0.23ms     3.1 MB/sec    1.05      8.6±0.31ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.03     10.4±0.47ms     3.9 MB/sec    1.00     10.1±0.38ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.10ms     7.7 MB/sec    1.00      2.2±0.07ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   247.7±12.64µs    11.9 MB/sec    1.04   256.9±18.84µs    11.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.4±0.14ms     5.8 MB/sec    1.04      4.6±0.15ms     5.6 MB/sec
+parser/large/dataset.py                    1.00      8.1±0.25ms     5.0 MB/sec    1.00      8.1±0.28ms     5.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1544.8±54.35µs    10.8 MB/sec    1.02  1576.9±31.07µs    10.6 MB/sec
+parser/numpy/globals.py                    1.00    158.9±5.41µs    18.6 MB/sec    1.03   164.2±21.18µs    18.0 MB/sec
+parser/pydantic/types.py                   1.00      3.5±0.09ms     7.2 MB/sec    1.00      3.5±0.11ms     7.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@MichaReiser approved on 2023-05-03 13:48_
+
+Thanks for providing the repro and the fix 
+
+---
+
+_Merged by @MichaReiser on 2023-05-03 13:48_
+
+---
+
+_Closed by @MichaReiser on 2023-05-03 13:48_
+
+---

@@ -1,0 +1,411 @@
+```yaml
+number: 3983
+title: "Preserve type annotations when fixing `E731`"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels: []
+assignees: []
+merged: true
+base: main
+head: fix/e731/preserve-types
+created_at: 2023-04-16T06:34:59Z
+updated_at: 2023-04-17T01:12:13Z
+url: https://github.com/astral-sh/ruff/pull/3983
+synced_at: 2026-01-12T04:28:19Z
+```
+
+# Preserve type annotations when fixing `E731`
+
+---
+
+_Pull request opened by @dhruvmanila on 2023-04-16 06:34_
+
+## Summary
+
+When converting a `lambda` expression to a function definition, if the variable is annotated using `Callable` (which can come from either `collections.abc` or `typing`), preserve the types in the function definition.
+
+The first argument to `Callable` can either be a list of types, parameter specification or an ellipsis. Parameter specification is mainly used to support forwarding parameter types from one callable to another (aka decorators or nested functions). It's a generic type and cannot be used in `lambda` expressions, so for now we'll ignore preserving the types (including the return type).
+
+fixes: #3973 
+
+---
+
+_@dhruvmanila reviewed on 2023-04-16 06:40_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff/src/rules/pycodestyle/rules/lambda_assignment.rs`:128 on 2023-04-16 06:40_
+
+Is there any way to write unit tests for this function? This is mainly regarding the `Context`. If there are any examples on how to create a mock `Context`, I could do that. If not, should we provide some functionality to do that to facilitate writing unit tests? (`Context` is being used in a lot of helper functions)
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-16 06:45_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+281, -0, 0 error(s))
+
+<details><summary>airflow (+130, -0)</summary>
+<p>
+
+```diff
++ airflow/providers/google/cloud/example_dags/example_compute_ssh.py:38:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/cloud/example_dags/example_compute_ssh.py:50:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/cloud/example_dags/example_compute_ssh.py:52:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/cloud/example_dags/example_compute_ssh.py:63:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/marketing_platform/example_dags/example_display_video.py:207:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/marketing_platform/example_dags/example_display_video.py:208:5: ERA001 [*] Found commented-out code
++ airflow/providers/google/marketing_platform/example_dags/example_display_video.py:210:5: ERA001 [*] Found commented-out code
++ airflow/settings.py:598:1: ERA001 [*] Found commented-out code
++ dev/breeze/src/airflow_breeze/utils/common_options.py:68:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:133:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:135:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:173:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:175:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:203:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:205:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:241:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:243:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:257:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:259:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:272:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:274:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:290:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:292:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:309:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:311:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:328:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:330:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:342:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:344:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:360:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:362:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:373:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:375:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:385:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:387:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:395:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:397:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:405:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:407:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:92:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/hooks/test_datasync.py:94:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:163:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:167:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:169:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:177:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:181:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:183:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:211:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:215:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:217:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:244:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:248:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:250:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:261:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:265:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:267:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:287:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:291:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:293:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:304:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:309:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:311:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:318:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:358:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:362:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:364:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:372:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:376:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:378:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:395:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:399:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:401:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:414:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:418:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:420:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:446:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:450:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:452:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:479:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:483:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:485:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:496:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:501:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:503:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:511:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:543:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:547:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:549:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:553:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:557:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:559:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:577:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:581:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:583:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:594:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:599:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:601:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:609:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:639:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:643:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:645:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:649:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:653:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:655:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:690:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:707:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:710:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:717:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:722:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:724:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:747:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:751:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:753:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:764:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:769:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:771:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:778:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:805:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:809:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:811:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:815:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:819:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:821:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:841:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:845:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:847:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:858:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:863:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:865:9: ERA001 [*] Found commented-out code
++ tests/providers/amazon/aws/operators/test_datasync.py:873:9: ERA001 [*] Found commented-out code
+```
+
+</p>
+</details>
+<details><summary>bokeh (+24, -0)</summary>
+<p>
+
+```diff
++ src/bokeh/client/session.py:40:1: ERA001 [*] Found commented-out code
++ src/bokeh/document/locking.py:36:1: ERA001 [*] Found commented-out code
++ src/bokeh/embed/elements.py:27:1: ERA001 [*] Found commented-out code
++ src/bokeh/embed/server.py:27:1: ERA001 [*] Found commented-out code
++ src/bokeh/io/notebook.py:38:1: ERA001 [*] Found commented-out code
++ src/bokeh/server/connection.py:26:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:103:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:292:5: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:301:5: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:363:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:372:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:386:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:395:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:407:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:416:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:71:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:81:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/tables/test_cell_editors.py:93:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/test_daterange_slider.py:160:1: ERA001 [*] Found commented-out code
++ tests/integration/widgets/test_daterange_slider.py:169:1: ERA001 [*] Found commented-out code
++ tests/unit/bokeh/core/test_properties.py:490:5: ERA001 [*] Found commented-out code
++ tests/unit/bokeh/io/test_export.py:24:1: ERA001 [*] Found commented-out code
++ tests/unit/bokeh/plotting/test__renderer.py:115:1: ERA001 [*] Found commented-out code
++ tests/unit/bokeh/server/_util_server.py:30:1: ERA001 [*] Found commented-out code
+```
+
+</p>
+</details>
+<details><summary>zulip (+127, -0)</summary>
+<p>
+
+```diff
++ zerver/tests/test_openapi.py:207:9: ERA001 [*] Found commented-out code
++ zerver/tests/test_openapi.py:217:9: ERA001 [*] Found commented-out code
++ zerver/tests/test_openapi.py:236:9: ERA001 [*] Found commented-out code
++ zerver/tests/test_openapi.py:246:9: ERA001 [*] Found commented-out code
++ zerver/tests/test_openapi.py:255:9: ERA001 [*] Found commented-out code
++ zerver/tests/test_openapi.py:262:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:100:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:101:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:10:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:117:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:118:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:121:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:12:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:138:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:13:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:141:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:167:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:168:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:174:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:180:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:185:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:186:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:190:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:191:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:201:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:203:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:220:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:225:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:226:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:241:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:248:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:258:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:272:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:274:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:278:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:285:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:288:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:291:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:299:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:301:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:302:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:304:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:305:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:307:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:308:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:312:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:320:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:322:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:323:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:324:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:326:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:329:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:335:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:338:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:342:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:346:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:347:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:352:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:354:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:358:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:363:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:367:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:383:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:391:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:393:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:395:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:404:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:405:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:407:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:40:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:412:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:428:9: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:466:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:46:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:472:5: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:47:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:490:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:498:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:500:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:502:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:512:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:514:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:515:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:518:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:519:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:522:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:525:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:534:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:535:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:536:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:545:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:56:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:571:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:58:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:610:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:624:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:629:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:63:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:640:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:642:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:652:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:659:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:65:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:674:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:675:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:681:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:682:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:686:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:688:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:705:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:717:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:71:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:72:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:732:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:740:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:745:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:747:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:765:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:800:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:808:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:82:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:92:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:93:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:94:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:95:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:99:1: ERA001 [*] Found commented-out code
++ zproject/prod_settings_template.py:9:1: ERA001 [*] Found commented-out code
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.03ms     2.9 MB/sec    1.00     14.2±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.00ms     4.6 MB/sec    1.00      3.6±0.00ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    463.9±2.14µs     6.4 MB/sec    1.00    458.0±1.23µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.1±0.01ms     4.2 MB/sec    1.00      6.0±0.02ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.3±0.02ms     5.6 MB/sec    1.00      7.1±0.01ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1637.0±1.97µs    10.2 MB/sec    1.00   1612.4±7.11µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.4±1.36µs    16.4 MB/sec    1.00    180.8±0.50µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.3±0.01ms     7.6 MB/sec    1.00      3.3±0.01ms     7.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     16.6±0.33ms     2.4 MB/sec    1.00     16.3±0.37ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.07ms     3.9 MB/sec    1.00      4.2±0.08ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    498.1±7.58µs     5.9 MB/sec    1.02    507.4±8.02µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.11ms     3.7 MB/sec    1.02      7.0±0.19ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.10ms     5.0 MB/sec    1.02      8.3±0.18ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1796.2±35.61µs     9.3 MB/sec    1.20      2.2±0.47ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    193.6±4.39µs    15.2 MB/sec    1.00    194.0±3.85µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.8 MB/sec    1.01      3.8±0.31ms     6.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pycodestyle/rules/lambda_assignment.rs`:128 on 2023-04-16 23:03_
+
+Sadly no, but I would definitely be interested in mechanisms for creating `Context` in tests.
+
+Mocking would be one approach. Another would be to provide some primer Python code that we could parse and traverse, then use the `Context` that results from traversing that code, and pass it to (e.g.) this function. That might be hard to do though, since `Context` is really driven by `Checker` and hard to decouple...
+
+
+---
+
+_@charliermarsh reviewed on 2023-04-16 23:03_
+
+---
+
+_Merged by @charliermarsh on 2023-04-16 23:15_
+
+---
+
+_Closed by @charliermarsh on 2023-04-16 23:15_
+
+---
+
+_Branch deleted on 2023-04-17 01:12_
+
+---
