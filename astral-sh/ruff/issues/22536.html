@@ -70,10 +70,55 @@ DEBUG Received message: Notification(Notification { method: &quot;textDocument/d
 <p>I understood that it's working if you open the folder (in which case the workspace root is <code>/tmp/mvce</code>) but not when opening the file (in which case I believe VS Code uses <code>~/</code>)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZedThree">@ZedThree</a> on 2026-01-12 18:21</div>
+            <div class="timeline-body"><p>Ah, indeed, that is true with VS code, but with other editors like neovim and helix, the workspace root is the cwd, so <code>/tmp/mvce</code> in this case. Here's the logs from neovim from first <code>nvim dir/test.py</code>, then from <code>cd dir; nvim test.py</code></p>
+<pre><code> INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce
+ INFO No workspace options found for file:///tmp/mvce, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce
+ INFO Registering workspace: /tmp/mvce
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir/test.py
+DEBUG request{id=3 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=3 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+
+
+ INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce/dir
+ INFO No workspace options found for file:///tmp/mvce/dir, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce/dir
+DEBUG No `target-version` found in `ruff.toml` log.target=&quot;ruff_workspace::pyproject&quot; log.module_path=&quot;ruff_workspace::pyproject&quot; log.file=&quot;crates/ruff_workspace/src/pyproject.rs&quot; log.line=207
+DEBUG No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified log.target=&quot;ruff_workspace::pyproject&quot; log.module_path=&quot;ruff_workspace::pyproject&quot; log.file=&quot;crates/ruff_workspace/src/pyproject.rs&quot; log.line=218
+DEBUG Loaded settings from: `/tmp/mvce/dir/ruff.toml`
+ INFO Registering workspace: /tmp/mvce/dir
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir/test.py
+DEBUG request{id=3 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=3 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-12 18:29</div>
+            <div class="timeline-body"><p>@dhruvmanila will know more here but the editors still run in single-file mode</p>
+<p>https://github.com/astral-sh/ruff/blob/4c4ddc8c29e649dad381b21c90593226687825e1/crates/ruff_server/src/session/index/ruff_settings.rs#L237-L254</p>
+<p>which was added here https://github.com/astral-sh/ruff/pull/13770</p>
+<p>That's why I still think it's the same issue. Ruff uses the default settings for files outside the workspace root (which also applies if the editor sends no workspace root)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:29:45 UTC
+        Synced at 2026-01-12 19:15:28 UTC
     </footer>
 </body>
 </html>
