@@ -1,0 +1,53 @@
+```yaml
+number: 8258
+title: Refine recommendation around static methods
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: charlie/class
+created_at: 2023-10-26T17:16:23Z
+updated_at: 2023-10-26T19:03:54Z
+url: https://github.com/astral-sh/ruff/pull/8258
+synced_at: 2026-01-12T02:32:42Z
+```
+
+# Refine recommendation around static methods
+
+---
+
+_Pull request opened by @charliermarsh on 2023-10-26 17:16_
+
+Closes https://github.com/astral-sh/ruff/issues/8025.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-10-26 17:16_
+
+---
+
+_Comment by @github-actions[bot] on 2023-10-26 17:32_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+
+
+---
+
+_Merged by @charliermarsh on 2023-10-26 19:03_
+
+---
+
+_Closed by @charliermarsh on 2023-10-26 19:03_
+
+---
+
+_Branch deleted on 2023-10-26 19:03_
+
+---

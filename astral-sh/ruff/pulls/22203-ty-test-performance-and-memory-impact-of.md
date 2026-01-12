@@ -2,7 +2,7 @@
 number: 22203
 title: "[ty] Test performance and memory impact of shrinking Salsa's DB key"
 type: pull_request
-state: open
+state: closed
 author: MichaReiser
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: micha/salsa-db-key
 created_at: 2025-12-26T10:09:44Z
-updated_at: 2025-12-26T10:29:23Z
+updated_at: 2026-01-10T17:59:20Z
 url: https://github.com/astral-sh/ruff/pull/22203
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T02:32:44Z
 ```
 
 # [ty] Test performance and memory impact of shrinking Salsa's DB key
@@ -173,5 +173,9 @@ _Comment by @astral-sh-bot[bot] on 2025-12-26 10:29_
 
 
 
+
+---
+
+_Closed by @MichaReiser on 2026-01-10 17:59_
 
 ---

@@ -1,0 +1,98 @@
+```yaml
+number: 4010
+title: Add Astral announcement to README
+type: pull_request
+state: merged
+author: JacobCoffee
+labels: []
+assignees: []
+merged: true
+base: main
+head: astral_announcement
+created_at: 2023-04-18T18:48:46Z
+updated_at: 2023-10-09T20:51:45Z
+url: https://github.com/astral-sh/ruff/pull/4010
+synced_at: 2026-01-12T02:32:41Z
+```
+
+# Add Astral announcement to README
+
+---
+
+_Pull request opened by @JacobCoffee on 2023-04-18 18:48_
+
+Adds an announcement banner with a link to the blog post about Astral - the future of performant Python tooling.
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-18 19:16_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     15.3±0.15ms     2.7 MB/sec    1.00     15.2±0.12ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.03ms     4.3 MB/sec    1.00      3.9±0.01ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.01    419.0±1.37µs     7.0 MB/sec    1.00    416.3±1.83µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.03ms     3.9 MB/sec    1.00      6.5±0.06ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.03ms     5.1 MB/sec    1.00      7.8±0.06ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1766.2±2.49µs     9.4 MB/sec    1.00   1754.7±3.46µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.01    183.4±0.37µs    16.1 MB/sec    1.00    181.3±0.55µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.00ms     7.0 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
+parser/large/dataset.py                    1.00      6.2±0.01ms     6.6 MB/sec    1.00      6.2±0.02ms     6.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1233.7±5.98µs    13.5 MB/sec    1.00   1227.9±2.21µs    13.6 MB/sec
+parser/numpy/globals.py                    1.02    125.8±0.73µs    23.5 MB/sec    1.00    123.0±0.23µs    24.0 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.03ms     9.5 MB/sec    1.00      2.7±0.00ms     9.5 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     20.2±0.64ms     2.0 MB/sec    1.02     20.5±0.36ms  2029.2 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.12ms     3.3 MB/sec    1.05      5.2±0.39ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   618.5±20.66µs     4.8 MB/sec    1.00   618.8±18.07µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.19ms     3.0 MB/sec    1.03      8.7±0.19ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.1±0.25ms     4.0 MB/sec    1.03     10.3±0.22ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.08ms     7.5 MB/sec    1.03      2.3±0.04ms     7.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    241.8±8.96µs    12.2 MB/sec    1.04   251.4±29.11µs    11.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.6±0.09ms     5.5 MB/sec    1.02      4.7±0.11ms     5.4 MB/sec
+parser/large/dataset.py                    1.00      8.1±0.17ms     5.0 MB/sec    1.01      8.1±0.12ms     5.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1533.8±33.47µs    10.9 MB/sec    1.01  1551.7±34.98µs    10.7 MB/sec
+parser/numpy/globals.py                    1.01    157.2±5.49µs    18.8 MB/sec    1.00    155.1±7.30µs    19.0 MB/sec
+parser/pydantic/types.py                   1.00      3.5±0.25ms     7.3 MB/sec    1.00      3.5±0.07ms     7.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review requested from @charliermarsh by @charliermarsh on 2023-04-18 23:41_
+
+---
+
+_Renamed from "Add `Astral` Announcement banner" to "Add Astral announcement to README" by @charliermarsh on 2023-04-19 20:21_
+
+---
+
+_Comment by @charliermarsh on 2023-04-19 20:21_
+
+I decided to move this down a bit, I want to make sure the most important info (What is the project? Why is it useful?) gets the most real estate.
+
+---
+
+_Merged by @charliermarsh on 2023-04-19 20:28_
+
+---
+
+_Closed by @charliermarsh on 2023-04-19 20:28_
+
+---
+
+_Branch deleted on 2023-10-09 20:51_
+
+---

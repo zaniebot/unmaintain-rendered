@@ -7,13 +7,12 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
-draft: true
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-10T15:52:05Z
+updated_at: 2026-01-10T17:28:32Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T02:32:44Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -48,8 +47,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-09 23:26_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-10 15:54:07.813817168 +0000
-+++ new-output.txt	2026-01-10 15:54:08.157817720 +0000
+--- old-output.txt	2026-01-10 17:03:51.206103214 +0000
++++ new-output.txt	2026-01-10 17:03:51.553107855 +0000
 @@ -523,20 +523,18 @@
  generics_scoping.py:75:11: error[invalid-generic-class] Generic class `Bad` must not reference type variables bound in an enclosing scope: `T` referenced in class definition here
  generics_self_advanced.py:11:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@prop1`
@@ -182,22 +181,8 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/llnl/util/lang.py:695:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `__class__` on type `Self@__init__` with custom `__set__` method
 - lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `_BufferedReaderStream | Unknown | None`
 + lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None`
-+ lib/spack/spack/vendor/jinja2/utils.py:586:21: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__getitem__`, found `deque[Any]`
-+ lib/spack/spack/vendor/jinja2/utils.py:593:17: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@__getitem__`, found `deque[Any]`
-+ lib/spack/spack/vendor/jinja2/utils.py:603:17: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ lib/spack/spack/vendor/jinja2/utils.py:605:35: error[invalid-argument-type] Argument to bound method `popleft` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ lib/spack/spack/vendor/jinja2/utils.py:607:13: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ lib/spack/spack/vendor/jinja2/utils.py:618:17: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__delitem__`, found `deque[Any]`
 - Found 4318 diagnostics
-+ Found 4325 diagnostics
-
-beartype (https://github.com/beartype/beartype)
-+ beartype/_util/cache/map/utilmapbig.py:156:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ beartype/_util/cache/map/utilmapbig.py:164:13: error[invalid-argument-type] Argument to bound method `__setitem__` is incorrect: Expected `Self@cache_or_get_cached_value`, found `dict[Hashable, object]`
-+ beartype/_util/cache/map/utilmapbig.py:224:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ beartype/_util/cache/map/utilmapbig.py:236:13: error[invalid-argument-type] Argument to bound method `__setitem__` is incorrect: Expected `Self@cache_or_get_cached_func_return_passed_arg`, found `dict[Hashable, object]`
-- Found 496 diagnostics
-+ Found 500 diagnostics
++ Found 4319 diagnostics
 
 bandersnatch (https://github.com/pypa/bandersnatch)
 - src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
@@ -205,36 +190,7 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 - Found 80 diagnostics
 + Found 78 diagnostics
 
-stone (https://github.com/dropbox/stone)
-- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- Found 252 diagnostics
-+ Found 249 diagnostics
-
-werkzeug (https://github.com/pallets/werkzeug)
-- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
-+ src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `UpdateDictMixin[Any, Any]`
-- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
-+ src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `Self@setdefault`
-- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
-+ src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `Self@pop`
-- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
-- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
-- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
-- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
-- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
-- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
-- Found 386 diagnostics
-+ Found 380 diagnostics
-
 jinja (https://github.com/pallets/jinja)
-+ src/jinja2/utils.py:519:21: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__getitem__`, found `deque[Any]`
-+ src/jinja2/utils.py:526:17: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@__getitem__`, found `deque[Any]`
-+ src/jinja2/utils.py:536:17: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ src/jinja2/utils.py:538:35: error[invalid-argument-type] Argument to bound method `popleft` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ src/jinja2/utils.py:540:13: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@__setitem__`, found `deque[Any]`
-+ src/jinja2/utils.py:551:17: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Self@__delitem__`, found `deque[Any]`
 - tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | None | Environment`
 + tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | Environment | None`
 - tests/test_loader.py:244:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | None | Environment`
@@ -265,16 +221,39 @@ jinja (https://github.com/pallets/jinja)
 + tests/test_loader.py:306:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | Environment | None`
 - tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | None | Environment`
 + tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | Environment | None`
-- Found 180 diagnostics
-+ Found 186 diagnostics
 
-graphql-core (https://github.com/graphql-python/graphql-core)
-- src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (bound method Self@to_kwargs.parse_literal(node: ValueNode, variables: dict[str, Any] | None = None) -> Any) | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
-+ src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
-+ src/graphql/utilities/separate_operations.py:97:9: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@enter_fragment_spread`, found `list[str]`
-+ src/graphql/validation/validation_context.py:80:9: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Self@enter_variable`, found `list[VariableUsage]`
-- Found 199 diagnostics
-+ Found 201 diagnostics
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
++ src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `UpdateDictMixin[Any, Any]`
+- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
++ src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `Self@setdefault`
+- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
++ src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `Self@pop`
+- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
+- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
+- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
+- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
+- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
+- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
+- Found 386 diagnostics
++ Found 380 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- Found 252 diagnostics
++ Found 249 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/boost.py:362:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` has no attribute `append`
+- boostedblob/boost.py:368:16: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]] & ~AlwaysFalsy` has no attribute `popleft`
+- boostedblob/boost.py:382:19: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
+- boostedblob/boost.py:402:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `add`
+- boostedblob/boost.py:413:55: error[unresolved-attribute] Object of type `Awaitable[T@UnorderedMappingBoostable]` has no attribute `done`
+- boostedblob/boost.py:416:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `remove`
+- Found 21 diagnostics
++ Found 15 diagnostics
 
 aiortc (https://github.com/aiortc/aiortc)
 - src/aiortc/rtcpeerconnection.py:571:25: warning[possibly-missing-attribute] Attribute `media` may be missing on object of type `SessionDescription | None | @Todo`
@@ -307,20 +286,9 @@ aiortc (https://github.com/aiortc/aiortc)
 - Found 194 diagnostics
 + Found 169 diagnostics
 
-pytest (https://github.com/pytest-dev/pytest)
-- src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
-- Found 425 diagnostics
-+ Found 424 diagnostics
-
-boostedblob (https://github.com/hauntsaninja/boostedblob)
-- boostedblob/boost.py:362:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` has no attribute `append`
-- boostedblob/boost.py:368:16: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]] & ~AlwaysFalsy` has no attribute `popleft`
-- boostedblob/boost.py:382:19: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
-- boostedblob/boost.py:402:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `add`
-- boostedblob/boost.py:413:55: error[unresolved-attribute] Object of type `Awaitable[T@UnorderedMappingBoostable]` has no attribute `done`
-- boostedblob/boost.py:416:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `remove`
-- Found 21 diagnostics
-+ Found 15 diagnostics
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (bound method Self@to_kwargs.parse_literal(node: ValueNode, variables: dict[str, Any] | None = None) -> Any) | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
++ src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
 
 alerta (https://github.com/alerta/alerta)
 + alerta/database/base.py:56:9: error[invalid-assignment] Invalid assignment to data descriptor attribute `__class__` on type `Self@init_db` with custom `__set__` method
@@ -328,15 +296,14 @@ alerta (https://github.com/alerta/alerta)
 - Found 555 diagnostics
 + Found 557 diagnostics
 
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
+- Found 425 diagnostics
++ Found 424 diagnostics
+
 scrapy (https://github.com/scrapy/scrapy)
 - tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
 + tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
-
-PyGithub (https://github.com/PyGithub/PyGithub)
-- tests/Requester.py:216:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
-- tests/Requester.py:263:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
-- Found 299 diagnostics
-+ Found 297 diagnostics
 
 dulwich (https://github.com/dulwich/dulwich)
 - dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
@@ -344,10 +311,31 @@ dulwich (https://github.com/dulwich/dulwich)
 - dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
 + dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
 
+PyGithub (https://github.com/PyGithub/PyGithub)
+- tests/Requester.py:216:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
+- tests/Requester.py:263:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
+- Found 299 diagnostics
++ Found 297 diagnostics
+
 poetry (https://github.com/python-poetry/poetry)
 + src/poetry/console/commands/build.py:242:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 978 diagnostics
 + Found 979 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- torchvision/models/densenet.py:62:37: error[invalid-argument-type] Argument to bound method `bn_function` is incorrect: Expected `list[Unknown]`, found `tuple[Unknown, ...]`
++ torchvision/prototype/datasets/_builtin/caltech.py:84:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ torchvision/prototype/datasets/_builtin/caltech.py:95:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ torchvision/prototype/datasets/_builtin/imagenet.py:141:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int]`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float]`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `InterpolationMode`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
+- Found 1409 diagnostics
++ Found 1404 diagnostics
 
 urllib3 (https://github.com/urllib3/urllib3)
 - src/urllib3/connection.py:560:9: warning[possibly-missing-attribute] Attribute `settimeout` may be missing on object of type `socket | Any | None`
@@ -440,40 +428,19 @@ mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - Found 2144 diagnostics
 + Found 2142 diagnostics
 
-antidote (https://github.com/Finistere/antidote)
-- src/antidote/core/_raw/wrapper.py:102:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> object) | ((...) -> object)`
-- src/antidote/core/_raw/wrapper.py:136:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> Awaitable[object]) | ((...) -> Awaitable[object])`
-+ src/antidote/core/_raw/wrapper.py:102:13: error[unresolved-attribute] Object of type `(...) -> object` has no attribute `__get__`
-+ src/antidote/core/_raw/wrapper.py:136:13: error[unresolved-attribute] Object of type `(...) -> Awaitable[object]` has no attribute `__get__`
-
-sphinx (https://github.com/sphinx-doc/sphinx)
-+ sphinx/domains/python/__init__.py:1032:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ sphinx/domains/std/__init__.py:1325:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 345 diagnostics
-+ Found 347 diagnostics
-
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-
 psycopg (https://github.com/psycopg/psycopg)
 - docs/lib/libpq_docs.py:99:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
 - Found 665 diagnostics
 + Found 664 diagnostics
+
+antidote (https://github.com/Finistere/antidote)
++ src/antidote/core/_raw/onion.py:417:9: error[invalid-assignment] Object of type `ReferenceType[Self@add_child]` is not assignable to attribute `__parent_ref` of type `Function[(), CatalogOnionLayerImpl | None]`
+- src/antidote/core/_raw/wrapper.py:102:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> object) | ((...) -> object)`
+- src/antidote/core/_raw/wrapper.py:136:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> Awaitable[object]) | ((...) -> Awaitable[object])`
++ src/antidote/core/_raw/wrapper.py:102:13: error[unresolved-attribute] Object of type `(...) -> object` has no attribute `__get__`
++ src/antidote/core/_raw/wrapper.py:136:13: error[unresolved-attribute] Object of type `(...) -> Awaitable[object]` has no attribute `__get__`
+- Found 247 diagnostics
++ Found 248 diagnostics
 
 Tanjun (https://github.com/FasterSpeeding/Tanjun)
 - tanjun/annotations.py:2520:30: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@add_to_slash_cmds`
@@ -482,9 +449,35 @@ Tanjun (https://github.com/FasterSpeeding/Tanjun)
 + tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
 
 discord.py (https://github.com/Rapptz/discord.py)
-+ discord/app_commands/tree.py:201:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Unknown | ConnectionState[Self@fetch_command
+- discord/app_commands/tree.py:1133:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Argument type `Interaction[ClientT@CommandTree]` does not satisfy upper bound `CommandTree[ClientT@CommandTree]` of type variable `Self`
++ discord/app_commands/tree.py:1133:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Expected `Self@_dispatch_error`, found `Interaction[ClientT@CommandTree]`
+- discord/app_commands/tree.py:1243:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Argument type `Interaction[ClientT@CommandTree]` does not satisfy upper bound `CommandTree[ClientT@CommandTree]` of type variable `Self`
++ discord/app_commands/tree.py:1243:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Expected `Self@_call_context_menu`, found `Interaction[ClientT@CommandTree]`
+- discord/app_commands/tree.py:1301:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Argument type `Interaction[ClientT@CommandTree]` does not satisfy upper bound `CommandTree[ClientT@CommandTree]` of type variable `Self`
++ discord/app_commands/tree.py:1301:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Expected `Self@_call`, found `Interaction[ClientT@CommandTree]`
+- discord/asset.py:462:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client] | _WebhookState`, found `Any | None | ConnectionState[Client] | _WebhookState`
+- discord/asset.py:490:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client] | _WebhookState`, found `Any | None | ConnectionState[Client] | _WebhookState`
+- discord/asset.py:525:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client] | _WebhookState`, found `Any | None | ConnectionState[Client] | _WebhookState`
+- discord/emoji.py:131:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
+- discord/emoji.py:186:16: warning[possibly-missing-attribute] Attribute `_get_guild` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:225:30: warning[possibly-missing-attribute] Attribute `application_id` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:229:19: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:232:15: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:282:30: warning[possibly-missing-attribute] Attribute `application_id` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:287:26: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/emoji.py:292:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
+- discord/emoji.py:294:22: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
+- discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
+- discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
++ discord/ext/commands/cog.py:715:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `cog` on type `Command[Self@_inject, (...), Any]` with custom `__set__` method
+- discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -> list[Command[Any, (...), Any]] = ...) -> list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands(self) -> list[Command[Self@get_commands, (...), Any]]`
++ discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -> list[Command[Any, (...), Any]] = ...) -> list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands(self) -> list[Command[Cog, (...), Any]]`
+- discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands(self) -> Generator[Command[Self@walk_commands, (...), Any], None, None]`
++ discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands(self) -> Generator[Command[Cog, (...), Any], None, None]`
+- discord/ext/tasks/__init__.py:304:9: error[invalid-assignment] Object of type `(bound method Self@__get__._error(*args: Any) -> CoroutineType[Any, Any, None]) | (def _error(self, *args: Any) -> CoroutineType[Any, Any, None])` is not assignable to attribute `_error` of type `def _error(self, *args: Any) -> CoroutineType[Any, Any, None]`
++ discord/ext/tasks/__init__.py:304:9: error[invalid-assignment] Object of type `def 
 
-... (truncated 5983 lines) ...
+... (truncated 5967 lines) ...
 ```
 
 </details>
@@ -520,7 +513,7 @@ class Element(NonVoidElement, Sized):
 
 So maybe that should work? Reviewing...
 
-(I now think these are wrong.)
+Edit: I was wrong; we were missing the `__getattr__`. It's now fixed.
 
 
 ---
@@ -528,6 +521,8 @@ So maybe that should work? Reviewing...
 _Comment by @charliermarsh on 2026-01-10 00:44_
 
 I think the `paasta` errors are also "correct" in that they're using a dynamic setter: https://github.com/Yelp/paasta/blob/4a16cce26b8bb53b5186b1ca04d5f93fe1d13791/paasta_tools/paastaapi/model_utils.py#L107C9-L107C22
+
+Edit: I was wrong; we were missing the `__getattr__`. It's now fixed.
 
 ---
 
@@ -539,12 +534,39 @@ The removal of `generics_self_attributes.py:29:5` is corrrect.
 
 The removal of `generics_self_usage.py:50:34` is correct.
 
-The removals of `generics_self_advanced.py:36:9` and `generics_self_advanced.py:37:9` are correct.
 
 ---
 
 _Comment by @charliermarsh on 2026-01-10 04:03_
 
 Current version looks better but needs more review of the ecosystem changes.
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-10 17:01_
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2026-01-10 17:01_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-10 17:01_
+
+---
+
+_Review requested from @sharkdp by @charliermarsh on 2026-01-10 17:01_
+
+---
+
+_Review requested from @dcreager by @charliermarsh on 2026-01-10 17:01_
+
+---
+
+_Renamed from "[ty] Bind `typing.Self` in class attributes and assignment" to "[ty] Fix incorrect `Self` binding for bound methods stored as instance attributes" by @charliermarsh on 2026-01-10 17:20_
+
+---
+
+_Renamed from "[ty] Fix incorrect `Self` binding for bound methods stored as instance attributes" to "[ty] Bind `typing.Self` in class attributes and assignment" by @charliermarsh on 2026-01-10 17:21_
 
 ---

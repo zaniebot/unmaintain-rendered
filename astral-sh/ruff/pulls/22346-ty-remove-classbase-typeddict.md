@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: main
 head: charlie/typed-mro
 created_at: 2026-01-02T20:19:58Z
-updated_at: 2026-01-09T14:57:51Z
+updated_at: 2026-01-10T18:53:58Z
 url: https://github.com/astral-sh/ruff/pull/22346
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T02:32:44Z
 ```
 
 # [ty] Remove `ClassBase::TypedDict`
@@ -285,5 +286,9 @@ _Comment by @charliermarsh on 2026-01-09 14:56_
 
 Okay, I can revisit later when we get to functional `TypedDict` if the value presents itself again. As an example, I believe I was able to remove all of the `ClassMemberResult::TypedDict` handling in https://github.com/astral-sh/ruff/pull/22291 so the MRO code became much simpler. I _think_ it also fixed a few bugs in the functional `TypedDict` PR, but I'm struggling to remember the details so I don't need to push on it for now.
 
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-10 18:53_
 
 ---
