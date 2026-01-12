@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: ruff --statistics - astral-sh/ruff #2092</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: ruff --statistics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2092">#2092</a>
+        opened by <a href="https://github.com/seanabreau">@seanabreau</a>
+        on 2023-01-22 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/seanabreau">@seanabreau</a> on 2023-01-22 20:27</div>
+            <div class="timeline-body"><p>adds --statistics flag from issue #1814
+open to all feedback :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/printer.rs</code>:168 on 2023-01-23 04:11</div>
+            <div class="timeline-body"><p>I think by default, for now, we should try to adhere to Flake8's format -- number of violations, then code, then default message, with consistent columnar width for the first column:</p>
+<pre><code>...
+2     W391 blank line at end of file
+8     W605 invalid escape sequence '\.'
+2     W606 'async' and 'await' are reserved keywords starting with Python 3.7
+2     YTT101 `sys.version[:3]` referenced (python3.10), use `sys.version_info`
+2     YTT102 `sys.version[2]` referenced (python3.10), use `sys.version_info`
+5     YTT103 `sys.version` compared to string (python3.10), use `sys.version_info`
+4     YTT201 `sys.version_info[0] == 3` referenced (python4), use `&gt;=`
+2     YTT202 `six.PY3` referenced (python4), use `not six.PY2`
+2     YTT203 `sys.version_info[1]` compared to integer (python4), compare `sys.version_info` to tuple
+2     YTT204 `sys.version_info.minor` compared to integer (python4), compare `sys.version_info` to tuple
+2     YTT301 `sys.version[0]` referenced (python10), use `sys.version_info`
+5     YTT302 `sys.version` compared to string (python10), use `sys.version_info`
+2     YTT303 `sys.version[:1]` referenced (python10), use `sys.version_info`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/printer.rs</code>:161 on 2023-01-23 04:13</div>
+            <div class="timeline-body"><p>Rather than putting this in printer, and introducing a new log level... what if, instead, we forked where we call <code>printer.write_once(&amp;diagnostics)?</code> from <code>main.rs</code>. That is: check if we're doing statistics, then call a new <code>Printer::statistics</code> instead of <code>Printer::write_once</code>?</p>
+<p>That way, we can also have different formats for statistics. For example, we could output JSON! And the implementation would be entirely separate from this method, which deals with a different kind of task and is already a little complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/main.rs</code>:228 on 2023-01-23 04:14</div>
+            <div class="timeline-body"><p>Nit: mind reverting this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/tests/integration_test.rs</code>:177 on 2023-01-23 04:14</div>
+            <div class="timeline-body"><p>Thanks for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/logging.rs</code>:59 on 2023-01-23 04:15</div>
+            <div class="timeline-body"><p>I think it'd be best not to tie this to log level. <code>--verbose</code> and <code>--quiet</code> should actually work with <code>--statistics</code>, I think, since some of that deals with debug logging that isn't related to that final output format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-23 04:15</div>
+            <div class="timeline-body"><p>Thanks for digging into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-23 10:24</div>
+            <div class="timeline-body"><p>A few thoughts that come to mind...</p>
+<p>Would it be possible to provide the following additional flags?</p>
+<ul>
+<li><code>--statistics-sort-field</code> accepting <code>count</code> <em>(default)</em> and <code>code</code></li>
+<li><code>--statistics-sort-order</code> with <code>asc</code> and <code>desc</code> <em>(default)</em></li>
+</ul>
+<p>Would it make sense to split the code into a separate column to the description? In future additional columns could be possibly be added to the stats via <code>--statistics-fields</code>... For example, <code>filename</code> could be added to have a breakdown by file.</p>
+<p>What about also accepting <code>--statistics-format</code> where there could be <code>text</code> <em>(default)</em>, <code>json</code>, <code>jsonl</code>, etc.?</p>
+<p>I guess these could be farmed out to separate issues to break this down into smaller chunks, but the sorting should be relatively straightforward to add here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 17:49</div>
+            <div class="timeline-body"><p>I'd love to try and output in a format that's amenable to doing those kinds of transforms in a downstream tool, e.g. with Unix-style piping, rather than implement all the flags and options in Ruff itself. For example: <code>--format=json</code> is intended to work here, so users could always output as JSON then sort and filter themselves. But maybe there's a way to output standard tabular data that can be manipulated in that way too? I'd have to look at what some other, comparable tools for inspiration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/seanabreau">@seanabreau</a> reviewed on 2023-01-25 05:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/seanabreau">@seanabreau</a> on <code>ruff_cli/src/printer.rs</code>:161 on 2023-01-25 05:20</div>
+            <div class="timeline-body"><p>good idea! on it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 15:38</div>
+            <div class="timeline-body"><p>I tried using it and currently get:</p>
+<pre><code>error[E0425]: cannot find value `cli` in this scope
+   --&gt; ruff_cli/src/args.rs:436:15
+    |
+436 |     } else if cli.statistics {
+    |               ^^^ not found in this scope
+
+
+</code></pre>
+<p>should be <code>args.statistics</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-27 13:57</div>
+            <div class="timeline-body"><p>FYI: as I am using this heavily I used your WIP version and rebased onto latest main: https://github.com/spaceone/ruff/pull/new/statistics
+(in case you want to continue working on it without resolving the merge conflicts on your own).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 18:45</div>
+            <div class="timeline-body"><p>Closing in favor of #2284 -- which just merged!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-29 18:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:13 UTC
+    </footer>
+</body>
+</html>

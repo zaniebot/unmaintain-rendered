@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>autofix for PT003 - astral-sh/ruff #2270</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>autofix for PT003</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2270">#2270</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-01-27 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-27 17:50</div>
+            <div class="timeline-body"><p>Closes https://github.com/charliermarsh/ruff/issues/2260</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_pytest_style/rules/fixture.rs</code>:327 on 2023-01-27 17:55</div>
+            <div class="timeline-body"><p>I think we need to be a bit more careful here. E.g. with <code>@pytest.fixture(scope=&quot;function&quot;,)</code>, would this leave the trailing comma and thus lead to a syntax error? What if this is the last argument, and we don't remove the preceding comma?</p>
+<p>Trying to find an example of where we handle this... I guess <code>remove_class_def_base</code>? But maybe not the best implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-27 17:55</div>
+            <div class="timeline-body"><p><a href="https://docs.pytest.org/en/7.1.x/reference/reference.html#pytest.fixture"><code>pytest.fixture</code></a> can have more arguments, this seems to preserve them but what happens to the comma?</p>
+<pre><code class="language-python">@pytest_fixture(scope='function', name='my_fixture')
+def dummy():
+    return 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-27 20:31</div>
+            <div class="timeline-body"><p>Thanks for the pointers @edgarrmondragon and @charliermarsh.
+I've changed my naive solution to take the <code>keywords.iter()</code> and check for a next value, if present it searches for the comma and extended the tests.
+(Refactored the related violations with it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_pytest_style/PT003.py</code>:39 on 2023-01-27 23:55</div>
+            <div class="timeline-body"><p>I think there are still a few cases that aren't quite handled correctly:</p>
+<pre><code class="language-py">@pytest.fixture(
+    scope=&quot;function&quot;,
+    name=&quot;my_fixture&quot;,
+)
+def error_multiple_args():
+    ...
+
+
+@pytest.fixture(name=&quot;my_fixture&quot;, scope=&quot;function&quot;)
+def error_multiple_args():
+    ...
+</code></pre>
+<p>These give:</p>
+<pre><code class="language-py">@pytest.fixture(
+    
+    name=&quot;my_fixture&quot;,
+)
+def error_multiple_args():
+    ...
+
+
+@pytest.fixture(name=&quot;my_fixture&quot;, )
+def error_multiple_args():
+    ...
+</code></pre>
+<p>Sorry for all the churn, but do you mind tweaking to address those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-27 23:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>resources/test/fixtures/flake8_pytest_style/PT003.py</code>:39 on 2023-01-27 23:58</div>
+            <div class="timeline-body"><p>Will do, should have tested a bit better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 23:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_pytest_style/PT003.py</code>:39 on 2023-01-27 23:59</div>
+            <div class="timeline-body"><p>Na don't sweat it. I only know to try these because I've run into them before :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-28 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>resources/test/fixtures/flake8_pytest_style/PT003.py</code>:39 on 2023-01-28 00:08</div>
+            <div class="timeline-body"><p>Would be nice to turn them into utilities after (e.g. <code>remove_argument</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_pytest_style/PT003.py</code>:39 on 2023-01-28 00:19</div>
+            <div class="timeline-body"><p>Strongly agree!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-28 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-29 18:46</div>
+            <div class="timeline-body"><p>(Just requesting changes to help manage my own queue, no rush of course.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-29 19:09</div>
+            <div class="timeline-body"><p>No problem, working on a general fix helper for removing (keyword)args. Will try to complete today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 19:12</div>
+            <div class="timeline-body"><p>Genuinely no rush, take your time :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sbrugman on 2023-01-29 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-29 22:08</div>
+            <div class="timeline-body"><p>@charliermarsh Introduced a helper function in <code>autofix/helpers.rs</code>.
+This is now used here, and for pyupgrade's <code>object</code> base removal (class definition and function call use the same <code>arguments</code> part in the python <a href="https://docs.python.org/3/reference/grammar.html">grammar</a>).</p>
+<p>This implementation does not take trailing commas into account (nor did the pyupgrade version), but that can be added later.</p>
+<p>(I also see opportunity to use it to autofix <code>PD002</code>, working on that now)</p>
+<p>Will rebase this PR and squash it into two commits (helper function and pyupgrade refactor)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sbrugman on 2023-01-30 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-30 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-30 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-30 07:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:15 UTC
+    </footer>
+</body>
+</html>

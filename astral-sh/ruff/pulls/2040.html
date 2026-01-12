@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade to toml v0.5.11 - astral-sh/ruff #2040</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade to toml v0.5.11</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2040">#2040</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-01-20 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 21:26</div>
+            <div class="timeline-body"><p>In #1680, we moved over to <code>toml_edit</code>. But it looks like <code>toml</code> now uses <code>toml_edit</code>, and has implemented some improvements (e.g., this closes #1894).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 21:39</div>
+            <div class="timeline-body"><p>\cc @messense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-20 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-20 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-20 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2023-01-21 00:07</div>
+            <div class="timeline-body"><p>Looks like the released version on crates.io doesn’t use toml_edit currently: https://crates.io/crates/toml/0.5.11/dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 00:23</div>
+            <div class="timeline-body"><p>Oh, strange. Any idea what the state of the crate is? Should I revert this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2023-01-21 01:27</div>
+            <div class="timeline-body"><p>Only <code>toml</code> released a new version without any noticeable behavior changes, <code>toml_edit</code> is still on 0.17.1 which doesn't resolve the issue.</p>
+<blockquote>
+<p>Should I revert this?</p>
+</blockquote>
+<p>For now you can revert it to be more compliant with TOML 1.0. At least a new <code>toml_edit</code> release a required for #1894.</p>
+<p>Or we can just depends on <code>toml</code> main branch using git dependency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 02:25</div>
+            <div class="timeline-body"><p>Interesting, I did run through the example described in that issue and it seemed to work with the new crate. Is that unexpected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 05:00</div>
+            <div class="timeline-body"><p>@messense - It looks like v0.5.11 was mostly about deprecations in advance of the toml-edit migration. I am confused though why this now works:</p>
+<pre><code class="language-toml">[tool.hatch]
+version.source = &quot;vcs&quot;
+
+[tool.hatch.version.raw-options]
+local_scheme = &quot;no-local-version&quot;
+</code></pre>
+<p>So, I might leave it as-is for now? Is that bad? What did we lose by not supporting TOML 1.0?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2023-01-21 05:31</div>
+            <div class="timeline-body"><p>It still fails for me?</p>
+<pre><code>cargo run
+   Compiling toml-test v0.1.0 (/private/tmp/toml-test)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/toml-test`
+Err(
+    Error {
+        inner: ErrorInner {
+            kind: Custom,
+            line: Some(
+                5,
+            ),
+            col: 0,
+            at: Some(
+                55,
+            ),
+            message: &quot;duplicate key: `version`&quot;,
+            key: [
+                &quot;tool&quot;,
+                &quot;hatch&quot;,
+            ],
+        },
+    },
+)
+</code></pre>
+<p><strong>Cargo.toml</strong></p>
+<pre><code class="language-toml">[package]
+name = &quot;toml-test&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+toml = &quot;0.5.11&quot;
+</code></pre>
+<p><strong>src/main.rs</strong></p>
+<pre><code class="language-rust">fn main() {
+    let content = r#&quot;# pyproject.toml
+
+[tool.hatch]
+version.source = &quot;vcs&quot;
+
+[tool.hatch.version.raw-options]
+local_scheme = &quot;no-local-version&quot;&quot;#;
+    println!(&quot;{:#?}&quot;, toml::from_str::&lt;toml::Value&gt;(content));
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 05:55</div>
+            <div class="timeline-body"><p>Interesting, let me try again in the morning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 12:26</div>
+            <div class="timeline-body"><p>Yeah I can reproduce that, but interestingly, this works fine:</p>
+<pre><code class="language-rs">let content = r#&quot;# pyproject.toml
+
+[tool.hatch]
+version.source = &quot;vcs&quot;
+
+[tool.hatch.version.raw-options]
+local_scheme = &quot;no-local-version&quot;&quot;#;
+
+println!(&quot;{:#?}&quot;, toml::from_str::&lt;Pyproject&gt;(content));
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:11 UTC
+    </footer>
+</body>
+</html>

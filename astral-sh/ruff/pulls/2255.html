@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix SIM300 to take Python constants into account - astral-sh/ruff #2255</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix SIM300 to take Python constants into account</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2255">#2255</a>
+        opened by <a href="https://github.com/frenck">@frenck</a>
+        on 2023-01-27 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/frenck">@frenck</a> on 2023-01-27 14:40</div>
+            <div class="timeline-body"><p>SIM300 currently doesn't take Python constants into account when looking for Yoda conditions, this PR fixes that behavior.</p>
+<pre><code class="language-python"># Errors
+YODA == age  # SIM300
+YODA &gt; age  # SIM300
+YODA &gt;= age  # SIM300
+
+# OK
+age == YODA
+age &lt; YODA
+age &lt;= YODA
+</code></pre>
+<p>Ref: <a href="https://github.com/home-assistant/core/pull/86793">https://github.com/home-assistant/core/pull/86793</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epenet">@epenet</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:22 on 2023-01-27 15:07</div>
+            <div class="timeline-body"><p>Maybe add a test for two constants?
+<code>THIS == THAT</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epenet">@epenet</a> reviewed on 2023-01-27 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/frenck">@frenck</a> on <code>resources/test/fixtures/flake8_simplify/SIM300.py</code>:22 on 2023-01-27 15:13</div>
+            <div class="timeline-body"><p>Done in <a href="https://github.com/charliermarsh/ruff/pull/2255/commits/b348a133bd80d047aaebfca53ceae709a17b03b7">b348a13</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/frenck">@frenck</a> reviewed on 2023-01-27 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 15:43</div>
+            <div class="timeline-body"><p>Just to confirm: I think this is a deviation from <code>flake8-simplify</code>'s behavior, so we'd be knowingly extending the rule to some new cases -- is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frenck">@frenck</a> on 2023-01-27 15:49</div>
+            <div class="timeline-body"><p>I don't know, I've not used it, but seems like it. Is the goal to be bug-by-bug compatible with upstream?</p>
+<p>If that is the case, this rule would already be wrongly implemented, as the upstream comparison only supports equality (<code>==</code>):</p>
+<p><a href="https://github.com/MartinThoma/flake8-simplify/blob/d3cb9556a5255969f83a8329df8f635da41f595d/flake8_simplify/rules/ast_compare.py#L81">https://github.com/MartinThoma/flake8-simplify/blob/d3cb9556a5255969f83a8329df8f635da41f595d/flake8_simplify/rules/ast_compare.py#L81</a></p>
+<p>../Frenck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 15:52</div>
+            <div class="timeline-body"><p>Nope! We deviate from upstream in some cases. I just try to do so intentionally, so I want to know when we're making an opinionated change.</p>
+<p>Let me just run this over a few large codebases and see how it looks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-27 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 16:21</div>
+            <div class="timeline-body"><p>Ok cool -- this seems reasonable to me! (I pushed a tweak to extract to a separate helper, and use the <code>Expr</code> directly rather than the string pulled from the source code -- hope that's fine.)</p>
+<p>This'll go out tonight, probably, assuming there's enough stuff to justify a release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-27 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frenck">@frenck</a> on 2023-01-27 16:24</div>
+            <div class="timeline-body"><p>Sure thanks! 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 16:25</div>
+            <div class="timeline-body"><p>Thanks for contributing!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:15 UTC
+    </footer>
+</body>
+</html>

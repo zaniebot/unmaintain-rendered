@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[readme.md] Automated link to pylint documentation using pre-commit - astral-sh/ruff #2546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[readme.md] Automated link to pylint documentation using pre-commit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2546">#2546</a>
+        opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a>
+        on 2023-02-03 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-03 15:53</div>
+            <div class="timeline-body"><p>This permit to have a link to the pylint documentation explaining the message using a pre-commit hook. Result here: https://github.com/Pierre-Sassoulas/ruff/tree/automated-link-to-pylint-doc#pylint-pl</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> reviewed on 2023-02-03 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on <code>README.md</code>:1354 on 2023-02-03 15:59</div>
+            <div class="timeline-body"><p>The real name seems to be <code>consider-using-sys-exit</code>, there's other broken links, I'll fix them if the PR is deemed valuable. (Otherwise I can fix in another MR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-02-03 16:04</div>
+            <div class="timeline-body"><p>Not everyone uses <code>pre-commit</code> alas.
+So, you would need to integrate it inside <code>cargo dev generate-all</code> as it centralizes the code generation and the CI would check if the generated code is up to date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>README.md</code>:1354 on 2023-02-03 16:28</div>
+            <div class="timeline-body"><p>Okay cool -- we can safely rename these as they aren't part of the public API in any way yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-03 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 16:28</div>
+            <div class="timeline-body"><p>Thanks for getting involved :) Happy to incorporate this but it does likely need to be part of <code>generate-all</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-03 23:41</div>
+            <div class="timeline-body"><p>Any tip on how to make <a href="https://github.com/charliermarsh/ruff/blob/ff859ead852b24cf6b2473a798678ccf049943c4/ruff_dev/src/generate_rules_table.rs#L38"><code>rule.as_ref()</code></a> be a link only for pylint's rule ? I'm new to rust I don't see where the function needs to be modified, I think it's generic for all Rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-04 03:38</div>
+            <div class="timeline-body"><p>Couple of notes:</p>
+<ol>
+<li><p>We do not want to blindly rename our violations to match Pylint. As I said in #1773 we want instead want to follow the <a href="https://rust-lang.github.io/rfcs/0344-conventions-galore.html#lints">Rust naming convention for lints</a>:</p>
+<blockquote>
+<p>the lint name should make sense when read as &quot;allow lint-name&quot; or &quot;allow lint-name items&quot;</p>
+</blockquote>
+<p>So <code>use-sys-exit</code> should actually be called <code>use-of-exit-or-quit</code>.</p>
+<p>The documentation of pylint messages only appears to be linkable via the pylint symbolic name ... we do not currently track these ... I think that's very much a blocker for implementing this (unless pylint introduces some redirect endpoint that redirects from the pylint code to the respective documentation).</p>
+</li>
+<li><p>We certainly want to implement this in a way that also works for other linters.</p>
+</li>
+</ol>
+<blockquote>
+<p>Any tip on how to make <a href="https://github.com/charliermarsh/ruff/blob/ff859ead852b24cf6b2473a798678ccf049943c4/ruff_dev/src/generate_rules_table.rs#L38">rule.as_ref()</a> be a link only for pylint's rule ? I'm new to rust I don't see where the function needs to be modified, I think it's generic for all Rules.</p>
+</blockquote>
+<p><code>as_ref</code> is much more generic than that ... since it's an interface from <a href="https://doc.rust-lang.org/std/convert/trait.AsRef.html">the <code>AsRef</code> trait of the standard library</a>. In this case it just returns a <code>&amp;str</code>.</p>
+<p>I am afraid that this is not really a beginner friendly issue, if you're new to Rust, you'll probably have a better experience trying to do something from <a href="https://github.com/charliermarsh/ruff/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22">the issues labeled as <code>good first issue</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 03:44</div>
+            <div class="timeline-body"><p>For what it's worth: it's fine to rename the Pylint rules to match upstream for now. We do it for <em>most</em> of them, and that's the current <em>intent</em> for that rule set, so any that deviate are an error. We need to do a pass to rename all rules consistently anyway prior to making that a public API.</p>
+<p>In other words: as long as we aren't applying <code>&quot;allow lint-name&quot;</code> consistently across Ruff, then having Pylint rules be consistent with upstream is preferable to having them be inconsistent with upstream. So I'm fine committing those changes. (I won't be working on them personally, but I will certainly merge them.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-04 03:52</div>
+            <div class="timeline-body"><p>I'd rather avoid needlessly naming rules back and forth. Many of the pylint rules are implemented also by flake8 plugins so naming them after pylint is rather arbitrary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2023-02-04 08:02</div>
+            <div class="timeline-body"><p>Maybe we can:</p>
+<ul>
+<li>Add the links in post-process after the Readme is generated (?) If so I can more or less adapt the python script to rust</li>
+<li>Have a 1-n relationship between ruff messages and other linter's messages (in the future for pylint, as the renaming was merged in #2559). That would also be convenient outside of ruff's repository if it's a json or something that can be parsed to generate doc automatically here and elsewhere.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 02:40</div>
+            <div class="timeline-body"><p>Let's omit this for now. We now have the ability to write documentation inline (see: https://github.com/charliermarsh/ruff/issues/1467#issuecomment-1421613021), so we'll bring these over as first-class documentation in Ruff itself (see: https://github.com/charliermarsh/ruff/issues/2646).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-08 02:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:19 UTC
+    </footer>
+</body>
+</html>

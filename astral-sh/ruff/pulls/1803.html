@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyupgrade: Printf string formatting - astral-sh/ruff #1803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pyupgrade: Printf string formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1803">#1803</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-01-12 01:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-12 01:30</div>
+            <div class="timeline-body"><p>A part of #827. This one is complicated so it will take me some more time.</p>
+<p>Please Note: I purposely did NOT implement the <code>--keep-percent-format</code> flag because it looks like the last flag I added was removed. If you want this flag in, just let me know.</p>
+<p>Note: the issue of the /N{dog} format will plague us in UP030 and UP032. Whatever solution we find here needs to be applied in both of those places. Right now I am just thinking of looking for it, and if it exists, only showing a warning but not attempting top fix. I have NEVER seen this syntax in practice, and I think it is reasonable to give the people using it a warning, but don't fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 01:48</div>
+            <div class="timeline-body"><p>@charliermarsh I have hit a blocker and I would love some assistance. Pyupgrade uses the regex <a href="https://github.com/asottile/pyupgrade/blob/main/pyupgrade/_string_helpers.py#L9">&quot;(?&lt;!\)(?:\\)*(\N{[^}]+})&quot;</a> to get an outcome like below:
+<img width="504" alt="Screenshot 2023-01-13 at 8 41 24 PM" src="https://user-images.githubusercontent.com/72827203/212444866-ef183cd1-6d96-4702-a57e-0698d1159869.png"></p>
+<p>We cannot use this regex in rust, because the regex uses look behinds, which are <a href="https://stackoverflow.com/questions/61485063/is-there-alternative-regex-syntax-to-avoid-the-error-look-around-including-loo">not implemented in rust</a>. I tried taking the post's advice and reimplementing the regex without look behinds, &quot;<a href="?:">^\</a>*(\N{[^}]+})&quot;, but then the character before is included in the string, which causes the program to break:
+<img width="446" alt="Screenshot 2023-01-13 at 8 44 51 PM" src="https://user-images.githubusercontent.com/72827203/212445008-10a79e35-8ddc-4dd2-a4ae-ebe2625b7f67.png">
+<a href="https://stackoverflow.com/questions/3926451/how-to-match-but-not-capture-part-of-a-regex">This SO post</a> seems to indicate that there is NOT a way to accomplish what I am looking to do.</p>
+<p>After this I tried using the <code>fancy_regex</code> create; however, they <a href="https://github.com/fancy-regex/fancy-regex/issues/104">do not implement the <code>split</code> method</a> which is required. With this I am unsure of what to do next. We could check for my ugly regex, and just ignore those (or report them as issues but not fix them). But that really bothers the perfectionist in me. Let me know how you think we should handle this.</p>
+<p>If we do go the ignore/only report a check route I believe this is the regex we should use: &quot;(?:\\)*(\N{[^}]+})&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 03:25</div>
+            <div class="timeline-body"><p>Why do we need / why does the regex exist? Is it to avoid treating named unicode characters as <code>{}</code>-style formatting placeholders?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 03:33</div>
+            <div class="timeline-body"><p>I know its for statements like these: <code>&quot;%s \N{snowman}&quot; % (a,)</code>, because they are currently causing issues in my code. However, I am not sure the specific reason they are needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 19:39</div>
+            <div class="timeline-body"><p>It looks like it exists so that <code>&quot;%s \N{snowman}&quot; % (a,)</code> does not turn into <code>&quot;%s \N{{snowman}}&quot; % (a,)</code>. If this happens we get the following error in python:
+SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 3-14: unknown Unicode character name</p>
+<p>But we DO need to convert <code>&quot;brace {} %s&quot; % (1,)</code> =&gt; <code>&quot;brace {{}} {}&quot;.format(1)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 20:20</div>
+            <div class="timeline-body"><p>Is there a way that we could run the regex, extract the match, then run a <em>second</em> regex over the match to get a more precise range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 20:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way that we could run the regex, extract the match, then run a <em>second</em> regex over the match to get a more precise range?</p>
+</blockquote>
+<p>Right now the regex I have developed that is the closest is <code>&quot;[^\\](?:\\\\)*(\\N\{[^}]+\})&quot;</code>. It has two issues:</p>
+<ol>
+<li>It grabs one character before the match starts (this could in theory be fixed by your solution)</li>
+<li>It would never match: <code>\N{snowman}&quot; % (a,)</code> because there is no character before the strong (we can't make it optional because then it would lose all effect), I am not sure how to overcome this shortcoming</li>
+</ol>
+<p>Additionally, I am not sure if we could use this &quot;double regex&quot; with methods like <code>split</code>. I have been trying to think of other ways we could do this. I am sure we could do something with tokens, but not sure how we could turn this back into a string simply.</p>
+<p>Basically all we need to confirm is that there is an odd number of <code>\</code> before a <code>N{something}</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-14 22:03</div>
+            <div class="timeline-body"><p>Ok, let me take a closer look. Don't worry about resolving it for now. I have to spend some time with the code to understand the problem before I can offer good advice :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-14 22:06</div>
+            <div class="timeline-body"><p>Sounds good! I am working on the dict implementation, once I get that done this is solved besides the regex issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-15 21:01</div>
+            <div class="timeline-body"><p>@charliermarsh I am moving this out of draft now. This one was pretty complicated so I left as many notes as I could. Everything is working as I want it to besides the regex we discussed above. However, please note I departed from pyupgrade for two negative test cases (test cases where the linter should NOT run):</p>
+<pre><code>        # don't rewrite string-joins in dict literal
+        '&quot;%(ab)s&quot; % {&quot;a&quot; &quot;b&quot;: 1}',
+</code></pre>
+<p>Rustpython_ast automatically makes this string-join &quot;ab&quot;. This means that not linting here would take more logic on our end, and would end up being less helpful for the user. If you can think of an edge case where this is an issue, let me know and I can fix.</p>
+<pre><code>        # don't rewrite strangely styled things
+        '&quot;%(a)s&quot; % {&quot;a&quot;  :  1}',
+</code></pre>
+<p>The rust_python ast we are using doesnt have the spaces factored in, so they do not create issues. Fixing this one will require adding complicated logic, to decrease the user experience. As before, if you disagree just let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2023-01-15 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-15 21:37</div>
+            <div class="timeline-body"><p>Thanks. I know I owe you a review here! Hasn’t slipped my mind. Just trying to find time since it’s a big PR and requires focus :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-15 21:39</div>
+            <div class="timeline-body"><p>No worries! I figured it might be a day or two before you get this one! By far the most complicated one I have done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 00:55</div>
+            <div class="timeline-body"><p>(Reviewing now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 01:07</div>
+            <div class="timeline-body"><p>I haven't finished reviewing the code yet, but I notice this is failing on a few cases:</p>
+<pre><code class="language-diff">@@ -244,8 +244,8 @@ def run(
+     print(
+-        &quot;Writing merged info for %s slides (%s unrecognized)&quot;
+-        % (len(merged_slide_data), unrecognized_count)
++        &quot;Writing merged info for {%s unrecognized:&quot;}
++       .format(len(merged_slide_data), unrecognized_count)
+     )
+     merged_slide_data = sorted(
+         merged_slide_data, key=lambda row: cast(str, row[&quot;Slides_slide_barcode&quot;])
+</code></pre>
+<pre><code class="language-diff">     def composite_image(self, files: List[str]) -&gt; List[str]:
+         if len(files) != len(self.channels):
+             raise ValueError(
+-                &quot;Expected one image (got %d) per channel (got %d)&quot;
+-                % (len(files), len(self.channels))
++                &quot;Expected one image (got {got %d:&quot;}
++               .format(len(files), len(self.channels))
+             )
+
+         composited_image = None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Printf string formatting" to "Pyupgrade: Printf string formatting" by @colin99d on 2023-01-17 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 01:14</div>
+            <div class="timeline-body"><p>I see you are making changes. Let me know once you are done and I can attack issues you find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 01:16</div>
+            <div class="timeline-body"><p>I'll stop for now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 01:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I have NEVER seen this syntax in practice, and I think it is reasonable to give the people using it a warning, but don't fix.</p>
+</blockquote>
+<p>FWIW, that's fine with me for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 01:21</div>
+            <div class="timeline-body"><blockquote>
+<p>--keep-percent-format</p>
+</blockquote>
+<p>Yeah we don't need to implement these flags IIUC because that's just equivalent to <code>--ignore UP031</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/rules/pyupgrade/helpers.rs</code>:9 on 2023-01-17 02:02</div>
+            <div class="timeline-body"><p>It’s <code>\N{dog}</code>, not <code>/N{dog}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-17 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>src/rules/pyupgrade/helpers.rs</code>:9 on 2023-01-17 02:06</div>
+            <div class="timeline-body"><p>\N{facepalm}</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2023-01-17 02:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 02:13</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>Pyupgrade won't event attempt to fix these, time to find out why and get it fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 03:28</div>
+            <div class="timeline-body"><p>@charliermarsh, unfortunately I was not able to fix the two issues you found tonight. However, I was able to determine that <code>parse_percent_format</code> is the function that is causing the issue. I was also able to run the same strings through the actual pyupgrade library, to determine the structs that should have been generated. This allowed me to create two failing unit tests. I am hoping to get this issue fixed by Sunday night at the latest. Also, I am wondering why pyupgrade does not change the strings at all, because the statement does not seem to violate any rules laid out in their unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 04:18</div>
+            <div class="timeline-body"><p>@colin99d - My suggestion is to try and use <code>CFormatString</code> from RustPython instead of regular expressions. You can see how it works in the f-string PR. But e.g.:</p>
+<pre><code class="language-rs">let Ok(format_string) = CFormatString::from_str(&amp;left_string[1..left_string.len() - 1]) else {
+    return;
+};
+</code></pre>
+<p>This gives you structured data about the string that I <em>think</em> we can use to reconstruct it. And the parser will be very robust. I can also take a crack at this if you're too tired of this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 12:40</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>I have no problem doing it (always good to learn more tools for later PRs). Will try to have it done by this Sunday night.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:41</div>
+            <div class="timeline-body"><p>Ok cool, thank you -- as always, appreciate all the effort here! Let me know how it goes. I can't guarantee that it will work, since I haven't done the exercise myself, but I suspect it <em>should</em>, and would lead to a really strong solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok cool, thank you -- as always, appreciate all the effort here! Let me know how it goes. I can't guarantee that it will work, since I haven't done the exercise myself, but I suspect it <em>should</em>, and would lead to a really strong solution.</p>
+</blockquote>
+<p>No problem! Also, would love to chat on Discord or something about next steps after I get pyupgrade done in the next couple weeks. Right now I am thinking about attacking pylint because that takes the most time in our CI and in pre-commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:55</div>
+            <div class="timeline-body"><p>@colin99d - Sounds great. I did setup a Discord, but... I haven't shared it with anyone yet, so it's just me :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 12:57</div>
+            <div class="timeline-body"><blockquote>
+<p>@colin99d - Sounds great. I did setup a Discord, but... I haven't shared it with anyone yet, so it's just me 😂</p>
+</blockquote>
+<p>Awesome! Honestly a small private discord is probably the way to go, where you just invite people actively contributing. That way you dont get bots and spammers. Also, ruff should just work so once this tool is ready community members should not need a lot of support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 20:29</div>
+            <div class="timeline-body"><p>One thing I'm realizing, just to confirm my understanding, is that in many cases, these will actually be fixed yet again by the f-string rule, right?</p>
+<p>E.g. <code>'%s %s' % (a, b)</code> to <code>'{} {}'.format(a, b)</code> to <code>f'{a} {b}'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 20:41</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I'm realizing, just to confirm my understanding, is that in many cases, these will actually be fixed yet again by the f-string rule, right?</p>
+<p>E.g. <code>'%s %s' % (a, b)</code> to <code>'{} {}'.format(a, b)</code> to <code>f'{a} {b}'</code>.</p>
+</blockquote>
+<p>That is correct!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-18 01:35</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I'm realizing, just to confirm my understanding, is that in many cases, these will actually be fixed yet again by the f-string rule, right?</p>
+<p>E.g. <code>'%s %s' % (a, b)</code> to <code>'{} {}'.format(a, b)</code> to <code>f'{a} {b}'</code>.</p>
+</blockquote>
+<p>Also, the f-strings purposely ignores strings with format specifiers, so that UP030 can handle it first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-18 03:28</div>
+            <div class="timeline-body"><p>@charliermarsh, I began working on the conversion to CFormatQuantity. This definitely looks like it will be a better way to do things! So far I have one question, how do I convert CConversionFlags to a string? So far I have been digging in <a href="https://docs.rs/rustpython-common/0.2.0/rustpython_common/cformat/struct.CConversionFlags.html">here</a>, and I have not been able to come up with anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 03:41</div>
+            <div class="timeline-body"><p>Hmm, I think I'd look at the <a href="https://github.com/RustPython/RustPython/blob/59b191c789c891a500659d2c3b29a645883f780a/common/src/cformat.rs#L410">RustPython source</a> for those flags to understand how they're created, then implement the inverse? Does that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-18 16:40</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>Oh perfect, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-19 00:15</div>
+            <div class="timeline-body"><p>@charliermarsh, if you dont mind digging into this if you get some free time I think it might have some differences that are too big. For example, if the precision is just &quot;.&quot;, this library decides to <a href="https://github.com/RustPython/RustPython/blob/59b191c789c891a500659d2c3b29a645883f780a/common/src/cformat.rs#L147">make it 6</a>. This is different to python, which would round to 0 decimals if precision is just 0. If we decide this doesn't work we can go back to the old way of doing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 00:56</div>
+            <div class="timeline-body"><p>(Will try to take a look tonight.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:39</div>
+            <div class="timeline-body"><p>I've started poking at this but there's a lot to read :)</p>
+<p>Are there any other discrepancies beyond what you've described? (Would it make sense to fix those in RustPython, if they're actual CPython incompatibilities?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-19 22:40</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>There are a couple, yeah. Also, I would be interested in knowing why they chose 6. If you run the unit tests you can see them. We could attempt a PR there, or I could Just try to fix the one we have (using the function ported from pyupgrade)? Let me know what you want me to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 23:04</div>
+            <div class="timeline-body"><p>I think it's because of this?</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;%f&quot; % 2.12
+'2.120000'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:22</div>
+            <div class="timeline-body"><p>You are right, but the issue is they are treating the below code as a 6. This means if we get a 6 we dont know if it should be a 0 or a 6.
+<img width="248" alt="Screenshot 2023-01-19 at 7 21 48 PM" src="https://user-images.githubusercontent.com/72827203/213590975-e0826968-2a02-4928-ab9c-1411765c7141.png"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:24</div>
+            <div class="timeline-body"><p>Yeah that, I think, should be fixed. I'll look into fixing it as I review this. Are there other limitations though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:37</div>
+            <div class="timeline-body"><p>It looks like this and pyupgrade are disagreeing on another one. But I am not sure who is right. The pyupgrade tests is <a href="https://github.com/asottile/pyupgrade/blob/main/tests/features/percent_format_test.py#L23">here</a>. Pyupgrade wants to convert this into a statement, but rustpython doesn't. It looks like rustpython might be right though:</p>
+<pre><code>&gt;&gt;&gt; &quot;%%&quot; % 2.12
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: not all arguments converted during string formatting
+&gt;&gt;&gt; &quot;%%&quot; % &quot;hello&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: not all arguments converted during string formatting
+&gt;&gt;&gt;
+</code></pre>
+<p>This is the same error you get if you submit a string that definitely does not work:</p>
+<pre><code>&gt;&gt;&gt; &quot;hello&quot; % &quot;goodbye&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: not all arguments converted during string formatting
+&gt;&gt;&gt;
+</code></pre>
+<p>This is the only other limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:42</div>
+            <div class="timeline-body"><p>Yeah that seems ok. So if I go and fix the RustPython parse limitation, does this seem good to go from your perspective?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:47</div>
+            <div class="timeline-body"><p>I am getting a little more weird behavior, but for right now im guessing its on me. I will let you know by EOD today if this is the only issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:51</div>
+            <div class="timeline-body"><p>I guess a related issue is that with:</p>
+<pre><code>&quot;%f&quot; % 1
+</code></pre>
+<p>I think RustPython reports that as precision(6), so I'm not sure we can reconstruct it exactly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:53</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>Yes this issue is definitely on them, but there is some other stuff im seeing that is weird. This is good though. We get to help the whole rust/python ecosystem on this stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:54</div>
+            <div class="timeline-body"><p>Yeah, my preference is to use the parser if we can. I think it will be faster and more robust (and easier for us to maintain, reason about, etc.) than regular expressions. So I want to push us down that path unless we can find a reason that it's ~impossible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:54</div>
+            <div class="timeline-body"><p>I'll put together a PR to fix those limitations in RustPython now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 00:56</div>
+            <div class="timeline-body"><p>To be clear, though, I am impressed by your regex abilities!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>To be clear, though, I am impressed by your regex abilities!</p>
+</blockquote>
+<p>Haha, 2 weeks ago I would not have known that. Regex101, and a buddy I know who did them full time for a couple months got me a lot further along than I should be (and some are just copied from pyupgrade).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 00:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, my preference is to use the parser if we can. I think it will be faster and more robust (and easier for us to maintain, reason about, etc.) than regular expressions. So I want to push us down that path unless we can find a reason that it's ~impossible.</p>
+</blockquote>
+<p>Yes. I would much rather rewrite now than deal with 100 edge case bugs once the feature gets merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 01:33</div>
+            <div class="timeline-body"><p>https://github.com/RustPython/RustPython/pull/4463</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 01:36</div>
+            <div class="timeline-body"><p>BTW, I think pyupgrade handles <code>%.f</code> incorrectly, maybe?</p>
+<p>This code:</p>
+<pre><code class="language-py">x = 1
+y = 2
+z = 3
+
+print('%.2f %.f %f' % (x, y, z))
+</code></pre>
+<p>Gets changed to:</p>
+<pre><code class="language-py">x = 1
+y = 2
+z = 3
+
+print('{:.2f} {:.f} {:f}'.format(x, y, z))
+</code></pre>
+<p>Which yields:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/Users/crmarsh/workspace/ruff/foo.py&quot;, line 5, in &lt;module&gt;
+    print('{:.2f} {:.f} {:f}'.format(x, y, z))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Format specifier missing precision
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 01:49</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>Looks like you are right, maybe we keep the 6 as a default if they do not specify, OR we could just issue a warning but not fix. I like the first option a little more, but as always up to you.</p>
+<p>Edit: Actually I dont like the first one, it changes how people's code operates with no warning. Maybe we add a 0?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 01:50</div>
+            <div class="timeline-body"><p>@colin99d - Mind if I do a pass on this from the current state of the code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 01:50</div>
+            <div class="timeline-body"><blockquote>
+<p>@colin99d - Mind if I do a pass on this from the current state of the code?</p>
+</blockquote>
+<p>I have some bad code im fixing. Unit tests caught a new edge case. Let me finish and then she's all yours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 01:51</div>
+            <div class="timeline-body"><p>Okay thanks. Just LMK when it's ready. I'll point to the updated RustPython branch and get it into a finished state, hopefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 01:51</div>
+            <div class="timeline-body"><p>And yeah -- I think we map <code>%.f</code> to <code>{:.0f}</code>. Same with <code>%.s</code> to <code>{:.0}</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-20 02:27</div>
+            <div class="timeline-body"><p>@charliermarsh I am ready for you. Running <code>cargo test printf_string_formatting</code> currently results in two failures. Both are related to the precision issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 05:05</div>
+            <div class="timeline-body"><p>Working my way through this one, found at least one bug but I think it might be in our logic and not the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 02:24</div>
+            <div class="timeline-body"><p>@colin99d - Ok, I think this is passing all tests now. I can think of a few ways that it could be improved so I might iterate on it a bit more. (For example: it'd be nice if we could avoid transforms that create really long string format calls.) It's a really significant transform, so I want it to be rock-solid before it goes out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-21 02:27</div>
+            <div class="timeline-body"><blockquote>
+</blockquote>
+<p>One thing I did in another check, is that if the new string is longer I would not do the change. But sounds good! Thanks for helping me out on this. It was definitely a lot trickier than I thought it would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 02:31</div>
+            <div class="timeline-body"><p>I guess I'm also thinking about whether we should be fixing multi-line strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-21 02:35</div>
+            <div class="timeline-body"><p>I can see it either way. Pyupgrade did NOT fix the strings that you sent me earlier that broke.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 04:59</div>
+            <div class="timeline-body"><p>Alright, I'm gonna merge this as soon as https://github.com/RustPython/RustPython/pull/4463 is merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-21 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-21 14:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>more builtin name checks when autofixing - astral-sh/ruff #2430</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>more builtin name checks when autofixing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2430">#2430</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-01 00:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 00:27</div>
+            <div class="timeline-body"><p>Issue #2427</p>
+<p>on test is failing and I cannot explain it. Maybe <code>checker.is_builtin()</code> returns the wrong result here as it checks outside of the function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 04:35</div>
+            <div class="timeline-body"><p>Which test is failing? Can you link it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 09:31</div>
+            <div class="timeline-body"><p><a href="https://github.com/charliermarsh/ruff/actions/runs/4059664017/jobs/6987962479">the test link</a> probably won't help but the output of <code>cargo insta review</code></p>
+<pre><code>Reviewing [1/1] ruff@0.0.239:
+Snapshot file: src/rules/flake8_simplify/snapshots/ruff__rules__flake8_simplify__tests__SIM110_SIM110.py.snap
+Snapshot: rules__flake8_simplify__tests__SIM110_SIM110
+Source: src/rules/flake8_simplify/mod.rs:48
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: diagnostics
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   53    53 │     end_location:
+   54    54 │       row: 77
+   55    55 │       column: 20
+   56    56 │   parent: ~
+         57 │+- kind:
+         58 │+    ConvertLoopToAny:
+         59 │+      any: return any(check(x) for x in iterable)
+         60 │+  location:
+         61 │+    row: 124
+         62 │+    column: 4
+         63 │+  end_location:
+         64 │+    row: 126
+         65 │+    column: 23
+         66 │+  fix:
+         67 │+    content:
+         68 │+      - return any(check(x) for x in iterable)
+         69 │+    location:
+         70 │+      row: 124
+         71 │+      column: 4
+         72 │+    end_location:
+         73 │+      row: 127
+         74 │+      column: 16
+         75 │+  parent: ~
+
+</code></pre>
+<p>there is a diff for the snapshot which shouldn't be there because ruff should leave that code as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 12:47</div>
+            <div class="timeline-body"><p>Ah yeah this failure makes sense but it's a little complicated. It has to do with the way we iterate over the body for those <em>specific</em> rules. I'm going to adjust it, and then we can rebase this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-01 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-01 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: add ruff --statistics - astral-sh/ruff #2284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: add ruff --statistics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2284">#2284</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-28 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-28 01:08</div>
+            <div class="timeline-body"><p>Closes #1814.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:363 on 2023-01-28 01:17</div>
+            <div class="timeline-body"><p>can you help me here? I don't want to map every rule but only the <code>.first()</code> one but don't know how to get the first instance. <code>.first()</code> gives me only errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/printer.rs</code>:363 on 2023-01-28 01:19</div>
+            <div class="timeline-body"><p>I think you want something like:</p>
+<pre><code class="language-rust">let message: Option&lt;String&gt; = diagnostics.messages.iter().find(|message| message.kind.rule() == rule).map(|message| message.kind.body());
+if let Some(message) = message{
+  writeln!(...)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-28 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-28 01:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/printer.rs</code>:363 on 2023-01-28 01:33</div>
+            <div class="timeline-body"><p>Note that the <code>.map</code> in my version and your version are slightly different. In your version, you're <code>.map</code>-ing over an iterator, kind of like Python's <code>map()</code>. In my version, it's <code>map</code> on an <code>Option&lt;String&gt;</code>, which basically means: if the value is <code>None</code>, return <code>None</code>; if the value is <code>Some(String)</code>, run this function over <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 01:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:363 on 2023-01-28 01:59</div>
+            <div class="timeline-body"><p>i try to further refactor, so that we can generate also JSON output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:363 on 2023-01-28 02:18</div>
+            <div class="timeline-body"><p>@charliermarsh enhanced in 0d66a24bacbaec144351e5a9aba36483613cdc03 - what do you think?</p>
+<p>The JSON output is:</p>
+<pre><code>[
+  {
+    &quot;count&quot;: 3,
+    &quot;code&quot;: &quot;E101&quot;,
+    &quot;message&quot;: &quot;Indentation contains mixed spaces and tabs&quot;
+  },
+]
+</code></pre>
+<p>would you prefer?:</p>
+<pre><code>{
+  &quot;E101&quot;: {                                                                                                                                                                         
+      &quot;count&quot;: 3,                                                     
+      &quot;message&quot;: &quot;Indentation contains mixed spaces and tabs&quot;       
+   }, 
+}
+</code></pre>
+<p>and the output is just appended to the regular output. would one want to combine it in case of the JSON formatter? i am unsure how to handle this. there would be two different items in the list then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 02:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:388 on 2023-01-28 02:48</div>
+            <div class="timeline-body"><p>Shouldn't these rather <code>anyhow::bail!()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:398 on 2023-01-28 02:51</div>
+            <div class="timeline-body"><p>It would be nice to add a comment that this uses the same output format as <code>flake8 --statistics</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:388 on 2023-01-28 10:44</div>
+            <div class="timeline-body"><p>added that. can we handle that on argparsing level somehow as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:398 on 2023-01-28 10:45</div>
+            <div class="timeline-body"><p>added a comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 11:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:386 on 2023-01-28 11:29</div>
+            <div class="timeline-body"><p>It probably makes sense to mention which formats are supported in the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:398 on 2023-01-28 11:30</div>
+            <div class="timeline-body"><p>nit: it would be nice to specifically mention <code>flake8 --statistics</code> instead of just flake8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:398 on 2023-01-28 11:32</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:386 on 2023-01-28 11:32</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:388 on 2023-01-28 11:33</div>
+            <div class="timeline-body"><p>For a clean solution where we have a different enum we'd have to turn <code>statistics</code> into a subcommand ... I don't think we want to make it a top-level subcommand and a subsubcommand for the <code>checker</code> subcommand might be too confusing for the user.</p>
+<p>Otherwise we can probably somehow hook into clap's conflict system but we'd still have the same enum so I don't really see the point of that ... it's better if this is defined in the printer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-28 11:35</div>
+            <div class="timeline-body"><p>@charliermarsh some off topic questions:</p>
+<ul>
+<li>ruff is released once a day (if there were changes)? this is done automatically?</li>
+<li>who are the maintainers - only you or is there a team already?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>ruff_cli/src/printer.rs</code>:388 on 2023-01-28 11:43</div>
+            <div class="timeline-body"><p>the subcommand thing has been developed in the last days, right?
+so the regular <code>ruff</code> command should be <code>ruff check</code> in the future?
+i consider the additional output of statistics still as a option then.
+<code>ruff statistics</code> or <code>ruff check statistics</code> doesn't fit for my feeling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-01-28 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/printer.rs</code>:388 on 2023-01-28 11:48</div>
+            <div class="timeline-body"><p>Yes I agree since it makes sense to combine <code>--statistics</code> with most of the other options of the (implicit) <code>check</code> command it does make sense to keep it as an option :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-28 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 11:54</div>
+            <div class="timeline-body"><p>We don't have an auto-release setup. Ruff releases only happen when Charlie decides to make a release, see also https://github.com/charliermarsh/ruff/pull/2288#issuecomment-1407277090. Afaik Charlie is the only maintainer but he has been working on ruff full-time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 01:25</div>
+            <div class="timeline-body"><p>@spaceone - That's right -- I cut a release about once a day, but it's done manually by me. (Mostly just consists of bumping the version via commit, creating a release in GitHub, and ensuring that the GitHub Action does its job.)</p>
+<p>I'm working on Ruff full-time. But we have a lot of contributors who are doing heavy lifting :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 03:00</div>
+            <div class="timeline-body"><p>This looks good, and I'll merge it as-is. But am I crazy to think that with <code>--statistics</code>, we should just show the statistics, and not the individual error codes? I know Flake8 shows both, but I was surprised by it, and it makes it much harder to pipe into other Unix tools (e.g., to sort the table).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 03:01</div>
+            <div class="timeline-body"><p>(That would also resolve your question about the two JSON items.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-29 08:48</div>
+            <div class="timeline-body"><p>OK: I adjusted the branch to shows statistics only and not the individual errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-29 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-29 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-29 18:49</div>
+            <div class="timeline-body"><p>Will you update the Readme to mention the use of this option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 18:51</div>
+            <div class="timeline-body"><p>@JonathanPlasse - Yeah we should probably change the <code>--help</code> in the README to use <code>run check --help</code> instead. Would that resolve it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-29 19:36</div>
+            <div class="timeline-body"><p>I think so yes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:16 UTC
+    </footer>
+</body>
+</html>

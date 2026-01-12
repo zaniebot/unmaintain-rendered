@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Add isort option lines-after-imports - astral-sh/ruff #2440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Add isort option lines-after-imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2440">#2440</a>
+        opened by <a href="https://github.com/reidswan">@reidswan</a>
+        on 2023-02-01 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/reidswan">@reidswan</a> on 2023-02-01 14:03</div>
+            <div class="timeline-body"><p>Fixes https://github.com/charliermarsh/ruff/issues/2243</p>
+<p>Adds support for the isort option <a href="https://pycqa.github.io/isort/docs/configuration/options.html#lines-after-imports">lines_after_imports</a> to insert blank lines between imports and the follow up code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-01 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff.schema.json</code>:961 on 2023-02-01 17:53</div>
+            <div class="timeline-body"><p>I'm tempted to use <code>null</code> as the automatic determination value... But, I guess in that case, we wouldn't be able to tell the difference between a config using the default value and the config using the automatic value, in the event that we need to merge two configuration files (via <code>extend</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:54</div>
+            <div class="timeline-body"><p>This looks good! Just curious: what's the typical use-case here? E.g., what styling do you typically enforce with this setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 18:23</div>
+            <div class="timeline-body"><p>it separates the import lines from every following.
+e.g. with <code>lines-after-imports=2</code> you prevent <code>E302</code> from happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-01 19:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/organize_imports.rs</code>:92 on 2023-02-01 19:05</div>
+            <div class="timeline-body"><p>We respect the <code>0</code> here to avoid things like:</p>
+<pre><code class="language-py">if True:
+  import foo
+
+
+x = 1
+</code></pre>
+<p>That is: the extra newlines when an import comes at the end of a block. Is that correct? (Was wondering why the <code>if settings</code> condition wasn't first.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/organize_imports.rs</code>:92 on 2023-02-02 02:17</div>
+            <div class="timeline-body"><p>I think this isn't quite the right place for this. If I set <code>lines-after-imports</code> to 3, and run over <code>resources/test/fixtures/isort/lines_after_imports_class_after.py</code>, I get:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import Any
+
+from my_first_party import my_first_party_object
+from requests import Session
+
+from . import my_local_folder_object
+
+
+    self.name = name
+</code></pre>
+<p>I believe that <code>num_trailing_lines</code> here is meant to be the number of existing trailing lines, not the number of <em>desired</em> trailing lines.</p>
+<p>Instead, I believe this needs to go in <code>format_imports</code>, where we do this:</p>
+<pre><code class="language-rs">    match trailer {
+        None =&gt; {}
+        Some(Trailer::Sibling) =&gt; {
+            output.push_str(stylist.line_ending());
+        }
+        Some(Trailer::FunctionDef | Trailer::ClassDef) =&gt; {
+            output.push_str(stylist.line_ending());
+            output.push_str(stylist.line_ending());
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/organize_imports.rs</code>:92 on 2023-02-02 02:20</div>
+            <div class="timeline-body"><p>I'll change and merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-02 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-02 02:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:18 UTC
+    </footer>
+</body>
+</html>

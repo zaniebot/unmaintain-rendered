@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `config` subcommand - astral-sh/ruff #2775</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>config</code> subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2775">#2775</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-02-11 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-11 17:53</div>
+            <div class="timeline-body"><p>The synopsis is as follows.</p>
+<p>List all top-level config keys:</p>
+<pre><code>$ ruff config
+allowed-confusables
+builtins
+cache-dir
+... etc.</code></pre>
+<p>List all config keys in a specific section:</p>
+<pre><code>$ ruff config mccabe
+max-complexity</code></pre>
+<p>Describe a specific config option:</p>
+<pre><code>$ ruff config mccabe.max-complexity
+The maximum McCabe complexity to allow before triggering `C901` errors.
+
+Default value: 10
+Type: int
+Example usage:
+```toml
+# Flag errors (`C901`) whenever the complexity level exceeds 5.
+max-complexity = 5
+```</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/config.rs</code>:36 on 2023-02-11 20:01</div>
+            <div class="timeline-body"><p>Can we wrap the usage in backticks with a <code>toml</code> syntax annotation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-11 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>crates/ruff_cli/src/commands/config.rs</code>:36 on 2023-02-11 20:34</div>
+            <div class="timeline-body"><p>Sure ... added :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-11 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 00:39</div>
+            <div class="timeline-body"><p>Do you have any opinion (and should we have any opinion) on the settings vs. configuration vs. options terminology? They mean different things internally -- I'm not sure what makes most sense to communicate to users, but I feel like you're often able to articulate opinions on these kinds of questions :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 02:07</div>
+            <div class="timeline-body"><p>One reason I ask is that <code>ruff check --config /path/to/pyproject.toml</code> exists, and so in that context <code>--config</code> means the <code>pyproject.toml</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @not-my-profile on 2023-02-12 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-12 03:50</div>
+            <div class="timeline-body"><p>I think as far as users are / should be concerned settings, configuration and options all refer to the same thing ... but we should of course try to be consistent in our usage of these terms.</p>
+<p>Some compound nouns are generally more established, e.g:</p>
+<ul>
+<li>configuration file</li>
+<li>command-line option</li>
+</ul>
+<p>I think it makes sense for us to use these commonly-used terms. Note that I don't think that using all of these terms is a problem, e.g we may say:</p>
+<blockquote>
+<p>Your ruff settings consist of several options which can be defined either in <code>.toml</code> configuration files or provided via command-line options. You can have multiple configuration sources from which ruff computes your effective settings.</p>
+</blockquote>
+<p>So in that regard we'd use:</p>
+<ul>
+<li>&quot;option&quot; to refer to individual settings</li>
+<li>&quot;settings&quot; to refer to the effective configuration</li>
+</ul>
+<p>Regarding this new command, I think the case could be made that it should rather be named <code>option</code> since that would be more consistent with our existing <code>rule</code> and <code>linter</code> commands which are also nouns referring to singular entities. And I think indeed <code>option</code> would be a better name for the command as currently implemented in this PR ... however I think in the future the new command could additionally print which current values are defined in which <code>.toml</code> files ... in which case the command would do more than just describing the available options and <code>config</code> would be very apt because e.g. <code>git config user.name</code> prints your configured git username ... and <code>ruff config &lt;option&gt;</code> could do the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-02-12 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-12 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-12 04:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:22 UTC
+    </footer>
+</body>
+</html>

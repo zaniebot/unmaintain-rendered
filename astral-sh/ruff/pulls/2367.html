@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: ignore UP006 for Python &lt; 3.9 - astral-sh/ruff #2367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: ignore UP006 for Python &lt; 3.9</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2367">#2367</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-30 21:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 21:51</div>
+            <div class="timeline-body"><p>UP006 transforms <code>typing.Dict[str, str]</code> into <code>dict[str, str]</code> which is a <code>TypeError: 'type' object is not subscriptable</code> in Python &lt; 3.9: https://peps.python.org/pep-0585/</p>
+<p>The test should ignore it if the target version doesn't match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2023-01-30 22:00</div>
+            <div class="timeline-body"><p>The transformation is perfectly fine if</p>
+<pre><code class="language-python">from __future__ import annotations
+</code></pre>
+<p>is present. See https://peps.python.org/pep-0563/ which works with Python 3.7+.</p>
+<p>Edit: I should have been clearer. It works as a type annotation with Python 3.7+</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 22:11</div>
+            <div class="timeline-body"><blockquote>
+<p>The transformation is perfectly fine if</p>
+<pre><code class="language-python">from __future__ import annotations
+</code></pre>
+<p>is present. See https://peps.python.org/pep-0563/ which works with Python 3.7+.</p>
+</blockquote>
+<p>no:</p>
+<pre><code class="language-bash">$ cat foo.py
+from __future__ import annotations
+dict[str, str]
+$ python3 --version
+Python 3.7.3
+$ python3 foo.py
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 2, in &lt;module&gt;
+    dict[str, str]
+TypeError: 'type' object is not subscriptable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 22:18</div>
+            <div class="timeline-body"><p>We already guard against this in <code>src/checkers/ast.rs</code>, at the call-site for this function! Can you include a code snippet that's causing an error, along with your <code>pyproject.toml</code> and the command you ran?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 22:20</div>
+            <div class="timeline-body"><p>Like, if you have this file:</p>
+<pre><code class="language-py">import typing
+
+typing.Dict[str, str]
+</code></pre>
+<p>Ruff doesn't change this if you have:</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py37&quot;
+</code></pre>
+<p>We don't change it if you have <code>from __future__ import annotations</code> either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-30 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 22:49</div>
+            <div class="timeline-body"><p>hm, ok. function annotations are stored as strings:</p>
+<pre><code>$ cat foo.py
+#!/usr/bin/python3
+
+from __future__ import annotations
+from typing import List
+
+def bar() -&gt; List[foo]:
+    return []
+
+$ ruff --isolated --target-version py37 --select UP006 --fix - &lt; foo.py
+#!/usr/bin/python3
+
+from __future__ import annotations
+from typing import List
+
+def bar() -&gt; list[foo]:
+    return []
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @spaceone on 2023-01-30 22:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:17 UTC
+    </footer>
+</body>
+</html>

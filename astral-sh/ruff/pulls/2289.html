@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove conflicting D203 and D213 pydocstyle rules - astral-sh/ruff #2289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove conflicting D203 and D213 pydocstyle rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2289">#2289</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-01-28 03:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 03:48</div>
+            <div class="timeline-body"><p>These rules both have conflicting variants (<code>D203</code> conflicts with <code>D211</code>, and <code>D213</code> conflicts with <code>D212</code>). The most common error I see in Ruff is users hitting an infinite autofix iteration loop due to having pairs of these rules enabled (e.g., Ruff goes back-and-forth, adding and removing a newline between the docstring and the <code>class</code> definition, until you hit 100 iterations). We display a warning, but... it's just a bad experience, and it comes up way too often.</p>
+<p>These are the only two codes that are included in none of the built-in conventions, and it seems like <code>D203</code> was actually removed from PEP 257 anyway (at least according to <a href="https://opendev.org/openstack/keystoneauth/commit/cf520d9ca45dfbb09ca9bab90fa3d615bc950326">this</a>). I did some extensive searching via GitHub Code Search, and I can only ever find these codes referenced in <code>ignore</code> lists. My guess is that there isn't a single Ruff user that has these enabled, at least not intentionally.</p>
+<p>Here are some examples of this coming up:</p>
+<ul>
+<li>https://github.com/scipy/scipy/pull/17812#issuecomment-1406908750</li>
+<li>https://github.com/charliermarsh/ruff/issues/2281</li>
+<li>https://github.com/charliermarsh/ruff/issues/1974</li>
+<li>https://github.com/charliermarsh/ruff/issues/1575</li>
+</ul>
+<p>As an alternative, I considered:</p>
+<ol>
+<li>Set <code>convention = &quot;pep257&quot;</code> by default. This would have the effect of disabling the incompatible rules. But, it's a breaking change, and doesn't seem worth it to me.</li>
+<li>Force-disable those rules if they're both set via <code>D</code> or <code>ALL</code> (but not via <code>D203</code> or <code>D213</code>). That would work, but it adds complexity, and it strikes me as a waste of time.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 03:49</div>
+            <div class="timeline-body"><p>@not-my-profile - Do you have an opinion on the cleanest way to log a warning when the user has one of these codes in their <code>pyproject.toml</code> (but not throw a hard error)? They're in a lot of <code>ignore</code> lists, and I don't want it to cause a hard failure for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 04:13</div>
+            <div class="timeline-body"><p>Firstly I am confused that the PR &amp; commit title says &quot;Deprecate&quot; when it in fact removes those rules? I think deprecation is what you do before removal.^^</p>
+<blockquote>
+<p>Set <code>convention = &quot;pep257&quot;</code> by default.</p>
+</blockquote>
+<p>I think this would actually be a sensible change.</p>
+<blockquote>
+<p>But, it's a breaking change, and doesn't seem worth it to me.</p>
+</blockquote>
+<p>We could make it non-breaking by using the Rust <code>edition</code> trick I mentioned earlier.</p>
+<p>I think the bigger problem of course is that our default rule set (E &amp; F) doesn't include most of our rules but selecting <code>ALL</code> selects several rules that are just annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Deprecate conflicting D203 and D213 pydocstyle rules" to "Remove conflicting D203 and D213 pydocstyle rules" by @charliermarsh on 2023-01-28 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 04:18</div>
+            <div class="timeline-body"><p>Sorry, yeah, I just want to remove these.</p>
+<p>Honestly I'd rather just remove them than accommodate them in any form, to avoid confusion. But I'll sleep on it. Maybe I'm missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 04:19</div>
+            <div class="timeline-body"><p>So yes I think the big problem we should actually address is that we don't have a &quot;default ruleset&quot; that contains all rules that are generally desirable.</p>
+<p>I think this could be solved via <em>rule categorization</em> (#1774), by introducing a category &quot;experimental&quot; (like clippy's &quot;nursery&quot;) and categorizing all problematic rules as &quot;experimental&quot;/&quot;nursery&quot; and letting users simply select all other categories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 04:20</div>
+            <div class="timeline-body"><p>I agree, but I just want to fix this specific case ASAP since it keeps coming up. And even with categorization, we'd run into the problem posed by these specific, conflicting rules: <code>D212</code> and <code>D213</code> would fit into the same category, but would conflict!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 04:21</div>
+            <div class="timeline-body"><p>Maybe setting <code>convention = &quot;pep257&quot;</code> will in fact fix this for most people.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 04:21</div>
+            <div class="timeline-body"><p>The other thing we could do is remove these from <code>D</code> and <code>ALL</code>, so they have to be enabled explicitly, but that requires additional work somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 04:23</div>
+            <div class="timeline-body"><blockquote>
+<p>And even with categorization, we'd run into the problem posed by these specific, conflicting rules</p>
+</blockquote>
+<p>I don't really see this as a problem ... I'd say: If you enable experimental rules you're on you're own ... you accept the risk that these may lead to a bad user experience. We do not guarantee that experimental rules work well on their own or with any other rules (be they non-experimental or experimental).</p>
+<blockquote>
+<p>The other thing we could do is remove these from D and ALL, so they have to be enabled explicitly, but that requires additional work somewhere.</p>
+</blockquote>
+<p>Yes I think it would make sense to make prefix selectors &amp; <code>ALL</code> exclude experimental rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 04:26</div>
+            <div class="timeline-body"><p>But, are D203 and D213 really <em>experimental</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 04:35</div>
+            <div class="timeline-body"><p>The exact name of that category is of course subject to bikeshedding^^.</p>
+<p>Well D203 conflicts with <a href="https://peps.python.org/pep-0257/">PEP 257</a> ... so yes I think it should certainly not be part of the default ruff experience. And neither should be conflicting rules.</p>
+<p>Let's discuss some other examples:</p>
+<p>https://github.com/charliermarsh/ruff/blob/8c70247188e379acb52fe3d9aa2cb99139214c59/scripts/pyproject.toml#L6-L7</p>
+<p>I consider the current implementation of both of these rules annoying and don't think they should be part of the default ruff experience. Both comparisons with strings and <code>assert</code> statements are incredibly common in Python code and neither of these is generally considered to be an anti-pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-28 04:51</div>
+            <div class="timeline-body"><p>Since I think rule categories should be implemented in conjunction with more thorough rule documentation, and I'd like to implement the many-to-many mapping first, I'll quickly implement a &quot;nursery&quot; classification (inspired by clippy). I think &quot;nursery&quot; is a better term than experimental since it's less judgemental.</p>
+<p>Edit: opened #2292</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 15:10</div>
+            <div class="timeline-body"><p>We now disable these if incompatible pairs are enabled -- which is fine with me for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-01 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-01 15:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:16 UTC
+    </footer>
+</body>
+</html>

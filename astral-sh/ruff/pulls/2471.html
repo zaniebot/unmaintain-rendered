@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't walk past project root when figuring out exclusion - astral-sh/ruff #2471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't walk past project root when figuring out exclusion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2471">#2471</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-02-02 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2023-02-02 12:25</div>
+            <div class="timeline-body"><p>Refs https://github.com/charliermarsh/ruff/issues/2034</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/resolver.rs</code>:399 on 2023-02-02 13:36</div>
+            <div class="timeline-body"><p>I think something like this could work, but isn't this condition always true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/resolver.rs</code>:399 on 2023-02-02 13:38</div>
+            <div class="timeline-body"><p>I think we may want this, after the <code>match</code>:</p>
+<pre><code class="language-rust">        if path == settings.project_root {
+            // Bail out if we've walked past the project root
+            // (so excludes etc. are virtually &quot;rooted&quot; to the project).
+            break;
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-02-02 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>src/resolver.rs</code>:399 on 2023-02-02 14:36</div>
+            <div class="timeline-body"><p>Nope, it's not always true – <code>for path in path.ancestors() {</code> above :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/resolver.rs</code>:399 on 2023-02-02 16:13</div>
+            <div class="timeline-body"><p>Sorry, I wasn't being clear!</p>
+<p>I created a directory structure like this:</p>
+<pre><code class="language-console">build/
+  foo/
+    ruff.toml/
+    bop.py
+</code></pre>
+<p>Where <code>bop.py</code> contained one unused import.</p>
+<p>In this case, if I run <code>cargo run build/foo/bop.py --force-exclude</code> on this branch, <code>bop.py</code> is still excluded:</p>
+<pre><code class="language-console">❯ cargo run build/foo/bop.py --force-exclude
+Checking &quot;/Users/crmarsh/workspace/ruff/build/foo/bop.py&quot; against &quot;/Users/crmarsh/workspace/ruff/build/foo&quot;
+Checking &quot;/Users/crmarsh/workspace/ruff/build/foo&quot; against &quot;/Users/crmarsh/workspace/ruff/build/foo&quot;
+Checking &quot;/Users/crmarsh/workspace/ruff/build&quot; against &quot;/Users/crmarsh/workspace/ruff&quot;
+warning: No Python files found under the given path(s)
+</code></pre>
+<p>However, if I change this check to <code>path == &amp;settings.project_root</code>:</p>
+<pre><code class="language-console">❯ cargo run build/foo/bop.py --force-exclude -n
+Checking &quot;/Users/crmarsh/workspace/ruff/build/foo/bop.py&quot; against &quot;/Users/crmarsh/workspace/ruff/build/foo&quot;
+Checking &quot;/Users/crmarsh/workspace/ruff/build/foo&quot; against &quot;/Users/crmarsh/workspace/ruff/build/foo&quot;
+build/foo/bop.py:1:8: F401 `sys` imported but unused
+Found 1 error.
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>Perhaps I'm misunderstanding what we're trying to prevent though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @akx on 2023-02-02 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-02-03 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>src/resolver.rs</code>:399 on 2023-02-03 13:22</div>
+            <div class="timeline-body"><p>Yep, you're right :)</p>
+<p>Switched to this implementation + added a test that piggybacks on the existing directory structure...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @akx on 2023-02-03 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @akx on 2023-02-03 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-03 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:18 UTC
+    </footer>
+</body>
+</html>

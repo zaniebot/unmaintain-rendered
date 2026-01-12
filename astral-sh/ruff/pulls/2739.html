@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>autofix relative imports (TID252) - astral-sh/ruff #2739</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>autofix relative imports (TID252)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2739">#2739</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-02-10 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-10 20:22</div>
+            <div class="timeline-body"><p>autofix relative imports (TID252)</p>
+<p>I found it unintuitive that a high level relative import (e.g. <code>.........parent</code>) resolves to directories above the project. We could build in a protection against it. VS Code does not have such a protection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sbrugman on 2023-02-10 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs</code>:54 on 2023-02-10 22:30</div>
+            <div class="timeline-body"><p>Can we find a home for this in <code>ruff_python</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs</code>:33 on 2023-02-10 22:30</div>
+            <div class="timeline-body"><p>I think this should be a &quot;sometimes&quot; autofixable. You can grep for <code>Availability::Sometimes</code> to see examples of that pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-02-11 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-11 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-11 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gertvdijk">@gertvdijk</a> on 2023-02-11 14:59</div>
+            <div class="timeline-body"><p>Thanks for this addition. It seems not to work for me in a src-layout, though. Coming here from the item in the changelog...</p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.ruff]
+src = [&quot;src&quot;, &quot;tests&quot;]
+</code></pre>
+<pre><code class="language-console">$ tree src/
+src/
+├── purepythonmilter
+│   ├── api
+│   │   ├── application.py
+[...]
+│   ├── protocol
+│   │   ├── commands.py
+│   │   ├── definitions.py
+[...]
+</code></pre>
+<pre><code class="language-diff">$ ruff --diff src/purepythonmilter/api/application.py 
+--- src/purepythonmilter/api/application.py
++++ src/purepythonmilter/api/application.py
+@@ -10,9 +10,9 @@
+ from typing import TYPE_CHECKING, Any, ClassVar
+ 
+ import attrs
++from src.protocol import commands, definitions, responses
++from src.server import milterserver
+ 
+-from ..protocol import commands, definitions, responses
+-from ..server import milterserver
+ from . import interfaces, logger, models
+</code></pre>
+<p>I expected <code>s/src/packagename/</code> here. Plus, it does not detect it as a first-party module here, I think, as it puts it with the third-party import <code>attrs</code>.</p>
+<p>I would have expected it to change it into:</p>
+<pre><code class="language-diff">$ ruff --diff src/purepythonmilter/api/application.py 
+--- src/purepythonmilter/api/application.py
++++ src/purepythonmilter/api/application.py
+@@ -10,9 +10,9 @@
+ from typing import TYPE_CHECKING, Any, ClassVar
+ 
+ import attrs
+
++from purepythonmilter.protocol import commands, definitions, responses
++from purepythonmilter.server import milterserver 
+-from ..protocol import commands, definitions, responses
+-from ..server import milterserver
+ from . import interfaces, logger, models
+</code></pre>
+<p>Am I doing something wrong or is this an omission? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-11 15:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:22 UTC
+    </footer>
+</body>
+</html>

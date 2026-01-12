@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flake8-annotations: add ignore-fully-untyped - astral-sh/ruff #2128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>flake8-annotations: add ignore-fully-untyped</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2128">#2128</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-01-24 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2023-01-24 13:59</div>
+            <div class="timeline-body"><p>This PR adds a configuration option to inhibit ANN* violations for functions that have no other annotations either, for easier gradual typing of a large codebase (looking at you, Home Assistant 😁).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-24 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_to_ruff/converter.rs</code>:189 on 2023-01-24 14:23</div>
+            <div class="timeline-body"><p>Generally, we only need to add these if the source plugin defines them. But I don't <em>think</em> this option exists in <code>flake8-annotations</code>, does it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 14:25</div>
+            <div class="timeline-body"><p>Would functions to which this applies not trigger ANN100 et al for each untyped argument? What's the configuration that would make this useful? Suppressing ANN100 plus enabling this to allow fully untyped functions + require return types for any partially typed functions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-24 14:45</div>
+            <div class="timeline-body"><p>Replying to both comments here 😄</p>
+<blockquote>
+<p>Generally, we only need to add these if the source plugin defines them. But I don't <em>think</em> this option exists in <code>flake8-annotations</code>, does it?</p>
+</blockquote>
+<p>I don't think it does, that's right, but I feel this is an useful check to make ANN2* less blanket-y. See below...</p>
+<blockquote>
+<p>What's the configuration that would make this useful?</p>
+</blockquote>
+<p>I should have probably mentioned this in the PR proper, but this is meant as a replacement for <a href="https://github.com/home-assistant/core/blob/0530f61373395db83b016173399b06eb8337a39a/pylint/plugins/hass_constructor.py">this pylint plugin in Home Assistant</a>: ('<code>__init__</code> should have explicit return type &quot;None&quot;' – Used when <code>__init__</code> has all arguments typed but doesn't have return type declared).</p>
+<p>In particular, enabling ANN204 on Home Assistant's repo right now yields oodles (1108 in particular) of these warnings for files that haven't been fully strictly typed yet; this option makes that number, well, 1. 😂</p>
+<p>(The other (bad, cumbersome) option I see would be to allow setting <code>per-file-select</code> or similar, and configure it to align with https://github.com/home-assistant/core/blob/dev/.strict-typing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-24 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_to_ruff/converter.rs</code>:189 on 2023-01-24 14:47</div>
+            <div class="timeline-body"><p>Oh sorry, what I meant was: we only need to add this logic to flake8-to-ruff, if it exists in the original plugin. Since, otherwise, we'll never run into them in <code>.flake8</code> files!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>src/flake8_to_ruff/converter.rs</code>:189 on 2023-01-24 14:49</div>
+            <div class="timeline-body"><p>Ah, right, yeah 😄 I based this on <code>mypy_init_return</code> and looked for all the places that worked with it. I'll remove this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-01-24 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 14:58</div>
+            <div class="timeline-body"><p>Ah, okay, yeah, I see. That makes sense.</p>
+<p>(In practice, this would be coupled with disabling the ANN00-level rules, right? Again, just confirming my understanding.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-24 15:01</div>
+            <div class="timeline-body"><blockquote>
+<p>(In practice, this would be coupled with disabling the ANN00-level rules, right? Again, just confirming my understanding.)</p>
+</blockquote>
+<p>Yep, my idea is to enable just ANN204 with this configuration for now to emulate what the pylint plugin does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 23:46</div>
+            <div class="timeline-body"><p>I wonder if this should be made into a more general setting: if a definition doesn't have <em>any</em> types, suppress all <code>ANN</code> rules. That way, you wouldn't need to turn off the <code>ANN00*</code> rules. But they would get flagged if you had a return type, but not argument types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-27 15:53</div>
+            <div class="timeline-body"><p>@charliermarsh Yeah, that sounds good too. <code>tool.ruff.flake8-annotations.all-or-nothing = true</code>? 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 16:16</div>
+            <div class="timeline-body"><p><code>ignore-fully-untyped</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-29 01:22</div>
+            <div class="timeline-body"><p>(Just requesting changes to help me manage my queue, no rush.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "flake8-annotations: add allow_untyped_return_if_untyped" to "flake8-annotations: add allow-untyped-return-if-untyped & ignore-fully-untyped" by @akx on 2023-02-02 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @akx on 2023-02-02 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-02 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_annotations/rules.rs</code>:516 on 2023-02-02 12:59</div>
+            <div class="timeline-body"><p>I was hoping we could just have this setting, and not <code>allow_untyped_return_if_untyped</code> :joy: What's an example of where <code>allow_untyped_return_if_untyped</code> would be useful but you'd want <code>ignore_fully_untyped</code> to be kept false?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>src/rules/flake8_annotations/rules.rs</code>:516 on 2023-02-02 20:17</div>
+            <div class="timeline-body"><p>Ah yeah, you're right, <code>ignore_fully_untyped</code> alone should be enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-02-02 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "flake8-annotations: add allow-untyped-return-if-untyped & ignore-fully-untyped" to "flake8-annotations: add ignore-fully-untyped" by @akx on 2023-02-02 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @akx on 2023-02-02 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 21:27</div>
+            <div class="timeline-body"><p>Is this ready for review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @akx on 2023-02-07 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-02-07 15:36</div>
+            <div class="timeline-body"><p>@charliermarsh Yeah, sorry, it's ready for review now! 😄 I'm not sure why the mypy_init_return snapshot changed though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-02-07 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-02-07 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing</span> added by @charliermarsh on 2023-02-07 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:14 UTC
+    </footer>
+</body>
+</html>

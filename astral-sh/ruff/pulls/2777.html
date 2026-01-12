@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically linkify option references in rule documentation - astral-sh/ruff #2777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically linkify option references in rule documentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2777">#2777</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-02-11 19:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-11 19:01</div>
+            <div class="timeline-body"><p>Previously the rule documentation referenced configuration options
+via full https:// URLs, which was bad for several reasons:</p>
+<ul>
+<li>changing the website would mean you'd have to change all URLs</li>
+<li>the links didn't work when building mkdocs locally</li>
+<li>the URLs showed up in the <code>ruff rule</code> output</li>
+<li>broken references weren't detected by our CI</li>
+</ul>
+<p>This commit solves all of these problems by post-processing the
+Markdown, recognizing sections such as:</p>
+<pre><code>## Options
+
+* `flake8-tidy-imports.ban-relative-imports`</code></pre>
+<p><code>cargo dev generate-all</code> will automatically linkify such references
+and panic if the referenced option doesn't exist.
+Note that the option can also be linked in the other Markdown sections
+via e.g. [<code>flake8-tidy-imports.ban-relative-imports</code>] since
+the post-processing code generates a CommonMark link definition.</p>
+<p>Resolves #2766.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_dev/src/generate_docs.rs</code>:68 on 2023-02-11 19:17</div>
+            <div class="timeline-body"><p>Nit: Can we link to the mkdocs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-02-11 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-11 19:19</div>
+            <div class="timeline-body"><p>Elegant solution, love it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-12 05:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>crates/ruff_dev/src/generate_docs.rs</code>:68 on 2023-02-12 05:35</div>
+            <div class="timeline-body"><p>Sure :) Changed it to <code>../../settings#{anchor}</code> ... which <em>should</em> work ... I am not certain since I don't know how to build mkdocs locally, see #2802.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-02-12 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-12 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/rules/unused-variable.md</code>:37 on 2023-02-12 16:54</div>
+            <div class="timeline-body"><p>Should this be an absolute link to GitHub? What happens when the user runs <code>ruff rule ...</code>? Do we show the relative link?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-12 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>docs/rules/unused-variable.md</code>:37 on 2023-02-12 17:01</div>
+            <div class="timeline-body"><p>I initially linked these to the GitHub README but @sbrugman suggested to instead link the mkdocs page ... which I think makes sense, since it's weird if https://beta.ruff.rs/docs/ suddenly links you to the GitHub README.</p>
+<p>I guess the only problem is that if you now follow these links in the GitHub README these links are broken ... which could be fixed by having absolute links to https://beta.ruff.rs/docs/settings/ ... but I think it would actually be better to stop listing the rules and configuration options in the README and have them solely on the documentation website. I'd also remove the <code>docs/rules/*.md</code> files from the master branch and only generate them for <code>mkdocs</code> ... having to run <code>cargo dev generate-all</code> all the time is annoying ... but it's your call ... I can also just change it to an absolute ruff.rs URL for now.</p>
+<blockquote>
+<p>What happens when the user runs ruff rule ...? Do we show the relative link?</p>
+</blockquote>
+<p>This isn't part of the <code>ruff rule</code> output at all ... since it's only added by generate-docs for the <code>.md</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/rules/unused-variable.md</code>:37 on 2023-02-12 18:18</div>
+            <div class="timeline-body"><p>Ah right, this makes sense. Even if we leave the rules and configuration options in the README, we could just remove the checked-in versions and have the README links point to the versions in the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-12 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-12 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/rules/unused-variable.md</code>:37 on 2023-02-12 18:19</div>
+            <div class="timeline-body"><p>We can follow-up though if we want to do that -- this makes sense for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-12 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-12 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:22 UTC
+    </footer>
+</body>
+</html>

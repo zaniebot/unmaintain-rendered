@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always report parse errors back to the user - astral-sh/ruff #2505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Always report parse errors back to the user</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2505">#2505</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-02-03 00:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 00:02</div>
+            <div class="timeline-body"><h1>Summary</h1>
+<p>We treat parse errors as lint errors -- they have their own code (<code>E999</code>). If we fail to parse a file, we add an <code>E999</code> diagnostic, and move on. Parse errors <em>are</em> recoverable, as many checks don't rely on the AST (like <code>E501</code>, line-length enforcement) -- so even if the parse fails, we can still report some other diagnostics.</p>
+<p>However, here's a common and confusing workflow: say a user introduces (e.g.) a <code>match</code> statement into their code, then runs <code>ruff --select I /path/to/file.py</code>.  They'll then wonder why their imports aren't being sorted. We can't parse <code>match</code> statements, so under the hood, we're adding an <code>E999</code> to the diagnostic list, but it's being suppressed (since <code>E999</code> isn't in the <code>select</code>), so the user doesn't get any feedback.</p>
+<p>This PR modifies the linter to propagate parse errors. They're still included as <code>E999</code>, and we still try to find other violations; however, we <em>also</em> log a warning to the console <em>and</em> avoid doing any caching to the file (so the warning appears on every invocation).</p>
+<p>Here's an example.</p>
+<p>Given these code changes:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/216478374-07e43c4e-500e-4d46-acd0-32ddc29284fd.png" alt="Screen Shot 2023-02-02 at 7 01 54 PM" /></p>
+<p>We now yield:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/216478400-a01a1f98-e09f-42ca-b84b-b5b4871d6db5.png" alt="Screen Shot 2023-02-02 at 7 02 19 PM" /></p>
+<p>So it's a little redundant, between the warning and the <code>E999</code>, but I think it's much clearer.</p>
+<p>Closes #2473.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-03 00:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/linter.rs</code>:365 on 2023-02-03 00:05</div>
+            <div class="timeline-body"><p>Having access to the parse error here means that we can also catch errors that <em>we</em> introduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-03 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-03 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gertvdijk">@gertvdijk</a> on 2023-02-06 13:55</div>
+            <div class="timeline-body"><p>Hi! I've just upgraded to 0.0.241 from 0.0.240 and seeing this as <em>new</em> error in <code>--diff</code> mode. I just wanted to make sure that the following behaviour is as expected.</p>
+<ul>
+<li>0 exit status code (seems OK to me in <code>--diff</code> mode, but just looks odd in output with red <code>error</code>-prefixed lines.)</li>
+<li>There seems to be no way to silence this error - having code E999 separate from the syntax error. A little bit of a show-stopper to me.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 15:00</div>
+            <div class="timeline-body"><p>@gertvdijk - Hi! We could omit this warning if you run under <code>-q</code> (which already omits everything that <em>isn't</em> a lint error). Would that fix this for you?</p>
+<p>Curious though - what's the context in which you're running over code consistently that fails to parse?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gertvdijk">@gertvdijk</a> on 2023-02-06 22:36</div>
+            <div class="timeline-body"><blockquote>
+<p>@gertvdijk - Hi! We could omit this warning if you run under <code>-q</code> (which already omits everything that <em>isn't</em> a lint error). Would that fix this for you?</p>
+</blockquote>
+<p>Yes, I think I would like that, but I'm afraid that it also hides more/other/future problems. It produced errors in regular mode, but it allowed me start using Ruff in <code>--diff</code> mode, until 0.0.241. Ideally, I would like to see a way to silence the &quot;syntax error&quot; error. I am sure the Python interpreter with proper test coverage is more accurate than Ruff on that anyway.</p>
+<blockquote>
+<p>Curious though - what's the context in which you're running over code consistently that fails to parse?</p>
+</blockquote>
+<p>The infamous #282. 😐</p>
+<p><sup>I just released <a href="https://github.com/gertvdijk/purepythonmilter">a project</a> last weekend and this started to show suddenly when running the <a href="https://github.com/gertvdijk/purepythonmilter/blob/f06f004a6ed2162d66893732c8610e12323d5577/run-all-linters#L24-L31"><code>run-all-linters</code> script</a> also in diff-mode which used to be OK in 0.0.240.</sup></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-08 20:41</div>
+            <div class="timeline-body"><p>Interestingly this seemed to remove the ability for us to do <code>#noqa: E999</code> on match lines which we had as a working pattern before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 21:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Interestingly this seemed to remove the ability for us to do #noqa: E999 on match lines which we had as a working pattern before.</p>
+</blockquote>
+<p>The intent is that the behavior is totally unchanged, except that we also show you an <code>error</code> message in the console. If it's behaving at all differently, then it's a bug and I should fix it :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 21:06</div>
+            <div class="timeline-body"><p>I could add an <code>--ignore-parse-errors</code> flag to suppress these. I don't mind doing so, I just worry that it can lead to other confusing situations for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 21:07</div>
+            <div class="timeline-body"><p>The other option is that we could avoid omitting these if you add <code># noqa</code> to the top of the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 22:25</div>
+            <div class="timeline-body"><p>To summarize a few options -- and I'd love feedback:</p>
+<ol>
+<li>Add <code>--ignore-parse-errors</code> to <code>pyproject.toml</code> and the CLI to always suppress the extra warning message. (The downside here is that you're opting in to the confusing possibility of having a parse error hidden from you and thereby suppressing all other lint errors.)</li>
+<li>Avoid these messages when <code># noqa</code> is present at the top of the file. (But then you can't get any lint enforcement on those files. Maybe that's fine though.)</li>
+<li>Only show this message if <code>E999</code> is disabled. That way, you can continue to suppress it with a <code># noqa: E999</code> if you want, but we also avoid silently failing.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gertvdijk">@gertvdijk</a> on 2023-02-08 23:19</div>
+            <div class="timeline-body"><p>Thanks for the thoughts!</p>
+<p>I would vote for option 1, if it's not possible to silence it on a block-level (whole match/case block). If you see the chance of making it fail on the use of that flag if there are no parse errors, that would be great. It will then act as a notification that a future Ruff will understand the syntax. (Just like how mypy will complain if a typing-ignore is not needed (anymore).)</p>
+<p>Against option 2 for the given reason - it would silence half my project.</p>
+<p>Option 3 sounds confusing to me. I think I get both E999 and the syntax error on the match/case block. I would need a <code># noqa E999</code> on that and then I'm back at the error message I came here to complain about. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 23:22</div>
+            <div class="timeline-body"><p>(Sorry, for Option 3, I meant that we'd only show the error if the E999 code wasn't selected at all. So if you ran <code>ruff /path/to/file.py --select B</code>, and hit a syntax error, we'd show the warning. If you ran <code>ruff /path/to/file.py --select B --select E</code>, we wouldn't show the warning, even if gets suppressed by a <code>noqa</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-09 12:21</div>
+            <div class="timeline-body"><p>Oh yes, I was just confused by the error output when I'd already had the <code># noqa: E999</code> on the line, but didn't look closely at the exit code.</p>
+<p>I <em>think</em> I'd vote for a 4th option: don't show the parse errors if the line is decorated with E999 ignore, even if that error isn't selected.</p>
+<p>For clarity, my code is:</p>
+<pre><code>  62   │     if not settings:
+  63   │         settings = get_settings()
+  64   │     match settings.app_kind:  # noqa: E999
+  65   │         case AppKind.hypervisor:
+</code></pre>
+<p>And the output I get is</p>
+<pre><code>❯ poetry run ruff src; echo $?
+error: Failed to parse src/laminar/app.py: invalid syntax. Got unexpected token 'settings' at line 64 column 11
+0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-09 23:22</div>
+            <div class="timeline-body"><p>That's a nice idea. I went ahead and added it. So if you have this:</p>
+<pre><code class="language-py">x = 1
+
+y = 2
+
+
+match x:  # noqa: E999
+    1
+</code></pre>
+<p>We'll always suppress that parse error, regardless of whether <code>E999</code> is active for the current <code>ruff</code> invocation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:19 UTC
+    </footer>
+</body>
+</html>

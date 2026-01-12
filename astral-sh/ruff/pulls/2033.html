@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows compatibility - astral-sh/ruff #2033</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows compatibility</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2033">#2033</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-01-20 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-20 16:08</div>
+            <div class="timeline-body"><p>CI testing for Windows to prevent windows-specific issues in the future (https://github.com/charliermarsh/ruff/issues/2026,  https://github.com/charliermarsh/ruff/issues/1915, https://github.com/charliermarsh/ruff/issues/832)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 17:58</div>
+            <div class="timeline-body"><p>I feel like I'm missing something hah - how does <code>cargo test</code> pass on Windows if there are failing tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-20 18:10</div>
+            <div class="timeline-body"><p>Probably something with powershell not passing the exit code to github actions (https://github.com/actions/runner/issues/351). Will look into it on my Windows machine later.</p>
+<p>e.g. in this job https://github.com/charliermarsh/ruff/actions/runs/3969891762/jobs/6805182473:</p>
+<pre><code>failures:
+[1018](https://github.com/charliermarsh/ruff/actions/runs/3969891762/jobs/6805182473#step:7:1019)
+    source_code::generator::tests::indent
+[1019](https://github.com/charliermarsh/ruff/actions/runs/3969891762/jobs/6805182473#step:7:1020)
+    source_code::generator::tests::set_indent
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2023-01-21 01:35</div>
+            <div class="timeline-body"><p>Maybe just add <code>shell: bash</code> to that <code>run</code> step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sbrugman on 2023-01-22 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-23 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/assert_yaml_snapshot.rs</code>:6 on 2023-01-23 18:03</div>
+            <div class="timeline-body"><p>Probably the only possible way to make this work but also could be a source of false negatives, maybe? I dunno, it's kind of sending my brain in circles. Since we do try to do things like &quot;Even if on Windows, if the file seems to use CL newlines, then insert CL newlines&quot;.</p>
+<p>(I think Insta does something like this normalization for the snapshot files themselves... but the errors we're running into are in the stringified fixes <em>within</em> the snapshots, right? Just making sure I understand.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 18:04</div>
+            <div class="timeline-body"><p>(In the interest of clear communication: I'd love to get this working!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-23 18:30</div>
+            <div class="timeline-body"><p>@charliermarsh summary of the findings so far.</p>
+<p>Tests are failing on Windows for:</p>
+<ul>
+<li>hardcoded line separators in the fix content in the snap files</li>
+<li>paths that are rendered to string differently per platform</li>
+<li>bugs that only occur on windows (false positives and false negatives)</li>
+</ul>
+<p>The last category is impacting users (and has been solved).</p>
+<p><code>insta</code> does normalize line endings in the <code>yaml</code> files, however this does not apply to line endings within strings (e.g. fix content).
+The simplest fix at this moment is to use the <code>filter</code> method that insta provides to normalize <code>\r\n</code> when writing. This impairs our ability to distinguish files where the CRLFs are intentional. I'll try to solve that with https://insta.rs/docs/redactions/. I'd like to prevent needing a file per platform.</p>
+<p>When I'm done I'll rewrite the commit history and mark the PR as ready</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-23 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/assert_yaml_snapshot.rs</code>:6 on 2023-01-23 18:31</div>
+            <div class="timeline-body"><p>See comment below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ci: enable windows testing" to "Windows compatibility" by @sbrugman on 2023-01-24 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sbrugman on 2023-01-24 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-24 10:15</div>
+            <div class="timeline-body"><p>@charliermarsh Many files changed, but the actual changes are manageable (especially if you look per commit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 13:09</div>
+            <div class="timeline-body"><p>@sbrugman - Thank you! Heroic work. I'll try to review today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 00:04</div>
+            <div class="timeline-body"><p>@charliermarsh could we try to merge the windows compatibility before any more refactors like https://github.com/charliermarsh/ruff/pull/2138? Otherwise it's hitting a moving target</p>
+<p>Current errors on windows are caused by the new EXE features</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 00:32</div>
+            <div class="timeline-body"><p>Yeah will do. Don't want you to have to keep rebasing here. I'll review this tonight, and hopefully we can merge tomorrow or whenever's convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 00:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Current errors on windows are caused by the new EXE features.</p>
+</blockquote>
+<p>(Are those real failures?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/assert_yaml_snapshot.rs</code>:12 on 2023-01-25 00:45</div>
+            <div class="timeline-body"><p>For more readable output, we could <em>split</em> on newlines instead, yielding a list.</p>
+<pre><code class="language-suggestion">            insta::internals::Content::Seq(
+                value.as_str().unwrap().split(line_sep).map(|line| line.into()).collect()
+            )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-01-25 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-25 00:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/assert_yaml_snapshot.rs</code>:12 on 2023-01-25 00:50</div>
+            <div class="timeline-body"><p>Much better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/ci.yaml</code>:73 on 2023-01-25 01:41</div>
+            <div class="timeline-body"><p>Should these be removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/tests/integration_test.rs</code>:56 on 2023-01-25 01:42</div>
+            <div class="timeline-body"><p>For posterity: why does this fail on Windows? Can we add a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 01:42</div>
+            <div class="timeline-body"><p>(I'm reviewing this now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_comprehensions/snapshots/ruff__rules__flake8_comprehensions__tests__C400_C400.py.snap</code>:35 on 2023-01-25 01:47</div>
+            <div class="timeline-body"><p>This is a clever solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/add_required_imports.rs</code>:101 on 2023-01-25 01:53</div>
+            <div class="timeline-body"><p>Can we move this down to be just after <code>Locator</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/add_required_imports.rs</code>:164 on 2023-01-25 01:53</div>
+            <div class="timeline-body"><p>Same here. I'd like to group <code>Stylist</code> and <code>Locator</code> wherever we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/source_code/generator.rs</code>:1297 on 2023-01-25 01:55</div>
+            <div class="timeline-body"><p>Let's wrap this in a helper method? So its responsibilities are clear (via the method name) and the logic is self-contained.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/assert_yaml_snapshot.rs</code>:11 on 2023-01-25 02:28</div>
+            <div class="timeline-body"><p>What would happen if we used <code>.lines()</code> here instead? Apart from losing the trailing newline / empty line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/mod.rs</code>:745 on 2023-01-25 02:29</div>
+            <div class="timeline-body"><p>Nit: the code (<code>#</code> onwards) should be on the next line, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/mod.rs</code>:761 on 2023-01-25 02:30</div>
+            <div class="timeline-body"><p>Any idea how we could re-enable this? What would it take? (This did catch an error once.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/assert_yaml_snapshot.rs</code>:11 on 2023-01-25 02:32</div>
+            <div class="timeline-body"><p>Dumb question: is this redaction applied to both the snapshot file (loaded from disk) and the generated value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-25 02:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 02:33</div>
+            <div class="timeline-body"><p>Looks great! Couple questions in the review. I have no doubt that this will catch a ton of issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 04:52</div>
+            <div class="timeline-body"><p>(I'll prioritize merging this as soon as the review is addressed, and try to avoid merging any conflicting changes in the interim!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-25 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>.github/workflows/ci.yaml</code>:73 on 2023-01-25 09:04</div>
+            <div class="timeline-body"><p>Yes. I left it intentionally before to emphasise that git is automatically changing the line endings which, together with the line ending detection, is causing the isort test to fail (but without it many other tests do not work).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-25 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/rules/isort/rules/add_required_imports.rs</code>:101 on 2023-01-25 09:07</div>
+            <div class="timeline-body"><p>✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-25 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/assert_yaml_snapshot.rs</code>:11 on 2023-01-25 09:12</div>
+            <div class="timeline-body"><p>To start with the second question: the test output is 'redacted' before being compared with the static snapshot file. The snapshot file does not change, so should be platform independent (or in some cases we need different tests when the behaviours are different per platform, such as with EXE).</p>
+<p><code>.lines()</code> seems to split on both <code>\r\n</code> and <code>\n</code>. This would mean that if a rule outputs the wrong line ending, say <code>\r\n</code> on Ubuntu, then <code>.lines()</code> would recognize that as line ending and test would pass. With the current setup, the <code>\r</code> character is different between the test output and the snapshot file and the test would fail correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-25 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/rules/isort/mod.rs</code>:761 on 2023-01-25 09:16</div>
+            <div class="timeline-body"><p>The test does pass locally. The issue is that when we checkout the repository, git reformats the line endings of the test files. This is expected and required for most tests, but in the case of <code>line_endings_crlf.py</code> and <code>line_endings_lf.py</code>, git should not touch them.</p>
+<p>A workaround would be to not store these two files in a python file but as a testing string in the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 16:47</div>
+            <div class="timeline-body"><p>@sbrugman - What's the current state of this PR? Is it mergeable? I notice that you've been tweaking the EXE tests a bit, but it seems that the changes are now causing different CI failures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 17:16</div>
+            <div class="timeline-body"><p>@charliermarsh Something is going wrong with selecting the right snap files per platform, I believe.
+I don't have the time to work on it today. Perhaps we can ignore these tests on Windows for now (with <code>cfg</code>), then merge and then review it later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 17:17</div>
+            <div class="timeline-body"><p>Yeah that's fine. Do you mind if I debug a bit, push to this PR, then squash and merge?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 17:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah that's fine. Do you mind if I debug a bit, push to this PR, then squash and merge?</p>
+</blockquote>
+<p>Perfect 🙏 ! Thank you
+(perhaps good to keep the mechanical changes somewhat in separate commits from the rest)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 17:56</div>
+            <div class="timeline-body"><p>Okay thanks! I'll try to get this merged today then. And I'll look to preserve a few separate commits, but I may squash some of the intermediary commits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 20:37</div>
+            <div class="timeline-body"><p>@sbrugman - I was thinking of squashing this down into a few commits, by squashing all the &quot;core&quot; and &quot;fix&quot; commits, so that we have that first commit, then all the &quot;refactor&quot; commits. Is that ok?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 21:21</div>
+            <div class="timeline-body"><blockquote>
+<p>@sbrugman - I was thinking of squashing this down into a few commits, by squashing all the &quot;core&quot; and &quot;fix&quot; commits, so that we have that first commit, then all the &quot;refactor&quot; commits. Is that ok?</p>
+</blockquote>
+<p>Sounds good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 22:19</div>
+            <div class="timeline-body"><p>(I'll merge this tonight, I'm just waiting for the v0.0.234 release to publish.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 22:19</div>
+            <div class="timeline-body"><p>@charliermarsh I could rebase and squash now if there are no more tweaks from your side (got 30 mins or so)
+(Your time and consideration are much appreciated)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 22:23</div>
+            <div class="timeline-body"><p>Go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 22:24</div>
+            <div class="timeline-body"><p>After this merges, I'll look into re-enabling those disabled tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-25 22:55</div>
+            <div class="timeline-body"><p>@charliermarsh These 6 commits seem meaningfully distinct to me. The prefix <code>feat</code> is typically the only one that shows up in the changelog. The fixes grouped by issue may be helpful as reference if other contributors run into issues with the windows tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-25 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-25 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 23:00</div>
+            <div class="timeline-body"><p>Awesome. Thank you @sbrugman! This is great for Ruff, I know it was a lot of work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-25 23:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`]: continue-in-finally - astral-sh/ruff #2618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2618">#2618</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-02-07 02:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-07 02:29</div>
+            <div class="timeline-body"><p>Ref: #970</p>
+<p>Charlie, one thing I could use help with. I would like the error line to be the line where continue is, and not the first line of the finalbody. I tried using the start of the token, but that results in incorrect values. Any advice? The lint still works if not, just might not highlight the line the user actually needs to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/continue_in_finally.rs</code>:31 on 2023-02-07 02:33</div>
+            <div class="timeline-body"><p>I think the way to get the right location would be to use <code>lexer::make_tokenizer_located(contents, range.location)</code>, and then use the <code>start</code> and <code>end</code> of <code>(start, tok, end</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-07 02:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-07 02:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/continue_in_finally.rs</code>:31 on 2023-02-07 02:34</div>
+            <div class="timeline-body"><p>That being said: I think we should instead do this with a visitor and the AST, rather than re-tokenzing. Take a look at how <code>ReturnStatementVisitor</code> works. We should try to find a <code>StmtKind::Continue</code> in <code>finalbody</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "['pylint']: continue-in-finally" to "[`pylint`]: continue-in-finally" by @colin99d on 2023-02-07 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @colin99d on 2023-02-07 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2023-02-08 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>crates/ruff/src/rules/pylint/rules/continue_in_finally.rs</code>:31 on 2023-02-08 00:12</div>
+            <div class="timeline-body"><p>I got this solution implemented!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-08 22:25</div>
+            <div class="timeline-body"><p>Out of interest, this rule is only really applicable to Python &lt; 3.8.</p>
+<p>See <a href="https://docs.python.org/dev/whatsnew/3.8.html#other-language-changes">here</a> which has:</p>
+<blockquote>
+<ul>
+<li>A <a href="https://docs.python.org/dev/reference/simple_stmts.html#continue">continue</a> statement was illegal in the <a href="https://docs.python.org/dev/reference/compound_stmts.html#finally">finally</a> clause due to a problem with the implementation. In Python 3.8 this restriction was lifted. (Contributed by Serhiy Storchaka in <a href="https://bugs.python.org/issue?@action=redirect&amp;bpo=32489">bpo-32489</a>.)</li>
+</ul>
+</blockquote>
+<p>With Python 3.7 reaching end-of-life June 2023, this is almost not worth implementing. But if we do it should be restricted to Python &lt; 3.8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 22:26</div>
+            <div class="timeline-body"><p>I should've noticed this earlier, but is this the same as <code>B012</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-08 22:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I should've noticed this earlier, but is this the same as <code>B012</code>?</p>
+</blockquote>
+<p>Not really, no. The reasons are different.</p>
+<p>For <code>flake8-bugbear</code> we have:</p>
+<blockquote>
+<p><strong>B012:</strong> Use of <code>break</code>, <code>continue</code> or <code>return</code> inside <code>finally</code> blocks will silence exceptions or override return values from the <code>try</code> or <code>except</code> blocks. To silence an exception, do it explicitly in the <code>except</code> block. To properly use a <code>break</code>, <code>continue</code> or <code>return</code> refactor your code so these statements are not in the <code>finally</code> block.</p>
+</blockquote>
+<p>For <code>pylint</code> we have:</p>
+<blockquote>
+<p>Emitted when the <code>continue</code> keyword is found inside a <code>finally</code> clause, which is a <code>SyntaxError</code>.</p>
+</blockquote>
+<p>So it's just about whether it's worth supporting this rule for the next ~5 months as per <a href="https://github.com/charliermarsh/ruff/pull/2618#issuecomment-1423320025">my comment</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2023-02-08 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-09 00:00</div>
+            <div class="timeline-body"><p>@charliermarsh let me know if you want me to add a pyversion38 checker? Also if you want to close it, that is totally fine as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-09 00:20</div>
+            <div class="timeline-body"><p>Lets nix for now just because it's confusingly similar to the other rule, even if it exists for a separate reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-09 00:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:20 UTC
+    </footer>
+</body>
+</html>

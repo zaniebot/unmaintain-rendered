@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: pylint `PLE0604` and `PLE0605` - astral-sh/ruff #2241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: pylint <code>PLE0604</code> and <code>PLE0605</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2241">#2241</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-01-26 23:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-26 23:54</div>
+            <div class="timeline-body"><p>Tracking issue: https://github.com/charliermarsh/ruff/issues/970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 00:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/operations.rs</code>:17 on 2023-01-27 00:24</div>
+            <div class="timeline-body"><p>My gut reaction is that this operation is fast (and rare) enough that I'd rather split this into three separate functions. What do you think?</p>
+<p>I was going to suggest making this <code>-&gt; Result&lt;Vec&lt;String&gt;, CustomError&gt;</code>, and having the error states captured by <code>CustomError</code>. But it looks like the errors aren't mutually exclusive (both can occur at once), and that even if it &quot;errors&quot;, we still want to return the names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-27 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/ast/operations.rs</code>:17 on 2023-01-27 08:40</div>
+            <div class="timeline-body"><p><code>extract_all_names</code> extracts the names where it can, and ignores other cases (such as when the type of <code>_all__</code> is not a list of tuple. Keeping track on if it has encountered any value to ignore is arguably nog out of its scope of complicating its logic (it should not  be tied to PLE directly, this responsibility is in <code>ast.rs</code>.</p>
+<p><code>Result&lt;Vec&lt;str&gt;, ..&gt;</code> wouldn't work, as both the return value and this state are used. We could also group the bools into a state struct and return it in a tuple.</p>
+<p>Splitting up the functions is also an option. Currently this is the only place where we go through the values in <code>__all__</code>. I do not think they would be distinct enough to have code repetiton. On the other hand, the logic for checking might evolve and that should not happen in <code>operarions.rs</code> (could be concern for later).</p>
+<p>What do you think is the best way to proceed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/operations.rs</code>:17 on 2023-01-27 12:46</div>
+            <div class="timeline-body"><p>Yeah, totally understand. I was suggesting that we split up the function. I hadn't gone through the exercise, so I wasn't sure how much code would be duplicated, but sometimes in those cases, I just prefer to write-it-twice.</p>
+<p>Maybe instead of returning two booleans, we return a <code>bitflags</code> flag, so that the responsibilities are clearer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 12:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-01-27 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>src/ast/operations.rs</code>:17 on 2023-01-27 14:47</div>
+            <div class="timeline-body"><p>Thanks. Refactored using bitflags. The responsibilities are now much clearer, do you agree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/operations.rs</code>:17 on 2023-01-27 15:46</div>
+            <div class="timeline-body"><p>Awesome, thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-27 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-27 16:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Implement TRY201 - astral-sh/ruff #2073</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Implement TRY201</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2073">#2073</a>
+        opened by <a href="https://github.com/alonme">@alonme</a>
+        on 2023-01-21 22:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alonme">@alonme</a> on 2023-01-21 22:11</div>
+            <div class="timeline-body"><p>I'm new to rust - so i hope this looks good enough.</p>
+<p>Would love any feedback</p>
+<p>See: #2056</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 22:23</div>
+            <div class="timeline-body"><p>Awesome, will take a look in a sec. Thanks for getting involved!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:16 on 2023-01-21 22:25</div>
+            <div class="timeline-body"><p>Nit: we prefer to use backticks around raise, like:</p>
+<pre><code>Use `raise` ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:27 on 2023-01-21 22:53</div>
+            <div class="timeline-body"><p>I think we need to walk the tree recursively here. As-is, we'll miss this case:</p>
+<pre><code class="language-py">def bad():
+    try:
+        process()
+    except MyException as e:
+        logger.exception(&quot;process failed&quot;)
+        if True:
+            raise e
+</code></pre>
+<p>Since <code>stmt</code> here would be the <code>StmtKind::If</code>. We have to go one level further.</p>
+<p>Here's how I'd recommend doing it...</p>
+<p>If you look in <code>src/rules/flake8_annotations/rules.rs</code>, we have a struct called <code>ReturnStatementVisitor</code>. It just iterates over a bunch of statements recursively and collects all the <code>StmtKind::Return</code> statements. Here, we can add a <code>RaiseStatementVisitor</code> that does the same thing. Then you can iterate over the raises, and keep the logic below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:33 on 2023-01-21 22:54</div>
+            <div class="timeline-body"><p>I think the cast here is unnecessary -- you should be able to do this directly:</p>
+<pre><code class="language-diff">diff --git a/src/rules/tryceratops/rules/verbose_raise.rs b/src/rules/tryceratops/rules/verbose_raise.rs
+index 84e1de38..9bd4ada0 100644
+--- a/src/rules/tryceratops/rules/verbose_raise.rs
++++ b/src/rules/tryceratops/rules/verbose_raise.rs
+@@ -26,11 +26,9 @@ pub fn verbose_raise(checker: &amp;mut Checker, handlers: &amp;[Excepthandler]) {
+             // look for `raise` statements in the body
+             for stmt in body {
+                 if let StmtKind::Raise {
+-                    exc: Some(box_expr),
+-                    ..
++                    exc: Some(expr), ..
+                 } = &amp;stmt.node
+                 {
+-                    let expr: &amp;Located&lt;ExprKind&gt; = box_expr;
+                     // if the the raised object is a name - check if its the same name that was
+                     // assigned to the exception
+                     if let ExprKind::Name { id, .. } = &amp;expr.node {
+</code></pre>
+<p>That compiles for me without an error. Rust handles the dereferences for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:40 on 2023-01-21 22:55</div>
+            <div class="timeline-body"><p>It looks like the original plugin uses <code>Range::from_located(stmt)</code> (the location of the <code>raise</code>). Not sure which is better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-21 22:55</div>
+            <div class="timeline-body"><p>Awesome! Some feedback, let me know if any of it is unclear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alonme">@alonme</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:40 on 2023-01-22 06:04</div>
+            <div class="timeline-body"><p>I think the fix here is to delete the name, so pointing to the name makes more sense to me,
+but both are probably good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alonme">@alonme</a> reviewed on 2023-01-22 06:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alonme">@alonme</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:27 on 2023-01-22 06:11</div>
+            <div class="timeline-body"><p>Cool!</p>
+<p>any chance that we are missing <code>ClassDef</code> there?
+https://github.com/charliermarsh/ruff/blob/main/src/rules/flake8_annotations/rules.rs#L26</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alonme">@alonme</a> reviewed on 2023-01-22 06:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:27 on 2023-01-22 17:55</div>
+            <div class="timeline-body"><p>I think we could add <code>ClassDef</code> there. However it's probably just an optimization in practice... If a <code>return</code> is inside a <code>ClassDef</code>, but <em>not</em> inside a <code>method</code>, you get a syntax error anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:40 on 2023-01-22 17:59</div>
+            <div class="timeline-body"><p>Yeah that's fine with me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alonme">@alonme</a> reviewed on 2023-01-22 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alonme">@alonme</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:27 on 2023-01-22 21:21</div>
+            <div class="timeline-body"><p>yea makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @alonme on 2023-01-22 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alonme">@alonme</a> on 2023-01-22 21:43</div>
+            <div class="timeline-body"><p>@charliermarsh  - should be good now,
+Thanks for the tips!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:46</div>
+            <div class="timeline-body"><p>This will end up raising twice for this case:</p>
+<pre><code class="language-py">try:
+    1/0
+except ZeroDivisionError as e:
+    try:
+        foo
+    except Exception as e:
+        raise e
+</code></pre>
+<p>But it looks like the original plugin does that too, so, oh well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:46</div>
+            <div class="timeline-body"><p>It'll also raise here, but, that's fine:</p>
+<pre><code class="language-py">try:
+    1/0
+except ZeroDivisionError as e:
+    e = 1
+    raise e
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alonme">@alonme</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:48</div>
+            <div class="timeline-body"><p>yes, i didn't like the fact that the second one raises, but the original didn't handle shadowing of the name, so i guess that is ok.</p>
+<p>is there anything where something like that is handled in ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alonme">@alonme</a> reviewed on 2023-01-22 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:48</div>
+            <div class="timeline-body"><p>It's possible for us to handle these cases correctly by making this rule run on <code>Raise</code> statements rather than over <code>&amp;[Excepthandler]</code>... We could see if the raise references a name, then do <code>checker.find_binding(name)</code>, and check if that binding comes from an except handler. It's a bit more involved, but it'd be more robust and probably a bit faster. If you're interested in trying that, cool! If not, we can still merge with this structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alonme">@alonme</a> reviewed on 2023-01-22 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alonme">@alonme</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:50</div>
+            <div class="timeline-body"><p>hmm sounds interesting,
+I wouldn't be able to try that today - but i would like to try,
+so up to you, if you want to merge this and i will get to improving it later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-22 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/tryceratops/rules/verbose_raise.rs</code>:34 on 2023-01-22 21:54</div>
+            <div class="timeline-body"><p>Yeah that's fine too. We can merge as-is, especially since (AFAICT) it has parity with the existing plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-22 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-22 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:12 UTC
+    </footer>
+</body>
+</html>

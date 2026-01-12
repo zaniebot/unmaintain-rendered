@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement bandit's 'hardcoded-sql-expressions' S608 - astral-sh/ruff #2698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement bandit's 'hardcoded-sql-expressions' S608</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2698">#2698</a>
+        opened by <a href="https://github.com/mattoberle">@mattoberle</a>
+        on 2023-02-09 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mattoberle">@mattoberle</a> on 2023-02-09 23:40</div>
+            <div class="timeline-body"><p>This is an attempt to implement <code>bandit</code> rule <code>B608</code> (renamed here <code>S608</code>).</p>
+<ul>
+<li>https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html</li>
+</ul>
+<p>The rule inspects strings constructed via <code>+</code>, <code>%</code>, <code>.format</code>, and <code>f&quot;&quot;</code>.</p>
+<ul>
+<li><code>+</code> and <code>%</code> via <code>BinOp</code></li>
+<li><code>.format</code> via <code>Call</code></li>
+<li><code>f&quot;&quot;</code> via <code>JoinedString</code></li>
+</ul>
+<p>Any SQL-ish strings that use Python string formatting are flagged.</p>
+<p>The expressions and targeted expression types for the rule come from here:</p>
+<ul>
+<li>https://github.com/PyCQA/bandit/blob/7104b336d31a691b145d4a5cc38d6c1d47c6046f/bandit/plugins/injection_sql.py</li>
+</ul>
+<blockquote>
+<p>Related Issue: https://github.com/charliermarsh/ruff/issues/1646</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:83 on 2023-02-10 00:18</div>
+            <div class="timeline-body"><p>Confused why the Bandit source has this <code>execute</code> and <code>executemany</code> detection, but then just throws out the returned value via <code>if _check_string(val[1])</code>? Anyway...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mattoberle">@mattoberle</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:83 on 2023-02-10 00:21</div>
+            <div class="timeline-body"><p>I think it has to do with bandit's concept of <code>confidence</code>, where vulnerability <code>confidence</code> is higher when the string formatting is detected within an <code>execute/executemany</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mattoberle">@mattoberle</a> reviewed on 2023-02-10 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-10 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-10 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-10 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-10 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:26 on 2023-02-10 22:50</div>
+            <div class="timeline-body"><p>This section implies that sanitizing inputs is alright ... when actually directly interpolating user input into SQL queries should always be avoided (no matter if sanitized or not).</p>
+<p>You should instead use &quot;parameter binding&quot; ... also called &quot;server-side binding&quot;, where the parameters are sent separately from the query to the server, see e.g. <a href="https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#server-side-binding">psycopg2 server-side binding</a>.</p>
+<p>So I think it would make sense to update this section accordingly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:21 UTC
+    </footer>
+</body>
+</html>

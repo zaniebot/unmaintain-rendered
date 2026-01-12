@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for pycodestyle E101 - astral-sh/ruff #2038</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for pycodestyle E101</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2038">#2038</a>
+        opened by <a href="https://github.com/ericroberts">@ericroberts</a>
+        on 2023-01-20 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ericroberts">@ericroberts</a> on 2023-01-20 20:40</div>
+            <div class="timeline-body"><p>Rule described here: https://www.flake8rules.com/rules/E101.html</p>
+<p>I tried to follow contributing guidelines closely, I've never worked with Rust before. Stumbled across Ruff a few days ago and would like to use it in our project, but we use a bunch of flake8 rules that are not yet implemented in ruff, so I decided to give it a go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 21:29</div>
+            <div class="timeline-body"><p>Awesome. Thanks for getting involved :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-20 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/lines.rs</code>:5 on 2023-01-20 21:31</div>
+            <div class="timeline-body"><p>I think you need to run <code>cargo +nightly fmt</code>:</p>
+<pre><code class="language-diff">❯ git diff HEAD
+diff --git a/src/checkers/lines.rs b/src/checkers/lines.rs
+index fd9b9aba..987e504b 100644
+--- a/src/checkers/lines.rs
++++ b/src/checkers/lines.rs
+@@ -2,7 +2,7 @@
+
+ use crate::registry::{Diagnostic, Rule};
+ use crate::rules::pycodestyle::rules::{
+-    doc_line_too_long, line_too_long, no_newline_at_end_of_file, mixed_spaces_and_tabs
++    doc_line_too_long, line_too_long, mixed_spaces_and_tabs, no_newline_at_end_of_file,
+ };
+ use crate::rules::pygrep_hooks::rules::{blanket_noqa, blanket_type_ignore};
+ use crate::rules::pyupgrade::rules::unnecessary_coding_comment;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-20 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/lines.rs</code>:78 on 2023-01-20 21:32</div>
+            <div class="timeline-body"><p>By using the &quot;physical&quot; lines here, this will also flag cases like: a multi-line string, where one of the lines in the string contains a mix of tabs and spaces.</p>
+<p>But, it looks like <code>pycodestyle</code> flags those too, and it seems rare (maybe even intended / helpful), so all good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-20 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pycodestyle/rules.rs</code>:85 on 2023-01-20 21:33</div>
+            <div class="timeline-body"><p>Running <code>cargo clippy --workspace --all-targets --all-features -- -D warnings -W clippy::pedantic</code> will show you a couple small things to be fixed (these can be chars instead of strings, like <code>indent.contains(' ')</code> with a single quote instead of a double quote).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-20 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:59 on 2023-01-20 21:35</div>
+            <div class="timeline-body"><p>(We're moving towards a model in which every rule gets its own file (rather than a <code>rules.rs</code>), and every <code>Violation</code> is defined in that file rather than here. But, the <code>pycodestyle</code> rules don't follow that convention yet, and I'd rather be consistent with a rule set, as opposed to doing this one rule in the new style. So, no changes needed, just adding a comment for... well, IDK why, for any onlookers I guess.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericroberts">@ericroberts</a> on 2023-01-20 22:05</div>
+            <div class="timeline-body"><p>Thank you for the fast review @charliermarsh! I will update now. I was wondering about format/linting stuff and somehow missed that part of the contribution guidelines, now I see they're in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericroberts">@ericroberts</a> on <code>src/checkers/lines.rs</code>:78 on 2023-01-20 22:10</div>
+            <div class="timeline-body"><p>I used leading_space in the rule, doesn't that just get the &quot;indent&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericroberts">@ericroberts</a> reviewed on 2023-01-20 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericroberts">@ericroberts</a> reviewed on 2023-01-20 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericroberts">@ericroberts</a> on <code>src/rules/pycodestyle/rules.rs</code>:85 on 2023-01-20 22:11</div>
+            <div class="timeline-body"><p>Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericroberts">@ericroberts</a> reviewed on 2023-01-20 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericroberts">@ericroberts</a> on <code>src/checkers/lines.rs</code>:5 on 2023-01-20 22:11</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/lines.rs</code>:78 on 2023-01-20 22:23</div>
+            <div class="timeline-body"><p>Yeah totally. What I'm referring to though is something like this:</p>
+<pre><code class="language-py">foo = &quot;&quot;&quot;
+&lt;imagine this is a tab&gt; &lt;imagine this is a space&gt; Some content
+&quot;&quot;&quot;
+</code></pre>
+<p><code>lines.rs</code> just iterates over the lines of the program, so it'd first see <code>foo = &quot;&quot;&quot;</code>, then the line that has a tab, space, and &quot;Some content&quot;, then a line of <code>&quot;&quot;&quot;</code>.</p>
+<p>So that second line would trigger this check, even though it's kind of <em>not</em> indentation, it's in the body of a string.</p>
+<p>IMO it'd be &quot;more correct&quot; <em>not</em> to flag that, but there's not an obvious right decision, and the behavior here is consistent with <code>pycodestyle</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-20 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-20 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-20 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-21 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericroberts">@ericroberts</a> reviewed on 2023-01-21 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericroberts">@ericroberts</a> on <code>src/violations.rs</code>:59 on 2023-01-21 01:07</div>
+            <div class="timeline-body"><p>I have a bunch more pycodestyle things I'd like to add, and I don't want to keep adding to a direction you'd like to change. How could I help make this change to rule files happen? Are there examples I could look at so I could attempt the refactoring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:59 on 2023-01-21 01:09</div>
+            <div class="timeline-body"><p>Yeah it's mostly a mechanical thing. Let me pull up an example...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-21 01:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:59 on 2023-01-21 01:10</div>
+            <div class="timeline-body"><p>This is an example of breaking up into one rule per file: https://github.com/charliermarsh/ruff/pull/2003/files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-21 01:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-21 01:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:59 on 2023-01-21 01:13</div>
+            <div class="timeline-body"><p>This is an example of placing the violation directly in the rule file (rather than in <code>violations.rs</code>): https://github.com/charliermarsh/ruff/pull/2023/files#diff-535e9b92bc3115ba9761fc71b63b3a70c16865330ccd3a080cd6eabdf8013faeR13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-21 01:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:59 on 2023-01-21 01:14</div>
+            <div class="timeline-body"><p>Let me know if you have any questions, I'm around :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:11 UTC
+    </footer>
+</body>
+</html>

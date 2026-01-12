@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`]: Removes quotes from annotations - astral-sh/ruff #2431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>]: Removes quotes from annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2431">#2431</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-02-01 03:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-01 03:12</div>
+            <div class="timeline-body"><p>Fixes #827</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[pyupgrade]: Removes quotes from annotations" to "[`pyupgrade`]: Removes quotes from annotations" by @colin99d on 2023-02-01 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2023-02-04 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 03:21</div>
+            <div class="timeline-body"><p>@charliermarsh this just needs your input on how to handle rustpython's lack of an Index token (I highlight more in the comments). Feel free to let me know how we should handle it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-04 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 22:04</div>
+            <div class="timeline-body"><p>Am I correct that the way this works is by passing the rule each function definition, having it identify all the stringified types from the body, and then stripping the quotes?</p>
+<p>I'm wondering if we can simplify things here, since we <em>already</em> have to solve this problem in <code>Checker</code>. In <code>Checker</code>, we track all the deferred string annotations, so that we can validate them at the very end (grep for <code>in_deferred_string_type_definition</code>). So we have logic for detecting whether we're in an annotation-compatible place, and we have special-cases for all the <code>typing</code> stuff.</p>
+<p>Could we instead leverage that? Could we just pass every item in <code>in_deferred_string_type_definition</code> to a method that removes the quotes, and generate a fix from that? (i.e., in <code>check_deferred_string_type_definitions</code>, for each <code>expression</code> string, pass it to the new rule that just de-quotes it?) That way, we wouldn't have to reimplement all of the detection, and we'd have a centralized implementation. But I may be overlooking some of the details here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 22:40</div>
+            <div class="timeline-body"><blockquote>
+<p>check_deferred_string_type_definitions</p>
+</blockquote>
+<p>I'm not 100% sure on the answer to this question, but let me dig in and I will find out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 23:38</div>
+            <div class="timeline-body"><p>@charliermarsh I implemented a rough POC with your idea. I see two issues:</p>
+<ol>
+<li>I am not sure how to check for future annotations</li>
+<li>It seems to be too aggressive, and change a bunch of my &quot;do NOT change&quot; items.</li>
+</ol>
+<p>Do you know if there is a simple solution to these things? If so I would love to switch over.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 23:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I am not sure how to check for future annotations</p>
+</blockquote>
+<p>I think we have a flag for that, <code>self.annotations_future_enabled</code>, on <code>Checker</code>.</p>
+<blockquote>
+<p>It seems to be too aggressive, and change a bunch of my &quot;do NOT change&quot; items.</p>
+</blockquote>
+<p>Anything that <em>shouldn't</em> change, and is being changed, might be a bug in the code today. Grep for <code>Some(Callable::TypedDict) =&gt; {</code> in <code>ast.rs</code>. We handle each case and try to either mark the thing as an annotation or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 23:53</div>
+            <div class="timeline-body"><p>The <code>self.annotations_future_enabled</code> worked perfect when calling rules the normal way, but now that I am in <code>check_deferred_string_type_definitions</code>, the method does not work anymore.</p>
+<p>Will dig into the other issue further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-05 00:03</div>
+            <div class="timeline-body"><p>It looks to me like the existing functionality just checks for a certain Type, while what I built has to decide when a string needs to be converted. Unless there is something I am missing, I don't think I can use what is built to replace what I created. Let me know if you agree, and I can revert my changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:44</div>
+            <div class="timeline-body"><p>It feels like the exact same problem... but I may still be misunderstanding. In the Checker, we have to identify all strings that should be treated as deferred type annotations, so that we can process them later (and find things like referenced to undefined variables). Here, don't we need to find all those deferred type annotations, then remove the quotes (if future annotations is enabled)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-05 00:54</div>
+            <div class="timeline-body"><p>Yeah. The issue is the items inside of the type. For example:</p>
+<pre><code>class D(typing.TypedDict):
+    E: TypedDict(E, {&quot;foo&quot;: &quot;int&quot;})
+</code></pre>
+<p>Should be converted to:</p>
+<pre><code>class D(typing.TypedDict):
+    E: TypedDict(E, {&quot;foo&quot;: int})
+</code></pre>
+<p>But instead it it converted into:</p>
+<pre><code>class D(typing.TypedDict):
+    E: TypedDict(E, {foo: int})
+</code></pre>
+<p>For almost all of my tests, this approach seems to ignore the rules of when information inside of a type should be uncommented, and just always uncomments it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:58</div>
+            <div class="timeline-body"><p>But, I think we <em>must</em> be detecting this correctly, because:</p>
+<pre><code class="language-py">import typing
+
+class D(typing.TypedDict):
+    E: typing.TypedDict(E, {&quot;foo&quot;: &quot;bar&quot;})
+</code></pre>
+<p>If I run <code>cargo run foo.py --select F -n</code>, I get:</p>
+<pre><code>foo.py:4:36: F821 Undefined name `bar`
+</code></pre>
+<p>So Ruff knows that &quot;bar&quot; is an annotation, but &quot;foo&quot; is not -- somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:59</div>
+            <div class="timeline-body"><p>E.g., this code block:</p>
+<pre><code class="language-rs">// Ex) TypedDict(&quot;a&quot;, {&quot;a&quot;: int})
+if args.len() &gt; 1 {
+    if let ExprKind::Dict { keys, values } = &amp;args[1].node {
+        for key in keys.iter().flatten() {
+            self.in_type_definition = false;
+            self.visit_expr(key);
+            self.in_type_definition = prev_in_type_definition;
+        }
+        for value in values {
+            self.in_type_definition = true;
+            self.visit_expr(value);
+            self.in_type_definition = prev_in_type_definition;
+        }
+    }
+}
+</code></pre>
+<p>We know to treat &quot;foo&quot; as a non-annotation, and &quot;bar&quot; as an annotation -- so can we not use the same logic and code to power this fix? What are you seeing exactly? Are the failing changes on this branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-05 01:04</div>
+            <div class="timeline-body"><p>Look at the differences in <code>cargo test</code>. They were all passing before the change, and now most of them are not. There is a chance I just missed something small.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 01:08</div>
+            <div class="timeline-body"><p>I'll take a look and see where I'm confused. No need to dig further till I've actually looked at the changes more closely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 05:00</div>
+            <div class="timeline-body"><p>I had to move a few things around, but I think this version mostly works? There are some errors, but they're errors that are also present in <code>Checker</code> and so we should fix them there. For example, it does change <code>&quot;name&quot;</code> here, incorrectly:</p>
+<pre><code class="language-py">x: DefaultNamedArg(name=&quot;name&quot;, quox=&quot;str&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 05:17</div>
+            <div class="timeline-body"><p>@colin99d - I think this is good to merge -- do you want to take a look? Or should I close out the issue? 🎉 🎉 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-05 13:43</div>
+            <div class="timeline-body"><p>Looks good to me!! Thanks for figuring out how to get the existing functionality working with my PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-05 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-05 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 14:43</div>
+            <div class="timeline-body"><p>Thanks for doing all the hard work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:17 UTC
+    </footer>
+</body>
+</html>

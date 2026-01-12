@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle functions that never return in RET503 (#2602) - astral-sh/ruff #2701</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle functions that never return in RET503 (#2602)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2701">#2701</a>
+        opened by <a href="https://github.com/ppentchev">@ppentchev</a>
+        on 2023-02-10 01:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ppentchev">@ppentchev</a> on 2023-02-10 01:31</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>Thanks for your relentless work on Ruff!</p>
+<p>What do you think about this first shot, extremely rough, extremely naive and incomplete attempt to handle https://github.com/charliermarsh/ruff/issues/2602 by trying to figure out whether the last statement is a call to one of the known no-return functions? This is my first timid look into the Ruff source code, and my first ever look into rustpython-parser, too, so there will certainly be several &quot;this is not the way&quot; objections... assuming this is even on the right path.</p>
+<p>And to foresee at least one of these objections: as noted in the code comments, this is naive and incomplete in that it compares the name under which the module (&quot;os&quot;, &quot;pytest&quot;, etc) is referenced, and not the actual name of the imported module. I would guess that Ruff already records imported modules somewhere so that there is a way for this code to obtain the actual (possibly fully qualified) name of the module that the expression refers to; if you could point me to a place in the Ruff code where something like that is done, I'd be happy to use it here. Also the same applies to unqualified names in function calls: when we see a call to <code>abort()</code> or <code>xfail(...)</code> as the last statement, it would be nice to be able to notice that this is, in this particular Python source file, actually <code>from pytest import xfail</code> and not complain about it.</p>
+<p>Of course, as noted in #2602, a real solution would not only resolve called functions and methods, but also check whether they are type-annotated as NoReturn, and base the decision on that. If you say that my temporary band-aid is not worth merging since a type-checking solution may be the way to go, that would be fine, too.</p>
+<p>Thanks again, and keep up the great work!</p>
+<p>G'luck,
+Peter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:181 on 2023-02-10 01:41</div>
+            <div class="timeline-body"><p>So we do have a system to support these -- grep around for <code>checker.resolve_call_path</code>. That will abstract away all the concerns around <code>import</code>, <code>import from</code>, aliasing, etc., and do the &quot;right thing&quot; in all cases to ensure that <code>func</code> is in fact a reference to the thing we care about here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 01:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:181 on 2023-02-10 01:42</div>
+            <div class="timeline-body"><p><code>crates/ruff/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code> would be one concrete example of the syntax and usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:232 on 2023-02-10 01:44</div>
+            <div class="timeline-body"><p>This is totally unrelated but I wonder why we don't raise on <code>While</code> and <code>Try</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 01:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ppentchev">@ppentchev</a> reviewed on 2023-02-10 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ppentchev">@ppentchev</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:181 on 2023-02-10 09:54</div>
+            <div class="timeline-body"><p>Wow. That made things... a lot simpler. But then, yes, that's what happens when a project already has the infrastructure in place to build upon. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ppentchev">@ppentchev</a> on 2023-02-10 09:56</div>
+            <div class="timeline-body"><p>Right, so after @charliermarsh pointed me in the right direction on resolving function calls, things are a bit simpler now in https://github.com/charliermarsh/ruff/pull/2701/commits/41ee9a827b1c25e34f2ef2391224d3fecbca565e
+Of course, the question remains of whether an allowlist that Somebody(tm) needs to maintain is the right path to take, but it might help things along for the present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 14:28</div>
+            <div class="timeline-body"><p>This is great, thanks! I'm generally a fan of pragmatic improvements like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 14:53</div>
+            <div class="timeline-body"><p>Thanks for this @ppentchev! Without typing support this is the next best thing.</p>
+<p>Also nice picking up on stuff in the standard library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-10 16:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:21 UTC
+    </footer>
+</body>
+</html>

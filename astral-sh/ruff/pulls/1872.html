@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement flake8-commas - astral-sh/ruff #1872</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement flake8-commas</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1872">#1872</a>
+        opened by <a href="https://github.com/bluetech">@bluetech</a>
+        on 2023-01-14 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-14 17:50</div>
+            <div class="timeline-body"><p>Implements <a href="https://github.com/PyCQA/flake8-commas">flake8-commas</a>. Fixes #1058.</p>
+<p>The plugin is mostly redundant with Black (and also deprecated upstream), but very useful for projects which can't/won't use an auto-formatter.</p>
+<p>This linter works on tokens. Before porting to Rust, I cleaned up the Python code (<a href="https://gist.github.com/bluetech/7c5dcbdec4a73dd5a74d4bc09c72b8b9">link</a>) and made sure the tests pass. In the Rust version I tried to add explanatory comments, to the best of my understanding of the original logic.</p>
+<p>Some changes I did make:</p>
+<ul>
+<li>Got rid of rule C814 - &quot;missing trailing comma in Python 2&quot;. Ruff doesn't support Python 2.</li>
+<li>Merged rules C815 - &quot;missing trailing comma in Python 3.5+&quot; and C816 - &quot;missing trailing comma in Python 3.6+&quot; into C812 - &quot;missing trailing comma&quot;. These Python versions are outdated, didn't think it was worth the complication.</li>
+<li>Added autofixes for C812 and C819.</li>
+</ul>
+<p>Autofix is missing for C818 - &quot;trailing comma on bare tuple prohibited&quot;. It needs to turn e.g. <code>x = 1,</code> into <code>x = (1, )</code>, it's a bit difficult to do with tokens only, so I skipped it for now.</p>
+<p>I ran the rules on cpython/Lib and on a big internal code base and it works as intended (though I only sampled the diffs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/mod.rs</code>:9 on 2023-01-14 22:35</div>
+            <div class="timeline-body"><p>Can we make this <code>pub(crate)</code> for now? (The <code>pub mod</code> pieces here have to expose <code>settings</code> as-is.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_commas/rules.rs</code>:93 on 2023-01-14 22:36</div>
+            <div class="timeline-body"><p>Nit: can we call this <code>type_</code>? It's admittedly subjective, but that's the property used in several of the AST structs, so I prefer consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-14 22:38</div>
+            <div class="timeline-body"><p>This looks great! Really appreciate the thoroughness here.</p>
+<p>They only major point of discussion for me is whether we should use a different error code prefix -- e.g., <code>COM</code>, like <code>COM812</code> instead of <code>C812</code>. It's admittedly inconvenient to deviate from the existing plugin, but as-is, users that have <code>&quot;C&quot;</code> enabled will turn this on by default unintentionally. I've been trying to avoid collision prefixes for that reason (e.g., <code>flake8-tidy-imports</code> became <code>TID</code> rather than <code>I</code>, which collided with <code>isort</code>). I would prefer to use something other than <code>C</code>, but curious to get your feedback.</p>
+<p>Pending that change, we should be able to merge this as soon as today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-15 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/rules/mod.rs</code>:9 on 2023-01-15 05:34</div>
+            <div class="timeline-body"><p>Since #1874 which made <code>ruff::rules</code> private all of the modules in <code>src/rules/mod.rs</code> should be defined with <code>pub mod</code> since <code>pub(crate) mod</code> would be redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-15 09:09</div>
+            <div class="timeline-body"><p>Thanks for the review, I made the requested changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-15 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-15 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-15 19:03</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Davrosh">@Davrosh</a> on 2023-01-29 00:14</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks great! Really appreciate the thoroughness here.</p>
+<p>They only major point of discussion for me is whether we should use a different error code prefix -- e.g., <code>COM</code>, like <code>COM812</code> instead of <code>C812</code>. It's admittedly inconvenient to deviate from the existing plugin, but as-is, users that have <code>&quot;C&quot;</code> enabled will turn this on by default unintentionally. I've been trying to avoid collision prefixes for that reason (e.g., <code>flake8-tidy-imports</code> became <code>TID</code> rather than <code>I</code>, which collided with <code>isort</code>). I would prefer to use something other than <code>C</code>, but curious to get your feedback.</p>
+<p>Pending that change, we should be able to merge this as soon as today.</p>
+</blockquote>
+<p>@charliermarsh I've been searching this repo and have come across this comment in response to a failure by both ruff@0.0.236 (with --fix) and the corresponding VSCode extension to provide autofix for COM errors.
+The repo states that the <code>fixable</code> option configurable via <code>pyproject.toml</code> has a default value which contains &quot;C&quot;.
+https://github.com/charliermarsh/ruff#fixable</p>
+<p>I may be misreading this, and if so please say so, but it looks like the above comment is hinting that users that have &quot;C&quot; enabled will have flake8-comments enabled.</p>
+<p>Now, I have &quot;COM&quot;, and not &quot;C&quot;, listed under <code>select</code> (simply because it didn't seem like it would be one of the specified options) and when I have &quot;C&quot; listed in my <code>fixable</code> options (either through the default value or set explicitly), the autofix option is not working for flake8-comments (&quot;COM&quot;) on either the CLI Tool or the extension.
+<img width="110" alt="image" src="https://user-images.githubusercontent.com/31009042/215296504-acdfa88a-4113-4dec-a696-6490aa47f035.png">
+<img width="346" alt="image" src="https://user-images.githubusercontent.com/31009042/215296515-1a7c42ed-85a7-4ae8-b247-cd0dec57ba5f.png"></p>
+<pre><code>&gt; poetry run ruff --fix .
+file.py:20:43: COM812 Trailing comma missing
+Found 1 error.
+</code></pre>
+<p>If I, however, manually add &quot;COM&quot; to the list, the autofix starts working.
+<img width="95" alt="image" src="https://user-images.githubusercontent.com/31009042/215296736-142c6d69-5702-41cd-a694-5b8b379dc9ac.png">
+<img width="264" alt="image" src="https://user-images.githubusercontent.com/31009042/215296886-af8c42e2-2e72-4615-af5b-83b1366ea439.png"></p>
+<pre><code>&gt; poetry run ruff --fix .
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>Is this an OK scenario and I'm misunderstanding this or is this a bug? Should I open an issue?
+Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 00:17</div>
+            <div class="timeline-body"><p>Thanks for the thorough note! I’ll test this out later tonight and get back to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 00:18</div>
+            <div class="timeline-body"><p>(In general, though, using C is not sufficient to enable the COM rules — you have to explicitly use COM. Using C will enable the flake8-comprehensions rules, but C isn’t considered a valid “prefix” for COM.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Davrosh">@Davrosh</a> on 2023-01-29 00:42</div>
+            <div class="timeline-body"><blockquote>
+<p>(In general, though, using C is not sufficient to enable the COM rules — you have to explicitly use COM. Using C will enable the flake8-comprehensions rules, but C isn’t considered a valid “prefix” for COM.)</p>
+</blockquote>
+<p>@charliermarsh Thanks, I had a feeling that it wasn't sufficient for <code>select</code>. This is why I found it odd that &quot;C&quot; would be listed as part of the default value for <code>fixable</code> to begin with, while flake8-comprehensions is listed as &quot;C4&quot; and flake9-comments as &quot;COM&quot;.
+If &quot;C&quot; can, for instance, be used as a substitute <strong>only</strong> for the flake8-comprehensions rule (&quot;C4&quot;), it should be more explicitly documented (maybe I've missed that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 01:04</div>
+            <div class="timeline-body"><p>@Davrosh - Yeah, what's wrong here is the documentation. That <code>fixable</code> default list <em>should</em> include <code>COM</code>. I'll fix it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 01:19</div>
+            <div class="timeline-body"><p>Updated in #2316.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:10 UTC
+    </footer>
+</body>
+</html>

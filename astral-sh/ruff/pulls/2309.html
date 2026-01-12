@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect per-file-ignores when checking noqa - astral-sh/ruff #2309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect per-file-ignores when checking noqa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2309">#2309</a>
+        opened by <a href="https://github.com/sciyoshi">@sciyoshi</a>
+        on 2023-01-28 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-28 19:08</div>
+            <div class="timeline-body"><p><code>RUF100</code> does not take into account a rule ignored for a file via a <code>per-file-ignores</code> configuration. To see this, try the following pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;test.py&quot; = [&quot;F401&quot;]
+</code></pre>
+<p>and this test.py file:</p>
+<pre><code class="language-python">import itertools  # noqa: F401
+</code></pre>
+<p>Running <code>ruff --extend-select RUF100 test.py</code>, we should expect to get this error:</p>
+<pre><code>test.py:1:19: RUF100 Unused `noqa` directive (unused: `F401`)
+</code></pre>
+<p>The issue is that the per-file-ignores diagnostics are filtered out after the noqa checks, rather than before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 19:16</div>
+            <div class="timeline-body"><p>Ah, good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-28 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-28 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-28 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-28 19:18</div>
+            <div class="timeline-body"><p>Looking again, I think I may have put the filtering in the wrong spot - it should probably come after this block https://github.com/charliermarsh/ruff/pull/2309/files#diff-9f39c861d0ab3e1bd158b77ee65246fe5c438ab6f2ddd112684cc6cef6185f01L136-L150</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:16 UTC
+    </footer>
+</body>
+</html>

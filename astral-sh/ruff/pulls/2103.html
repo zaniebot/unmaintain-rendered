@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>refactor: Move redirects out of RuleCodePrefix  - astral-sh/ruff #2103</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>refactor: Move redirects out of RuleCodePrefix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2103">#2103</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-23 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-23 08:46</div>
+            <div class="timeline-body"><p>(See the 2nd commit message for an explanation &amp; the reasoning.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-23 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rule_redirects.rs</code>:22 on 2023-01-23 17:55</div>
+            <div class="timeline-body"><p>Does this correctly trigger once, <em>per rule</em>? Or is this going to trigger once, ever?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-23 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/rule_redirects.rs</code>:22 on 2023-01-23 18:29</div>
+            <div class="timeline-body"><p>Hahaha oh yeah ... this indeed didn't work as intended.</p>
+<p>I just changed it to just use <code>warn_user!</code> since I cannot think of an easy alternative to preserve the limitation that it only prints once since a <code>FromStr</code> impl cannot easily keep state.</p>
+<p>I think we'd have to move the warning call to the CLI crate and <code>flake8_to_ruff/parser.rs</code> because these can keep state of which warnings have already been reported ... but I am still uncertain how the integration with <code>clap</code> (w|c)ould work ... if you think that should be done I can take a look tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-23 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rule_redirects.rs</code>:22 on 2023-01-23 19:15</div>
+            <div class="timeline-body"><p>Hmm... It'd be nice to preserve, although it's not the end of the world. It looks like it appears once per inclusion, and never when parsing <code>noqa</code> redirects (haven't looked at the code to understand how / why the latter behavior works -- does that make sense to you?).</p>
+<p>Given <code>foo.py</code>:</p>
+<pre><code class="language-py">import pandas as x # noqa: IC001
+</code></pre>
+<p>I get:</p>
+<pre><code>❯ cargo run foo.py --select IC001 --fixable IC001
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff foo.py --select IC001 --fixable IC001`
+warning: `IC001` has been remapped to `ICN001`
+warning: `IC001` has been remapped to `ICN001`
+warning: debug build without --no-cache.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rule_redirects.rs</code>:22 on 2023-01-23 19:17</div>
+            <div class="timeline-body"><p>Oh, right, ok, it's because the <code>noqa</code> redirect goes through the <code>REDIRECTS</code> map directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-23 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @not-my-profile on 2023-01-24 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-24 12:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/rule_redirects.rs</code>:22 on 2023-01-24 12:18</div>
+            <div class="timeline-body"><p>ruff didn't warn about redirects in <code>noqa</code> comments previously ... my PR doesn't change that.</p>
+<p>Anyway I have updated the PR to only warn about redirects once when they occur multiple times (in the CLI or <code>pyproject.toml</code> files) :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-01-24 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @not-my-profile on 2023-01-24 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-24 12:27</div>
+            <div class="timeline-body"><p>I split the first 7 commits into their own PR (#2122) to make them easier to review ... once that has been merged, I'll rebase this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "refactor: Move redirects out of RuleSelector " to "refactor: Move redirects out of RuleCodePrefix " by @not-my-profile on 2023-01-24 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-01-24 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @not-my-profile on 2023-01-24 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-24 12:54</div>
+            <div class="timeline-body"><p>(Note that I have realized that code redirects should be supported everywhere <code>RuleSelector</code> is used and have hence refactored <code>RuleSelector</code> accordingly as opposed to introducing a <code>MaybeRedirectedRuleSelector</code> wrapper type that I initially proposed, since it would have to be used everywhere.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:317 on 2023-01-24 13:20</div>
+            <div class="timeline-body"><p>Can we use <code>FxHashMap</code> for this, just for consistency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-24 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-24 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:361 on 2023-01-24 13:23</div>
+            <div class="timeline-body"><p>This will still warn twice if you specify an invalid code in both <code>select</code> and <code>fixable</code>, right? I'm ok with that, but I want to make sure I understand what's going on. (We could lift the redirect map up a level, or something, but seems annoying.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-24 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/settings/mod.rs</code>:317 on 2023-01-24 14:09</div>
+            <div class="timeline-body"><p>Sure ... changed to <code>FxHashMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-24 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/settings/mod.rs</code>:361 on 2023-01-24 14:16</div>
+            <div class="timeline-body"><p>Yes indeed ... good observation.</p>
+<p>I honestly think that reporting config issues this way is generally suboptimal because ruff configuration can come from many sources, so it could be hard to track down where exactly a deprecated redirect is coming from. I think we should rather report exactly where a redirect is used, i.e. in which config file and key (e.g. <code>tool.ruff.select</code>) or in which CLI parameter. However implementing that would take some effort and probably only really be worth it if we had more lints for our configuration (#1472 seems related).</p>
+<p>So yes the current reporting isn't optimal ... but neither would be moving the redirect map up a level as far as I'm concerned ... so I'd also be ok with keeping this for now and cycle back to it once we have addressed the more pressing matters (like the many to many mapping, documentation, human-friendly rule names etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-24 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-24 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:13 UTC
+    </footer>
+</body>
+</html>

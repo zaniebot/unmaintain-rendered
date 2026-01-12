@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: issue D401 only for non-test/property functions and methods - astral-sh/ruff #2071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: issue D401 only for non-test/property functions and methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2071">#2071</a>
+        opened by <a href="https://github.com/scop">@scop</a>
+        on 2023-01-21 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/scop">@scop</a> on 2023-01-21 21:24</div>
+            <div class="timeline-body"><p>Extend test fixture to verify the targeting.</p>
+<p>Includes two &quot;attribute docstrings&quot; which per PEP 257 are not recognized by the Python bytecode compiler or available as runtime object attributes. They are not available for us either at time of writing, but include them for completeness anyway in case they one day are.</p>
+<p>Rust newbie here, review with a fine comb greatly appreciated :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:36 on 2023-01-21 22:58</div>
+            <div class="timeline-body"><p>We have a little helper for this --- <code>cast::name</code> from <code>src/ast/cast.rs</code>. We know these are functions, even though it's not encoded in the type system. (Not <em>great</em>, but we should definitely error anyway if we get a non-<code>FunctionDef</code> here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:42 on 2023-01-21 23:01</div>
+            <div class="timeline-body"><p>It looks like Pydocstyle defaults to accepting <code>property,cached_property,functools.cached_property</code>.</p>
+<p>Maybe just for consistency with this &quot;kind&quot; of check, let's add a method to <code>src/visibilty.rs</code> like:</p>
+<pre><code class="language-rs">pub fn is_property(checker: &amp;Checker, decorator_list: &amp;[Expr]) -&gt; bool {
+    decorator_list.iter().any(|expr| {
+        checker.resolve_call_path(expr).map_or(false, |call_path| {
+            call_path.as_slice() == [&quot;&quot;, &quot;property&quot;] || call_path.as_slice() == [&quot;functools&quot;, &quot;cached_property&quot;]
+        })
+    })
+}
+</code></pre>
+<p>That will check the additional decorator <em>and</em> ensure that it only triggers when <code>functools</code> is imported <em>and</em> track aliases <em>and</em> track overrides :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-01-21 23:02</div>
+            <div class="timeline-body"><p>Great! Let me know if any of the below is unclear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/scop">@scop</a> reviewed on 2023-01-21 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:42 on 2023-01-21 23:56</div>
+            <div class="timeline-body"><p>I actually implemented <code>is_property</code> in <code>visibility.rs</code> in my first cut of this patch, but then decided to move it back, &quot;inlined&quot; at the call site. I felt <code>@property</code> isn't actually related to visibility in the broad sense the other similar helpers there are, and thus it seemed misplaced.</p>
+<p>But no strong opinions really, could you confirm if you'd still rather see it there and I'll refactor.</p>
+<p>In any case, will revise this tomorrow. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-21 23:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:42 on 2023-01-21 23:59</div>
+            <div class="timeline-body"><p>Yeah I think that's a totally reasonable instinct, but I'd still rather see it in there. There are some other helpers in that file that aren't <em>really</em> related to visibility (like <code>is_override</code>), and I'd like to have them logically grouped for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/scop">@scop</a> reviewed on 2023-01-22 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:36 on 2023-01-22 19:22</div>
+            <div class="timeline-body"><p>Made use of that and <code>cast::decorator_list</code> in 05ec78c0812d8657442a6cd4900dfd235da17b50.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/scop">@scop</a> reviewed on 2023-01-22 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/non_imperative_mood.rs</code>:42 on 2023-01-22 19:22</div>
+            <div class="timeline-body"><p>Sure, done in f38b51a29dc243060f77c6d90e6e453242f1ef7e.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-22 19:22</div>
+            <div class="timeline-body"><p>Looks great! Will merge when CI is green.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-01-22 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-22 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-22 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-22 19:25</div>
+            <div class="timeline-body"><p>Thanks tons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-01-22 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-23 08:11</div>
+            <div class="timeline-body"><p>@scop Thanks for refining this! ❤️</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:12 UTC
+    </footer>
+</body>
+</html>

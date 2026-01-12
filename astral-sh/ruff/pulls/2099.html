@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`]: Remove outdated `sys.version_info` blocks - astral-sh/ruff #2099</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>]: Remove outdated <code>sys.version_info</code> blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2099">#2099</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-01-23 03:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-23 03:26</div>
+            <div class="timeline-body"><p>A part of #827. Opening this up as a draft for visibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-25 03:13</div>
+            <div class="timeline-body"><p>@charliermarsh I am hitting a blocker and was wondering if you could offer some assistance. My issue is linting the code below:</p>
+<pre><code>if sys.version_info &lt; (2,0):
+    print(&quot;This script requires Python 2.0 or greater.&quot;)
+elif sys.version_info &lt; (2,6):
+    print(&quot;This script requires Python 2.6 or greater.&quot;)
+elif sys.version_info &lt; (3,):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,0):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>Currently, my program lints every line, and removes it if the condition meets the requirements, this means we end up with the following:</p>
+<pre><code>elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>As you can see, this is not a valid python statement. I tried creating checkers that either look at the parent, or see if the statement is an if to remove the &quot;el&quot; from the &quot;elif&quot; in the next line, however; since ruff goes through all elif and if statements before running again, the code is already broken before the next loop through. So essentially I need to know whether to convert an elif statement to an if statement.</p>
+<p>Pyupgrade currently solves this issue by only removing one if or elif at a time, so to fix the statement above you would have to call pyupgrade four times.</p>
+<p>Only running on if statements is not a viable solution here because sometimes the issue might only be on an elif statement. So far my best ideas would be to:</p>
+<ol>
+<li>Somehow &quot;skip&quot; the rest of the statement until the next run through,</li>
+<li>Save the state somehow, so it can know whether to skip (this seems like a pretty bad idea)</li>
+<li>Allow the statement to be converted to the bad format, and then run a separate linter at the end that can fix it. This seems like a REALLY bad idea because if the linter breaks anywhere else, we will wreck people's code</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-27 02:58</div>
+            <div class="timeline-body"><p>It looks like I have a second issue that could be easily fixed if I can skip fixing the rest of the statement until the next iteration. Is there any functionality like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 03:10</div>
+            <div class="timeline-body"><p>We avoid applying fixes that &quot;overlap&quot; in the text. So one thing you could do is... when you go to fix one of these, generate a fix that applies to the entire <code>if</code> chain, even if you're only changing one of the statements within it.</p>
+<p>So if you had this:</p>
+<pre><code class="language-py">if sys.version_info &lt; (2,0):
+    print(&quot;This script requires Python 2.0 or greater.&quot;)
+elif sys.version_info &lt; (2,6):
+    print(&quot;This script requires Python 2.6 or greater.&quot;)
+elif sys.version_info &lt; (3,):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,0):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>Then to fix the first one, you'd generate a <code>Fix::replace</code> with this text:</p>
+<pre><code class="language-py">if sys.version_info &lt; (2,6):
+    print(&quot;This script requires Python 2.6 or greater.&quot;)
+elif sys.version_info &lt; (3,):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,0):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>All the fixes will overlap, and so it'll only apply one per iteration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-27 03:11</div>
+            <div class="timeline-body"><blockquote>
+<p>We avoid applying fixes that &quot;overlap&quot; in the text. So one thing you could do is... when you go to fix one of these, generate a fix that applies to the entire <code>if</code> chain, even if you're only changing one of the statements within it.</p>
+<p>So if you had this:</p>
+<pre><code class="language-python">if sys.version_info &lt; (2,0):
+    print(&quot;This script requires Python 2.0 or greater.&quot;)
+elif sys.version_info &lt; (2,6):
+    print(&quot;This script requires Python 2.6 or greater.&quot;)
+elif sys.version_info &lt; (3,):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,0):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>Then to fix the first one, you'd generate a <code>Fix::replace</code> with this text:</p>
+<pre><code class="language-python">if sys.version_info &lt; (2,6):
+    print(&quot;This script requires Python 2.6 or greater.&quot;)
+elif sys.version_info &lt; (3,):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,0):
+    print(&quot;This script requires Python 3.0 or greater.&quot;)
+elif sys.version_info &lt; (3,12):
+    print(&quot;Python 3.0 or 3.1 or 3.2&quot;)
+else:
+    print(&quot;Python 3&quot;)
+</code></pre>
+<p>All the fixes will overlap, and so it'll only apply one per iteration.</p>
+</blockquote>
+<p>Charlie this is absolutely perfect! Thank you so much!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 03:14</div>
+            <div class="timeline-body"><p>No worries, sorry it took me a while to respond. It might take some work to find the outermost <code>if</code> parent, but hopefully it's at least <em>possible</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-28 03:35</div>
+            <div class="timeline-body"><p>@charliermarsh, I believe I found an issue with the <code>rustpython_parser::lexer</code>. When I run the following program in python, it runs fine:</p>
+<pre><code>import six
+
+if True:
+    if six.PY2:
+        print(&quot;PY2&quot;)
+    else:
+        print(&quot;PY3&quot;)
+
+</code></pre>
+<p>However, when I attempt to use the lexer to get the tokens in the statement I get the following issue:
+<code>value: LexicalError { error: IndentationError, location: Location { row: 3, column: 4 } }</code>. When printing the tokens out I get the following before the error occurs:</p>
+<pre><code>If
+Name { name: &quot;six&quot; }
+Dot
+Name { name: &quot;PY2&quot; }
+Colon
+Newline
+Indent
+Name { name: &quot;print&quot; }
+Lpar
+String { value: &quot;PY2&quot;, kind: String, triple_quoted: false }
+Rpar
+Newline
+</code></pre>
+<p>Based on this, and the position of the location where the error occurs, it looks like the parser is failing one the <code>else</code> token. Do you have any idea what could be going on here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 03:59</div>
+            <div class="timeline-body"><p>I think you need to dedent the entire block before lexing.</p>
+<p>Right now, you're feeding it:</p>
+<pre><code class="language-py">if six.PY2:
+        print(&quot;PY2&quot;)
+    else:
+        print(&quot;PY3&quot;)
+</code></pre>
+<p>...since you're starting at the <code>if</code>. So it looks like invalid indentation.</p>
+<p>(This is a guess, I admittedly didn't look at the code.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-28 18:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you need to dedent the entire block before lexing.</p>
+<p>Right now, you're feeding it:</p>
+<pre><code class="language-python">if six.PY2:
+        print(&quot;PY2&quot;)
+    else:
+        print(&quot;PY3&quot;)
+</code></pre>
+<p>...since you're starting at the <code>if</code>. So it looks like invalid indentation.</p>
+<p>(This is a guess, I admittedly didn't look at the code.)</p>
+</blockquote>
+<p>I think you are exactly right, is there an example somewhere in the code of this being done already? I noticed dedent does not work if the first line has no indent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 18:50</div>
+            <div class="timeline-body"><p>You could look at how we handle <code>fix_multiple_with_statements</code>. It uses LibCST, but you could use the same idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2023-01-29 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-29 23:12</div>
+            <div class="timeline-body"><p>This is ready to go! One thing I could use some feedback on is that I am not removing comments from the removed block if they are the last line of the else block. I am not sure if there is a way to resolve this, but if there is let me know! I do not see this as an issue that blocks the PR. Windows tests are failing for this pr too, even though I just merged with main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2023-01-29 23:21</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I could use some feedback on is that I am not removing comments from the removed block if they are the last line.</p>
+</blockquote>
+<p>As the author of the original feature in pyupgrade, I think this is the behaviour to be expected.</p>
+<p>pyupgrade doesn't attempt to clean up any code that might be left hanging in this situation, to avoid generating syntax errors.</p>
+<p>For instance:</p>
+<pre><code class="language-python">if sys.version_info &gt;= (3, 9):
+    pass
+else:
+    ... # special treatment
+</code></pre>
+<p>is transformed to (with <code>--py39-plus</code>)</p>
+<pre><code class="language-python">pass
+</code></pre>
+<p>Comments are less of a problem, but I think it's still preferable to leave them intact, as it's much easier to manually clean them up later if necessary than it might be to just realise they are gone if it wasn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-29 23:29</div>
+            <div class="timeline-body"><p>Thanks for your feedback and sounds good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-30 00:23</div>
+            <div class="timeline-body"><p>@charliermarsh, would you also like me to remove the Six functionality from this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 00:24</div>
+            <div class="timeline-body"><p>@colin99d - I think it'd be appropriate. What about you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-30 02:49</div>
+            <div class="timeline-body"><p>Got the six stuff removed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2023-01-30 20:32</div>
+            <div class="timeline-body"><p>I got a question regarding how this is meant to be used in practice: is there any equivalent to pyupgrade's <code>--py3x-plus</code> flags in ruff, or does ruff parse the <code>[project] python-requires</code> field from <code>pyproject.toml</code> ? is it doing something else ? I haven't been able to find this in docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 20:36</div>
+            <div class="timeline-body"><p>@neutrinoceros - The relevant API is <a href="https://github.com/charliermarsh/ruff#target-version"><code>target-version</code></a>, which you set in <code>pyproject.toml</code> (or <code>ruff.toml</code>) -- but it's not accepted on the command-line. It's similar to Black's API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2023-01-30 20:49</div>
+            <div class="timeline-body"><p>thank you !
+In case you're not aware, there's a PR in black to use the project metadata directly when possible, which I think would be useful  in ruff too</p>
+<p>see https://github.com/psf/black/pull/3219</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 21:06</div>
+            <div class="timeline-body"><p>Oh nice! I need to look at how Black does that. This was mentioned in #2039.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 00:06</div>
+            <div class="timeline-body"><p>I'm hoping to review this tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pyupgrade: Old code blocks" to "[`pyupgrade`]: Remove outdated `sys.version_info` blocks" by @charliermarsh on 2023-02-01 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-01 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-01 04:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pyupgrade/mod.rs</code>:67 on 2023-02-01 04:47</div>
+            <div class="timeline-body"><p>@sbrugman - Do you have any idea why these are failing on Windows? I tried with both <code>to_string_lossy()</code> and <code>display()</code> but no luck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 04:48</div>
+            <div class="timeline-body"><p>@colin99d - Did a pass over this, I was able to simplify a few things a little bit, but I also made it slightly more timid in some cases... Do you have any interest in looking through or even testing the code prior to merging?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-01 14:18</div>
+            <div class="timeline-body"><blockquote>
+<p>@colin99d - Did a pass over this, I was able to simplify a few things a little bit, but I also made it slightly more timid in some cases... Do you have any interest in looking through or even testing the code prior to merging?</p>
+</blockquote>
+<p>Would love to! I can do this tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-01 14:57</div>
+            <div class="timeline-body"><p>What is the reason for not refactoring single line if statements anymore? I am assuming there were some edge cases it was not handling well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 15:03</div>
+            <div class="timeline-body"><p>I thought it would just be simpler to not worry about them given that they're pretty rare (e.g. Black doesn't preserve them). It's possible that the implementation was totally sound... I just get worried about cases like multi-statement lines and continuations:</p>
+<pre><code class="language-py">if True: a = 1; b = 2
+
+if True: a = 1; \
+  b = 2
+</code></pre>
+<p>But this isn't a rigorous answer at all. Maybe we should revisit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-01 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought it would just be simpler to not worry about them given that they're pretty rare (e.g. Black doesn't preserve them). It's possible that the implementation was totally sound... I just get worried about cases like multi-statement lines and continuations:</p>
+<pre><code class="language-python">if True: a = 1; b = 2
+
+if True: a = 1; \
+  b = 2
+</code></pre>
+<p>But this isn't a rigorous answer at all. Maybe we should revisit.</p>
+</blockquote>
+<p>I have not seen this in practice before EVER, so maybe we ignore it, and if someone leaves an issue, and it gains some traction, we can invest into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 15:08</div>
+            <div class="timeline-body"><p>There is one failing case right now, which I think we can only solve with LibCST -- something like this:</p>
+<pre><code class="language-py">if True:
+    if sys.version_info &gt;= (3, 9):
+        expected_error = [
+&quot;&lt;stdin&gt;:1:5: Generator expression must be parenthesized&quot;,
+&quot;max(1 for i in range(10), key=lambda x: x+1)&quot;,
+&quot;    ^&quot;,
+        ]
+    elif PYPY:
+        expected_error = []
+    else:
+        expected_error = []
+</code></pre>
+<p>Or even harder:</p>
+<pre><code class="language-py">if True:
+    if sys.version_info &gt;= (3, 9):
+        &quot;&quot;&quot;this
+        is valid&quot;&quot;&quot;
+
+        &quot;&quot;&quot;the indentation on
+        this line is significant&quot;&quot;&quot;
+
+        &quot;this is&quot; \
+&quot;allowed too&quot;
+
+        (&quot;so is&quot;
+&quot;this for some reason&quot;)
+</code></pre>
+<p><code>dedent</code> isn't safe for these reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:04</div>
+            <div class="timeline-body"><p>(Fixed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:50</div>
+            <div class="timeline-body"><p>Ok, I think this is good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 00:20</div>
+            <div class="timeline-body"><p>@colin99d - LMK if you wanna give this a read tonight or if I should go ahead and merge. It's not urgent -- I probably won't release tonight anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-02 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-02 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 12:49</div>
+            <div class="timeline-body"><p>Merging for now but LMK if you have any follow-up feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-02 14:03</div>
+            <div class="timeline-body"><p>Sorry, had something come up last night. Looks good to me!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 14:27</div>
+            <div class="timeline-body"><p>All good, no prob at all!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:54:13 UTC
+    </footer>
+</body>
+</html>
