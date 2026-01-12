@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive Hash instead of implementing it by hand - astral-sh/ruff #1890</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive Hash instead of implementing it by hand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1890">#1890</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-15 08:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-15 08:35</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @not-my-profile on 2023-01-15 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-15 10:13</div>
+            <div class="timeline-body"><p>Marked this as a draft since #1891 should be merged first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 18:58</div>
+            <div class="timeline-body"><p>These are all intentionally using <code>FxHashSet</code>. Last I checked it actually made a measurable difference in the benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 19:17</div>
+            <div class="timeline-body"><p>To be clear: I don't want to change this right now if it has any noticeable impact on perf. We read from these <em>extremely</em> often (but only hash the configuration once).</p>
+<p>However, in theory, this could be even better, if that's interesting to you: https://github.com/charliermarsh/ruff/issues/703</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-15 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 19:48</div>
+            <div class="timeline-body"><p>Right, I agree that we shouldn't change this if it makes a measurable difference ... I'll do a benchmark.</p>
+<p>If it makes a difference I'll just amend this PR to introduce <code>HashableHashSet</code> and <code>HashableHashMap</code> wrapper types instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 20:12</div>
+            <div class="timeline-body"><p>Ok yes it does make a difference ... good catch! I'll change it to use newtypes instead after #1891 has been merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-15 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 20:21</div>
+            <div class="timeline-body"><p>I'm actually shocked at how big of an impact it has.</p>
+<p>Before:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/212564931-b0c2ac73-b0e0-4c45-b659-8e3695ac0fba.png" alt="Screen Shot 2023-01-15 at 3 20 20 PM" /></p>
+<p>After:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/212564933-b2ee329b-1a0b-4d66-a299-a7b01c156be2.png" alt="Screen Shot 2023-01-15 at 3 20 08 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 20:22</div>
+            <div class="timeline-body"><p>Maybe it shouldn't be a surprise given that we're doing these <code>enabled</code> lookups <em>constantly</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 20:32</div>
+            <div class="timeline-body"><p>I'm going to revisit using a bitset for this... some early benchmarks suggest it could provide another 10% speedup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-15 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 20:59</div>
+            <div class="timeline-body"><p>I am actually doing that just now ... PR incoming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-15 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings/mod.rs</code>:48 on 2023-01-15 21:12</div>
+            <div class="timeline-body"><p>Awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @not-my-profile on 2023-01-16 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @not-my-profile on 2023-01-16 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-16 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-16 06:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:26:15 UTC
+    </footer>
+</body>
+</html>

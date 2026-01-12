@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add flake8-pie PIE796: prefer-unique-enum - astral-sh/ruff #1923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add flake8-pie PIE796: prefer-unique-enum</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1923">#1923</a>
+        opened by <a href="https://github.com/ljesparis">@ljesparis</a>
+        on 2023-01-16 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ljesparis">@ljesparis</a> on 2023-01-16 21:48</div>
+            <div class="timeline-body"><p>I accept any suggestion. By the way, I have a doubt, I have checked and all flake8-pie plugins can be fixed by ruff, but is it necessary that this one is also fixed automatically ?</p>
+<p>rel #1543</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 21:59</div>
+            <div class="timeline-body"><p>Awesome, thank you -- I'll review this tonight!</p>
+<blockquote>
+<p>...but is it necessary that this one is also fixed automatically ?</p>
+</blockquote>
+<p>I think in this case we probably <em>shouldn't</em> autofix it (even though we could), since there's not a clearly-correct way to resolve the error. That is, it's not clear <em>which</em> enum member should be removed, so we should probably just leave it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-16 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_pie/rules.rs</code>:136 on 2023-01-16 22:01</div>
+            <div class="timeline-body"><p>Could we instead use...</p>
+<pre><code class="language-rs">let comparable_value: ComparableExpr = (&amp;value).into();
+if !seen_targets.insert(comparable_value) {
+  ...
+}
+</code></pre>
+<p>Not exact code, just pseudo code. But this would detect any duplicate values, not just constants.</p>
+<p>If we <em>do</em> want to leave it as constants, can we change the <code>ExprKind::Constant</code> match to use <code>ExprKind::Constant { value: Constant::Str(value), .. }</code>? And remove the <code>value.to_string()</code>? That way, we'll <em>only</em> match on strings, which I think better matches the desired semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-16 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:5978 on 2023-01-16 22:05</div>
+            <div class="timeline-body"><p>I know this is copied over from <code>flake8-pie</code> but I think we can do something more descriptive...</p>
+<p>Can we change <code>pub struct PreferUniqueEnums</code> to:</p>
+<pre><code class="language-rs">pub struct PreferUniqueEnums {
+  pub value: String
+}
+</code></pre>
+<p>Then, change this to, like: <code>format!(&quot;Enum contains duplicate value: </code>{value}<code>&quot;)</code>.</p>
+<p>In <code>prefer_unique_enums</code>, you can pass <code>violations::PreferUniqueEnums(unparse_expr(&amp;values[i], checker.stylist))</code> to get the formatted value.</p>
+<p>Does that seem ok? Let me know if you have any questions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ljesparis">@ljesparis</a> reviewed on 2023-01-16 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ljesparis">@ljesparis</a> on <code>src/rules/flake8_pie/rules.rs</code>:136 on 2023-01-16 23:21</div>
+            <div class="timeline-body"><p>good one, i didn't know about <strong>ComparableExpr</strong>  😅. It makes everything a bit more simple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ljesparis">@ljesparis</a> reviewed on 2023-01-16 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ljesparis">@ljesparis</a> on <code>src/violations.rs</code>:5978 on 2023-01-16 23:24</div>
+            <div class="timeline-body"><p>it seems more explicit, which is a good thing.  I've uploaded the review changes 👍🏿</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-17 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-17 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-17 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_pie/rules.rs</code>:122 on 2023-01-17 00:30</div>
+            <div class="timeline-body"><p>I tweaked this logic to use <code>resolve_call_path</code>, which validates that the expression is bound to <code>enum.Enum</code> (i.e., it tracks imports, follows aliases, and so on).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-17 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:5976 on 2023-01-17 00:30</div>
+            <div class="timeline-body"><p>(Tweaked this to use named fields which we're trying to prefer going forwards.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 00:30</div>
+            <div class="timeline-body"><p>Thank you! Made a few small changes prior to merging (left notes).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:26:15 UTC
+    </footer>
+</body>
+</html>

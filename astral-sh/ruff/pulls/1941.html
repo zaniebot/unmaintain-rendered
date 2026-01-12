@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drop `RuleCode` in favor of `Rule` enum with human-friendly names - astral-sh/ruff #1941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Drop <code>RuleCode</code> in favor of <code>Rule</code> enum with human-friendly names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1941">#1941</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-18 01:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-18 01:45</div>
+            <div class="timeline-body"><p>Rules often exist in several linters for example UselessObjectInheritance is known as:</p>
+<ul>
+<li>UP004 in pyupgrade</li>
+<li>R0205 in pylint</li>
+<li>PIE792 in flake8-pie</li>
+</ul>
+<p>Ruff currently only supports one code per rule (aside from &quot;prefix redirects&quot; which aren't documented at all), so basically the first code used ends up being the code promoted by ruff which is very arbitrary.</p>
+<p>I think we should rather have a proper many to many mapping, allowing many codes to be mapped to one ruff rule or one code to several ruff rules (e.g. C0103 from pylint encompasses N801, N802 and N803 from pep8-naming). This would also allow flake8_to_ruff to be expanded to support e.g. pylint.</p>
+<p>To cleanly implement this we have to decouple &quot;rules&quot; from &quot;rule codes&quot;. This is the first PR for that epic task ... it doesn't yet change the mapping, only which variant names we use in our codebase.</p>
+<p>Added benefits: The code is no longer littered with cryptic numeric codes and thus more readable and we get a big step closer to #1773.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 04:47</div>
+            <div class="timeline-body"><p>I haven't looked at the code yet, but I definitely agree with the argument put forward in the summary -- I've wanted this for a long time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-18 08:46</div>
+            <div class="timeline-body"><p>Alright let me give you some more context: The PR changes nothing about the UI. The first two commits are solely preparatory and could be merged independently from the rest. I have relabeled the remaining 7 commits as {n}/7 to make it clear that they belong together and have amended the 1st of those commits to explain the commit set in the commit message.</p>
+<p>The derive implementations that depend on the variant names are removed to guarantee that they aren't used by anything anymore so that the last commit doesn't break anything ... these derive implementations may very well be added back in the future.</p>
+<p>As always I strongly advise you to review this commit by commit to make sense of the changes :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 16:09</div>
+            <div class="timeline-body"><p>Thank you. I know it's likely tedious to have to keep it up-to-date so feel free to rebase at the end or as you like. I'll try to review this today -- bear with me as it's a large PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 00:56</div>
+            <div class="timeline-body"><p>(Will review this tonight.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:63 on 2023-01-19 02:10</div>
+            <div class="timeline-body"><p>Do you mind just wrapping this in <code>{ version ... }</code> for consistency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 02:11</div>
+            <div class="timeline-body"><p>Did you change these manually, or via some automation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/imports.rs</code>:39 on 2023-01-19 02:12</div>
+            <div class="timeline-body"><p>This is, of course, greatly, greatly superior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/cli.rs</code>:183 on 2023-01-19 02:16</div>
+            <div class="timeline-body"><p>Maybe the one &quot;loss&quot; in this series of commits. I wish we could catch these statically as part of the CLI.</p>
+<p>Separately, while we're here (and now that the type is string), can we set <code>value_name = &quot;RULE_CODE&quot;</code> for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/main.rs</code>:170 on 2023-01-19 02:17</div>
+            <div class="timeline-body"><p>Is this intended? It should all be handled by the outer function via <code>commands::explain(&amp;code, format)?;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-19 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 03:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 03:42</div>
+            <div class="timeline-body"><p>I did the initial conversion automatically via a small Python script however that script isn't idempotent and the last commit also contained some manual changes so I have been manually rebasing since.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 03:45</div>
+            <div class="timeline-body"><p>(I can try to make this the next thing we merge.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-19 03:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 04:02</div>
+            <div class="timeline-body"><p>Ok great let's do that ... I already addressed your two other comments locally ... then I'll start the final rebase ... doing it automatically this time because there have been too much changes to do this manually ... I'll have to split the last commit into two one for the manual changes and one for the automatic ones and update my python script^^.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-19 04:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 04:22</div>
+            <div class="timeline-body"><p>Ok, all good. I'll hold off on merging anything until this is updated and in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/cli.rs</code>:183 on 2023-01-19 04:47</div>
+            <div class="timeline-body"><p>I have changed this to <code>Option&lt;Rule&gt;</code> by setting the clap option <code>value_parser=Rule::from_code</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 04:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/main.rs</code>:170 on 2023-01-19 04:48</div>
+            <div class="timeline-body"><p>With the previously described change to use <code>value_parser</code> this diff has been removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 04:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/commands.rs</code>:117 on 2023-01-19 04:48</div>
+            <div class="timeline-body"><p>See the last commit message for the script I used to generate it (the last commit is now 100% autogenerated).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 04:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff_cli/src/cli.rs</code>:183 on 2023-01-19 04:51</div>
+            <div class="timeline-body"><blockquote>
+<p>can we set value_name = &quot;RULE_CODE&quot; for this?</p>
+</blockquote>
+<p>I agree that this would be a good addition however this PR accomplishes one thing and I'd rather keep unrelated changes for other PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-01-19 04:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-19 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-19 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-19 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff_cli/src/cli.rs</code>:183 on 2023-01-19 04:53</div>
+            <div class="timeline-body"><p>All good, preserving the type is great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-19 05:06</div>
+            <div class="timeline-body"><p>Thanks for reviewing and merging, I think this greatly improves the overall code readability. :tada:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:26:15 UTC
+    </footer>
+</body>
+</html>

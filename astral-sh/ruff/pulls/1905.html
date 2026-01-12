@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pyupgrade] Automatically rewrite format-strings to f-strings - astral-sh/ruff #1905</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pyupgrade] Automatically rewrite format-strings to f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1905">#1905</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2023-01-16 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-16 03:11</div>
+            <div class="timeline-body"><p>Draft opened for visibility. This is a part of #827. This PR is currently affected by the \N{emoji} bug that we are searching for a fix for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fstrings" to "Pyupgrade: Fstrings" by @colin99d on 2023-01-16 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-16 20:33</div>
+            <div class="timeline-body"><p>@charliermarsh this pr is ready except for the questions below, so I will move it out of draft. Before this is merged we need to consider or resolve the following items:</p>
+<ol>
+<li>The <code>/N{emoji}</code> issue from UP031 remains unsolved (whenever we solve it I will integrate the solution here.</li>
+<li>F strings introduce double bracket syntax <code>{{}}</code>, which is throwing my regexs for a loop. Currently, the best solution I have is <code>\{(?P&lt;name&gt;[^\W0-9]\w*)?(?P&lt;fmt&gt;[^{]*?)}</code> (this does NOT work fully). I tried using <code>libcst_native</code> but it just gives a normal string, and not a formatted one. I believe we could use <code>fancy_regex</code> here; however, that adds a whole dependency for one small functionality. As always, we could just only check for this and not fix it.</li>
+<li>Similar to my PR for UP031, there is a negative test case I disagree with.</li>
+</ol>
+<pre><code>&quot;{}&quot; . format(x)
+</code></pre>
+<p>This is not supposed to be formatted because of its &quot;weird syntax&quot;, but our AST parser ignores the spaces. This means ignoring this is more work for us, and results in a worse user experience.
+4. Lastly (and this one is kinda embarrassing). I cannot for the life of me get the proper <code>.snap</code> file to generate for tests. I have never had an issue before, but it keeps suggesting that the snap just be an empty list, even though running ruff on those files produces a lot of changes. I am sure its something small I am missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @colin99d on 2023-01-16 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/ast.rs</code>:1870 on 2023-01-17 01:30</div>
+            <div class="timeline-body"><p>(This was causing the fixtures to be a no-op per your question in the PR summary @colin99d.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-17 01:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pyupgrade/rules/f_strings.rs</code>:89 on 2023-01-17 02:15</div>
+            <div class="timeline-body"><p>@colin99d - Is this strictly necessary? (Do you know of any case where it would trigger?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-17 02:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 02:52</div>
+            <div class="timeline-body"><p>@colin99d - I'm fine to ignore the unicode case. What else needs solving here? The <code>{{}}</code> case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/colin99d">@colin99d</a> reviewed on 2023-01-17 02:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/colin99d">@colin99d</a> on <code>src/checkers/ast.rs</code>:1870 on 2023-01-17 02:53</div>
+            <div class="timeline-body"><p>Thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 02:57</div>
+            <div class="timeline-body"><p>That should be the only thing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 02:59</div>
+            <div class="timeline-body"><p>I have one idea I'd like to try, which may let us avoid regexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 03:00</div>
+            <div class="timeline-body"><p>(As-is, what happens in those cases? We just ignore them?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-17 03:19</div>
+            <div class="timeline-body"><blockquote>
+<p>(As-is, what happens in those cases? We just ignore them?)</p>
+</blockquote>
+<p>Right now it is ignored in a way. For example: below rust thinks it needs three arguments but only finds 2, so it exits. If we are going to ignore these, we should probably implement some better logic for ignoring them.
+<code>{}{{}}{}&quot;.format(escaped, y)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 03:22</div>
+            <div class="timeline-body"><p>I think we can leverage RustPython's actual string parser and forego regular expressions. Trying it now...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pyupgrade: Fstrings" to "Pyupgrade: automatically rewrite format-strings to f-strings" by @charliermarsh on 2023-01-17 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pyupgrade: automatically rewrite format-strings to f-strings" to "[pyupgrade] Automatically rewrite format-strings to f-strings" by @charliermarsh on 2023-01-17 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 03:43</div>
+            <div class="timeline-body"><p>@colin99d - I was able to use RustPython's own parser, and I think it's properly handling all test-cases now.</p>
+<p>This might be a useful approach to use in the other PR too? I haven't looked into it deeply, but generally, it's best to use the RustPython parsers where we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-17 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-17 04:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:26:15 UTC
+    </footer>
+</body>
+</html>
