@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-11T15:42:30Z
+updated_at: 2026-01-12T21:45:47Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-12T15:57:41Z
+synced_at: 2026-01-12T22:24:50Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -565,5 +565,88 @@ I’ve addressed all the remarks, improved the documentation and bumped the vers
 ---
 
 _Review requested from @ntBre by @leandrobbraga on 2026-01-11 15:04_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:170 on 2026-01-12 21:22_
+
+I think we should be able to use [`try_set_fix`](https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_linter/src/checkers/ast/mod.rs#L3538) here, which will automatically log this error if it fails.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:13 on 2026-01-12 21:24_
+
+I think this was actually okay before the latest revision since the rule may be used without `--fix`.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py`:32 on 2026-01-12 21:31_
+
+Can we add an end-of-line comment too? And maybe one after the deleted element, just to check which comments get deleted.
+
+
+```suggestion
+    "B",  # 2
+    # 3
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:10 on 2026-01-12 21:32_
+
+tiny nit:
+
+
+```suggestion
+use rustc_hash::{FxBuildHasher, FxHashSet};
+
+use ruff_diagnostics::{Applicability, Fix};
+use ruff_macros::{ViolationMetadata, derive_message_formats};
+use ruff_python_ast as ast;
+use ruff_text_size::Ranged;
+
+use crate::checkers::ast::Checker;
+use crate::fix::edits;
+use crate::{FixAvailability, Violation};
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:154 on 2026-01-12 21:36_
+
+Let's add a test for a case like this.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:158 on 2026-01-12 21:38_
+
+tiny nit:
+
+
+```suggestion
+            let mut diagnostic = checker.report_diagnostic(DuplicateEntryInDunderAll, expr);
+```
+
+`expr` implements `Ranged`, which should make it a valid argument on its own, as long as I'm not missing another reference to `range`.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:157 on 2026-01-12 21:40_
+
+Yes, removing that comment is okay. That's what makes the fix unsafe, though.
+
+---
+
+_@ntBre reviewed on 2026-01-12 21:45_
+
+Thank you! This is looking great. I just had a few more very small nits, and a couple of suggestions about additional tests (but I think they'll be handled well already).
+
+I also think it might be worth manually testing the CLI to make sure cases with multiple deletions in the same assignment are fixed correctly. I think they should be, but we have a mechanism to [`isolate`](https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_diagnostics/src/fix.rs#L168) fixes if we need it. I think just testing something like:
+
+```shell
+$ cargo run -p ruff -- check --preview --select RUF069 --fix - <<<'__all__ = ["A", "A", "B", "B"]'
+```
+
+should work. If it _doesn't_ work, we should add an actual CLI test, but I think it's okay as long as the manual test works as expected.
 
 ---

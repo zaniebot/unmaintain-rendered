@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-12T21:13:45Z
+updated_at: 2026-01-12T22:10:37Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-12T21:26:06Z
+synced_at: 2026-01-12T22:25:03Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -38,7 +38,7 @@ The example are GitHub releases that can be references with URLs like https://ap
 
 If extension is not specified, we assume it is a tar.gz file, as it's a common pattern for GitHub.
 
-Fixes: https://github.com/astral-sh/uv/issues/17425
+Fixes: 17425
 Co-authored-by: Copilot Agent
 
 ## Test Plan

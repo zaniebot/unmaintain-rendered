@@ -9,9 +9,9 @@ labels:
   - parser
 assignees: []
 created_at: 2026-01-12T08:42:37Z
-updated_at: 2026-01-12T20:58:34Z
+updated_at: 2026-01-12T21:25:52Z
 url: https://github.com/astral-sh/ruff/issues/22528
-synced_at: 2026-01-12T21:25:42Z
+synced_at: 2026-01-12T22:24:39Z
 ```
 
 # invalid syntax error with something that looks like a `match` statement
@@ -187,5 +187,17 @@ But I think the correct thing to do is mimic the CPython behavior more precisely
 https://github.com/python/cpython/blob/66e1399311c17684c6e26f5d9d9603fbd0717d0d/Parser/parser.c#L7765-L7778
 
 and I believe the logic is to revert to treating `match` as an identifier unless we "match" (pun intended) the pattern: `match`, followed by valid `subject`, followed by `:` and `Newline` and indent, followed by one or more valid `case`s, followed by a `dedent`.
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 21:25_
+
+> But I think the correct thing to do is mimic the CPython behavior more precisely. The relevant code is here:
+
+I'm not sure that's trivial, because it seems they perform a lookahead over the entire `case` (which can be an arbitrary number of tokens).
+
+Unlike Python, we also strive to still parse as much as possible even in the presence of an error. So we need to be careful not to be too strict (but obviously, also not deny valid syntax)
+
+
 
 ---

@@ -9,9 +9,9 @@ labels:
   - type aliases
 assignees: []
 created_at: 2026-01-12T16:23:44Z
-updated_at: 2026-01-12T16:25:46Z
+updated_at: 2026-01-12T21:54:52Z
 url: https://github.com/astral-sh/ty/issues/2470
-synced_at: 2026-01-12T18:23:17Z
+synced_at: 2026-01-12T22:24:33Z
 ```
 
 # Stack overflow with self referential tuple + use of list(...) constructor
@@ -124,5 +124,9 @@ _Label `fatal` added by @AlexWaygood on 2026-01-12 16:25_
 ---
 
 _Label `type aliases` added by @AlexWaygood on 2026-01-12 16:25_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-12 21:54_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-04-30T08:33:11Z
-updated_at: 2026-01-12T15:56:45Z
+updated_at: 2026-01-12T21:31:29Z
 url: https://github.com/astral-sh/uv/issues/13217
-synced_at: 2026-01-12T16:13:58Z
+synced_at: 2026-01-12T22:24:55Z
 ```
 
 # Retain history of package versions through updates
@@ -141,5 +141,18 @@ _Comment by @notatallshaw-gts on 2026-01-12 15:56_
 This is unworkable for a non-developer running code locally, often experimenting or prototyping models, that's the main selling point of this feature, otherwise this would already be solved with lock files. Think data scientist, financial analysist, etc.
 
 FYI, I'm not particularly advocating for this feature, I'm not sure it's as required with a clean distinction between requirements and lock files, but I have known many non-developer conda users use this.
+
+---
+
+_Comment by @CarliJoy on 2026-01-12 21:31_
+
+@juhaszp95 I am not in favour of a history file.
+What would it track? Each revision in full? Only changes?
+The first option is prone to quite large file sizes, as in a uv.lock hashes etc. are saved as well.
+The changes is harder to implement and a thing git does already.
+Git is very good with tracking and compressing changes.
+
+On the first thought it seems like a simpler choice but it just increases complexity. 
+Git already implements everything to keep track of histories.
 
 ---

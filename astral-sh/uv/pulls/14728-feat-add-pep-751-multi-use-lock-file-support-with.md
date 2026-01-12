@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-12T19:59:54Z
+updated_at: 2026-01-12T21:41:11Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-12T20:26:40Z
+synced_at: 2026-01-12T22:25:02Z
 ```
 
 # feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers
@@ -45,38 +45,36 @@ The `pylock.toml` output now includes the required PEP 751 metadata fields:
 
 #### 2. Dependency Markers for Extras and Groups
 
-Package dependencies include PEP 751 markers using the container membership syntax:
+Package dependencies include markers using the appropriate syntax:
 
-- `'test' in extras` - indicates this dependency is only needed with the `test` extra
-- `'dev' in dependency_groups` - indicates this dependency is only needed with the `dev` group
+- **Root project extras/groups**: Use PEP 751 container syntax (`'test' in extras`, `'dev' in dependency_groups`)
+- **Transitive package extras**: Use standard PEP 508 syntax (`extra == 'dotenv'`)
 
 Dependency markers are simplified relative to `requires-python`. Unconditional dependencies have no marker; conditional ones only include the additional constraints.
 
 #### 3. Marker Conversion
 
-uv's internal lock format uses "universal markers" that encode extras and groups in a special format. PEP 751 specifies a different syntax:
+uv's internal lock format uses "universal markers" that encode extras and groups. The conversion logic:
 
-| Internal Format                | PEP 751 Format               |
-| ------------------------------ | ---------------------------- |
-| `extra == 'extra-3-pkg-cpu'`   | `'cpu' in extras`            |
-| `extra == 'group-5-myapp-dev'` | `'dev' in dependency_groups` |
+- Identifies root project extras/groups and converts to PEP 751 syntax
+- Preserves standard PEP 508 syntax for transitive package extras
+- Simplifies markers by removing redundant `requires-python` constraints
 
-### Example Output
+### Marker Syntax Summary
+
+| Dependency Type | Marker Syntax | Example |
+|----------------|---------------|---------|
+| Unconditional | *(no marker)* | `{ name = "flask", version = "3.0.2" }` |
+| Platform-specific | PEP 508 | `marker = "sys_platform == 'win32'"` |
+| Root project extra | PEP 751 | `marker = "'extra1' in extras"` |
+| Root project group | PEP 751 | `marker = "'test' in dependency_groups"` |
+| Transitive extra | PEP 508 | `marker = "extra == 'dotenv'"` |
+
+### Marker Variations
+
+#### Unconditional dependencies (no marker)
 
 ```toml
-lock-version = "1.0"
-created-by = "uv"
-requires-python = ">=3.12"
-extras = ["docs", "test"]
-dependency-groups = ["dev"]
-
-[[packages]]
-name = "click"
-version = "8.1.7"
-dependencies = [{ name = "colorama", version = "0.4.6", marker = "sys_platform == 'win32'" }]
-index = "https://pypi.org/simple"
-...
-
 [[packages]]
 name = "flask"
 version = "3.0.2"
@@ -84,29 +82,52 @@ dependencies = [
     { name = "blinker", version = "1.7.0" },
     { name = "click", version = "8.1.7" },
     { name = "itsdangerous", version = "2.1.2" },
-    { name = "jinja2", version = "3.1.3" },
-    { name = "python-dotenv", version = "1.0.1", marker = "'dotenv' in extras" },
-    { name = "werkzeug", version = "3.0.1" },
 ]
-index = "https://pypi.org/simple"
-...
+```
 
+#### Platform-specific dependencies (PEP 508 marker)
+
+```toml
+[[packages]]
+name = "click"
+version = "8.1.7"
+dependencies = [
+    { name = "colorama", version = "0.4.6", marker = "sys_platform == 'win32'" },
+]
+```
+
+#### Root project extras (PEP 751 syntax)
+
+```toml
 [[packages]]
 name = "project"
 dependencies = [
-    { name = "flask", version = "3.0.2" },
-    { name = "pytest", version = "8.0.0", marker = "'test' in extras" },
-    { name = "sphinx", version = "7.0.0", marker = "'docs' in extras" },
-    { name = "mypy", version = "1.0.0", marker = "'dev' in dependency_groups" },
+    { name = "sortedcontainers", version = "2.3.0", marker = "'extra1' in extras" },
+    { name = "sortedcontainers", version = "2.4.0", marker = "'extra2' in extras" },
 ]
-directory = { path = ".", editable = true }
 ```
 
-Note:
-- Unconditional dependencies (blinker, click, etc.) have no marker
-- Platform-specific dependencies include only that condition (`sys_platform == 'win32'`)
-- Extra dependencies include the extras marker (`'dotenv' in extras`)
-- Dependency group dependencies include the groups marker (`'dev' in dependency_groups`)
+#### Root project dependency groups (PEP 751 syntax)
+
+```toml
+[[packages]]
+name = "project"
+dependencies = [
+    { name = "pytest", version = "8.1.1", marker = "'test' in dependency_groups" },
+    { name = "mypy", version = "1.0.0", marker = "'dev' in dependency_groups" },
+]
+```
+
+#### Transitive package extras (PEP 508 syntax)
+
+```toml
+[[packages]]
+name = "flask"
+version = "3.0.2"
+dependencies = [
+    { name = "python-dotenv", version = "1.0.1", marker = "extra == 'dotenv'" },
+]
+```
 
 ### Usage
 

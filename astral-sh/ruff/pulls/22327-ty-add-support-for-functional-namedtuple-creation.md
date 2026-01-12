@@ -9,12 +9,12 @@ labels:
   - ecosystem-analyzer
 assignees: []
 draft: true
-base: charlie/dyn-members
+base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-12T13:51:35Z
+updated_at: 2026-01-12T21:39:25Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-12T15:57:47Z
+synced_at: 2026-01-12T22:24:50Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
