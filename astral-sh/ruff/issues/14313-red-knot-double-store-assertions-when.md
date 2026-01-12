@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T10:57:55Z
 updated_at: 2024-11-13T13:35:55Z
 url: https://github.com/astral-sh/ruff/issues/14313
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Double-store assertions when encountering invalid syntax
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-13 10:57_
+_@sharkdp_
 
 During type inference on some invalid syntax examples, we encounter situations where the exact same expression appears in multiple places inside the AST. The smallest example I could find is this:
 ```py

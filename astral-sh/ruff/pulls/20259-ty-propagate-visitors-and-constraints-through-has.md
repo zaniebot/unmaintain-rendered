@@ -13,14 +13,14 @@ head: cjm/recursive-invariant-relation
 created_at: 2025-09-05T02:06:59Z
 updated_at: 2025-09-06T00:18:25Z
 url: https://github.com/astral-sh/ruff/pull/20259
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] propagate visitors and constraints through has_relation_in_invariant_position
 
 ---
 
-_Pull request opened by @carljm on 2025-09-05 02:06_
+_@carljm_
 
 ## Summary
 

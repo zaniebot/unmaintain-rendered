@@ -13,14 +13,14 @@ head: jtfm/fix-torch-failure
 created_at: 2025-06-18T13:45:37Z
 updated_at: 2025-06-18T14:30:14Z
 url: https://github.com/astral-sh/uv/pull/14128
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Fix benchmark compilation failure: `cannot find attribute clap in this scope`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-18 13:45_
+_@jtfmumm_
 
 [Two benchmark jobs](https://github.com/astral-sh/uv/actions/runs/15732775460/job/44337710992?pr=14126) were failing with `error: cannot find attribute clap in this scope` based on #14120. This updates the recently added `#[clap(name = rocm...` lines to use `cfg_attr(feature = "clap",`.
 

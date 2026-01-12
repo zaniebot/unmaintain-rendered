@@ -13,14 +13,14 @@ head: refactor-extra-specification
 created_at: 2025-04-18T12:37:46Z
 updated_at: 2025-04-28T17:30:14Z
 url: https://github.com/astral-sh/uv/pull/12964
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Refactor `ExtraSpecification` to support `default-extras`
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-18 12:37_
+_@blueraft_
 
 ## Summary
 

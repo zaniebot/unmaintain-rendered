@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T18:30:32Z
 updated_at: 2025-11-14T15:14:45Z
 url: https://github.com/astral-sh/ty/issues/684
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Basic system Python auto-detection
 
 ---
 
-_Issue opened by @Andrej730 on 2025-06-19 18:30_
+_@Andrej730_
 
 ### Question
 

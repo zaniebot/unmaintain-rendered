@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T20:22:19Z
 updated_at: 2025-06-24T06:26:29Z
 url: https://github.com/astral-sh/ruff/issues/18854
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`RUF`] [preview] `RUF037` could support empty strings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-21 20:22_
+_@MeGaGiGaGon_
 
 ### Summary
 

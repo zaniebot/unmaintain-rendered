@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T10:46:50Z
 updated_at: 2026-01-03T20:37:27Z
 url: https://github.com/astral-sh/uv/issues/16072
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Multiple OpenMP versions cause segfault
 
 ---
 
-_Issue opened by @anstadnik on 2025-09-30 10:46_
+_@anstadnik_
 
 ### Question
 

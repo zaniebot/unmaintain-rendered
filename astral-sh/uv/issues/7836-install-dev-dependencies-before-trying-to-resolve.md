@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-01T12:54:58Z
 updated_at: 2024-10-01T12:54:58Z
 url: https://github.com/astral-sh/uv/issues/7836
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Install dev-dependencies before trying to resolve "normal" dependencies
 
 ---
 
-_Issue opened by @vlad-ivanov-name on 2024-10-01 12:54_
+_@vlad-ivanov-name_
 
 Consider the following `pyproject.toml`:
 

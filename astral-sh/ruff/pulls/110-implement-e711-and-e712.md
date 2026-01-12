@@ -12,14 +12,14 @@ head: charlie/E711
 created_at: 2022-09-06T13:49:14Z
 updated_at: 2022-09-06T14:14:37Z
 url: https://github.com/astral-sh/ruff/pull/110
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement E711 and E712
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-06 13:49_
+_@charliermarsh_
 
 _No description provided._
 

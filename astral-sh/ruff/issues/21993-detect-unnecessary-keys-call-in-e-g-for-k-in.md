@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-15T22:34:40Z
 updated_at: 2025-12-16T13:57:15Z
 url: https://github.com/astral-sh/ruff/issues/21993
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # detect unnecessary keys() call in e.g. `for k in sorted(my_dict.keys()):`
 
 ---
 
-_Issue opened by @ctcjab on 2025-12-15 22:34_
+_@ctcjab_
 
 ### Summary
 

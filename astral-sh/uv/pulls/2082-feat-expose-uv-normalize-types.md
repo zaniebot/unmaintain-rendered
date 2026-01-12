@@ -12,14 +12,14 @@ head: feat/expose-uv-normalize-types
 created_at: 2024-02-29T14:54:47Z
 updated_at: 2024-02-29T15:06:56Z
 url: https://github.com/astral-sh/uv/pull/2082
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # feat: expose uv_normalize types
 
 ---
 
-_Pull request opened by @tdejager on 2024-02-29 14:54_
+_@tdejager_
 
 ## Summary
 

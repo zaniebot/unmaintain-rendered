@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T18:52:32Z
 updated_at: 2024-08-21T19:03:22Z
 url: https://github.com/astral-sh/uv/issues/6367
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # `--no-build-isolation` has no effect in `uv add `
 
 ---
 
-_Issue opened by @kabouzeid on 2024-08-21 18:52_
+_@kabouzeid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

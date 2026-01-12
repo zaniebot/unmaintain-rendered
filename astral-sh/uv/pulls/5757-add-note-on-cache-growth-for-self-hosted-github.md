@@ -13,14 +13,14 @@ head: caching-hosted-runner
 created_at: 2024-08-04T04:53:02Z
 updated_at: 2024-09-18T22:25:16Z
 url: https://github.com/astral-sh/uv/pull/5757
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Add note on cache growth for self-hosted GitHub runners
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-04 04:53_
+_@samypr100_
 
 ## Summary
 

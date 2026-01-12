@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-01-29T17:24:21Z
 updated_at: 2024-01-29T17:55:01Z
 url: https://github.com/astral-sh/ruff/pull/9677
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Document `literal-membership` fix safety conditions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 17:24_
+_@charliermarsh_
 
 ## Summary
 

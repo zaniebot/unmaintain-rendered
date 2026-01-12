@@ -13,14 +13,14 @@ head: alex/redknot-import-2
 created_at: 2024-08-22T12:34:47Z
 updated_at: 2024-08-27T13:17:24Z
 url: https://github.com/astral-sh/ruff/pull/13055
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Improve the accuracy of the unresolved-import check
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-22 12:34_
+_@AlexWaygood_
 
 ## Summary
 

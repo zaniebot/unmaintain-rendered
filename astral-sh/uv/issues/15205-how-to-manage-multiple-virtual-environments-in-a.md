@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T17:32:32Z
 updated_at: 2025-08-11T10:49:25Z
 url: https://github.com/astral-sh/uv/issues/15205
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # How to manage multiple virtual environments in a single uv project?
 
 ---
 
-_Issue opened by @ziminz19 on 2025-08-10 17:32_
+_@ziminz19_
 
 ### Question
 

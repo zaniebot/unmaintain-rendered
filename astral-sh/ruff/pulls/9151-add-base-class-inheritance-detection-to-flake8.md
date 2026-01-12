@@ -13,14 +13,14 @@ head: charlie/django
 created_at: 2023-12-15T17:52:56Z
 updated_at: 2023-12-15T18:07:49Z
 url: https://github.com/astral-sh/ruff/pull/9151
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add base-class inheritance detection to flake8-django rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 17:52_
+_@charliermarsh_
 
 ## Summary
 

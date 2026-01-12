@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-17T12:13:16Z
 updated_at: 2025-04-18T15:20:04Z
 url: https://github.com/astral-sh/ruff/issues/17447
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Some pairs of types are no longer recognised as assignable to their union
 
 ---
 
-_Issue opened by @github-actions on 2025-04-17 12:13_
+_@github-actions_
 
 Failing property test run here: https://github.com/astral-sh/ruff/actions/runs/14515316525
 

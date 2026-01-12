@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T06:55:14Z
 updated_at: 2025-02-18T23:10:48Z
 url: https://github.com/astral-sh/ruff/issues/13713
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [TCH001] Improvement with FastAPI dependencies
 
 ---
 
-_Issue opened by @JP-Ellis on 2024-10-11 06:55_
+_@JP-Ellis_
 
 FastAPI makes extensive use of the type annotations at runtime, which then requires that the relevant imports be available at runtime. This can cause issues when Ruff suggests they be moved into type-checking blocks.
 

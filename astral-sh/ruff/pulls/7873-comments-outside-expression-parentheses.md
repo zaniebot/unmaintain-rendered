@@ -13,14 +13,14 @@ head: Comments-outside-expression-parentheses
 created_at: 2023-10-09T16:56:40Z
 updated_at: 2023-10-19T09:30:41Z
 url: https://github.com/astral-sh/ruff/pull/7873
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Comments outside expression parentheses
 
 ---
 
-_Pull request opened by @konstin on 2023-10-09 16:56_
+_@konstin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

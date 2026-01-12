@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T13:21:08Z
 updated_at: 2024-05-02T14:41:33Z
 url: https://github.com/astral-sh/uv/issues/3338
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Support _netrc files for windows
 
 ---
 
-_Issue opened by @jurkov on 2024-05-02 13:21_
+_@jurkov_
 
 Uv does need a .netrc file on Windows. Unfortunately, pip needs a _netfile on Windows.
 Uv should also use a _netfile on Windows.

@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-08-21T00:04:02Z
 updated_at: 2024-08-21T16:28:04Z
 url: https://github.com/astral-sh/uv/pull/6287
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Avoid treating `uv add -r` as `--raw-sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-21 00:04_
+_@charliermarsh_
 
 ## Summary
 

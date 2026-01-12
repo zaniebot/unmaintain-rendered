@@ -13,14 +13,14 @@ head: configurable-bytecode-timeout
 created_at: 2025-06-30T09:01:29Z
 updated_at: 2025-07-17T13:11:33Z
 url: https://github.com/astral-sh/uv/pull/14369
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Add UV_COMPILE_BYTECODE_TIMEOUT environment variable
 
 ---
 
-_Pull request opened by @adisbladis on 2025-06-30 09:01_
+_@adisbladis_
 
 ## Summary
 

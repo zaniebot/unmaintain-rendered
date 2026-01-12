@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-19T06:40:18Z
 updated_at: 2023-05-02T13:14:04Z
 url: https://github.com/astral-sh/ruff/issues/4018
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Text format: Annotation Caret misplaced on lines with tabs
 
 ---
 
-_Issue opened by @MichaReiser on 2023-04-19 06:40_
+_@MichaReiser_
 
 The `TextEmitter` misplaces the position caret `^` if the output string contains any tab characters. 
 

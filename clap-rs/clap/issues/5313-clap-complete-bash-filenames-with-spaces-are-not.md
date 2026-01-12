@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-01-16T18:38:56Z
 updated_at: 2024-02-02T16:11:12Z
 url: https://github.com/clap-rs/clap/issues/5313
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete bash: filenames with spaces are not completed properly
 
 ---
 
-_Issue opened by @alexheretic on 2024-01-16 18:38_
+_@alexheretic_
 
 ### Please complete the following tasks
 

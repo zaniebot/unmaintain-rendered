@@ -13,14 +13,14 @@ head: zb/release-runner
 created_at: 2024-11-19T19:38:42Z
 updated_at: 2024-11-19T20:36:01Z
 url: https://github.com/astral-sh/uv/pull/9239
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Use larger runners for bottleneck builds of release artifacts
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 19:38_
+_@zanieb_
 
 Uses a different runner for builds that take >15m.
 

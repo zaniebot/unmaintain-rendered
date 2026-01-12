@@ -14,14 +14,14 @@ head: dhruv/f-string-multiline-preview
 created_at: 2024-11-27T09:45:38Z
 updated_at: 2024-11-27T10:20:30Z
 url: https://github.com/astral-sh/ruff/pull/14630
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Gate `is_multiline` change behind preview
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 09:45_
+_@dhruvmanila_
 
 ## Summary
 

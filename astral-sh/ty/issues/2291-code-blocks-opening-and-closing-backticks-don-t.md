@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-31T08:22:27Z
 updated_at: 2026-01-05T12:13:26Z
 url: https://github.com/astral-sh/ty/issues/2291
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Code blocks opening and closing backticks don't match
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-31 08:22_
+_@MichaReiser_
 
 ### Summary
 

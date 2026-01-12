@@ -13,14 +13,14 @@ head: zb/fix-extra-spec
 created_at: 2025-07-03T02:25:29Z
 updated_at: 2025-07-03T12:30:01Z
 url: https://github.com/astral-sh/uv/pull/14434
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Fix forced resolution with all extras in `uv version`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-03 02:25_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14433
 

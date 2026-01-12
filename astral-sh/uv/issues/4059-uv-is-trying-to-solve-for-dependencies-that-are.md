@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T18:14:43Z
 updated_at: 2024-06-06T05:00:17Z
 url: https://github.com/astral-sh/uv/issues/4059
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # `uv` is trying to solve for dependencies that are already installed, failing if they are not available from the package repository
 
 ---
 
-_Issue opened by @hoechenberger on 2024-06-05 18:14_
+_@hoechenberger_
 
 Hello,
 

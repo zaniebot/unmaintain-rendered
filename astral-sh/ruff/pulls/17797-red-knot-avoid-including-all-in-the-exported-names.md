@@ -14,14 +14,14 @@ head: dhruv/avoid-exporting-dunder-all
 created_at: 2025-05-02T19:53:21Z
 updated_at: 2025-05-07T15:18:07Z
 url: https://github.com/astral-sh/ruff/pull/17797
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Avoid including `__all__` in the exported names
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-02 19:53_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-01T13:50:48Z
 updated_at: 2025-07-04T10:36:27Z
 url: https://github.com/astral-sh/ty/issues/741
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Stack overflow with file called `types.py`
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-01 13:50_
+_@sharkdp_
 
 ### Summary
 

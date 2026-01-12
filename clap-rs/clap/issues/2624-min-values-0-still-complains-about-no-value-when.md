@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-26T14:55:38Z
 updated_at: 2021-07-30T09:37:41Z
 url: https://github.com/clap-rs/clap/issues/2624
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `min_values(0)` still complains about no value when combining short versions
 
 ---
 
-_Issue opened by @miDeb on 2021-07-26 14:55_
+_@miDeb_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: dcreager/remove-reveals
 created_at: 2025-11-21T18:27:38Z
 updated_at: 2025-11-21T18:57:57Z
 url: https://github.com/astral-sh/ruff/pull/21568
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Remove brittle constraint set reveal tests
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-21 18:27_
+_@dcreager_
 
 These were added to try to make it clearer that assignability checks will eventually return more detailed answers than true or false. However, the constraint set display rendering is still more brittle than I'd like it to be, and it's more trouble than it's worth to keep them updated with semantically identically but textually different edits. The `static_assert`s are sufficient to check correctness, and we can always add `reveal_type` when needed for further debugging.
 

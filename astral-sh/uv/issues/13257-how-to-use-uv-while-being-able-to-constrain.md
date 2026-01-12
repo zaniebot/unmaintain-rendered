@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T00:35:03Z
 updated_at: 2025-05-02T02:11:32Z
 url: https://github.com/astral-sh/uv/issues/13257
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # How to use uv while being able to constrain exactly where uv installs itself?
 
 ---
 
-_Issue opened by @RuABraun on 2025-05-02 00:35_
+_@RuABraun_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: fix-panics-when-checking-black
 created_at: 2024-08-21T12:30:40Z
 updated_at: 2024-08-21T12:45:11Z
 url: https://github.com/astral-sh/ruff/pull/13033
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fix various panicks when linting black/src
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-21 12:30_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T01:20:44Z
 updated_at: 2024-07-12T06:23:49Z
 url: https://github.com/astral-sh/uv/issues/4983
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # how can to change the pip source in a virtual environment, use the following command
 
 ---
 
-_Issue opened by @dividduang on 2024-07-11 01:20_
+_@dividduang_
 
 ```
 python --version

@@ -13,14 +13,14 @@ head: dhruv/fstring-E25
 created_at: 2023-10-10T13:27:58Z
 updated_at: 2023-10-12T05:32:47Z
 url: https://github.com/astral-sh/ruff/pull/7894
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix `E251` false positive inside f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-10 13:27_
+_@dhruvmanila_
 
 ## Summary
 

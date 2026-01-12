@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T08:33:12Z
 updated_at: 2024-10-23T09:05:10Z
 url: https://github.com/astral-sh/ruff/issues/13885
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TRY300: Recommend putting code after the try/except instead of inside a else
 
 ---
 
-_Issue opened by @cbornet on 2024-10-23 08:33_
+_@cbornet_
 
 When an exception handler re-raises or returns, it seems to me that it's better to put the "else" code as a follow-up to the try/except than in a "else".
 

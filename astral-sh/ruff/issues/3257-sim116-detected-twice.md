@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T18:45:51Z
 updated_at: 2023-02-27T23:08:46Z
 url: https://github.com/astral-sh/ruff/issues/3257
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM116 detected twice
 
 ---
 
-_Issue opened by @spaceone on 2023-02-27 18:45_
+_@spaceone_
 
 ```python
 def foo(func_name):

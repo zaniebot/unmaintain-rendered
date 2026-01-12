@@ -12,14 +12,14 @@ head: preserve-history
 created_at: 2023-07-27T09:43:46Z
 updated_at: 2023-08-05T08:19:40Z
 url: https://github.com/astral-sh/ruff/pull/6119
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Preserve RustPython History
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-27 09:43_
+_@MichaReiser_
 
 ## Summary
 

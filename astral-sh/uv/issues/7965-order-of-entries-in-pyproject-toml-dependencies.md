@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T11:16:12Z
 updated_at: 2024-10-09T09:20:06Z
 url: https://github.com/astral-sh/uv/issues/7965
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Order of entries in pyproject.toml [dependencies] defines what versions get installed. 
 
 ---
 
-_Issue opened by @MatteoLacki on 2024-10-07 11:16_
+_@MatteoLacki_
 
 Hi,
 

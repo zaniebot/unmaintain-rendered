@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T20:47:12Z
 updated_at: 2025-12-25T07:29:11Z
 url: https://github.com/astral-sh/ty/issues/2120
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Split the `ty_python_semantic` into more crates
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-19 20:47_
+_@MichaReiser_
 
 The `ty_python_semantic` crates has become pretty big and slow to compile. Splitting the type inference logic is tricky but we could try:
 

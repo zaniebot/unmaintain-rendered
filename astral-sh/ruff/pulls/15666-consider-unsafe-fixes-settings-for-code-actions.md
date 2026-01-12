@@ -14,14 +14,14 @@ head: dhruv/server-unsafe-fixes
 created_at: 2025-01-22T05:58:38Z
 updated_at: 2025-01-22T08:14:15Z
 url: https://github.com/astral-sh/ruff/pull/15666
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Consider `unsafe-fixes` settings for code actions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-22 05:58_
+_@dhruvmanila_
 
 ## Summary
 

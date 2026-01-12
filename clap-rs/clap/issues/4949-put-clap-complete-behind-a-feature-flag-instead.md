@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-05T00:45:15Z
 updated_at: 2023-06-05T12:08:52Z
 url: https://github.com/clap-rs/clap/issues/4949
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # put clap_complete behind a feature flag instead of a separate crate
 
 ---
 
-_Issue opened by @contagnas on 2023-06-05 00:45_
+_@contagnas_
 
 ### Please complete the following tasks
 

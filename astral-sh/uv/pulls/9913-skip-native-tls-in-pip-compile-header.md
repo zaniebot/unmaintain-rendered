@@ -13,14 +13,14 @@ head: charlie/native-tls
 created_at: 2024-12-15T14:33:51Z
 updated_at: 2024-12-15T14:45:01Z
 url: https://github.com/astral-sh/uv/pull/9913
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Skip `--native-tls` in `pip compile` header
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-15 14:33_
+_@charliermarsh_
 
 ## Summary
 

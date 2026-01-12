@@ -14,14 +14,14 @@ head: alex/property-test-failure
 created_at: 2025-01-21T12:46:16Z
 updated_at: 2025-01-21T12:53:05Z
 url: https://github.com/astral-sh/ruff/pull/15637
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Heterogeneous tuple types with differently ordered (but equivalent) unions at the same index should be considered equivalent
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-21 12:46_
+_@AlexWaygood_
 
 ## Summary
 

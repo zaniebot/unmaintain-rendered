@@ -14,14 +14,14 @@ head: konsti/simplify-no-solution-error
 created_at: 2024-07-15T10:41:55Z
 updated_at: 2024-07-15T15:43:37Z
 url: https://github.com/astral-sh/uv/pull/5067
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Remove special casing from no solution error
 
 ---
 
-_Pull request opened by @konstin on 2024-07-15 10:41_
+_@konstin_
 
 The only pubgrub error that can occur is a `NoSolutionError`, and the only place it can occur is `unit_propagation`, all other variants if `PubGrubError` are unreachable. By changing the return type on pubgrub's side (https://github.com/astral-sh/pubgrub/pull/28), we can remove the pattern matching and the `unreachable!()` asserts on `PubGrubError`.
 

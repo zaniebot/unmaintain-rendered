@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:52:23Z
 updated_at: 2025-05-19T16:52:14Z
 url: https://github.com/astral-sh/ty/issues/170
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Multi-span diagnostics in the LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:52_
+_@MichaReiser_
 
 Red Knot only highlights the primary diagnostic range today. 
 

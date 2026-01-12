@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T09:21:18Z
 updated_at: 2025-09-12T10:48:02Z
 url: https://github.com/astral-sh/uv/issues/15805
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # A way to remove old Python versions
 
 ---
 
-_Issue opened by @adamchainz on 2025-09-12 09:21_
+_@adamchainz_
 
 ### Summary
 

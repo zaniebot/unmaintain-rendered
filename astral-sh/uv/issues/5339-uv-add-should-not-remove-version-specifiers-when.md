@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-23T15:50:33Z
 updated_at: 2024-07-23T20:48:42Z
 url: https://github.com/astral-sh/uv/issues/5339
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv add` should not remove version specifiers when adding source
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 15:50_
+_@zanieb_
 
 e.g. the version specifier is removed from `httpx` in `project.dependencies`
 

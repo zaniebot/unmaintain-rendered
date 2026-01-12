@@ -13,14 +13,14 @@ head: charlie/contrast
 created_at: 2023-11-07T21:35:08Z
 updated_at: 2023-11-07T21:41:35Z
 url: https://github.com/astral-sh/ruff/pull/8548
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve detail link contrast in dark mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 21:35_
+_@charliermarsh_
 
 Use our light-mode styling for links in that context.
 

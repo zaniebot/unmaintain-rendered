@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-29T21:36:24Z
 updated_at: 2023-05-21T20:56:43Z
 url: https://github.com/astral-sh/ruff/issues/4153
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Change `isort.split-on-trailing-comma` default to false
 
 ---
 
-_Issue opened by @janosh on 2023-04-29 21:36_
+_@janosh_
 
 [Currently defaults to true](https://beta.ruff.rs/docs/settings/#split-on-trailing-comma), causing this to stay as is
 

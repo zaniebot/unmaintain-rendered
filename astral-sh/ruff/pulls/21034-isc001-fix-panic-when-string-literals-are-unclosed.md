@@ -13,14 +13,14 @@ head: fix-isc001-unterminated-literal
 created_at: 2025-10-22T18:56:33Z
 updated_at: 2025-10-28T19:18:52Z
 url: https://github.com/astral-sh/ruff/pull/21034
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [`ISC001`] fix panic when string literals are unclosed
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-22 18:56_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

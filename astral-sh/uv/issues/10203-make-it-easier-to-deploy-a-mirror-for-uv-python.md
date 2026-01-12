@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T17:18:48Z
 updated_at: 2025-04-11T13:48:56Z
 url: https://github.com/astral-sh/uv/issues/10203
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Make it easier to deploy a mirror for uv-python command
 
 ---
 
-_Issue opened by @MeitarR on 2024-12-27 17:18_
+_@MeitarR_
 
 # The problem
 

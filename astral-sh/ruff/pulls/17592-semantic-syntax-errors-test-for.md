@@ -13,14 +13,14 @@ head: semantic-syntax-error-load-before-global-declaration
 created_at: 2025-04-23T19:12:20Z
 updated_at: 2025-04-24T20:15:26Z
 url: https://github.com/astral-sh/ruff/pull/17592
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`semantic-syntax-errors`] test for `LoadBeforeGlobalDeclaration` - ruff linter
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-23 19:12_
+_@VascoSch92_
 
 Hey @ntBre 
 

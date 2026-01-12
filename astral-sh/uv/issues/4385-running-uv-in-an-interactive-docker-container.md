@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T15:14:52Z
 updated_at: 2024-08-21T06:16:56Z
 url: https://github.com/astral-sh/uv/issues/4385
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Running uv in an interactive docker container
 
 ---
 
-_Issue opened by @braaannigan on 2024-06-18 15:14_
+_@braaannigan_
 
 Thanks for this great crate! I've been working with a recent version and trying to capture my best practices here: https://www.rhosignal.com/posts/uv-in-docker/
 

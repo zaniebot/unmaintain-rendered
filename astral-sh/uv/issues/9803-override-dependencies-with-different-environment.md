@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T10:05:36Z
 updated_at: 2024-12-14T02:12:45Z
 url: https://github.com/astral-sh/uv/issues/9803
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # override-dependencies with different environment markers leads to error
 
 ---
 
-_Issue opened by @mcschempp on 2024-12-11 10:05_
+_@mcschempp_
 
 Environment Info:
 ```

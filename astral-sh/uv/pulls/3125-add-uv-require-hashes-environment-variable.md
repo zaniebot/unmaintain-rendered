@@ -13,14 +13,14 @@ head: charlie/env
 created_at: 2024-04-18T20:57:16Z
 updated_at: 2024-04-19T08:04:38Z
 url: https://github.com/astral-sh/uv/pull/3125
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Add `UV_REQUIRE_HASHES` environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 20:57_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/3117.
 

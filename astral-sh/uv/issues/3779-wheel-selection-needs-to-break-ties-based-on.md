@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T00:09:47Z
 updated_at: 2024-05-23T21:12:54Z
 url: https://github.com/astral-sh/uv/issues/3779
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Wheel selection needs to break ties based on build tag
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-23 00:09_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/2538#issuecomment-2125957629.
 

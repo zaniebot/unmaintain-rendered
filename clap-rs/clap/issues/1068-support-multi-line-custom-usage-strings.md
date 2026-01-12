@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-16T17:50:25Z
 updated_at: 2021-12-08T20:03:04Z
 url: https://github.com/clap-rs/clap/issues/1068
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support multi-line custom usage strings
 
 ---
 
-_Issue opened by @m-ou-se on 2017-10-16 17:50_
+_@m-ou-se_
 
 ### Affected Version of clap
 

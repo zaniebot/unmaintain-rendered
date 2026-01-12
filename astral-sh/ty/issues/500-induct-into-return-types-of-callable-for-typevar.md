@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T21:07:11Z
 updated_at: 2025-08-15T15:12:09Z
 url: https://github.com/astral-sh/ty/issues/500
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # induct into return types of Callable for typevar solving
 
 ---
 
-_Issue opened by @DouweM on 2025-05-23 21:07_
+_@DouweM_
 
 ### Summary
 

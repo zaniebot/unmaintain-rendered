@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-17T04:48:28Z
 updated_at: 2024-02-19T03:38:46Z
 url: https://github.com/astral-sh/ruff/issues/8737
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Allow default configuration for integrators
 
 ---
 
-_Issue opened by @ofek on 2023-11-17 04:48_
+_@ofek_
 
 I am integrating with Ruff and wish to provide out-of-the-box configuration that users can override if they wish. Essentially, a flag to set the [extend](https://docs.astral.sh/ruff/settings/#extend) option like `--config-extend` would be perfect.
 

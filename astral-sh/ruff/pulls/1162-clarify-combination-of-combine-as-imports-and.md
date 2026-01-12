@@ -12,14 +12,14 @@ head: charlie/force-wrap
 created_at: 2022-12-09T17:20:12Z
 updated_at: 2022-12-09T17:20:16Z
 url: https://github.com/astral-sh/ruff/pull/1162
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Clarify combination of combine-as-imports and force-wrap-aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-09 17:20_
+_@charliermarsh_
 
 Resolves #1158.
 

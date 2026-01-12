@@ -12,14 +12,14 @@ head: report_imports
 created_at: 2023-02-27T02:52:04Z
 updated_at: 2023-04-04T03:52:48Z
 url: https://github.com/astral-sh/ruff/pull/3243
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Generate `ImportMap` from module path to imported dependencies
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-02-27 02:52_
+_@chanman3388_
 
 Related to #2914 amongst others.
 The tests will fail at the moment but I'd like to get some feedback on the architecture first.

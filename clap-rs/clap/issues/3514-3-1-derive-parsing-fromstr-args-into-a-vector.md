@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-26T13:41:07Z
 updated_at: 2022-02-28T16:04:13Z
 url: https://github.com/clap-rs/clap/issues/3514
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # [3.1] Derive parsing FromStr args into a vector regression from 3.0
 
 ---
 
-_Issue opened by @ufoscout on 2022-02-26 13:41_
+_@ufoscout_
 
 ### Please complete the following tasks
 

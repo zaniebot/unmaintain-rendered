@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-31T14:07:43Z
 updated_at: 2025-08-18T17:45:45Z
 url: https://github.com/astral-sh/ty/issues/920
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect inference of equality operation between literal enum types
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-31 14:07_
+_@AlexWaygood_
 
 ### Summary
 

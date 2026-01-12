@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T19:13:28Z
 updated_at: 2025-08-17T00:32:13Z
 url: https://github.com/astral-sh/uv/issues/6459
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Run `uv sync` without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)
 
 ---
 
-_Issue opened by @adiberk on 2024-08-22 19:13_
+_@adiberk_
 
 Our current Dockerfile install command with poetry - we can disable venv creation
 `poetry config virtualenvs.create false...`

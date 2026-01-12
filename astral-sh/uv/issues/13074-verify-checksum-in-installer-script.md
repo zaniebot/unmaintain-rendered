@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T19:58:04Z
 updated_at: 2025-12-01T13:03:41Z
 url: https://github.com/astral-sh/uv/issues/13074
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Verify checksum in installer script
 
 ---
 
-_Issue opened by @polothy on 2025-04-23 19:58_
+_@polothy_
 
 ### Summary
 

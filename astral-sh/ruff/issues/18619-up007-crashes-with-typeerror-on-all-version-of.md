@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T00:37:08Z
 updated_at: 2025-06-30T21:22:24Z
 url: https://github.com/astral-sh/ruff/issues/18619
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP007 crashes with TypeError on all version of Python prior to 3.14 for Optional[typing.NamedTuple]
 
 ---
 
-_Issue opened by @tleonhardt on 2025-06-11 00:37_
+_@tleonhardt_
 
 ### Summary
 

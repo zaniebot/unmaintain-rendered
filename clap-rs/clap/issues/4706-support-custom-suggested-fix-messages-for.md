@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-13T15:03:48Z
 updated_at: 2023-08-17T13:58:14Z
 url: https://github.com/clap-rs/clap/issues/4706
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support custom suggested fix messages for specific flags
 
 ---
 
-_Issue opened by @weihanglo on 2023-02-13 15:03_
+_@weihanglo_
 
 ### Please complete the following tasks
 

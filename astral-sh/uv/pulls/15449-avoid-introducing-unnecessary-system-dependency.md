@@ -13,14 +13,14 @@ head: charlie/dep
 created_at: 2025-08-22T10:38:19Z
 updated_at: 2025-08-22T11:06:25Z
 url: https://github.com/astral-sh/uv/pull/15449
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Avoid introducing unnecessary system dependency on CUDA
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-22 10:38_
+_@charliermarsh_
 
 ## Summary
 

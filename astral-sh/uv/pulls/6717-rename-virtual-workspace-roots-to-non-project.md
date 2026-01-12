@@ -13,14 +13,14 @@ head: charlie/leg
 created_at: 2024-08-27T19:33:35Z
 updated_at: 2024-08-27T21:36:41Z
 url: https://github.com/astral-sh/uv/pull/6717
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Rename virtual workspace roots to non-project workspace roots
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 19:33_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/refactor-generators-scope
 created_at: 2024-09-14T17:21:31Z
 updated_at: 2024-09-14T17:35:10Z
 url: https://github.com/astral-sh/ruff/pull/13353
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Clarify how scopes are pushed and popped for comprehensions and generator expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-14 17:21_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T19:46:16Z
 updated_at: 2024-05-21T19:46:27Z
 url: https://github.com/astral-sh/uv/issues/3719
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Move interpreter discovery test cases to subprocesses
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 19:46_
+_@zanieb_
 
 Instead of testing interpreter discovery with mocked environment variables, we should consider exposing a CLI command e.g. `uv python find [...]` so we can test with full control of the environment and remove ugly workarounds to patch e.g. the working directory.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-05T11:24:06Z
 updated_at: 2026-01-05T11:31:55Z
 url: https://github.com/astral-sh/ty/issues/2339
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Losing type information in itertools.chain
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-05 11:24_
+_@AndBoyS_
 
 ### Summary
 

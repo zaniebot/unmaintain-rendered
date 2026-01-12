@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T12:25:04Z
 updated_at: 2024-12-03T07:52:27Z
 url: https://github.com/astral-sh/uv/issues/9574
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Difference in `uv run` behavior between GNU/Linux and Windows
 
 ---
 
-_Issue opened by @sbellon on 2024-12-02 12:25_
+_@sbellon_
 
 On GNU/Linux you can do
 

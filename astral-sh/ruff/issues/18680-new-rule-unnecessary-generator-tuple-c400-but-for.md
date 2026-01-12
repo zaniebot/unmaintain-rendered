@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-15T06:26:49Z
 updated_at: 2025-06-15T16:56:34Z
 url: https://github.com/astral-sh/ruff/issues/18680
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New rule - unnecessary-generator-tuple (C400 but for tuples)
 
 ---
 
-_Issue opened by @Andrej730 on 2025-06-15 06:26_
+_@Andrej730_
 
 ### Summary
 

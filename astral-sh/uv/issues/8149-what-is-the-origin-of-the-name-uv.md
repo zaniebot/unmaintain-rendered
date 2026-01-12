@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-12T18:47:43Z
 updated_at: 2024-10-14T14:27:55Z
 url: https://github.com/astral-sh/uv/issues/8149
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # What is the origin of the name `uv`?
 
 ---
 
-_Issue opened by @johnthagen on 2024-10-12 18:47_
+_@johnthagen_
 
 When I introduce `uv` to my colleagues, a surprising number of them ask me "what does `uv` stand for?" or "where did that name come from?".
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T10:59:00Z
 updated_at: 2025-12-18T09:36:24Z
 url: https://github.com/astral-sh/uv/issues/7356
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Using "uv run" etc as Run/Debug configurations in PyCharm
 
 ---
 
-_Issue opened by @tmct on 2024-09-13 10:59_
+_@tmct_
 
 Hi,
 

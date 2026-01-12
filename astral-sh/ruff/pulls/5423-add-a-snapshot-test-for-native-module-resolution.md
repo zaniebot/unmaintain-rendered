@@ -13,14 +13,14 @@ head: charlie/native
 created_at: 2023-06-28T16:49:07Z
 updated_at: 2023-06-28T18:35:49Z
 url: https://github.com/astral-sh/ruff/pull/5423
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add a snapshot test for native module resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-28 16:49_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: feat/rich-comparison-algorithm
 created_at: 2024-10-04T19:52:31Z
 updated_at: 2024-10-28T10:06:05Z
 url: https://github.com/astral-sh/ruff/pull/13635
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] feat: implement all rich comparison operators
 
 ---
 
-_Pull request opened by @Slyces on 2024-10-04 19:52_
+_@Slyces_
 
 The algorithm for rich comparison still has some todo items
 

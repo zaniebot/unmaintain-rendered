@@ -13,14 +13,14 @@ head: zb/735-docs
 created_at: 2024-10-25T14:44:51Z
 updated_at: 2024-10-25T18:15:51Z
 url: https://github.com/astral-sh/uv/pull/8566
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Add documentation for PEP 735 support
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-25 14:44_
+_@zanieb_
 
 This adds the minimal documentation I think we need to release PEP 735 support.
 

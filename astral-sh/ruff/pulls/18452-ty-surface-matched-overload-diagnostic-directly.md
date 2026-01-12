@@ -14,14 +14,14 @@ head: dhruv/matched-overload-diagnostic
 created_at: 2025-06-04T03:32:08Z
 updated_at: 2025-06-20T11:41:58Z
 url: https://github.com/astral-sh/ruff/pull/18452
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Surface matched overload diagnostic directly
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-04 03:32_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-06T13:18:47Z
 updated_at: 2024-11-06T13:47:20Z
 url: https://github.com/astral-sh/ruff/issues/14134
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # method on a class that returns an instance of that class gets F821 (undefined name) for the annotated return type
 
 ---
 
-_Issue opened by @JoranDox on 2024-11-06 13:18_
+_@JoranDox_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

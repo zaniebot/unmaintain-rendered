@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-05T22:16:52Z
 updated_at: 2023-11-06T04:34:19Z
 url: https://github.com/astral-sh/ruff/issues/8498
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # not compile `flake8-to-ruff` (bin "flake8-to-ruff") due to previous error          ~/.../cryptography/ruff $ cargo run --bin flake8-to-ruff
 
 ---
 
-_Issue opened by @hotKe on 2023-11-05 22:16_
+_@hotKe_
 
 ,e6\x89\x8b\xe6\x95\xb2\xe7\x9a\x84\xe4\xbb\xa3\xe7\xa0\x81(\xe4\xb8\xad\xe6\x96\x87\xe6\xb3\xa8\xe9\x87\x8a)/chapter2/cryptography/ruff/target/debug/deps/flake8_to_ruff-e4a0abb456ac5239" "-Wl,--gc-sections" "-pie" "-Wl,-z,relro,-z,now" "-nodefaultlibs"                               = note: PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.                                     cc: error: unable to execute command: Aborted                                                   cc: error: linker command failed due to signal (use -v to see invocation)                                                                                                             error: could not compile `flake8-to-ruff` (bin "flake8-to-ruff") due to previous
 

@@ -13,14 +13,14 @@ head: charlie/bound-ii
 created_at: 2024-11-01T16:01:09Z
 updated_at: 2024-11-01T19:58:56Z
 url: https://github.com/astral-sh/ruff/pull/14045
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Handle unions in augmented assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-01 16:01_
+_@charliermarsh_
 
 ## Summary
 

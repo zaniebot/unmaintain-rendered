@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T16:55:54Z
 updated_at: 2025-04-02T08:34:12Z
 url: https://github.com/astral-sh/uv/issues/12601
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit       status: 1)
 
 ---
 
-_Issue opened by @mikel-brostrom on 2025-04-01 16:55_
+_@mikel-brostrom_
 
 ### Question
 

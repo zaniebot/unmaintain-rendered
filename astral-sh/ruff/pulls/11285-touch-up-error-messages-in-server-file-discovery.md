@@ -14,14 +14,14 @@ head: charlie/errs
 created_at: 2024-05-04T17:47:01Z
 updated_at: 2024-05-05T17:20:51Z
 url: https://github.com/astral-sh/ruff/pull/11285
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Touch-up error messages in server file discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 17:47_
+_@charliermarsh_
 
 ## Summary
 

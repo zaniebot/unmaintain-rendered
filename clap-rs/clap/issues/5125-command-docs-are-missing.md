@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-14T14:23:24Z
 updated_at: 2023-09-14T20:51:07Z
 url: https://github.com/clap-rs/clap/issues/5125
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # #[command] docs are missing
 
 ---
 
-_Issue opened by @nixpulvis on 2023-09-14 14:23_
+_@nixpulvis_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/target
 created_at: 2024-04-18T03:02:48Z
 updated_at: 2024-04-24T08:18:43Z
 url: https://github.com/astral-sh/uv/pull/3111
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Add a `--platform` argument to enable resolving against a target platform
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 03:02_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-30T05:03:21Z
 updated_at: 2023-08-01T16:12:37Z
 url: https://github.com/clap-rs/clap/issues/5053
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # doc test parsing/displaying
 
 ---
 
-_Issue opened by @djugei on 2023-07-30 05:03_
+_@djugei_
 
 ### Please complete the following tasks
 

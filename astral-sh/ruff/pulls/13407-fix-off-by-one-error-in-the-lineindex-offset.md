@@ -14,14 +14,14 @@ head: micha/fix-line-index-offset-calculation
 created_at: 2024-09-19T11:11:43Z
 updated_at: 2024-09-19T12:13:27Z
 url: https://github.com/astral-sh/ruff/pull/13407
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix off-by one error in the `LineIndex::offset` calculation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-19 11:11_
+_@MichaReiser_
 
 ## Summary
 

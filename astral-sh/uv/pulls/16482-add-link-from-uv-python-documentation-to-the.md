@@ -11,14 +11,14 @@ head: ross/docs-python-version
 created_at: 2025-10-28T12:06:56Z
 updated_at: 2025-10-28T12:52:59Z
 url: https://github.com/astral-sh/uv/pull/16482
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Add link from `UV_PYTHON` documentation to the version request formats
 
 ---
 
-_Pull request opened by @rossng on 2025-10-28 12:06_
+_@rossng_
 
 ## Summary
 

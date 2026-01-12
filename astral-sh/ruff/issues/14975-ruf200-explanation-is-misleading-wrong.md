@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-14T21:02:27Z
 updated_at: 2024-12-23T05:00:17Z
 url: https://github.com/astral-sh/ruff/issues/14975
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF200 explanation is misleading/wrong
 
 ---
 
-_Issue opened by @knirch on 2024-12-14 21:02_
+_@knirch_
 
 > ## Example
 > ```toml

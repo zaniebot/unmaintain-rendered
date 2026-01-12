@@ -13,14 +13,14 @@ head: ibraheem/bench-profiling
 created_at: 2024-09-10T21:12:36Z
 updated_at: 2024-09-10T21:20:51Z
 url: https://github.com/astral-sh/uv/pull/7276
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Revert `Cargo.lock` changes
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-09-10 21:12_
+_@ibraheemdev_
 
 ## Summary
 

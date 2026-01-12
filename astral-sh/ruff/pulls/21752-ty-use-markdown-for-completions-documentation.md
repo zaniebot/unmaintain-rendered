@@ -14,14 +14,14 @@ head: completion-docstrings
 created_at: 2025-12-02T14:48:19Z
 updated_at: 2025-12-27T00:22:10Z
 url: https://github.com/astral-sh/ruff/pull/21752
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Use markdown for completions documentation
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-02 14:48_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

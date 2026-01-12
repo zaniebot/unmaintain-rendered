@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-06-01T08:03:18Z
 updated_at: 2022-01-11T18:20:20Z
 url: https://github.com/clap-rs/clap/issues/2513
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 #  Only print help for subsubcommand when global settings subcommandneededelsehelp
 
 ---
 
-_Issue opened by @ZenithalHourlyRate on 2021-06-01 08:03_
+_@ZenithalHourlyRate_
 
 ### Please complete the following tasks
 

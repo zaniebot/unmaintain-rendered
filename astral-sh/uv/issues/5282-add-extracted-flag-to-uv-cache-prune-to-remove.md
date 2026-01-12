@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-22T12:14:08Z
 updated_at: 2024-07-24T19:34:20Z
 url: https://github.com/astral-sh/uv/issues/5282
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Add `--extracted` flag to `uv cache prune` to remove unzipped wheels
 
 ---
 
-_Issue opened by @Jorricks on 2024-07-22 12:14_
+_@Jorricks_
 
 First of all, thank you for the awesome package. It's working blazingly fast and our developers are loving the new speed they have locally.
 

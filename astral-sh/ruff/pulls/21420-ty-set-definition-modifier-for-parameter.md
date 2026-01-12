@@ -14,14 +14,14 @@ head: semantic_tokens_param_definition
 created_at: 2025-11-13T08:35:37Z
 updated_at: 2025-11-13T09:14:41Z
 url: https://github.com/astral-sh/ruff/pull/21420
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Set `definition` modifier for parameter declarations when computing semantic tokens
 
 ---
 
-_Pull request opened by @lucach on 2025-11-13 08:35_
+_@lucach_
 
 ## Summary
 

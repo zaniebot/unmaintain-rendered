@@ -14,14 +14,14 @@ head: highlights_playground
 created_at: 2025-07-24T20:29:36Z
 updated_at: 2025-07-25T15:55:44Z
 url: https://github.com/astral-sh/ruff/pull/19540
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Added support for document highlights in playground.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-24 20:29_
+_@UnboundVariable_
 
 This PR adds support for the "document highlights" feature in the ty playground.
 

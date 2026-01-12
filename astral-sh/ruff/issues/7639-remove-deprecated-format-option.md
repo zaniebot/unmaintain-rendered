@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T08:54:02Z
 updated_at: 2023-10-17T00:55:54Z
 url: https://github.com/astral-sh/ruff/issues/7639
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Remove deprecated `format` option
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 08:54_
+_@MichaReiser_
 
 The `--format` CLI option and `format = "text"` options have been deprecated with 0.0.291. 
 

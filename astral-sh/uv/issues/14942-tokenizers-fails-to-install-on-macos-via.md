@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T15:42:55Z
 updated_at: 2025-07-28T15:52:36Z
 url: https://github.com/astral-sh/uv/issues/14942
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # tokenizers fails to install on macOS via `pyproject.toml`
 
 ---
 
-_Issue opened by @prrao87 on 2025-07-28 15:42_
+_@prrao87_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T15:52:29Z
 updated_at: 2025-09-08T15:03:02Z
 url: https://github.com/astral-sh/uv/issues/13412
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # Filter source dependencies by pattern
 
 ---
 
-_Issue opened by @jzazo on 2025-05-12 15:52_
+_@jzazo_
 
 ### Summary
 

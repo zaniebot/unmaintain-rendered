@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T05:20:16Z
 updated_at: 2024-09-28T19:10:22Z
 url: https://github.com/astral-sh/uv/issues/7729
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Must the executable name match package name when using `uv tool run package`
 
 ---
 
-_Issue opened by @gitgithan on 2024-09-27 05:20_
+_@gitgithan_
 
 Command ran: `uv tool run toolong`  
 Output: 

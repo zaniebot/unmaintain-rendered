@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-17T16:44:28Z
 updated_at: 2025-02-18T15:20:36Z
 url: https://github.com/astral-sh/uv/issues/3097
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Add strict command mode to `uv run`
 
 ---
 
-_Issue opened by @zanieb on 2024-04-17 16:44_
+_@zanieb_
 
 This would only allow you to run a command provided by a package in the current environment.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-12T21:07:38Z
 updated_at: 2024-05-06T14:59:09Z
 url: https://github.com/astral-sh/ruff/issues/9497
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # FBT001: Allow booleans used as values rather than flags
 
 ---
 
-_Issue opened by @arvidfm on 2024-01-12 21:07_
+_@arvidfm_
 
 The post that originally inspired the FBT rules is concerned specifically with boolean flags that modify the behaviour of a function, and in that context they make a lot of sense in terms of readability, and I like to have the rules enabled for that reason. However, there are cases where the boolean _is the value_ as opposed to a flag. You might encounter this for instance when dealing with functions for enabling options, where the meaning of the option is given by the function or object name itself, not the parameter: `config.enable_fallback(False)`, `self.is_running.set_value(True)`.
 

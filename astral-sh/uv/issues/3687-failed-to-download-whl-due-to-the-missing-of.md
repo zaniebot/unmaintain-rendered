@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T08:02:45Z
 updated_at: 2025-03-20T22:12:13Z
 url: https://github.com/astral-sh/uv/issues/3687
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Failed to download whl due to the missing of credentials in URL
 
 ---
 
-_Issue opened by @iyanging on 2024-05-21 08:02_
+_@iyanging_
 
 cmd:
 ```

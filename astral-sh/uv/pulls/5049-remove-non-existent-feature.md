@@ -13,14 +13,14 @@ head: konsti/non-existant-feature
 created_at: 2024-07-14T18:38:06Z
 updated_at: 2024-07-14T23:49:24Z
 url: https://github.com/astral-sh/uv/pull/5049
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Remove non-existent feature
 
 ---
 
-_Pull request opened by @konstin on 2024-07-14 18:38_
+_@konstin_
 
 Nightly rustc is complaining about this.
 

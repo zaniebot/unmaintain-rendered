@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T23:22:35Z
 updated_at: 2024-11-21T03:26:44Z
 url: https://github.com/astral-sh/uv/issues/9295
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Configuring accelerators with optional dependencies and PyPI
 
 ---
 
-_Issue opened by @eginhard on 2024-11-20 23:22_
+_@eginhard_
 
 Thank you for the quick fix for #9259! I have one more issue, but not sure if it's user error in this case. I removed the custom `pytorch-cu214` index from the example at https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies so that for the `cu214` extra uv should just install whatever it gets from PyPI, i.e. CPU for Mac and Windows.
 

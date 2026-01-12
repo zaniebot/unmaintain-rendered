@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T14:04:12Z
 updated_at: 2024-12-03T05:07:22Z
 url: https://github.com/astral-sh/uv/issues/8887
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv add workspace fails misteriously from git but not locally
 
 ---
 
-_Issue opened by @PhilipVinc on 2024-11-07 14:04_
+_@PhilipVinc_
 
 I tried to add as a dependency to a project a workspace that is found on git by doing
 

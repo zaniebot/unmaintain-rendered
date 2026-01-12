@@ -13,14 +13,14 @@ head: teofr/red_knot_bytes
 created_at: 2024-08-22T16:42:51Z
 updated_at: 2024-08-27T23:47:44Z
 url: https://github.com/astral-sh/ruff/pull/13061
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Added bytes type and some inference
 
 ---
 
-_Pull request opened by @teofr on 2024-08-22 16:42_
+_@teofr_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T16:34:39Z
 updated_at: 2024-08-29T16:34:39Z
 url: https://github.com/astral-sh/uv/issues/6820
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # refactor `ExcludeNewer` to avoid accidentally exposing "local date" input
 
 ---
 
-_Issue opened by @BurntSushi on 2024-08-29 16:34_
+_@BurntSushi_
 
 Basically, see: https://github.com/astral-sh/uv/pull/6562#pullrequestreview-2269422424
 

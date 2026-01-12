@@ -14,14 +14,14 @@ head: zb/eco-ignore-required-version
 created_at: 2024-01-20T16:35:12Z
 updated_at: 2024-01-21T05:08:09Z
 url: https://github.com/astral-sh/ruff/pull/9593
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Always unset the `required-version` option during ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-20 16:35_
+_@zanieb_
 
 Uses our existing configuration overrides to unset the `required-version` option in ecosystem projects during checks.
 

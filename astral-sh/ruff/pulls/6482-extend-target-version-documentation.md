@@ -13,14 +13,14 @@ head: docs/target-version
 created_at: 2023-08-10T16:31:58Z
 updated_at: 2023-08-10T17:33:13Z
 url: https://github.com/astral-sh/ruff/pull/6482
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Extend `target-version` documentation
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-10 16:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6462
 

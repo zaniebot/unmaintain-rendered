@@ -12,14 +12,14 @@ head: zanie/695-comparable
 created_at: 2023-07-18T15:45:33Z
 updated_at: 2023-07-18T17:35:00Z
 url: https://github.com/astral-sh/ruff/pull/5865
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Implement `Comparable` for type aliases and parameters
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-18 15:45_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ruff/issues/5062
 

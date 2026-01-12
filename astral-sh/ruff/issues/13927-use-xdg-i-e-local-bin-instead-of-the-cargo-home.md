@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-25T15:23:17Z
 updated_at: 2024-11-19T15:14:47Z
 url: https://github.com/astral-sh/ruff/issues/13927
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Use XDG (i.e. ~/.local/bin) instead of the Cargo home directory in the installer 
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-25 15:23_
+_@MichaReiser_
 
 See https://github.com/astral-sh/uv/pull/8420
 

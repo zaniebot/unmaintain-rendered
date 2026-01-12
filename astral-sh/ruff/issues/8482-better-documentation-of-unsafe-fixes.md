@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T22:34:33Z
 updated_at: 2024-08-20T10:55:27Z
 url: https://github.com/astral-sh/ruff/issues/8482
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Better documentation of unsafe fixes
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-03 22:34_
+_@hauntsaninja_
 
 It would be nice if it was easier to figure out what checks have unsafe fixes, e.g. maybe there could be a different icon next to the rules in https://docs.astral.sh/ruff/rules/
 

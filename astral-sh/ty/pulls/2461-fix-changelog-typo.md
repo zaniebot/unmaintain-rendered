@@ -13,14 +13,14 @@ head: alex/changelog
 created_at: 2026-01-12T12:15:12Z
 updated_at: 2026-01-12T12:17:49Z
 url: https://github.com/astral-sh/ty/pull/2461
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Fix changelog typo
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-12 12:15_
+_@AlexWaygood_
 
 The rule is called `unused-ignore-comment`, not `unused-type-ignore-comment`
 

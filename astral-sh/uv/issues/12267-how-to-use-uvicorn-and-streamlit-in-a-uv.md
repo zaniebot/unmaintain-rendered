@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T09:50:56Z
 updated_at: 2025-04-14T08:24:07Z
 url: https://github.com/astral-sh/uv/issues/12267
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # How to use uvicorn and streamlit in a UV environment?
 
 ---
 
-_Issue opened by @dyuzhou on 2025-03-18 09:50_
+_@dyuzhou_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/exclude
 created_at: 2022-09-16T01:40:28Z
 updated_at: 2022-09-16T01:40:49Z
 url: https://github.com/astral-sh/ruff/pull/209
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Improve exclusion syntax to match exact files
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-16 01:40_
+_@charliermarsh_
 
 Resolves #203.
 

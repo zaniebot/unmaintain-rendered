@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-27T03:05:23Z
 updated_at: 2023-09-28T00:43:34Z
 url: https://github.com/clap-rs/clap/issues/5144
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Selectively disable word wrapping
 
 ---
 
-_Issue opened by @nic-hartley on 2023-09-27 03:05_
+_@nic-hartley_
 
 ### Please complete the following tasks
 

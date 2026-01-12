@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T03:36:30Z
 updated_at: 2025-07-16T13:48:26Z
 url: https://github.com/astral-sh/uv/issues/12771
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # the requested Python version (>=3.8) does not satisfy when use add
 
 ---
 
-_Issue opened by @bigblackhat-cpu on 2025-04-09 03:36_
+_@bigblackhat-cpu_
 
 ### Question
 

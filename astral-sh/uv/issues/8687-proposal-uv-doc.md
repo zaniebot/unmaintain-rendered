@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T21:18:58Z
 updated_at: 2025-03-05T04:19:57Z
 url: https://github.com/astral-sh/uv/issues/8687
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Proposal: `uv doc`
 
 ---
 
-_Issue opened by @nanthony007 on 2024-10-29 21:18_
+_@nanthony007_
 
 # `uv doc` as an API documentation tool
 

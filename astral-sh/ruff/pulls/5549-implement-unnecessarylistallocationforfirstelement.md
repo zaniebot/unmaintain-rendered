@@ -13,14 +13,14 @@ head: 5503_first_list_item
 created_at: 2023-07-06T01:03:53Z
 updated_at: 2023-07-10T16:52:02Z
 url: https://github.com/astral-sh/ruff/pull/5549
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Implement `UnnecessaryListAllocationForFirstElement`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-07-06 01:03_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T21:53:37Z
 updated_at: 2023-12-02T22:03:53Z
 url: https://github.com/astral-sh/ruff/issues/8973
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # C3001/C3002 Implemented?
 
 ---
 
-_Issue opened by @Ryang20718 on 2023-12-02 21:53_
+_@Ryang20718_
 
 
 In my ruff.toml, i have, but I get an error for C3001 and C3002 not implemented?

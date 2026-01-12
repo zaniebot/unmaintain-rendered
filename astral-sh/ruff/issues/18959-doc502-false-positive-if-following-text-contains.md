@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T14:24:16Z
 updated_at: 2025-11-12T21:37:56Z
 url: https://github.com/astral-sh/ruff/issues/18959
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # DOC502: False positive if following text contains a colon
 
 ---
 
-_Issue opened by @dargueta on 2025-06-26 14:24_
+_@dargueta_
 
 ### Summary
 

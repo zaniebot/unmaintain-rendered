@@ -14,14 +14,14 @@ head: brent/syn-duplicate-pattern-class-attribute
 created_at: 2025-04-03T20:35:38Z
 updated_at: 2025-04-03T21:55:40Z
 url: https://github.com/astral-sh/ruff/pull/17186
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Duplicate attributes in match class pattern
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-03 20:35_
+_@ntBre_
 
 Summary
 --

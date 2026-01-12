@@ -14,14 +14,14 @@ head: micha/ansi-feature
 created_at: 2025-05-15T09:36:20Z
 updated_at: 2025-05-15T09:49:24Z
 url: https://github.com/astral-sh/ruff/pull/18116
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Enable 'ansi' feature to fix compile error
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-15 09:36_
+_@MichaReiser_
 
 ## Summary
 

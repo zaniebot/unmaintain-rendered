@@ -13,14 +13,14 @@ head: zb/all-sigs
 created_at: 2025-04-21T15:08:37Z
 updated_at: 2025-04-21T19:47:33Z
 url: https://github.com/astral-sh/uv/pull/13017
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:30Z
 ```
 
 # Forward additional signals to the child process in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 15:08_
+_@zanieb_
 
 As I suspected quite some time ago (https://github.com/astral-sh/uv/pull/6738#issuecomment-2315466033), it's problematic that we don't handle _every_ signal here. This PR adds handling for all of the Unix signals except `SIGCHLD`, `SIGIO`, and `SIGPOLL` which seem incorrect to forward. Also notable, we _cannot_ handle `SIGKILL` so if someone sends that to the PID instead of the PGID, they will leave dangling subprocesses.
 

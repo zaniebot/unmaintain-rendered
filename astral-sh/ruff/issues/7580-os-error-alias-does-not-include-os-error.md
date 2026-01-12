@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-21T19:48:31Z
 updated_at: 2023-09-21T21:18:16Z
 url: https://github.com/astral-sh/ruff/issues/7580
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `os-error-alias` does not include `os.error`
 
 ---
 
-_Issue opened by @Avasam on 2023-09-21 19:48_
+_@Avasam_
 
 `os.error` is an alias for `OSError`, but is not standardized as part of https://docs.astral.sh/ruff/rules/os-error-alias/
 

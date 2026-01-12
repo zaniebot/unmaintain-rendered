@@ -12,14 +12,14 @@ head: charlie/result
 created_at: 2023-02-02T23:39:31Z
 updated_at: 2023-02-02T23:47:47Z
 url: https://github.com/astral-sh/ruff/pull/2503
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Remove a result wrapper from `linter.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 23:39_
+_@charliermarsh_
 
 We should only be passing valid filenames to this file (since we only pass _collected_ filenames to this file, which have already gone through `extract_path_names`). Changing this to an irrecoverable error lets us drop a lot of ceremony elsewhere.
 

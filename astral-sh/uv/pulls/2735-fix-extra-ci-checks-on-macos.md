@@ -13,14 +13,14 @@ head: zb/fix-ci
 created_at: 2024-03-30T14:44:25Z
 updated_at: 2024-03-30T14:55:36Z
 url: https://github.com/astral-sh/uv/pull/2735
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Fix extra CI checks on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-30 14:44_
+_@zanieb_
 
 Alternative to https://github.com/astral-sh/uv/pull/2729 since we're having problems with the Homebrew Python.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T14:48:14Z
 updated_at: 2024-08-14T14:56:50Z
 url: https://github.com/astral-sh/ruff/issues/12893
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC202 false positive with abstract methods
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-14 14:48_
+_@MichaReiser_
 
 I really like these new rules, they provide a lot of extra guardrails for docstrings!
 

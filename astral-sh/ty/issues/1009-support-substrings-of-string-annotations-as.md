@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:30:26Z
 updated_at: 2025-11-25T13:31:06Z
 url: https://github.com/astral-sh/ty/issues/1009
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support (substrings of) string annotations as GotoTargets
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 14:30_
+_@Gankra_
 
 ```
 x: "int | str"

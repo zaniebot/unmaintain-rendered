@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-05-01T04:59:21Z
 updated_at: 2022-02-08T20:23:36Z
 url: https://github.com/clap-rs/clap/issues/1264
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # ArgRequiredElseHelp is ignored if there are *any* default values
 
 ---
 
-_Issue opened by @whitfin on 2018-05-01 04:59_
+_@whitfin_
 
 ### Rust Version
 

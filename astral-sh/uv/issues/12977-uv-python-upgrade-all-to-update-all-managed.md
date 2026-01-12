@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T23:55:19Z
 updated_at: 2025-06-20T14:17:15Z
 url: https://github.com/astral-sh/uv/issues/12977
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # `uv python upgrade --all` to update all managed Python versions
 
 ---
 
-_Issue opened by @johnthagen on 2025-04-18 23:55_
+_@johnthagen_
 
 ### Summary
 

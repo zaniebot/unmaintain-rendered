@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T17:33:57Z
 updated_at: 2025-03-26T01:49:07Z
 url: https://github.com/astral-sh/uv/issues/7932
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Legacy Windows Server (2008)
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-10-04 17:33_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

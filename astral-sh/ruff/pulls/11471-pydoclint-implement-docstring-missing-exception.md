@@ -15,14 +15,14 @@ head: darglint
 created_at: 2024-05-19T20:43:34Z
 updated_at: 2024-07-21T16:13:24Z
 url: https://github.com/astral-sh/ruff/pull/11471
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`pydoclint`] Implement `docstring-missing-exception` and `docstring-extraneous-exception` (`DOC501`, `DOC502`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-05-19 20:43_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

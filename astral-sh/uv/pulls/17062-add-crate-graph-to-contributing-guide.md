@@ -13,14 +13,14 @@ head: konsti/contributing-graph
 created_at: 2025-12-10T08:40:48Z
 updated_at: 2025-12-10T15:01:02Z
 url: https://github.com/astral-sh/uv/pull/17062
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Add crate graph to contributing guide
 
 ---
 
-_Pull request opened by @konstin on 2025-12-10 08:40_
+_@konstin_
 
 I share this regularly with people, we should document it.
 

@@ -13,14 +13,14 @@ head: MichaReiser-patch-1
 created_at: 2025-12-10T16:19:41Z
 updated_at: 2025-12-10T16:25:43Z
 url: https://github.com/astral-sh/ruff/pull/21899
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Update README to remove production warning
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-10 16:19_
+_@MichaReiser_
 
 Remove note about production readiness
 

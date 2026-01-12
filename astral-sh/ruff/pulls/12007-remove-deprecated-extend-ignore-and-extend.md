@@ -14,14 +14,14 @@ head: remove-deprecated-ignore-and-unfixable-options
 created_at: 2024-06-24T07:18:55Z
 updated_at: 2024-08-12T07:54:42Z
 url: https://github.com/astral-sh/ruff/pull/12007
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove deprecated `extend-ignore` and `extend-unfixable` options
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 07:18_
+_@MichaReiser_
 
 ## Summary
 

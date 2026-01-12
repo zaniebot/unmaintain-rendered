@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T09:10:07Z
 updated_at: 2025-12-23T00:42:17Z
 url: https://github.com/astral-sh/ty/issues/1835
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consolidate handling of dataclass-params and dataclass-transformer-params
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-10 09:10_
+_@sharkdp_
 
 The goal of this ticket is to consolidate and clean up our handling of dataclass-params and dataclass-transformer-params for all different kinds of dataclasses: "standard" `dataclasses.dataclass` dataclasses, decorator-based dataclass transformers, base-class-based dataclass transformers, and metaclass-based dataclass transformers.
 

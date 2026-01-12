@@ -12,14 +12,14 @@ head: jtfm/first-index-messages
 created_at: 2025-04-21T09:09:08Z
 updated_at: 2025-04-22T08:45:49Z
 url: https://github.com/astral-sh/uv/pull/13016
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:30Z
 ```
 
 # Improve messages for `FirstIndex` authentication failures
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-21 09:09_
+_@jtfmumm_
 
 Stop exiting early on authentication failures so we can benefit from more detailed reporting.
 

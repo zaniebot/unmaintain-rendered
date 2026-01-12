@@ -13,14 +13,14 @@ head: fix-lazy-nested-narrowing
 created_at: 2025-08-14T05:58:52Z
 updated_at: 2025-08-15T01:28:33Z
 url: https://github.com/astral-sh/ruff/pull/19908
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] fix lazy snapshot sweeping in nested scopes
 
 ---
 
-_Pull request opened by @mtshiba on 2025-08-14 05:58_
+_@mtshiba_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T18:29:28Z
 updated_at: 2025-11-29T22:13:06Z
 url: https://github.com/astral-sh/uv/issues/16865
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # `tool update-shell` uses incorrect logic when `ZDOTDIR` is set by `~/.zshenv`
 
 ---
 
-_Issue opened by @benberryallwood on 2025-11-26 18:29_
+_@benberryallwood_
 
 ### Summary
 

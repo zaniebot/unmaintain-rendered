@@ -12,14 +12,14 @@ head: feat/uv-init-script
 created_at: 2024-09-15T02:56:23Z
 updated_at: 2024-09-25T22:51:31Z
 url: https://github.com/astral-sh/uv/pull/7404
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Add --script option to uv init
 
 ---
 
-_Pull request opened by @jbvsmo on 2024-09-15 02:56_
+_@jbvsmo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -15,14 +15,14 @@ head: alex/typeddict-fix
 created_at: 2025-11-28T18:35:37Z
 updated_at: 2025-11-28T18:40:36Z
 url: https://github.com/astral-sh/ruff/pull/21682
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Preserve quoting style when autofixing `TypedDict` keys
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-28 18:35_
+_@AlexWaygood_
 
 ## Summary
 

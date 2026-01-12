@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T17:07:13Z
 updated_at: 2025-01-14T14:39:22Z
 url: https://github.com/astral-sh/uv/issues/10571
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Filter out x86 wheels when `platform_machine == 'arm64'` is specified
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-13 17:07_
+_@charliermarsh_
 
 We filter by platform, but not architecture. (The title is just an example; the logic should be more general.)
 

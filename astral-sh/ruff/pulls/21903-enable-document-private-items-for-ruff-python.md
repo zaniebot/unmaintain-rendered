@@ -13,14 +13,14 @@ head: brent/test-formatter-links
 created_at: 2025-12-10T19:54:51Z
 updated_at: 2025-12-11T13:23:12Z
 url: https://github.com/astral-sh/ruff/pull/21903
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Enable `--document-private-items` for `ruff_python_formatter`
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-10 19:54_
+_@ntBre_
 
 Summary
 --

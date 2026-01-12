@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T20:42:27Z
 updated_at: 2025-09-18T07:10:12Z
 url: https://github.com/astral-sh/uv/issues/9246
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Still don't see retry on request or body error when fetching metadata
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-11-19 20:42_
+_@notatallshaw-gts_
 
 uv 0.5.3, inside a docker build script installed via `COPY --from=ghcr.io/astral-sh/uv:0.5.3 /uv /uvx /bin/`.
 

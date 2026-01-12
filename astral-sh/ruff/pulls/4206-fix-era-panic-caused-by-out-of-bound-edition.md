@@ -12,14 +12,14 @@ head: fix-era-fixer
 created_at: 2023-05-03T13:32:48Z
 updated_at: 2023-05-03T14:00:33Z
 url: https://github.com/astral-sh/ruff/pull/4206
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix era panic caused by out of bound edition
 
 ---
 
-_Pull request opened by @leiserfg on 2023-05-03 13:32_
+_@leiserfg_
 
 _No description provided._
 

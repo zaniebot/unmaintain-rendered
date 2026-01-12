@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T19:12:08Z
 updated_at: 2026-01-09T20:53:18Z
 url: https://github.com/astral-sh/uv/issues/13974
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Add support for requesting indexes with `--index <name>`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-11 19:12_
+_@zanieb_
 
 ### Summary
 

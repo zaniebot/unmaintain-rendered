@@ -13,14 +13,14 @@ head: charlie/attr
 created_at: 2023-12-29T15:07:17Z
 updated_at: 2023-12-29T15:20:27Z
 url: https://github.com/astral-sh/ruff/pull/9309
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Respect attribute chains when resolving builtin call paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-29 15:07_
+_@charliermarsh_
 
 ## Summary
 

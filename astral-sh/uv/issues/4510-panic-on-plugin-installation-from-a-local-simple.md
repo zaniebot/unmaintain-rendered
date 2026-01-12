@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-25T07:28:35Z
 updated_at: 2024-06-26T07:38:17Z
 url: https://github.com/astral-sh/uv/issues/4510
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Panic on plugin installation from a local simple repository
 
 ---
 
-_Issue opened by @BenediktMaag on 2024-06-25 07:28_
+_@BenediktMaag_
 
 I have setup a simple repository (https://packaging.python.org/en/latest/specifications/simple-repository-api/ | PEP503).
 

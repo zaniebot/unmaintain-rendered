@@ -13,14 +13,14 @@ head: zb/order-executables
 created_at: 2024-11-12T17:42:17Z
 updated_at: 2024-11-13T16:00:27Z
 url: https://github.com/astral-sh/uv/pull/9066
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Prefer Python executable names that match the request over default names
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-12 17:42_
+_@zanieb_
 
 This restores behavior previously removed in https://github.com/astral-sh/uv/pull/7649.
 

@@ -14,14 +14,14 @@ head: alex/property-test-debug
 created_at: 2025-10-06T13:34:27Z
 updated_at: 2025-10-06T13:44:26Z
 url: https://github.com/astral-sh/ruff/pull/20720
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Print `display` of types when a property test fails
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-06 13:34_
+_@AlexWaygood_
 
 ## Summary
 

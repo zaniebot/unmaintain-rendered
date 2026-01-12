@@ -12,14 +12,14 @@ head: main
 created_at: 2023-04-04T16:18:34Z
 updated_at: 2023-04-25T19:15:30Z
 url: https://github.com/astral-sh/ruff/pull/3877
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add checks for `dataclass`es
 
 ---
 
-_Pull request opened by @mosauter on 2023-04-04 16:18_
+_@mosauter_
 
 Adds checks specifically for `dataclass`es in combination with mutable defaults.
 

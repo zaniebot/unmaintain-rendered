@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T11:41:15Z
 updated_at: 2024-10-25T19:09:55Z
 url: https://github.com/astral-sh/uv/issues/7492
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Unclear how to configure dockerfile for CI with a workspace and multiple projects
 
 ---
 
-_Issue opened by @vilim on 2024-09-18 11:41_
+_@vilim_
 
 I have a workspace setup as follows
 ```

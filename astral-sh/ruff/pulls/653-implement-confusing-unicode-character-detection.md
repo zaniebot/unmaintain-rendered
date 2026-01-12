@@ -12,14 +12,14 @@ head: charlie/RUF003
 created_at: 2022-11-08T02:16:30Z
 updated_at: 2022-11-08T02:16:35Z
 url: https://github.com/astral-sh/ruff/pull/653
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement confusing unicode character detection for comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-08 02:16_
+_@charliermarsh_
 
 Resolves #586.
 

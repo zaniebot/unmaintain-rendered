@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-22T06:17:01Z
 updated_at: 2023-06-23T00:35:15Z
 url: https://github.com/astral-sh/ruff/issues/5285
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # New option to include or exclude git submodules
 
 ---
 
-_Issue opened by @tgross35 on 2023-06-22 06:17_
+_@tgross35_
 
 Would it be possible to add a configuration option to automatically opt git submodules in or out?
 

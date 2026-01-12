@@ -13,14 +13,14 @@ head: tab-indentations-rule
 created_at: 2023-07-25T21:32:04Z
 updated_at: 2023-07-25T23:36:38Z
 url: https://github.com/astral-sh/ruff/pull/6079
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # tab indentation comment
 
 ---
 
-_Pull request opened by @arembridge on 2023-07-25 21:32_
+_@arembridge_
 
 ## Summary
 

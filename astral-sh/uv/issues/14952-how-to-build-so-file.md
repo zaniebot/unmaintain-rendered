@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T11:42:17Z
 updated_at: 2025-08-01T09:48:15Z
 url: https://github.com/astral-sh/uv/issues/14952
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # How to build .so file?
 
 ---
 
-_Issue opened by @ciaoyizhen on 2025-07-29 11:42_
+_@ciaoyizhen_
 
 ### Question
 

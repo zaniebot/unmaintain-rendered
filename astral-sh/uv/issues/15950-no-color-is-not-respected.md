@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T13:54:53Z
 updated_at: 2025-09-29T13:38:49Z
 url: https://github.com/astral-sh/uv/issues/15950
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `--no-color` is not respected
 
 ---
 
-_Issue opened by @konstin on 2025-09-19 13:54_
+_@konstin_
 
 ### Summary
 

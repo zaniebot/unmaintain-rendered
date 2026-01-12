@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-09-19T09:31:11Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1050
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Using `number_of_values` and `default_value` together
 
 ---
 
-_Issue opened by @Frederick888 on 2017-09-19 09:31_
+_@Frederick888_
 
 Found this issue with `clap 2.26.2`
 

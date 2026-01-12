@@ -12,14 +12,14 @@ head: zb/compile-scenarios
 created_at: 2024-01-19T18:46:10Z
 updated_at: 2024-01-21T23:47:44Z
 url: https://github.com/astral-sh/uv/pull/1011
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Add scenario tests for `pip-compile`
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-19 18:46_
+_@zanieb_
 
 e.g. for scenarios that test resolution _without_ installation.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T20:38:29Z
 updated_at: 2024-09-05T17:59:02Z
 url: https://github.com/astral-sh/uv/issues/7047
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Update GitHub Actions docs to mention `astral-sh/setup-uv`
 
 ---
 
-_Issue opened by @my1e5 on 2024-09-04 20:38_
+_@my1e5_
 
 Now that `eifinger/setup-uv` is under the Astral banner as `astral-sh/setup-uv`, perhaps the docs for [Using uv in GitHub Actions](https://docs.astral.sh/uv/guides/integration/github/) could be updated to recommend using this action? 
 

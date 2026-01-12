@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T11:22:10Z
 updated_at: 2025-02-24T03:59:10Z
 url: https://github.com/astral-sh/uv/issues/7967
-synced_at: 2026-01-10T11:10:19Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Indirect Dependency Authentication Issue
 
 ---
 
-_Issue opened by @alfman99 on 2024-10-07 11:22_
+_@alfman99_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

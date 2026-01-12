@@ -13,14 +13,14 @@ head: charlie/noqa-snapshot
 created_at: 2023-07-05T17:10:37Z
 updated_at: 2023-07-05T22:05:42Z
 url: https://github.com/astral-sh/ruff/pull/5535
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add debug-based snapshot tests for noqa directive parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 17:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-06-20T15:30:39Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/990
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Fatal internal error when misusing requires/conflicting rules
 
 ---
 
-_Issue opened by @chriscoomber on 2017-06-20 15:30_
+_@chriscoomber_
 
 I provided the following misconfigured matches:
 

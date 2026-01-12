@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T05:13:06Z
 updated_at: 2024-02-16T05:14:56Z
 url: https://github.com/astral-sh/uv/issues/1432
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # uv doesn't respect pyproject.toml dependencies
 
 ---
 
-_Issue opened by @ac130kz on 2024-02-16 05:13_
+_@ac130kz_
 
 I'm trying out a very basic example, and it simply ignores what is specified in the PEP 621 dependencies section of a pyproject.toml. I get that there should be a lock file requirements.txt in the final environment, but in a lockless scenario it has to install everything, right?
 

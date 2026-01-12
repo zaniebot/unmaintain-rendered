@@ -13,14 +13,14 @@ head: konsti/windows-launcher
 created_at: 2024-01-25T13:33:31Z
 updated_at: 2024-01-26T16:57:34Z
 url: https://github.com/astral-sh/uv/pull/1092
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Windows launchers using posy trampolines
 
 ---
 
-_Pull request opened by @konstin on 2024-01-25 13:33_
+_@konstin_
 
 ## Background
 

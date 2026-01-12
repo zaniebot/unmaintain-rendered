@@ -13,14 +13,14 @@ head: dhruv/indent-test
 created_at: 2024-06-03T13:17:18Z
 updated_at: 2024-06-03T13:31:00Z
 url: https://github.com/astral-sh/ruff/pull/11721
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Isolate non-breaking whitespace indentation test case
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-03 13:17_
+_@dhruvmanila_
 
 As discussed in Discord, this moves the test case for non-breaking whitespace into its own method.
 

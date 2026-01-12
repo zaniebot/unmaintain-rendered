@@ -13,14 +13,14 @@ head: renovate/crate-ci-typos-1.x
 created_at: 2025-09-15T01:22:19Z
 updated_at: 2025-09-15T02:50:41Z
 url: https://github.com/astral-sh/uv/pull/15858
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Update crate-ci/typos action to v1.36.2
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 01:22_
+_@renovate_
 
 This PR contains the following updates:
 

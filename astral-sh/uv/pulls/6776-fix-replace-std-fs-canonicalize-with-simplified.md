@@ -13,14 +13,14 @@ head: fix-canonical-path-of-net-drive-on-windows
 created_at: 2024-08-28T21:18:13Z
 updated_at: 2024-09-01T17:59:16Z
 url: https://github.com/astral-sh/uv/pull/6776
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # fix: replace std::fs::canonicalize with Simplified::simple_canonicaliz…
 
 ---
 
-_Pull request opened by @cning112 on 2024-08-28 21:18_
+_@cning112_
 
 ## Summary
 This PR addresses an issue on Windows where `std::fs::canonicalize` can fail or panic when resolving paths on mapped network drives. By replacing it with `Simplified::simple_canonicalize`, we aim to improve the robustness and cross-platform compatibility of path resolution.

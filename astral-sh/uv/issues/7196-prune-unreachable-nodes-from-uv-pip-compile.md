@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T18:31:53Z
 updated_at: 2024-09-09T13:20:26Z
 url: https://github.com/astral-sh/uv/issues/7196
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Prune unreachable nodes from `uv pip compile --universal` output
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-08 18:31_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/6730#issuecomment-2334330741
 

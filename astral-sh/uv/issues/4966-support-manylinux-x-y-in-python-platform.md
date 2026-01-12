@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T16:23:36Z
 updated_at: 2024-11-19T19:37:51Z
 url: https://github.com/astral-sh/uv/issues/4966
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Support `manylinux_x_y` in `--python-platform`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-10 16:23_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/4965.
 

@@ -13,14 +13,14 @@ head: dhruv/token-value-fields
 created_at: 2024-05-20T10:40:55Z
 updated_at: 2024-05-27T16:02:05Z
 url: https://github.com/astral-sh/ruff/pull/11475
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use struct fields in `TokenValue` enum
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-20 10:40_
+_@dhruvmanila_
 
 ## Summary
 

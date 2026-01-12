@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-23T03:37:50Z
 updated_at: 2024-03-22T22:27:20Z
 url: https://github.com/astral-sh/uv/issues/1896
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # The uv pip install for current directory only works with editable mode
 
 ---
 
-_Issue opened by @dbritto-dev on 2024-02-23 03:37_
+_@dbritto-dev_
 
 * The command I invoked: `uv pip install .`
 * The current Ruff settings:

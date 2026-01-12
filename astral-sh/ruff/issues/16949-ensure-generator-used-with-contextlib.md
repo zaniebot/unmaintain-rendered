@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T14:15:41Z
 updated_at: 2025-04-19T22:02:47Z
 url: https://github.com/astral-sh/ruff/issues/16949
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ensure generator used with `contextlib.contextmanager` yields only once
 
 ---
 
-_Issue opened by @Tinche on 2025-03-24 14:15_
+_@Tinche_
 
 ### Summary
 

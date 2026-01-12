@@ -13,14 +13,14 @@ head: zb/insiders
 created_at: 2025-06-30T22:53:56Z
 updated_at: 2025-07-01T16:29:12Z
 url: https://github.com/astral-sh/uv/pull/14379
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Use the insiders requirements when building docs in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-30 22:53_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T04:55:34Z
 updated_at: 2025-01-17T16:12:26Z
 url: https://github.com/astral-sh/uv/issues/6407
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Incorrect precedence of UV_INDEX_URL vs --index-url in reqs file
 
 ---
 
-_Issue opened by @wimglenn on 2024-08-22 04:55_
+_@wimglenn_
 
 If an index url has been specified directly in the [requirements file](https://pip.pypa.io/en/stable/reference/requirements-file-format/#global-options) using `-i` or `--index-url`, this should have precedence over env var.
 

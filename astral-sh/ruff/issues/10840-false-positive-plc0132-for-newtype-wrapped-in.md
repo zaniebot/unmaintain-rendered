@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-08T22:39:39Z
 updated_at: 2024-04-11T02:13:26Z
 url: https://github.com/astral-sh/ruff/issues/10840
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False positive PLC0132 for NewType wrapped in Annotated
 
 ---
 
-_Issue opened by @minmax on 2024-04-08 22:39_
+_@minmax_
 
 Ruff 0.3.5 false positive PLC0132 for NewType wrapped in Annotated
 

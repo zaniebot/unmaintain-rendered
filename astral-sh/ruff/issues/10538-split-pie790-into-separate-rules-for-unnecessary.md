@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-23T20:14:05Z
 updated_at: 2024-03-25T14:32:55Z
 url: https://github.com/astral-sh/ruff/issues/10538
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Split `PIE790` into separate rules for unnecessary `pass` vs `...`; I want to keep `...` in example code
 
 ---
 
-_Issue opened by @Zac-HD on 2024-03-23 20:14_
+_@Zac-HD_
 
 The autofix to remove useless `pass` statements is great, but I currently disable the whole rule because it _also_ catches `...`.  These constructs are equivalent at execution time, but ellipses do in fact convey something to the reader, and therefore I want to keep them for example code.  Consider e.g.:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T13:34:21Z
 updated_at: 2025-12-02T18:53:03Z
 url: https://github.com/astral-sh/ty/issues/1718
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support `yield`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-02 13:34_
+_@MichaReiser_
 
 Stop inferring `Todo` for:
 

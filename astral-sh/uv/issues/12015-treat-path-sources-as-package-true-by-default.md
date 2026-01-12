@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T18:20:55Z
 updated_at: 2025-07-17T22:20:27Z
 url: https://github.com/astral-sh/uv/issues/12015
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Treat path sources as `package = true` by default
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-06 18:20_
+_@charliermarsh_
 
 In `[tool.uv.sources]`, `path` sources should be treated as packages by default (even if they don't specify a build system). It's confusing that we treat them as virtual. As of https://github.com/astral-sh/uv/pull/12014, users can annotate such dependencies with `package = false` as an escape hatch.
 

@@ -13,14 +13,14 @@ head: fix-ci
 created_at: 2025-02-13T20:32:29Z
 updated_at: 2025-05-21T20:26:36Z
 url: https://github.com/astral-sh/ruff/pull/16145
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Use ubuntu-24 to run benchmarks
 
 ---
 
-_Pull request opened by @Glyphack on 2025-02-13 20:32_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

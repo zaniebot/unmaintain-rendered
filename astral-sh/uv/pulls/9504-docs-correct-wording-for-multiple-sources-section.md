@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-28T15:17:36Z
 updated_at: 2024-11-29T17:33:20Z
 url: https://github.com/astral-sh/uv/pull/9504
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # docs: correct wording for multiple sources section
 
 ---
 
-_Pull request opened by @trag1c on 2024-11-28 15:17_
+_@trag1c_
 
 ## Summary
 

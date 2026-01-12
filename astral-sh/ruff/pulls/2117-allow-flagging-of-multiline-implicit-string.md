@@ -12,14 +12,14 @@ head: charlie/implicit
 created_at: 2023-01-24T04:51:08Z
 updated_at: 2023-01-24T05:01:02Z
 url: https://github.com/astral-sh/ruff/pull/2117
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Allow flagging of multiline implicit string concatenations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-24 04:51_
+_@charliermarsh_
 
 At present, `ISC001` and `ISC002` flag concatenations like the following:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T12:22:05Z
 updated_at: 2024-09-24T12:55:34Z
 url: https://github.com/astral-sh/ruff/issues/13497
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # C401 message missing closing parenthesis
 
 ---
 
-_Issue opened by @Toaster192 on 2024-09-24 12:22_
+_@Toaster192_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: renovate/astral-sh-setup-uv-6.x
 created_at: 2025-10-06T02:08:34Z
 updated_at: 2025-10-06T06:40:11Z
 url: https://github.com/astral-sh/ruff/pull/20710
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Update astral-sh/setup-uv action to v6.8.0
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:08_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

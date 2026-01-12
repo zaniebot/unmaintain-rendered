@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-05T23:12:09Z
 updated_at: 2025-05-07T19:14:03Z
 url: https://github.com/astral-sh/ruff/issues/3893
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Static type checking à la mypy
 
 ---
 
-_Issue opened by @saada on 2023-04-05 23:12_
+_@saada_
 
 Would be amazing if Ruff had static type checking. Mypy is a well known solution in this area as well as pytype, pyre, and others.
 

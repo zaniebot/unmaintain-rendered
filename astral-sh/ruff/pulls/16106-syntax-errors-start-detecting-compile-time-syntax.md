@@ -13,14 +13,14 @@ head: brent/syntax-error-source-order
 created_at: 2025-02-11T21:33:48Z
 updated_at: 2025-03-21T18:45:28Z
 url: https://github.com/astral-sh/ruff/pull/16106
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [syntax-errors] Start detecting compile-time syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-11 21:33_
+_@ntBre_
 
 ## Summary
 

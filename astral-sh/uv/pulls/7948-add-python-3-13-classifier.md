@@ -13,14 +13,14 @@ head: zb/313-metadata
 created_at: 2024-10-06T14:36:18Z
 updated_at: 2024-10-07T14:31:41Z
 url: https://github.com/astral-sh/uv/pull/7948
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Add Python 3.13 classifier
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-06 14:36_
+_@zanieb_
 
 ref https://pyreadiness.org/3.13/
 

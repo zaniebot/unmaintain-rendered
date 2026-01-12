@@ -15,14 +15,14 @@ head: rep-not-subscriptable
 created_at: 2025-12-25T09:30:41Z
 updated_at: 2025-12-29T20:02:36Z
 url: https://github.com/astral-sh/ruff/pull/22193
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Rename `non-subscriptable` to `not-subscriptable`
 
 ---
 
-_Pull request opened by @silamon on 2025-12-25 09:30_
+_@silamon_
 
 ## Summary
 

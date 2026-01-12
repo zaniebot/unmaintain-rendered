@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-21T05:21:16Z
 updated_at: 2025-11-12T01:54:38Z
 url: https://github.com/astral-sh/ty/issues/1075
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect inferred type when indexing Pandas dataframe with column list
 
 ---
 
-_Issue opened by @janosh on 2025-08-21 05:21_
+_@janosh_
 
 ### Summary
 

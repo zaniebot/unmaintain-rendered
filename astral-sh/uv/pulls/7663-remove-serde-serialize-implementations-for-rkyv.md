@@ -13,14 +13,14 @@ head: charlie/rkyv
 created_at: 2024-09-24T17:05:05Z
 updated_at: 2024-09-24T17:23:50Z
 url: https://github.com/astral-sh/uv/pull/7663
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Remove `serde::Serialize` implementations for rkyv-able structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-24 17:05_
+_@charliermarsh_
 
 ## Summary
 

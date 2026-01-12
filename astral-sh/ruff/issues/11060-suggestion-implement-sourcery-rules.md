@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-20T23:26:46Z
 updated_at: 2025-11-26T06:51:38Z
 url: https://github.com/astral-sh/ruff/issues/11060
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Suggestion: Implement Sourcery rules
 
 ---
 
-_Issue opened by @diceroll123 on 2024-04-20 23:26_
+_@diceroll123_
 
 [Sourcery](https://github.com/sourcery-ai/sourcery) is a closed-source, paid program with refactoring/suggestion rules, some of which are covered by existing rules within Ruff.
 

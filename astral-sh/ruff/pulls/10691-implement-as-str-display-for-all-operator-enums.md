@@ -13,14 +13,14 @@ head: dhruv/operator-as-str
 created_at: 2024-04-01T05:50:52Z
 updated_at: 2024-04-02T10:45:34Z
 url: https://github.com/astral-sh/ruff/pull/10691
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Implement `as_str` & `Display` for all operator enums
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-01 05:50_
+_@dhruvmanila_
 
 ## Summary
 

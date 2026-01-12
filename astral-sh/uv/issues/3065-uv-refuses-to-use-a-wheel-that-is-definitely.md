@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T16:03:22Z
 updated_at: 2025-01-16T21:30:50Z
 url: https://github.com/astral-sh/uv/issues/3065
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv refuses to use a wheel that is definitely built using a matching python implementation
 
 ---
 
-_Issue opened by @kvelicka on 2024-04-16 16:03_
+_@kvelicka_
 
 I'm trying to pre-build some wheels for a Pyston based build pipeline. I've realised that using `uv pip install` appears to ignore my pre-built wheels. DEBUG/TRACE level logging doesn't seem to provide enough information as to why the wheel I built was unsuitable.
 

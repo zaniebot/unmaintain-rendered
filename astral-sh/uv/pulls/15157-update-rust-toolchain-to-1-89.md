@@ -13,14 +13,14 @@ head: rust189
 created_at: 2025-08-08T03:46:48Z
 updated_at: 2025-09-27T22:38:49Z
 url: https://github.com/astral-sh/uv/pull/15157
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Update Rust toolchain to 1.89
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-08 03:46_
+_@samypr100_
 
 ## Summary
 

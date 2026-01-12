@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T16:31:26Z
 updated_at: 2025-02-18T20:12:44Z
 url: https://github.com/astral-sh/uv/issues/10685
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Environment Variables for uv publish not being recognized
 
 ---
 
-_Issue opened by @dvonessen on 2025-01-16 16:31_
+_@dvonessen_
 
 When publishing a package to a private repository, there are two environment variables that can be set: `UV_PUBLISH_PASSWORD` and `UV_PUBLISH_USERNAME` and `UV_PUBLISH_URL`.
 

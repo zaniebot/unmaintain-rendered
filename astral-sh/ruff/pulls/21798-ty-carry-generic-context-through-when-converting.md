@@ -14,14 +14,14 @@ head: dcreager/generic-context-of-callable
 created_at: 2025-12-04T19:55:48Z
 updated_at: 2025-12-05T13:57:23Z
 url: https://github.com/astral-sh/ruff/pull/21798
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Carry generic context through when converting class into `Callable`
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-04 19:55_
+_@dcreager_
 
 When converting a class (whether specialized or not) into a `Callable` type, we should carry through any generic context that the constructor has. This includes both the generic context of the class itself (if it's generic) and of the constructor methods (if they are separately generic).
 

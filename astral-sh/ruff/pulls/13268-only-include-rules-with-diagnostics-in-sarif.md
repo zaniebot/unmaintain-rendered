@@ -13,14 +13,14 @@ head: remove-unnecessary-sarif-rules
 created_at: 2024-09-06T12:02:38Z
 updated_at: 2024-09-10T00:36:31Z
 url: https://github.com/astral-sh/ruff/pull/13268
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Only include rules with diagnostics in SARIF metadata
 
 ---
 
-_Pull request opened by @RussellLuo on 2024-09-06 12:02_
+_@RussellLuo_
 
 This PR can be considered as a follow-up of #13180.
 

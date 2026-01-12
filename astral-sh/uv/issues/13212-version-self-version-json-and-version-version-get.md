@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T04:19:25Z
 updated_at: 2025-05-21T19:59:40Z
 url: https://github.com/astral-sh/uv/issues/13212
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # `version::self_version_json` and `version::version_get_fallback_unmanaged_json` test failures (outside git checkout?)
 
 ---
 
-_Issue opened by @mgorny on 2025-04-30 04:19_
+_@mgorny_
 
 ### Summary
 

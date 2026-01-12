@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T11:03:51Z
 updated_at: 2025-12-23T11:03:51Z
 url: https://github.com/astral-sh/uv/issues/17226
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Specify target platform in uv export
 
 ---
 
-_Issue opened by @hy144328 on 2025-12-23 11:03_
+_@hy144328_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/sh
 created_at: 2025-01-18T18:11:44Z
 updated_at: 2025-01-18T18:22:10Z
 url: https://github.com/astral-sh/uv/pull/10737
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Use short-form for platform tag checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-18 18:11_
+_@charliermarsh_
 
 _No description provided._
 

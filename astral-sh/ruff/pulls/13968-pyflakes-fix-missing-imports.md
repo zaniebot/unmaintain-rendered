@@ -12,14 +12,14 @@ head: fix/unimported_submodules
 created_at: 2024-10-28T18:41:44Z
 updated_at: 2024-10-29T05:53:28Z
 url: https://github.com/astral-sh/ruff/pull/13968
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [pyflakes] Fix missing imports
 
 ---
 
-_Pull request opened by @gpilikin on 2024-10-28 18:41_
+_@gpilikin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

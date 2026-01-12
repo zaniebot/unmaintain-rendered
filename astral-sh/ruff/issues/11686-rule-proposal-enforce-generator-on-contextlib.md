@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T01:39:19Z
 updated_at: 2026-01-11T19:09:33Z
 url: https://github.com/astral-sh/ruff/issues/11686
-synced_at: 2026-01-11T19:14:50Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule Proposal: Enforce `generator` on `contextlib.contextmanager` decorated functions
 
 ---
 
-_Issue opened by @max-muoto on 2024-06-02 01:39_
+_@max-muoto_
 
 In the past, it was fairly common for people to simply put `Iterator` on context managers simply out of convenience, as typing out `Generator`, required adding in two (mostly useless) generic params. However, this can lead to runtime failures not caught by a type-checker, take this example from https://github.com/python/typeshed/issues/2772.
 

@@ -13,14 +13,14 @@ head: dylan/stabilize-plr1733
 created_at: 2025-06-08T19:25:55Z
 updated_at: 2025-06-12T13:18:43Z
 url: https://github.com/astral-sh/ruff/pull/18571
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `unnecessary-dict-index-lookup` (`PLR1733`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:25_
+_@dylwil3_
 
 _No description provided._
 

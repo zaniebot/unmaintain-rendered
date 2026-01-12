@@ -15,14 +15,14 @@ head: konsti/h2-err
 created_at: 2025-09-26T12:36:37Z
 updated_at: 2025-10-09T13:53:15Z
 url: https://github.com/astral-sh/uv/pull/16038
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Retry all h2 errors
 
 ---
 
-_Pull request opened by @konstin on 2025-09-26 12:36_
+_@konstin_
 
 The h2 errors, a specific type nested in reqwest errors, all look like they shouldn't happen in regular operations and should be retried. This covers all `io::Error`s going through h2 (i.e., only HTTP 2 connections).
 

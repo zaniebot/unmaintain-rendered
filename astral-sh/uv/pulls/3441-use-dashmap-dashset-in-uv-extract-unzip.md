@@ -11,14 +11,14 @@ head: unzip-dashmap
 created_at: 2024-05-07T22:06:10Z
 updated_at: 2024-05-09T14:52:45Z
 url: https://github.com/astral-sh/uv/pull/3441
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Use `dashmap::DashSet` in `uv_extract::unzip`
 
 ---
 
-_Pull request opened by @DaniPopes on 2024-05-07 22:06_
+_@DaniPopes_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

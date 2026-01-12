@@ -12,14 +12,14 @@ head: feature/improve-slots-support
 created_at: 2025-09-28T13:18:16Z
 updated_at: 2025-09-28T13:22:55Z
 url: https://github.com/astral-sh/ruff/pull/20607
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # Improve __slots__ 
 
 ---
 
-_Pull request opened by @BlairAllan on 2025-09-28 13:18_
+_@BlairAllan_
 
 _No description provided._
 

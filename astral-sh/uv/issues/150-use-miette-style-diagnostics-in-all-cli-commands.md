@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-20T05:22:12Z
 updated_at: 2025-12-02T09:42:19Z
 url: https://github.com/astral-sh/uv/issues/150
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Use miette-style diagnostics in all CLI commands
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-20 05:22_
+_@charliermarsh_
 
 _No description provided._
 

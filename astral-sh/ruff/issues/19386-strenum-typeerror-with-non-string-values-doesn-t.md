@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-16T16:37:42Z
 updated_at: 2025-07-16T16:59:10Z
 url: https://github.com/astral-sh/ruff/issues/19386
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # strEnum TypeError with non-string values doesn't raise an error or warning
 
 ---
 
-_Issue opened by @Tomas542 on 2025-07-16 16:37_
+_@Tomas542_
 
 ### Summary
 

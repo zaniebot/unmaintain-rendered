@@ -13,14 +13,14 @@ head: charlie/paren
 created_at: 2023-10-26T16:23:00Z
 updated_at: 2023-10-26T16:38:54Z
 url: https://github.com/astral-sh/ruff/pull/8256
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Clarify unsafe case in RSE102
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 16:23_
+_@charliermarsh_
 
 _No description provided._
 

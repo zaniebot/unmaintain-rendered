@@ -14,14 +14,14 @@ head: furb192-always-unsafe
 created_at: 2025-12-26T15:49:03Z
 updated_at: 2025-12-29T14:17:34Z
 url: https://github.com/astral-sh/ruff/pull/22210
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`refurb`] Mark `FURB192` fix as always unsafe
 
 ---
 
-_Pull request opened by @harupy on 2025-12-26 15:49_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

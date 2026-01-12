@@ -12,14 +12,14 @@ head: charlie/configuration-ii
 created_at: 2022-12-11T18:29:48Z
 updated_at: 2022-12-12T15:15:06Z
 url: https://github.com/astral-sh/ruff/pull/1197
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Simplify some logic around configuration detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-11 18:29_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: remove-outdated-todos
 created_at: 2023-11-21T13:53:41Z
 updated_at: 2023-11-21T13:57:42Z
 url: https://github.com/astral-sh/uv/pull/476
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Remove outdated todos
 
 ---
 
-_Pull request opened by @konstin on 2023-11-21 13:53_
+_@konstin_
 
 _No description provided._
 

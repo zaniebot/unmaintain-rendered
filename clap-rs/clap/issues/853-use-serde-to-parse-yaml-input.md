@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-16T05:52:57Z
 updated_at: 2021-12-08T20:01:33Z
 url: https://github.com/clap-rs/clap/issues/853
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Use Serde to parse YAML input
 
 ---
 
-_Issue opened by @dtolnay on 2017-02-16 05:52_
+_@dtolnay_
 
 The errors from `clap` when my YAML isn't perfect are far less helpful than they could be. This makes it difficult to iterate on a YAML input.
 

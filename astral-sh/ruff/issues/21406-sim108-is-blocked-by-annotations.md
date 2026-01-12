@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T14:33:59Z
 updated_at: 2025-12-30T16:47:41Z
 url: https://github.com/astral-sh/ruff/issues/21406
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM108 is blocked by annotations
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-12 14:33_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T00:41:44Z
 updated_at: 2025-09-17T08:06:47Z
 url: https://github.com/astral-sh/uv/issues/13757
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # How to give "uv tool" access to system site packages similar to "pipx"?
 
 ---
 
-_Issue opened by @akkadaya on 2025-06-01 00:41_
+_@akkadaya_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-04T04:00:08Z
 updated_at: 2015-05-05T03:45:01Z
 url: https://github.com/clap-rs/clap/issues/98
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add named valued to `from_usage` methods
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-04 04:00_
+_@kbknapp_
 
 To allow something like
 

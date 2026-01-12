@@ -13,14 +13,14 @@ head: konsti/assert-package-priority-size
 created_at: 2025-01-22T11:13:03Z
 updated_at: 2025-02-19T10:33:43Z
 url: https://github.com/astral-sh/uv/pull/10851
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Add test for package priority size
 
 ---
 
-_Pull request opened by @konstin on 2025-01-22 11:13_
+_@konstin_
 
 See also #10833
 

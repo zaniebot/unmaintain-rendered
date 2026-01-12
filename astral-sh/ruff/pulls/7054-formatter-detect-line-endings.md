@@ -14,14 +14,14 @@ head: detect-line-ending
 created_at: 2023-09-01T21:35:54Z
 updated_at: 2023-09-04T06:09:32Z
 url: https://github.com/astral-sh/ruff/pull/7054
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Formatter: Detect line endings
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-01 21:35_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

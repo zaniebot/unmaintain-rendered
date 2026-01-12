@@ -14,14 +14,14 @@ head: specialize-non-generic
 created_at: 2025-12-08T07:49:14Z
 updated_at: 2025-12-12T03:46:42Z
 url: https://github.com/astral-sh/ruff/pull/21840
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] improve bad specialization results & error messages
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-08 07:49_
+_@mtshiba_
 
 ## Summary
 

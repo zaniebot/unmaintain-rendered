@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T09:43:52Z
 updated_at: 2024-11-15T14:52:08Z
 url: https://github.com/astral-sh/uv/issues/9010
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # uv run powershell script fails
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-11-11 09:43_
+_@jenshnielsen_
 
 If pyright is installed from npm it will install itself with a cmd and powershell entry point on windows and a shell script on linux.
 When trying to run this script using `uv run`, to run it in uv's managed .venv on windows, it errors unless the cmd script is supplied or an explicit powershell is prefixed. 

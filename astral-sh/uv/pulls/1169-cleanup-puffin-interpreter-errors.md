@@ -13,14 +13,14 @@ head: konsti/cleanup-puffin-interpreter-errors
 created_at: 2024-01-29T12:14:46Z
 updated_at: 2024-01-30T09:52:47Z
 url: https://github.com/astral-sh/uv/pull/1169
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Cleanup puffin interpreter errors
 
 ---
 
-_Pull request opened by @konstin on 2024-01-29 12:14_
+_@konstin_
 
 Use `virtualenv` consistently, remove unused error variants and hint the user towards installing missing python versions.
 

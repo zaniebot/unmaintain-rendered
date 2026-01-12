@@ -12,14 +12,14 @@ head: revert-13533-patch-1
 created_at: 2025-05-20T14:30:41Z
 updated_at: 2025-05-20T14:35:16Z
 url: https://github.com/astral-sh/uv/pull/13555
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Revert "[docs] Fix Publishing Packages, Next = "Index""
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-20 14:30_
+_@charliermarsh_
 
 Reverts astral-sh/uv#13533. I think this isn't quite right. AFAICT, this is actually solved by upgrading our Material version.
 

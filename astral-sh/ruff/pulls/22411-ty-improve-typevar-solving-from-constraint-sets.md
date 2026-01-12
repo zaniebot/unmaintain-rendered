@@ -14,14 +14,14 @@ head: cjm/issue-2292
 created_at: 2026-01-06T02:18:04Z
 updated_at: 2026-01-06T21:11:27Z
 url: https://github.com/astral-sh/ruff/pull/22411
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] improve typevar solving from constraint sets
 
 ---
 
-_Pull request opened by @carljm on 2026-01-06 02:18_
+_@carljm_
 
 ## Summary
 

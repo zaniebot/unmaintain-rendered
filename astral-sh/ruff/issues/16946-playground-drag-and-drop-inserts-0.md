@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T11:23:39Z
 updated_at: 2025-03-24T17:09:48Z
 url: https://github.com/astral-sh/ruff/issues/16946
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [playground] Drag-and-drop inserts `$0`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-24 11:23_
+_@InSyncWithFoo_
 
 Steps to reproduce:
 

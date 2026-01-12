@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T14:08:49Z
 updated_at: 2025-05-20T13:35:26Z
 url: https://github.com/astral-sh/uv/issues/13493
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # `sources`-like behavior in system-level configuration
 
 ---
 
-_Issue opened by @hutch3232 on 2025-05-16 14:08_
+_@hutch3232_
 
 ### Question
 

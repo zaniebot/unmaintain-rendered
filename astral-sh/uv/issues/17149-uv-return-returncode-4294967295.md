@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T14:29:20Z
 updated_at: 2025-12-16T14:37:59Z
 url: https://github.com/astral-sh/uv/issues/17149
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # UV return returncode 4294967295
 
 ---
 
-_Issue opened by @Wintreist on 2025-12-16 14:29_
+_@Wintreist_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T14:49:50Z
 updated_at: 2025-12-05T14:49:50Z
 url: https://github.com/astral-sh/ty/issues/1776
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [completions] Rank symbols with class-literal types higher inside class declarations
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 14:49_
+_@AlexWaygood_
 
 `NotImplementedError` and `NotADirectoryError` should be ranked higher than `NotImplemented` here, because it is invalid to inherit from `NotImplemented` -- `NotImplemented` is not a class
 

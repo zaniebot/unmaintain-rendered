@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T21:26:28Z
 updated_at: 2024-11-20T18:54:30Z
 url: https://github.com/astral-sh/uv/issues/9250
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Can't `uv self update` via ssh
 
 ---
 
-_Issue opened by @dedebenui on 2024-11-19 21:26_
+_@dedebenui_
 
 I want to manage a remote server with ansible and use `uv`, but the `self update` command doesn't work. I narrowed down the problem to running the command over ssh:
 ```

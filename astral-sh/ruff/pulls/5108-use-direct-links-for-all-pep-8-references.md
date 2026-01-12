@@ -13,14 +13,14 @@ head: charlie/pep8
 created_at: 2023-06-15T00:49:58Z
 updated_at: 2023-06-15T01:23:56Z
 url: https://github.com/astral-sh/ruff/pull/5108
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use direct links for all PEP 8 references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-15 00:49_
+_@charliermarsh_
 
 _No description provided._
 

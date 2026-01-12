@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-13T22:47:53Z
 updated_at: 2025-02-14T18:26:41Z
 url: https://github.com/astral-sh/uv/issues/11494
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # Support Kerberos Authentication to Proxy
 
 ---
 
-_Issue opened by @jornfranke on 2025-02-13 22:47_
+_@jornfranke_
 
 ### Summary
 

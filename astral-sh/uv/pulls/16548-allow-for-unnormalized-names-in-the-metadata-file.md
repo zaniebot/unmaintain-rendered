@@ -13,14 +13,14 @@ head: uppercase-wheel-metadata
 created_at: 2025-11-01T20:37:18Z
 updated_at: 2025-11-02T01:57:37Z
 url: https://github.com/astral-sh/uv/pull/16548
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Allow for unnormalized names in the METADATA file (#16547)
 
 ---
 
-_Pull request opened by @caschb on 2025-11-01 20:37_
+_@caschb_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

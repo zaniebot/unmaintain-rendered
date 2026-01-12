@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T02:51:17Z
 updated_at: 2025-11-29T14:16:35Z
 url: https://github.com/astral-sh/uv/issues/12030
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # How to make Pylance recognize the declared dependencies in a script
 
 ---
 
-_Issue opened by @CrendKing on 2025-03-07 02:51_
+_@CrendKing_
 
 ### Question
 

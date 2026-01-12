@@ -13,14 +13,14 @@ head: david/fix-261
 created_at: 2025-05-10T13:31:52Z
 updated_at: 2025-05-13T14:59:13Z
 url: https://github.com/astral-sh/ruff/pull/18005
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Recognize submodules in self-referential imports
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-10 13:31_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/fix-gh11793
 created_at: 2025-02-27T15:07:08Z
 updated_at: 2025-02-28T12:40:21Z
 url: https://github.com/astral-sh/uv/pull/11833
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Fix non-directory in workspace on Windows
 
 ---
 
-_Pull request opened by @konstin on 2025-02-27 15:07_
+_@konstin_
 
 Fixes #11793
 

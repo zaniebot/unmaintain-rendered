@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T18:52:26Z
 updated_at: 2024-02-05T19:30:33Z
 url: https://github.com/astral-sh/ruff/issues/9842
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive for B035 dictionary comprehension uses static key
 
 ---
 
-_Issue opened by @rouge8 on 2024-02-05 18:52_
+_@rouge8_
 
 ## Code
 

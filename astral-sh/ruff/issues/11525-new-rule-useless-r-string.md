@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T05:56:59Z
 updated_at: 2024-06-03T10:48:39Z
 url: https://github.com/astral-sh/ruff/issues/11525
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # new rule: useless `r` string
 
 ---
 
-_Issue opened by @DetachHead on 2024-05-24 05:56_
+_@DetachHead_
 
 we have [`F541`](https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/) which reports useless `f` strings, so it would be nice if there was a rule for `r` strings as well:
 ```py

@@ -13,14 +13,14 @@ head: charlie/function-signature-ii
 created_at: 2023-08-08T01:37:17Z
 updated_at: 2023-08-09T12:38:11Z
 url: https://github.com/astral-sh/ruff/pull/6410
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Group function definition parameters with return type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-08 01:37_
+_@charliermarsh_
 
 ## Summary
 

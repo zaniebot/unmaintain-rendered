@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-28T14:31:51Z
 updated_at: 2023-07-07T00:37:43Z
 url: https://github.com/astral-sh/ruff/issues/5420
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support globbing in the `known-first-party` isort option
 
 ---
 
-_Issue opened by @tjkuson on 2023-06-28 14:31_
+_@tjkuson_
 
 Globbing should be supported in the `known-first-party` isort option so that
 

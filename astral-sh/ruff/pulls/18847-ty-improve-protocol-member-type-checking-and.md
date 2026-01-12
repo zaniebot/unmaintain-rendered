@@ -13,14 +13,14 @@ head: protocol-member-checks
 created_at: 2025-06-21T03:57:30Z
 updated_at: 2025-06-29T15:50:47Z
 url: https://github.com/astral-sh/ruff/pull/18847
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Improve protocol member type checking and relation handling
 
 ---
 
-_Pull request opened by @mtshiba on 2025-06-21 03:57_
+_@mtshiba_
 
 ## Summary
 

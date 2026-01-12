@@ -13,14 +13,14 @@ head: ruf027-docs
 created_at: 2024-08-14T09:19:42Z
 updated_at: 2024-08-14T09:49:50Z
 url: https://github.com/astral-sh/ruff/pull/12886
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Improve docs for `missing-fstring-syntax` (`RUF027`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-14 09:19_
+_@AlexWaygood_
 
 Some docs improvements I made while I was looking into whether we could stabilise this rule (which we decided in #12869 to postpone for now)
 

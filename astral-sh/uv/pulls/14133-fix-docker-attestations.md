@@ -13,14 +13,14 @@ head: zb/fix-dockerhub
 created_at: 2025-06-18T18:33:49Z
 updated_at: 2025-06-18T18:46:31Z
 url: https://github.com/astral-sh/uv/pull/14133
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Fix Docker attestations
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-18 18:33_
+_@zanieb_
 
 These regressed in #14088 and were found during my test publish from a fork.
 

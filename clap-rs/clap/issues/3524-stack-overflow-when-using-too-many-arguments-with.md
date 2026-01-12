@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-03-01T16:17:35Z
 updated_at: 2023-01-06T16:41:06Z
 url: https://github.com/clap-rs/clap/issues/3524
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Stack overflow when using too many arguments with `arg!()`
 
 ---
 
-_Issue opened by @bkstein on 2022-03-01 16:17_
+_@bkstein_
 
 ### Please complete the following tasks
 

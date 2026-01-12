@@ -11,14 +11,14 @@ head: unused-variable-accessed
 created_at: 2024-11-16T16:57:04Z
 updated_at: 2024-11-16T17:11:36Z
 url: https://github.com/astral-sh/ruff/pull/14380
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Unused variable accessed
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-16 16:57_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

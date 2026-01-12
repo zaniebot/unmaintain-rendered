@@ -12,14 +12,14 @@ head: isort/force-sort-within-sections
 created_at: 2023-01-04T19:54:46Z
 updated_at: 2023-01-09T18:24:09Z
 url: https://github.com/astral-sh/ruff/pull/1635
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add isort.force-sort-within-sections setting
 
 ---
 
-_Pull request opened by @mattoberle on 2023-01-04 19:54_
+_@mattoberle_
 
 This commit is a first attempt at addressing issue #1003.
 

@@ -14,14 +14,14 @@ head: pixi-bench
 created_at: 2024-02-17T10:19:09Z
 updated_at: 2024-02-21T18:15:53Z
 url: https://github.com/astral-sh/uv/pull/1581
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Add benchmark of pixi with uv
 
 ---
 
-_Pull request opened by @olivier-lacroix on 2024-02-17 10:19_
+_@olivier-lacroix_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

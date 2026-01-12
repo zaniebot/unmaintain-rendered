@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T09:47:27Z
 updated_at: 2024-06-27T15:56:43Z
 url: https://github.com/astral-sh/uv/issues/4578
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `--extra-index-url` fails to look up on pypi when there are no wheels built for my machine
 
 ---
 
-_Issue opened by @baggiponte on 2024-06-27 09:47_
+_@baggiponte_
 
 Ciao! I am using `uv` to install a package from a private index. I noticed an error when trying to install anything that depends on `pydantic-core`. Basically, on the private index there are just these wheels:
 

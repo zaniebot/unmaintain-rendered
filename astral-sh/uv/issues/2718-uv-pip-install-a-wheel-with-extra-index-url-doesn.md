@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T19:08:39Z
 updated_at: 2024-04-07T00:10:29Z
 url: https://github.com/astral-sh/uv/issues/2718
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env
 
 ---
 
-_Issue opened by @rbavery on 2024-03-28 19:08_
+_@rbavery_
 
 * A minimal code snippet that reproduces the bug.
 

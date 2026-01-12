@@ -13,14 +13,14 @@ head: additional-tags-entrypoint-adjustment
 created_at: 2024-09-04T23:00:49Z
 updated_at: 2024-09-04T23:59:24Z
 url: https://github.com/astral-sh/uv/pull/7054
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:39Z
 ```
 
 # ci(docker)!: adjust entrypoint and cmd for inherited images
 
 ---
 
-_Pull request opened by @samypr100 on 2024-09-04 23:00_
+_@samypr100_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: jtfm/obfuscate-username
 created_at: 2025-04-18T14:06:58Z
 updated_at: 2025-04-19T09:11:43Z
 url: https://github.com/astral-sh/uv/pull/12969
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Obfuscate username in tracing URL
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-18 14:06_
+_@jtfmumm_
 
 A URL username can be a secret token, so we should avoid logging it.
 

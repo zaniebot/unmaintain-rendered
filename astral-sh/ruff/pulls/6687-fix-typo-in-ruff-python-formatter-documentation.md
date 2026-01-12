@@ -13,14 +13,14 @@ head: fix-doc-typo
 created_at: 2023-08-18T22:05:15Z
 updated_at: 2023-08-25T20:45:49Z
 url: https://github.com/astral-sh/ruff/pull/6687
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix typo in `ruff_python_formatter` documentation
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-18 22:05_
+_@LaBatata101_
 
 ## Summary
 

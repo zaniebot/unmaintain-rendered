@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T12:34:28Z
 updated_at: 2024-12-12T19:34:29Z
 url: https://github.com/clap-rs/clap/issues/5668
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Lazy loading of dynamic completions
 
 ---
 
-_Issue opened by @alerque on 2024-08-12 12:34_
+_@alerque_
 
 I've been looking forward to dynamic completion support for a long time. I see ZSH support has landed as an unstable feature so I [started playing around with a POC on a small project](https://github.com/alerque/git-warp-time/compare/dynamic-completion) to get an idea how it all goes together.
 

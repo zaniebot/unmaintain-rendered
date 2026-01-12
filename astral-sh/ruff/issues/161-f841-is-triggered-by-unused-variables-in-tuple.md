@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-12T00:17:37Z
 updated_at: 2022-09-17T01:46:30Z
 url: https://github.com/astral-sh/ruff/issues/161
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F841 is triggered by unused variables in tuple unpacking (unlike flake8)
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-12 00:17_
+_@Jackenmen_
 
 Unlike flake8, ruff adds F841 error when an unused variable is in tuple unpacking. Due to this being an incredibly common pattern, it would be good if it didn't work like this. In the code base I tested this on, it has caused over 50 errors and I don't think that replacing meaningful names with `_` improves the readability of the code.
 

@@ -13,14 +13,14 @@ head: konsti/fix-git-workspaces
 created_at: 2024-10-29T16:07:19Z
 updated_at: 2024-10-30T19:12:24Z
 url: https://github.com/astral-sh/uv/pull/8665
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Support transitive dependencies in Git workspaces
 
 ---
 
-_Pull request opened by @konstin on 2024-10-29 16:07_
+_@konstin_
 
 When resolving workspace dependencies (from one workspace member to another) from a workspace that's in git, we need to emit these transitive dependencies as git dependencies, not path dependencies as all other workspace deps. This fixes a bug where we would treat them as path dependencies inside the checkout directory, leading either to clashes (between a local path and another direct git dependency) or invalid lockfiles (referencing the checkout dir in the lockfile when we should be referencing the git repo).
 

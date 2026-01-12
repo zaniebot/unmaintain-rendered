@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T23:33:58Z
 updated_at: 2024-10-10T14:17:40Z
 url: https://github.com/astral-sh/ruff/issues/13697
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: `black` compatibility mode
 
 ---
 
-_Issue opened by @cramertj on 2024-10-09 23:33_
+_@cramertj_
 
 [Ruff's website says](https://docs.astral.sh/ruff/formatter/#black-compatibility):
 > The formatter is designed to be a drop-in replacement for [Black](https://github.com/psf/black).

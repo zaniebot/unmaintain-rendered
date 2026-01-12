@@ -12,14 +12,14 @@ head: charlie/plc
 created_at: 2023-03-27T18:17:34Z
 updated_at: 2023-03-27T18:47:07Z
 url: https://github.com/astral-sh/ruff/pull/3761
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid `useless-import alias` (`C0414`) in `.pyi` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-27 18:17_
+_@charliermarsh_
 
 Closes https://github.com/charliermarsh/ruff/issues/3734.
 

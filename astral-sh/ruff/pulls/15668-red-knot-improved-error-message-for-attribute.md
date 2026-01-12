@@ -13,14 +13,14 @@ head: david/attribute-assignment-improved-error
 created_at: 2025-01-22T10:25:49Z
 updated_at: 2025-01-22T11:06:00Z
 url: https://github.com/astral-sh/ruff/pull/15668
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Improved error message for attribute-assignments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-22 10:25_
+_@sharkdp_
 
 ## Summary
 

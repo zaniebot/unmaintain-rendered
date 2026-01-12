@@ -13,14 +13,14 @@ head: david/disallow-final-in-parameters
 created_at: 2025-07-22T08:31:20Z
 updated_at: 2025-07-22T11:15:21Z
 url: https://github.com/astral-sh/ruff/pull/19480
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Disallow `Final` in function parameter/return-type annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 08:31_
+_@sharkdp_
 
 ## Summary
 

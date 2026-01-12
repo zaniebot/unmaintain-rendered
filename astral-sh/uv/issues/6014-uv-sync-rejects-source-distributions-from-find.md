@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T00:16:27Z
 updated_at: 2024-08-12T02:02:41Z
 url: https://github.com/astral-sh/uv/issues/6014
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv sync` rejects source distributions from `--find-links`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-12 00:16_
+_@charliermarsh_
 
 ```
 ❯ uv sync --find-links ../scripts/links

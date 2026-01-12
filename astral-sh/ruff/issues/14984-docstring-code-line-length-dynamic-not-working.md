@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T14:44:52Z
 updated_at: 2024-12-15T20:24:20Z
 url: https://github.com/astral-sh/ruff/issues/14984
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `docstring-code-line-length = "dynamic"` not Working Correctly
 
 ---
 
-_Issue opened by @Bibo-Joshi on 2024-12-15 14:44_
+_@Bibo-Joshi_
 
 Hey. I found another instance where `docstring-code-line-length = "dynamic"` is not corking correctly. I've already seen https://github.com/astral-sh/ruff/issues/13358, but the fix for that apparently is not sufficient for the following example:
 

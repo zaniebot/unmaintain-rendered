@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T03:17:42Z
 updated_at: 2025-06-25T08:04:16Z
 url: https://github.com/astral-sh/ruff/issues/18742
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Fixing some rules with debug f-strings introduces a syntax error
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 03:17_
+_@MeGaGiGaGon_
 
 ### Summary
 

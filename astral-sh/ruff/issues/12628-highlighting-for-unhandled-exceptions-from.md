@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T13:05:22Z
 updated_at: 2024-10-24T14:33:06Z
 url: https://github.com/astral-sh/ruff/issues/12628
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Highlighting for unhandled exceptions from docstrings
 
 ---
 
-_Issue opened by @divaltor on 2024-08-02 13:05_
+_@divaltor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

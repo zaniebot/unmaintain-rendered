@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-30T02:55:50Z
 updated_at: 2024-05-30T04:18:09Z
 url: https://github.com/astral-sh/ruff/issues/11606
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Fix isort break the indent-width
 
 ---
 
-_Issue opened by @nasyxx on 2024-05-30 02:55_
+_@nasyxx_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

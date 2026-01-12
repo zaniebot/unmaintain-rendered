@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T08:21:35Z
 updated_at: 2024-02-20T03:26:31Z
 url: https://github.com/astral-sh/uv/issues/1633
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Invalid extra name - python_version_2.7_
 
 ---
 
-_Issue opened by @yoavk on 2024-02-18 08:21_
+_@yoavk_
 
 In addition to [this](https://github.com/astral-sh/uv/issues/1399), there seem to be other extra names that don't match PEP.
 I tried installing `uv pip install huaweicloudsdkcore==3.1.56`, but got the following error

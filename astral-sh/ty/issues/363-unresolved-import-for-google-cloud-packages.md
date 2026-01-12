@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T18:04:42Z
 updated_at: 2025-08-15T18:12:42Z
 url: https://github.com/astral-sh/ty/issues/363
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `unresolved-import` for `google.cloud` packages
 
 ---
 
-_Issue opened by @galah92 on 2025-05-13 18:04_
+_@galah92_
 
 ### Summary
 

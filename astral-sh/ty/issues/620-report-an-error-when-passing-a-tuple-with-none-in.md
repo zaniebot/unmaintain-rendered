@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-10T10:47:22Z
 updated_at: 2025-11-21T00:08:09Z
 url: https://github.com/astral-sh/ty/issues/620
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # report an error when passing a tuple with `None` in an `isinstance` check
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-10 10:47_
+_@DetachHead_
 
 ```py
 if isinstance(None, (int, None)): # no error, crashes at runtime

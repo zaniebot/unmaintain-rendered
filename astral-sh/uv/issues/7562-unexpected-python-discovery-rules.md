@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T22:03:04Z
 updated_at: 2024-09-29T14:54:29Z
 url: https://github.com/astral-sh/uv/issues/7562
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Unexpected python discovery rules
 
 ---
 
-_Issue opened by @bulletmark on 2024-09-19 22:03_
+_@bulletmark_
 
 I wondered why my venv was using a very old Python version and then did the following test:
 ```

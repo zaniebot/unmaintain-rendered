@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-24T21:39:11Z
 updated_at: 2022-11-10T04:10:40Z
 url: https://github.com/astral-sh/ruff/issues/463
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Create an official VS Code extension
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-24 21:39_
+_@charliermarsh_
 
 Related: #271.
 

@@ -12,14 +12,14 @@ head: charlie/withitem
 created_at: 2022-11-24T01:14:27Z
 updated_at: 2022-11-24T01:28:38Z
 url: https://github.com/astral-sh/ruff/pull/897
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Treat withitem variables as bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-24 01:14_
+_@charliermarsh_
 
 Resolves #890.
 

@@ -14,14 +14,14 @@ head: david/implicit-type-aliases-typing-special-forms
 created_at: 2025-11-13T18:50:14Z
 updated_at: 2025-11-14T08:09:00Z
 url: https://github.com/astral-sh/ruff/pull/21433
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Support legacy `typing` special forms in implicit type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-13 18:50_
+_@sharkdp_
 
 ## Summary
 

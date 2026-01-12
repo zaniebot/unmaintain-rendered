@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-27T17:17:28Z
 updated_at: 2023-09-14T19:47:13Z
 url: https://github.com/astral-sh/ruff/issues/4135
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # CI fails to create PR comment when output is too long
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-04-27 17:17_
+_@dhruvmanila_
 
 Example: https://github.com/charliermarsh/ruff/actions/runs/4820701572/jobs/8585562172
 

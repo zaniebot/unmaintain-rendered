@@ -13,14 +13,14 @@ head: konsti/document-uv-virtualenv
 created_at: 2024-03-10T13:16:45Z
 updated_at: 2024-03-10T13:44:51Z
 url: https://github.com/astral-sh/uv/pull/2334
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Rename and document venv discoveries
 
 ---
 
-_Pull request opened by @konstin on 2024-03-10 13:16_
+_@konstin_
 
 Preparing for #2058, i found it hard to follow where which discovery function gets called. I moved all the discovery functions to a `find_python` module (some exposed through `PythonEnvironment`) and documented which subcommand uses which python discovery strategy.
 

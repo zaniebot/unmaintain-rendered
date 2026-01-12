@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T17:35:31Z
 updated_at: 2024-08-16T17:42:08Z
 url: https://github.com/astral-sh/uv/issues/6158
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv add foo` followed by a `uv remove foo` can sometimes produce a different lock file than what one started with
 
 ---
 
-_Issue opened by @BurntSushi on 2024-08-16 17:35_
+_@BurntSushi_
 
 This is, assuming, of course, that the world remains fixed (which one can simulate with `--exclude-newer`). Here's a basic test case that is derived from #6063:
 

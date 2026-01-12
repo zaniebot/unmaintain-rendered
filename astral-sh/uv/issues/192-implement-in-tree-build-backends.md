@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T08:46:46Z
 updated_at: 2023-11-10T10:54:25Z
 url: https://github.com/astral-sh/uv/issues/192
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Implement in-tree build backends
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 08:46_
+_@konstin_
 
 https://peps.python.org/pep-0517/#in-tree-build-backends
 

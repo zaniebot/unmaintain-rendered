@@ -14,14 +14,14 @@ head: konsti/log-forking
 created_at: 2024-06-18T15:51:11Z
 updated_at: 2024-06-18T16:47:07Z
 url: https://github.com/astral-sh/uv/pull/4386
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Log when we fork
 
 ---
 
-_Pull request opened by @konstin on 2024-06-18 15:51_
+_@konstin_
 
 We currently don't log if or when we split the resolution graphs into forks. I ran into this when trying to debug missing forking.
 

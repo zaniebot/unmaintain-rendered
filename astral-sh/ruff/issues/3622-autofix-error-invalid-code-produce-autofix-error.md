@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T08:30:52Z
 updated_at: 2023-03-23T17:36:51Z
 url: https://github.com/astral-sh/ruff/issues/3622
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] Invalid code produce autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-03-20 08:30_
+_@qarmin_
 
 Ruff  a45753f462c7a53afd7f942ab3c6f9af3871bf1f
 

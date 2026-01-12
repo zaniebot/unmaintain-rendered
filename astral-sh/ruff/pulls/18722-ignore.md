@@ -12,14 +12,14 @@ head: alex/debug-primer-2
 created_at: 2025-06-17T13:32:53Z
 updated_at: 2025-06-17T14:48:23Z
 url: https://github.com/astral-sh/ruff/pull/18722
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ignore]
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-17 13:32_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

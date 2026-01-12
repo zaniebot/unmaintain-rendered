@@ -14,14 +14,14 @@ head: typo/projects_lockfile
 created_at: 2024-08-12T11:52:03Z
 updated_at: 2024-08-12T12:09:17Z
 url: https://github.com/astral-sh/uv/pull/6033
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Fixed projects guide typo
 
 ---
 
-_Pull request opened by @TheoBabilon on 2024-08-12 11:52_
+_@TheoBabilon_
 
 Sorry for spam, also noticed this tiny repetition
 

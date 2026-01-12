@@ -14,14 +14,14 @@ head: pt-default
 created_at: 2024-08-15T13:22:45Z
 updated_at: 2024-08-15T14:21:02Z
 url: https://github.com/astral-sh/ruff/pull/12904
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fixup description of default values for `fixture-parentheses` and `mark-parentheses`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-15 13:22_
+_@AlexWaygood_
 
 I noticed while creating a PR to update the schemastore entry for Ruff that there was still some language here that implied that these defaulted to true; but they default to false on ruff 0.6+. #12838 changed some but not all the language here.
 

@@ -14,14 +14,14 @@ head: brent/a005-defaults
 created_at: 2025-02-12T18:53:34Z
 updated_at: 2025-03-11T18:10:04Z
 url: https://github.com/astral-sh/ruff/pull/16125
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-builtins`] Default to non-strict checking (`A005`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-12 18:53_
+_@ntBre_
 
 ## Summary
 

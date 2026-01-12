@@ -14,14 +14,14 @@ head: dcreager/fix-flaky-constraints
 created_at: 2025-09-30T20:16:58Z
 updated_at: 2025-10-01T07:14:37Z
 url: https://github.com/astral-sh/ruff/pull/20653
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Fix flaky constraint set rendering
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-30 20:16_
+_@dcreager_
 
 This doesn't seem to be flaky in the sense of tests failing non-deterministically, but they are flaky in the sense of unrelated changes causing testing failures from the clauses of a constraint set being rendered in different orders. This flakiness is because we're using Salsa IDs to determine the order in which typevars appear in a constraint set BDD, and those IDs are assigned non-deterministically.
 

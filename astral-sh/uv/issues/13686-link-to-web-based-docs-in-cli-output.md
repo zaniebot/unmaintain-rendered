@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-27T18:35:07Z
 updated_at: 2025-05-27T18:39:49Z
 url: https://github.com/astral-sh/uv/issues/13686
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Link to web-based docs in CLI output
 
 ---
 
-_Issue opened by @geofft on 2025-05-27 18:35_
+_@geofft_
 
 It's often useful for errors or warnings to give you a link to a documentation page on the web hosting longer docs than can be reasonably stuffed into a terminal-sized error message. For instance, this came up in https://github.com/astral-sh/uv/pull/13455#discussion_r2109387403 regarding the error message when resolution works for your _current_ Python version or platform, but your project isn't declared as Python-version-specific or platform-specific and some _other_ version/platform fails, and it'd be nice to have some examples of how to declare those constraints if that's the right answer for your project:
 

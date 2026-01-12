@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-19T13:25:18Z
 updated_at: 2025-11-13T13:59:22Z
 url: https://github.com/clap-rs/clap/issues/5020
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Global arguments with a `requires` clause don't work under subcommands when specified through environment variables
 
 ---
 
-_Issue opened by @Xophmeister on 2023-07-19 13:25_
+_@Xophmeister_
 
 ### Please complete the following tasks
 

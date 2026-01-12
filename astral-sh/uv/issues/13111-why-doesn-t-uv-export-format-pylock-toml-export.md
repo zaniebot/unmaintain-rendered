@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T01:35:20Z
 updated_at: 2025-04-26T03:12:17Z
 url: https://github.com/astral-sh/uv/issues/13111
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Why doesn't `uv export --format pylock.toml` export `uv.lock` into a multi-use `pylock.toml`?
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2025-04-26 01:35_
+_@ReinforcedKnowledge_
 
 ### Question
 

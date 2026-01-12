@@ -12,14 +12,14 @@ head: fix-try-203
 created_at: 2025-03-08T08:56:35Z
 updated_at: 2025-06-21T09:02:06Z
 url: https://github.com/astral-sh/ruff/pull/16564
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Fix `useless-try-except (TRY203)` false negative
 
 ---
 
-_Pull request opened by @harupy on 2025-03-08 08:56_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

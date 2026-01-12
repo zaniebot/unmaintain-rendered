@@ -13,14 +13,14 @@ head: charlie/E402
 created_at: 2023-08-12T18:41:10Z
 updated_at: 2023-08-12T19:12:34Z
 url: https://github.com/astral-sh/ruff/pull/6526
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use top-level semantic detection for E402
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-12 18:41_
+_@charliermarsh_
 
 ## Summary
 

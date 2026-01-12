@@ -14,14 +14,14 @@ head: zb/warn-empty-requirements
 created_at: 2024-02-16T17:37:00Z
 updated_at: 2024-02-16T18:28:39Z
 url: https://github.com/astral-sh/uv/pull/1519
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Add warning for empty requirements files
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-16 17:37_
+_@zanieb_
 
 Also, improve tracing of requirements file parsing.
 

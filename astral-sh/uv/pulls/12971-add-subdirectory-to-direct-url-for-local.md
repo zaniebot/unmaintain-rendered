@@ -12,14 +12,14 @@ head: charlie/subdir
 created_at: 2025-04-18T15:48:54Z
 updated_at: 2025-04-18T15:57:59Z
 url: https://github.com/astral-sh/uv/pull/12971
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Add `subdirectory` to Direct URL for local directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-18 15:48_
+_@charliermarsh_
 
 ## Summary
 

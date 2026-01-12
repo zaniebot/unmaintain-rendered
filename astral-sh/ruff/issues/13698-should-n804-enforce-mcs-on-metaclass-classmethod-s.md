@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T00:19:05Z
 updated_at: 2024-12-26T09:20:22Z
 url: https://github.com/astral-sh/ruff/issues/13698
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # (🎁) should `N804` enforce `mcs` on metaclass `classmethod`s?
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-10-10 00:19_
+_@KotlinIsland_
 
 ```py
 class M(type):

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T17:35:12Z
 updated_at: 2025-02-14T18:52:25Z
 url: https://github.com/astral-sh/uv/issues/11515
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # QUESTION // install requirements for existing project
 
 ---
 
-_Issue opened by @nfparham on 2025-02-14 17:35_
+_@nfparham_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: isort-lines-after-imports-in-stub-files
 created_at: 2024-02-13T08:33:10Z
 updated_at: 2024-02-28T16:36:52Z
 url: https://github.com/astral-sh/ruff/pull/9971
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Limit `isort.lines-after-imports` to 1 for stub files
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-13 08:33_
+_@MichaReiser_
 
 ## Summary
 

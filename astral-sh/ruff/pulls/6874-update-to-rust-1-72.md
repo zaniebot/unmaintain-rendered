@@ -13,14 +13,14 @@ head: rustc-1.72
 created_at: 2023-08-25T15:59:45Z
 updated_at: 2023-08-25T21:42:05Z
 url: https://github.com/astral-sh/ruff/pull/6874
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update to Rust 1.72
 
 ---
 
-_Pull request opened by @konstin on 2023-08-25 15:59_
+_@konstin_
 
 Update to [Rust 1.72](https://blog.rust-lang.org/2023/08/24/Rust-1.72.0.html), fixed the failing lints.
 

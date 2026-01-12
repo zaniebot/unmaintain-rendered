@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T12:38:38Z
 updated_at: 2025-01-15T20:42:02Z
 url: https://github.com/astral-sh/ruff/issues/13996
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Clarify the difference between `CallOutcome::return_ty` and `::return_ty_result`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-30 12:38_
+_@MichaReiser_
 
 The documentation and the names of `CallOutcome::return_ty` and `CallOutcome::return_ty_result` both give the impression that they only differ in their return type, but that's not the case:
 

@@ -12,14 +12,14 @@ head: charlie/u8
 created_at: 2023-03-04T20:53:34Z
 updated_at: 2023-03-04T21:01:06Z
 url: https://github.com/astral-sh/ruff/pull/3345
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use u8 to represent ambiguous representants
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-04 20:53_
+_@charliermarsh_
 
 These are all valid ASCII, by definition.
 

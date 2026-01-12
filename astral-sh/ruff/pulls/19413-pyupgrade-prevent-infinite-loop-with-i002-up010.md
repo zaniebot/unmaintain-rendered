@@ -13,14 +13,14 @@ head: fix-18729
 created_at: 2025-07-17T21:04:05Z
 updated_at: 2025-07-31T20:44:42Z
 url: https://github.com/astral-sh/ruff/pull/19413
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`pyupgrade`] Prevent infinite loop with `I002` (`UP010`, `UP035`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-17 21:04_
+_@danparizher_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: literal-types-invalid-type-expression
 created_at: 2025-03-15T17:46:30Z
 updated_at: 2025-03-17T20:55:56Z
 url: https://github.com/astral-sh/ruff/pull/16765
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Emit error if int/float/complex/bytes/boolean literals appear in type expressions outside `typing.Literal[]`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-15 17:46_
+_@MatthewMckee4_
 
 Expand `InvalidTypeExpression` enum to include number, bytes and boolean in type expression
 

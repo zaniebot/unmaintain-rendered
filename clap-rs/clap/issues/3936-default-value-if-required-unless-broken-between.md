@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-07-14T11:51:03Z
 updated_at: 2022-07-16T02:29:32Z
 url: https://github.com/clap-rs/clap/issues/3936
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `default_value_if` / `required_unless` broken between v3.1.17 and v3.2.11
 
 ---
 
-_Issue opened by @saschagrunert on 2022-07-14 11:51_
+_@saschagrunert_
 
 ### Please complete the following tasks
 

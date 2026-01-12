@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T12:43:47Z
 updated_at: 2024-12-21T13:49:19Z
 url: https://github.com/astral-sh/ruff/issues/15062
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Allow to ignore B008 (function calls in default arguments) in cases where the function is a method of a local variable
 
 ---
 
-_Issue opened by @beneyal on 2024-12-19 12:43_
+_@beneyal_
 
 Hey all,
 

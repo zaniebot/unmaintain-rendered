@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-19T21:04:10Z
 updated_at: 2024-11-19T03:21:42Z
 url: https://github.com/astral-sh/uv/issues/8373
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Error adding dependency that uses setup.py & distutils when on Python 3.10
 
 ---
 
-_Issue opened by @ntessman-capsule on 2024-10-19 21:04_
+_@ntessman-capsule_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

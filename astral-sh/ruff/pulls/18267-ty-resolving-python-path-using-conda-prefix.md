@@ -13,14 +13,14 @@ head: conda-prefix-var
 created_at: 2025-05-23T02:05:48Z
 updated_at: 2025-05-23T18:09:20Z
 url: https://github.com/astral-sh/ruff/pull/18267
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Resolving Python path using `CONDA_PREFIX` variable to support Conda and Pixi
 
 ---
 
-_Pull request opened by @lipefree on 2025-05-23 02:05_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

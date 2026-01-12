@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T07:14:22Z
 updated_at: 2025-02-20T14:39:16Z
 url: https://github.com/astral-sh/uv/issues/11588
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # `tool_run_verbatim_name` fails with `COLUMNS=100`
 
 ---
 
-_Issue opened by @mgorny on 2025-02-18 07:14_
+_@mgorny_
 
 ### Summary
 

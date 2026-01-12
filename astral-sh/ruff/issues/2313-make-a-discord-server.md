@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-28T20:31:35Z
 updated_at: 2025-03-26T15:54:36Z
 url: https://github.com/astral-sh/ruff/issues/2313
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Make a discord server. 
 
 ---
 
-_Issue opened by @chirag127 on 2023-01-28 20:31_
+_@chirag127_
 
 Is it possible Make an interactive communication medium for asking small queries if there is not one yet? 
 

@@ -12,14 +12,14 @@ head: zb/docs-bench-align
 created_at: 2025-02-05T19:26:03Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11256
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Left-align benchmark on landing instead of center
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 19:26_
+_@zanieb_
 
 ![image](https://github.com/user-attachments/assets/78c92fe7-60ba-4d95-8441-17b14260d844)
 

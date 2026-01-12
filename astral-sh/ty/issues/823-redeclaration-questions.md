@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T19:29:51Z
 updated_at: 2025-07-14T20:09:18Z
 url: https://github.com/astral-sh/ty/issues/823
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Redeclaration Questions
 
 ---
 
-_Issue opened by @erictraut on 2025-07-14 19:29_
+_@erictraut_
 
 ### Question
 

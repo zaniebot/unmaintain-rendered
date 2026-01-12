@@ -13,14 +13,14 @@ head: charlie/PYI030
 created_at: 2023-08-09T20:36:09Z
 updated_at: 2023-08-09T20:48:44Z
 url: https://github.com/astral-sh/ruff/pull/6457
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid applying `PYI055` to runtime-evaluated annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 20:36_
+_@charliermarsh_
 
 ## Summary
 

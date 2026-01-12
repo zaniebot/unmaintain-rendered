@@ -15,14 +15,14 @@ head: dhruv/zip-explicit-specialization
 created_at: 2025-11-26T07:09:58Z
 updated_at: 2025-11-28T12:31:05Z
 url: https://github.com/astral-sh/ruff/pull/21635
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Use `zip` to perform explicit specialization
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-26 07:09_
+_@dhruvmanila_
 
 ## Summary
 

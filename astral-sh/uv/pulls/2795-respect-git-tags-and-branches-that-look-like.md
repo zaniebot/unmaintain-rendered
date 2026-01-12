@@ -13,14 +13,14 @@ head: charlie/ambiguous-git
 created_at: 2024-04-03T03:13:26Z
 updated_at: 2024-04-04T02:05:55Z
 url: https://github.com/astral-sh/uv/pull/2795
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Respect Git tags and branches that look like short commits
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 03:13_
+_@charliermarsh_
 
 ## Summary
 

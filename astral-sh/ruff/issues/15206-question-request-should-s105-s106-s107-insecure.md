@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T22:04:22Z
 updated_at: 2025-01-03T17:24:31Z
 url: https://github.com/astral-sh/ruff/issues/15206
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Question/Request: Should `S105`, `S106`, `S107` (Insecure hardcoded password) apply to stubs?
 
 ---
 
-_Issue opened by @Avasam on 2024-12-30 22:04_
+_@Avasam_
 
 `hardcoded-password-string (S105)`, `hardcoded-password-func-arg (S106)` and `hardcoded-password-default (S107)` will naturally have false-positives. But do they make sense to enable in stubs? Is the risk that hardcoded password be found in source code on an assignement of a certain name, and have that be exposed as public API through stubs, actually a concern ?
 

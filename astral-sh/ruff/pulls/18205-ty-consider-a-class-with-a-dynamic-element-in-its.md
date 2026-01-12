@@ -13,14 +13,14 @@ head: feat/check-mro-in-is_assignable_to
 created_at: 2025-05-19T18:48:16Z
 updated_at: 2025-05-19T19:30:31Z
 url: https://github.com/astral-sh/ruff/pull/18205
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty]: Consider a class with a dynamic element in its MRO assignable to any subtype of `type`
 
 ---
 
-_Pull request opened by @felixscherz on 2025-05-19 18:48_
+_@felixscherz_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

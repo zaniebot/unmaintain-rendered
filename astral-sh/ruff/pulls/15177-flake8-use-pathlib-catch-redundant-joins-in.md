@@ -13,14 +13,14 @@ head: PTH201
 created_at: 2024-12-29T02:33:32Z
 updated_at: 2024-12-30T03:32:56Z
 url: https://github.com/astral-sh/ruff/pull/15177
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-use-pathlib`] Catch redundant joins in `PTH201` and avoid syntax errors
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-29 02:33_
+_@InSyncWithFoo_
 
 ## Summary
 

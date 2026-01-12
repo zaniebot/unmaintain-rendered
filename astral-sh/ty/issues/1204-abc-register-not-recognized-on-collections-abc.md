@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T16:09:21Z
 updated_at: 2026-01-09T00:56:52Z
 url: https://github.com/astral-sh/ty/issues/1204
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `ABC.register` not recognized on `collections.abc.Mapping`
 
 ---
 
-_Issue opened by @gerlero on 2025-09-18 16:09_
+_@gerlero_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T17:32:09Z
 updated_at: 2025-12-30T18:28:30Z
 url: https://github.com/astral-sh/ruff/issues/22284
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Consider replacing bincode
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-29 17:32_
+_@MichaReiser_
 
 bincode is now unmaintained (considered feature complete). It still gets security updates, for now. But we should probably consider moving to something else.
 

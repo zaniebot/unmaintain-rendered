@@ -12,14 +12,14 @@ head: fix-bash-clap-complete-space
 created_at: 2025-04-27T21:40:52Z
 updated_at: 2025-05-11T22:10:14Z
 url: https://github.com/clap-rs/clap/pull/5981
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(complete): restore `nospace` in bash when reply ends in `=/:`
 
 ---
 
-_Pull request opened by @mernen on 2025-04-27 21:40_
+_@mernen_
 
 This is a fix for #5980.
 

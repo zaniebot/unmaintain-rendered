@@ -13,14 +13,14 @@ head: dhruv/fix-docs
 created_at: 2023-11-06T02:53:56Z
 updated_at: 2023-11-09T20:53:06Z
 url: https://github.com/astral-sh/ruff/pull/8502
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix tab configuration docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-06 02:53_
+_@dhruvmanila_
 
 Otherwise it doesn't render as expected. I basically ran `cargo dev generate-all` again.
 

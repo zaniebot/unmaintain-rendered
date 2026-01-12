@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T01:09:29Z
 updated_at: 2024-11-23T07:45:30Z
 url: https://github.com/astral-sh/ruff/issues/14289
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # (📚) documentation for `B028` is misleading
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-11-12 01:09_
+_@KotlinIsland_
 
 > The `warnings.warn` method uses a `stacklevel` of 1 by default, which limits the rendered stack trace to that of the line on which the `warn` method is called.
 

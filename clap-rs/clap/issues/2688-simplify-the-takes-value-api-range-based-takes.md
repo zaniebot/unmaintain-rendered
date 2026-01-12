@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-08-13T19:28:14Z
 updated_at: 2022-08-09T22:04:36Z
 url: https://github.com/clap-rs/clap/issues/2688
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Simplify the `takes_value` API (range-based `takes_values`)
 
 ---
 
-_Issue opened by @epage on 2021-08-13 19:28_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2676
 

@@ -13,14 +13,14 @@ head: zb/python3-venv
 created_at: 2024-05-23T16:48:32Z
 updated_at: 2024-05-24T00:33:35Z
 url: https://github.com/astral-sh/uv/pull/3798
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Search for `python3` in unix virtual environments
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 16:48_
+_@zanieb_
 
 _No description provided._
 

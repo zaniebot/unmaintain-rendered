@@ -13,14 +13,14 @@ head: fewercomps
 created_at: 2024-04-02T22:57:08Z
 updated_at: 2024-04-02T23:43:10Z
 url: https://github.com/astral-sh/ruff/pull/10744
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [flake8_comprehensions] update docs for unnecessary-comprehension-any-all (C419)
 
 ---
 
-_Pull request opened by @carljm on 2024-04-02 22:57_
+_@carljm_
 
 Ref #3259; see in particular https://github.com/astral-sh/ruff/issues/3259#issuecomment-2033127339
 

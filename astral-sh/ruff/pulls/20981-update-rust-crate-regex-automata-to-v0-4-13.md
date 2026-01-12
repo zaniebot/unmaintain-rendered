@@ -13,14 +13,14 @@ head: renovate/regex-automata-0.x-lockfile
 created_at: 2025-10-20T01:16:04Z
 updated_at: 2025-10-20T06:45:19Z
 url: https://github.com/astral-sh/ruff/pull/20981
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Update Rust crate regex-automata to v0.4.13
 
 ---
 
-_Pull request opened by @renovate on 2025-10-20 01:16_
+_@renovate_
 
 This PR contains the following updates:
 

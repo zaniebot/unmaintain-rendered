@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T07:19:55Z
 updated_at: 2024-10-18T16:34:07Z
 url: https://github.com/astral-sh/uv/issues/7859
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Torch installation instructions for different platforms
 
 ---
 
-_Issue opened by @chitralverma on 2024-10-02 07:19_
+_@chitralverma_
 
 Hi, coming from poetry, I am trying out uv due to poetry's super slow resolutions and bulk.
 

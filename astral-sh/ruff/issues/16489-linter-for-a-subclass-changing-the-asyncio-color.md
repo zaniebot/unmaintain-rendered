@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T03:39:08Z
 updated_at: 2025-03-04T09:31:23Z
 url: https://github.com/astral-sh/ruff/issues/16489
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # linter for a subclass changing the asyncio "color" of a method
 
 ---
 
-_Issue opened by @NorthIsUp on 2025-03-04 03:39_
+_@NorthIsUp_
 
 ### Summary
 

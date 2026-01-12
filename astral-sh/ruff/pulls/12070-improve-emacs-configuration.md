@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-27T13:58:46Z
 updated_at: 2024-06-28T07:51:11Z
 url: https://github.com/astral-sh/ruff/pull/12070
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Improve Emacs configuration
 
 ---
 
-_Pull request opened by @bersace on 2024-06-27 13:58_
+_@bersace_
 
 Replace black and combine `ruff check --select=I --fix` and `ruff format`.
 

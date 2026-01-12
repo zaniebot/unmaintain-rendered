@@ -13,14 +13,14 @@ head: dhruv/ecosystem-notebook
 created_at: 2023-11-28T18:04:39Z
 updated_at: 2023-12-14T15:46:21Z
 url: https://github.com/astral-sh/ruff/pull/8873
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update ecosystem with notebook repositories
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-28 18:04_
+_@dhruvmanila_
 
 ## Summary
 

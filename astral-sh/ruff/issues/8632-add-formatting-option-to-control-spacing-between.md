@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-12T18:51:42Z
 updated_at: 2025-01-06T08:43:21Z
 url: https://github.com/astral-sh/ruff/issues/8632
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add formatting option to control spacing between consecutive `if` statements
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 18:51_
+_@ofek_
 
 I'm upgrading formatting across codebases and am often fixing https://docs.astral.sh/ruff/rules/#flake8-return-ret
 

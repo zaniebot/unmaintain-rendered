@@ -14,14 +14,14 @@ head: doc-type
 created_at: 2023-09-22T20:07:49Z
 updated_at: 2023-09-22T21:07:54Z
 url: https://github.com/astral-sh/ruff/pull/7611
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix line ending doc typo
 
 ---
 
-_Pull request opened by @konstin on 2023-09-22 20:07_
+_@konstin_
 
 Fixes https://docs.astral.sh/ruff/settings/#format-quote-style
 

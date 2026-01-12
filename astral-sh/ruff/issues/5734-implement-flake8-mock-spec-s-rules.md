@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-13T10:25:52Z
 updated_at: 2025-10-06T20:21:53Z
 url: https://github.com/astral-sh/ruff/issues/5734
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Implement flake8-mock-spec's rules
 
 ---
 
-_Issue opened by @sauloperez on 2023-07-13 10:25_
+_@sauloperez_
 
 I want to enforce the use of the `autospec` argument on Python's unittest mocks in my team's codebase and so after a quick googling I found https://pypi.org/project/flake8-mock-spec/. Specifically, the rule `TMS021` is what we need.
 

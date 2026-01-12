@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T10:43:06Z
 updated_at: 2025-07-16T18:13:36Z
 url: https://github.com/astral-sh/uv/issues/14103
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # `uv python install --preview` does not allow keeping existing Python launchers
 
 ---
 
-_Issue opened by @konstin on 2025-06-17 10:43_
+_@konstin_
 
 I have an existing pyenv Python launcher in `~/.local/bin` that I would like to keep. Currently, preview uv Python installs have the option of either failing, due to there already being a non-uv managed Python, or overriding the existing launcher, but it doesn't have an option to not change it.
 

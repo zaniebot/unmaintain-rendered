@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-20T02:33:01Z
 updated_at: 2024-08-03T13:47:13Z
 url: https://github.com/astral-sh/uv/issues/5237
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Universal resolution needs documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-07-20 02:33_
+_@zanieb_
 
 e.g in `docs/resolution.md#multi-platform-resolution` or in a new section after it.
 

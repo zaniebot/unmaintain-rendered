@@ -13,14 +13,14 @@ head: linter-tch-autofix-quotations
 created_at: 2024-11-11T18:48:05Z
 updated_at: 2024-11-15T13:28:54Z
 url: https://github.com/astral-sh/ruff/pull/14285
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-type-checking`] Skip quoting annotation if it becomes invalid syntax (`TCH001`)
 
 ---
 
-_Pull request opened by @Glyphack on 2024-11-11 18:48_
+_@Glyphack_
 
 Fix: #13934 
 

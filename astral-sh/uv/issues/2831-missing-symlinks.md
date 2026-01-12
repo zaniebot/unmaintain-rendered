@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T12:11:15Z
 updated_at: 2024-06-25T12:22:27Z
 url: https://github.com/astral-sh/uv/issues/2831
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # missing --symlinks
 
 ---
 
-_Issue opened by @axelande on 2024-04-05 12:11_
+_@axelande_
 
 I'm trying to debug some native c++ that is a part of my python project with Visual Studio. To get this working with a "pip generated" venv (after ~python 3.10) you need to add `--symlinks` when you create the the `venv` on a Windows machine. Do you think that it would be possible to add this option to uv as well? (So that the files gets created as symlinks instead as of copies..)
 

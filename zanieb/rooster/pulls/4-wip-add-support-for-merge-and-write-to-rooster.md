@@ -12,14 +12,14 @@ head: merge
 created_at: 2023-11-08T16:16:50Z
 updated_at: 2025-05-03T21:49:39Z
 url: https://github.com/zanieb/rooster/pull/4
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # WIP: Add support for `--merge` and `--write` to `rooster changelog`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-08 16:16_
+_@zanieb_
 
 _No description provided._
 

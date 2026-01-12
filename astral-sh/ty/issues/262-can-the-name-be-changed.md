@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T07:27:32Z
 updated_at: 2025-05-08T14:33:16Z
 url: https://github.com/astral-sh/ty/issues/262
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Can the name be changed?
 
 ---
 
-_Issue opened by @romanzdk on 2025-05-08 07:27_
+_@romanzdk_
 
 ### Question
 

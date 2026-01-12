@@ -14,14 +14,14 @@ head: kd/remove-white
 created_at: 2025-04-17T13:07:02Z
 updated_at: 2025-04-17T21:23:32Z
 url: https://github.com/astral-sh/uv/pull/12943
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # fix(ui): update version formatting to use cyan color
 
 ---
 
-_Pull request opened by @kdheepak on 2025-04-17 13:07_
+_@kdheepak_
 
 ## Summary
 

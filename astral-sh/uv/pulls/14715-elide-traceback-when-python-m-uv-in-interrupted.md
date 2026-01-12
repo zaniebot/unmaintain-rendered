@@ -14,14 +14,14 @@ head: zb/interrupt
 created_at: 2025-07-18T12:11:44Z
 updated_at: 2025-07-18T13:07:51Z
 url: https://github.com/astral-sh/uv/pull/14715
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Elide traceback when `python -m uv` in interrupted with Ctrl-C on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-18 12:11_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14704
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T11:00:17Z
 updated_at: 2025-06-06T11:25:18Z
 url: https://github.com/astral-sh/uv/issues/13881
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # internal package index OK with pip but NOT OK with UV
 
 ---
 
-_Issue opened by @rv2931 on 2025-06-06 11:00_
+_@rv2931_
 
 ### Question
 

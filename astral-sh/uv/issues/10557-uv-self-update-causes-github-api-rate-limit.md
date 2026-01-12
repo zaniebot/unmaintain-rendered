@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T08:20:25Z
 updated_at: 2025-04-25T12:10:59Z
 url: https://github.com/astral-sh/uv/issues/10557
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # uv self update causes ''GitHub API rate limit exceeded." error
 
 ---
 
-_Issue opened by @AmineDjeghri on 2025-01-13 08:20_
+_@AmineDjeghri_
 
 A preview of the error 
 ![Image](https://github.com/user-attachments/assets/32718b3c-7479-4314-83ea-5e66c6572e26)

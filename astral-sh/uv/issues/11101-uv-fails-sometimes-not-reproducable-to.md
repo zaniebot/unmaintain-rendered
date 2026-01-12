@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T16:17:38Z
 updated_at: 2025-01-30T19:37:44Z
 url: https://github.com/astral-sh/uv/issues/11101
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # uv fails sometimes (not reproducable) to deserialize cache entries
 
 ---
 
-_Issue opened by @cwiede on 2025-01-30 16:17_
+_@cwiede_
 
 ### Summary
 

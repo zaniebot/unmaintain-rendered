@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T23:12:28Z
 updated_at: 2024-08-21T02:48:27Z
 url: https://github.com/astral-sh/uv/issues/6282
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Question about system Python-created venv and uv-created venv
 
 ---
 
-_Issue opened by @nth10sd on 2024-08-20 23:12_
+_@nth10sd_
 
 I just have a question. For 2 scenarios:
 

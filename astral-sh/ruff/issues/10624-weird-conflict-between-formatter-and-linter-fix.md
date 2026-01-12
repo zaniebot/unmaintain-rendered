@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-27T08:59:03Z
 updated_at: 2025-02-03T14:29:25Z
 url: https://github.com/astral-sh/ruff/issues/10624
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Weird conflict between formatter and linter fix all
 
 ---
 
-_Issue opened by @mgzenitech on 2024-03-27 08:59_
+_@mgzenitech_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

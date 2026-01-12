@@ -13,14 +13,14 @@ head: charlie/B9
 created_at: 2024-07-17T14:21:31Z
 updated_at: 2024-07-17T16:03:38Z
 url: https://github.com/astral-sh/ruff/pull/12366
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Detect enumerate iterations in `loop-iterator-mutation`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 14:21_
+_@charliermarsh_
 
 ## Summary
 

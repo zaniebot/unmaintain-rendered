@@ -13,14 +13,14 @@ head: docs/replace-extend-exclude-with-exclude
 created_at: 2023-10-28T14:28:33Z
 updated_at: 2023-10-28T21:28:40Z
 url: https://github.com/astral-sh/ruff/pull/8306
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # docs(configuration): replace `extend-exclude` with `exclude`
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-10-28 14:28_
+_@mkniewallner_
 
 ## Summary
 

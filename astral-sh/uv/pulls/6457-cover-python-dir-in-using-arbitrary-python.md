@@ -12,14 +12,14 @@ head: zb/environment-note
 created_at: 2024-08-22T18:49:25Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/6457
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Cover `--python <dir>` in "Using arbitrary Python environments"
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 18:49_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6237
 

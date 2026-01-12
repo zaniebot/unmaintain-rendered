@@ -14,14 +14,14 @@ head: david/schemastore-precise-update
 created_at: 2025-10-17T19:24:14Z
 updated_at: 2025-10-17T19:35:54Z
 url: https://github.com/astral-sh/uv/pull/16346
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Only add actual schema in schemastore PRs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-17 19:24_
+_@sharkdp_
 
 ## Summary
 

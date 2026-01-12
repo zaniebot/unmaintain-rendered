@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-09T21:00:33Z
 updated_at: 2023-03-13T04:02:45Z
 url: https://github.com/astral-sh/ruff/issues/3425
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [panic]: index out of bounds: the len is 1 but the index is 2
 
 ---
 
-_Issue opened by @qarmin on 2023-03-09 21:00_
+_@qarmin_
 
 0.0.254
 Config with all rules

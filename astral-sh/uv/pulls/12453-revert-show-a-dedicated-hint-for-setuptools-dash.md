@@ -12,14 +12,14 @@ head: revert-12438-charlie/x
 created_at: 2025-03-24T21:51:01Z
 updated_at: 2025-03-24T23:09:28Z
 url: https://github.com/astral-sh/uv/pull/12453
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Revert "Show a dedicated hint for `setuptools` dash-separator change"
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-24 21:51_
+_@charliermarsh_
 
 Reverts astral-sh/uv#12438
 

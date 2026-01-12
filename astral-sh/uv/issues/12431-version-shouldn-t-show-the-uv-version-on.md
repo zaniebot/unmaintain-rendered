@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T15:29:46Z
 updated_at: 2025-04-29T17:58:12Z
 url: https://github.com/astral-sh/uv/issues/12431
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `--version` shouldn't show the uv version on subcommands
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-24 15:29_
+_@charliermarsh_
 
 For example:
 

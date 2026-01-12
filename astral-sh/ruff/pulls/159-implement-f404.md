@@ -12,14 +12,14 @@ head: charlie/F404
 created_at: 2022-09-11T21:50:46Z
 updated_at: 2022-09-11T22:05:02Z
 url: https://github.com/astral-sh/ruff/pull/159
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F404
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-11 21:50_
+_@charliermarsh_
 
 _No description provided._
 

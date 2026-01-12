@@ -11,14 +11,14 @@ head: issue_3362
 created_at: 2025-07-19T07:09:58Z
 updated_at: 2025-10-22T16:46:14Z
 url: https://github.com/clap-rs/clap/pull/6072
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_man should respect the configured display order for args and subcommands
 
 ---
 
-_Pull request opened by @ericgumba on 2025-07-19 07:09_
+_@ericgumba_
 
 In https://github.com/clap-rs/clap/issues/3362 we have an issue where when we configure an arg via .display_order(int),
 and then generate a manpage, the synposis and options will render

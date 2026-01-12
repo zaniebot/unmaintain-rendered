@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T16:27:29Z
 updated_at: 2025-01-29T12:41:03Z
 url: https://github.com/astral-sh/ruff/issues/15652
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ungrouping `import` ... `as` ...
 
 ---
 
-_Issue opened by @CmpCtrl on 2025-01-21 16:27_
+_@CmpCtrl_
 
 Ruff recently started ungrouping imports from a module when using `import` ... `as` ..., Am i doing something wrong?
 

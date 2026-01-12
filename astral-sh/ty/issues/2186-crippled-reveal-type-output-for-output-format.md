@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T15:11:00Z
 updated_at: 2025-12-24T15:28:25Z
 url: https://github.com/astral-sh/ty/issues/2186
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Crippled reveal_type output for --output-format=gitlab/github
 
 ---
 
-_Issue opened by @abelcheung on 2025-12-23 15:11_
+_@abelcheung_
 
 ### Summary
 

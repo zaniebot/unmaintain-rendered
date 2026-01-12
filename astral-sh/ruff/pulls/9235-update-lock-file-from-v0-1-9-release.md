@@ -13,14 +13,14 @@ head: ag/update-lock-file
 created_at: 2023-12-21T19:44:19Z
 updated_at: 2023-12-22T12:51:57Z
 url: https://github.com/astral-sh/ruff/pull/9235
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # update lock file from v0.1.9 release
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-21 19:44_
+_@BurntSushi_
 
 This should have been done before the actual release, so we add another step to `CONTRIBUTING.md` to make sure it gets done in the future.
 

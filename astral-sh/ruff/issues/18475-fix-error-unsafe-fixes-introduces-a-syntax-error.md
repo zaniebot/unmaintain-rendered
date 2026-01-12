@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-05T08:40:16Z
 updated_at: 2025-06-13T06:44:17Z
 url: https://github.com/astral-sh/ruff/issues/18475
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Fix error] unsafe-fixes introduces a syntax error
 
 ---
 
-_Issue opened by @zegervdv on 2025-06-05 08:40_
+_@zegervdv_
 
 When running `ruff check --fix --unsafe-fixes` (no extra settings or config) on the following code snippet:
 

@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-02-13T22:55:59Z
 updated_at: 2025-02-13T23:36:04Z
 url: https://github.com/astral-sh/uv/pull/11495
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Add some additional tests for extras validation in uv sync
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-13 22:55_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T20:36:40Z
 updated_at: 2024-07-04T18:13:28Z
 url: https://github.com/astral-sh/ruff/issues/12156
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [flake8-bugbear] Avoid false positive for usage `return None` (B901)
 
 ---
 
-_Issue opened by @f4rk4sh on 2024-07-02 20:36_
+_@f4rk4sh_
 
 A minimal code snippet that reproduces the bug is almost the same as [here](https://github.com/astral-sh/ruff/commit/312f6640b837eb1189748980707cfed70d1f5ffb#diff-3da9dc4c996fc465b80db3e323994049105aa08d73a56f50a4991481408f90e4R16) but with explicit `return None`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T14:45:02Z
 updated_at: 2025-05-30T12:27:37Z
 url: https://github.com/clap-rs/clap/issues/5914
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Set clap's `ColorChoice` using an argument
 
 ---
 
-_Issue opened by @acuteenvy on 2025-02-18 14:45_
+_@acuteenvy_
 
 ### Please complete the following tasks
 

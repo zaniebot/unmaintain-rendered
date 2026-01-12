@@ -13,14 +13,14 @@ head: dcreager/union-callables
 created_at: 2025-03-13T20:37:29Z
 updated_at: 2025-03-17T14:35:55Z
 url: https://github.com/astral-sh/ruff/pull/16716
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Handle unions of callables better
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-13 20:37_
+_@dcreager_
 
 This cleans up how we handle calling unions of types.  astral-sh/ruff#16568 adding a three-level structure for callable signatures (`Signatures`, `CallableSignature`, and `Signature`) to handle unions and overloads.
 

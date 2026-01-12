@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T18:07:55Z
 updated_at: 2024-07-02T09:37:45Z
 url: https://github.com/astral-sh/uv/issues/2210
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Large package fails to download on Windows when paging file is small
 
 ---
 
-_Issue opened by @akx on 2024-03-05 18:07_
+_@akx_
 
 ... that's a new one! :grin:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-14T01:57:50Z
 updated_at: 2024-09-16T19:35:12Z
 url: https://github.com/astral-sh/ruff/issues/13350
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # G002 gives a false positive with translated strings
 
 ---
 
-_Issue opened by @jpmckinney on 2024-09-14 01:57_
+_@jpmckinney_
 
 For example, when using gettext, it's common to write code like:
 

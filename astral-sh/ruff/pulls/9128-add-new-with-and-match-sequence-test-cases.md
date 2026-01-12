@@ -13,14 +13,14 @@ head: new-with-match-sequence-tests
 created_at: 2023-12-14T10:48:38Z
 updated_at: 2023-12-15T02:47:51Z
 url: https://github.com/astral-sh/ruff/pull/9128
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add new `with` and `match` sequence test cases
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-14 10:48_
+_@MichaReiser_
 
 ## Summary
 

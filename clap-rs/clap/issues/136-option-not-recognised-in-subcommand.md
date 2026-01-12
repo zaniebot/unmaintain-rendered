@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-06-01T08:02:09Z
 updated_at: 2018-08-02T03:29:40Z
 url: https://github.com/clap-rs/clap/issues/136
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Option not recognised in subcommand
 
 ---
 
-_Issue opened by @bmcorser on 2015-06-01 08:02_
+_@bmcorser_
 
 Not sure if this is an error on my part, but in [this branch](https://github.com/bmcorser/git-tags-rs/tree/clap-opt-issue) the `-m, --message` option isn't recognised when I pass it.
 

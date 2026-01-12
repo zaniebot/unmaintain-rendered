@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-22T08:27:47Z
 updated_at: 2023-11-22T15:10:29Z
 url: https://github.com/astral-sh/uv/issues/482
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Use new cargo lint table
 
 ---
 
-_Issue opened by @konstin on 2023-11-22 08:27_
+_@konstin_
 
 Port https://github.com/astral-sh/ruff/pull/8722 to puffin
 

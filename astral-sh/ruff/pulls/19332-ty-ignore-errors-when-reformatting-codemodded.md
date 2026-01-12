@@ -14,14 +14,14 @@ head: alex/fix-workflow
 created_at: 2025-07-14T16:11:03Z
 updated_at: 2025-07-14T16:14:03Z
 url: https://github.com/astral-sh/ruff/pull/19332
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] ignore errors when reformatting codemodded typeshed
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-14 16:11_
+_@AlexWaygood_
 
 ## Summary
 

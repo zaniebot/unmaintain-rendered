@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T21:54:23Z
 updated_at: 2024-10-15T15:31:25Z
 url: https://github.com/astral-sh/uv/issues/6278
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add a `uv publish` command
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 21:54_
+_@zanieb_
 
 e.g., to publish the project to PyPI.
 

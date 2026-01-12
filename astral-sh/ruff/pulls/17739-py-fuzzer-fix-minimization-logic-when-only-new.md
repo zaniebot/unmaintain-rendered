@@ -14,14 +14,14 @@ head: alex/fix-fuzzer
 created_at: 2025-04-30T15:27:40Z
 updated_at: 2025-04-30T17:48:33Z
 url: https://github.com/astral-sh/ruff/pull/17739
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # py-fuzzer: fix minimization logic when `--only-new-bugs` is passed
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-30 15:27_
+_@AlexWaygood_
 
 ## Summary
 

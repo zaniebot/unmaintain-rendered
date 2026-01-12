@@ -14,14 +14,14 @@ head: uv-manifest
 created_at: 2025-11-30T00:55:48Z
 updated_at: 2025-12-01T20:57:50Z
 url: https://github.com/astral-sh/uv/pull/16894
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Add a Windows manifest to uv binaries
 
 ---
 
-_Pull request opened by @samypr100 on 2025-11-30 00:55_
+_@samypr100_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/req-toml
 created_at: 2024-07-26T21:01:59Z
 updated_at: 2024-07-31T16:16:40Z
 url: https://github.com/astral-sh/uv/pull/5494
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Use full requirement when serializing receipt
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 21:01_
+_@charliermarsh_
 
 ## Summary
 

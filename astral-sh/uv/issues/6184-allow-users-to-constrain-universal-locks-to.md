@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-18T18:22:00Z
 updated_at: 2024-08-20T13:28:05Z
 url: https://github.com/astral-sh/uv/issues/6184
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Allow users to constrain universal locks to specific markers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-18 18:22_
+_@charliermarsh_
 
 I think we should let users apply a global marker constraint to "universal" resolution. E.g., maybe you don't care about locking on Windows, so you specify `platform_system != 'Windows'` in your `pyproject.toml`, and we avoid solving any branches that are Windows-only. Later, when installing, we'd error if the user is on an unsupported platform, based on those markers.
 

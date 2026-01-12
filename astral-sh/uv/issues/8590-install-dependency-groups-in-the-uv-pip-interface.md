@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T11:58:43Z
 updated_at: 2025-03-17T18:44:12Z
 url: https://github.com/astral-sh/uv/issues/8590
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Install dependency groups in the `uv pip` interface, i.e., `uv pip install --group`
 
 ---
 
-_Issue opened by @hynek on 2024-10-26 11:58_
+_@hynek_
 
 Hi,
 

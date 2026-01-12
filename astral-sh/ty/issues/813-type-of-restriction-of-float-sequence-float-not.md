@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-11T07:43:30Z
 updated_at: 2025-07-14T06:40:16Z
 url: https://github.com/astral-sh/ty/issues/813
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type of restriction of float | Sequence[float] not working
 
 ---
 
-_Issue opened by @eendebakpt on 2025-07-11 07:43_
+_@eendebakpt_
 
 ### Summary
 

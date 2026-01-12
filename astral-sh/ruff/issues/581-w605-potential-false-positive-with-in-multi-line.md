@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T14:03:38Z
 updated_at: 2022-11-04T18:30:06Z
 url: https://github.com/astral-sh/ruff/issues/581
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # W605 potential false positive with `\` in multi-line strings
 
 ---
 
-_Issue opened by @AA-Turner on 2022-11-04 14:03_
+_@AA-Turner_
 
 Escaping a newline is explicitly allowed, see the table in Lexical Analysis: https://docs.python.org/3/reference/lexical_analysis.html#index-23
 

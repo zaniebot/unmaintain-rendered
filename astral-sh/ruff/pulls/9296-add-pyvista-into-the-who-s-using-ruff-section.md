@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-28T02:07:48Z
 updated_at: 2023-12-28T18:26:14Z
 url: https://github.com/astral-sh/ruff/pull/9296
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add PyVista into the `Who's Using Ruff?` section
 
 ---
 
-_Pull request opened by @tkoyama010 on 2023-12-28 02:07_
+_@tkoyama010_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

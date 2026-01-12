@@ -12,14 +12,14 @@ head: feature/run-watch
 created_at: 2025-04-11T22:28:12Z
 updated_at: 2025-07-31T19:45:47Z
 url: https://github.com/astral-sh/uv/pull/12847
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Add `uv run --watch` for scripts
 
 ---
 
-_Pull request opened by @thejchap on 2025-04-11 22:28_
+_@thejchap_
 
 ## Summary
 (Closes #9652)

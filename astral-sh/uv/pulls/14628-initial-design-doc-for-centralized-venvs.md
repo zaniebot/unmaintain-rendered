@@ -11,14 +11,14 @@ head: 1495-centralized-venvs
 created_at: 2025-07-15T14:55:53Z
 updated_at: 2025-09-01T05:06:59Z
 url: https://github.com/astral-sh/uv/pull/14628
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Initial design doc for centralized venvs
 
 ---
 
-_Pull request opened by @rsyring on 2025-07-15 14:55_
+_@rsyring_
 
 refs: https://github.com/astral-sh/uv/issues/1495#issuecomment-3073898354
 

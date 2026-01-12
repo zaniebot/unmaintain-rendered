@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T21:47:03Z
 updated_at: 2024-02-16T05:01:22Z
 url: https://github.com/astral-sh/uv/issues/1363
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Install fails with Failed to download: fastapi==0.10.1
 
 ---
 
-_Issue opened by @emsi on 2024-02-15 21:47_
+_@emsi_
 
 When installing using following [requirements.txt](https://raw.githubusercontent.com/emsi/docker-ML/py3.11/requirements.txt) file it "counts down" fastapi versions and then fails with:
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T19:19:18Z
 updated_at: 2025-12-09T21:20:22Z
 url: https://github.com/astral-sh/uv/issues/16987
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Enforce publish ordering
 
 ---
 
-_Issue opened by @woodruffw on 2025-12-04 19:19_
+_@woodruffw_
 
 For consistency/idempotency/recovery purposes, we want to enforce a consistent order in our publish steps during uv releases. Right now all of our publish workflows (which are reusable workflows) get scheduled in parallel, and race to win.
 

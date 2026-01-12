@@ -14,14 +14,14 @@ head: dcreager/gradual-bounds
 created_at: 2025-12-12T20:05:24Z
 updated_at: 2025-12-13T03:18:32Z
 url: https://github.com/astral-sh/ruff/pull/21957
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Allow gradual lower/upper bounds in a constraint set
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-12 20:05_
+_@dcreager_
 
 We now allow the lower and upper bounds of a constraint to be gradual. Before, we would take the top/bottom materializations of the bounds. This required us to pass in whether the constraint was intended for a subtyping check or an assignability check, since that would control whether we took the "restrictive" or "permissive" materializations, respectively.
 

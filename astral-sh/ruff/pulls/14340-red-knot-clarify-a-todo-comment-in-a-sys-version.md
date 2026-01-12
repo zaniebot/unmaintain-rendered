@@ -13,14 +13,14 @@ head: alex/sysversion-comment
 created_at: 2024-11-14T17:19:36Z
 updated_at: 2024-11-15T10:29:49Z
 url: https://github.com/astral-sh/ruff/pull/14340
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Clarify a TODO comment in a `sys.version_info` test
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-14 17:19_
+_@AlexWaygood_
 
 Addresses Carl's review comment in https://github.com/astral-sh/ruff/pull/14244#discussion_r1836988919
 

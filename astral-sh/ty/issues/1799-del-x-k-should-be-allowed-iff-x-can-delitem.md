@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-07T20:26:45Z
 updated_at: 2025-12-24T03:34:22Z
 url: https://github.com/astral-sh/ty/issues/1799
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `del x[k]` should be allowed iff `x` can `__delitem__`
 
 ---
 
-_Issue opened by @jorenham on 2025-12-07 20:26_
+_@jorenham_
 
 ### Summary
 

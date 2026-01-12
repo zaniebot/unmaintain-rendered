@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T11:43:47Z
 updated_at: 2026-01-08T18:25:51Z
 url: https://github.com/astral-sh/ty/issues/291
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Reimplement popular Mypy Plugins
 
 ---
 
-_Issue opened by @johnthagen on 2025-05-09 11:43_
+_@johnthagen_
 
 > For [better discoverability of the decision](https://github.com/astral-sh/ruff/issues/15828#issuecomment-2865283264), cross post  to document reasons for 
 > - https://github.com/astral-sh/ruff/issues/15828

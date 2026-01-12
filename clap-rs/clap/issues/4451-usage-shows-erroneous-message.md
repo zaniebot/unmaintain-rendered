@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T23:43:35Z
 updated_at: 2022-11-05T01:26:43Z
 url: https://github.com/clap-rs/clap/issues/4451
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Usage shows erroneous message
 
 ---
 
-_Issue opened by @hectorruiz-it on 2022-11-04 23:43_
+_@hectorruiz-it_
 
 ### Please complete the following tasks
 

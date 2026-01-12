@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-31T15:17:41Z
 updated_at: 2025-06-05T14:57:09Z
 url: https://github.com/astral-sh/ruff/issues/18405
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Fixes for PERF401 and PERF403 should parenthesize lambdas and ternary expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-31 15:17_
+_@dscorbett_
 
 ### Summary
 

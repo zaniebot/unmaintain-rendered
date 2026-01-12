@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T14:59:41Z
 updated_at: 2025-03-14T19:32:00Z
 url: https://github.com/astral-sh/ruff/issues/16710
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Disallow str.split("\n") in favour of str.splitlines()
 
 ---
 
-_Issue opened by @lukaszett on 2025-03-13 14:59_
+_@lukaszett_
 
 ### Summary
 

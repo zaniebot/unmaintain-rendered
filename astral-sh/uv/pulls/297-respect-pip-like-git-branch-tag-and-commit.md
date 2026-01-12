@@ -12,14 +12,14 @@ head: charlie/hash
 created_at: 2023-11-02T18:45:49Z
 updated_at: 2023-11-02T19:10:04Z
 url: https://github.com/astral-sh/uv/pull/297
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Respect pip-like Git branch, tag, and commit references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 18:45_
+_@charliermarsh_
 
 We need to parse revisions out from URLs like `MyProject @ git+https://git.example.com/MyProject.git@v1.0`, per [VCS Support](https://pip.pypa.io/en/stable/topics/vcs-support/). Cargo has the advantage that it uses a TOML table in its configuration, so the user has to specify whether they're fetching a commit, a tag, a branch, etc. We have to instead assume that anything that isn't clearly a commit is _either_ a branch or a tag.
 

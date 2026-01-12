@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T17:02:17Z
 updated_at: 2025-11-03T09:30:13Z
 url: https://github.com/astral-sh/uv/issues/11070
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Inheriting [tool.uv] section from root-level `pyproject.toml` when desired
 
 ---
 
-_Issue opened by @uwu-420 on 2025-01-29 17:02_
+_@uwu-420_
 
 ### Summary
 

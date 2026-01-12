@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T06:57:45Z
 updated_at: 2024-06-01T23:34:52Z
 url: https://github.com/astral-sh/ruff/issues/11631
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # new rule - enforce that `__init__.py` files are empty
 
 ---
 
-_Issue opened by @DetachHead on 2024-05-31 06:57_
+_@DetachHead_
 
 putting any code in `__init__.py` files is a bad idea, because they are unnecessarily imported when you import any modules in the same folder:
 

@@ -13,14 +13,14 @@ head: ag/pubgrub-package-marker
 created_at: 2024-05-20T18:04:52Z
 updated_at: 2024-05-20T23:56:25Z
 url: https://github.com/astral-sh/uv/pull/3673
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # add `Option<MarkerTree>` to `PubGrubPackage`
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-20 18:04_
+_@BurntSushi_
 
 I'm plucking this off my WIP of resolver forking since it grew to
 a fairly sizable change on its own. In this PR, all we do is add

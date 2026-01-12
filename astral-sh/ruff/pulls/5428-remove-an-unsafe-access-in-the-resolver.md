@@ -13,14 +13,14 @@ head: charlie/flags
 created_at: 2023-06-28T19:00:53Z
 updated_at: 2023-06-28T19:27:46Z
 url: https://github.com/astral-sh/ruff/pull/5428
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove an unsafe access in the resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-28 19:00_
+_@charliermarsh_
 
 _No description provided._
 

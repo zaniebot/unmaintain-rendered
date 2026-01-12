@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-12T03:25:55Z
 updated_at: 2021-08-12T20:32:07Z
 url: https://github.com/clap-rs/clap/issues/2533
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Help heading is printed when all args are hidden
 
 ---
 
-_Issue opened by @stevenengler on 2021-06-12 03:25_
+_@stevenengler_
 
 ### Please complete the following tasks
 

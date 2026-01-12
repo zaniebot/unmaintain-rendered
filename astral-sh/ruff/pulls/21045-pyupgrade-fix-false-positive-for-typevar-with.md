@@ -14,14 +14,14 @@ head: fix-20929
 created_at: 2025-10-23T13:22:31Z
 updated_at: 2025-10-30T16:59:07Z
 url: https://github.com/astral-sh/ruff/pull/21045
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [`pyupgrade`] Fix false positive for `TypeVar` with default on Python <3.13 (`UP046`,`UP047`)
 
 ---
 
-_Pull request opened by @prakhar1144 on 2025-10-23 13:22_
+_@prakhar1144_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

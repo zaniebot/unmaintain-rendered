@@ -13,14 +13,14 @@ head: konsti/remove-unnecessary-current-dir-in-tests
 created_at: 2025-05-20T19:28:53Z
 updated_at: 2025-05-20T19:36:48Z
 url: https://github.com/astral-sh/uv/pull/13561
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Remove unnecessary current dir in tests
 
 ---
 
-_Pull request opened by @konstin on 2025-05-20 19:28_
+_@konstin_
 
 This is already done by `add_shared_options`.
 

@@ -12,14 +12,14 @@ head: fix/value-enum-detailed-help
 created_at: 2025-08-11T16:22:19Z
 updated_at: 2025-08-12T17:56:36Z
 url: https://github.com/clap-rs/clap/pull/6101
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(ValueEnum): Detailed help for ValueEnum variant #6096
 
 ---
 
-_Pull request opened by @smoqadam on 2025-08-11 16:22_
+_@smoqadam_
 
 #6096 
 

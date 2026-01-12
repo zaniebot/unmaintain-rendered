@@ -12,14 +12,14 @@ head: charlie/reporter
 created_at: 2023-11-01T03:16:51Z
 updated_at: 2023-11-01T03:19:15Z
 url: https://github.com/astral-sh/uv/pull/266
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Use distributions for `Reporter` signatures
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-01 03:16_
+_@charliermarsh_
 
 _No description provided._
 

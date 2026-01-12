@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T11:18:50Z
 updated_at: 2024-02-04T21:56:01Z
 url: https://github.com/astral-sh/uv/issues/1221
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Document minimum supported python version
 
 ---
 
-_Issue opened by @konstin on 2024-02-01 11:18_
+_@konstin_
 
 References:
 

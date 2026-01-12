@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-11T09:18:33Z
 updated_at: 2023-11-11T13:57:35Z
 url: https://github.com/astral-sh/ruff/issues/8612
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter does not sort inputs to match isort profile ["I"]
 
 ---
 
-_Issue opened by @mwip on 2023-11-11 09:18_
+_@mwip_
 
 This could be by design, but I did not find a specific answer to the following question in the issues here. So I thought I'd ask.
 

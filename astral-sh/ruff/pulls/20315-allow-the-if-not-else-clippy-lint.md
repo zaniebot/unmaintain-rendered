@@ -12,14 +12,14 @@ head: ag/leave-my-negations-alone
 created_at: 2025-09-09T12:17:32Z
 updated_at: 2025-09-09T12:49:27Z
 url: https://github.com/astral-sh/ruff/pull/20315
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # Allow the `if_not_else` Clippy lint
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-09 12:17_
+_@BurntSushi_
 
 Specifically, the [`if_not_else`] lint will sometimes flag
 code to change the order of `if` and `else` bodies if this

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-24T18:58:23Z
 updated_at: 2020-01-05T18:46:29Z
 url: https://github.com/clap-rs/clap/issues/1583
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add `Arg::conflicts_with_everything` method
 
 ---
 
-_Issue opened by @CreepySkeleton on 2019-10-24 18:58_
+_@CreepySkeleton_
 
 ### Summary
 

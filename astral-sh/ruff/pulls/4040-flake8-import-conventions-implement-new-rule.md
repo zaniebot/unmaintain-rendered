@@ -13,14 +13,14 @@ head: feat/ban-import-from
 created_at: 2023-04-20T06:23:31Z
 updated_at: 2023-04-23T14:16:45Z
 url: https://github.com/astral-sh/ruff/pull/4040
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-import-conventions`] Implement new rule `ICN003` to ban `from ... import ...` for selected modules
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-04-20 06:23_
+_@edgarrmondragon_
 
 Closes https://github.com/charliermarsh/ruff/issues/4034
 

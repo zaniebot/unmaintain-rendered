@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-04T22:12:50Z
 updated_at: 2023-11-14T04:34:16Z
 url: https://github.com/astral-sh/ruff/issues/1640
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Suggest type annotations similar to autotyping
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-04 22:12_
+_@twoertwein_
 
 [autotyping](https://github.com/JelleZijlstra/autotyping) suggests type annotations in a "safe" and more "aggressive" manner. It would be nice to include its rules in ruff.
 

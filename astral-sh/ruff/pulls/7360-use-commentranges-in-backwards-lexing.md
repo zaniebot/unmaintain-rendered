@@ -13,14 +13,14 @@ head: remove-backwards-lexing
 created_at: 2023-09-13T18:20:29Z
 updated_at: 2023-09-16T03:28:54Z
 url: https://github.com/astral-sh/ruff/pull/7360
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use CommentRanges in backwards lexing
 
 ---
 
-_Pull request opened by @konstin on 2023-09-13 18:20_
+_@konstin_
 
 ## Summary
 

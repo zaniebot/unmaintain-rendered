@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-11T19:32:58Z
 updated_at: 2022-11-08T04:30:08Z
 url: https://github.com/clap-rs/clap/issues/4372
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `ArgMatches.grouped_values_of()` does not support groups
 
 ---
 
-_Issue opened by @etemesi254 on 2022-10-11 19:32_
+_@etemesi254_
 
 ### Please complete the following tasks
 

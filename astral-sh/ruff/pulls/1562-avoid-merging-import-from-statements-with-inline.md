@@ -12,14 +12,14 @@ head: charlie/import-comment
 created_at: 2023-01-02T21:24:37Z
 updated_at: 2023-01-02T21:24:42Z
 url: https://github.com/astral-sh/ruff/pull/1562
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid merging import from statements with inline comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-02 21:24_
+_@charliermarsh_
 
 Resolves #1551.
 

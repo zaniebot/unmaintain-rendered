@@ -13,14 +13,14 @@ head: line-length-in-format-dev
 created_at: 2023-08-25T11:58:59Z
 updated_at: 2023-09-05T14:19:18Z
 url: https://github.com/astral-sh/ruff/pull/6870
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use ruff line-length in format_dev
 
 ---
 
-_Pull request opened by @konstin on 2023-08-25 11:58_
+_@konstin_
 
 **Summary** Use the `[ruff]` config line length setting in format_dev. This aligns it with `ruff format` (originally, this was the prototype for `ruff format`, but now `ruff format` works and we instead need to keep `format_dev` consistent).
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-26T11:38:11Z
 updated_at: 2024-02-26T18:06:00Z
 url: https://github.com/astral-sh/uv/issues/1981
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Installation error "Failed to extract source distribution" on Azure Artifacts when using cache, works correctly with `--no-cache`
 
 ---
 
-_Issue opened by @inigohidalgo on 2024-02-26 11:38_
+_@inigohidalgo_
 
 EDIT: cannot repro after `uv cache clean`
 

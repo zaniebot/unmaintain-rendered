@@ -12,14 +12,14 @@ head: type-parameters
 created_at: 2024-12-30T00:33:06Z
 updated_at: 2025-01-26T14:36:47Z
 url: https://github.com/astral-sh/ruff/pull/15183
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Introduce type parameters for InstanceType
 
 ---
 
-_Pull request opened by @pcmoritz on 2024-12-30 00:33_
+_@pcmoritz_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/format-inst
 created_at: 2024-11-20T00:53:47Z
 updated_at: 2024-11-20T15:00:51Z
 url: https://github.com/astral-sh/ruff/pull/14471
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Improve the performance of the formatter instability check job
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-20 00:53_
+_@zanieb_
 
 We should probably get rid of this entirely and subsume it's functionality in the normal ecosystem checks? I don't think we're using the black comparison tests anymore, but maybe someone wants it?
 

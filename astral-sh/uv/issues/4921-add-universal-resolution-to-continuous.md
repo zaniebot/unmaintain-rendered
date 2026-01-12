@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-09T10:31:02Z
 updated_at: 2025-01-14T18:55:50Z
 url: https://github.com/astral-sh/uv/issues/4921
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add universal resolution to continuous benchmarking
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 10:31_
+_@konstin_
 
 Currently, we only benchmark single-platform resolution on codspeed. We need to add universal resolution to avoid performance regressions.
 

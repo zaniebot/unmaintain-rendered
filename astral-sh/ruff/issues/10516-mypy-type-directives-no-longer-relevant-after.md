@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T20:56:06Z
 updated_at: 2025-07-05T00:34:34Z
 url: https://github.com/astral-sh/ruff/issues/10516
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Mypy (type) directives no longer relevant after running isort check
 
 ---
 
-_Issue opened by @jaraco on 2024-03-21 20:56_
+_@jaraco_
 
 I'm struggling to create a minimal example, so bear with this more complicated one:
 

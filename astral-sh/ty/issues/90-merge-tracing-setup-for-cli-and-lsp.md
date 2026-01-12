@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T07:51:59Z
 updated_at: 2025-12-31T16:33:45Z
 url: https://github.com/astral-sh/ty/issues/90
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # merge tracing setup for CLI and LSP
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-08 07:51_
+_@dhruvmanila_
 
 With https://github.com/astral-sh/ruff/pull/12730, I think we should merge the tracing setup which exists in `ty_server` into the main setup.
 

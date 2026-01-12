@@ -13,14 +13,14 @@ head: zb/tmpdir
 created_at: 2025-01-23T22:44:18Z
 updated_at: 2025-04-21T19:38:47Z
 url: https://github.com/astral-sh/uv/pull/10921
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Skip clean-up of test temporary directories in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 22:44_
+_@zanieb_
 
 Looked fast in my hack in https://github.com/astral-sh/uv/pull/10919 so trying for something more serious now.
 

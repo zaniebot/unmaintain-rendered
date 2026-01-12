@@ -13,14 +13,14 @@ head: cjm/nomrofix
 created_at: 2025-04-25T01:43:34Z
 updated_at: 2025-05-04T15:29:20Z
 url: https://github.com/astral-sh/ruff/pull/17622
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] remove fixpoint handling from try_mro query
 
 ---
 
-_Pull request opened by @carljm on 2025-04-25 01:43_
+_@carljm_
 
 ## Summary
 

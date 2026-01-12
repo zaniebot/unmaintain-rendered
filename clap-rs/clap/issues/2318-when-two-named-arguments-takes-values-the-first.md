@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-01-29T20:29:39Z
 updated_at: 2021-01-29T21:52:40Z
 url: https://github.com/clap-rs/clap/issues/2318
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # When two named arguments takes values, the first named argument will always take the value of the second
 
 ---
 
-_Issue opened by @Yuri6037 on 2021-01-29 20:29_
+_@Yuri6037_
 
 ### Make sure you completed the following tasks
 

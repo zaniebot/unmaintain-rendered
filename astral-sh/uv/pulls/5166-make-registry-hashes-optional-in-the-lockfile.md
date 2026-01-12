@@ -13,14 +13,14 @@ head: charlie/hash-optional
 created_at: 2024-07-17T20:09:17Z
 updated_at: 2024-07-17T20:29:51Z
 url: https://github.com/astral-sh/uv/pull/5166
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Make registry hashes optional in the lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 20:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-22T11:55:03Z
 updated_at: 2023-08-03T19:56:54Z
 url: https://github.com/astral-sh/ruff/issues/1332
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] enhanced first-party detection
 
 ---
 
-_Issue opened by @smackesey on 2022-12-22 11:55_
+_@smackesey_
 
 Probably the most common use-case for marking a package as a "known first party" import is when you have an associated test package. In the world of `pytest`, the associated test package is typically called `<TARGET_PKG>_tests`. It would be cool if auto-first-party detection was smart enough to understand this.
 

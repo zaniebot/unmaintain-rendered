@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T07:58:51Z
 updated_at: 2024-12-15T14:48:06Z
 url: https://github.com/astral-sh/uv/issues/9907
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # resolver: requiring `PyQt5` produces non-portable locks
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-12-15 07:58_
+_@neutrinoceros_
 
 Ok this is a weird one. Let's start with what uv 0.5.9 does (or older versions too, as far as I could check):
 

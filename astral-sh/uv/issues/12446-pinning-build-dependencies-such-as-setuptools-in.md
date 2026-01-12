@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T19:06:28Z
 updated_at: 2025-03-25T12:48:30Z
 url: https://github.com/astral-sh/uv/issues/12446
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Pinning build dependencies such as `setuptools` in `uv.lock`
 
 ---
 
-_Issue opened by @Ben-grmbl on 2025-03-24 19:06_
+_@Ben-grmbl_
 
 ### Summary
 

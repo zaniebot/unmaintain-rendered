@@ -13,14 +13,14 @@ head: fix-4829
 created_at: 2023-06-04T17:28:40Z
 updated_at: 2023-06-12T23:32:38Z
 url: https://github.com/astral-sh/ruff/pull/4853
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Autofixer for ISC001
 
 ---
 
-_Pull request opened by @tkukushkin on 2023-06-04 17:28_
+_@tkukushkin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

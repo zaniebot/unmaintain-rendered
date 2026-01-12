@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-07-25T10:40:06Z
 updated_at: 2021-12-09T17:06:37Z
 url: https://github.com/clap-rs/clap/issues/1013
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # The help message offset is inconsistent
 
 ---
 
-_Issue opened by @marmistrz on 2017-07-25 10:40_
+_@marmistrz_
 
 ### Rust Version
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T13:07:14Z
 updated_at: 2025-06-12T14:45:13Z
 url: https://github.com/astral-sh/uv/issues/13988
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Do not allow `uv add --group ... --script`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-12 13:07_
+_@zanieb_
 
 uv will happily do
 

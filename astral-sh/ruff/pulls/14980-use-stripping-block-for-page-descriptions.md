@@ -13,14 +13,14 @@ head: mkdocs-descriptions
 created_at: 2024-12-15T03:07:32Z
 updated_at: 2024-12-15T16:20:28Z
 url: https://github.com/astral-sh/ruff/pull/14980
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Use stripping block (`|-`) for page descriptions
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-15 03:07_
+_@InSyncWithFoo_
 
 ## Summary
 

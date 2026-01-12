@@ -13,14 +13,14 @@ head: konsti/unknown-field-errpr
 created_at: 2024-11-29T13:31:15Z
 updated_at: 2024-11-29T17:32:50Z
 url: https://github.com/astral-sh/uv/pull/9522
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Make pip install snapshot independent of settings fields
 
 ---
 
-_Pull request opened by @konstin on 2024-11-29 13:31_
+_@konstin_
 
 When changing something about the settings, `invalid_pyproject_toml_option_unknown_field` would fail unexpectedly because the exact list of possible options had changed. Since we're already testing this list in the settings-related test `resolve_config_file`, i'm stubbing the exact output here.
 

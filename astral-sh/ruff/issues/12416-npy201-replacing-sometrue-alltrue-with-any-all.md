@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T05:43:29Z
 updated_at: 2024-07-23T09:21:12Z
 url: https://github.com/astral-sh/ruff/issues/12416
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # NPY201: replacing `sometrue`/`alltrue` with `any`/`all` results in broken code
 
 ---
 
-_Issue opened by @radoering on 2024-07-20 05:43_
+_@radoering_
 
 NPY201 can produce broken code. Replacing `numpy.sometrue` with `any` is dangerous and does not work for multidimensional arrays. Using `numpy.any` instead is probably a better option.
 

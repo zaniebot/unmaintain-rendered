@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T04:04:11Z
 updated_at: 2023-05-10T16:02:30Z
 url: https://github.com/astral-sh/ruff/issues/4302
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Use self-documenting f-strings where possible
 
 ---
 
-_Issue opened by @janosh on 2023-05-09 04:04_
+_@janosh_
 
 Could maybe be added to `flake8-simplify`.
 

@@ -13,14 +13,14 @@ head: brent/suppression-docs
 created_at: 2025-03-13T12:11:18Z
 updated_at: 2025-03-13T16:48:55Z
 url: https://github.com/astral-sh/ruff/pull/16703
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Add new `noqa` specification to the docs
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-13 12:11_
+_@ntBre_
 
 ## Summary
 

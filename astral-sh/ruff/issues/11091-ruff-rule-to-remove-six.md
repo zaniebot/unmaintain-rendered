@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-22T14:49:43Z
 updated_at: 2024-12-03T04:13:34Z
 url: https://github.com/astral-sh/ruff/issues/11091
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff rule to remove six
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-04-22 14:49_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

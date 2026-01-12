@@ -14,14 +14,14 @@ head: micha/debug-text-newline
 created_at: 2025-06-14T05:52:22Z
 updated_at: 2025-06-15T05:53:08Z
 url: https://github.com/astral-sh/ruff/pull/18673
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # Fix `\r` and `\r\n` handling in t- and f-string debug texts
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-14 05:52_
+_@MichaReiser_
 
 ## Summary
 

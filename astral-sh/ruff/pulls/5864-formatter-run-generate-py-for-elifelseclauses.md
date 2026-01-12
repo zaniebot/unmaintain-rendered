@@ -12,14 +12,14 @@ head: run_generate_py_for_elif_else_clauses
 created_at: 2023-07-18T15:08:20Z
 updated_at: 2023-07-18T15:34:39Z
 url: https://github.com/astral-sh/ruff/pull/5864
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Formatter: Run generate.py for ElifElseClauses
 
 ---
 
-_Pull request opened by @konstin on 2023-07-18 15:08_
+_@konstin_
 
 **Summary** This removes the diff for the next user of `generate.py`. It's effectively a refactoring.
 

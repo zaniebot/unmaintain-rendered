@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-08T13:27:59Z
 updated_at: 2025-11-09T16:31:22Z
 url: https://github.com/astral-sh/ty/issues/1504
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Length of concatenation of tuples is not inferred
 
 ---
 
-_Issue opened by @ThorstenBuss on 2025-11-08 13:27_
+_@ThorstenBuss_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-07T09:25:11Z
 updated_at: 2025-08-07T09:47:00Z
 url: https://github.com/astral-sh/ty/issues/950
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Print fully qualified type names in type checker errors
 
 ---
 
-_Issue opened by @missingdays on 2025-08-07 09:25_
+_@missingdays_
 
 Consider this example
 

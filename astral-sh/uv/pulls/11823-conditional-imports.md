@@ -13,14 +13,14 @@ head: conditionalImports
 created_at: 2025-02-27T07:06:07Z
 updated_at: 2025-03-06T23:10:41Z
 url: https://github.com/astral-sh/uv/pull/11823
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Conditional imports
 
 ---
 
-_Pull request opened by @Choudhry18 on 2025-02-27 07:06_
+_@Choudhry18_
 
 ## Summary
 

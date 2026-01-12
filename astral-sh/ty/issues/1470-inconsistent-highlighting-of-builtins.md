@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T14:10:32Z
 updated_at: 2025-11-11T19:15:43Z
 url: https://github.com/astral-sh/ty/issues/1470
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Inconsistent highlighting of builtins
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-03 14:10_
+_@MichaReiser_
 
 ty's builtins highlighting is inconsistent in a few types:
 

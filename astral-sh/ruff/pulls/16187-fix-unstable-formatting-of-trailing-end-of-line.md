@@ -14,14 +14,14 @@ head: micha/fix-instable-trailing-attribute-value-formatting
 created_at: 2025-02-16T15:26:38Z
 updated_at: 2025-02-18T07:43:53Z
 url: https://github.com/astral-sh/ruff/pull/16187
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Fix unstable formatting of trailing end-of-line comments of parenthesized attribute values
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-16 15:26_
+_@MichaReiser_
 
 ## Summary
 

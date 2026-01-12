@@ -12,14 +12,14 @@ head: main
 created_at: 2026-01-09T03:50:06Z
 updated_at: 2026-01-09T19:48:36Z
 url: https://github.com/astral-sh/ruff/pull/22471
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Add AIR301 deprecation rules for airflow.utils module classes
 
 ---
 
-_Pull request opened by @jashparekh on 2026-01-09 03:50_
+_@jashparekh_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

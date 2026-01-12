@@ -13,14 +13,14 @@ head: charlie/exp
 created_at: 2024-12-22T20:32:38Z
 updated_at: 2024-12-22T20:42:43Z
 url: https://github.com/astral-sh/uv/pull/10101
-synced_at: 2026-01-10T11:44:34Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Rename 'Expected' and 'Actual' in lockfile logging
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-22 20:32_
+_@charliermarsh_
 
 ## Summary
 

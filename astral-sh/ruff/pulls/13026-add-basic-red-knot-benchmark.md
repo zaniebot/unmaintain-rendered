@@ -13,14 +13,14 @@ head: knot-mypy-pyright-benchmarks
 created_at: 2024-08-21T09:09:12Z
 updated_at: 2024-08-23T06:59:41Z
 url: https://github.com/astral-sh/ruff/pull/13026
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add basic red knot benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-21 09:09_
+_@MichaReiser_
 
 ## Summary
 

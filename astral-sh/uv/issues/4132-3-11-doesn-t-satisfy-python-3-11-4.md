@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T15:23:44Z
 updated_at: 2024-06-08T01:22:58Z
 url: https://github.com/astral-sh/uv/issues/4132
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `==3.11.*` doesn't satisfy `Python>=3.11,<4`
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 15:23_
+_@konstin_
 
 `requires-python = "==3.11.*"` doesn't satisfy `Python>=3.11,<4` for a project that depends on it, while `requires-python = ">=3.11, <4"` does an resolves without problem.
 

@@ -13,14 +13,14 @@ head: cjm/exprty
 created_at: 2024-12-09T16:00:46Z
 updated_at: 2024-12-09T17:03:42Z
 url: https://github.com/astral-sh/ruff/pull/14879
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] move standalone expression_ty to TypeInferenceBuilder::file_expression_ty
 
 ---
 
-_Pull request opened by @carljm on 2024-12-09 16:00_
+_@carljm_
 
 ## Summary
 

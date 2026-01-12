@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T03:00:38Z
 updated_at: 2024-11-17T07:38:37Z
 url: https://github.com/astral-sh/uv/issues/6402
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv add flash-attn --no-build-isolation` fails
 
 ---
 
-_Issue opened by @vwxyzjn on 2024-08-22 03:00_
+_@vwxyzjn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

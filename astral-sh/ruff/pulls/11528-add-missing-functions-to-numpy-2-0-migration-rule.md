@@ -13,14 +13,14 @@ head: npy201-alltrue
 created_at: 2024-05-24T09:34:21Z
 updated_at: 2024-05-27T10:04:01Z
 url: https://github.com/astral-sh/ruff/pull/11528
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add missing functions to NumPy 2.0 migration rule
 
 ---
 
-_Pull request opened by @mtsokol on 2024-05-24 09:34_
+_@mtsokol_
 
 Hi! 
 

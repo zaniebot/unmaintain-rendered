@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-03-20T12:14:41Z
 updated_at: 2021-08-13T19:52:42Z
 url: https://github.com/clap-rs/clap/issues/1434
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # confusing documentation on parsing multiple subcommands (minor issue)
 
 ---
 
-_Issue opened by @0x900C5649 on 2019-03-20 12:14_
+_@0x900C5649_
 
 I am working on a personal project for which I would like to parse a list of subcommands (together with their arguments).
 So something like:

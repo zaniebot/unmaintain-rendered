@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T10:00:45Z
 updated_at: 2024-09-16T14:53:28Z
 url: https://github.com/astral-sh/ruff/issues/13344
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter: allow spaces in keyword arguments
 
 ---
 
-_Issue opened by @nicoonoclaste on 2024-09-13 10:00_
+_@nicoonoclaste_
 
 Hi!
 

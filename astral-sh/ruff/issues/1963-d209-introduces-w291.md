@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-18T15:59:52Z
 updated_at: 2023-01-18T17:09:19Z
 url: https://github.com/astral-sh/ruff/issues/1963
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D209 introduces W291
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 15:59_
+_@spaceone_
 
 ```python
 #!/usr/bin/python3

@@ -12,14 +12,14 @@ head: ale_in_readme
 created_at: 2023-01-14T02:06:42Z
 updated_at: 2023-01-14T02:39:51Z
 url: https://github.com/astral-sh/ruff/pull/1857
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Added ALE
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-14 02:06_
+_@colin99d_
 
 Fixes the sub issue I brought up in #1829.
 

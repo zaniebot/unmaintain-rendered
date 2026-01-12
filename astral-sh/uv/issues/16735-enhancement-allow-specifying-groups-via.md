@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T09:29:49Z
 updated_at: 2025-12-01T14:23:34Z
 url: https://github.com/astral-sh/uv/issues/16735
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Enhancement: Allow specifying `--groups` via environment variable UV_DEFAULT_GROUPS
 
 ---
 
-_Issue opened by @turbotimon on 2025-11-14 09:29_
+_@turbotimon_
 
 ### Summary
 

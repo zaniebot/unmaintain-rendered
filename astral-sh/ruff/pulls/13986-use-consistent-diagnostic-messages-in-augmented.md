@@ -13,14 +13,14 @@ head: charlie/diag
 created_at: 2024-10-30T02:28:37Z
 updated_at: 2024-10-30T12:24:44Z
 url: https://github.com/astral-sh/ruff/pull/13986
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use consistent diagnostic messages in augmented assignment inference
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 02:28_
+_@charliermarsh_
 
 _No description provided._
 

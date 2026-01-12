@@ -13,14 +13,14 @@ head: zb/ed-iso
 created_at: 2025-06-21T13:40:25Z
 updated_at: 2025-06-21T13:54:15Z
 url: https://github.com/astral-sh/uv/pull/14188
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Use isolated Poetry editables for `pip_uninstall` tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 13:40_
+_@zanieb_
 
 Looking at https://github.com/astral-sh/uv/issues/14158
 

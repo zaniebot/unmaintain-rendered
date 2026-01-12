@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-08T20:34:09Z
 updated_at: 2024-01-22T14:50:08Z
 url: https://github.com/clap-rs/clap/issues/3422
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Create a dedicated documentation section on StructOpt migration
 
 ---
 
-_Issue opened by @nyurik on 2022-02-08 20:34_
+_@nyurik_
 
 ### Please complete the following tasks
 

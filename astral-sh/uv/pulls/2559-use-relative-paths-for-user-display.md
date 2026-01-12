@@ -13,14 +13,14 @@ head: charlie/relativize
 created_at: 2024-03-20T01:15:35Z
 updated_at: 2024-03-20T13:52:51Z
 url: https://github.com/astral-sh/uv/pull/2559
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Use relative paths for user display
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 01:15_
+_@charliermarsh_
 
 ## Summary
 

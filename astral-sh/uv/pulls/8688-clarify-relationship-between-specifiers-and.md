@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-10-29T21:21:32Z
 updated_at: 2024-10-29T21:30:03Z
 url: https://github.com/astral-sh/uv/pull/8688
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Clarify relationship between specifiers and `requires-python` range
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 21:21_
+_@charliermarsh_
 
 ## Summary
 

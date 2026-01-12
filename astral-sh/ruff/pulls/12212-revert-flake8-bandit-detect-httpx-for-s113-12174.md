@@ -11,14 +11,14 @@ head: revert-httpx-S113
 created_at: 2024-07-06T03:02:07Z
 updated_at: 2024-07-06T04:05:39Z
 url: https://github.com/astral-sh/ruff/pull/12212
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Revert "[`flake8-bandit`] Detect `httpx` for `S113` (#12174)"
 
 ---
 
-_Pull request opened by @trim21 on 2024-07-06 03:02_
+_@trim21_
 
 This reverts PR `feat(rules): detect httpx for S113` #12174
 

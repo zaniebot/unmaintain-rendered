@@ -14,14 +14,14 @@ head: ag/diag-method-overload
 created_at: 2025-05-15T14:15:34Z
 updated_at: 2025-05-15T15:46:36Z
 url: https://github.com/astral-sh/ruff/pull/18122
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Improve invalid method calls for unmatched overloads
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-15 14:15_
+_@BurntSushi_
 
 This makes an easy tweak to allow our diagnostics for unmatched
 overloads to apply to method calls. Previously, they only worked for

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T13:06:23Z
 updated_at: 2025-11-30T10:49:27Z
 url: https://github.com/astral-sh/ruff/issues/21675
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Incorrect Line Number Reporting when Importing scienceplots
 
 ---
 
-_Issue opened by @cospeng on 2025-11-28 13:06_
+_@cospeng_
 
 ### Summary
 

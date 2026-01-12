@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T12:03:20Z
 updated_at: 2025-07-26T18:33:39Z
 url: https://github.com/astral-sh/ty/issues/751
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [playground] Support go to with vendored typeshed stubs
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-07-02 12:03_
+_@ibraheemdev_
 
 https://github.com/astral-sh/ruff/pull/19057 implemented this for the LSP server but does not have WASM support.
 

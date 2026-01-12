@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-12T12:47:21Z
 updated_at: 2025-10-30T13:17:55Z
 url: https://github.com/astral-sh/uv/issues/9837
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Feature request: Have MACOSX_DEPLOYMENT_TARGET as uv config or have a default place from where env vars are loaded for uv
 
 ---
 
-_Issue opened by @uwu-420 on 2024-12-12 12:47_
+_@uwu-420_
 
 Hi all, thanks for making uv!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T07:16:05Z
 updated_at: 2024-08-27T23:38:12Z
 url: https://github.com/astral-sh/uv/issues/6675
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Scripts don't seem to be installed in system
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-08-27 07:16_
+_@NeilGirdhar_
 
 For some reason uv doesn't make scripts accessible the way pip does
 ```bash

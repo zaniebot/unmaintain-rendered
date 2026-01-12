@@ -14,14 +14,14 @@ head: konstin-patch-1
 created_at: 2025-04-29T13:32:51Z
 updated_at: 2025-04-29T13:33:50Z
 url: https://github.com/astral-sh/uv/pull/13194
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Fix typo (`-r`) in changelog
 
 ---
 
-_Pull request opened by @konstin on 2025-04-29 13:32_
+_@konstin_
 
 Fixes #13193
 

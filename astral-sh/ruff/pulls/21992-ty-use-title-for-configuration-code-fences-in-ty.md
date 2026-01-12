@@ -13,14 +13,14 @@ head: zb/ty-pyproject
 created_at: 2025-12-15T20:50:18Z
 updated_at: 2025-12-15T21:36:10Z
 url: https://github.com/astral-sh/ruff/pull/21992
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Use `title` for configuration code fences in ty reference documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 20:50_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ty/pull/1904
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T14:31:06Z
 updated_at: 2025-09-16T07:40:06Z
 url: https://github.com/astral-sh/ruff/issues/20237
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # TC006 (runtime-cast-value) shouldn't trigger with `annotations`
 
 ---
 
-_Issue opened by @Kilo59 on 2025-09-04 14:31_
+_@Kilo59_
 
 ### Summary
 

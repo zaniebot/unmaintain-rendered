@@ -12,14 +12,14 @@ head: fix-tests
 created_at: 2023-11-15T22:13:13Z
 updated_at: 2023-11-15T22:38:35Z
 url: https://github.com/astral-sh/uv/pull/432
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Update all venv creation in tests to pin versions
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-15 22:13_
+_@zanieb_
 
 Extends #431
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T10:32:00Z
 updated_at: 2025-05-13T03:03:45Z
 url: https://github.com/astral-sh/uv/issues/13344
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Resolver panics when adding qlmaas as dependency
 
 ---
 
-_Issue opened by @shumpohl on 2025-05-08 10:32_
+_@shumpohl_
 
 ### Summary
 

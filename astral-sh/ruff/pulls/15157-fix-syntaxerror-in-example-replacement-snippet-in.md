@@ -13,14 +13,14 @@ head: main
 created_at: 2024-12-26T23:53:23Z
 updated_at: 2024-12-27T12:16:45Z
 url: https://github.com/astral-sh/ruff/pull/15157
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix `SyntaxError` in example replacement snippet in `nonlocal-without-binding`
 
 ---
 
-_Pull request opened by @enochkan on 2024-12-26 23:53_
+_@enochkan_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

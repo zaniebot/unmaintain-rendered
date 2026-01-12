@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T12:30:53Z
 updated_at: 2025-04-06T18:33:10Z
 url: https://github.com/astral-sh/uv/issues/12692
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # When killing the top process of a `uvx` command, the process keeps running in the background
 
 ---
 
-_Issue opened by @schnow265 on 2025-04-06 12:30_
+_@schnow265_
 
 ### Summary
 

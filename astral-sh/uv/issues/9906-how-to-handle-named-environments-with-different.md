@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T07:23:18Z
 updated_at: 2024-12-16T22:33:24Z
 url: https://github.com/astral-sh/uv/issues/9906
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # How to handle named environments with different python versions?
 
 ---
 
-_Issue opened by @mhechthz on 2024-12-15 07:23_
+_@mhechthz_
 
 Since I'm new to uv I still did not get how to deal with different named venvs.
 

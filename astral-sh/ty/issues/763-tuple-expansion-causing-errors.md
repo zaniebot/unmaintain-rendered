@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-04T01:50:34Z
 updated_at: 2025-07-04T02:06:20Z
 url: https://github.com/astral-sh/ty/issues/763
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Tuple expansion causing errors
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-07-04 01:50_
+_@Ryang20718_
 
 ### Summary
 

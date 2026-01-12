@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T23:03:50Z
 updated_at: 2025-05-28T07:52:43Z
 url: https://github.com/astral-sh/ruff/issues/17973
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # How to disable alphabetical import sort
 
 ---
 
-_Issue opened by @juanzolotoochin on 2025-05-08 23:03_
+_@juanzolotoochin_
 
 ### Question
 

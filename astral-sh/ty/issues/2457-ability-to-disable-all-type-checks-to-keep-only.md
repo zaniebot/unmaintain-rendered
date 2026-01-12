@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-12T10:27:28Z
 updated_at: 2026-01-12T10:45:23Z
 url: https://github.com/astral-sh/ty/issues/2457
-synced_at: 2026-01-12T11:01:03Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Ability to disable all type checks, to keep only the LSP server
 
 ---
 
-_Issue opened by @ilan-schemoul on 2026-01-12 10:27_
+_@ilan-schemoul_
 
 Hello,
 The pylsp server is used is horribly slow (like 1 minute for rename or go to definition). I want to use ty for LSP features, and when it hits feature parity with mypy (we have very complex type system at my company) I'll enable ty for type check.

@@ -12,14 +12,14 @@ head: charlie/universal-lock
 created_at: 2024-06-03T01:39:00Z
 updated_at: 2024-07-06T19:32:47Z
 url: https://github.com/astral-sh/uv/pull/3977
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Avoid joining globs in workspace discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 01:39_
+_@charliermarsh_
 
 ## Summary
 

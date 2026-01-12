@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T04:09:19Z
 updated_at: 2024-10-17T04:09:24Z
 url: https://github.com/astral-sh/uv/issues/8280
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Verbose enumeration of available versions in resolve error message
 
 ---
 
-_Issue opened by @zanieb on 2024-10-17 04:09_
+_@zanieb_
 
 ```
 ❯ uv tool install open-webui --with 'requests[socks]'

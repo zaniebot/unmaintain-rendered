@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T21:21:31Z
 updated_at: 2025-09-17T07:19:20Z
 url: https://github.com/astral-sh/ruff/issues/19626
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Failed to execute the command 'ruff.applyFormat'.
 
 ---
 
-_Issue opened by @dlefcoe on 2025-07-29 21:21_
+_@dlefcoe_
 
 ### Summary
 

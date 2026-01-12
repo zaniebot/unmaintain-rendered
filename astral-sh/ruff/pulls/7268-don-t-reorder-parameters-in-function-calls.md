@@ -13,14 +13,14 @@ head: dont-reorder-parameters-in-function-calls
 created_at: 2023-09-11T12:05:57Z
 updated_at: 2023-09-13T09:08:10Z
 url: https://github.com/astral-sh/ruff/pull/7268
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Don't reorder parameters in function calls
 
 ---
 
-_Pull request opened by @konstin on 2023-09-11 12:05_
+_@konstin_
 
 ## Summary
 

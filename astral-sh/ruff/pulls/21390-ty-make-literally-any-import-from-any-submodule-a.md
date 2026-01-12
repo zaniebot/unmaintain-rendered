@@ -14,14 +14,14 @@ head: gankra/comedy-reex
 created_at: 2025-11-11T19:55:18Z
 updated_at: 2025-11-11T20:05:08Z
 url: https://github.com/astral-sh/ruff/pull/21390
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] make literally any import from any submodule a re-export unless renamed
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-11 19:55_
+_@Gankra_
 
 *turning a big dial taht says "Non-standard Import Conventions" on it and constantly looking back at the audience for approval like a contestant on the price is right.*
 

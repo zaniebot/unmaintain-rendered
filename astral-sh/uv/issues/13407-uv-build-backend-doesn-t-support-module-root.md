@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-12T11:37:55Z
 updated_at: 2025-05-15T15:19:04Z
 url: https://github.com/astral-sh/uv/issues/13407
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # uv build backend doesn't support ` module-root = "./"`
 
 ---
 
-_Issue opened by @followheart26 on 2025-05-12 11:37_
+_@followheart26_
 
 ### Question
 

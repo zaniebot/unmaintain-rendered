@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T13:52:25Z
 updated_at: 2025-05-05T14:13:17Z
 url: https://github.com/astral-sh/ruff/issues/17859
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Python 3.14+: Warn against use of `__annotate_func__` and `__annotations_cache__`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-05 13:52_
+_@JelleZijlstra_
 
 ### Summary
 

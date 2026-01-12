@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T21:39:53Z
 updated_at: 2025-06-04T05:12:17Z
 url: https://github.com/astral-sh/ruff/issues/18449
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Block fixes on a repo with uncommitted files?
 
 ---
 
-_Issue opened by @etiennebacher on 2025-06-03 21:39_
+_@etiennebacher_
 
 Hello, while using `cargo fix` on a repo that uses version control, I got this error:
 

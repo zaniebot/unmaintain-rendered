@@ -13,14 +13,14 @@ head: implement_pylint_invalid_str_returnE0307
 created_at: 2023-06-04T22:42:49Z
 updated_at: 2023-06-05T18:12:58Z
 url: https://github.com/astral-sh/ruff/pull/4854
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # implement E307 for pylint invalid str return type
 
 ---
 
-_Pull request opened by @Ryang20718 on 2023-06-04 22:42_
+_@Ryang20718_
 
 ## Summary
 

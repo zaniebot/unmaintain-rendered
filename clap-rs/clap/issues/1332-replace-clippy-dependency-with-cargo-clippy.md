@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-08-19T14:29:24Z
 updated_at: 2020-02-02T07:27:13Z
 url: https://github.com/clap-rs/clap/issues/1332
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Replace clippy dependency with cargo clippy
 
 ---
 
-_Issue opened by @kpcyrd on 2018-08-19 14:29_
+_@kpcyrd_
 
 ### Affected Version of clap
 

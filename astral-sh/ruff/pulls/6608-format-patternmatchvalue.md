@@ -13,14 +13,14 @@ head: evanrittenhouse/6555
 created_at: 2023-08-16T03:53:59Z
 updated_at: 2023-08-23T06:32:09Z
 url: https://github.com/astral-sh/ruff/pull/6608
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchValue`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-08-16 03:53_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

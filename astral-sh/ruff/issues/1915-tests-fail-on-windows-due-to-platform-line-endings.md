@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T13:04:06Z
 updated_at: 2023-01-26T00:53:23Z
 url: https://github.com/astral-sh/ruff/issues/1915
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # tests fail on windows due to platform line endings
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-16 13:04_
+_@sbrugman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

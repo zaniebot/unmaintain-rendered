@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T01:09:13Z
 updated_at: 2024-06-25T16:22:46Z
 url: https://github.com/astral-sh/ruff/issues/6465
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # type-comparison (E721) only works on some builtin classes and nothing else
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-10 01:09_
+_@DetachHead_
 
 ```py
 def asdf(value: object):

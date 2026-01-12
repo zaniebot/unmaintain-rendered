@@ -11,14 +11,14 @@ head: fix/sync-only-group-entry-points
 created_at: 2025-08-12T03:48:48Z
 updated_at: 2025-08-12T05:50:13Z
 url: https://github.com/astral-sh/uv/pull/15231
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Fix/sync only group entry points dose not install projects with entry points
 
 ---
 
-_Pull request opened by @yumeminami on 2025-08-12 03:48_
+_@yumeminami_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

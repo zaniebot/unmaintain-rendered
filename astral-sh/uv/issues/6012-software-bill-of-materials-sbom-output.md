@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T23:18:36Z
 updated_at: 2025-11-20T18:49:25Z
 url: https://github.com/astral-sh/uv/issues/6012
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Software Bill of Materials (SBOM) output
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-11 23:18_
+_@chrisrodrigue_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

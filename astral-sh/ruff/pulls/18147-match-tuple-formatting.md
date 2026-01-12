@@ -14,14 +14,14 @@ head: match-tuple-formatting
 created_at: 2025-05-17T04:51:15Z
 updated_at: 2025-05-22T05:52:21Z
 url: https://github.com/astral-sh/ruff/pull/18147
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Match tuple formatting
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-17 04:51_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

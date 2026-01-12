@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-21T11:16:16Z
 updated_at: 2023-12-07T12:10:52Z
 url: https://github.com/astral-sh/ruff/issues/7568
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Allow disabling sub-config required-versions
 
 ---
 
-_Issue opened by @xmo-odoo on 2023-09-21 11:16_
+_@xmo-odoo_
 
 From what I understand, ruff currently aborts as soon as it finds a `required-version` mismatch.
 

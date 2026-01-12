@@ -13,14 +13,14 @@ head: zb/quote-parse-err
 created_at: 2024-04-30T17:03:24Z
 updated_at: 2024-04-30T17:20:15Z
 url: https://github.com/astral-sh/uv/pull/3325
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Quote version parse errors consistently
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-30 17:03_
+_@zanieb_
 
 _No description provided._
 

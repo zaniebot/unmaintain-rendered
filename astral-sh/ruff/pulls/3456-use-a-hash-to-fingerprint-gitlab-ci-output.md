@@ -12,14 +12,14 @@ head: charlie/gitlab
 created_at: 2023-03-12T05:09:59Z
 updated_at: 2023-03-12T05:22:40Z
 url: https://github.com/astral-sh/ruff/pull/3456
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use a hash to fingerprint GitLab CI output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-12 05:09_
+_@charliermarsh_
 
 Example output:
 

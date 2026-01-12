@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:11:56Z
 updated_at: 2025-10-13T14:47:33Z
 url: https://github.com/clap-rs/clap/issues/3116
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Using a struct's `Default::default`, instead of a field type's `Default::default`
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:11_
+_@epage_
 
 Maintainer's notes
 - We can use the field's `Default::default` with `#[clap(default_value_t)]`

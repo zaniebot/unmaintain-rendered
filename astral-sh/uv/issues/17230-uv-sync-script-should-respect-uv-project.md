@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T17:56:01Z
 updated_at: 2026-01-05T21:21:18Z
 url: https://github.com/astral-sh/uv/issues/17230
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # `uv sync --script` should respect `UV_PROJECT_ENVIRONMENT` (or some other env var)
 
 ---
 
-_Issue opened by @metaist on 2025-12-23 17:56_
+_@metaist_
 
 ### Summary
 

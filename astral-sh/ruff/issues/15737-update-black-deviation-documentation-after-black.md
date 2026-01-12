@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-25T10:04:38Z
 updated_at: 2025-02-04T14:04:25Z
 url: https://github.com/astral-sh/ruff/issues/15737
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Update black deviation documentation after Black 2025 release
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-25 10:04_
+_@MichaReiser_
 
 ### Description
 

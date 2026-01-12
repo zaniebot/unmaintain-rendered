@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-05-10T12:25:07Z
 updated_at: 2025-10-08T18:37:32Z
 url: https://github.com/astral-sh/ty/issues/306
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Wrong overload for `str.join` / assignability to `Iterable[_]`
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-10 12:25_
+_@sharkdp_
 
 The return type of `str.join` should be `str` here, not `LiteralString`:
 ```py

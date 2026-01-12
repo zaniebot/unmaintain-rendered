@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T03:03:28Z
 updated_at: 2025-11-11T03:07:21Z
 url: https://github.com/astral-sh/uv/issues/16680
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # feat: add a command to search for installable packages (similar to npm search)
 
 ---
 
-_Issue opened by @EGQM on 2025-11-11 03:03_
+_@EGQM_
 
 ### Summary
 

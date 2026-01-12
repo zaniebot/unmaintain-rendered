@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-04T20:27:37Z
 updated_at: 2021-10-13T14:13:05Z
 url: https://github.com/clap-rs/clap/issues/2811
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Color should be exposed as a single enum, not individual Settings
 
 ---
 
-_Issue opened by @epage on 2021-10-04 20:27_
+_@epage_
 
 ### Rust Version
 

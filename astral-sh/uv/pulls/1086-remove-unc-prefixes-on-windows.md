@@ -13,14 +13,14 @@ head: charlie/dunce
 created_at: 2024-01-24T22:27:42Z
 updated_at: 2024-01-25T16:44:23Z
 url: https://github.com/astral-sh/uv/pull/1086
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Remove UNC prefixes on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 22:27_
+_@charliermarsh_
 
 ## Summary
 

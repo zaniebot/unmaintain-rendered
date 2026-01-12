@@ -14,14 +14,14 @@ head: micha/playground-no-python-files
 created_at: 2025-03-27T19:38:16Z
 updated_at: 2025-03-27T20:58:10Z
 url: https://github.com/astral-sh/ruff/pull/17021
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Don't check non-python files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-27 19:38_
+_@MichaReiser_
 
 ## Summary
 

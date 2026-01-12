@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T13:02:18Z
 updated_at: 2024-11-20T00:40:06Z
 url: https://github.com/astral-sh/uv/issues/8449
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Feature Request: Environment variable or CLI parameter to disable manylinux wheels
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-10-22 13:02_
+_@pythonweb2_
 
 UV supports PEP 600 (partially), for disablement of manylinux wheels, which is great. (https://docs.astral.sh/uv/pip/compatibility/#manylinux_compatible-enforcement).
 

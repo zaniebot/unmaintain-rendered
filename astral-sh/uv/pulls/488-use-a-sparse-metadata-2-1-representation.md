@@ -13,14 +13,14 @@ head: charlie/sparse
 created_at: 2023-11-22T12:53:50Z
 updated_at: 2023-11-22T13:25:37Z
 url: https://github.com/astral-sh/uv/pull/488
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Use a sparse Metadata 2.1 representation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-22 12:53_
+_@charliermarsh_
 
 This is an optimization to avoid parsing the entire Metadata 2.1 when we only need a small subset of the fields.
 

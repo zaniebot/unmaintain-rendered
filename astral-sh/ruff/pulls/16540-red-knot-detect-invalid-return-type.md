@@ -13,14 +13,14 @@ head: 16248-return-type-checking
 created_at: 2025-03-06T17:48:36Z
 updated_at: 2025-03-12T02:01:07Z
 url: https://github.com/astral-sh/ruff/pull/16540
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] detect invalid return type
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-06 17:48_
+_@mtshiba_
 
 ## Summary
 

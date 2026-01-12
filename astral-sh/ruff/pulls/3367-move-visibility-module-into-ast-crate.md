@@ -13,14 +13,14 @@ head: charlie/visibility
 created_at: 2023-03-06T20:07:15Z
 updated_at: 2023-03-06T20:14:48Z
 url: https://github.com/astral-sh/ruff/pull/3367
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Move `visibility` module into `ast` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 20:07_
+_@charliermarsh_
 
 _No description provided._
 

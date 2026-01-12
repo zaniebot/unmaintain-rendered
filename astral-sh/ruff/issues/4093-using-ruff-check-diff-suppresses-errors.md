@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T11:05:20Z
 updated_at: 2024-02-01T06:49:26Z
 url: https://github.com/astral-sh/ruff/issues/4093
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Using ruff check diff suppresses errors
 
 ---
 
-_Issue opened by @aminalaee on 2023-04-25 11:05_
+_@aminalaee_
 
 Hey, thanks for the great work.
 I don't know if this is a bug or maybe unclear flag, but doing `ruff check --diff .` does not fail:

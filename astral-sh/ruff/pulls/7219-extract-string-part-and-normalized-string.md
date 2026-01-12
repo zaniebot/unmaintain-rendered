@@ -14,14 +14,14 @@ head: extract-string-part
 created_at: 2023-09-07T11:57:59Z
 updated_at: 2023-09-21T10:38:48Z
 url: https://github.com/astral-sh/ruff/pull/7219
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Extract string part and normalized string
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 11:57_
+_@MichaReiser_
 
 ## Summary
 

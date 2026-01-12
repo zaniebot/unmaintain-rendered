@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-15T21:16:32Z
 updated_at: 2022-10-18T21:19:14Z
 url: https://github.com/astral-sh/ruff/issues/438
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support error selection via prefix codes
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-15 21:16_
+_@charliermarsh_
 
 E.g., you should be able to `--select D` to enable all of the `pydocstyle` rules.
 

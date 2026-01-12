@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T11:43:17Z
 updated_at: 2025-07-24T12:04:24Z
 url: https://github.com/astral-sh/ruff/issues/18240
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Recent `I001` rule changes conflict with custom C++ extensions
 
 ---
 
-_Issue opened by @JackAshwell11 on 2025-05-21 11:43_
+_@JackAshwell11_
 
 ### Summary
 

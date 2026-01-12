@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-29T20:39:22Z
 updated_at: 2023-12-31T16:36:46Z
 url: https://github.com/astral-sh/ruff/pull/9315
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Improve responsiveness when invoked via Python
 
 ---
 
-_Pull request opened by @ofek on 2023-12-29 20:39_
+_@ofek_
 
 This saves a handful of milliseconds on Windows and even more on other platforms when running `python -m ruff`. On non-Windows systems the process is replaced directly (impossible on Windows unfortunately).
 

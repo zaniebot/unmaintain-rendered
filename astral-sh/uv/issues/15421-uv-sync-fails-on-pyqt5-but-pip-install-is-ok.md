@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T16:43:16Z
 updated_at: 2025-08-21T18:54:46Z
 url: https://github.com/astral-sh/uv/issues/15421
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # `uv sync` fails on `PyQt5` but pip install is OK
 
 ---
 
-_Issue opened by @tyctor on 2025-08-21 16:43_
+_@tyctor_
 
 ### Question
 

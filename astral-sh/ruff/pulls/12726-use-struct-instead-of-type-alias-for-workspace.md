@@ -13,14 +13,14 @@ head: dhruv/workspace-settings-index
 created_at: 2024-08-07T05:06:03Z
 updated_at: 2024-08-07T09:36:28Z
 url: https://github.com/astral-sh/ruff/pull/12726
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use struct instead of type alias for workspace settings index
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-07 05:06_
+_@dhruvmanila_
 
 ## Summary
 

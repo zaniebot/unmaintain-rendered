@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-24T22:23:04Z
 updated_at: 2025-10-13T10:57:48Z
 url: https://github.com/astral-sh/ty/issues/697
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Using super() in generic classes will fail if the `self` parameter type is set
 
 ---
 
-_Issue opened by @Glyphack on 2025-06-24 22:23_
+_@Glyphack_
 
 ### Summary
 

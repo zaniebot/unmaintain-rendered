@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T12:18:05Z
 updated_at: 2025-12-10T14:53:52Z
 url: https://github.com/astral-sh/uv/issues/16977
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # uv: local package randomly becomes unimportable in project created with `uv init --package`
 
 ---
 
-_Issue opened by @jesusseper on 2025-12-04 12:18_
+_@jesusseper_
 
 ### Summary
 

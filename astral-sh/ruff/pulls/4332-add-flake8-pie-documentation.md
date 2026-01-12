@@ -13,14 +13,14 @@ head: main
 created_at: 2023-05-09T21:40:49Z
 updated_at: 2023-05-09T22:11:31Z
 url: https://github.com/astral-sh/ruff/pull/4332
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add flake8-pie documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-09 21:40_
+_@tjkuson_
 
 Add documentation to the flake8-pie rules. Should complete the flake8-pie ruleset.
 

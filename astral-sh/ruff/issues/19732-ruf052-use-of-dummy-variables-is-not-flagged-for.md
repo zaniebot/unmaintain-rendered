@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-04T08:13:42Z
 updated_at: 2025-11-21T17:57:03Z
 url: https://github.com/astral-sh/ruff/issues/19732
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF052: Use of dummy variables is not flagged for loop variables
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-04 08:13_
+_@MichaReiser_
 
 @AlexWaygood @MichaReiser Searching https://github.com/search?q=repo%3Aastral-sh%2Fruff+RUF052&type=issues does not reveal previous discussions on detecting used dummy variables inside FOR loops and list comprehensions. To avoid extra noise from rushing into opening a new issue, I would like to clarify:  Was this rejected somewhere, or was this just not discussed and not implemented yet?
 

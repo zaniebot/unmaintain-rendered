@@ -14,14 +14,14 @@ head: charlie/resolve-then-create
 created_at: 2024-07-03T19:01:40Z
 updated_at: 2024-07-04T13:45:28Z
 url: https://github.com/astral-sh/uv/pull/4788
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Resolve requirements prior to nuking tool environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 19:01_
+_@charliermarsh_
 
 ## Summary
 

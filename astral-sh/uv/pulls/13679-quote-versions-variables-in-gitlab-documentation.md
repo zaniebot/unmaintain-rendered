@@ -13,14 +13,14 @@ head: main
 created_at: 2025-05-27T12:34:22Z
 updated_at: 2025-05-27T12:43:39Z
 url: https://github.com/astral-sh/uv/pull/13679
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Quote versions variables in GitLab documentation
 
 ---
 
-_Pull request opened by @AKuederle on 2025-05-27 12:34_
+_@AKuederle_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: bump-rustpython
 created_at: 2023-01-12T22:21:10Z
 updated_at: 2023-01-14T13:03:27Z
 url: https://github.com/astral-sh/ruff/pull/1836
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Bump RustPython
 
 ---
 
-_Pull request opened by @bluetech on 2023-01-12 22:21_
+_@bluetech_
 
 ~~Draft pending merge of https://github.com/RustPython/RustPython/pull/4443, currently pointing at my fork.~~
 

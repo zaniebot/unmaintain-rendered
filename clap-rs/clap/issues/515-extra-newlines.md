@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-28T19:31:47Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/515
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Extra Newlines
 
 ---
 
-_Issue opened by @mitsuhiko on 2016-05-28 19:31_
+_@mitsuhiko_
 
 Currently clap renders an extra newline after usage, version and help. This is untypical and there does not appear to be a way to disable that.
 

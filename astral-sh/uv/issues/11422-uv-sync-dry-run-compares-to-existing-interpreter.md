@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T15:34:19Z
 updated_at: 2025-02-11T22:51:19Z
 url: https://github.com/astral-sh/uv/issues/11422
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # `uv sync --dry-run` compares to existing interpreter
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-11 15:34_
+_@charliermarsh_
 
 This seems wrong... cc @charliermarsh 
 

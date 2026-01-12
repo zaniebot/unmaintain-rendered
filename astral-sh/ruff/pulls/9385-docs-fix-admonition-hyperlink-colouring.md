@@ -13,14 +13,14 @@ head: main
 created_at: 2024-01-03T23:16:48Z
 updated_at: 2024-01-04T00:41:27Z
 url: https://github.com/astral-sh/ruff/pull/9385
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [docs] - Fix admonition hyperlink colouring
 
 ---
 
-_Pull request opened by @Eutropios on 2024-01-03 23:16_
+_@Eutropios_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

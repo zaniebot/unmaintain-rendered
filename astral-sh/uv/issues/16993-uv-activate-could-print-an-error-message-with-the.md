@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T05:10:02Z
 updated_at: 2026-01-09T23:04:44Z
 url: https://github.com/astral-sh/uv/issues/16993
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # `uv activate` could print an error message with the appropriate `source .venv/bin/activate` command
 
 ---
 
-_Issue opened by @charliermarsh on 2025-12-05 05:10_
+_@charliermarsh_
 
 A suggestion that came up in an in-person conversation. Even if we can't support `uv activate`, we could at least print a message telling the user how to activate it.
 

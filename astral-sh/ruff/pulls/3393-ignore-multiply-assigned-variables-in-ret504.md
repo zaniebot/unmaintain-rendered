@@ -13,14 +13,14 @@ head: charlie/multi-assign
 created_at: 2023-03-08T00:25:53Z
 updated_at: 2023-03-09T19:56:51Z
 url: https://github.com/astral-sh/ruff/pull/3393
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Ignore multiply-assigned variables in RET504
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-08 00:25_
+_@charliermarsh_
 
 This PR acts on the suggestion from #2950 to avoid RET504 errors when a variable is assigned to multiple times. As-is, we have too many false positives like:
 

@@ -13,14 +13,14 @@ head: F407
 created_at: 2025-09-24T16:47:34Z
 updated_at: 2025-09-25T17:52:25Z
 url: https://github.com/astral-sh/ruff/pull/20554
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [syntax-errors]: future-feature-not-defined (F407)
 
 ---
 
-_Pull request opened by @11happy on 2025-09-24 16:47_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

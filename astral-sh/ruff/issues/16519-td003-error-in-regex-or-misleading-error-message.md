@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-05T14:02:30Z
 updated_at: 2025-10-03T15:59:34Z
 url: https://github.com/astral-sh/ruff/issues/16519
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TD003 error in regex or misleading error message
 
 ---
 
-_Issue opened by @JimMajor on 2025-03-05 14:02_
+_@JimMajor_
 
 ### Summary
 

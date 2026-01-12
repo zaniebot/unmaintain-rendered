@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T22:05:24Z
 updated_at: 2024-09-20T00:49:17Z
 url: https://github.com/astral-sh/uv/issues/7563
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv` does not follow conditional dependency from `setup.py`
 
 ---
 
-_Issue opened by @zhou13 on 2024-09-19 22:05_
+_@zhou13_
 
 # A minimal code snippet that reproduces the bug.
 

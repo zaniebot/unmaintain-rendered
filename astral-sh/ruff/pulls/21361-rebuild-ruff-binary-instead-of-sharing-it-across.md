@@ -13,14 +13,14 @@ head: micha/stop-sharing-ruff-binary-across-jobs
 created_at: 2025-11-10T10:24:24Z
 updated_at: 2025-11-10T13:27:09Z
 url: https://github.com/astral-sh/ruff/pull/21361
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Rebuild ruff binary instead of sharing it across jobs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-10 10:24_
+_@MichaReiser_
 
 ## Summary
 

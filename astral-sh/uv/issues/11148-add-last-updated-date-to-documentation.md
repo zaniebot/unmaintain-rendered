@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T22:47:57Z
 updated_at: 2025-02-04T03:28:49Z
 url: https://github.com/astral-sh/uv/issues/11148
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Add "last updated" date to documentation
 
 ---
 
-_Issue opened by @zanieb on 2025-01-31 22:47_
+_@zanieb_
 
 Ref https://github.com/squidfunk/mkdocs-material/discussions/5301
 

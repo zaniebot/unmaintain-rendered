@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T13:38:09Z
 updated_at: 2025-03-19T21:46:23Z
 url: https://github.com/astral-sh/uv/issues/12312
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Question: why are dev dependency-groups of workspace members not being installed?
 
 ---
 
-_Issue opened by @RensDimmendaal on 2025-03-19 13:38_
+_@RensDimmendaal_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/script-http
 created_at: 2025-11-29T01:44:38Z
 updated_at: 2025-12-02T23:45:11Z
 url: https://github.com/astral-sh/uv/pull/16891
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Allow reading requirements from scripts with HTTP(S) paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-29 01:44_
+_@charliermarsh_
 
 ## Summary
 

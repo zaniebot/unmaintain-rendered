@@ -13,14 +13,14 @@ head: charlie/emit
 created_at: 2024-11-20T18:39:01Z
 updated_at: 2024-11-20T19:10:33Z
 url: https://github.com/astral-sh/uv/pull/9288
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Strip `--index` and `--default-index` from command header
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 18:39_
+_@charliermarsh_
 
 ## Summary
 

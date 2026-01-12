@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T23:33:20Z
 updated_at: 2024-10-03T17:38:08Z
 url: https://github.com/astral-sh/ruff/issues/13321
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # find_ruff_bin does not work as a build dependency with pip
 
 ---
 
-_Issue opened by @gaborbernat on 2024-09-10 23:33_
+_@gaborbernat_
 
 See reproducible at https://github.com/gaborbernat/ruff-find-bin-during-pip-build/actions/runs/10802198412/job/29963805989
 

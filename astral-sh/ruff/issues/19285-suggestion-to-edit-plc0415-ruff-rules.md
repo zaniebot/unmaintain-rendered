@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T13:30:56Z
 updated_at: 2025-07-14T07:50:29Z
 url: https://github.com/astral-sh/ruff/issues/19285
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Suggestion to edit #PLC0415 ruff rules
 
 ---
 
-_Issue opened by @lighting9999 on 2025-07-11 13:30_
+_@lighting9999_
 
 ### Summary
 

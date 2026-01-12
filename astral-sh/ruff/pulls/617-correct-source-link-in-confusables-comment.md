@@ -12,14 +12,14 @@ head: confusables-link
 created_at: 2022-11-06T00:28:17Z
 updated_at: 2022-11-20T01:59:33Z
 url: https://github.com/astral-sh/ruff/pull/617
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Correct source link in CONFUSABLES comment
 
 ---
 
-_Pull request opened by @andersk on 2022-11-06 00:28_
+_@andersk_
 
 _No description provided._
 

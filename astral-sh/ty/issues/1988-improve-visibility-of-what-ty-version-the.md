@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T08:49:55Z
 updated_at: 2026-01-12T09:25:20Z
 url: https://github.com/astral-sh/ty/issues/1988
-synced_at: 2026-01-12T09:56:37Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve visibility of what ty version the extension is using
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-17 08:49_
+_@MichaReiser_
 
 A common issue is that the extension uses a much older ty version than the bundled version without users noticing. Can we make it easier for users to notice when the extension uses the wrong ty version? Should we show the version in the status bar? Can we improve the ty discovery?
 

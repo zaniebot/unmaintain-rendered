@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-29T16:05:25Z
 updated_at: 2022-12-29T18:32:08Z
 url: https://github.com/astral-sh/ruff/issues/1439
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Subsequent runs with --diff give no result
 
 ---
 
-_Issue opened by @rhkleijn on 2022-12-29 16:05_
+_@rhkleijn_
 
 I tried the new `--diff` functionality from #1430 / #1431 and found that it works nicely on the first run, but subsequent runs give no result.
 To reproduce:

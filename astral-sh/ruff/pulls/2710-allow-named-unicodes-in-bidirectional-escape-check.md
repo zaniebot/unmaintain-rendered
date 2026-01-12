@@ -12,14 +12,14 @@ head: charlie/bidi
 created_at: 2023-02-10T04:29:02Z
 updated_at: 2023-02-11T06:22:05Z
 url: https://github.com/astral-sh/ruff/pull/2710
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Allow named unicodes in bidirectional escape check
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 04:29_
+_@charliermarsh_
 
 Closes #2679.
 

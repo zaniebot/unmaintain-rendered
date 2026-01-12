@@ -13,14 +13,14 @@ head: charlie/target
 created_at: 2024-11-22T20:55:24Z
 updated_at: 2024-11-22T22:06:44Z
 url: https://github.com/astral-sh/uv/pull/9371
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Allow system Python discovery with `--target` and `--prefix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-22 20:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/is-metaclass
 created_at: 2023-11-12T22:55:01Z
 updated_at: 2023-11-13T00:47:49Z
 url: https://github.com/astral-sh/ruff/pull/8639
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid recommending Self usages in metaclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-12 22:55_
+_@charliermarsh_
 
 PEP 673 forbids the use of `typing(_extensions).Self` in metaclasses, so we want to avoid flagging `PYI034` on metaclasses. This is based on an analogous change in `flake8-pyi`: https://github.com/PyCQA/flake8-pyi/pull/436.
 

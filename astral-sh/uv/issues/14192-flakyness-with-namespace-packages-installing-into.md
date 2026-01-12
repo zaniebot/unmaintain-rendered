@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T18:52:16Z
 updated_at: 2025-06-21T19:44:48Z
 url: https://github.com/astral-sh/uv/issues/14192
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Flakyness with namespace packages installing into overlapping directories
 
 ---
 
-_Issue opened by @amotl on 2025-06-21 18:52_
+_@amotl_
 
 ### Problem
 We are observing a spurious flakyness across CI matrix slots when switching from vanilla `pip install` to `uv pip install`, around the installation of the [testcontainers](https://pypi.org/project/testcontainers/) package, for example together with its auxilliary [testcontainers-azurite](https://pypi.org/project/testcontainers-azurite/) package.

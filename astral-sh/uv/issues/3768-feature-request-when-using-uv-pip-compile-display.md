@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T20:11:09Z
 updated_at: 2024-05-22T21:21:38Z
 url: https://github.com/astral-sh/uv/issues/3768
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Feature request: When using `uv pip compile` display yank message on selecting a yanked package
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-22 20:11_
+_@notatallshaw-gts_
 
 Follow up to https://github.com/astral-sh/uv/issues/3703 to also add to `uv pip compile`, useful warning when compiling requirements,
 

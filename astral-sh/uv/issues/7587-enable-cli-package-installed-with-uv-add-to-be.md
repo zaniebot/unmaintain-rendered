@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T15:04:21Z
 updated_at: 2024-09-27T12:03:16Z
 url: https://github.com/astral-sh/uv/issues/7587
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Enable CLI package installed with `uv add` to be accessed from the virtual env
 
 ---
 
-_Issue opened by @PatrickAlphaC on 2024-09-20 15:04_
+_@PatrickAlphaC_
 
 Let's say I add the following package that is a CLI:
 

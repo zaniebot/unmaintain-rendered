@@ -13,14 +13,14 @@ head: charlie/sig
 created_at: 2023-09-06T11:57:50Z
 updated_at: 2023-09-06T12:12:06Z
 url: https://github.com/astral-sh/ruff/pull/7186
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Restructure signatures of `flake8_comprehensions` fixers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-06 11:57_
+_@charliermarsh_
 
 The `expr` should always be first, with any "global" structs like the locator and semantic model coming last. (No behavior changes, just changing the order of arguments.)
 

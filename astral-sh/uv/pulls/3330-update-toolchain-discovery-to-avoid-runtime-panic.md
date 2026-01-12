@@ -13,14 +13,14 @@ head: zb/toolchain-panic
 created_at: 2024-05-01T17:27:17Z
 updated_at: 2024-05-02T11:44:17Z
 url: https://github.com/astral-sh/uv/pull/3330
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Update toolchain discovery to avoid runtime panic
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-01 17:27_
+_@zanieb_
 
 Split out of https://github.com/astral-sh/uv/pull/3266
 

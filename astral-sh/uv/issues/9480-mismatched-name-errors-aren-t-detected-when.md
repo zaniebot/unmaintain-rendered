@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T17:32:34Z
 updated_at: 2024-11-27T21:51:02Z
 url: https://github.com/astral-sh/uv/issues/9480
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Mismatched name errors aren't detected when builds are cached
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-27 17:32_
+_@charliermarsh_
 
 Given:
 

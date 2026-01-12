@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-07T18:33:04Z
 updated_at: 2025-11-07T20:27:47Z
 url: https://github.com/astral-sh/ruff/issues/21324
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Using `pathlib.Path`'s `__truediv__` method on `os.environ["HOMEDRIVE"]` and `os.environ["SystemDrive"]` leads to undesired behavior
 
 ---
 
-_Issue opened by @swaldhoer on 2025-11-07 18:33_
+_@swaldhoer_
 
 ### Summary
 

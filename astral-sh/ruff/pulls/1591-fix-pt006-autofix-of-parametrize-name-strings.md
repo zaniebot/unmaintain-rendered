@@ -12,14 +12,14 @@ head: pt006-whitespace
 created_at: 2023-01-03T10:08:53Z
 updated_at: 2023-01-03T13:12:09Z
 url: https://github.com/astral-sh/ruff/pull/1591
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix PT006 autofix of parametrize name strings like `'   first, ,  second  '`
 
 ---
 
-_Pull request opened by @bluetech on 2023-01-03 10:08_
+_@bluetech_
 
 pytest trims and ignores empty names.
 

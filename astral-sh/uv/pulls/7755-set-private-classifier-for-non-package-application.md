@@ -11,14 +11,14 @@ head: private-classifier
 created_at: 2024-09-28T10:07:44Z
 updated_at: 2024-10-13T09:13:56Z
 url: https://github.com/astral-sh/uv/pull/7755
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Set private classifier for non-package application
 
 ---
 
-_Pull request opened by @j178 on 2024-09-28 10:07_
+_@j178_
 
 ## Summary
 

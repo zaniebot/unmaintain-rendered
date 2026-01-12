@@ -13,14 +13,14 @@ head: charlie/bind
 created_at: 2023-07-15T18:54:56Z
 updated_at: 2023-07-15T19:28:57Z
 url: https://github.com/astral-sh/ruff/pull/5783
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Lift `Expr::Subscript` value visit out of branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 18:54_
+_@charliermarsh_
 
 Like #5772, but for subscripts.
 

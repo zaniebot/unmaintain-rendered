@@ -12,14 +12,14 @@ head: charlie/overridden
 created_at: 2023-01-26T19:45:17Z
 updated_at: 2023-01-26T19:46:47Z
 url: https://github.com/astral-sh/ruff/pull/2217
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove unused overridden property
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-26 19:45_
+_@charliermarsh_
 
 _No description provided._
 

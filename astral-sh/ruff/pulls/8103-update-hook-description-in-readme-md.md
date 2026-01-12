@@ -12,14 +12,14 @@ head: sa/update-precommit-hooks-in-readme
 created_at: 2023-10-21T10:12:24Z
 updated_at: 2023-10-21T15:56:20Z
 url: https://github.com/astral-sh/ruff/pull/8103
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update hook description in README.md
 
 ---
 
-_Pull request opened by @Cjkjvfnby on 2023-10-21 10:12_
+_@Cjkjvfnby_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/cargo-bin
 created_at: 2024-11-08T13:15:59Z
 updated_at: 2024-11-08T13:29:34Z
 url: https://github.com/astral-sh/uv/pull/8936
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Remove some missed references to `~/.cargo/bin`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 13:15_
+_@zanieb_
 
 _No description provided._
 

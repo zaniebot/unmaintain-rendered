@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-13T07:05:13Z
 updated_at: 2023-06-13T18:32:58Z
 url: https://github.com/astral-sh/ruff/issues/5043
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF008 false positive on class variable
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-06-13 07:05_
+_@hauntsaninja_
 
 ```
 λ cat xyz.py

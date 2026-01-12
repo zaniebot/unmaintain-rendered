@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-26T01:28:07Z
 updated_at: 2025-08-26T14:31:35Z
 url: https://github.com/astral-sh/ruff/issues/20092
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule to Restrict Imports for Specific Modules by Other Specific Modules
 
 ---
 
-_Issue opened by @Ykrej on 2025-08-26 01:28_
+_@Ykrej_
 
 ### Summary
 

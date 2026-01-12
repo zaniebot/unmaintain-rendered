@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-08T11:20:07Z
 updated_at: 2024-09-12T00:21:44Z
 url: https://github.com/astral-sh/ruff/issues/13282
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # # ruff: noqa: PTH is not working
 
 ---
 
-_Issue opened by @jolaf on 2024-09-08 11:20_
+_@jolaf_
 
 I have a large old module using `os.path` API.
 I'm not ready to convert to `pathlib` yet.

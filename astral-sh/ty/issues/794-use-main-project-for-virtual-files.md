@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T20:23:30Z
 updated_at: 2025-07-15T06:57:21Z
 url: https://github.com/astral-sh/ty/issues/794
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Use main project for virtual files
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-09 20:23_
+_@MichaReiser_
 
 We currently always use the default project for virtual files. That's unlikely what the user expects. Instead, we should use the primary workspace and project. How we define primary is up for debate: the easiest is if there's a single workspace with a single project, we should then use those. It's less clear what the right heuristics are if there are multiple workspaces or projects. We can either use the default in those cases or always use the outer most project and workspace
 

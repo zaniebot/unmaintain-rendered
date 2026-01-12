@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T13:38:40Z
 updated_at: 2024-09-04T14:26:33Z
 url: https://github.com/astral-sh/uv/issues/7018
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Feature request: lockfile import
 
 ---
 
-_Issue opened by @Kobzol on 2024-09-04 13:38_
+_@Kobzol_
 
 Hi, thank you for an awesome package management tool! :) I have a suggestion for a feature that I would appreciate very much when porting existing projects to `uv`.
 

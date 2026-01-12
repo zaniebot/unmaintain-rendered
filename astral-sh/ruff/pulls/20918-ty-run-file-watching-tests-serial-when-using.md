@@ -14,14 +14,14 @@ head: configure-nextest-sequential
 created_at: 2025-10-16T12:12:42Z
 updated_at: 2025-10-16T14:08:39Z
 url: https://github.com/astral-sh/ruff/pull/20918
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Run file watching tests serial when using nextest
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-16 12:12_
+_@MichaReiser_
 
 ## Summary
 

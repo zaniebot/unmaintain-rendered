@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T21:25:27Z
 updated_at: 2022-12-08T21:26:48Z
 url: https://github.com/astral-sh/ruff/issues/1146
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Pattern matching
 
 ---
 
-_Issue opened by @jgsimard on 2022-12-08 21:25_
+_@jgsimard_
 
 Hi, 
 do you plan to support pattern matching as introduced in 3.10 ? I get 

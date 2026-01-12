@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T06:58:10Z
 updated_at: 2024-08-24T07:49:50Z
 url: https://github.com/astral-sh/uv/issues/6246
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `implementation` parameter from `pip install` missing in `uv pip install / compile`
 
 ---
 
-_Issue opened by @schlamar on 2024-08-20 06:58_
+_@schlamar_
 
 Follow up of #6198
 

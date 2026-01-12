@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-09-01T16:34:31Z
 updated_at: 2016-09-06T12:30:13Z
 url: https://github.com/clap-rs/clap/issues/643
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # ColoredHelp global_setting only goes one level deep
 
 ---
 
-_Issue opened by @clux on 2016-09-01 16:34_
+_@clux_
 
 Similar to #519 - but now on clap 2.11.0.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-23T07:35:08Z
 updated_at: 2020-04-23T08:03:31Z
 url: https://github.com/clap-rs/clap/issues/1854
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Yaml has security issue
 
 ---
 
-_Issue opened by @yaa110 on 2020-04-23 07:35_
+_@yaa110_
 
 ```
 ID:       RUSTSEC-2018-0006

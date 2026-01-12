@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-23T12:42:45Z
 updated_at: 2024-12-27T20:54:50Z
 url: https://github.com/astral-sh/ruff/issues/8145
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add option to mark test file paths for `flake8-pytest-style`
 
 ---
 
-_Issue opened by @a-recknagel on 2023-10-23 12:42_
+_@a-recknagel_
 
 I don't want to run any linters for my test code, except for `flake8-pytest-style`. It would be nice if I could give it the path(s) to the test files somehow, so that I don't need to have two distinct configurations for running `ruff`.
 

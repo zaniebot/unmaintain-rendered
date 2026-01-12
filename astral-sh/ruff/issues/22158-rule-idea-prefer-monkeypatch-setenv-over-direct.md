@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T09:46:23Z
 updated_at: 2025-12-23T14:20:18Z
 url: https://github.com/astral-sh/ruff/issues/22158
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rule idea: Prefer `monkeypatch.setenv` over direct `os.environ` mutation in tests
 
 ---
 
-_Issue opened by @harupy on 2025-12-23 09:46_
+_@harupy_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/u009
 created_at: 2022-11-26T19:03:01Z
 updated_at: 2022-11-26T19:03:18Z
 url: https://github.com/astral-sh/ruff/pull/917
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Respect noqa comments in U009
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-26 19:03_
+_@charliermarsh_
 
 _No description provided._
 

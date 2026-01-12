@@ -13,14 +13,14 @@ head: charlie/post
 created_at: 2025-11-28T14:04:33Z
 updated_at: 2025-11-28T14:50:50Z
 url: https://github.com/astral-sh/uv/pull/16881
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Allow earlier post releases with exclusive ordering
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 14:04_
+_@charliermarsh_
 
 ## Summary
 

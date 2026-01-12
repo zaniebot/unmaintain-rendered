@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T21:29:12Z
 updated_at: 2025-05-25T17:16:20Z
 url: https://github.com/astral-sh/ruff/issues/18292
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # YTT201 diagnostic is wrong when the expression uses `!=`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-24 21:29_
+_@dscorbett_
 
 ### Summary
 

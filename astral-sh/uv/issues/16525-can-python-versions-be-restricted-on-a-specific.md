@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T21:53:31Z
 updated_at: 2025-11-01T20:26:04Z
 url: https://github.com/astral-sh/uv/issues/16525
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Can python versions be restricted on a specific sys_platform?
 
 ---
 
-_Issue opened by @mhicks-cfs on 2025-10-30 21:53_
+_@mhicks-cfs_
 
 ### Question
 

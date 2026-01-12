@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-02-02T19:31:57Z
 updated_at: 2025-02-04T09:05:42Z
 url: https://github.com/astral-sh/ruff/pull/15883
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # nit: docs for ignore & select
 
 ---
 
-_Pull request opened by @anordin95 on 2025-02-02 19:31_
+_@anordin95_
 
 ## Clarity for ignore & select when the same prefix is in both
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T13:37:47Z
 updated_at: 2024-08-28T18:08:42Z
 url: https://github.com/astral-sh/uv/issues/6434
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Is there a setting similar to the `package-mode` in poetry?
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-08-22 13:37_
+_@pythonweb2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

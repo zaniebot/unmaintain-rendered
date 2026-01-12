@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T14:35:51Z
 updated_at: 2024-11-23T11:48:27Z
 url: https://github.com/astral-sh/uv/issues/8094
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Add frozen config in settings
 
 ---
 
-_Issue opened by @ygorpontelo on 2024-10-10 14:35_
+_@ygorpontelo_
 
 uv is an excellent project, thanks for developing it!
 

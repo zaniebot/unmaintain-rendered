@@ -13,14 +13,14 @@ head: tk/pip-compile-missing-py
 created_at: 2025-12-22T15:39:20Z
 updated_at: 2025-12-22T16:29:51Z
 url: https://github.com/astral-sh/uv/pull/17216
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Allow `uv pip compile` to install missing python interpreters in cases where it would otherwise fail
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-22 15:39_
+_@EliteTK_
 
 ## Summary
 

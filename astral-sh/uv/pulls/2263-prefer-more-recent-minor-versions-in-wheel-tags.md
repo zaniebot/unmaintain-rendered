@@ -13,14 +13,14 @@ head: charlie/ver
 created_at: 2024-03-07T04:46:25Z
 updated_at: 2024-03-07T14:04:56Z
 url: https://github.com/astral-sh/uv/pull/2263
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Prefer more recent minor versions in wheel tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 04:46_
+_@charliermarsh_
 
 ## Summary
 

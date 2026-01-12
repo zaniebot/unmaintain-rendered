@@ -13,14 +13,14 @@ head: redknot.attrchain
 created_at: 2024-05-14T00:56:28Z
 updated_at: 2024-05-28T20:13:05Z
 url: https://github.com/astral-sh/ruff/pull/11416
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [redknot] add module type and attribute lookup for some types
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-14 00:56_
+_@plredmond_
 
 * Add a module type, `ModuleTypeId`
 * Add an attribute lookup method `get_member` for `Type`

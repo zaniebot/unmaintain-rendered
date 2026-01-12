@@ -13,14 +13,14 @@ head: charlie/slf
 created_at: 2023-08-11T00:43:00Z
 updated_at: 2023-08-11T01:18:30Z
 url: https://github.com/astral-sh/ruff/pull/6490
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Allow `os._exit` accesses in `SLF001`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 00:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6483.
 

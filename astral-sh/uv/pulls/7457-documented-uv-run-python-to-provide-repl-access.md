@@ -12,14 +12,14 @@ head: docs/clarify-uv-run-python-repl
 created_at: 2024-09-17T13:18:43Z
 updated_at: 2025-09-11T22:52:37Z
 url: https://github.com/astral-sh/uv/pull/7457
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Documented uv run python to Provide REPL Access
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-17 13:18_
+_@Aditya-PS-05_
 
 closes #6548
 

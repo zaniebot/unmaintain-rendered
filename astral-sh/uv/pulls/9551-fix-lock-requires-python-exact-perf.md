@@ -13,14 +13,14 @@ head: konsti/fix-lock_requires_python_exact
 created_at: 2024-12-01T11:00:10Z
 updated_at: 2024-12-04T14:17:22Z
 url: https://github.com/astral-sh/uv/pull/9551
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Fix lock_requires_python_exact perf
 
 ---
 
-_Pull request opened by @konstin on 2024-12-01 11:00_
+_@konstin_
 
 When running `lock_requires_python_exact`, we would download CPython 3.12.0 each time. By instead downloading CPython 3.13.0 ahead of time and passing it in, we speed the test up and avoid timeouts. Locally in pycharm, the test goes from 6.5s to 500ms.
 

@@ -13,14 +13,14 @@ head: micha/refactors-air302
 created_at: 2024-12-20T07:31:51Z
 updated_at: 2024-12-20T07:40:52Z
 url: https://github.com/astral-sh/ruff/pull/15075
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Use `&'static str` for `Replacement`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 07:31_
+_@MichaReiser_
 
 ## Summary
 

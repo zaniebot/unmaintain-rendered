@@ -13,14 +13,14 @@ head: cjm/deferred-panic
 created_at: 2024-09-02T02:14:12Z
 updated_at: 2024-09-03T18:20:45Z
 url: https://github.com/astral-sh/ruff/pull/13204
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] fix scope inference with deferred types
 
 ---
 
-_Pull request opened by @carljm on 2024-09-02 02:14_
+_@carljm_
 
 Test coverage for #13131 wasn't as good as I thought it was, because although we infer a lot of types in stubs in typeshed, we don't check typeshed, and therefore we don't do scope-level inference and pull all types for a scope. So we didn't really have good test coverage for scope-level inference in a stub. And because of this, I got the code for supporting that wrong, meaning that if we did scope-level inference with deferred types, we'd end up never populating the deferred types in the scope's `TypeInference`, which causes panics like #13160.
 

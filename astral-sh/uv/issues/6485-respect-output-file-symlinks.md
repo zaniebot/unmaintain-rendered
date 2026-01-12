@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T02:25:32Z
 updated_at: 2024-08-23T03:09:47Z
 url: https://github.com/astral-sh/uv/issues/6485
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Respect output-file symlinks
 
 ---
 
-_Issue opened by @dpoznik on 2024-08-23 02:25_
+_@dpoznik_
 
 `uv 0.2.36` respected output-file symlinks, whereas `uv 0.3.1` does not.
 

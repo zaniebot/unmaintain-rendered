@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T10:33:52Z
 updated_at: 2025-08-30T22:43:40Z
 url: https://github.com/astral-sh/uv/issues/15104
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Is uv cache clean thread-safe / process-safe?
 
 ---
 
-_Issue opened by @mil-ad on 2025-08-06 10:33_
+_@mil-ad_
 
 ### Question
 

@@ -15,14 +15,14 @@ head: konsti/better-cache-dir-errors
 created_at: 2024-04-29T10:32:31Z
 updated_at: 2024-04-29T14:33:11Z
 url: https://github.com/astral-sh/uv/pull/3304
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Use fs_err for cachedir errors
 
 ---
 
-_Pull request opened by @konstin on 2024-04-29 10:32_
+_@konstin_
 
 When running
 

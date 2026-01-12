@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T12:07:53Z
 updated_at: 2025-12-09T13:06:21Z
 url: https://github.com/astral-sh/ruff/issues/21863
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Disagreement with isort
 
 ---
 
-_Issue opened by @thmo on 2025-12-09 12:07_
+_@thmo_
 
 ### Summary
 

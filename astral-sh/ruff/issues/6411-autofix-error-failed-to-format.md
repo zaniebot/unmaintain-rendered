@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-08T01:42:32Z
 updated_at: 2023-08-08T01:45:11Z
 url: https://github.com/astral-sh/ruff/issues/6411
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Autofix error] Failed to format
 
 ---
 
-_Issue opened by @gaborbernat on 2023-08-08 01:42_
+_@gaborbernat_
 
 ```
 from __future__ import annotations

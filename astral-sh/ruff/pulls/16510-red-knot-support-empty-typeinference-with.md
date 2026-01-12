@@ -13,14 +13,14 @@ head: cjm/fallbackty
 created_at: 2025-03-05T00:14:31Z
 updated_at: 2025-03-05T17:12:28Z
 url: https://github.com/astral-sh/ruff/pull/16510
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] support empty TypeInference with fallback type
 
 ---
 
-_Pull request opened by @carljm on 2025-03-05 00:14_
+_@carljm_
 
 This is split out of https://github.com/astral-sh/ruff/pull/14029, to reduce the size of that PR, and to validate that this "fallback type" support in `TypeInference` doesn't come with a performance cost. It also improves the reliability and debuggability of our current (temporary) cycle handling.
 

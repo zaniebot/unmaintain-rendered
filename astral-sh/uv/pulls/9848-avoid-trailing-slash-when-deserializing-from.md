@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2024-12-12T18:35:18Z
 updated_at: 2024-12-12T18:49:06Z
 url: https://github.com/astral-sh/uv/pull/9848
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Avoid trailing slash when deserializing from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-12 18:35_
+_@charliermarsh_
 
 ## Summary
 

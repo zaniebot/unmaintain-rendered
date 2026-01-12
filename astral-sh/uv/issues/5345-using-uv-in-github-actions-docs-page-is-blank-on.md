@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T16:34:49Z
 updated_at: 2024-07-23T16:37:58Z
 url: https://github.com/astral-sh/uv/issues/5345
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `Using uv in GitHub Actions` docs page is blank on website
 
 ---
 
-_Issue opened by @schloerke on 2024-07-23 16:34_
+_@schloerke_
 
 Source file with a lot of content: https://github.com/astral-sh/uv/blob/0f8186d9adde63be0b8ff4af28b5adb2f287374b/docs/guides/integration/github.md
 

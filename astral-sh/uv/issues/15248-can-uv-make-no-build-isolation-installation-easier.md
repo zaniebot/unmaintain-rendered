@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T03:03:23Z
 updated_at: 2025-08-18T21:15:37Z
 url: https://github.com/astral-sh/uv/issues/15248
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Can `uv` make `no-build-isolation` installation easier?
 
 ---
 
-_Issue opened by @sidmadala on 2025-08-13 03:03_
+_@sidmadala_
 
 ### Summary
 

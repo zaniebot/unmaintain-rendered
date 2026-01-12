@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T16:26:36Z
 updated_at: 2025-05-29T16:47:51Z
 url: https://github.com/astral-sh/ruff/issues/18375
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP036 doesn't work for ternary expressions
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-29 16:26_
+_@Andrej730_
 
 ### Summary
 

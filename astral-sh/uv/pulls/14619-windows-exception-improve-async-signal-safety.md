@@ -12,14 +12,14 @@ head: geofft/windows-exception-async-signal-safe
 created_at: 2025-07-14T23:24:53Z
 updated_at: 2025-07-17T01:39:22Z
 url: https://github.com/astral-sh/uv/pull/14619
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # windows_exception: Improve async signal safety
 
 ---
 
-_Pull request opened by @geofft on 2025-07-14 23:24_
+_@geofft_
 
 It's not as bad as I feared to bypass libsys's stderr. (There's still a lock in libsys's backtrace, which might also not be too bad to bypass.)
 

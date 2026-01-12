@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-04-27T16:34:38Z
 updated_at: 2020-02-01T14:21:25Z
 url: https://github.com/clap-rs/clap/issues/1459
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Howto enhance subcommand/USAGE message?
 
 ---
 
-_Issue opened by @spooch on 2019-04-27 16:34_
+_@spooch_
 
 Hi,
 Im trying to use clap for a cli-tool like git with two subcommands. The first one is the target, which I want to edit, the second is the action type (like "create" "remove" etc.).

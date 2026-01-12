@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-27T18:00:11Z
 updated_at: 2024-12-27T18:43:03Z
 url: https://github.com/astral-sh/uv/pull/10205
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # fix: typo in uv main
 
 ---
 
-_Pull request opened by @domenicocinque on 2024-12-27 18:00_
+_@domenicocinque_
 
 ## Summary
 

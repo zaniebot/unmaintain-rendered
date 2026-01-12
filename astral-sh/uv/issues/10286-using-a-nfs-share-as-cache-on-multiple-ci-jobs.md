@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T14:01:16Z
 updated_at: 2025-01-03T16:59:59Z
 url: https://github.com/astral-sh/uv/issues/10286
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Using a NFS share as cache on multiple CI jobs results in lock timeouts
 
 ---
 
-_Issue opened by @RonNabuurs on 2025-01-03 14:01_
+_@RonNabuurs_
 
 # Goal
 I want to reduce network usage on my local runners and increase performance. 

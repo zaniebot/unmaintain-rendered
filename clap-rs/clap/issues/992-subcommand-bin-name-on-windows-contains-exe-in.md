@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-06-30T18:45:39Z
 updated_at: 2022-12-26T18:26:54Z
 url: https://github.com/clap-rs/clap/issues/992
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Subcommand bin_name on Windows contains ".exe" in the middle instead of at the end (or not at all)
 
 ---
 
-_Issue opened by @Arnavion on 2017-06-30 18:45_
+_@Arnavion_
 
 ### Rust Version
 

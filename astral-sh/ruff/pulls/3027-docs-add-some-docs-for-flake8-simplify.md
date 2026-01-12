@@ -13,14 +13,14 @@ head: rules-docs
 created_at: 2023-02-19T09:10:17Z
 updated_at: 2023-02-19T14:51:14Z
 url: https://github.com/astral-sh/ruff/pull/3027
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [docs] Add some docs for `flake8-simplify`
 
 ---
 
-_Pull request opened by @thatlittleboy on 2023-02-19 09:10_
+_@thatlittleboy_
 
 Added docs for rules SIM101 and SIM117.
 

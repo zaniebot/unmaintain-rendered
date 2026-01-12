@@ -13,14 +13,14 @@ head: update-links
 created_at: 2023-06-08T04:00:50Z
 updated_at: 2023-06-08T15:43:45Z
 url: https://github.com/astral-sh/ruff/pull/4949
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Update links to point to Astral org
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-08 04:00_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T11:41:01Z
 updated_at: 2025-09-05T11:53:50Z
 url: https://github.com/astral-sh/ty/issues/1120
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support "egglog" project layout
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-03 11:41_
+_@sharkdp_
 
 The [egglog-python](https://github.com/egraphs-good/egglog-python) project uses a layout where the Python source code is kept under `python/egglog` and tests are under `python/tests`. We can simulate this layout using something like
 

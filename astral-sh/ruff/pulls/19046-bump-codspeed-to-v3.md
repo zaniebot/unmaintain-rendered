@@ -13,14 +13,14 @@ head: chore/bump-codspeed
 created_at: 2025-06-30T11:52:15Z
 updated_at: 2025-06-30T14:14:58Z
 url: https://github.com/astral-sh/ruff/pull/19046
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # Bump CodSpeed to v3
 
 ---
 
-_Pull request opened by @adriencaccia on 2025-06-30 11:52_
+_@adriencaccia_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix-Message.cmp
 created_at: 2022-09-11T05:23:29Z
 updated_at: 2022-09-11T14:18:27Z
 url: https://github.com/astral-sh/ruff/pull/152
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix `Message.cmp`
 
 ---
 
-_Pull request opened by @harupy on 2022-09-11 05:23_
+_@harupy_
 
 Fix `Message.cmp`, which currently compares `self.location.column()` and `self.location.column()`.
 

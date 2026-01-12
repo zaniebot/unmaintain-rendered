@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T12:33:02Z
 updated_at: 2025-12-03T15:25:35Z
 url: https://github.com/astral-sh/uv/issues/11883
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Add sizes option to the tree command
 
 ---
 
-_Issue opened by @pablofueros on 2025-03-01 12:33_
+_@pablofueros_
 
 ### Summary
 

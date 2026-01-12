@@ -12,14 +12,14 @@ head: charlie/show
 created_at: 2022-09-21T18:47:22Z
 updated_at: 2022-09-21T19:08:51Z
 url: https://github.com/astral-sh/ruff/pull/246
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement --show-settings and --show-files
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-21 18:47_
+_@charliermarsh_
 
 Resolves #231.
 

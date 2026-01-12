@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T13:58:12Z
 updated_at: 2024-10-23T18:51:35Z
 url: https://github.com/astral-sh/ruff/issues/13893
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Type narrowing for `isinstance` tests
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-23 13:58_
+_@sharkdp_
 
 Part of #13694. Add type narrowing for `isinstance(object, classinfo)` tests.
 

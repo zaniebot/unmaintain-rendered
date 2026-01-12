@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T10:19:30Z
 updated_at: 2023-01-27T16:25:46Z
 url: https://github.com/astral-sh/ruff/issues/2247
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F401 false positive
 
 ---
 
-_Issue opened by @dalcinl on 2023-01-27 10:19_
+_@dalcinl_
 
 I have typing stub files like the following minimal reproducer (original code [here](https://github.com/mpi4py/mpi4py/blob/master/src/mpi4py/futures/_core.pyi#L2) ):
 

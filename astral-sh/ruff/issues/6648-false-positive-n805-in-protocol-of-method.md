@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T10:52:17Z
 updated_at: 2023-09-07T08:50:14Z
 url: https://github.com/astral-sh/ruff/issues/6648
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False-positive N805 in `Protocol` of method
 
 ---
 
-_Issue opened by @bersbersbers on 2023-08-17 10:52_
+_@bersbersbers_
 
 ```python
 from typing import Protocol

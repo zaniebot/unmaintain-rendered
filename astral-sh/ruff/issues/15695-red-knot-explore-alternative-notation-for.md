@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-23T17:15:00Z
 updated_at: 2025-02-04T07:27:18Z
 url: https://github.com/astral-sh/ruff/issues/15695
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Explore alternative notation for declaring file names in mdtests
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-23 17:15_
+_@MichaReiser_
 
 ### Description
 

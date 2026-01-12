@@ -13,14 +13,14 @@ head: charlie/dot
 created_at: 2023-09-14T18:16:43Z
 updated_at: 2023-09-14T18:35:48Z
 url: https://github.com/astral-sh/ruff/pull/7391
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use dot references in docs for methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 18:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ assignees: []
 created_at: 2017-01-14T02:17:59Z
 updated_at: 2025-09-16T18:43:57Z
 url: https://github.com/clap-rs/clap/issues/815
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for automatic negation flags
 
 ---
 
-_Issue opened by @kbknapp on 2017-01-14 02:17_
+_@kbknapp_
 
 Add a way to automatically generate flags that override (or negate) other flags. This can be done manually already, but doing so for an entire CLI can be tedious, painful, and error prone. Manually doing so will also pollute the `--help` output.
 

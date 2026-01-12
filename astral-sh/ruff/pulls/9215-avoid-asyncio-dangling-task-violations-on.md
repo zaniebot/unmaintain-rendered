@@ -13,14 +13,14 @@ head: charlie/defer
 created_at: 2023-12-20T16:57:42Z
 updated_at: 2023-12-20T17:10:21Z
 url: https://github.com/astral-sh/ruff/pull/9215
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid `asyncio-dangling-task` violations on shadowed bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 16:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T16:29:57Z
 updated_at: 2025-06-26T16:30:23Z
 url: https://github.com/astral-sh/uv/issues/14283
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Rust cache restore times out after 10m
 
 ---
 
-_Issue opened by @zanieb on 2025-06-26 16:29_
+_@zanieb_
 
 e.g., https://github.com/astral-sh/uv/actions/runs/15906868894/job/44864007951
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-15T15:55:32Z
 updated_at: 2025-12-30T02:22:18Z
 url: https://github.com/astral-sh/ty/issues/1891
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Allow to disable a specific rule for a whole file
 
 ---
 
-_Issue opened by @lypwig on 2025-12-15 15:55_
+_@lypwig_
 
 ### Summary
 

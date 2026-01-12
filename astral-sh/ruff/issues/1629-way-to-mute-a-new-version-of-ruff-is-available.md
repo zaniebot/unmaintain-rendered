@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-04T12:44:12Z
 updated_at: 2023-01-04T12:54:32Z
 url: https://github.com/astral-sh/ruff/issues/1629
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Way to mute `A new version of ruff is available:` warning
 
 ---
 
-_Issue opened by @samuelcolvin on 2023-01-04 12:44_
+_@samuelcolvin_
 
 Ruff is moving very fast which is great, but it means it's virtually impossible to reliably use the latest version.
 

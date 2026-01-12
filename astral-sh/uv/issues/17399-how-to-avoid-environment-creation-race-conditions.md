@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T00:30:58Z
 updated_at: 2026-01-12T11:34:57Z
 url: https://github.com/astral-sh/uv/issues/17399
-synced_at: 2026-01-12T11:55:21Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # How to avoid environment creation race conditions?
 
 ---
 
-_Issue opened by @colobas on 2026-01-10 00:30_
+_@colobas_
 
 ### Question
 

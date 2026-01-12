@@ -12,14 +12,14 @@ head: consider-merging-isinstance
 created_at: 2022-12-03T08:49:20Z
 updated_at: 2022-12-03T21:51:54Z
 url: https://github.com/astral-sh/ruff/pull/1009
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement `consider-merging-isinstance`
 
 ---
 
-_Pull request opened by @harupy on 2022-12-03 08:49_
+_@harupy_
 
 #970
 

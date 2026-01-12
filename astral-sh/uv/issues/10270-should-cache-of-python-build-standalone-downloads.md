@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T10:07:34Z
 updated_at: 2025-01-03T15:38:46Z
 url: https://github.com/astral-sh/uv/issues/10270
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Should cache of `python-build-standalone` downloads be invalidated?
 
 ---
 
-_Issue opened by @tpgillam on 2025-01-02 10:07_
+_@tpgillam_
 
 Context: I was wondering whether https://github.com/astral-sh/python-build-standalone/pull/421 might have helped with https://github.com/astral-sh/uv/issues/6893 (answer: 'no'). This required me knowing which build of python-build-standalone I was using.
 

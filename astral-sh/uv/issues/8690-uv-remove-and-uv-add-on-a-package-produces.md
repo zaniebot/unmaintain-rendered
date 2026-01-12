@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-29T22:16:12Z
 updated_at: 2024-10-31T14:25:23Z
 url: https://github.com/astral-sh/uv/issues/8690
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # uv remove and uv add on a package produces missing `RECORD` file error on `dist-info` folder
 
 ---
 
-_Issue opened by @akozlu on 2024-10-29 22:16_
+_@akozlu_
 
 Hey team, experiencing an issue w.r.t. `uv remove` and then `uv add` operations, was looking for direction/wondering if there's a known fix. One similar closed issue I found is this one: https://github.com/astral-sh/uv/issues/1525
 

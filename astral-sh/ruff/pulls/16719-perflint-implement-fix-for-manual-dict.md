@@ -14,14 +14,14 @@ head: perf403_fix
 created_at: 2025-03-14T03:53:39Z
 updated_at: 2025-04-19T15:17:25Z
 url: https://github.com/astral-sh/ruff/pull/16719
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`perflint`] Implement fix for `manual-dict-comprehension` (`PERF403`)
 
 ---
 
-_Pull request opened by @w0nder1ng on 2025-03-14 03:53_
+_@w0nder1ng_
 
 ## Summary
 

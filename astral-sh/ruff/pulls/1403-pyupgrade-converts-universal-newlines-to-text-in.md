@@ -12,14 +12,14 @@ head: un_nl_to_txt
 created_at: 2022-12-27T13:43:34Z
 updated_at: 2022-12-27T23:30:38Z
 url: https://github.com/astral-sh/ruff/pull/1403
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Pyupgrade: converts `universal_newlines` to `text` in `subprocess.run`
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-27 13:43_
+_@colin99d_
 
 A part of #827.
 

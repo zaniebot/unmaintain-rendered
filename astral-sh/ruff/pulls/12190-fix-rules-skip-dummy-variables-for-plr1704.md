@@ -13,14 +13,14 @@ head: fix/issue-12157
 created_at: 2024-07-04T18:32:54Z
 updated_at: 2024-07-05T13:06:01Z
 url: https://github.com/astral-sh/ruff/pull/12190
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # fix(rules): skip dummy variables for `PLR1704`
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-04 18:32_
+_@mkniewallner_
 
 ## Summary
 

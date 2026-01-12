@@ -13,14 +13,14 @@ head: fix-19655
 created_at: 2025-09-23T02:51:14Z
 updated_at: 2025-09-23T13:15:44Z
 url: https://github.com/astral-sh/ruff/pull/20527
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`playground`] Allow hover quick fixes to appear for overlapping diagnostics
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-23 02:51_
+_@danparizher_
 
 ## Summary
 

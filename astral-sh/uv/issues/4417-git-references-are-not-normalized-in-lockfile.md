@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-19T18:18:58Z
 updated_at: 2024-07-28T00:42:01Z
 url: https://github.com/astral-sh/uv/issues/4417
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Git references are not normalized in lockfile
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-19 18:18_
+_@ibraheemdev_
 
 The lockfile currently differentiates between identical Git references depending on how they are declared. For example:
 

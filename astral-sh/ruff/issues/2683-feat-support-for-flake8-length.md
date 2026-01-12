@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T05:27:45Z
 updated_at: 2023-02-09T16:10:03Z
 url: https://github.com/astral-sh/ruff/issues/2683
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # feat: support for `flake8-length`
 
 ---
 
-_Issue opened by @aarnphm on 2023-02-09 05:27_
+_@aarnphm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

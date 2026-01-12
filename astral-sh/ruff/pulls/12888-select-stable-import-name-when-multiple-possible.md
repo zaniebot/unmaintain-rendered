@@ -13,14 +13,14 @@ head: stable-import-fix
 created_at: 2024-08-14T09:41:54Z
 updated_at: 2024-08-16T18:16:59Z
 url: https://github.com/astral-sh/ruff/pull/12888
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Select stable import name when multiple possible bindings are in scope
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-14 09:41_
+_@MichaReiser_
 
 ## Summary
 

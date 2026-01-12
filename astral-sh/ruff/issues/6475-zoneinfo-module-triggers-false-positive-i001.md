@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T09:35:42Z
 updated_at: 2023-08-10T14:05:14Z
 url: https://github.com/astral-sh/ruff/issues/6475
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # zoneinfo module triggers false positive I001
 
 ---
 
-_Issue opened by @Atilla on 2023-08-10 09:35_
+_@Atilla_
 
 Ruff considers the python stdlib module `zoneinfo` to be 3rd party now, so it sorts it in the wrong section. This disagrees with `isort`. 
 

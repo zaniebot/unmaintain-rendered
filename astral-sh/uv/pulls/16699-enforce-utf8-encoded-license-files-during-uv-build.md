@@ -13,14 +13,14 @@ head: license-files-utf8
 created_at: 2025-11-12T03:44:34Z
 updated_at: 2025-11-13T12:50:00Z
 url: https://github.com/astral-sh/uv/pull/16699
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Enforce UTF‑8-encoded license files during `uv build`
 
 ---
 
-_Pull request opened by @terror on 2025-11-12 03:44_
+_@terror_
 
 I noticed this when working on https://github.com/astral-sh/uv/pull/16697.
 

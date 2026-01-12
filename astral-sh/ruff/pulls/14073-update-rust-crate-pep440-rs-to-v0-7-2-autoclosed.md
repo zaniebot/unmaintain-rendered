@@ -13,14 +13,14 @@ head: renovate/pep440_rs-0.x-lockfile
 created_at: 2024-11-04T01:56:45Z
 updated_at: 2024-11-04T02:28:09Z
 url: https://github.com/astral-sh/ruff/pull/14073
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Update Rust crate pep440_rs to v0.7.2 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2024-11-04 01:56_
+_@renovate_
 
 This PR contains the following updates:
 

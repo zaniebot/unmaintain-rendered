@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-22T08:22:28Z
 updated_at: 2025-11-29T13:39:38Z
 url: https://github.com/astral-sh/ruff/issues/10519
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Folder with module name detected as source leads to false `I001` error
 
 ---
 
-_Issue opened by @carschno on 2024-03-22 08:22_
+_@carschno_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

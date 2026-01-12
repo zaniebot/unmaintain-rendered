@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-19T10:33:49Z
 updated_at: 2025-11-01T19:47:36Z
 url: https://github.com/astral-sh/uv/issues/16358
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # could you use releases rather than git hashes for Cargo.toml deps?
 
 ---
 
-_Issue opened by @sthen on 2025-10-19 10:33_
+_@sthen_
 
 ### Summary
 

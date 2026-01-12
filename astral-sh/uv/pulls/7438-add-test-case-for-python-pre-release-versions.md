@@ -13,14 +13,14 @@ head: zb/test-parent-pre
 created_at: 2024-09-16T19:55:09Z
 updated_at: 2024-09-16T20:42:01Z
 url: https://github.com/astral-sh/uv/pull/7438
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Add test case for Python pre-release versions from parent interpreter
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-16 19:55_
+_@zanieb_
 
 _No description provided._
 

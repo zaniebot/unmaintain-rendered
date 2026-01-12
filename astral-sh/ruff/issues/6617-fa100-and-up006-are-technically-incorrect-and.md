@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-16T14:21:35Z
 updated_at: 2023-08-16T16:01:09Z
 url: https://github.com/astral-sh/ruff/issues/6617
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `FA100` and `UP006` are technically incorrect and recommend code that can crash
 
 ---
 
-_Issue opened by @pfaion on 2023-08-16 14:21_
+_@pfaion_
 
 Hi everyone,
 

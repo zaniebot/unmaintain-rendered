@@ -13,14 +13,14 @@ head: zb/ecosystem-changed-projects
 created_at: 2023-12-16T03:29:46Z
 updated_at: 2023-12-16T06:05:40Z
 url: https://github.com/astral-sh/ruff/pull/9157
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update ecosystem check headers to show unchanged project count
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-16 03:29_
+_@zanieb_
 
 Instead of displaying the total completed project count in the "changed" section of a header, we now separately calculated the changed and unchanged count to make the header message nice and clear.
 

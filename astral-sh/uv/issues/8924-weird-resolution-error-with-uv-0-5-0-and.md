@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T07:49:56Z
 updated_at: 2024-11-08T20:26:23Z
 url: https://github.com/astral-sh/uv/issues/8924
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Weird resolution error with `uv==0.5.0` and unsatisfiable requirements
 
 ---
 
-_Issue opened by @jamesbraza on 2024-11-08 07:49_
+_@jamesbraza_
 
 I have a situation where: package `b` depends on `a`, and `a` has `b` as an extra. Or more concretely, `a` = [`fhaviary`](https://pypi.org/project/fhaviary/) and `b` = [`paper-qa`](https://pypi.org/project/paper-qa/)
 

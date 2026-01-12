@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T02:32:10Z
 updated_at: 2025-11-08T19:25:28Z
 url: https://github.com/astral-sh/uv/issues/1791
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # UV venv doesn't work on MacOS when Rye is installed
 
 ---
 
-_Issue opened by @justinhauer on 2024-02-21 02:32_
+_@justinhauer_
 
 
 **Summary:**

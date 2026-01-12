@@ -12,14 +12,14 @@ head: cargo_test_ruff
 created_at: 2023-07-26T20:14:04Z
 updated_at: 2023-07-26T20:44:54Z
 url: https://github.com/astral-sh/ruff/pull/6104
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix `cargo test -p ruff`
 
 ---
 
-_Pull request opened by @konstin on 2023-07-26 20:14_
+_@konstin_
 
 Previously, this would fail with "the trait bound `SourceLocation: Serialize` is not satisfied".
 

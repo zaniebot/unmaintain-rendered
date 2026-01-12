@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T03:44:08Z
 updated_at: 2024-06-07T22:03:09Z
 url: https://github.com/astral-sh/uv/issues/4124
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Can't specify URIs (for multiple paths) in UV_CONSTRAINT
 
 ---
 
-_Issue opened by @henryiii on 2024-06-07 03:44_
+_@henryiii_
 
 In pip, if you want to provide a path that has as space in it, you must provide a URI, as pip universally uses spaces for separating arguments. So for example, to set two constraint files that potentially contain spaces, you'd do:
 

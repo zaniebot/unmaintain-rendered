@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-11T16:03:42Z
 updated_at: 2022-11-11T18:46:03Z
 url: https://github.com/clap-rs/clap/issues/4473
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Panics on invalid utf8 for unknown arguments
 
 ---
 
-_Issue opened by @matklad on 2022-11-11 16:03_
+_@matklad_
 
 ```rust
 fn main() {

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-20T19:29:11Z
 updated_at: 2025-08-22T22:12:34Z
 url: https://github.com/astral-sh/ruff/issues/8795
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `per-file-ignores` paths from `extend` are relative to the extended configuration file
 
 ---
 
-_Issue opened by @bwildenborg on 2023-11-20 19:29_
+_@bwildenborg_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

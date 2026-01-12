@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T22:59:37Z
 updated_at: 2025-01-25T16:22:59Z
 url: https://github.com/astral-sh/uv/issues/10949
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Alias pip
 
 ---
 
-_Issue opened by @stevenwalton on 2025-01-24 22:59_
+_@stevenwalton_
 
 ### Summary
 

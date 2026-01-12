@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-04T20:28:29Z
 updated_at: 2025-02-04T21:53:02Z
 url: https://github.com/astral-sh/ruff/issues/15947
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Incorrectly raised error F821 Undefined name `migrations`
 
 ---
 
-_Issue opened by @softwaredevPK on 2025-02-04 20:28_
+_@softwaredevPK_
 
 ### Description
 

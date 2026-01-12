@@ -11,14 +11,14 @@ head: main
 created_at: 2025-04-30T20:05:16Z
 updated_at: 2025-05-02T12:23:34Z
 url: https://github.com/astral-sh/uv/pull/13244
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Improve Python Environment Detection and Platform Matching in uv Project
 
 ---
 
-_Pull request opened by @joey-the-33rd on 2025-04-30 20:05_
+_@joey-the-33rd_
 
 This pull request addresses **two actionable** TODOs in the uv project to improve code robustness and functionality related to Python environment management.
 

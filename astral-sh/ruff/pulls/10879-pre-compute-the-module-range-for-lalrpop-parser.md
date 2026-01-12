@@ -13,14 +13,14 @@ head: dhruv/mod-range-lalrpop
 created_at: 2024-04-11T13:20:51Z
 updated_at: 2024-04-12T06:18:19Z
 url: https://github.com/astral-sh/ruff/pull/10879
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Pre-compute the module range for LALRPOP parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-11 13:20_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: directory_option_allow_envvar
 created_at: 2025-10-05T15:45:16Z
 updated_at: 2025-10-08T13:46:11Z
 url: https://github.com/astral-sh/uv/pull/16125
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Support `UV_WORKING_DIRECTORY` for setting `--directory`
 
 ---
 
-_Pull request opened by @shunsock on 2025-10-05 15:45_
+_@shunsock_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

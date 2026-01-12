@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T13:33:33Z
 updated_at: 2023-11-18T18:01:01Z
 url: https://github.com/astral-sh/ruff/issues/8754
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [question] Preview lints: shouldn't autofixes be unsafe?
 
 ---
 
-_Issue opened by @magnuslarsen on 2023-11-18 13:33_
+_@magnuslarsen_
 
 
 As the title says, wouldn't the autofixes on in-preview lint-rules, inherently be unsafe? 

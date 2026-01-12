@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-08T22:35:30Z
 updated_at: 2022-07-11T22:00:39Z
 url: https://github.com/clap-rs/clap/issues/3901
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # YAML Parsing
 
 ---
 
-_Issue opened by @aress31 on 2022-07-08 22:35_
+_@aress31_
 
 ### Please complete the following tasks
 

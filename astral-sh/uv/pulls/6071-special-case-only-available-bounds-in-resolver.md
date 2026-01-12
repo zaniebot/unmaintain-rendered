@@ -12,14 +12,14 @@ head: zb/only-available-exclusive
 created_at: 2024-08-13T23:08:38Z
 updated_at: 2024-08-15T16:27:46Z
 url: https://github.com/astral-sh/uv/pull/6071
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Special case "only available" bounds in resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-13 23:08_
+_@zanieb_
 
 So, this is a little nuanced, but it confused me a couple times and I'm poking around in this code so I figured I'd give it a try.
 

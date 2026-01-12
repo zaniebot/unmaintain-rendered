@@ -14,14 +14,14 @@ head: dcreager/refactor-call-binding
 created_at: 2025-06-27T19:34:09Z
 updated_at: 2025-06-27T21:01:55Z
 url: https://github.com/astral-sh/ruff/pull/18997
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Refactor argument matching / type checking in call binding
 
 ---
 
-_Pull request opened by @dcreager on 2025-06-27 19:34_
+_@dcreager_
 
 This PR extracts a lot of the complex logic in the `match_parameters` and `check_types` methods of our call binding machinery into separate helper types. This is setup for #18996, which will update this logic to handle variadic arguments. To do so, it is helpful to have the per-argument logic extracted into a method that we can call repeatedly for each _element_ of a variadic argument.
 

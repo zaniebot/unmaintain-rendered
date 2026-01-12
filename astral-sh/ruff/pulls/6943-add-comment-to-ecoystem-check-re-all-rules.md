@@ -13,14 +13,14 @@ head: docs/check-all
 created_at: 2023-08-28T14:27:23Z
 updated_at: 2023-08-28T16:28:38Z
 url: https://github.com/astral-sh/ruff/pull/6943
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add comment to ecoystem check re. ALL rules
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-28 14:27_
+_@zanieb_
 
 _No description provided._
 

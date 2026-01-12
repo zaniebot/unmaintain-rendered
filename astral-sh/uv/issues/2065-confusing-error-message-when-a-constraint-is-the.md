@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T00:31:17Z
 updated_at: 2024-03-04T23:51:30Z
 url: https://github.com/astral-sh/uv/issues/2065
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Confusing error message when a constraint is the cause of not finding a version
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-29 00:31_
+_@notatallshaw_
 
 Environment: Linux Python 3.10.13 uv 0.1.12
 

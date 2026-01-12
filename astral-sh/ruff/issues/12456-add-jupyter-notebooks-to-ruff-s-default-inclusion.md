@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T16:26:20Z
 updated_at: 2024-08-14T16:02:15Z
 url: https://github.com/astral-sh/ruff/issues/12456
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add Jupyter Notebooks to Ruff's default inclusion
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-22 16:26_
+_@dhruvmanila_
 
 I think it's time we promote Jupyter Notebooks to be included by default in Ruff i.e., promote notebook files to stable.
 

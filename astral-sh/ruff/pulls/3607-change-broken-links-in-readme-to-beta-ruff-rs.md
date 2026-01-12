@@ -13,14 +13,14 @@ head: fix_doc_links
 created_at: 2023-03-19T15:12:59Z
 updated_at: 2023-03-19T15:39:02Z
 url: https://github.com/astral-sh/ruff/pull/3607
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Change broken links in README to beta.ruff.rs
 
 ---
 
-_Pull request opened by @Rogdham on 2023-03-19 15:12_
+_@Rogdham_
 
 _No description provided._
 

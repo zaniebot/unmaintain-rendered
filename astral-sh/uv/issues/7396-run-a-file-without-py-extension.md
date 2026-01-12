@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-14T17:12:57Z
 updated_at: 2024-10-11T09:53:26Z
 url: https://github.com/astral-sh/uv/issues/7396
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Run a file without .py extension
 
 ---
 
-_Issue opened by @sequoiayoav on 2024-09-14 17:12_
+_@sequoiayoav_
 
 if I make this file and name it `example.py`
 

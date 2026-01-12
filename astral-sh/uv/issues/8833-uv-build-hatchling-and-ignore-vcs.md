@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T17:54:00Z
 updated_at: 2025-08-16T18:05:28Z
 url: https://github.com/astral-sh/uv/issues/8833
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # `uv build`, `hatchling` and `ignore-vcs`
 
 ---
 
-_Issue opened by @cofin on 2024-11-05 17:54_
+_@cofin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

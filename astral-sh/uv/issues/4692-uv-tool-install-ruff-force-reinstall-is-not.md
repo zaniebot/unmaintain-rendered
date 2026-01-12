@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-01T13:30:57Z
 updated_at: 2024-07-01T14:25:13Z
 url: https://github.com/astral-sh/uv/issues/4692
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool install ruff --force --reinstall` is not idempotent
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-01 13:30_
+_@charliermarsh_
 
 If I run `cargo run tool install ruff --force --reinstall`, it alternatives between the following.
 

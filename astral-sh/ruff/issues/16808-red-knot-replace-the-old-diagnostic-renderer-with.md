@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T15:07:12Z
 updated_at: 2025-03-17T16:46:51Z
 url: https://github.com/astral-sh/ruff/issues/16808
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Replace the old diagnostic renderer with the new one.
 
 ---
 
-_Issue opened by @BurntSushi on 2025-03-17 15:07_
+_@BurntSushi_
 
 This is a small task where we should "rug pull" the old renderer and replace it with the new one.
 

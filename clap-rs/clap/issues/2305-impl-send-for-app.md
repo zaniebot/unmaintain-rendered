@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-01-22T00:25:14Z
 updated_at: 2021-01-22T12:17:24Z
 url: https://github.com/clap-rs/clap/issues/2305
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # impl Send for App
 
 ---
 
-_Issue opened by @tbraun96 on 2021-01-22 00:25_
+_@tbraun96_
 
 I am using clap to parse arguments in a custom terminal environment. I initialize ``App`` once, then use ``get_matches_from_safe_borrow``in order to not consume ``self``, thus allowing me to reuse ``App``. When initializing ``App``, I place it inside lazy_static block wrapped in a ``Mutex`` to ensure no race conditions. However, I am surprised to see that ``App`` does not implement ``Send``, so really, I can't safely use App. Inside your code, replace the ``Rc``'s with ``Arc``'s, thus giving us more usability. Thanks
 

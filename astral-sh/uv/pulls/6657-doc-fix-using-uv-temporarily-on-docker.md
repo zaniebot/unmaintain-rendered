@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-26T20:34:53Z
 updated_at: 2024-08-26T20:36:38Z
 url: https://github.com/astral-sh/uv/pull/6657
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # [Doc] Fix using uv temporarily on docker
 
 ---
 
-_Pull request opened by @2xyo on 2024-08-26 20:34_
+_@2xyo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

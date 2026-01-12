@@ -12,14 +12,14 @@ head: type-validate-init-subclass
 created_at: 2025-12-24T20:05:43Z
 updated_at: 2025-12-29T19:35:56Z
 url: https://github.com/astral-sh/ruff/pull/22185
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add diagnostics for `__init_subclass__` argument mismatch
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-24 20:05_
+_@RasmusNygren_
 
 ## Summary
 

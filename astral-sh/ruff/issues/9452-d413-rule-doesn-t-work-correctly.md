@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-10T00:42:52Z
 updated_at: 2024-08-07T01:50:17Z
 url: https://github.com/astral-sh/ruff/issues/9452
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # D413 rule doesn't work correctly
 
 ---
 
-_Issue opened by @stinodego on 2024-01-10 00:42_
+_@stinodego_
 
 If I take the code from the example section in the docs:
 https://docs.astral.sh/ruff/rules/blank-line-after-last-section/

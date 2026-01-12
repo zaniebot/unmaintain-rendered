@@ -13,14 +13,14 @@ head: charlie/cy
 created_at: 2024-10-28T00:28:27Z
 updated_at: 2024-10-28T00:44:33Z
 url: https://github.com/astral-sh/uv/pull/8610
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Remove inverse-node tracking in `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-28 00:28_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T03:34:50Z
 updated_at: 2025-04-14T12:26:53Z
 url: https://github.com/astral-sh/uv/issues/12869
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv not installing `.so` files on macOS
 
 ---
 
-_Issue opened by @CalaW on 2025-04-14 03:34_
+_@CalaW_
 
 ### Summary
 

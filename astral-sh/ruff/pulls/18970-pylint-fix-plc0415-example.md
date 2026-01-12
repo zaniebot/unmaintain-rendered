@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-06-26T21:18:01Z
 updated_at: 2025-06-26T22:38:25Z
 url: https://github.com/astral-sh/ruff/pull/18970
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`pylint`] Fix `PLC0415` example
 
 ---
 
-_Pull request opened by @yairp03 on 2025-06-26 21:18_
+_@yairp03_
 
 Fixed documentation error
 

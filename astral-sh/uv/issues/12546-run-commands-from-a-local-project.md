@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T15:11:33Z
 updated_at: 2025-03-30T10:49:30Z
 url: https://github.com/astral-sh/uv/issues/12546
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Run commands from a local project
 
 ---
 
-_Issue opened by @perillo on 2025-03-29 15:11_
+_@perillo_
 
 ### Summary
 

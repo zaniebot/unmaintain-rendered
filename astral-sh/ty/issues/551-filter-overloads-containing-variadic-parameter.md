@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T15:21:35Z
 updated_at: 2025-09-25T14:58:01Z
 url: https://github.com/astral-sh/ty/issues/551
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Filter overloads containing variadic parameter during call evaluation
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-30 15:21_
+_@dhruvmanila_
 
 This corresponds to step 4 of the [overload call evaluation algorithm](https://typing.python.org/en/latest/spec/overload.html#overload-call-evaluation).
 

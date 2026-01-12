@@ -13,14 +13,14 @@ head: reinstall-packages-uv-add
 created_at: 2025-05-15T10:03:15Z
 updated_at: 2025-05-15T14:08:54Z
 url: https://github.com/astral-sh/uv/pull/13462
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Reinstall local packages in `uv add`
 
 ---
 
-_Pull request opened by @blueraft on 2025-05-15 10:03_
+_@blueraft_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-newline
 created_at: 2023-12-21T18:08:24Z
 updated_at: 2024-03-24T16:51:04Z
 url: https://github.com/zanieb/rooster/pull/13
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Ensure the changelog always ends with a single newline
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-21 18:08_
+_@zanieb_
 
 Closes https://github.com/zanieb/rooster/issues/11
 

@@ -13,14 +13,14 @@ head: charlir/typo
 created_at: 2024-10-21T17:34:21Z
 updated_at: 2024-10-21T17:35:23Z
 url: https://github.com/astral-sh/uv/pull/8422
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Fix `cache-keys` typo in `tags = true`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-21 17:34_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/8421.
 

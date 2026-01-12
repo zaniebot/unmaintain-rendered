@@ -11,14 +11,14 @@ head: signature_help_playground
 created_at: 2025-07-14T00:58:59Z
 updated_at: 2025-07-14T06:58:58Z
 url: https://github.com/astral-sh/ruff/pull/19312
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Signature help for playground
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-14 00:58_
+_@UnboundVariable_
 
 This PR adds support for "signature help" in the ty playground.
 

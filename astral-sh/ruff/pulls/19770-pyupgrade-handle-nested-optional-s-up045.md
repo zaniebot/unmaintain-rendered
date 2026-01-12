@@ -14,14 +14,14 @@ head: fix-19746
 created_at: 2025-08-05T19:07:18Z
 updated_at: 2025-08-19T22:48:38Z
 url: https://github.com/astral-sh/ruff/pull/19770
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`pyupgrade`] Handle nested `Optional`s (`UP045`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-05 19:07_
+_@danparizher_
 
 ## Summary
 

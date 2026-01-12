@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T03:11:23Z
 updated_at: 2024-10-24T14:34:12Z
 url: https://github.com/astral-sh/ruff/issues/10234
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature Request: Rule for Flagging Missing Required Parameters in Function Calls
 
 ---
 
-_Issue opened by @gtupak on 2024-03-05 03:11_
+_@gtupak_
 
 Would it be possible to add a rule in Ruff to detect and flag missing required parameters when calling a function? 
 

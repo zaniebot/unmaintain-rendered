@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-25T21:38:30Z
 updated_at: 2025-02-17T15:32:50Z
 url: https://github.com/astral-sh/uv/issues/9428
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # missing target for python 3.12-linux-armv7-musl
 
 ---
 
-_Issue opened by @karmingc on 2024-11-25 21:38_
+_@karmingc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

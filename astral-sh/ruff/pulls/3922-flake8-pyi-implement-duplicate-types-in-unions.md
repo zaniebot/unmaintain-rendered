@@ -12,14 +12,14 @@ head: pyi016-duplicates-in-union
 created_at: 2023-04-09T04:01:20Z
 updated_at: 2023-04-12T04:24:30Z
 url: https://github.com/astral-sh/ruff/pull/3922
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-pyi`] Implement duplicate types in unions (`PYI016`)
 
 ---
 
-_Pull request opened by @USER-5 on 2023-04-09 04:01_
+_@USER-5_
 
 Addresses Y016 in #848:
 

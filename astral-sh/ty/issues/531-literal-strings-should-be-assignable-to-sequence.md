@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T09:15:43Z
 updated_at: 2025-06-01T15:39:57Z
 url: https://github.com/astral-sh/ty/issues/531
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Literal strings should be assignable to `Sequence[Unknown]`
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-28 09:15_
+_@sharkdp_
 
 Found this while analyzing common ecosystem false positives. I think this should work?
 ```py

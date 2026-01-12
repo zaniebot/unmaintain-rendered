@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-06T20:30:00Z
 updated_at: 2024-11-06T21:00:05Z
 url: https://github.com/clap-rs/clap/issues/5809
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Optional `#[command(flatten)]` breaks when nesting
 
 ---
 
-_Issue opened by @kaplanz on 2024-11-06 20:30_
+_@kaplanz_
 
 ### Please complete the following tasks
 

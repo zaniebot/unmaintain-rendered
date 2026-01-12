@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-03T03:40:12Z
 updated_at: 2024-05-06T13:47:29Z
 url: https://github.com/astral-sh/uv/issues/3341
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # uv pip list does not show all packages in conda environment
 
 ---
 
-_Issue opened by @gboeing on 2024-05-03 03:40_
+_@gboeing_
 
 This seems to be related to, but different from, #2841 and #3164. I'm using 0.1.39 on Ubuntu.
 

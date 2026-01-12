@@ -12,14 +12,14 @@ head: dhruv/type-aliases-RUF013
 created_at: 2023-06-23T17:11:12Z
 updated_at: 2023-06-23T23:12:15Z
 url: https://github.com/astral-sh/ruff/pull/5344
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Ignore type aliases for RUF013
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-23 17:11_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-16T10:11:15Z
 updated_at: 2025-03-12T14:52:25Z
 url: https://github.com/astral-sh/uv/issues/11551
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # UX: `uv python install` silently skips requests depending on what I already have installed
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-02-16 10:11_
+_@neutrinoceros_
 
 ### Summary
 

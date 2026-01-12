@@ -13,14 +13,14 @@ head: charlie/io
 created_at: 2024-07-18T01:58:38Z
 updated_at: 2024-07-18T04:13:47Z
 url: https://github.com/astral-sh/uv/pull/5174
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Rename `Error::IO` to `Error::Io`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-18 01:58_
+_@charliermarsh_
 
 ## Summary
 

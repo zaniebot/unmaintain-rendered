@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T13:08:28Z
 updated_at: 2025-08-01T10:01:00Z
 url: https://github.com/astral-sh/ruff/issues/8470
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Warnings about incompatible rules with `--select ALL`
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-11-03 13:08_
+_@DimitriPapadopoulos_
 
 I'd rather not see warnings about incompatible rules with `--select ALL`. Do the following warnings about incompatible rules appear by default on purpose with `--select ALL`? 
 * ```python

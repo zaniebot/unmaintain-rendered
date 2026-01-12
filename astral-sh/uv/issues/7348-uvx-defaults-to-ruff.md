@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T00:28:51Z
 updated_at: 2024-09-14T00:42:58Z
 url: https://github.com/astral-sh/uv/issues/7348
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uvx defaults to ruff?
 
 ---
 
-_Issue opened by @dimaqq on 2024-09-13 00:28_
+_@dimaqq_
 
 ```command
 🦐~> uvx

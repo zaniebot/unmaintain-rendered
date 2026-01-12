@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-11T14:58:08Z
 updated_at: 2025-03-04T02:18:49Z
 url: https://github.com/astral-sh/uv/issues/9813
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Add '--constraints'  flag to 'uv tool run'
 
 ---
 
-_Issue opened by @wpk-nist-gov on 2024-12-11 14:58_
+_@wpk-nist-gov_
 
 The `--constraints` flag was recently added to `uv tool install` via #9547.  It would be really useful to add a similar flag to `uv tool run`. 
 This would allow specifying version constraints for tooling in one place.  For example, 

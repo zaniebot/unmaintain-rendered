@@ -13,14 +13,14 @@ head: zb/invert
 created_at: 2024-02-02T17:28:00Z
 updated_at: 2024-02-02T18:00:26Z
 url: https://github.com/astral-sh/uv/pull/1233
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Invert display of "no versions" incompatibilities with multiple ranges
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-02 17:28_
+_@zanieb_
 
 Closes #884 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T10:40:26Z
 updated_at: 2024-07-10T04:12:59Z
 url: https://github.com/astral-sh/ruff/issues/12242
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` does not consider config `include`
 
 ---
 
-_Issue opened by @christianbrugger on 2024-07-08 10:40_
+_@christianbrugger_
 
 I want to use `ruff server` on a project where I want to introduce formatting and linting gradually. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T13:54:05Z
 updated_at: 2025-12-16T14:29:56Z
 url: https://github.com/astral-sh/uv/issues/17147
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # uv tool installs alpha versions
 
 ---
 
-_Issue opened by @willmcgugan on 2025-12-16 13:54_
+_@willmcgugan_
 
 ### Summary
 

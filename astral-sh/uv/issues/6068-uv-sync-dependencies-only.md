@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-13T20:52:36Z
 updated_at: 2024-08-13T21:00:11Z
 url: https://github.com/astral-sh/uv/issues/6068
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv sync dependencies only
 
 ---
 
-_Issue opened by @sbidoul on 2024-08-13 20:52_
+_@sbidoul_
 
 With dependencies locked in a `requirements.txt` I can do a two layers Dockerfile where the infrequently changing `requirements.txt` is copied to the image and is installed first, and then the frequently changing project is installed in a second layer. This is to benefit from layers caching.
 

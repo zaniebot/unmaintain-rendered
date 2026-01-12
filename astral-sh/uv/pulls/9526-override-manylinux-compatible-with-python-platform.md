@@ -13,14 +13,14 @@ head: charlie/many
 created_at: 2024-11-29T17:17:50Z
 updated_at: 2024-11-29T17:26:26Z
 url: https://github.com/astral-sh/uv/pull/9526
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Override `manylinux_compatible` with `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-29 17:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-28T21:37:12Z
 updated_at: 2023-12-01T19:48:56Z
 url: https://github.com/astral-sh/ruff/issues/8883
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Feature request: PLW1514 autofix
 
 ---
 
-_Issue opened by @Avasam on 2023-11-28 21:37_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

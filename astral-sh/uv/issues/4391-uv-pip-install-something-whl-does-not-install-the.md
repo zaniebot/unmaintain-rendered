@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T17:40:53Z
 updated_at: 2024-06-19T14:50:14Z
 url: https://github.com/astral-sh/uv/issues/4391
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv pip install something.whl` does not install the new version
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-06-18 17:40_
+_@ThiefMaster_
 
 When installing from a local wheel file, a newer (or generally different, since it should not matter if it's newer or older) version does not get installed since uv thinks it's already there.
 

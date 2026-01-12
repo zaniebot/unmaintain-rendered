@@ -13,14 +13,14 @@ head: claude/parse-path-override-variable-i5AT4
 created_at: 2026-01-08T21:54:56Z
 updated_at: 2026-01-09T13:23:21Z
 url: https://github.com/astral-sh/uv/pull/17367
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Support relative paths in `UV_PYTHON_BIN_DIR` and `UV_TOOL_BIN_DIR`
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 21:54_
+_@zanieb_
 
 Closes #17364
 

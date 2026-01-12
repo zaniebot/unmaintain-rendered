@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T01:55:15Z
 updated_at: 2025-11-09T04:17:47Z
 url: https://github.com/astral-sh/uv/issues/6399
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # pyright language server crashes when run from inside venv created by uv
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-22 01:55_
+_@DetachHead_
 
 i'm not sure what's causing this, but for some reason all of my language servers are crashing with strange errors when running from a venv created by uv (tested with both ruff and basedpyright language servers).
 

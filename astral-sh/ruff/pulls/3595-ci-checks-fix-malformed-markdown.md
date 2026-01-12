@@ -12,14 +12,14 @@ head: ci/fix-invalid-markdown
 created_at: 2023-03-18T09:50:35Z
 updated_at: 2023-03-18T10:25:13Z
 url: https://github.com/astral-sh/ruff/pull/3595
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # CI Checks: Fix malformed markdown
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-18 09:50_
+_@MichaReiser_
 
 ## Summary 
 The Benchmark results aren't formatted properly if the ecosystem check finds differences because the ecosystem check doesn't emit a trailing newline.

@@ -12,14 +12,14 @@ head: autofix-E713-E714
 created_at: 2022-11-18T14:53:58Z
 updated_at: 2022-11-18T17:16:12Z
 url: https://github.com/astral-sh/ruff/pull/804
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for E713 and E714
 
 ---
 
-_Pull request opened by @harupy on 2022-11-18 14:53_
+_@harupy_
 
 #722 
 

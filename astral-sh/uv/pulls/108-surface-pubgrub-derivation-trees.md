@@ -12,14 +12,14 @@ head: charlie/conflict
 created_at: 2023-10-16T18:03:51Z
 updated_at: 2023-10-16T18:14:37Z
 url: https://github.com/astral-sh/uv/pull/108
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Surface PubGrub derivation trees
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 18:03_
+_@charliermarsh_
 
 I think the derivation trees could be stronger but this exposes PubGrub's proof-like error messages.
 

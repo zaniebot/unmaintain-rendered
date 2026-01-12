@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T21:22:05Z
 updated_at: 2024-12-12T07:06:12Z
 url: https://github.com/astral-sh/ruff/issues/14926
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [ruff] Hex code formatting restrictions around debug f-strings are too strict on preview
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2024-12-11 21:22_
+_@MeGaGiGaGon_
 
 With preview disabled [playground link](https://play.ruff.rs/68e68e62-750b-411f-b997-d1948e35a661): 
 ```py

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T13:19:41Z
 updated_at: 2024-04-10T19:09:05Z
 url: https://github.com/astral-sh/uv/issues/474
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support hash-checking mode in `pip-sync`
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 13:19_
+_@konstin_
 
 See https://pip.pypa.io/en/stable/topics/secure-installs/#hash-checking-mode
 

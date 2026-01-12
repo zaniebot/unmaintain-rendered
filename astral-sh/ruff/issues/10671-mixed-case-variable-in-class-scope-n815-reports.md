@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T16:47:47Z
 updated_at: 2024-10-24T14:34:14Z
 url: https://github.com/astral-sh/ruff/issues/10671
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # mixed-case-variable-in-class-scope (N815) reports mixedCase on class variables of subclassed TypedDict
 
 ---
 
-_Issue opened by @teaishealthy on 2024-03-30 16:47_
+_@teaishealthy_
 
 
 <!--

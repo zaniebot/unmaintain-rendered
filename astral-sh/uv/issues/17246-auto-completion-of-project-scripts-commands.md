@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T08:37:26Z
 updated_at: 2026-01-02T18:33:21Z
 url: https://github.com/astral-sh/uv/issues/17246
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Auto-completion of project.scripts commands
 
 ---
 
-_Issue opened by @TurtleOrangina on 2025-12-28 08:37_
+_@TurtleOrangina_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-12T16:43:07Z
 updated_at: 2023-12-12T17:41:20Z
 url: https://github.com/astral-sh/uv/issues/621
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Don't show extra in progress bar
 
 ---
 
-_Issue opened by @konstin on 2023-12-12 16:43_
+_@konstin_
 
 When resolving a package with many extras the progress bar will switch between extras, e.g.
 ```

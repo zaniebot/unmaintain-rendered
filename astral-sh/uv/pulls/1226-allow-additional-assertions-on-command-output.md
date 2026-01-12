@@ -13,14 +13,14 @@ head: konsti/return-output-in-tests
 created_at: 2024-02-01T14:45:53Z
 updated_at: 2024-02-02T17:01:41Z
 url: https://github.com/astral-sh/uv/pull/1226
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Allow additional assertions on command output
 
 ---
 
-_Pull request opened by @konstin on 2024-02-01 14:45_
+_@konstin_
 
 In the scenario tests, we want to make sure we're actually conforming to the scenario's expectations, so we now have an extra assertion on whether resolution failed or succeeded as well as that it includes the given packages.
 

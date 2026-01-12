@@ -14,14 +14,14 @@ head: charlie/au
 created_at: 2025-03-09T17:57:46Z
 updated_at: 2025-03-09T18:28:35Z
 url: https://github.com/astral-sh/uv/pull/12077
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Remove some allocations from `uv-auth`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-09 17:57_
+_@charliermarsh_
 
 ## Summary
 

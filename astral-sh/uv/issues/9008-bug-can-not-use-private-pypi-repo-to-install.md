@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T08:16:17Z
 updated_at: 2025-01-06T23:49:24Z
 url: https://github.com/astral-sh/uv/issues/9008
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # [BUG] can not use private pypi repo to install package(same as offical pypi package)
 
 ---
 
-_Issue opened by @Sube-py on 2024-11-11 08:16_
+_@Sube-py_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

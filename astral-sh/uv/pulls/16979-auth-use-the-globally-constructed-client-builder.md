@@ -13,14 +13,14 @@ head: zsol/jj-rwztvoqowvuy
 created_at: 2025-12-04T15:15:27Z
 updated_at: 2025-12-04T20:04:36Z
 url: https://github.com/astral-sh/uv/pull/16979
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # auth: use the globally constructed client builder
 
 ---
 
-_Pull request opened by @zsol on 2025-12-04 15:15_
+_@zsol_
 
 ## Summary
 

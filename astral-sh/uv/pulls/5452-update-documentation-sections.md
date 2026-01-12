@@ -14,14 +14,14 @@ head: zb/docs-epic-iiii
 created_at: 2024-07-25T17:24:49Z
 updated_at: 2024-07-25T17:37:24Z
 url: https://github.com/astral-sh/uv/pull/5452
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Update documentation sections
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-25 17:24_
+_@zanieb_
 
 Reframes "the low-level interface" as "the pip interface"
 Adds indexes to all sections

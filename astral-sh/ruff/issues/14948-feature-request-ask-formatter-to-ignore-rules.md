@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-12T22:04:52Z
 updated_at: 2024-12-13T07:36:30Z
 url: https://github.com/astral-sh/ruff/issues/14948
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature request: Ask formatter to ignore rules like the linter
 
 ---
 
-_Issue opened by @ayjayt on 2024-12-12 22:04_
+_@ayjayt_
 
 A way to set the formatter to ignore whole classes of rules just like the linter. 
 

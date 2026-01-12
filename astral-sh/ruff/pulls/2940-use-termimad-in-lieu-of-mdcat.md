@@ -11,14 +11,14 @@ head: charlie/termimad
 created_at: 2023-02-15T21:18:13Z
 updated_at: 2023-02-20T19:59:05Z
 url: https://github.com/astral-sh/ruff/pull/2940
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use `termimad` in lieu of `mdcat`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 21:18_
+_@charliermarsh_
 
 This would need refinement prior to merging, as-is I don't think it's better than just rendering the raw text:
 

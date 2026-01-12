@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T22:51:31Z
 updated_at: 2022-12-25T22:22:51Z
 url: https://github.com/astral-sh/ruff/issues/1254
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement the config options for flake8-unused-arguments
 
 ---
 
-_Issue opened by @lovetox on 2022-12-15 22:51_
+_@lovetox_
 
 Hi, this is very useful check but we cant use it because it detects **kwargs / *args as unused.
 I believe its not necessary to mark this unsued vars, as bei convention **kwargs / *args is in most cases expected to not be used as it acts as a catch all.

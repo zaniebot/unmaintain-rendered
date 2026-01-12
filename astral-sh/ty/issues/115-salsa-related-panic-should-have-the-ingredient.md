@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-22T18:08:50Z
 updated_at: 2025-06-12T05:17:02Z
 url: https://github.com/astral-sh/ty/issues/115
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # salsa-related panic: "should have the ingredient index available"
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-22 18:08_
+_@sharkdp_
 
 Occurred twice today in mypy_primer CI runs, went away when retrying:
 

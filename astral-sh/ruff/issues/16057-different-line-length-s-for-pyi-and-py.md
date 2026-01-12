@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T22:51:48Z
 updated_at: 2025-02-10T07:40:28Z
 url: https://github.com/astral-sh/ruff/issues/16057
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # different `line-length`s for `.pyi` and `.py`
 
 ---
 
-_Issue opened by @jorenham on 2025-02-09 22:51_
+_@jorenham_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T00:04:28Z
 updated_at: 2024-12-12T01:24:36Z
 url: https://github.com/astral-sh/uv/issues/9828
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # `uv self update` should support `--dry-run`
 
 ---
 
-_Issue opened by @jmknoble on 2024-12-12 00:04_
+_@jmknoble_
 
 I want `uv` to tell me whether it thinks it needs an update, before I actually tell it to update.
 

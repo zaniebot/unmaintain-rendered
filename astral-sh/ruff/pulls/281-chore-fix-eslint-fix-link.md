@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-09-29T06:43:59Z
 updated_at: 2022-09-29T11:15:07Z
 url: https://github.com/astral-sh/ruff/pull/281
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # chore: fix eslint fix link
 
 ---
 
-_Pull request opened by @fannheyward on 2022-09-29 06:43_
+_@fannheyward_
 
 _No description provided._
 

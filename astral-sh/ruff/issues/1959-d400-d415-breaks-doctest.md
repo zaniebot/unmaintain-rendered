@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-18T15:28:05Z
 updated_at: 2023-01-18T20:47:32Z
 url: https://github.com/astral-sh/ruff/issues/1959
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D400 / D415 breaks doctest
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 15:28_
+_@spaceone_
 
 ```python
 #!/usr/bin/python3

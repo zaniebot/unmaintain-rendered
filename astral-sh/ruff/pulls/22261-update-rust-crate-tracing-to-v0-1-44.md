@@ -13,14 +13,14 @@ head: renovate/tokio-tracing-monorepo
 created_at: 2025-12-29T16:12:58Z
 updated_at: 2025-12-29T16:39:39Z
 url: https://github.com/astral-sh/ruff/pull/22261
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update Rust crate tracing to v0.1.44
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:12_
+_@renovate_
 
 This PR contains the following updates:
 

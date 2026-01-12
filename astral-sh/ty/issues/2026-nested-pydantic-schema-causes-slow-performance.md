@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T18:07:56Z
 updated_at: 2025-12-20T04:18:09Z
 url: https://github.com/astral-sh/ty/issues/2026
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Nested Pydantic schema causes slow performance
 
 ---
 
-_Issue opened by @zsol on 2025-12-17 18:07_
+_@zsol_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-12T14:33:15Z
 updated_at: 2022-08-24T02:48:17Z
 url: https://github.com/clap-rs/clap/issues/3912
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Allow a field's type to be different than the value parser type
 
 ---
 
-_Issue opened by @epage on 2022-07-12 14:33_
+_@epage_
 
 ### Please complete the following tasks
 

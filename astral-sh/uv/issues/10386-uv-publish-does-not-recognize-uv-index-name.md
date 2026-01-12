@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T09:55:30Z
 updated_at: 2025-01-08T15:06:32Z
 url: https://github.com/astral-sh/uv/issues/10386
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # uv publish does not recognize UV_INDEX_{name}_PASSWORD and UV_INDEX_{name}_USERNAME
 
 ---
 
-_Issue opened by @SalttownUser on 2025-01-08 09:55_
+_@SalttownUser_
 
 I have an issue using the `uv publish` command. I'm trying to upload a package to a private GitLab package registry and getting check error.
 

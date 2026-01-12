@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-10-11T03:05:32Z
 updated_at: 2021-02-28T12:37:31Z
 url: https://github.com/clap-rs/clap/issues/2167
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Panic on subcommand without -h
 
 ---
 
-_Issue opened by @Absolucy on 2020-10-11 03:05_
+_@Absolucy_
 
 ### Make sure you completed the following tasks
 

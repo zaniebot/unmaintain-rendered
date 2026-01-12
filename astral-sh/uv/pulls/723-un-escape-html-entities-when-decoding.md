@@ -13,14 +13,14 @@ head: charlie/decode
 created_at: 2023-12-24T21:24:02Z
 updated_at: 2023-12-24T21:45:15Z
 url: https://github.com/astral-sh/uv/pull/723
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Un-escape HTML entities when decoding
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-24 21:24_
+_@charliermarsh_
 
 I don't have a good testing strategy here (I'm manually testing against `devpi` via `packse`), but the HTML index uses (e.g.) `data-requires-python="&gt;=3.8"`, so we need to decode.
 

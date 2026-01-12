@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T11:38:40Z
 updated_at: 2023-02-13T15:07:56Z
 url: https://github.com/astral-sh/ruff/issues/2851
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # B005 false positive for multibyte characters
 
 ---
 
-_Issue opened by @S-aiueo32 on 2023-02-13 11:38_
+_@S-aiueo32_
 
 ```
 "".strip("a")  # negative

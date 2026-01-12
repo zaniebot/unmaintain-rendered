@@ -13,14 +13,14 @@ head: zb/skip-redownload
 created_at: 2024-01-26T19:41:26Z
 updated_at: 2024-01-27T18:46:22Z
 url: https://github.com/astral-sh/uv/pull/1133
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Do not re-download already installed Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 19:41_
+_@zanieb_
 
 A minor usability improvement cherry-picked from https://github.com/astral-sh/puffin/pull/1131 e.g.
 

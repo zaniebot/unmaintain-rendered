@@ -14,14 +14,14 @@ head: micha/more-benchmarks
 created_at: 2025-11-20T09:21:01Z
 updated_at: 2025-11-25T07:58:36Z
 url: https://github.com/astral-sh/ruff/pull/21536
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add more and update existing projects in `ty_benchmark`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-20 09:21_
+_@MichaReiser_
 
 ## Summary
 

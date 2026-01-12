@@ -14,14 +14,14 @@ head: charlie/C404
 created_at: 2023-09-06T11:49:37Z
 updated_at: 2023-09-06T12:05:40Z
 url: https://github.com/astral-sh/ruff/pull/7185
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add required space when fixing C404
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-06 11:49_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7087.
 

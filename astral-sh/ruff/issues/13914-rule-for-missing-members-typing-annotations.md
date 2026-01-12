@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-24T16:00:10Z
 updated_at: 2024-10-30T20:55:21Z
 url: https://github.com/astral-sh/ruff/issues/13914
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule for missing members typing annotations
 
 ---
 
-_Issue opened by @yairp03 on 2024-10-24 16:00_
+_@yairp03_
 
 Consider the following class:
 

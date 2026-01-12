@@ -11,14 +11,14 @@ head: charlie/cst
 created_at: 2022-09-02T20:49:26Z
 updated_at: 2022-09-06T17:58:04Z
 url: https://github.com/astral-sh/ruff/pull/89
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use LibCST for AST parsing, traversal, and autofixing
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-02 20:49_
+_@charliermarsh_
 
 (Still experimental.)
 

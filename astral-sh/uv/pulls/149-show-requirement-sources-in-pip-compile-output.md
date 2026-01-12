@@ -12,14 +12,14 @@ head: charlie/graph
 created_at: 2023-10-20T04:50:31Z
 updated_at: 2023-10-20T05:15:00Z
 url: https://github.com/astral-sh/uv/pull/149
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Show requirement sources in `pip-compile` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-20 04:50_
+_@charliermarsh_
 
 Builds up a complete resolved graph from PubGrub, and shows the sources that led to each package being included in the resolution, like `pip-compile`.
 

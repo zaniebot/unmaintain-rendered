@@ -13,14 +13,14 @@ head: zb/fix-release-check
 created_at: 2025-05-05T13:14:13Z
 updated_at: 2025-05-05T13:17:32Z
 url: https://github.com/zanieb/rooster/pull/59
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Use `importlib.metadata.version` instead of `pkg_resources`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 13:14_
+_@zanieb_
 
 _No description provided._
 

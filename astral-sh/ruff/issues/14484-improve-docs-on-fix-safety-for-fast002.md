@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T11:09:10Z
 updated_at: 2024-11-20T11:45:05Z
 url: https://github.com/astral-sh/ruff/issues/14484
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Improve docs on fix safety for FAST002
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-20 11:09_
+_@AlexWaygood_
 
 The fix for FAST002 is marked as always unsafe, but there isn't a `## Fix safety` section in the documentation explaining why it is marked as unsafe.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T17:46:34Z
 updated_at: 2024-10-02T18:10:22Z
 url: https://github.com/astral-sh/uv/issues/7875
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # uv changes my package version when doing "uv build --sdist" or "uv lock"
 
 ---
 
-_Issue opened by @cmalek on 2024-10-02 17:46_
+_@cmalek_
 
 I'm using `uv` version 0.4.16.   
 

@@ -14,14 +14,14 @@ head: alex/move-super
 created_at: 2025-10-13T11:13:29Z
 updated_at: 2025-10-13T11:18:14Z
 url: https://github.com/astral-sh/ruff/pull/20840
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Move logic for `super()` inference to a new `types::bound_super` submodule
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-13 11:13_
+_@AlexWaygood_
 
 ## Summary
 

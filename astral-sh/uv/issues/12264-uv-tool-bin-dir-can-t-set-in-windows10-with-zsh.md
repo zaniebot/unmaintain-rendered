@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T08:59:01Z
 updated_at: 2025-03-18T12:37:29Z
 url: https://github.com/astral-sh/uv/issues/12264
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # `UV_TOOL_BIN_DIR` can't set in windows10 with zsh
 
 ---
 
-_Issue opened by @kamiertop on 2025-03-18 08:59_
+_@kamiertop_
 
 ### Summary
 

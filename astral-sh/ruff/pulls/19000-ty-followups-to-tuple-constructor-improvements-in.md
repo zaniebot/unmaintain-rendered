@@ -14,14 +14,14 @@ head: alex/sound-tuples-2
 created_at: 2025-06-27T20:57:17Z
 updated_at: 2025-06-27T21:09:16Z
 url: https://github.com/astral-sh/ruff/pull/19000
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Followups to tuple constructor improvements in #18987
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-27 20:57_
+_@AlexWaygood_
 
 Addresses @dcreager's post-merge review on #18987
 

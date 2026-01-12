@@ -12,14 +12,14 @@ head: main
 created_at: 2025-11-14T11:16:25Z
 updated_at: 2025-11-16T05:16:02Z
 url: https://github.com/astral-sh/uv/pull/16736
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Replace `sys-info` with `sysinfo` for Android support; use mimalloc instead of jemalloc on Android
 
 ---
 
-_Pull request opened by @LIghtJUNction on 2025-11-14 11:16_
+_@LIghtJUNction_
 
 sys-info: https://crates.io/crates/sys-info
 sysinfo: https://crates.io/crates/sysinfo

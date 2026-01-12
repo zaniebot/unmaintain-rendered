@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-26T08:51:11Z
 updated_at: 2025-06-26T14:39:35Z
 url: https://github.com/astral-sh/ty/issues/707
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Attribute "Problem" [unresolved-attribute]
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-06-26 08:51_
+_@Julian-J-S_
 
 I am getting a type error and I am not sure if its on `ty` or some fancy "hacks" in the library the `ty` does not understand (yet)  😆 
 

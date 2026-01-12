@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T17:38:32Z
 updated_at: 2024-05-13T17:51:34Z
 url: https://github.com/astral-sh/uv/issues/3557
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Global CLI flags cannot be passed to commands
 
 ---
 
-_Issue opened by @zanieb on 2024-05-13 17:38_
+_@zanieb_
 
 It's not a great user experience to need to be aware which flags are global and pass them in a different location.
 

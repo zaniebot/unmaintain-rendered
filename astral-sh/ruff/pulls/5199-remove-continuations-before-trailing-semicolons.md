@@ -13,14 +13,14 @@ head: charlie/E703
 created_at: 2023-06-20T02:12:28Z
 updated_at: 2023-06-20T02:39:28Z
 url: https://github.com/astral-sh/ruff/pull/5199
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove continuations before trailing semicolons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 02:12_
+_@charliermarsh_
 
 ## Summary
 

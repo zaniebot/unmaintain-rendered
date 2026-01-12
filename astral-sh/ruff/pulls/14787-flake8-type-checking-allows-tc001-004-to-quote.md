@@ -12,14 +12,14 @@ head: feat/allow-additional-quotables
 created_at: 2024-12-05T11:26:58Z
 updated_at: 2025-06-25T11:56:45Z
 url: https://github.com/astral-sh/ruff/pull/14787
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-type-checking`] Allows TC001-004 to quote more expressions
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-05 11:26_
+_@Daverball_
 
 This idea came up during the discussion of #14676
 

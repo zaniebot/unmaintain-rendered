@@ -13,14 +13,14 @@ head: konsti/log-data-location
 created_at: 2025-06-03T08:34:08Z
 updated_at: 2025-06-03T14:22:20Z
 url: https://github.com/astral-sh/uv/pull/13797
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Add data locations to logging
 
 ---
 
-_Pull request opened by @konstin on 2025-06-03 08:34_
+_@konstin_
 
 `trace!`-log the locations of data directories used by a wheel. These paths are queried from sysconfig, i.e. they are mostly Python interpreter defined instead of being computed by uv.
 

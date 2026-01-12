@@ -13,14 +13,14 @@ head: charlie/src
 created_at: 2024-12-22T15:12:09Z
 updated_at: 2024-12-22T15:23:28Z
 url: https://github.com/astral-sh/uv/pull/10095
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Avoid erroring when subdirectories are provided in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-22 15:12_
+_@charliermarsh_
 
 ## Summary
 

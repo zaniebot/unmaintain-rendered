@@ -13,14 +13,14 @@ head: zb/ft-debug-docs
 created_at: 2025-09-20T15:35:21Z
 updated_at: 2025-09-22T13:59:42Z
 url: https://github.com/astral-sh/uv/pull/15961
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Document support for free-threaded and debug Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-20 15:35_
+_@zanieb_
 
 Closes #12707 
 

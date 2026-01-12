@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-17T23:00:05Z
 updated_at: 2023-07-19T01:22:01Z
 url: https://github.com/astral-sh/ruff/issues/5846
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Allow applying rule classes with noqa
 
 ---
 
-_Issue opened by @kieran-ryan on 2023-07-17 23:00_
+_@kieran-ryan_
 
 Multiple violations from the same rule class can be detected in a single statement e.g. two errors from the `FBT` rule class:
 

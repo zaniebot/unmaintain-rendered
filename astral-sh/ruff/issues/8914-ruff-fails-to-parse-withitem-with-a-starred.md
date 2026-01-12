@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-29T23:44:10Z
 updated_at: 2024-04-18T12:27:41Z
 url: https://github.com/astral-sh/ruff/issues/8914
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ruff fails to parse `WithItem` with a starred expression as `optional_vars`
 
 ---
 
-_Issue opened by @LaBatata101 on 2023-11-29 23:44_
+_@LaBatata101_
 
 Ruff version: v0.1.6
 

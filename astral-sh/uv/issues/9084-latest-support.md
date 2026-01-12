@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T13:32:07Z
 updated_at: 2025-05-03T18:20:38Z
 url: https://github.com/astral-sh/uv/issues/9084
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # @latest support?
 
 ---
 
-_Issue opened by @drcongo on 2024-11-13 13:32_
+_@drcongo_
 
 I'm coming from a poetry background here and one thing I regularly need to do is upgrade multiple packages to the latest compatible version, while leaving others untouched. With poetry, this is `poetry show -o` to list packages where updates are available, and then I can `poetry add {package}@latest` to upgrade the ones I want to upgrade - after each upgrade, I then run the test suite to make sure nothing has broken (so I definitely don't want to upgrade everything all at once).
 

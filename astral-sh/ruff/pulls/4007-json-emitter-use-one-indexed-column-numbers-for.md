@@ -13,14 +13,14 @@ head: JSON_Emitter_Use_one-indexed_column_numbers_for_edits
 created_at: 2023-04-18T06:44:21Z
 updated_at: 2023-05-10T15:21:03Z
 url: https://github.com/astral-sh/ruff/pull/4007
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # JSON Emitter: Use one indexed column numbers for edits
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-18 06:44_
+_@MichaReiser_
 
  I noticed in the byte-offsets refactor that the `JsonEmitter` uses one indexed column numbers for the diagnostic start and end locations but not for `edits`.
 

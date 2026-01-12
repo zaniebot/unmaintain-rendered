@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T14:46:39Z
 updated_at: 2025-07-24T16:12:08Z
 url: https://github.com/astral-sh/uv/issues/13886
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Improve documentation for Keyring Credential Provider
 
 ---
 
-_Issue opened by @da1910 on 2025-06-06 14:46_
+_@da1910_
 
 ### Summary
 

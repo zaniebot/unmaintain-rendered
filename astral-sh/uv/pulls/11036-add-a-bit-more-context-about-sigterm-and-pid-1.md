@@ -13,14 +13,14 @@ head: zb/signal-pid-1
 created_at: 2025-01-28T20:03:42Z
 updated_at: 2025-01-29T14:21:49Z
 url: https://github.com/astral-sh/uv/pull/11036
-synced_at: 2026-01-10T11:45:25Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Add a bit more context about SIGTERM and PID 1
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 20:03_
+_@zanieb_
 
 _No description provided._
 

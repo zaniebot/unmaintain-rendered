@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T16:22:59Z
 updated_at: 2025-07-22T19:10:00Z
 url: https://github.com/astral-sh/uv/issues/14817
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Indices don't get added to pyproject.toml in same order as command
 
 ---
 
-_Issue opened by @DougCal on 2025-07-22 16:22_
+_@DougCal_
 
 ### Summary
 

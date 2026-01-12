@@ -13,14 +13,14 @@ head: replace-crates-by-dependi
 created_at: 2024-08-27T17:40:21Z
 updated_at: 2024-08-28T04:46:06Z
 url: https://github.com/astral-sh/ruff/pull/13125
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Replace crates by dependi for VS Code Dev Container
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2024-08-27 17:40_
+_@JonathanPlasse_
 
 ## Summary
 crates is now recommending migrating to dependi

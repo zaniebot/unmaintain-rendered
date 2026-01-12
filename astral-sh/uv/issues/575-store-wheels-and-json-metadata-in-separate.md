@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-06T00:45:51Z
 updated_at: 2023-12-07T05:02:48Z
 url: https://github.com/astral-sh/uv/issues/575
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Store wheels and JSON metadata in separate directories
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-06 00:45_
+_@charliermarsh_
 
 In the cache. Otherwise, we have to iterate over twice as many files whenever we need to perform a lookup.
 

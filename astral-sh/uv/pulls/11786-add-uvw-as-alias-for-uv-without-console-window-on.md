@@ -12,14 +12,14 @@ head: main
 created_at: 2025-02-26T01:40:28Z
 updated_at: 2025-05-29T00:02:59Z
 url: https://github.com/astral-sh/uv/pull/11786
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Add `uvw` as alias for `uv` without console window on Windows
 
 ---
 
-_Pull request opened by @CrendKing on 2025-02-26 01:40_
+_@CrendKing_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

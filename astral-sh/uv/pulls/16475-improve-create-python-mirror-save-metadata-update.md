@@ -11,14 +11,14 @@ head: plucia-mitre/create-python-mirror-improvements
 created_at: 2025-10-28T02:12:02Z
 updated_at: 2025-10-29T21:02:16Z
 url: https://github.com/astral-sh/uv/pull/16475
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Improve create-python-mirror - Save metadata & Update URLs
 
 ---
 
-_Pull request opened by @plucia-mitre on 2025-10-28 02:12_
+_@plucia-mitre_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/synchronize-virtualenv
 created_at: 2025-02-05T19:53:10Z
 updated_at: 2025-02-05T21:00:41Z
 url: https://github.com/astral-sh/uv/pull/11259
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Use a flock to avoid concurrent initialization of project environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-05 19:53_
+_@charliermarsh_
 
 ## Summary
 

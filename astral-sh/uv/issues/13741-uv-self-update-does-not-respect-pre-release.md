@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T19:34:43Z
 updated_at: 2025-06-04T15:33:00Z
 url: https://github.com/astral-sh/uv/issues/13741
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv self update` does not respect pre-release segments during equality checks
 
 ---
 
-_Issue opened by @zanieb on 2025-05-30 19:34_
+_@zanieb_
 
 ### Summary
 

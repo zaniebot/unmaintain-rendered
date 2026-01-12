@@ -13,14 +13,14 @@ head: charlie/only-binary
 created_at: 2024-05-22T13:58:54Z
 updated_at: 2024-05-22T14:46:29Z
 url: https://github.com/astral-sh/uv/pull/3735
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Document `--only-binary` compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 13:58_
+_@charliermarsh_
 
 ## Summary
 

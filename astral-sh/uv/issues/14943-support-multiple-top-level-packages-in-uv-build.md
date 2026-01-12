@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T16:30:48Z
 updated_at: 2025-07-28T17:34:59Z
 url: https://github.com/astral-sh/uv/issues/14943
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Support multiple top-level packages in `uv_build`
 
 ---
 
-_Issue opened by @johnthagen on 2025-07-28 16:30_
+_@johnthagen_
 
 ### Summary
 

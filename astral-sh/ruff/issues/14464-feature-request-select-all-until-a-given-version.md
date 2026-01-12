@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T15:35:57Z
 updated_at: 2024-11-19T17:26:08Z
 url: https://github.com/astral-sh/ruff/issues/14464
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # feature request: select ALL until a given version number
 
 ---
 
-_Issue opened by @DaniBodor on 2024-11-19 15:35_
+_@DaniBodor_
 
 In the ruff settings, I like to select ALL rules and just ignore the ones that I dont use (which is a much shorter list than those I do). However, as the documentation already warns: "Use ALL with discretion. Enabling ALL will implicitly enable new rules whenever you upgrade." Indeed, I run into this quite frequently and it is a bit frustrating.
 

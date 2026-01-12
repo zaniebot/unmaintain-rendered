@@ -12,14 +12,14 @@ head: charlie/struct
 created_at: 2023-01-15T06:53:17Z
 updated_at: 2023-01-15T06:56:19Z
 url: https://github.com/astral-sh/ruff/pull/1887
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Convert confusable violations to named fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-15 06:53_
+_@charliermarsh_
 
 See: #1871.
 

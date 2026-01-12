@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T13:43:24Z
 updated_at: 2025-05-12T19:48:39Z
 url: https://github.com/astral-sh/uv/issues/13410
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # uvx with a lock file
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-12 13:43_
+_@dimaqq_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/locals
 created_at: 2024-08-22T01:44:00Z
 updated_at: 2024-08-23T20:41:52Z
 url: https://github.com/astral-sh/uv/pull/6398
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Add `uv sync --no-locals` to skip syncing local dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 01:44_
+_@charliermarsh_
 
 ## Summary
 

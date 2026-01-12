@@ -12,14 +12,14 @@ head: charlie/license
 created_at: 2023-01-25T22:44:52Z
 updated_at: 2023-01-25T22:59:14Z
 url: https://github.com/astral-sh/ruff/pull/2180
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Restore single-file license
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 22:44_
+_@charliermarsh_
 
 These were split into per-project licenses in #1648, but I don't like that they're no longer included in the distribution (due to current limitations in the `pyproject.toml` spec).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T17:28:01Z
 updated_at: 2025-02-25T17:35:31Z
 url: https://github.com/astral-sh/ruff/issues/16377
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Consider documenting syntax errors
 
 ---
 
-_Issue opened by @ntBre on 2025-02-25 17:28_
+_@ntBre_
 
 One reason why we might want to have different error codes for different syntax errors is so that we can provide more detailed documentation for some syntax errors. This isn't _much_ of a concern with the specific syntax error that @ntBre is adding here, as there's not much more to say than "you can't use the `match` statement on Python <3.10".[^1]. However, as we discussed on Brent's design proposal, it will be a concern with other syntax errors that we'll want to detect in the future -- for example, we have very nice docs for [`F404`](https://docs.astral.sh/ruff/rules/late-future-import/#late-future-import-f404) currently in Ruff, and it would be a shame to provide worse docs for red-knot users when we start detecting that syntax error in our brand new tool.
 

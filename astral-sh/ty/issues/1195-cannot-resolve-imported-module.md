@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T08:00:57Z
 updated_at: 2025-09-25T01:15:37Z
 url: https://github.com/astral-sh/ty/issues/1195
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Cannot resolve imported module `.`
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-17 08:00_
+_@sharkdp_
 
 ### Summary
 

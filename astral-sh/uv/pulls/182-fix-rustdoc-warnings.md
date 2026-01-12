@@ -12,14 +12,14 @@ head: fix-doc-warnings
 created_at: 2023-10-25T11:46:03Z
 updated_at: 2023-10-25T11:48:25Z
 url: https://github.com/astral-sh/uv/pull/182
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Fix rustdoc warnings
 
 ---
 
-_Pull request opened by @konstin on 2023-10-25 11:46_
+_@konstin_
 
 Changes to make `cargo doc --all --all-features` pass without warnings.
 

@@ -13,14 +13,14 @@ head: alex/runtime-checkable-protos
 created_at: 2025-04-22T18:35:18Z
 updated_at: 2025-04-23T21:45:20Z
 url: https://github.com/astral-sh/ruff/pull/17561
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Emit diagnostics for isinstance() and issubclass() calls where a non-runtime-checkable protocol is the second argument
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-22 18:35_
+_@AlexWaygood_
 
 ## Summary
 

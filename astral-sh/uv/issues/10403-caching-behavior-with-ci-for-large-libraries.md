@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-08T18:25:40Z
 updated_at: 2025-10-01T15:21:44Z
 url: https://github.com/astral-sh/uv/issues/10403
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Caching behavior with --ci for large libraries
 
 ---
 
-_Issue opened by @MattTheCuber on 2025-01-08 18:25_
+_@MattTheCuber_
 
 According to [the docs](https://docs.astral.sh/uv/concepts/cache/#caching-in-continuous-integration), `uv cache prune --ci` "removes all pre-built wheels and unzipped source distributions from the cache".
 

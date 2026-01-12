@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T00:10:16Z
 updated_at: 2024-09-10T02:47:19Z
 url: https://github.com/astral-sh/uv/issues/7236
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Improve help for `--requirement` in `uv pip install`
 
 ---
 
-_Issue opened by @AdrianB-sovo on 2024-09-10 00:10_
+_@AdrianB-sovo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

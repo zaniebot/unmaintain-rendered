@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T18:09:32Z
 updated_at: 2024-08-20T18:21:34Z
 url: https://github.com/astral-sh/uv/issues/5822
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Should `uv run foo/bar.py` automatically run in the `foo` package?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-06 18:09_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/pull/12622#issuecomment-2271225573
 

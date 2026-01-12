@@ -15,14 +15,14 @@ head: david/prevent-builder-construction
 created_at: 2025-06-26T10:30:11Z
 updated_at: 2025-06-26T11:58:18Z
 url: https://github.com/astral-sh/ruff/pull/18954
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Prevent union builder construction for just one declaration
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-26 10:30_
+_@sharkdp_
 
 ## Summary
 

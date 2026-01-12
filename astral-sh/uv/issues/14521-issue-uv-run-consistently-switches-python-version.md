@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T14:49:19Z
 updated_at: 2025-07-09T15:26:49Z
 url: https://github.com/astral-sh/uv/issues/14521
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Issue: ```uv run``` consistently switches Python version to system default, recreating venv
 
 ---
 
-_Issue opened by @Muhammad-Saad-2 on 2025-07-09 14:49_
+_@Muhammad-Saad-2_
 
 
 

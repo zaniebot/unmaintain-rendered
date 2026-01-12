@@ -12,14 +12,14 @@ head: konsti/box-prioritized-dist
 created_at: 2024-01-17T13:45:01Z
 updated_at: 2024-01-19T09:44:42Z
 url: https://github.com/astral-sh/uv/pull/948
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Box `PrioritizedDistribution`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-17 13:45_
+_@konstin_
 
 On top of https://github.com/astral-sh/puffin/pull/947, we can also box `PrioritizedDistribution`.
 

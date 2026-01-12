@@ -12,14 +12,14 @@ head: pydantic-f821-revert
 created_at: 2024-03-21T16:32:53Z
 updated_at: 2024-03-21T16:46:20Z
 url: https://github.com/astral-sh/ruff/pull/10513
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # 'Revert "F821: Fix false negatives in .py files when `from __future__ import annotations` is active (#10362)"'
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-21 16:32_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ruff/issues/10451.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T18:56:06Z
 updated_at: 2025-06-11T01:01:14Z
 url: https://github.com/astral-sh/ty/issues/109
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Check implementation consistency for an overloaded function
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-30 18:56_
+_@dhruvmanila_
 
 The task here is to check whether the overloaded signatures is consistent with the implementation signature if it's present. Specifically, from the spec:
 

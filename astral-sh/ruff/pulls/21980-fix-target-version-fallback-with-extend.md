@@ -13,14 +13,14 @@ head: fix/target-version-extended
 created_at: 2025-12-14T19:41:08Z
 updated_at: 2025-12-22T10:05:23Z
 url: https://github.com/astral-sh/ruff/pull/21980
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # fix: target-version fallback with extend
 
 ---
 
-_Pull request opened by @denyszhak on 2025-12-14 19:41_
+_@denyszhak_
 
 ## Summary
 

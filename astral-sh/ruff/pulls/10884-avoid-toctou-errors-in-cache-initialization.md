@@ -13,14 +13,14 @@ head: charlie/git
 created_at: 2024-04-11T15:54:24Z
 updated_at: 2024-04-11T16:09:09Z
 url: https://github.com/astral-sh/ruff/pull/10884
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Avoid TOCTOU errors in cache initialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 15:54_
+_@charliermarsh_
 
 ## Summary
 

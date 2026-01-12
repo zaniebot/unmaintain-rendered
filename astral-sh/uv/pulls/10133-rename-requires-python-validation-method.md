@@ -13,14 +13,14 @@ head: charlie/vi
 created_at: 2024-12-24T00:31:17Z
 updated_at: 2024-12-24T00:45:22Z
 url: https://github.com/astral-sh/uv/pull/10133
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Rename `requires-python` validation method
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 00:31_
+_@charliermarsh_
 
 ## Summary
 

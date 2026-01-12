@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T18:08:38Z
 updated_at: 2024-10-15T22:58:16Z
 url: https://github.com/astral-sh/uv/issues/7761
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Allow users to define multiple, disjoint explicit indexes
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-28 18:08_
+_@charliermarsh_
 
 I.e., this should work:
 ```toml

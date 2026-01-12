@@ -13,14 +13,14 @@ head: docker-example-bind-mounts
 created_at: 2024-09-01T19:05:41Z
 updated_at: 2024-09-03T14:44:54Z
 url: https://github.com/astral-sh/uv/pull/6921
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # docs `docker.md`: example to use bind mounts
 
 ---
 
-_Pull request opened by @odie5533 on 2024-09-01 19:05_
+_@odie5533_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T11:58:09Z
 updated_at: 2025-11-18T16:31:18Z
 url: https://github.com/astral-sh/uv/issues/16703
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # SSL certificate verification paths not configured correctly when Python is installed via uv (in Red Hat UBI8 base image)
 
 ---
 
-_Issue opened by @winwinashwin on 2025-11-12 11:58_
+_@winwinashwin_
 
 ### Summary
 

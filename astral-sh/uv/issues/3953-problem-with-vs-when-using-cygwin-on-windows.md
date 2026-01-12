@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T00:00:42Z
 updated_at: 2024-06-28T21:09:08Z
 url: https://github.com/astral-sh/uv/issues/3953
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Problem with `/` vs `\` when using cygwin on windows
 
 ---
 
-_Issue opened by @JackDyre on 2024-06-01 00:00_
+_@JackDyre_
 
 I am on Windows 10 and use Cygwin as my preferred shell/terminal. The problem is that cygwin uses `/` unlike windows.
 

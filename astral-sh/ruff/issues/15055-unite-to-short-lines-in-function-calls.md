@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T09:30:21Z
 updated_at: 2024-12-19T14:52:23Z
 url: https://github.com/astral-sh/ruff/issues/15055
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Unite to short lines in function calls?
 
 ---
 
-_Issue opened by @artsiomkaltovich on 2024-12-19 09:30_
+_@artsiomkaltovich_
 
 Here’s a polished version of your text:  
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T23:52:33Z
 updated_at: 2025-05-19T18:36:08Z
 url: https://github.com/astral-sh/uv/issues/9134
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # How to properly setup a mirror for the standalone installer and updater?
 
 ---
 
-_Issue opened by @leodevian on 2024-11-14 23:52_
+_@leodevian_
 
 Hello ! Noob here !
 

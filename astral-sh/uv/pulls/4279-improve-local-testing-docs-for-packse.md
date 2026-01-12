@@ -13,14 +13,14 @@ head: zb/packse-test-docs
 created_at: 2024-06-12T16:20:21Z
 updated_at: 2024-06-12T18:19:11Z
 url: https://github.com/astral-sh/uv/pull/4279
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Improve local testing docs for packse
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-12 16:20_
+_@zanieb_
 
 _No description provided._
 

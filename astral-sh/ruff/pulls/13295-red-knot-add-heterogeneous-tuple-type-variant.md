@@ -13,14 +13,14 @@ head: dhruv/tuple-type
 created_at: 2024-09-09T20:50:11Z
 updated_at: 2024-09-10T18:03:29Z
 url: https://github.com/astral-sh/ruff/pull/13295
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add heterogeneous tuple type variant
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-09 20:50_
+_@dhruvmanila_
 
 ## Summary
 

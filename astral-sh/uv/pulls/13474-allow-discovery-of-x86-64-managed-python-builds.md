@@ -12,14 +12,14 @@ head: zb/macos-86
 created_at: 2025-05-15T17:38:07Z
 updated_at: 2025-05-29T19:06:35Z
 url: https://github.com/astral-sh/uv/pull/13474
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Allow discovery of x86-64 managed Python builds on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-15 17:38_
+_@zanieb_
 
 _No description provided._
 

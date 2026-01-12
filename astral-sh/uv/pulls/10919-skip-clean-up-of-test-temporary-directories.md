@@ -13,14 +13,14 @@ head: zb/no-tmp-delete
 created_at: 2025-01-23T22:28:19Z
 updated_at: 2025-01-23T22:44:08Z
 url: https://github.com/astral-sh/uv/pull/10919
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Skip clean-up of test temporary directories
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 22:28_
+_@zanieb_
 
 What if this is really slow in CI?
 

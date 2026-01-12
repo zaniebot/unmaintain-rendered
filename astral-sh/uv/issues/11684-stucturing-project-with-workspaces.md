@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T03:04:04Z
 updated_at: 2025-02-26T18:21:53Z
 url: https://github.com/astral-sh/uv/issues/11684
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Stucturing project with workspaces
 
 ---
 
-_Issue opened by @haarisr on 2025-02-21 03:04_
+_@haarisr_
 
 ### Question
 

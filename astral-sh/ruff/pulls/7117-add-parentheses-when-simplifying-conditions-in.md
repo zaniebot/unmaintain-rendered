@@ -14,14 +14,14 @@ head: charlie/SIM222
 created_at: 2023-09-03T21:50:42Z
 updated_at: 2023-09-03T22:43:23Z
 url: https://github.com/astral-sh/ruff/pull/7117
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add parentheses when simplifying conditions in SIM222
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 21:50_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7099.
 

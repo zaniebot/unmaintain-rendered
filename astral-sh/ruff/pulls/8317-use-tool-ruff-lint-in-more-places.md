@@ -13,14 +13,14 @@ head: more-tool-ruff-lint
 created_at: 2023-10-28T22:43:16Z
 updated_at: 2023-10-28T23:40:29Z
 url: https://github.com/astral-sh/ruff/pull/8317
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use `tool.ruff.lint` in more places
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-10-28 22:43_
+_@mkniewallner_
 
 ## Summary
 

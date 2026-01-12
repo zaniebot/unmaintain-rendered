@@ -13,14 +13,14 @@ head: charlie/cy
 created_at: 2025-08-13T20:44:31Z
 updated_at: 2025-08-13T21:41:29Z
 url: https://github.com/astral-sh/uv/pull/15259
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Make 'v' prefix cyan in overlap warnings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-13 20:44_
+_@charliermarsh_
 
 _No description provided._
 

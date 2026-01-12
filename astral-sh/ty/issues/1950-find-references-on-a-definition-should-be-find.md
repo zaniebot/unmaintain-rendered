@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T18:27:53Z
 updated_at: 2025-12-16T19:24:18Z
 url: https://github.com/astral-sh/ty/issues/1950
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # find-references on a definition should be find-uses (not include self)
 
 ---
 
-_Issue opened by @Gankra on 2025-12-16 18:27_
+_@Gankra_
 
 ### Summary
 

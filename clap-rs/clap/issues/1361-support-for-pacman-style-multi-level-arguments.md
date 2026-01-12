@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-15T06:34:17Z
 updated_at: 2020-07-18T14:28:57Z
 url: https://github.com/clap-rs/clap/issues/1361
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for pacman-style multi-level arguments
 
 ---
 
-_Issue opened by @ncihnegn on 2018-10-15 06:34_
+_@ncihnegn_
 
 ### Bug or Feature Request Summary
 I want to emulate archlinux pacman's style with two-level arguments.

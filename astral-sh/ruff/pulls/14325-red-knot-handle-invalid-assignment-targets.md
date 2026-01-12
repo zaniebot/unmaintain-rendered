@@ -13,14 +13,14 @@ head: david/fix-invalid-assignment-target-panics
 created_at: 2024-11-13T18:50:23Z
 updated_at: 2024-11-13T19:50:42Z
 url: https://github.com/astral-sh/ruff/pull/14325
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Handle invalid assignment targets
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-13 18:50_
+_@sharkdp_
 
 ## Summary
 

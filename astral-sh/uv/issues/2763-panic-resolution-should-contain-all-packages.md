@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T21:35:03Z
 updated_at: 2024-04-07T00:02:51Z
 url: https://github.com/astral-sh/uv/issues/2763
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Panic: Resolution should contain all packages
 
 ---
 
-_Issue opened by @BradLucky on 2024-04-01 21:35_
+_@BradLucky_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-23T15:00:37Z
 updated_at: 2025-10-24T13:37:56Z
 url: https://github.com/astral-sh/ty/issues/1420
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-return-type` on syntax `(A | None) and B` for return type `B | None`; needs narrowing
 
 ---
 
-_Issue opened by @CoderJoshDK on 2025-10-23 15:00_
+_@CoderJoshDK_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T13:21:21Z
 updated_at: 2025-11-17T17:07:03Z
 url: https://github.com/astral-sh/ty/issues/1577
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # lint for missing-module-source
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-17 13:21_
+_@MichaReiser_
 
 At least Pyrefly and Pyright both support linting for modules where the typing stubs can be found, but the runtime modules are missing:
 

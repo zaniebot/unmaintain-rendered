@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-20T15:56:05Z
 updated_at: 2023-07-10T01:16:03Z
 url: https://github.com/astral-sh/ruff/issues/4048
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # support isort `use_parentheses` config
 
 ---
 
-_Issue opened by @andykais on 2023-04-20 15:56_
+_@andykais_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

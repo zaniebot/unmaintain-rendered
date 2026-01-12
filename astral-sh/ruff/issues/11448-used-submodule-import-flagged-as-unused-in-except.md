@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-16T13:05:30Z
 updated_at: 2024-05-17T14:27:16Z
 url: https://github.com/astral-sh/ruff/issues/11448
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Used submodule import flagged as unused in `except` handler
 
 ---
 
-_Issue opened by @bnomis on 2024-05-16 13:05_
+_@bnomis_
 
 Ruff version 0.4.4
 

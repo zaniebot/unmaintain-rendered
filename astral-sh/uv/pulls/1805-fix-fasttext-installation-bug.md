@@ -12,14 +12,14 @@ head: fix/fasttext-installation
 created_at: 2024-02-21T13:15:41Z
 updated_at: 2024-02-21T13:28:40Z
 url: https://github.com/astral-sh/uv/pull/1805
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Fix fastText installation bug
 
 ---
 
-_Pull request opened by @yasufumy on 2024-02-21 13:15_
+_@yasufumy_
 
 ## Summary
 

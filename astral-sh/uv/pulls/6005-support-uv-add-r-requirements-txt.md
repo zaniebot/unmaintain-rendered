@@ -14,14 +14,14 @@ head: add-r-requirements
 created_at: 2024-08-11T13:57:22Z
 updated_at: 2024-08-16T21:57:46Z
 url: https://github.com/astral-sh/uv/pull/6005
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Support `uv add -r requirements.txt`
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-11 13:57_
+_@blueraft_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: zb/dirty
 created_at: 2025-03-17T23:27:36Z
 updated_at: 2025-03-28T11:21:00Z
 url: https://github.com/astral-sh/uv/pull/12252
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Allow dirty files in `cargo-dist` for action pins
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-17 23:27_
+_@zanieb_
 
 _No description provided._
 

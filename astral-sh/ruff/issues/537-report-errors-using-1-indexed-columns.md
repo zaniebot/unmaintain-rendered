@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-01T21:46:36Z
 updated_at: 2022-11-01T23:06:10Z
 url: https://github.com/astral-sh/ruff/issues/537
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Report errors using 1-indexed columns
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-01 21:46_
+_@charliermarsh_
 
 See: #414
 

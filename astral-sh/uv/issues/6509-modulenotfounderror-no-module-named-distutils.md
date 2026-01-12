@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T12:54:55Z
 updated_at: 2024-08-23T14:28:17Z
 url: https://github.com/astral-sh/uv/issues/6509
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # ModuleNotFoundError: No module named 'distutils'
 
 ---
 
-_Issue opened by @kdheepak on 2024-08-23 12:54_
+_@kdheepak_
 
 When I run `uv add numpy` (after adding some other dependencies successfully), I get an "No module named 'distutils'" error. I've just installed `uv` and ran `uv install python 3.12` and tried to create a new project with it.
 

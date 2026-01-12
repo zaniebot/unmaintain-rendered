@@ -15,14 +15,14 @@ head: brent/unnecessary-re
 created_at: 2024-11-28T15:52:24Z
 updated_at: 2024-12-01T16:21:08Z
 url: https://github.com/astral-sh/ruff/pull/14659
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implement `unnecessary-regular-expression` (`RUF055`)
 
 ---
 
-_Pull request opened by @ntBre on 2024-11-28 15:52_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T20:37:03Z
 updated_at: 2024-06-11T21:40:10Z
 url: https://github.com/astral-sh/uv/issues/4252
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # monailabel not installable after uv 0.2.3
 
 ---
 
-_Issue opened by @StellarStorm on 2024-06-11 20:37_
+_@StellarStorm_
 
 uv 0.2.3 and later cannot install [monailabel](https://pypi.org/project/monailabel/), but 0.2.2 and earlier can. It is still installable with `pip`.
 

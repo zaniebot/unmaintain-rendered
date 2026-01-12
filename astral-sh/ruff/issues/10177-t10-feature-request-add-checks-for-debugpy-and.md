@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-01T01:57:52Z
 updated_at: 2024-03-02T04:03:01Z
 url: https://github.com/astral-sh/ruff/issues/10177
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [T10]: Feature Request: Add checks for debugpy and ptvsd imports
 
 ---
 
-_Issue opened by @ivanbarsukov on 2024-03-01 01:57_
+_@ivanbarsukov_
 
 I'm suggesting to enhance T10 rule by adding checks for imports of debugpy and ptvsd, commonly used debugging packages
 

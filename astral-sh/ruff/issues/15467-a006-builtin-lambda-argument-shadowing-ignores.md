@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T00:57:46Z
 updated_at: 2025-01-14T01:05:46Z
 url: https://github.com/astral-sh/ruff/issues/15467
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # A006 builtin-lambda-argument-shadowing ignores exceptions
 
 ---
 
-_Issue opened by @Zer0x00 on 2025-01-14 00:57_
+_@Zer0x00_
 
 The [documentation](https://docs.astral.sh/ruff/rules/builtin-lambda-argument-shadowing/) describes, that setting an exception in pyproject.toml should exclude this module from being marked as a lint error.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T05:11:36Z
 updated_at: 2025-03-11T08:52:43Z
 url: https://github.com/astral-sh/ruff/issues/15468
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New rule for str.join usage simplification
 
 ---
 
-_Issue opened by @victorsamun on 2025-01-14 05:11_
+_@victorsamun_
 
 Method `str.join` takes an iterable, so we don't need create list or tuple explicitly.
 

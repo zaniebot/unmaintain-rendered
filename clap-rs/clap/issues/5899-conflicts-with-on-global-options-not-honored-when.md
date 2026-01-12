@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T12:51:07Z
 updated_at: 2025-02-03T17:27:19Z
 url: https://github.com/clap-rs/clap/issues/5899
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `conflicts_with` on `global` options not honored when used across a subcommand
 
 ---
 
-_Issue opened by @jwodder on 2025-02-03 12:51_
+_@jwodder_
 
 ### Please complete the following tasks
 

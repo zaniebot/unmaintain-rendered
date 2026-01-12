@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T14:03:31Z
 updated_at: 2024-10-23T11:16:10Z
 url: https://github.com/clap-rs/clap/issues/5778
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Derive-argument with camel-case enum variant as default_value_t generates wrong default value
 
 ---
 
-_Issue opened by @Cydhra on 2024-10-15 14:03_
+_@Cydhra_
 
 ### Please complete the following tasks
 

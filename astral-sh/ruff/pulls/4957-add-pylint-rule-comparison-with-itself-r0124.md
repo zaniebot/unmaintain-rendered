@@ -13,14 +13,14 @@ head: comparison-with-itself
 created_at: 2023-06-08T11:21:03Z
 updated_at: 2023-07-10T09:55:29Z
 url: https://github.com/astral-sh/ruff/pull/4957
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Pylint rule `comparison-with-itself` (`R0124`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-08 11:21_
+_@tjkuson_
 
 ## Summary
 

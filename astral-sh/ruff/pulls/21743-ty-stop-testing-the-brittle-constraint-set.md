@@ -14,14 +14,14 @@ head: dcreager/fire-display
 created_at: 2025-12-01T22:50:59Z
 updated_at: 2025-12-02T13:42:34Z
 url: https://github.com/astral-sh/ruff/pull/21743
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Stop testing the (brittle) constraint set display implementation
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-01 22:50_
+_@dcreager_
 
 The `Display` implementation for constraint sets is brittle, and deserves a rethink. But later! It's perfectly fine for printf debugging; we just shouldn't be writing mdtests that depend on any particular rendering details. Most of these tests can be replaced with an equivalence check that actually validates that the _behavior_ of two constraint sets are identical.
 

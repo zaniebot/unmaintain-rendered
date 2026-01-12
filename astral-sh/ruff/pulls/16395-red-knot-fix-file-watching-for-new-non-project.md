@@ -13,14 +13,14 @@ head: micha/fix-non-project-files
 created_at: 2025-02-26T13:47:43Z
 updated_at: 2025-02-26T15:10:15Z
 url: https://github.com/astral-sh/ruff/pull/16395
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Fix file watching for new non-project files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-26 13:47_
+_@MichaReiser_
 
 ## Summary
 

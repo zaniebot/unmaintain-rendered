@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T21:45:49Z
 updated_at: 2025-01-03T03:57:25Z
 url: https://github.com/astral-sh/ruff/issues/14881
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [check] Basic, non-CFG, after-return dead code detection
 
 ---
 
-_Issue opened by @gsnedders on 2024-12-09 21:45_
+_@gsnedders_
 
 I had some code that was similar to:
 

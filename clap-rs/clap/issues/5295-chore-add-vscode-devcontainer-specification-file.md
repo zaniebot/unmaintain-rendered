@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-10T04:32:06Z
 updated_at: 2024-01-13T01:29:44Z
 url: https://github.com/clap-rs/clap/issues/5295
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # chore: add VSCode DevContainer specification file
 
 ---
 
-_Issue opened by @ccap2 on 2024-01-10 04:32_
+_@ccap2_
 
 ### Please complete the following tasks
 

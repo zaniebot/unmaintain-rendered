@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-10T17:21:44Z
 updated_at: 2024-05-13T20:42:36Z
 url: https://github.com/astral-sh/uv/issues/3513
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Add support for setting all remote packages to --only-binary
 
 ---
 
-_Issue opened by @yeswalrus on 2024-05-10 17:21_
+_@yeswalrus_
 
 Feature request/suggestion:
 If your requirements.txt file contains both local packages that are meant to be built as well as remote packages, the `--no-build` flag becomes unusable. It would be very useful to be able to specify you don't want to build any package that needs to be fetched remotely.  At minimum this could be achieved with `--only-binary :remote:`.

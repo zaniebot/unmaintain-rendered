@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:10:58Z
 updated_at: 2025-11-13T12:46:37Z
 url: https://github.com/astral-sh/ty/issues/173
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Notebook support
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:10_
+_@MichaReiser_
 
 Support for jupyter notebooks
 

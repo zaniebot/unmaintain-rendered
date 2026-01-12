@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T06:41:18Z
 updated_at: 2024-03-23T22:49:52Z
 url: https://github.com/astral-sh/ruff/issues/10504
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Support Cross-Language (R and Python) in Jupyter Notebook
 
 ---
 
-_Issue opened by @partrita on 2024-03-21 06:41_
+_@partrita_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

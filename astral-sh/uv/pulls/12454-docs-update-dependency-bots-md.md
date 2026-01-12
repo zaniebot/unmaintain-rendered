@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-03-24T22:43:38Z
 updated_at: 2025-03-24T23:08:58Z
 url: https://github.com/astral-sh/uv/pull/12454
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # docs: update dependency-bots.md
 
 ---
 
-_Pull request opened by @ShlomoCode on 2025-03-24 22:43_
+_@ShlomoCode_
 
 https://github.com/renovatebot/renovate/issues/30909 has already been resolved and released
 

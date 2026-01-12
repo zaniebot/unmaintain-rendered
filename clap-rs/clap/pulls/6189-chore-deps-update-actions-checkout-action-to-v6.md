@@ -12,14 +12,14 @@ head: renovate/actions-checkout-6.x
 created_at: 2025-12-01T01:55:39Z
 updated_at: 2025-12-01T13:28:01Z
 url: https://github.com/clap-rs/clap/pull/6189
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # chore(deps): Update actions/checkout action to v6
 
 ---
 
-_Pull request opened by @renovate on 2025-12-01 01:55_
+_@renovate_
 
 This PR contains the following updates:
 

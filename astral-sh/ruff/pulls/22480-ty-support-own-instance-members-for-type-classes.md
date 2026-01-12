@@ -11,16 +11,16 @@ assignees: []
 base: charlie/dyn
 head: charlie/dyn-members
 created_at: 2026-01-09T15:56:47Z
-updated_at: 2026-01-12T04:07:41Z
+updated_at: 2026-01-12T15:34:47Z
 url: https://github.com/astral-sh/ruff/pull/22480
-synced_at: 2026-01-12T06:55:04Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Support own instance members for `type(...)` classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 15:56_
+_@charliermarsh_
 
 ## Summary
 

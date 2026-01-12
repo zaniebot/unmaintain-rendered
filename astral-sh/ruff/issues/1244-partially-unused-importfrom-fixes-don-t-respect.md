@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T00:31:15Z
 updated_at: 2022-12-16T04:13:59Z
 url: https://github.com/astral-sh/ruff/issues/1244
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Partially unused `ImportFrom` fixes don't respect `# noqa`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-15 00:31_
+_@charliermarsh_
 
 It just occurred to me that this code:
 

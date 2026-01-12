@@ -13,14 +13,14 @@ head: renovate/pathdiff-0.x-lockfile
 created_at: 2024-12-02T00:12:18Z
 updated_at: 2024-12-02T01:08:09Z
 url: https://github.com/astral-sh/uv/pull/9562
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Update Rust crate pathdiff to v0.2.3 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 00:12_
+_@renovate_
 
 This PR contains the following updates:
 

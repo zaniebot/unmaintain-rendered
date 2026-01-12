@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T22:12:44Z
 updated_at: 2024-11-05T21:34:01Z
 url: https://github.com/astral-sh/uv/issues/8819
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # lowest-direct resolution error with constraints
 
 ---
 
-_Issue opened by @azmeuk on 2024-11-04 22:12_
+_@azmeuk_
 
 The following dockerfile is the minimum reproducible example of a situation I met in a real project CI.
 

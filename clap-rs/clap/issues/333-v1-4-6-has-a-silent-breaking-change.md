@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-10-31T16:33:40Z
 updated_at: 2015-11-03T08:44:01Z
 url: https://github.com/clap-rs/clap/issues/333
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # v1.4.6 has a silent breaking change
 
 ---
 
-_Issue opened by @Diggsey on 2015-10-31 16:33_
+_@Diggsey_
 
 Starting with v1.4.6, `--version` and `--help` cause the process to exit with a non-zero exit code. This sort of change shouldn't happen on a minor release.
 

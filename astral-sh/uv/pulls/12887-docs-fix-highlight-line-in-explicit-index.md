@@ -13,14 +13,14 @@ head: fix-docs-line-highlight
 created_at: 2025-04-14T19:22:50Z
 updated_at: 2025-04-15T20:39:59Z
 url: https://github.com/astral-sh/uv/pull/12887
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # docs: Fix highlight line in explicit index documentation
 
 ---
 
-_Pull request opened by @orishamir on 2025-04-14 19:22_
+_@orishamir_
 
 ## Summary
 

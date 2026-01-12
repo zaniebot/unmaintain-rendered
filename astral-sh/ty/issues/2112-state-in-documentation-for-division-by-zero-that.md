@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T12:03:19Z
 updated_at: 2025-12-19T18:45:20Z
 url: https://github.com/astral-sh/ty/issues/2112
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # State in documentation for `division-by-zero` that it's disabled by default because it has false positives
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-19 12:03_
+_@AlexWaygood_
 
 Split out from https://github.com/astral-sh/ty/issues/2107 because this is something we should definitely do
 

@@ -12,14 +12,14 @@ head: charlie/fix-exclude
 created_at: 2022-11-18T23:39:03Z
 updated_at: 2022-11-19T04:19:04Z
 url: https://github.com/astral-sh/ruff/pull/811
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Enable customization of autofixable error codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-18 23:39_
+_@charliermarsh_
 
 You can now specify errors that should be considered `fixable` and `unfixable`. The semantics are identical to `select` and `ignore.
 

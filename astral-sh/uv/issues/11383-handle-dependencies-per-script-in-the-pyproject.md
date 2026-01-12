@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T13:09:44Z
 updated_at: 2025-02-10T13:09:44Z
 url: https://github.com/astral-sh/uv/issues/11383
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Handle dependencies per script, in the `pyproject.toml`
 
 ---
 
-_Issue opened by @Arno500 on 2025-02-10 13:09_
+_@Arno500_
 
 ### Summary
 

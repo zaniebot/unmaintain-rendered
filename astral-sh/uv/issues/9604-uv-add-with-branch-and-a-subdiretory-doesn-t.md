@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T11:11:46Z
 updated_at: 2024-12-04T13:42:08Z
 url: https://github.com/astral-sh/uv/issues/9604
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # `uv add` with `--branch` and a subdiretory doesn't check out the branch before checking the subdirectory
 
 ---
 
-_Issue opened by @m-o-leary on 2024-12-03 11:11_
+_@m-o-leary_
 
 
 I run the following command:

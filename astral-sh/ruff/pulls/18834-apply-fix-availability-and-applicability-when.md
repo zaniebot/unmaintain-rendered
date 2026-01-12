@@ -14,14 +14,14 @@ head: brent/fix-availability
 created_at: 2025-06-20T20:26:35Z
 updated_at: 2025-06-24T14:08:38Z
 url: https://github.com/astral-sh/ruff/pull/18834
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # Apply fix availability and applicability when adding to `DiagnosticGuard` and remove `NoqaCode::rule`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-20 20:26_
+_@ntBre_
 
 ## Summary
 

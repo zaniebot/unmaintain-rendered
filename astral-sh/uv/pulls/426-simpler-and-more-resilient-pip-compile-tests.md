@@ -12,14 +12,14 @@ head: debug-ci
 created_at: 2023-11-15T08:30:39Z
 updated_at: 2023-11-15T17:32:34Z
 url: https://github.com/astral-sh/uv/pull/426
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Simpler and more resilient pip compile tests
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 08:30_
+_@konstin_
 
 The pip compile test now explicitly set their python version and `puffin venv` resolves e.g. `python3.12` correctly now. The venv creation is moved to a shared method
 

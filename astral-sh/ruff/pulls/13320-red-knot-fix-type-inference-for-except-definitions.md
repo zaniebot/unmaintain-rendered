@@ -13,14 +13,14 @@ head: alex/async-except
 created_at: 2024-09-10T22:09:00Z
 updated_at: 2024-09-11T19:05:42Z
 url: https://github.com/astral-sh/ruff/pull/13320
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Fix type inference for `except*` definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 22:09_
+_@AlexWaygood_
 
 Once again, async Python requires different inference rules to sync Python!
 

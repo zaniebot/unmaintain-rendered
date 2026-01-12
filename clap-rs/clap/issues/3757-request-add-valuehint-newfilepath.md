@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-26T03:09:55Z
 updated_at: 2022-11-08T04:56:05Z
 url: https://github.com/clap-rs/clap/issues/3757
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Request: add ValueHint::NewFilePath
 
 ---
 
-_Issue opened by @alexjago on 2022-05-26 03:09_
+_@alexjago_
 
 ### Please complete the following tasks
 

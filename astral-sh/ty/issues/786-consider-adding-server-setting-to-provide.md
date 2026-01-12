@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-09T07:18:50Z
 updated_at: 2025-12-22T15:13:21Z
 url: https://github.com/astral-sh/ty/issues/786
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider adding server setting to provide configuration file
 
 ---
 
-_Issue opened by @kkpattern on 2025-07-09 07:18_
+_@kkpattern_
 
 Since ty now supports the `--config-file` flag, we can add this flag to the `server` command. This would greatly benefit users running ty server within a monorepo.
 

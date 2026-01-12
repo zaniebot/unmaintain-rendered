@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-06-22T02:46:13Z
 updated_at: 2016-06-24T00:33:36Z
 url: https://github.com/clap-rs/clap/issues/533
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # required_unless produces error on a flag
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-22 02:46_
+_@joshtriplett_
 
 As the clap documentation notes, you can't make a flag required.  However, it should be possible to mark a flag as `.required_unless` another flag or argument.  Doing so currently produces a runtime panic.
 

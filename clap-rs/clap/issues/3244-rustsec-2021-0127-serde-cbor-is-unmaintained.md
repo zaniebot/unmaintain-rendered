@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-01-03T03:08:22Z
 updated_at: 2022-01-04T01:34:22Z
 url: https://github.com/clap-rs/clap/issues/3244
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # RUSTSEC-2021-0127: serde_cbor is unmaintained
 
 ---
 
-_Issue opened by @github-actions on 2022-01-03 03:08_
+_@github-actions_
 
 
 > serde_cbor is unmaintained

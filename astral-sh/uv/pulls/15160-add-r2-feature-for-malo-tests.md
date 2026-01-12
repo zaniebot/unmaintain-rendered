@@ -13,14 +13,14 @@ head: charlie/r2
 created_at: 2025-08-08T09:30:20Z
 updated_at: 2025-08-08T11:26:20Z
 url: https://github.com/astral-sh/uv/pull/15160
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Add R2 feature for malo tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-08 09:30_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/15158.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-11-25T22:42:50Z
 updated_at: 2020-04-24T15:14:01Z
 url: https://github.com/clap-rs/clap/issues/1601
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # panic when using global arguments + subcommands and calling get_matches_from_safe_borrow() then print_help()
 
 ---
 
-_Issue opened by @igozali on 2019-11-25 22:42_
+_@igozali_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

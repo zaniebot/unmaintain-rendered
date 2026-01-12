@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T00:18:25Z
 updated_at: 2024-03-25T20:30:54Z
 url: https://github.com/astral-sh/uv/issues/1619
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Can't compile pyproject.toml to requirements.txt
 
 ---
 
-_Issue opened by @Pixel-Minions on 2024-02-18 00:18_
+_@Pixel-Minions_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

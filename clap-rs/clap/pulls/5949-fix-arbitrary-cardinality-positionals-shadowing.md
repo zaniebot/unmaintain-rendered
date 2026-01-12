@@ -12,14 +12,14 @@ head: option-name-completions-after-positionals
 created_at: 2025-03-15T13:39:19Z
 updated_at: 2025-03-19T21:00:35Z
 url: https://github.com/clap-rs/clap/pull/5949
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Fix arbitrary-cardinality positionals shadowing option name completion
 
 ---
 
-_Pull request opened by @krobelus on 2025-03-15 13:39_
+_@krobelus_
 
 NOTE This text is outdated; see commit messages.
 

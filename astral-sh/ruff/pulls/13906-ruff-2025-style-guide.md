@@ -14,14 +14,14 @@ head: micha/ruff-2025
 created_at: 2024-10-24T11:23:04Z
 updated_at: 2025-01-03T13:16:13Z
 url: https://github.com/astral-sh/ruff/pull/13906
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Ruff 2025 style guide
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-24 11:23_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T23:45:27Z
 updated_at: 2024-12-17T16:37:09Z
 url: https://github.com/astral-sh/ruff/issues/14550
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support narrowing on `if x` and `if not x`
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 23:45_
+_@carljm_
 
 This is trickier than it might appear; the complexities are discussed in https://github.com/astral-sh/ruff/issues/13694#issuecomment-2438438759
 

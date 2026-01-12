@@ -13,14 +13,14 @@ head: workspace-refs
 created_at: 2024-08-05T21:25:12Z
 updated_at: 2024-08-05T22:07:24Z
 url: https://github.com/astral-sh/ruff/pull/12697
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Rename `workspace_root` variables in the module resolver to `src_root`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-05 21:25_
+_@AlexWaygood_
 
 Fixes #12337
 

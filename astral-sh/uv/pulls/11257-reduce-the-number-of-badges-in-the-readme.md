@@ -13,14 +13,14 @@ head: zb/badges
 created_at: 2025-02-05T19:46:24Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11257
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Reduce the number of badges in the README
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 19:46_
+_@zanieb_
 
 _No description provided._
 

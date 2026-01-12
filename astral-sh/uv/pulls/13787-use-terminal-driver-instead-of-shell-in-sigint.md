@@ -13,14 +13,14 @@ head: zb/term-driver
 created_at: 2025-06-02T18:37:28Z
 updated_at: 2025-06-03T22:07:04Z
 url: https://github.com/astral-sh/uv/pull/13787
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Use "terminal driver" instead of "shell" in SIGINT docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-02 18:37_
+_@zanieb_
 
 Addressing the comment at https://github.com/astral-sh/uv/issues/12108#issuecomment-2925703719
 

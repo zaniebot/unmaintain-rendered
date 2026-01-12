@@ -12,14 +12,14 @@ head: ci/benchmark-step
 created_at: 2023-03-13T12:51:42Z
 updated_at: 2023-03-16T08:05:11Z
 url: https://github.com/astral-sh/ruff/pull/3480
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: Benchmark CI Step
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-13 12:51_
+_@MichaReiser_
 
 This PR adds a new benchmark step that runs for every pull request and compares the PR performance against main. The action writes a comment (or updates an existing one) with the results. 
 

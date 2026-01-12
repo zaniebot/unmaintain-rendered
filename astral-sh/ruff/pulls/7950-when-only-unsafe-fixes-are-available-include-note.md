@@ -12,14 +12,14 @@ head: zanie/hidden-lonely
 created_at: 2023-10-13T16:16:02Z
 updated_at: 2023-10-13T17:43:15Z
 url: https://github.com/astral-sh/ruff/pull/7950
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # When only unsafe fixes are available, include note that no fixes are available first
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-13 16:16_
+_@zanieb_
 
 I believe this is a bit clearer.
 

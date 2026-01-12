@@ -13,14 +13,14 @@ head: dcreager/both-directions
 created_at: 2025-05-17T19:39:39Z
 updated_at: 2025-05-19T15:45:42Z
 url: https://github.com/astral-sh/ruff/pull/18155
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Infer function call typevars in both directions
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-17 19:39_
+_@dcreager_
 
 This primarily comes up with annotated `self` parameters in constructors:
 

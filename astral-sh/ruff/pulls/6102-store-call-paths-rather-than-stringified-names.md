@@ -12,14 +12,14 @@ head: charlie/store-call-path
 created_at: 2023-07-26T19:19:18Z
 updated_at: 2023-08-05T15:40:32Z
 url: https://github.com/astral-sh/ruff/pull/6102
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Store call paths rather than stringified names
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-26 19:19_
+_@charliermarsh_
 
 ## Summary
 

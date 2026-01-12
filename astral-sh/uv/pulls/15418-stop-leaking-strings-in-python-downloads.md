@@ -13,14 +13,14 @@ head: konsti/stop-leaking-strings
 created_at: 2025-08-21T14:23:23Z
 updated_at: 2025-08-21T15:54:40Z
 url: https://github.com/astral-sh/uv/pull/15418
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Stop leaking strings in Python downloads
 
 ---
 
-_Pull request opened by @konstin on 2025-08-21 14:23_
+_@konstin_
 
 We should not unnecessarily leak memory. Instead, we follow the general patterns and use `Cow` for strings that can be from either a static or a dynamic source.
 

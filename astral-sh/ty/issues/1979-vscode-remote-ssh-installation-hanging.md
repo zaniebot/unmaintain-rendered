@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T06:38:20Z
 updated_at: 2025-12-18T08:57:43Z
 url: https://github.com/astral-sh/ty/issues/1979
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # vscode remote-ssh installation hanging
 
 ---
 
-_Issue opened by @lagamura on 2025-12-17 06:38_
+_@lagamura_
 
 ### Summary
 

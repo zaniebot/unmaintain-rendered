@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T07:52:44Z
 updated_at: 2024-12-06T17:34:07Z
 url: https://github.com/astral-sh/ruff/issues/14782
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF055: false negative for `re.search(...)`
 
 ---
 
-_Issue opened by @trim21 on 2024-12-05 07:52_
+_@trim21_
 
 ```python
 import re

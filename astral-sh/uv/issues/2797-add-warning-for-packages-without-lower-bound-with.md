@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-03T04:34:06Z
 updated_at: 2024-07-18T14:56:49Z
 url: https://github.com/astral-sh/uv/issues/2797
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Add warning for packages without lower bound with `--resolution=lowest`
 
 ---
 
-_Issue opened by @zanieb on 2024-04-03 04:34_
+_@zanieb_
 
 per https://github.com/astral-sh/uv/issues/1718#issuecomment-1954420636 we should throw a warning in this case since without a lower bound we will take the _oldest_ version of a package which is actually quite unlikely to be compatible.
 

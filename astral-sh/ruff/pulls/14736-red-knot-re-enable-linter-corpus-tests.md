@@ -13,14 +13,14 @@ head: david/reenable-linter-corpus-tests
 created_at: 2024-12-02T15:55:24Z
 updated_at: 2024-12-02T19:11:32Z
 url: https://github.com/astral-sh/ruff/pull/14736
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Re-enable linter corpus tests
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-02 15:55_
+_@sharkdp_
 
 ## Summary
 

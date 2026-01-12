@@ -12,14 +12,14 @@ head: main
 created_at: 2025-08-21T01:47:33Z
 updated_at: 2025-09-20T11:46:01Z
 url: https://github.com/astral-sh/ruff/pull/20016
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Add option for ty to find modules in paths defined in PYTHONPATH
 
 ---
 
-_Pull request opened by @natelust on 2025-08-21 01:47_
+_@natelust_
 
 Fixes https://github.com/astral-sh/ty/issues/547. Add the option for looking up modules from paths in the PYTHONPATH environment variable.
 

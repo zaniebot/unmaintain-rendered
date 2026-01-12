@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T09:05:53Z
 updated_at: 2023-09-08T10:15:50Z
 url: https://github.com/clap-rs/clap/issues/5103
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `clap_complete` fails of some optional arguments are missing
 
 ---
 
-_Issue opened by @janstarke on 2023-08-30 09:05_
+_@janstarke_
 
 ### Please complete the following tasks
 

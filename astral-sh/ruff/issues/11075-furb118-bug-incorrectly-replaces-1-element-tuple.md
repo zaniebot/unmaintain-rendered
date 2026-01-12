@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-21T18:36:48Z
 updated_at: 2024-04-23T00:20:44Z
 url: https://github.com/astral-sh/ruff/issues/11075
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FURB118 bug: incorrectly replaces 1 element tuple lambdas with itemgetter
 
 ---
 
-_Issue opened by @Skylion007 on 2024-04-21 18:36_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

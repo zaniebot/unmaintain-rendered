@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T12:58:38Z
 updated_at: 2025-03-14T15:21:55Z
 url: https://github.com/astral-sh/uv/issues/10238
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Explicitly declare extra depenendcy conflicts
 
 ---
 
-_Issue opened by @martinitus on 2024-12-30 12:58_
+_@martinitus_
 
 Hey  folks,
 I have a followup question  / issue to the "conflicting extras / groups" features that were merged the last weeks (e.g. #8976).

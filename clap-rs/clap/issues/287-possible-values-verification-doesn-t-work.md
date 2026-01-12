@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-29T23:31:50Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/287
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Possible values verification doesn't work
 
 ---
 
-_Issue opened by @grossws on 2015-09-29 23:31_
+_@grossws_
 
 Can be reproduced using [example 11_only_specific_values](https://github.com/kbknapp/clap-rs/blob/master/examples/11_only_specific_values.rs). 
 ### actual

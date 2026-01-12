@@ -12,14 +12,14 @@ head: charlie/up
 created_at: 2023-10-26T01:03:21Z
 updated_at: 2023-10-26T13:00:23Z
 url: https://github.com/astral-sh/uv/pull/185
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Filter and store all distributions upfront
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 01:03_
+_@charliermarsh_
 
 Modifies the resolver to remove any incompatible distributions upfront, and store them in an index by version. This will be necessary to support `--upgrade` semantics.
 

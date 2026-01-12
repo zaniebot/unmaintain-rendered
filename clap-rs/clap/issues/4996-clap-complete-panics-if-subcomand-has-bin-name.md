@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-05T20:29:33Z
 updated_at: 2024-08-10T00:47:38Z
 url: https://github.com/clap-rs/clap/issues/4996
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete panics if subcomand has bin_name defined
 
 ---
 
-_Issue opened by @cymruu on 2023-07-05 20:29_
+_@cymruu_
 
 ### Please complete the following tasks
 

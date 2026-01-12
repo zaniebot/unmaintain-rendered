@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-01-22T01:40:27Z
 updated_at: 2021-02-07T18:05:36Z
 url: https://github.com/clap-rs/clap/issues/1640
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow changing message for generated version subcommand
 
 ---
 
-_Issue opened by @casey on 2020-01-22 01:40_
+_@casey_
 
 Is it possible to change the auto-generated help and version sub-command help strings, as is possible with `App::help_message` and `App::version_message`?
 

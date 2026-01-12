@@ -13,14 +13,14 @@ head: alex/naming-setting
 created_at: 2024-08-16T15:32:18Z
 updated_at: 2024-08-16T15:50:20Z
 url: https://github.com/astral-sh/ruff/pull/12935
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # `N817` docs: refer to the correct setting
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-16 15:32_
+_@AlexWaygood_
 
 Addresses the issue I raised in https://github.com/astral-sh/ruff/pull/12922#discussion_r1719834258. Cc. @MichaReiser
 

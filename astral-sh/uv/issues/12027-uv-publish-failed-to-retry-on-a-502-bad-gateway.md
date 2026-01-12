@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T22:52:21Z
 updated_at: 2025-03-10T11:38:09Z
 url: https://github.com/astral-sh/uv/issues/12027
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `uv publish` failed to retry on a 502 bad gateway error
 
 ---
 
-_Issue opened by @zanieb on 2025-03-06 22:52_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/actions/runs/13707864294/job/38338658887
 

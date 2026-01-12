@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T02:26:33Z
 updated_at: 2025-07-17T14:49:24Z
 url: https://github.com/astral-sh/uv/issues/13308
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv tool: mode to treat exact dependencies as overridden
 
 ---
 
-_Issue opened by @tjni on 2025-05-06 02:26_
+_@tjni_
 
 ### Summary
 

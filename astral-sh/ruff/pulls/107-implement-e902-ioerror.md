@@ -12,14 +12,14 @@ head: charlie/E902
 created_at: 2022-09-05T16:43:05Z
 updated_at: 2022-09-05T17:15:12Z
 url: https://github.com/astral-sh/ruff/pull/107
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement E902 (IOError)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-05 16:43_
+_@charliermarsh_
 
 _No description provided._
 

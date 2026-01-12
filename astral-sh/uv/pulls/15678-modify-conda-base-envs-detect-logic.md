@@ -11,14 +11,14 @@ head: main
 created_at: 2025-09-04T13:05:06Z
 updated_at: 2025-09-07T07:58:20Z
 url: https://github.com/astral-sh/uv/pull/15678
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # modify conda base envs detect logic
 
 ---
 
-_Pull request opened by @gigberg on 2025-09-04 13:05_
+_@gigberg_
 
 Related to https://github.com/astral-sh/uv/issues/15604#issuecomment-3253567864, modify conda base envs detect logic
 

@@ -14,14 +14,14 @@ head: dhruv/equal-line-d407
 created_at: 2023-06-27T05:33:22Z
 updated_at: 2023-06-27T16:53:36Z
 url: https://github.com/astral-sh/ruff/pull/5383
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Replace same length equal line with dash line in D407
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-27 05:33_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-13T16:50:46Z
 updated_at: 2023-03-13T04:03:19Z
 url: https://github.com/astral-sh/ruff/issues/1230
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Panic when RUF100 check encounters carriage return
 
 ---
 
-_Issue opened by @squiddy on 2022-12-13 16:50_
+_@squiddy_
 
 Another one from #1206 
 

@@ -15,14 +15,14 @@ head: b006-fix
 created_at: 2025-10-15T01:09:51Z
 updated_at: 2025-10-15T21:37:25Z
 url: https://github.com/astral-sh/ruff/pull/20877
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [`flake8-bugbear`] Omit annotation in preview fix for `B006`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-15 01:09_
+_@dylwil3_
 
 Closes #20864 
 

@@ -13,14 +13,14 @@ head: zb/fix-install-ii
 created_at: 2025-03-11T23:40:12Z
 updated_at: 2025-03-11T23:53:29Z
 url: https://github.com/astral-sh/uv/pull/12124
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Fix `uv python install --reinstall` when the version is not yet installed
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-11 23:40_
+_@zanieb_
 
 I noticed this was failing to perform the install
 

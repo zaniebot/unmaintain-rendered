@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T23:19:29Z
 updated_at: 2024-11-26T14:40:04Z
 url: https://github.com/astral-sh/ruff/issues/14594
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Tests failed for ruff 0.8.0
 
 ---
 
-_Issue opened by @eli-schwartz on 2024-11-25 23:19_
+_@eli-schwartz_
 
 I attempted to package ruff 0.8.0 as a distro package update for Gentoo Linux. The new version fails to run tests.
 

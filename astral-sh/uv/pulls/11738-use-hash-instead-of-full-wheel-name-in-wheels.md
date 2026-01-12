@@ -14,14 +14,14 @@ head: cache-url-length
 created_at: 2025-02-24T05:27:03Z
 updated_at: 2025-02-27T08:13:34Z
 url: https://github.com/astral-sh/uv/pull/11738
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # Use hash instead of full wheel name in wheels bucket
 
 ---
 
-_Pull request opened by @nkitsaini on 2025-02-24 05:27_
+_@nkitsaini_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

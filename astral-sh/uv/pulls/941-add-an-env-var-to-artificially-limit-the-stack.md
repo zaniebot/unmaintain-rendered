@@ -12,14 +12,14 @@ head: konsti/set-explicit-thread-size
 created_at: 2024-01-16T16:24:23Z
 updated_at: 2024-01-19T09:34:47Z
 url: https://github.com/astral-sh/uv/pull/941
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 #  Add an env var to artificially limit the stack size 
 
 ---
 
-_Pull request opened by @konstin on 2024-01-16 16:24_
+_@konstin_
 
 By default, windows has a stack size limit of 1MB which we run against in debug without any explicit culprit. A new environment variable `PUFFIN_STACK_SIZE` allows setting an artificially smaller stack size.
 

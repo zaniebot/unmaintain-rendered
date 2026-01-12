@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T07:10:14Z
 updated_at: 2025-09-20T05:14:02Z
 url: https://github.com/astral-sh/uv/issues/15803
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Add config to allow connection errors when searching across indexes
 
 ---
 
-_Issue opened by @chrisirhc on 2025-09-12 07:10_
+_@chrisirhc_
 
 ### Summary
 

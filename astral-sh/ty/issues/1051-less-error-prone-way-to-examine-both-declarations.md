@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T15:13:18Z
 updated_at: 2025-08-19T15:13:34Z
 url: https://github.com/astral-sh/ty/issues/1051
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Less error-prone way to examine both declarations and bindings
 
 ---
 
-_Issue opened by @carljm on 2025-08-19 15:13_
+_@carljm_
 
 We do this sort of thing a lot in ty's code base: iterating over both bindings and declarations separately, hoping that there is a 1:1 relationship. This is not always the case. For example:
 ```py

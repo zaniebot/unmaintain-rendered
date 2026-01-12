@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T08:04:13Z
 updated_at: 2025-10-08T13:19:56Z
 url: https://github.com/astral-sh/ruff/issues/20739
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # new rule - ban `from __future__ import annotations` when targeting python >=3.14
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-07 08:04_
+_@DetachHead_
 
 ### Summary
 

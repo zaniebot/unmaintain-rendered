@@ -13,14 +13,14 @@ head: fix/various-rules-refer-to-except-star-as-except-14791
 created_at: 2024-12-06T12:40:18Z
 updated_at: 2024-12-08T17:38:59Z
 url: https://github.com/astral-sh/ruff/pull/14815
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Improve error messages for except* (B025, B029, B030, B904) #14791
 
 ---
 
-_Pull request opened by @smokyabdulrahman on 2024-12-06 12:40_
+_@smokyabdulrahman_
 
 Improves error message for [except*](https://peps.python.org/pep-0654/) (Rules: B025, B029, B030, B904)
 

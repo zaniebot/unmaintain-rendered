@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-16T23:04:33Z
 updated_at: 2022-02-28T17:48:15Z
 url: https://github.com/clap-rs/clap/issues/3480
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # write_help / write_long_help do not respect Command color settings
 
 ---
 
-_Issue opened by @nicklan on 2022-02-16 23:04_
+_@nicklan_
 
 ### Please complete the following tasks
 

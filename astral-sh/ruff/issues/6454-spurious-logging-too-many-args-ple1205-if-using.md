@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-09T18:10:59Z
 updated_at: 2023-08-09T20:39:12Z
 url: https://github.com/astral-sh/ruff/issues/6454
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Spurious logging-too-many-args (PLE1205) if using the msg kwarg
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-08-09 18:10_
+_@adamtheturtle_
 
 `logging.info`, `logging.warning`, `logging.error`, etc. each take `(msg, *args, **kwargs)`.
 If `msg` is given as a keyword argument, ruff 0.0.283 gives an error (https://beta.ruff.rs/docs/rules/logging-too-many-args/), which is incorrect.

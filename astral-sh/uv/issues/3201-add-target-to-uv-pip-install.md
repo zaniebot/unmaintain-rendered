@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-22T21:44:37Z
 updated_at: 2024-04-22T21:56:48Z
 url: https://github.com/astral-sh/uv/issues/3201
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add --target to uv pip install
 
 ---
 
-_Issue opened by @Pixel-Minions on 2024-04-22 21:44_
+_@Pixel-Minions_
 
 Hi, 
 

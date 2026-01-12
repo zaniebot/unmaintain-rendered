@@ -13,14 +13,14 @@ head: zb/venv-from-venv
 created_at: 2024-06-05T13:12:09Z
 updated_at: 2024-07-02T14:57:21Z
 url: https://github.com/astral-sh/uv/pull/4045
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:00Z
 ```
 
 # Add test coverage for creating a venv with an active venv
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 13:12_
+_@zanieb_
 
 _No description provided._
 

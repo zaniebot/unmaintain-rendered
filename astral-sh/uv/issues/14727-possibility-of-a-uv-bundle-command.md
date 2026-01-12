@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T14:32:55Z
 updated_at: 2025-07-18T16:21:03Z
 url: https://github.com/astral-sh/uv/issues/14727
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Possibility of a `uv bundle` command
 
 ---
 
-_Issue opened by @Mstr0A on 2025-07-18 14:32_
+_@Mstr0A_
 
 ### Summary
 

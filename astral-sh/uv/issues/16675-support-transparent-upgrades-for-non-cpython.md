@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-10T22:05:21Z
 updated_at: 2025-11-10T23:00:24Z
 url: https://github.com/astral-sh/uv/issues/16675
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Support transparent upgrades for non-CPython managed interpreters
 
 ---
 
-_Issue opened by @terror on 2025-11-10 22:05_
+_@terror_
 
 Our "transparent upgrade" machinery (minor-version links/junctions) [only runs for CPython](https://github.com/astral-sh/uv/blob/9a21897f3d5a36413c1d1305a5cd5a3da05b1391/crates/uv-python/src/managed.rs#L754), so prerelease warnings are suppressed for PyPy/GraalPy/Pyodide installs. We should extend the link/update flow and warning logic to cover every managed implementation we ship (PyPy, GraalPy, etc.) so `uv python upgrade` can actually promote their prereleases to stable builds.
 

@@ -11,14 +11,14 @@ head: add-path-dep
 created_at: 2024-07-30T14:46:25Z
 updated_at: 2024-07-31T03:14:26Z
 url: https://github.com/astral-sh/uv/pull/5601
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # `uv add` should respect `dependency_type` for path dependencies
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-30 14:46_
+_@eth3lbert_
 
 ## Summary
 

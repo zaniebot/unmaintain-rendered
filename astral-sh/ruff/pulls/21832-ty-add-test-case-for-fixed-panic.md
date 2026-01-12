@@ -14,14 +14,14 @@ head: alex/panic-test
 created_at: 2025-12-07T15:53:19Z
 updated_at: 2025-12-07T15:58:12Z
 url: https://github.com/astral-sh/ruff/pull/21832
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Add test case for fixed panic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-07 15:53_
+_@AlexWaygood_
 
 ## Summary
 

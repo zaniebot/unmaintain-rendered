@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T11:12:25Z
 updated_at: 2025-05-19T08:23:57Z
 url: https://github.com/astral-sh/uv/issues/13487
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Updating `uv lock` with win32 dependency in uv.sources under linux fails with "Distribution not found at"
 
 ---
 
-_Issue opened by @Timoses on 2025-05-16 11:12_
+_@Timoses_
 
 ### Summary
 

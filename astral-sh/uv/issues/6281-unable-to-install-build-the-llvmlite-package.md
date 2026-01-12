@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T23:11:40Z
 updated_at: 2024-12-22T15:32:09Z
 url: https://github.com/astral-sh/uv/issues/6281
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Unable to install/build the `llvmlite` package
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-08-20 23:11_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

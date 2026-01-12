@@ -13,14 +13,14 @@ head: incompatible-path
 created_at: 2023-12-29T16:09:41Z
 updated_at: 2024-01-02T15:00:51Z
 url: https://github.com/astral-sh/uv/pull/739
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Don't install incompatible path and url wheels
 
 ---
 
-_Pull request opened by @konstin on 2023-12-29 16:09_
+_@konstin_
 
 Add early tag checking for path and url wheels.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T11:04:18Z
 updated_at: 2024-10-30T12:48:47Z
 url: https://github.com/astral-sh/ruff/issues/13991
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # module-import-not-at-top-of-file (E402): Broken because of exceptional handling
 
 ---
 
-_Issue opened by @buhtz on 2024-10-30 11:04_
+_@buhtz_
 
 The rule "[module-import-not-at-top-of-file (E402)](https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/#module-import-not-at-top-of-file-e402)" was derived from `pycodestyle`. But compared to the original pycodestyle-e402, ruff's behavior has an exception:
 

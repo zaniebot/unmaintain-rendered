@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-12T17:39:48Z
 updated_at: 2025-01-19T13:29:43Z
 url: https://github.com/astral-sh/uv/issues/10543
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # How to use the parent directory `venv` within subfolders?
 
 ---
 
-_Issue opened by @badlydrawnrob on 2025-01-12 17:39_
+_@badlydrawnrob_
 
 You can call a subfolders file with `uv run uvicorn src.main:app --reload` from the parent directory (the `venv` is stored in this parent directory). How might you run the virtual environment `uv` command from within the subfolder itself? Is that even possible?
 

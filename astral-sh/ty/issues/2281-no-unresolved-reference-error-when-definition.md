@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T21:38:11Z
 updated_at: 2025-12-30T21:38:51Z
 url: https://github.com/astral-sh/ty/issues/2281
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # No unresolved-reference error when definition exists but is not reachable
 
 ---
 
-_Issue opened by @carljm on 2025-12-30 21:38_
+_@carljm_
 
 In this code, we (of course) emit an `unresolved-reference` on the use of `x` in the last line:
 

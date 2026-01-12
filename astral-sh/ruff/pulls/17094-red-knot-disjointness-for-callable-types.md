@@ -13,14 +13,14 @@ head: dhruv/callable-disjoint
 created_at: 2025-03-31T14:04:11Z
 updated_at: 2025-04-02T02:35:18Z
 url: https://github.com/astral-sh/ruff/pull/17094
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Disjointness for callable types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-31 14:04_
+_@dhruvmanila_
 
 ## Summary
 

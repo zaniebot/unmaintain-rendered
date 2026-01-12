@@ -13,14 +13,14 @@ head: fix_issue_12914
 created_at: 2025-04-16T09:15:57Z
 updated_at: 2025-04-17T21:19:12Z
 url: https://github.com/astral-sh/uv/pull/12915
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Show PyPy downloads during `uv python list`
 
 ---
 
-_Pull request opened by @alexprengere on 2025-04-16 09:15_
+_@alexprengere_
 
 Fixes #12914.
 When `PythonDownloadRequest` does not have the `implementation` set, do not set it to CPython when calling `fill`, otherwise only CPython interpreters are shown when listing interpreters available for download, with `uv python list`.

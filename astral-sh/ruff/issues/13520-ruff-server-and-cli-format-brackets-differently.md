@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-26T07:50:18Z
 updated_at: 2025-01-07T05:16:10Z
 url: https://github.com/astral-sh/ruff/issues/13520
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ruff server and CLI format brackets differently on long lines
 
 ---
 
-_Issue opened by @pdecat on 2024-09-26 07:50_
+_@pdecat_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

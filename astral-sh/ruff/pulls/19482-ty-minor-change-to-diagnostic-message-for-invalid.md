@@ -15,14 +15,14 @@ head: david/invalid-type-form-literal
 created_at: 2025-07-22T09:35:07Z
 updated_at: 2025-07-22T09:42:14Z
 url: https://github.com/astral-sh/ruff/pull/19482
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Minor change to diagnostic message for invalid Literal uses
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 09:35_
+_@sharkdp_
 
 _No description provided._
 

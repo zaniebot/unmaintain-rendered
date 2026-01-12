@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-19T23:50:20Z
 updated_at: 2024-05-28T16:07:40Z
 url: https://github.com/astral-sh/uv/issues/3660
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # 'Unable to create Windows launch for x86' while installing packages
 
 ---
 
-_Issue opened by @anishpillay2002 on 2024-05-19 23:50_
+_@anishpillay2002_
 
 I receive the following error while trying to install packages with uv but `pip install crewai` works fine
 

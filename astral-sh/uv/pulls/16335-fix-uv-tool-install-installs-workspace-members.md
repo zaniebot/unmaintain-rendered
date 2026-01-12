@@ -13,14 +13,14 @@ head: krish/tool3
 created_at: 2025-10-17T05:10:51Z
 updated_at: 2025-11-26T23:21:20Z
 url: https://github.com/astral-sh/uv/pull/16335
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Fix: uv tool install installs workspace members non‑editable by default; --editable to opt‑in
 
 ---
 
-_Pull request opened by @krishmas on 2025-10-17 05:10_
+_@krishmas_
 
 ## Summary
 

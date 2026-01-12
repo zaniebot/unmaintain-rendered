@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T03:09:33Z
 updated_at: 2025-11-04T02:10:32Z
 url: https://github.com/astral-sh/uv/issues/14383
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Editable Installs with scikit-build-core don't work
 
 ---
 
-_Issue opened by @fizzxed on 2025-07-01 03:09_
+_@fizzxed_
 
 ### Summary
 

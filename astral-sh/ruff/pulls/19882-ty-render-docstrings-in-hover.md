@@ -14,14 +14,14 @@ head: gankra/dochover
 created_at: 2025-08-12T18:18:04Z
 updated_at: 2025-08-13T15:00:58Z
 url: https://github.com/astral-sh/ruff/pull/19882
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] render docstrings in hover
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-12 18:18_
+_@Gankra_
 
 This PR has several components:
 

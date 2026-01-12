@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-04T15:17:54Z
 updated_at: 2024-06-04T15:17:54Z
 url: https://github.com/astral-sh/ruff/issues/11738
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Implement flake8-picky-parentheses
 
 ---
 
-_Issue opened by @benjamb on 2024-06-04 15:17_
+_@benjamb_
 
 - [ ] `PAR001`: `Redundant parentheses (general)`
 - [ ] `PAR002`: `Parentheses used for tuple unpacking`

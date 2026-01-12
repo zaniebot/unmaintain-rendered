@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T18:04:37Z
 updated_at: 2026-01-09T10:24:39Z
 url: https://github.com/astral-sh/ty/issues/1657
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reconsider one `Db` per `ProgramSettings`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-27 18:04_
+_@MichaReiser_
 
 Today, there's exactly one `ProgramSettings` per `Db` instance. I think the main motivation for this design were:
 

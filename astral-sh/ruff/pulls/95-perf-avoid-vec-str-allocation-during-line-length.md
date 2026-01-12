@@ -12,14 +12,14 @@ head: dd/no-alloc-line-check
 created_at: 2022-09-03T19:02:58Z
 updated_at: 2022-09-03T20:34:11Z
 url: https://github.com/astral-sh/ruff/pull/95
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # perf: Avoid `Vec<&str>` allocation during line length checking
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-03 19:02_
+_@Stranger6667_
 
 I noticed that for each line a new vector is allocated, however it could be avoided. Generally, this allocation doesn't hurt much, but it could be visible on lines with a lot of short words and is invoked on **every** line `ruff` processes. For example, the [\_\_init\_\_.py](https://github.com/psf/black/blob/main/src/black/__init__.py) (1388 lines) file from `black` gains ~35% improvement:
 - before: `236.92 µs`

@@ -14,14 +14,14 @@ head: charlie/req-ii
 created_at: 2024-03-05T04:41:01Z
 updated_at: 2024-03-14T02:37:02Z
 url: https://github.com/astral-sh/uv/pull/2196
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Error when direct URL requirements don't match `Requires-Python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 04:41_
+_@charliermarsh_
 
 ## Summary
 

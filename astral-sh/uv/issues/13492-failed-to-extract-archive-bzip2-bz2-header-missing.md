@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T14:07:40Z
 updated_at: 2025-05-17T00:17:24Z
 url: https://github.com/astral-sh/uv/issues/13492
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Failed to extract archive, bzip2: bz2 header missing
 
 ---
 
-_Issue opened by @Sergo1217 on 2025-05-16 14:07_
+_@Sergo1217_
 
 ### Summary
 

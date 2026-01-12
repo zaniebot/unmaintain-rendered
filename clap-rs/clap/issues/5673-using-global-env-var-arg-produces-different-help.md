@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T19:58:44Z
 updated_at: 2024-08-14T13:27:18Z
 url: https://github.com/clap-rs/clap/issues/5673
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # using global env var arg produces different help output
 
 ---
 
-_Issue opened by @davepacheco on 2024-08-13 19:58_
+_@davepacheco_
 
 ### Please complete the following tasks
 

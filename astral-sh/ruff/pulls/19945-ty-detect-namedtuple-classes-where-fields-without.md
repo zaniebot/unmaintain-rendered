@@ -13,14 +13,14 @@ head: alex/namedtuple-default-values
 created_at: 2025-08-16T22:40:54Z
 updated_at: 2025-08-19T08:56:35Z
 url: https://github.com/astral-sh/ruff/pull/19945
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Detect `NamedTuple` classes where fields without default values follow fields with default values
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-16 22:40_
+_@AlexWaygood_
 
 (Stacked on top of https://github.com/astral-sh/ruff/pull/19943 and https://github.com/astral-sh/ruff/pull/19944; review them first.)
 

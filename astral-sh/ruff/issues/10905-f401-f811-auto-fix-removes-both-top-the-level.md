@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-12T12:27:16Z
 updated_at: 2024-04-27T15:44:54Z
 url: https://github.com/astral-sh/ruff/issues/10905
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F401 + F811 - auto-fix removes both top the level import and any inside-function import
 
 ---
 
-_Issue opened by @Adamasterr on 2024-04-12 12:27_
+_@Adamasterr_
 
 Hello!
 

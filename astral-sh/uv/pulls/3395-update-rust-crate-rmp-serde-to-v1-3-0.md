@@ -13,14 +13,14 @@ head: renovate/rmp-serde-1.x-lockfile
 created_at: 2024-05-06T02:02:23Z
 updated_at: 2024-05-06T02:29:25Z
 url: https://github.com/astral-sh/uv/pull/3395
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Update Rust crate rmp-serde to v1.3.0
 
 ---
 
-_Pull request opened by @renovate on 2024-05-06 02:02_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -13,14 +13,14 @@ head: unnecessary-generator-set
 created_at: 2024-03-26T03:47:16Z
 updated_at: 2024-03-29T04:42:55Z
 url: https://github.com/astral-sh/ruff/pull/10596
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8-comprehensions`] Handled special case for `C401` which also matches `C416`
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-26 03:47_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

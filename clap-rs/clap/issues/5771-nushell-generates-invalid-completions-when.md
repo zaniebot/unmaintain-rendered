@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-09T00:17:09Z
 updated_at: 2024-10-09T14:48:05Z
 url: https://github.com/clap-rs/clap/issues/5771
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [nushell] Generates invalid completions when variadic arg is used with last=true arg
 
 ---
 
-_Issue opened by @milesj on 2024-10-09 00:17_
+_@milesj_
 
 ### Please complete the following tasks
 

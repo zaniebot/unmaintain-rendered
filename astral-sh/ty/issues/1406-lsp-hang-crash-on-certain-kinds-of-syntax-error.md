@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-20T16:35:06Z
 updated_at: 2025-10-21T08:51:10Z
 url: https://github.com/astral-sh/ty/issues/1406
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # LSP hang/crash on certain kinds of syntax error?
 
 ---
 
-_Issue opened by @DanCardin on 2025-10-20 16:35_
+_@DanCardin_
 
 ### Summary
 

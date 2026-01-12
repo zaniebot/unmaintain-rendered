@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T00:39:43Z
 updated_at: 2026-01-07T10:17:06Z
 url: https://github.com/astral-sh/ty/issues/913
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `--add-noqa`‑style auto-suppression feature
 
 ---
 
-_Issue opened by @aaronsteers on 2025-07-30 00:39_
+_@aaronsteers_
 
 Hi Astral/`ty` team – I’m evaluating **ty** (and Pyrefly) for static typing adoption across a very large legacy codebase (tens of thousands of lines) that never adopted MyPy.
 

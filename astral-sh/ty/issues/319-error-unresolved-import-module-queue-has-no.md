@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T15:57:06Z
 updated_at: 2025-05-12T09:48:36Z
 url: https://github.com/astral-sh/ty/issues/319
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # error[unresolved-import]: Module `queue` has no member `ShutDown` even with Python 3.13
 
 ---
 
-_Issue opened by @crazymidnight on 2025-05-11 15:57_
+_@crazymidnight_
 
 ### Summary
 

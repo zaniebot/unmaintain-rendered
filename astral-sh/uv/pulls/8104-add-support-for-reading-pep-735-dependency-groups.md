@@ -14,14 +14,14 @@ head: zb/735-read
 created_at: 2024-10-10T18:41:28Z
 updated_at: 2024-10-16T21:34:48Z
 url: https://github.com/astral-sh/uv/pull/8104
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Add support for reading PEP 735 dependency groups
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 18:41_
+_@zanieb_
 
 Part of #8090 
 

@@ -13,14 +13,14 @@ head: charlie/plus
 created_at: 2024-11-05T21:47:06Z
 updated_at: 2024-11-06T03:51:38Z
 url: https://github.com/astral-sh/uv/pull/8844
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Use a + for the visual max local
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-05 21:47_
+_@charliermarsh_
 
 ## Summary
 

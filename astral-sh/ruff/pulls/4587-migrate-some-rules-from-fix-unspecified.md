@@ -12,14 +12,14 @@ head: fix-unspecified
 created_at: 2023-05-22T21:19:46Z
 updated_at: 2023-05-24T04:49:07Z
 url: https://github.com/astral-sh/ruff/pull/4587
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Migrate some rules from `Fix::unspecified`
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-05-22 21:19_
+_@sladyn98_
 
 This PR aims to migrate `unspecified` code to `safe` or `maybe_correct`
 

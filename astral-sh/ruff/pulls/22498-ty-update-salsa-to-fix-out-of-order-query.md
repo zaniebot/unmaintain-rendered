@@ -14,14 +14,14 @@ head: micha/cycle-validation-order
 created_at: 2026-01-10T18:02:49Z
 updated_at: 2026-01-11T15:06:40Z
 url: https://github.com/astral-sh/ruff/pull/22498
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Update salsa to fix out-of-order query validation
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-10 18:02_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T09:49:15Z
 updated_at: 2025-02-12T15:12:34Z
 url: https://github.com/astral-sh/uv/issues/11441
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # uv pip doesn't accept --trusted-host inside requirements.txt, but vanilla pip does
 
 ---
 
-_Issue opened by @Gualor on 2025-02-12 09:49_
+_@Gualor_
 
 ### Summary
 

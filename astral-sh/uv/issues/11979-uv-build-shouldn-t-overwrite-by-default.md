@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T15:11:03Z
 updated_at: 2025-03-18T22:22:46Z
 url: https://github.com/astral-sh/uv/issues/11979
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # uv build shouldn't overwrite by default
 
 ---
 
-_Issue opened by @pycaw on 2025-03-05 15:11_
+_@pycaw_
 
 In my opinion uv build shouldn't overwrite by default. Let's say I have distributed by build output. Then I forget to bump the package version and I overwrite the last build output of mine. I assume just as repositories do not overwrite packages by default (what is more, aren't really even configured to overwrite any time), files under /dist shouldn't be either by `uv build`. Maybe if an additional flag is present.
 

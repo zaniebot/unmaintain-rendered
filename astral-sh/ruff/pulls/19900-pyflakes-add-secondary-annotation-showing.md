@@ -13,14 +13,14 @@ head: brent/redefined-while-unused
 created_at: 2025-08-13T16:27:17Z
 updated_at: 2025-08-14T17:23:45Z
 url: https://github.com/astral-sh/ruff/pull/19900
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [`pyflakes`] Add secondary annotation showing previous definition (`F811`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-13 16:27_
+_@ntBre_
 
 ## Summary
 

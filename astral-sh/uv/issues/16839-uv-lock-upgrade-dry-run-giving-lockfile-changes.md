@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T20:54:07Z
 updated_at: 2025-12-19T15:46:54Z
 url: https://github.com/astral-sh/uv/issues/16839
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # `uv lock --upgrade --dry-run` giving "Lockfile changes detected" despite no changes
 
 ---
 
-_Issue opened by @shenanigansd on 2025-11-24 20:54_
+_@shenanigansd_
 
 ### Summary
 

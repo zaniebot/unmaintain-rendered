@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-13T16:07:43Z
 updated_at: 2023-05-16T14:51:25Z
 url: https://github.com/astral-sh/ruff/issues/4417
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Indented-block checks fail to respect inline comment
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-13 16:07_
+_@charliermarsh_
 
 Given:
 

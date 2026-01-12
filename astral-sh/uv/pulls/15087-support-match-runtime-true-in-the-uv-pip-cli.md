@@ -14,14 +14,14 @@ head: charlie/match-runtime-pip
 created_at: 2025-08-05T17:53:03Z
 updated_at: 2025-08-05T20:03:11Z
 url: https://github.com/astral-sh/uv/pull/15087
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Support `match-runtime = true` in the `uv pip` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-05 17:53_
+_@charliermarsh_
 
 ## Summary
 

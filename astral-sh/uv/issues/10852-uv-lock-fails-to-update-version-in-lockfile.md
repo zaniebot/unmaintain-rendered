@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T11:51:57Z
 updated_at: 2025-01-22T17:58:17Z
 url: https://github.com/astral-sh/uv/issues/10852
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # `uv lock` fails to update version in lockfile
 
 ---
 
-_Issue opened by @vasiliy-poverennov-doordash on 2025-01-22 11:51_
+_@vasiliy-poverennov-doordash_
 
 ### Summary
 

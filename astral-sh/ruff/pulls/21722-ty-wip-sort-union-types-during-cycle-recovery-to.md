@@ -13,14 +13,14 @@ head: sort-recursive-union
 created_at: 2025-12-01T10:59:03Z
 updated_at: 2025-12-17T17:03:13Z
 url: https://github.com/astral-sh/ruff/pull/21722
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] WIP: sort union types during cycle recovery to stabilize output
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-01 10:59_
+_@mtshiba_
 
 ## Summary
 

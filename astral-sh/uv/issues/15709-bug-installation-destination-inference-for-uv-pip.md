@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-06T19:21:14Z
 updated_at: 2025-09-08T14:18:51Z
 url: https://github.com/astral-sh/uv/issues/15709
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # bug: Installation destination inference for `uv pip` commands has inconsistent behavior (`UV_PYTHON` a.k.a `--python`)
 
 ---
 
-_Issue opened by @gabyx on 2025-09-06 19:21_
+_@gabyx_
 
 ### Summary
 

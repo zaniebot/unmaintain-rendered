@@ -13,14 +13,14 @@ head: charlie/tuple
 created_at: 2023-08-15T16:28:09Z
 updated_at: 2023-08-16T13:40:17Z
 url: https://github.com/astral-sh/ruff/pull/6599
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix parenthesized detection for tuples
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-15 16:28_
+_@charliermarsh_
 
 ## Summary
 

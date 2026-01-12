@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T20:46:53Z
 updated_at: 2025-05-18T18:20:02Z
 url: https://github.com/astral-sh/ruff/issues/18143
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLC2701 treats `os._exit` as private, unlike SLF001
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-16 20:46_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/repeated
 created_at: 2023-08-20T14:31:15Z
 updated_at: 2023-08-20T15:05:59Z
 url: https://github.com/astral-sh/ruff/pull/6705
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Ignore multi-comparisons in `repeated-equality-comparison-target`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-20 14:31_
+_@charliermarsh_
 
 Given `foo == "a" == "b" or foo == "c"`, we were suggesting `foo in {"a", "b", "c"}`.
 

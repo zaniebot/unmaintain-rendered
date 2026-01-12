@@ -13,14 +13,14 @@ head: charlie/end-of-statement
 created_at: 2023-03-03T19:11:19Z
 updated_at: 2023-03-03T19:15:57Z
 url: https://github.com/astral-sh/ruff/pull/3324
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Extend `RET503` autofixes to "end of statement", including comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-03 19:11_
+_@charliermarsh_
 
 Closes #3317.
 

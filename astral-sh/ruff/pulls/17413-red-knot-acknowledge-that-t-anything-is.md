@@ -13,14 +13,14 @@ head: dcreager/typevar-minus
 created_at: 2025-04-15T19:27:20Z
 updated_at: 2025-04-15T20:34:09Z
 url: https://github.com/astral-sh/ruff/pull/17413
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Acknowledge that `T & anything` is assignable to `T`
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-15 19:27_
+_@dcreager_
 
 This reworks the assignability/subtyping relations a bit to handle typevars better:
 

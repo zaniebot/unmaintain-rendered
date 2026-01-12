@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-30T23:26:28Z
 updated_at: 2025-12-29T12:57:28Z
 url: https://github.com/astral-sh/ty/issues/1691
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Output file configuration option
 
 ---
 
-_Issue opened by @kieran-ryan on 2025-11-30 23:26_
+_@kieran-ryan_
 
 Provide a `--output-file` configuration option - matching `ruff` - to specify file to output the linter output rather than the user handling through other means. Standardises configuration across Astral toolchains.
 

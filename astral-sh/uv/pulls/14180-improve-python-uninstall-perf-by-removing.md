@@ -13,14 +13,14 @@ head: jtfm/speed-up-uninstall
 created_at: 2025-06-21T09:29:18Z
 updated_at: 2025-06-23T13:51:46Z
 url: https://github.com/astral-sh/uv/pull/14180
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Improve Python uninstall perf by removing unnecessary call to `installations.find_all()`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-21 09:29_
+_@jtfmumm_
 
 #13954 introduced an unnecessary slow-down to Python uninstall by calling `installations.find_all()` to discover remaining installations after an uninstall. Instead, we can filter all initial installations against those in `uninstalled`.
 

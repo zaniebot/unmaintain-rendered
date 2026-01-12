@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-15T19:04:50Z
 updated_at: 2023-07-18T20:00:32Z
 url: https://github.com/clap-rs/clap/issues/4643
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # assert_defaults assumes parsers are stateless (e.g. don't check file system for a files existence)
 
 ---
 
-_Issue opened by @kmanc on 2023-01-15 19:04_
+_@kmanc_
 
 ### Please complete the following tasks
 

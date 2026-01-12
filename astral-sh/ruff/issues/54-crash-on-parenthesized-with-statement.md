@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-31T08:38:05Z
 updated_at: 2023-02-03T18:28:27Z
 url: https://github.com/astral-sh/ruff/issues/54
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Crash on parenthesized with statement
 
 ---
 
-_Issue opened by @antonagestam on 2022-08-31 08:38_
+_@antonagestam_
 
 I tried running ruff on a large project, which resulted in this crash:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-27T23:50:36Z
 updated_at: 2025-06-28T01:17:46Z
 url: https://github.com/astral-sh/ruff/issues/7684
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Keep right-hanging comments aligned
 
 ---
 
-_Issue opened by @warsaw on 2023-09-27 23:50_
+_@warsaw_
 
 `ruff format` follows `black`'s style for right-hanging comments (i.e. inline comments), but that leads to poorly readable results, especially when a series of consecutive lines uses comment alignment by column.  Blue fixes this readability problem.
 

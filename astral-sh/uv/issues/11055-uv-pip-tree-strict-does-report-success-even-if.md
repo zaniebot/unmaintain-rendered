@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T09:56:53Z
 updated_at: 2025-01-29T14:12:53Z
 url: https://github.com/astral-sh/uv/issues/11055
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # uv pip tree --strict does report success even if conflicts are found
 
 ---
 
-_Issue opened by @ssbarnea on 2025-01-29 09:56_
+_@ssbarnea_
 
 ### Summary
 

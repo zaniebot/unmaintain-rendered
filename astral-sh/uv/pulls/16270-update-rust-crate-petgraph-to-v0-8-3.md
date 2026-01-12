@@ -13,14 +13,14 @@ head: renovate/petgraph-0.x-lockfile
 created_at: 2025-10-13T02:23:26Z
 updated_at: 2025-10-13T02:42:50Z
 url: https://github.com/astral-sh/uv/pull/16270
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Update Rust crate petgraph to v0.8.3
 
 ---
 
-_Pull request opened by @renovate on 2025-10-13 02:23_
+_@renovate_
 
 This PR contains the following updates:
 

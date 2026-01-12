@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T16:32:15Z
 updated_at: 2023-06-28T00:27:27Z
 url: https://github.com/astral-sh/ruff/issues/5396
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add Jupyter integration to the docs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-27 16:32_
+_@charliermarsh_
 
 Let's add a section to "Configuration" and a question to the "FAQ".
 

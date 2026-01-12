@@ -14,14 +14,14 @@ head: ide-namedtuple-fallback-instance-completions
 created_at: 2025-09-11T20:02:54Z
 updated_at: 2025-09-15T09:00:03Z
 url: https://github.com/astral-sh/ruff/pull/20356
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [`ty`] Include `NamedTupleFallback` members in `NamedTuple` instance completions
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-11 20:02_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

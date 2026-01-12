@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T01:51:34Z
 updated_at: 2025-11-03T13:28:28Z
 url: https://github.com/astral-sh/uv/issues/12994
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Add `--torch-backend=auto` Flag to `uv add torch`
 
 ---
 
-_Issue opened by @NourEldin-Osama on 2025-04-21 01:51_
+_@NourEldin-Osama_
 
 ### Summary
 

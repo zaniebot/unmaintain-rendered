@@ -15,14 +15,14 @@ head: micha/fix-import-as-classification
 created_at: 2025-12-24T15:14:39Z
 updated_at: 2025-12-25T23:32:37Z
 url: https://github.com/astral-sh/ruff/pull/22175
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Fix classification of module in `import x as y`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-24 15:14_
+_@MichaReiser_
 
 ## Summary
 

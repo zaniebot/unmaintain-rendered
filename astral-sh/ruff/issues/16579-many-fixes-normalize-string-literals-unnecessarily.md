@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-09T17:45:58Z
 updated_at: 2025-03-10T08:41:26Z
 url: https://github.com/astral-sh/ruff/issues/16579
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Many fixes normalize string literals unnecessarily
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-09 17:45_
+_@dscorbett_
 
 ### Summary
 

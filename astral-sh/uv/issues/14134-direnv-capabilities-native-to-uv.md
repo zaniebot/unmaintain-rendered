@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T18:38:26Z
 updated_at: 2025-06-18T18:44:51Z
 url: https://github.com/astral-sh/uv/issues/14134
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # direnv capabilities native to uv
 
 ---
 
-_Issue opened by @zyads on 2025-06-18 18:38_
+_@zyads_
 
 ### Summary
 

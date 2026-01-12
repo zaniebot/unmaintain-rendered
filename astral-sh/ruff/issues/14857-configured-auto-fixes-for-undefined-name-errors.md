@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T02:34:50Z
 updated_at: 2024-12-16T07:39:42Z
 url: https://github.com/astral-sh/ruff/issues/14857
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Configured auto-fixes for undefined-name errors
 
 ---
 
-_Issue opened by @leep-frog on 2024-12-09 02:34_
+_@leep-frog_
 
 It would be tremendously useful if we could add the following configuration to automatically fix [undefined-name](https://docs.astral.sh/ruff/rules/undefined-name/) errors:
 

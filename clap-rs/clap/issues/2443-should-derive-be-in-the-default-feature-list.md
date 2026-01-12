@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-04-17T09:15:13Z
 updated_at: 2021-05-20T22:30:55Z
 url: https://github.com/clap-rs/clap/issues/2443
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Should `derive` be in the default feature list?
 
 ---
 
-_Issue opened by @pksunkara on 2021-04-17 09:15_
+_@pksunkara_
 
 It's currently in it. But I am thinking of changing it to not be in it.
 

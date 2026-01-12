@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-11T22:37:21Z
 updated_at: 2026-01-12T12:12:28Z
 url: https://github.com/astral-sh/uv/issues/17406
-synced_at: 2026-01-12T13:00:04Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # Bad error message trying to install abi3 wheel on a free threaded venv
 
 ---
 
-_Issue opened by @AngheloAlf on 2026-01-11 22:37_
+_@AngheloAlf_
 
 ### Summary
 

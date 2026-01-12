@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-24T16:16:54Z
 updated_at: 2022-12-24T17:22:12Z
 url: https://github.com/astral-sh/ruff/issues/1359
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Improve B025 location
 
 ---
 
-_Issue opened by @harupy on 2022-12-24 16:16_
+_@harupy_
 
 ### Current
 

@@ -15,14 +15,14 @@ head: david/benchmark-711
 created_at: 2025-06-27T09:10:02Z
 updated_at: 2025-06-27T21:11:27Z
 url: https://github.com/astral-sh/ruff/pull/18979
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Add micro-benchmark for #711
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-27 09:10_
+_@sharkdp_
 
 ## Summary
 

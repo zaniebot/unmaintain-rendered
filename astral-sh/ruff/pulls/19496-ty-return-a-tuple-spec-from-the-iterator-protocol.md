@@ -13,14 +13,14 @@ head: dcreager/iterate-tuple
 created_at: 2025-07-22T20:19:29Z
 updated_at: 2025-07-23T21:11:46Z
 url: https://github.com/astral-sh/ruff/pull/19496
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Return a tuple spec from the iterator protocol
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-22 20:19_
+_@dcreager_
 
 This PR updates our iterator protocol machinery to return a tuple spec describing the elements that are returned, instead of a type. That allows us to track heterogeneous iterators more precisely, and consolidates the logic in unpacking and splatting, which are the two places where we can take advantage of that more precise information. (Other iterator consumers, like `for` loops, have to collapse the iterated elements down to a single type regardless, and we provide a new helper method on `TupleSpec` to perform that summarization.)
 

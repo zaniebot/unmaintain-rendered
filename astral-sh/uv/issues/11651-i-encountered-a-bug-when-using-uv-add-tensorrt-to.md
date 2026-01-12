@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T01:37:48Z
 updated_at: 2025-02-20T19:59:44Z
 url: https://github.com/astral-sh/uv/issues/11651
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # I encountered a bug when using "uv add tensorrt" to install TensorRT
 
 ---
 
-_Issue opened by @txh19971013 on 2025-02-20 01:37_
+_@txh19971013_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T01:33:33Z
 updated_at: 2024-12-18T01:30:45Z
 url: https://github.com/astral-sh/uv/issues/9951
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # How to set environment variables
 
 ---
 
-_Issue opened by @michaelxiacs on 2024-12-17 01:33_
+_@michaelxiacs_
 
 How do I set environment variables for the virtual environment created by UV? I tried setting it ```.venv/scripts/activate_this.py``` and it doesn't work.
 

@@ -13,14 +13,14 @@ head: fix-20906
 created_at: 2025-10-16T00:19:57Z
 updated_at: 2025-10-27T14:23:44Z
 url: https://github.com/astral-sh/ruff/pull/20907
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [`flake8-django`] Apply `DJ001` to annotated fields
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-16 00:19_
+_@danparizher_
 
 ## Summary
 

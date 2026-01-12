@@ -13,14 +13,14 @@ head: konsti/s390x-nightly-rust
 created_at: 2025-05-26T20:02:46Z
 updated_at: 2025-05-27T14:32:10Z
 url: https://github.com/astral-sh/uv/pull/13665
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Build s390x on nightly
 
 ---
 
-_Pull request opened by @konstin on 2025-05-26 20:02_
+_@konstin_
 
 Build s390x on nightly due to llvm performance regressions see https://github.com/rust-lang/rust/issues/141287. To be undone when the llvm fixes land on stable.
 

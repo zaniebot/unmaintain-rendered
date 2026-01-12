@@ -13,14 +13,14 @@ head: codex/fix-issue-#14724
 created_at: 2025-07-18T16:03:31Z
 updated_at: 2025-07-21T09:48:39Z
 url: https://github.com/astral-sh/uv/pull/14731
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Match `--bounds` formatting for `uv_build` bounds in `uv init`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-18 16:03_
+_@zanieb_
 
 Closes #14724 
 

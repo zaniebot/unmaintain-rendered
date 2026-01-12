@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T08:28:30Z
 updated_at: 2025-07-23T09:43:51Z
 url: https://github.com/astral-sh/uv/issues/10845
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # `uv run` changes uv.lock files
 
 ---
 
-_Issue opened by @jaapz on 2025-01-22 08:28_
+_@jaapz_
 
 When running a command through `uv run`, sometimes the `uv.lock` file gets changed. This is a bit annoying when the `uv.lock` file is in a git repository, as it introduces unrelated changes to the lock file to merge requests or commits (or you have to undo the change or explicitly not commit it...).
 

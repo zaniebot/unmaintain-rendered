@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T07:11:08Z
 updated_at: 2025-04-30T08:55:57Z
 url: https://github.com/astral-sh/uv/issues/13214
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Installation from explicit azure devops package fails as of 0.7
 
 ---
 
-_Issue opened by @aersam on 2025-04-30 07:11_
+_@aersam_
 
 ### Summary
 

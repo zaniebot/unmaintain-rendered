@@ -12,14 +12,14 @@ head: charlie/udeps
 created_at: 2023-01-02T21:51:23Z
 updated_at: 2023-01-02T22:23:30Z
 url: https://github.com/astral-sh/ruff/pull/1565
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove common-path dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-02 21:51_
+_@charliermarsh_
 
 _No description provided._
 

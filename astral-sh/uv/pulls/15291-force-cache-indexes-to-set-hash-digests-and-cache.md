@@ -13,14 +13,14 @@ head: charlie/ca
 created_at: 2025-08-14T22:11:18Z
 updated_at: 2025-08-14T22:28:57Z
 url: https://github.com/astral-sh/uv/pull/15291
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Force cache indexes to set hash digests and cache info
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-14 22:11_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T14:42:36Z
 updated_at: 2025-05-01T18:33:52Z
 url: https://github.com/astral-sh/ruff/issues/17122
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Store the value type for name expressions in store context.
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-01 14:42_
+_@MichaReiser_
 
 Given:
 

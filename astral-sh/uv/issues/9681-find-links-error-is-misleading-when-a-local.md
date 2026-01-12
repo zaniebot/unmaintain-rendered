@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-06T13:26:15Z
 updated_at: 2024-12-08T17:22:19Z
 url: https://github.com/astral-sh/uv/issues/9681
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # `--find-links` error is misleading when a local directory does not exist
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-06 13:26_
+_@charliermarsh_
 
 In this case, `./links` does not exist, but we give you the error from parsing the relative URL or something.
 

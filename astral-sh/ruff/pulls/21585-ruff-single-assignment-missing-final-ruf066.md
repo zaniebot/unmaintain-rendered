@@ -11,14 +11,14 @@ head: hamir/feat/flag-variables-that-are-not-reassigned-and-missing-final
 created_at: 2025-11-22T23:53:23Z
 updated_at: 2025-11-24T17:21:09Z
 url: https://github.com/astral-sh/ruff/pull/21585
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ruff] single-assignment-missing-final (RUF066)
 
 ---
 
-_Pull request opened by @hamirmahal on 2025-11-22 23:53_
+_@hamirmahal_
 
 Closes #21584
 <!--

@@ -13,14 +13,14 @@ head: Add_Unify
 created_at: 2024-01-31T15:07:14Z
 updated_at: 2024-01-31T15:09:26Z
 url: https://github.com/astral-sh/ruff/pull/9735
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Update README.md by adding `ivy` repository to the who's using Ruff section
 
 ---
 
-_Pull request opened by @Sai-Suraj-27 on 2024-01-31 15:07_
+_@Sai-Suraj-27_
 
 ## Summary
 I have recently made a contribution to a big python based repo **replacing flake8 with ruff** (https://github.com/unifyai/ivy/pull/27779). So, as per this [discussion](https://github.com/astral-sh/ruff/discussions/9731). I am making this PR to add the [ivy](https://github.com/unifyai/ivy) repository (**with > 13k stars ⭐**) to the Ruff's readme

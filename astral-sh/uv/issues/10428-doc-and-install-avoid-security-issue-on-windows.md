@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T14:01:05Z
 updated_at: 2025-04-21T20:35:11Z
 url: https://github.com/astral-sh/uv/issues/10428
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Doc and install: avoid security issue on Windows
 
 ---
 
-_Issue opened by @paugier on 2025-01-09 14:01_
+_@paugier_
 
 In https://docs.astral.sh/uv/getting-started/installation/#installation-methods, the given install command is currently for Windows
 

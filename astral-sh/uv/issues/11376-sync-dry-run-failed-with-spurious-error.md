@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T03:13:16Z
 updated_at: 2025-07-11T02:36:09Z
 url: https://github.com/astral-sh/uv/issues/11376
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `sync_dry_run` failed with spurious error
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-10 03:13_
+_@charliermarsh_
 
 ![Image](https://github.com/user-attachments/assets/872c0d82-e2bb-404f-ba3c-ef41bd806a35)
 

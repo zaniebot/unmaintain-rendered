@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T03:50:07Z
 updated_at: 2024-05-29T13:23:41Z
 url: https://github.com/astral-sh/uv/issues/3896
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # "Resolving dependencies" message is repeated
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-29 03:50_
+_@charliermarsh_
 
 This hasn't shipped, but it's present on main:
 

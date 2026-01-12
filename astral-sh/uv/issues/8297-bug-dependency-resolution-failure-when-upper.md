@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T17:46:43Z
 updated_at: 2024-10-23T01:15:16Z
 url: https://github.com/astral-sh/uv/issues/8297
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # [Bug]: Dependency Resolution Failure when Upper Bound on Required Python Version
 
 ---
 
-_Issue opened by @mahyarmirrashed on 2024-10-17 17:46_
+_@mahyarmirrashed_
 
 I noticed this error about a week ago when I switched over from `poetry` to `uv`. The dependency resolution fails when I set the upper bound of the required version in my `pyproject.toml`. (Yes, apparently this is a contentious decision, but I think I'll keep it.)
 

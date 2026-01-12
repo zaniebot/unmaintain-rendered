@@ -12,14 +12,14 @@ head: charlie/base-classes
 created_at: 2023-03-07T04:46:30Z
 updated_at: 2023-03-07T14:51:13Z
 url: https://github.com/astral-sh/ruff/pull/3379
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Rename `runtime-evaluated-baseclasses` to `runtime-evaluated-base-classes`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-07 04:46_
+_@charliermarsh_
 
 \cc @sasanjac 
 

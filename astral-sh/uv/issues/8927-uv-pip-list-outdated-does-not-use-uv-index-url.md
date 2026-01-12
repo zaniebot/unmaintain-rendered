@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T09:02:25Z
 updated_at: 2024-11-08T14:52:34Z
 url: https://github.com/astral-sh/uv/issues/8927
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # uv pip list --outdated does not use UV_INDEX_URL setting
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-11-08 09:02_
+_@jenshnielsen_
 
 Trying to use the new `uv pip list --outdated` feature with a custom `UV_INDEX_URL` I get an error that a random private pacakge cannot be found in the registry. Such as ```error: Package `mypackagename` was not found in the registry```
 

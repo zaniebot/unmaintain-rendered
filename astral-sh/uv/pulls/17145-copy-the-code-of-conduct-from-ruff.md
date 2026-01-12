@@ -13,14 +13,14 @@ head: zb/coc
 created_at: 2025-12-16T13:51:39Z
 updated_at: 2025-12-16T14:12:16Z
 url: https://github.com/astral-sh/uv/pull/17145
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Copy the Code of Conduct from Ruff
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 13:51_
+_@zanieb_
 
 _No description provided._
 

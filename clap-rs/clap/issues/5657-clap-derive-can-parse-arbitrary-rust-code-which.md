@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-10T12:58:08Z
 updated_at: 2024-11-04T16:37:33Z
 url: https://github.com/clap-rs/clap/issues/5657
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_derive can parse arbitrary Rust code, which is not always necessary and costs compile time
 
 ---
 
-_Issue opened by @hanna-kruppe on 2024-08-10 12:58_
+_@hanna-kruppe_
 
 ### Please complete the following tasks
 

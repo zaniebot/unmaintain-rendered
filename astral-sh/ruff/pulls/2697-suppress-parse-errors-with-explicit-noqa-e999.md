@@ -13,14 +13,14 @@ head: charlie/noqa
 created_at: 2023-02-09T23:22:21Z
 updated_at: 2023-02-09T23:24:21Z
 url: https://github.com/astral-sh/ruff/pull/2697
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Suppress parse errors with explicit `# noqa: E999` directives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 23:22_
+_@charliermarsh_
 
 See: #2505.
 

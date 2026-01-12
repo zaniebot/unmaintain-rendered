@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T06:48:21Z
 updated_at: 2025-10-06T08:19:12Z
 url: https://github.com/astral-sh/ty/issues/493
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Tuples of unions, Unions of tuples
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-23 06:48_
+_@sharkdp_
 
 An example that I got from [this post](https://discuss.python.org/t/specify-that-assert-type-checks-for-equivalence/92967). As mentioned there, it's probably hard to support this in full generality, but it seems like those base cases should maybe be handled:
 

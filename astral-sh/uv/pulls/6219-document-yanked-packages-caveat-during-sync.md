@@ -14,14 +14,14 @@ head: zb/cli-yank-sync
 created_at: 2024-08-19T17:43:52Z
 updated_at: 2024-08-19T17:52:54Z
 url: https://github.com/astral-sh/uv/pull/6219
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Document yanked packages caveat during sync
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 17:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5928
 

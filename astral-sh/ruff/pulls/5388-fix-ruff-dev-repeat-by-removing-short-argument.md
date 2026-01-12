@@ -13,14 +13,14 @@ head: fix_ruff_dev_repeat
 created_at: 2023-06-27T13:22:42Z
 updated_at: 2023-06-27T13:48:44Z
 url: https://github.com/astral-sh/ruff/pull/5388
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix ruff_dev repeat by removing short argument
 
 ---
 
-_Pull request opened by @konstin on 2023-06-27 13:22_
+_@konstin_
 
 ruff_dev repeat recently broke (i think with the cargo update?):
 

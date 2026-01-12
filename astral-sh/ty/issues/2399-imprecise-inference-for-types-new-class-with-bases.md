@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T16:18:32Z
 updated_at: 2026-01-08T23:48:58Z
 url: https://github.com/astral-sh/ty/issues/2399
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # imprecise inference for types.new_class() with `bases`
 
 ---
 
-_Issue opened by @bcmills on 2026-01-08 16:18_
+_@bcmills_
 
 ### Summary
 

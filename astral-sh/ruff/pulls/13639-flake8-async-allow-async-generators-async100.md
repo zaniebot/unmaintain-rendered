@@ -13,14 +13,14 @@ head: async100-allow-async-generators
 created_at: 2024-10-05T09:02:04Z
 updated_at: 2024-10-11T12:04:10Z
 url: https://github.com/astral-sh/ruff/pull/13639
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`flake8-async`] allow async generators (`ASYNC100`)
 
 ---
 
-_Pull request opened by @autinerd on 2024-10-05 09:02_
+_@autinerd_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

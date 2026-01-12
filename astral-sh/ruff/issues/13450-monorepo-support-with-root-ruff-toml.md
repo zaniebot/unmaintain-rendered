@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T00:10:40Z
 updated_at: 2024-09-23T14:34:47Z
 url: https://github.com/astral-sh/ruff/issues/13450
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Monorepo support with root .ruff.toml
 
 ---
 
-_Issue opened by @augustelalande on 2024-09-23 00:10_
+_@augustelalande_
 
 I'm having an issue with rule inheritance in a monorepo with the following structure
 ```

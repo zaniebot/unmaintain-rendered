@@ -12,14 +12,14 @@ head: ignore-unittest-methods
 created_at: 2022-10-29T10:25:16Z
 updated_at: 2022-10-29T19:36:10Z
 url: https://github.com/astral-sh/ruff/pull/502
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Ignore unittest methods and functions in N802
 
 ---
 
-_Pull request opened by @harupy on 2022-10-29 10:25_
+_@harupy_
 
 Ignores `unittest` methods and functions in N802.
 

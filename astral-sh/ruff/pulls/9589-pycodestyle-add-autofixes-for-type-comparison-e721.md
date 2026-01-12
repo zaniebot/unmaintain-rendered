@@ -12,14 +12,14 @@ head: add-fixes-to-E721
 created_at: 2024-01-20T04:05:26Z
 updated_at: 2024-01-20T04:41:42Z
 url: https://github.com/astral-sh/ruff/pull/9589
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pycodestyle`] - add autofixes for `type-comparison` / `E721`
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-20 04:05_
+_@diceroll123_
 
 ## Summary
 

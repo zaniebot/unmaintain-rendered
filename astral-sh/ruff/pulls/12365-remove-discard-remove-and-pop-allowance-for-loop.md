@@ -13,14 +13,14 @@ head: charlie/B909
 created_at: 2024-07-17T14:15:11Z
 updated_at: 2024-07-17T17:51:52Z
 url: https://github.com/astral-sh/ruff/pull/12365
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove `discard`, `remove`, and `pop` allowance for `loop-iterator-mutation`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 14:15_
+_@charliermarsh_
 
 ## Summary
 

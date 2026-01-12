@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-06T23:33:01Z
 updated_at: 2024-09-06T23:47:29Z
 url: https://github.com/astral-sh/uv/issues/7148
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # support building all packages in the workspace including all dependencies
 
 ---
 
-_Issue opened by @mmerickel on 2024-09-06 23:33_
+_@mmerickel_
 
 I have a workspace like `src/*`. Now I want to package a subset of those packages and install it into a new virtualenv somewhere.
 

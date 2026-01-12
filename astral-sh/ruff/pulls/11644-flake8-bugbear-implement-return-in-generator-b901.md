@@ -14,14 +14,14 @@ head: b901-return-x-generator-function
 created_at: 2024-05-31T17:58:59Z
 updated_at: 2024-06-01T11:38:40Z
 url: https://github.com/astral-sh/ruff/pull/11644
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-bugbear`] Implement `return-in-generator` (`B901`)
 
 ---
 
-_Pull request opened by @tobb10001 on 2024-05-31 17:58_
+_@tobb10001_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

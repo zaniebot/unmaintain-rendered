@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-05T09:25:48Z
 updated_at: 2023-11-05T14:48:23Z
 url: https://github.com/astral-sh/ruff/issues/8493
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Docs/website: https://astral.sh/ruff is not automatically updating `VERSION v0.1.2`
 
 ---
 
-_Issue opened by @thernstig on 2023-11-05 09:25_
+_@thernstig_
 
 Ruff is currently at version [`v0.1.4`](https://github.com/astral-sh/ruff/releases/tag/v0.1.4), but https://astral.sh/ruff shows:
 

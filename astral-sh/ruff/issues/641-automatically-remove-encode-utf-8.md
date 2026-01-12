@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-07T14:56:22Z
 updated_at: 2022-11-16T04:08:32Z
 url: https://github.com/astral-sh/ruff/issues/641
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically remove .encode("utf-8")
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-07 14:56_
+_@charliermarsh_
 
 See: https://github.com/asottile/pyupgrade#encodeutf-8
 

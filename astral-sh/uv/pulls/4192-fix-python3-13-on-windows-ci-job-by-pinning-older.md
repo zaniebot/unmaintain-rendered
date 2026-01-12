@@ -13,14 +13,14 @@ head: konsti/fix-check-3.13-on-windows
 created_at: 2024-06-10T11:31:58Z
 updated_at: 2024-06-10T11:49:25Z
 url: https://github.com/astral-sh/uv/pull/4192
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Fix python3.13 on windows CI job by pinning older version
 
 ---
 
-_Pull request opened by @konstin on 2024-06-10 11:31_
+_@konstin_
 
 See https://github.com/actions/setup-python/issues/888
 

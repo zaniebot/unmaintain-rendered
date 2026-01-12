@@ -14,14 +14,14 @@ head: konsti/tool-uv-sources-analysis
 created_at: 2024-04-25T11:34:05Z
 updated_at: 2024-05-06T11:20:16Z
 url: https://github.com/astral-sh/uv/pull/3263
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 #  Add basic `tool.uv.sources` support 
 
 ---
 
-_Pull request opened by @konstin on 2024-04-25 11:34_
+_@konstin_
 
 ## Introduction
 

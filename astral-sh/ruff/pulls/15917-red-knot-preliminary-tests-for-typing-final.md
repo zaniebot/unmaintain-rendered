@@ -13,14 +13,14 @@ head: david/add-support-for-final
 created_at: 2025-02-03T19:39:43Z
 updated_at: 2025-03-14T11:30:15Z
 url: https://github.com/astral-sh/ruff/pull/15917
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Preliminary tests for typing.Final
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-03 19:39_
+_@sharkdp_
 
 ## Summary
 

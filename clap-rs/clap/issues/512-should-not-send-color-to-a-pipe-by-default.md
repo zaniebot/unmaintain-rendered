@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-23T14:53:16Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/512
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Should not send color to a pipe by default
 
 ---
 
-_Issue opened by @joshtriplett on 2016-05-23 14:53_
+_@joshtriplett_
 
 Clap prints color unconditionally, even when sending output somewhere other than a terminal.  Redirecting output to a file, or to a pager that doesn't understand terminal escape sequences like `less -R` does, produces undesirable terminal escape sequences in the file or pager.
 

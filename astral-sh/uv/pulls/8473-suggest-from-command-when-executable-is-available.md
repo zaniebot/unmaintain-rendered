@@ -12,14 +12,14 @@ head: hint-uvx-from-package
 created_at: 2024-10-22T18:17:52Z
 updated_at: 2024-10-22T19:44:36Z
 url: https://github.com/astral-sh/uv/pull/8473
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Suggest `--from` command when executable is available for `uvx`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-22 18:17_
+_@blueraft_
 
 ## Summary
 

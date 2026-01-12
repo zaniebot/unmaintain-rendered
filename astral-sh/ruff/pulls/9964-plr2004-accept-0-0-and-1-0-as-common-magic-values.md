@@ -13,14 +13,14 @@ head: magic-values
 created_at: 2024-02-12T22:50:00Z
 updated_at: 2024-03-07T02:22:55Z
 url: https://github.com/astral-sh/ruff/pull/9964
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # `PLR2004`: Accept 0.0 and 1.0 as common magic values
 
 ---
 
-_Pull request opened by @augustelalande on 2024-02-12 22:50_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

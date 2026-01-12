@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-13T03:53:03Z
 updated_at: 2022-07-28T14:50:32Z
 url: https://github.com/clap-rs/clap/issues/1105
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # A `.required(true).takes_value(true)` arg is successfully assigned no value if followed by a recognized option
 
 ---
 
-_Issue opened by @ExpHP on 2017-11-13 03:53_
+_@ExpHP_
 
 ### Rust Version
 

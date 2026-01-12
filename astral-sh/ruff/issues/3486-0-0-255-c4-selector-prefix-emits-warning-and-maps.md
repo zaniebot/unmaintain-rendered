@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-13T19:01:40Z
 updated_at: 2023-03-13T19:52:07Z
 url: https://github.com/astral-sh/ruff/issues/3486
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # 0.0.255: `C4` selector prefix emits warning and maps to `C40` only (subset of `flake8-comprehensions`)
 
 ---
 
-_Issue opened by @bastimeyer on 2023-03-13 19:01_
+_@bastimeyer_
 
 #3452 changed the mapping of some selector prefixes, one of them being `C` for `C40`, as `C` is used for both `mccabe` (`C90`) and `flake8-comprehensions` (`C4`).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T17:59:50Z
 updated_at: 2025-04-02T07:27:48Z
 url: https://github.com/astral-sh/ruff/issues/16987
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] support decorators
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 17:59_
+_@carljm_
 
 _No description provided._
 

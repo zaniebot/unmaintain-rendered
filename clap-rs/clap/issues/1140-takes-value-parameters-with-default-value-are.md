@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-01-05T22:04:12Z
 updated_at: 2022-02-08T18:39:16Z
 url: https://github.com/clap-rs/clap/issues/1140
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `takes_value()` parameters with `default_value()` are shown in USAGE like mandatory
 
 ---
 
-_Issue opened by @albel727 on 2018-01-05 22:04_
+_@albel727_
 
 ### Affected Version of clap
 clap 2.29.0

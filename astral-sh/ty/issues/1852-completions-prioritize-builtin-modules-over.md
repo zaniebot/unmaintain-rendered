@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T10:39:06Z
 updated_at: 2026-01-09T15:11:39Z
 url: https://github.com/astral-sh/ty/issues/1852
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # completions: Prioritize builtin modules over symbols from third-party packages
 
 ---
 
-_Issue opened by @zsol on 2025-12-11 10:39_
+_@zsol_
 
 I'd like to suggest a new heuristic: consider prioritizing builtin modules over symbols defined with the same name in the environment.
 

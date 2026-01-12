@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-02T23:46:48Z
 updated_at: 2025-08-04T18:13:51Z
 url: https://github.com/astral-sh/ty/issues/928
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Capture with `as` in `match` statement breaks type narrowing
 
 ---
 
-_Issue opened by @mthuurne on 2025-08-02 23:46_
+_@mthuurne_
 
 ### Summary
 

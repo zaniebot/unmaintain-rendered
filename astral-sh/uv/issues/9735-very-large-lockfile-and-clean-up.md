@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T09:50:22Z
 updated_at: 2025-02-18T12:44:14Z
 url: https://github.com/astral-sh/uv/issues/9735
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Very large lockfile and clean up
 
 ---
 
-_Issue opened by @jbcdnr on 2024-12-09 09:50_
+_@jbcdnr_
 
 We noticed that our `uv.lock` file grows in size, up to 2.5MB and 35k lines with a lot of `resolution-markers` and the time to `uv lock` explodes to more than 30 min and sometimes OOM. We have a pretty bad hygien for our `pyproject.toml` with  a lot of `*` versions and some conflicts so the resolver might have a hard time.
 

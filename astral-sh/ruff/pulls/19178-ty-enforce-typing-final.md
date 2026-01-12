@@ -14,14 +14,14 @@ head: david/enforce-final
 created_at: 2025-07-07T14:03:19Z
 updated_at: 2025-07-10T12:20:01Z
 url: https://github.com/astral-sh/ruff/pull/19178
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Enforce `typing.Final`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-07 14:03_
+_@sharkdp_
 
 ## Summary
 

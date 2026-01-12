@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T09:41:48Z
 updated_at: 2025-07-31T07:04:13Z
 url: https://github.com/astral-sh/ruff/issues/19633
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New rule: limit call‑hierarchy depth across functions/methods
 
 ---
 
-_Issue opened by @Spenhouet on 2025-07-30 09:41_
+_@Spenhouet_
 
 ### Motivation
 Ruff already checks block‑nesting depth ([PLR1702](https://docs.astral.sh/ruff/rules/too-many-nested-blocks/)) and cyclomatic complexity ([C901](https://docs.astral.sh/ruff/rules/complex-structure/)). These don’t catch code that hops through many functions/methods (A→B→C→D…), which reduces readability, testability and maintainability. [WPS233](https://github.com/astral-sh/ruff/issues/8022) limits chained calls in one expression (e.g., obj.a().b().c()). It does not measure cross‑function call depth. A rule to cap inter‑procedural call depth would fill this gap.

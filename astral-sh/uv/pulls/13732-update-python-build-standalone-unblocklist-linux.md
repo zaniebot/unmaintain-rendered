@@ -13,14 +13,14 @@ head: gankra/blockless
 created_at: 2025-05-30T15:28:06Z
 updated_at: 2025-05-30T16:34:13Z
 url: https://github.com/astral-sh/uv/pull/13732
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # update python build standalone, unblocklist linux updates
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-30 15:28_
+_@Gankra_
 
 _No description provided._
 

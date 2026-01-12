@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T12:28:44Z
 updated_at: 2025-11-05T17:31:30Z
 url: https://github.com/astral-sh/uv/issues/16599
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Issues Found with uv sync --editable and --no-editable Flags
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-11-05 12:28_
+_@DhavalGojiya_
 
 ### Summary
 

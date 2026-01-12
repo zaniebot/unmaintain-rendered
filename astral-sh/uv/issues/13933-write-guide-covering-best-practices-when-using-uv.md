@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-09T19:50:35Z
 updated_at: 2025-06-24T21:46:01Z
 url: https://github.com/astral-sh/uv/issues/13933
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Write guide covering best practices when using uv with LLM-based tooling
 
 ---
 
-_Issue opened by @zanieb on 2025-06-09 19:50_
+_@zanieb_
 
 We should add an integration guide, i.e., "Using uv with AI tooling", that covers best practices for using uv with tools like Cursor and Claude Code.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T21:04:27Z
 updated_at: 2022-11-05T03:13:51Z
 url: https://github.com/astral-sh/ruff/issues/591
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # What should Ruff's error code prefix be?
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-04 21:04_
+_@charliermarsh_
 
 That is: what prefix should we use for errors that are specific to Ruff, and not implemented out of compatibility with another tool?
 

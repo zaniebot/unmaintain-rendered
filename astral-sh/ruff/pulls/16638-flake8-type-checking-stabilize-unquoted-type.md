@@ -13,14 +13,14 @@ head: brent/tc007-0.10
 created_at: 2025-03-11T17:22:29Z
 updated_at: 2025-03-12T12:08:54Z
 url: https://github.com/astral-sh/ruff/pull/16638
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-type-checking`] Stabilize `unquoted-type-alias` (`TC007`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 17:22_
+_@ntBre_
 
 Summary
 --

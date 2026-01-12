@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T05:38:57Z
 updated_at: 2025-09-11T14:06:18Z
 url: https://github.com/astral-sh/ty/issues/1058
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] execute: too many cycle iterations
 
 ---
 
-_Issue opened by @aivarannamaa on 2025-08-20 05:38_
+_@aivarannamaa_
 
 Got following stacktrace for `ty check`:
 

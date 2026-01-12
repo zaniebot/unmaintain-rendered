@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-19T07:35:27Z
 updated_at: 2024-08-21T06:44:35Z
 url: https://github.com/astral-sh/ruff/issues/12980
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `non-pep695-type-alias` (`UP040`) - fix should be marked as unsafe when a type comes from an import
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-19 07:35_
+_@DetachHead_
 
 
 normally the fix will detect whether a type used in a type alias is a `TypeVar` and fix it like so:

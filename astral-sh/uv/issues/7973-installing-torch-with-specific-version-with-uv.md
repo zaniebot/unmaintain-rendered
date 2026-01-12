@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-07T14:54:30Z
 updated_at: 2024-10-16T11:05:52Z
 url: https://github.com/astral-sh/uv/issues/7973
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # installing "torch" with specific version with "uv pip install"  fails
 
 ---
 
-_Issue opened by @szobov on 2024-10-07 14:54_
+_@szobov_
 
 Hey there,
 

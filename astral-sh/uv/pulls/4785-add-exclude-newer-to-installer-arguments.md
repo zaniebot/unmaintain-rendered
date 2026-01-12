@@ -13,14 +13,14 @@ head: charlie/exclude-newer
 created_at: 2024-07-03T17:57:56Z
 updated_at: 2024-07-03T18:05:06Z
 url: https://github.com/astral-sh/uv/pull/4785
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Add `--exclude-newer` to installer arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 17:57_
+_@charliermarsh_
 
 ## Summary
 

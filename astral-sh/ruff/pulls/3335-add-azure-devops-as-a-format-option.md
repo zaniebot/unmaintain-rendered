@@ -12,14 +12,14 @@ head: stefanbras/azure-devops-format
 created_at: 2023-03-04T13:17:11Z
 updated_at: 2023-03-06T02:48:40Z
 url: https://github.com/astral-sh/ruff/pull/3335
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add Azure Devops as a `-format` option.
 
 ---
 
-_Pull request opened by @StefanBRas on 2023-03-04 13:17_
+_@StefanBRas_
 
 Adds option to print messages in an error format for azure pipelines, following https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands?view=azure-devops&tabs=bash#usage.
 

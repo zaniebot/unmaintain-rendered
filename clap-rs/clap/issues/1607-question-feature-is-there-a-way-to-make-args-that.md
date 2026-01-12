@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-12-12T03:10:57Z
 updated_at: 2021-05-26T17:01:10Z
 url: https://github.com/clap-rs/clap/issues/1607
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # [Question/Feature] Is There a Way to Make Args that Behave Like `--help`
 
 ---
 
-_Issue opened by @zicklag on 2019-12-12 03:10_
+_@zicklag_
 
 I have a situation where I have created a custom `--doc` flag that works very similarly to the `--help` flag except it triggers a documentation pager like a manpage. The problem I have is that I have "required" arguments that should not be required when the `--doc` flag is present. I could usually use `required_unless("doc")`, but that doesn't work when the `--doc` flag is passed to a subcommand and the required argument is in a super-command. For example with this app:
 

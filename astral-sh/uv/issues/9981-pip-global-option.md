@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T19:27:17Z
 updated_at: 2025-05-20T19:01:14Z
 url: https://github.com/astral-sh/uv/issues/9981
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # pip --global-option
 
 ---
 
-_Issue opened by @bdols on 2024-12-17 19:27_
+_@bdols_
 
 is it possible to supply "global-options" to the build step?
 

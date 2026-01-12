@@ -12,14 +12,14 @@ head: stable
 created_at: 2025-10-31T18:53:03Z
 updated_at: 2025-10-31T18:58:17Z
 url: https://github.com/clap-rs/clap/pull/6170
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs: Fix link
 
 ---
 
-_Pull request opened by @epage on 2025-10-31 18:53_
+_@epage_
 
 <!--
 Thanks for helping out!

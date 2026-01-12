@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T16:15:46Z
 updated_at: 2025-12-19T16:19:34Z
 url: https://github.com/astral-sh/ty/issues/2021
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Semantic token highlighting causes wrong color for first line of Google-style docstrings
 
 ---
 
-_Issue opened by @willjobs on 2025-12-17 16:15_
+_@willjobs_
 
 Congratulations on your release! I'm liking the extension so far. This issue not a show-stopper by any means, but a little annoying thing that has to do with how the semantic tokenizing is interacting with coloring in VS Code.
 

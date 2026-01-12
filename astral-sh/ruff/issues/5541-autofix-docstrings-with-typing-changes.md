@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-05T20:02:08Z
 updated_at: 2023-12-21T21:59:27Z
 url: https://github.com/astral-sh/ruff/issues/5541
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Autofix docstrings with typing changes?
 
 ---
 
-_Issue opened by @petermattia on 2023-07-05 20:02_
+_@petermattia_
 
 First off, thanks for `ruff`, really an amazing utility for the python ecosystem!
 

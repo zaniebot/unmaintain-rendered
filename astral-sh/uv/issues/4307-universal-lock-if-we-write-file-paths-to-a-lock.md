@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T15:26:26Z
 updated_at: 2024-06-14T13:09:18Z
 url: https://github.com/astral-sh/uv/issues/4307
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # universal-lock: if we write file paths to a lock file, we need to make them portable
 
 ---
 
-_Issue opened by @BurntSushi on 2024-06-13 15:26_
+_@BurntSushi_
 
 While working on #4266, I realized that the file paths we write to a lock file are platform specific. Specifically, on Windows, we use `\` as a path separator, while on Unix, we use `/` as a path separator. I believe this implies that if developers on Windows and Unix work on the same project, they will generate different lock files. This is, I believe, untenable.
 

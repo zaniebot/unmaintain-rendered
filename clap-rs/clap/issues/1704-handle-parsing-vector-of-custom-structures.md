@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-02-22T19:26:53Z
 updated_at: 2024-09-12T06:45:03Z
 url: https://github.com/clap-rs/clap/issues/1704
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Handle parsing vector of custom structures
 
 ---
 
-_Issue opened by @krystian-wojtas on 2020-02-22 19:26_
+_@krystian-wojtas_
 
 ### What are you trying to do?
 

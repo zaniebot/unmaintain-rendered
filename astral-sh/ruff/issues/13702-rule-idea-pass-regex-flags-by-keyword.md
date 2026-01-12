@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T08:27:48Z
 updated_at: 2024-10-11T11:33:23Z
 url: https://github.com/astral-sh/ruff/issues/13702
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule idea: pass regex flags by keyword
 
 ---
 
-_Issue opened by @xmo-odoo on 2024-10-10 08:27_
+_@xmo-odoo_
 
 In my experiece this is a relatively common issue for re.sub / re.subn: they take both a `count` and a `flags` parameter, and `count` is first. So
 

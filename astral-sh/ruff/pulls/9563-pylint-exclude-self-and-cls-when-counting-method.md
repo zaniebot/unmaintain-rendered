@@ -13,14 +13,14 @@ head: positional-exclude-self-cls
 created_at: 2024-01-17T14:01:45Z
 updated_at: 2024-01-18T11:35:03Z
 url: https://github.com/astral-sh/ruff/pull/9563
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Exclude `self` and `cls` when counting method arguments
 
 ---
 
-_Pull request opened by @tmke8 on 2024-01-17 14:01_
+_@tmke8_
 
 closes #9552
 

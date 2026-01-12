@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-05T10:02:40Z
 updated_at: 2024-01-05T15:22:03Z
 url: https://github.com/astral-sh/ruff/issues/9400
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add an exception for `N802` for `BaseHTTPRequestHandler` subclasses' methods
 
 ---
 
-_Issue opened by @ZeeD on 2024-01-05 10:02_
+_@ZeeD_
 
 According to [the doc](https://docs.python.org/3/library/http.server.html#http.server.BaseHTTPRequestHandler) you should use `BaseHTTPRequestHandler` subclassing it and implementing various `do_SPAM` methods, one for each request method.
 But if in this basic snippet

@@ -12,14 +12,14 @@ head: use-proper-line-endings
 created_at: 2022-12-30T16:55:16Z
 updated_at: 2022-12-30T19:43:37Z
 url: https://github.com/astral-sh/ruff/pull/1482
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Detect line endings and use them during code generation
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-30 16:55_
+_@squiddy_
 
 Closes #1477
 

@@ -13,14 +13,14 @@ head: zb/install-constraint
 created_at: 2024-02-15T20:43:37Z
 updated_at: 2024-02-16T17:39:40Z
 url: https://github.com/astral-sh/uv/pull/1334
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add `pip install --constraint` test coverage
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 20:43_
+_@zanieb_
 
 Exploring behavior reported in https://github.com/astral-sh/uv/issues/1332
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T11:19:36Z
 updated_at: 2023-03-16T05:37:27Z
 url: https://github.com/astral-sh/ruff/issues/3539
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `C901`: Add `max-complexity` value to message
 
 ---
 
-_Issue opened by @ngnpope on 2023-03-15 11:19_
+_@ngnpope_
 
 Having just seen output like the following:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-12T18:29:54Z
 updated_at: 2021-11-13T12:01:32Z
 url: https://github.com/clap-rs/clap/issues/3017
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Nested subcommands in enums gives lots of clippy warnings
 
 ---
 
-_Issue opened by @sondr3 on 2021-11-12 18:29_
+_@sondr3_
 
 ### Please complete the following tasks
 

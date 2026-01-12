@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T16:23:52Z
 updated_at: 2025-02-10T08:46:24Z
 url: https://github.com/astral-sh/ruff/issues/15772
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `B008` doesn't report when the annotation refers to an immutable type, but `RUF009` does
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-01-27 16:23_
+_@InSyncWithFoo_
 
 Minimal reproducible example ([playground](https://play.ruff.rs/d559f6aa-7617-4e99-97a0-57198b791c5f)):
 

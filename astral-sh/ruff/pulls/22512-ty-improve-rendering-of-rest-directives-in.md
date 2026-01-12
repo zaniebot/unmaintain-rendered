@@ -13,14 +13,14 @@ head: feat/improve-rest-directive-rendering
 created_at: 2026-01-12T00:10:54Z
 updated_at: 2026-01-12T08:24:52Z
 url: https://github.com/astral-sh/ruff/pull/22512
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Improve rendering of ReST directives in docstrings
 
 ---
 
-_Pull request opened by @AryanBagade on 2026-01-12 00:10_
+_@AryanBagade_
 
 ## Summary
 Improves the rendering of ReST version directives in docstrings to use human-readable phrases matching Sphinx/Pylance output.

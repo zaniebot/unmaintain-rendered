@@ -12,14 +12,14 @@ head: fix/diff-requires-fix-arg
 created_at: 2023-04-25T17:58:13Z
 updated_at: 2023-04-26T03:45:38Z
 url: https://github.com/astral-sh/ruff/pull/4098
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Document that `--diff` implies `--fix-only`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-25 17:58_
+_@dhruvmanila_
 
 fixes: #4093 
 

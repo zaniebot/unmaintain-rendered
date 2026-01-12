@@ -13,14 +13,14 @@ head: main
 created_at: 2024-09-05T15:02:37Z
 updated_at: 2024-09-05T17:04:47Z
 url: https://github.com/astral-sh/uv/pull/7084
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # Use astral-sh/setup-uv action
 
 ---
 
-_Pull request opened by @j178 on 2024-09-05 15:02_
+_@j178_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-12T11:30:20Z
 updated_at: 2026-01-12T12:26:49Z
 url: https://github.com/astral-sh/ty/issues/2460
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect type narrowing for `if type(x) == bool`
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-12 11:30_
+_@AlexWaygood_
 
 ### Summary
 

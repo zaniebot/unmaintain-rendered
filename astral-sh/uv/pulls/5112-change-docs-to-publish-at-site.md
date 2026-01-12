@@ -14,14 +14,14 @@ head: charlie/docs
 created_at: 2024-07-16T16:53:08Z
 updated_at: 2024-07-16T16:58:01Z
 url: https://github.com/astral-sh/uv/pull/5112
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Change docs to publish at site
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 16:53_
+_@charliermarsh_
 
 ## Summary
 

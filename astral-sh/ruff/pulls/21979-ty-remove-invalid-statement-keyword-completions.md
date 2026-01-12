@@ -14,14 +14,14 @@ head: filter-incorrect-keyword-completions
 created_at: 2025-12-14T19:15:14Z
 updated_at: 2025-12-15T18:27:36Z
 url: https://github.com/astral-sh/ruff/pull/21979
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Remove invalid statement-keyword completions in for-statements
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-14 19:15_
+_@RasmusNygren_
 
 In `for x in <CURSOR>` statements it's only valid to provide expressions that eventually evaluate to an iterable. While it's extremely difficult to know if something can evaulate to an iterable in a general case, there are some suggestions we know can never lead to an iterable. Most keywords are such and hence we remove them here.
 

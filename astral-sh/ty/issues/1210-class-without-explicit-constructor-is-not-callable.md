@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-19T19:15:03Z
 updated_at: 2025-09-23T00:26:26Z
 url: https://github.com/astral-sh/ty/issues/1210
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Class without explicit constructor is not callable
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-09-19 19:15_
+_@ibraheemdev_
 
 The following example currently errors:
 

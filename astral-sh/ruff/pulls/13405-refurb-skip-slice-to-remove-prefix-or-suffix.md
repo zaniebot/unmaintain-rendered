@@ -14,14 +14,14 @@ head: slice-step
 created_at: 2024-09-19T04:15:22Z
 updated_at: 2024-09-19T16:48:02Z
 url: https://github.com/astral-sh/ruff/pull/13405
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [refurb] Skip `slice-to-remove-prefix-or-suffix (FURB188)` when nontrivial slice step is present
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-09-19 04:15_
+_@dylwil3_
 
 Skips check when slice is of the form `text[a:b:c]` in the case where `c` is not `None`, `True`, or 1.
 

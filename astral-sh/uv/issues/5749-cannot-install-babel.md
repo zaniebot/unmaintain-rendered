@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-03T13:52:32Z
 updated_at: 2024-08-08T14:28:00Z
 url: https://github.com/astral-sh/uv/issues/5749
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Cannot install Babel
 
 ---
 
-_Issue opened by @RomainBrault on 2024-08-03 13:52_
+_@RomainBrault_
 
 I cannot install Babel with
 

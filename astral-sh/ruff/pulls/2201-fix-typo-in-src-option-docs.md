@@ -12,14 +12,14 @@ head: fix-typo-in-src-option-docs
 created_at: 2023-01-26T17:05:28Z
 updated_at: 2023-01-26T17:23:10Z
 url: https://github.com/astral-sh/ruff/pull/2201
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix typo in src option docs
 
 ---
 
-_Pull request opened by @jvstme on 2023-01-26 17:05_
+_@jvstme_
 
 As far as I can tell, `source` is not a valid option, so this is probably a typo. This PR fixes it
 

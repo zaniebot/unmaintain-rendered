@@ -13,14 +13,14 @@ head: konsti/support-cp3-none-any
 created_at: 2025-12-10T10:06:46Z
 updated_at: 2025-12-10T12:47:44Z
 url: https://github.com/astral-sh/uv/pull/17064
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Support `cp3-none-any`
 
 ---
 
-_Pull request opened by @konstin on 2025-12-10 10:06_
+_@konstin_
 
 According to https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/, `cp3-none-any` is a valid tag, even though you shouldn't use it. We should accept it.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-20T00:31:18Z
 updated_at: 2025-12-23T11:22:12Z
 url: https://github.com/astral-sh/ty/issues/2125
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Before filing an issue
 
 ---
 
-_Issue opened by @carljm on 2025-12-20 00:31_
+_@carljm_
 
 ## Thanks for trying ty and reporting an issue!
 

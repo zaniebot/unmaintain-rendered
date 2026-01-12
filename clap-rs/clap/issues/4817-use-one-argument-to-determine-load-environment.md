@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T23:02:31Z
 updated_at: 2023-03-31T23:17:30Z
 url: https://github.com/clap-rs/clap/issues/4817
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Use one argument to determine load environment, before setting defaults
 
 ---
 
-_Issue opened by @tgross35 on 2023-03-31 23:02_
+_@tgross35_
 
 ### Please complete the following tasks
 

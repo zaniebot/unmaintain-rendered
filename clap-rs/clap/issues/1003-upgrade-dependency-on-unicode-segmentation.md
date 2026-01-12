@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-18T17:51:17Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1003
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Upgrade dependency on unicode-segmentation
 
 ---
 
-_Issue opened by @shepmaster on 2017-07-18 17:51_
+_@shepmaster_
 
 As you noticed, I had to remove clap from the crates on the playground. After trying to update the crates again, it still failed, so I did a bit of digging.
 

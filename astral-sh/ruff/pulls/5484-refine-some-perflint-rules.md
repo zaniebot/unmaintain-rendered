@@ -13,14 +13,14 @@ head: charlie/perf
 created_at: 2023-07-03T17:27:48Z
 updated_at: 2023-07-03T17:59:59Z
 url: https://github.com/astral-sh/ruff/pull/5484
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refine some `perflint` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 17:27_
+_@charliermarsh_
 
 ## Summary
 

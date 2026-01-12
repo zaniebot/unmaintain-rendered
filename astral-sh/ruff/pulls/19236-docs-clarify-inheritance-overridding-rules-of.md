@@ -12,14 +12,14 @@ head: update-configuration-docs
 created_at: 2025-07-09T15:18:36Z
 updated_at: 2025-10-01T15:11:49Z
 url: https://github.com/astral-sh/ruff/pull/19236
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`docs`] Clarify inheritance/overridding rules of Ruff settings (#18641)
 
 ---
 
-_Pull request opened by @pakal on 2025-07-09 15:18_
+_@pakal_
 
 ## Summary
 As per https://github.com/astral-sh/ruff/issues/18641 , the goal is to clarify that default settings are not "replaced" at any moment by custom config files, they are always used as fallbacks ; only custom config files exclude each other (unless "extend" is used).

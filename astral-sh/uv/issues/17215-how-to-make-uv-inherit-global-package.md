@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T13:27:57Z
 updated_at: 2025-12-31T04:33:25Z
 url: https://github.com/astral-sh/uv/issues/17215
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # How to make uv inherit global package?
 
 ---
 
-_Issue opened by @fighterhit on 2025-12-22 13:27_
+_@fighterhit_
 
 ### Question
 

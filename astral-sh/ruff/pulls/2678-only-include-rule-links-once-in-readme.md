@@ -13,14 +13,14 @@ head: charlie/read
 created_at: 2023-02-09T02:47:52Z
 updated_at: 2023-02-09T02:48:07Z
 url: https://github.com/astral-sh/ruff/pull/2678
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Only include rule links once in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 02:47_
+_@charliermarsh_
 
 _No description provided._
 

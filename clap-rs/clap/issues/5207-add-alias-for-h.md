@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T23:06:32Z
 updated_at: 2023-11-13T18:24:57Z
 url: https://github.com/clap-rs/clap/issues/5207
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add `-?` alias for `-h`
 
 ---
 
-_Issue opened by @SUPERCILEX on 2023-11-10 23:06_
+_@SUPERCILEX_
 
 ### Please complete the following tasks
 

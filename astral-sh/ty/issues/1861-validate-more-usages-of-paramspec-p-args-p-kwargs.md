@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-12T10:13:12Z
 updated_at: 2025-12-12T10:13:12Z
 url: https://github.com/astral-sh/ty/issues/1861
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Validate more usages of `ParamSpec`, `P.args`, `P.kwargs`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-12-12 10:13_
+_@dhruvmanila_
 
 https://github.com/astral-sh/ruff/pull/21445 did not focus much on validating whether `ParamSpec`, `P.args` and `P.kwargs` were used correctly.
 

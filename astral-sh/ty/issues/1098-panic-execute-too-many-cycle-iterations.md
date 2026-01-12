@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-26T09:47:18Z
 updated_at: 2025-09-05T01:27:23Z
 url: https://github.com/astral-sh/ty/issues/1098
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] execute: too many cycle iterations
 
 ---
 
-_Issue opened by @obi-jerome on 2025-08-26 09:47_
+_@obi-jerome_
 
 Hi, 
 I'm testing ty and got this error:

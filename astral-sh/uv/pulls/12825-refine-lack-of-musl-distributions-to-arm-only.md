@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2025-04-10T21:31:51Z
 updated_at: 2025-04-10T21:35:43Z
 url: https://github.com/astral-sh/uv/pull/12825
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Refine lack of musl distributions to ARM-only
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-10 21:31_
+_@charliermarsh_
 
 _No description provided._
 

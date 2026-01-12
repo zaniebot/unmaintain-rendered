@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-30T21:10:22Z
 updated_at: 2023-12-31T15:43:36Z
 url: https://github.com/astral-sh/ruff/issues/9323
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule W293 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2023-12-30 21:10_
+_@qarmin_
 
 Ruff 0.1.9 (latest changes from main branch)
 ```

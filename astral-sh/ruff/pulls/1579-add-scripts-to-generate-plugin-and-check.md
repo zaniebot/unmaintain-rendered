@@ -12,14 +12,14 @@ head: charlie/scripts
 created_at: 2023-01-03T02:44:28Z
 updated_at: 2023-01-03T03:11:14Z
 url: https://github.com/astral-sh/ruff/pull/1579
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add scripts to generate plugin and check boilerplate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-03 02:44_
+_@charliermarsh_
 
 These are pretty hacky, but they work, and they'll save us a ton of time. Since they're dev-only, they can be pretty scrappy, so let's just iterate on them as we go.
 

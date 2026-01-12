@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T09:29:56Z
 updated_at: 2025-11-18T10:44:18Z
 url: https://github.com/astral-sh/uv/issues/16766
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # uv build-backend does not allow building a single-module package (module-only, no package directory)
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-11-18 09:29_
+_@DhavalGojiya_
 
 ### Summary
 

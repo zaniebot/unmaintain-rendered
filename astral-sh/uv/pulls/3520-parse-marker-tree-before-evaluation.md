@@ -12,14 +12,14 @@ head: marker-tree-parsing
 created_at: 2024-05-10T22:05:08Z
 updated_at: 2024-05-14T15:02:58Z
 url: https://github.com/astral-sh/uv/pull/3520
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Parse marker tree before evaluation
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-10 22:05_
+_@ibraheemdev_
 
 ## Summary
 

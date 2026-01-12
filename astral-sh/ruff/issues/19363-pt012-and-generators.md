@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T16:39:50Z
 updated_at: 2025-07-15T16:53:34Z
 url: https://github.com/astral-sh/ruff/issues/19363
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PT012: and generators
 
 ---
 
-_Issue opened by @spaceone on 2025-07-15 16:39_
+_@spaceone_
 
 I wonder whether PT012 is valid for generators, as one need to resolve them.
 in a regular generator i can put `list()` or `next()` around it and for async, `anext` works or putting it into a list comprehension.

@@ -13,14 +13,14 @@ head: charlie/unc
 created_at: 2024-08-27T17:24:26Z
 updated_at: 2024-08-27T17:49:10Z
 url: https://github.com/astral-sh/uv/pull/6706
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Avoid writing invalid PEP 723 scripts on `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 17:24_
+_@charliermarsh_
 
 ## Summary
 

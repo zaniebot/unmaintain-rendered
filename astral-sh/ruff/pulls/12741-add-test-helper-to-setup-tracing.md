@@ -13,14 +13,14 @@ head: red-knot-test-tracing
 created_at: 2024-08-08T06:55:38Z
 updated_at: 2024-08-09T07:18:20Z
 url: https://github.com/astral-sh/ruff/pull/12741
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add test helper to setup tracing
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-08 06:55_
+_@MichaReiser_
 
 ## Summary
 

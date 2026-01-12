@@ -12,14 +12,14 @@ head: renkai-narrow-enum-2
 created_at: 2025-09-07T13:25:26Z
 updated_at: 2025-09-08T23:56:28Z
 url: https://github.com/astral-sh/ruff/pull/20285
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] equality narrowing on enums that don't override `__eq__` or `__ne__`
 
 ---
 
-_Pull request opened by @Renkai on 2025-09-07 13:25_
+_@Renkai_
 
 It's a TODO clean of PR https://github.com/astral-sh/ruff/pull/20164 that solved issue https://github.com/astral-sh/ty/issues/939
 

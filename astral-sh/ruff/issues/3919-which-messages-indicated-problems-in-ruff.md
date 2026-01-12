@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-08T14:04:35Z
 updated_at: 2025-08-07T13:18:56Z
 url: https://github.com/astral-sh/ruff/issues/3919
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Which messages indicated problems in Ruff?
 
 ---
 
-_Issue opened by @charliermarsh on 2023-04-08 14:04_
+_@charliermarsh_
 
 ### Discussed in https://github.com/charliermarsh/ruff/discussions/3917
 

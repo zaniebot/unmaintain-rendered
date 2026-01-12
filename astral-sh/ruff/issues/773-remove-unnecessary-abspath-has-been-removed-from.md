@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T17:28:21Z
 updated_at: 2022-11-17T16:35:00Z
 url: https://github.com/astral-sh/ruff/issues/773
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Remove unnecessary abspath has been removed from pyupgrade
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-16 17:28_
+_@JonathanPlasse_
 
 Hi, 
 I just discovered `Ruff`, love it :heart_eyes: 

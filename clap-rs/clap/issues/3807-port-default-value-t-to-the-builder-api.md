@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-09T13:54:56Z
 updated_at: 2022-06-09T13:56:46Z
 url: https://github.com/clap-rs/clap/issues/3807
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Port `default_value_t` to the Builder API
 
 ---
 
-_Issue opened by @epage on 2022-06-09 13:54_
+_@epage_
 
 With #3732, we now have a typed API.  This means we can move the derive's `default_value_t` down into the builder API
 

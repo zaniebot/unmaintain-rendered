@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-29T14:27:10Z
 updated_at: 2024-11-20T00:32:48Z
 url: https://github.com/astral-sh/uv/issues/3310
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Consider `zlib-rs` flate2 backend instead of `zlib-ng`
 
 ---
 
-_Issue opened by @zanieb on 2024-04-29 14:27_
+_@zanieb_
 
 See https://github.com/rust-lang/flate2-rs/releases/tag/1.0.29 and #3295 
 

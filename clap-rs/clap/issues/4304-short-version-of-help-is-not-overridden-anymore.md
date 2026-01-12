@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-30T17:03:28Z
 updated_at: 2022-09-30T18:08:39Z
 url: https://github.com/clap-rs/clap/issues/4304
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # short version of help is not overridden anymore
 
 ---
 
-_Issue opened by @erazor-de on 2022-09-30 17:03_
+_@erazor-de_
 
 ### Please complete the following tasks
 

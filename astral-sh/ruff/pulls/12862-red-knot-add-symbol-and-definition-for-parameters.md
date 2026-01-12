@@ -13,14 +13,14 @@ head: dhruv/parameters
 created_at: 2024-08-13T13:32:53Z
 updated_at: 2024-08-16T05:30:00Z
 url: https://github.com/astral-sh/ruff/pull/12862
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Add symbol and definition for parameters
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-13 13:32_
+_@dhruvmanila_
 
 ## Summary
 

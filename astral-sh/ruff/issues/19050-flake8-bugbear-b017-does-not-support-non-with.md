@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-30T18:25:07Z
 updated_at: 2025-07-08T19:04:56Z
 url: https://github.com/astral-sh/ruff/issues/19050
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`flake8-bugbear`] `B017` does not support non-`with` calls
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-30 18:25_
+_@MeGaGiGaGon_
 
 ### Summary
 

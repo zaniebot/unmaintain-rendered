@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-22T20:11:31Z
 updated_at: 2025-05-09T17:53:06Z
 url: https://github.com/astral-sh/ruff/issues/15100
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # 3.14 deferred evaluation of annotations
 
 ---
 
-_Issue opened by @nickdrozd on 2024-12-22 20:11_
+_@nickdrozd_
 
 In 3.14, type annotations are not evaluated eagerly.
 

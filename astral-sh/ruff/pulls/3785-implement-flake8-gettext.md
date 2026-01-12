@@ -13,14 +13,14 @@ head: implement-flake8-gettext
 created_at: 2023-03-28T21:06:44Z
 updated_at: 2023-03-28T23:47:21Z
 url: https://github.com/astral-sh/ruff/pull/3785
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Implement `flake8-gettext`
 
 ---
 
-_Pull request opened by @leiserfg on 2023-03-28 21:06_
+_@leiserfg_
 
 Adds rules regarding incorrect usage of gettext functions
 Closes #3294.

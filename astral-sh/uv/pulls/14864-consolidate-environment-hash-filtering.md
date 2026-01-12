@@ -13,14 +13,14 @@ head: zb/env-hash-filter
 created_at: 2025-07-24T04:33:19Z
 updated_at: 2025-07-24T12:35:46Z
 url: https://github.com/astral-sh/uv/pull/14864
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Consolidate environment hash filtering
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 04:33_
+_@zanieb_
 
 _No description provided._
 

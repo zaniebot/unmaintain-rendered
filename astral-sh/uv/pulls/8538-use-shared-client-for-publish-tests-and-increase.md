@@ -13,14 +13,14 @@ head: zb/publish-test
 created_at: 2024-10-24T18:26:21Z
 updated_at: 2024-10-25T13:36:26Z
 url: https://github.com/astral-sh/uv/pull/8538
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Use shared client for publish tests and increase read timeout
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-24 18:26_
+_@zanieb_
 
 Attempts to address the read timeout case in https://github.com/astral-sh/uv/issues/8418
 

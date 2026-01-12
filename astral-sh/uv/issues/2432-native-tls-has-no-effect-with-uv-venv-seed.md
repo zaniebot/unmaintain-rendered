@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T22:33:18Z
 updated_at: 2024-03-13T22:54:53Z
 url: https://github.com/astral-sh/uv/issues/2432
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # --native-tls has no effect with uv venv --seed
 
 ---
 
-_Issue opened by @jtanx on 2024-03-13 22:33_
+_@jtanx_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

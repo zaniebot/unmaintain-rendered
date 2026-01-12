@@ -12,14 +12,14 @@ head: isort-inline-comment-handling
 created_at: 2022-12-26T07:59:03Z
 updated_at: 2022-12-27T05:42:30Z
 url: https://github.com/astral-sh/ruff/pull/1380
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Only re-associate inline comments during normalization when necessary
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-26 07:59_
+_@squiddy_
 
 This is in preparation for the force-single-line isort setting. We need
 to keep inline comments associated to the import itself, if possible.

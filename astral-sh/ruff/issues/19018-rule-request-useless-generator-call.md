@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T19:05:15Z
 updated_at: 2025-07-07T12:50:08Z
 url: https://github.com/astral-sh/ruff/issues/19018
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule request: useless generator call
 
 ---
 
-_Issue opened by @xavdid on 2025-06-28 19:05_
+_@xavdid_
 
 ### Summary
 

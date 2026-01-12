@@ -14,14 +14,14 @@ head: thejchap/enum-auto2
 created_at: 2025-09-24T00:01:58Z
 updated_at: 2025-11-10T17:53:09Z
 url: https://github.com/astral-sh/ruff/pull/20541
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Fix incorrect inference of `enum.auto()` for enums with non-`int` mixins, and imprecise inference of `enum.auto()` for single-member enums
 
 ---
 
-_Pull request opened by @thejchap on 2025-09-24 00:01_
+_@thejchap_
 
 ## Summary
 

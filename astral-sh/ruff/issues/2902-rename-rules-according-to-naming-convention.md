@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-14T21:40:48Z
 updated_at: 2023-03-22T15:36:03Z
 url: https://github.com/astral-sh/ruff/issues/2902
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Rename rules according to naming convention
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-14 21:40_
+_@not-my-profile_
 
 This is the tracking issue for our effort to rename our rules according to our [rule naming convention](https://github.com/charliermarsh/ruff/blob/main/CONTRIBUTING.md#rule-naming-convention).
 

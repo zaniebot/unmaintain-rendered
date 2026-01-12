@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T17:26:48Z
 updated_at: 2024-11-03T18:42:52Z
 url: https://github.com/astral-sh/uv/issues/8778
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Is it normal for `uv sync` to return an "error: No `project` table found" when used with `--group`?
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2024-11-03 17:26_
+_@ReinforcedKnowledge_
 
 Hi!
 

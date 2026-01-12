@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T22:10:01Z
 updated_at: 2025-04-02T18:14:59Z
 url: https://github.com/astral-sh/uv/issues/12611
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Authenticate argument ignored with explicit index
 
 ---
 
-_Issue opened by @jdumas on 2025-04-01 22:10_
+_@jdumas_
 
 ### Summary
 

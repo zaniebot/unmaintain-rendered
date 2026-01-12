@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-14T16:48:46Z
 updated_at: 2023-01-29T18:30:22Z
 url: https://github.com/astral-sh/ruff/issues/1871
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Migrate existing violations to use named fields
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-14 16:48_
+_@charliermarsh_
 
 Purely a mechanical refactor, but right now all the structs use anonymous fields.
 

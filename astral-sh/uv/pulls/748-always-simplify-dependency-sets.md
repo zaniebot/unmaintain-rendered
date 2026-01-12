@@ -12,14 +12,14 @@ head: charlie/star
 created_at: 2024-01-03T01:46:51Z
 updated_at: 2024-01-03T18:21:05Z
 url: https://github.com/astral-sh/uv/pull/748
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Always simplify dependency sets
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 01:46_
+_@charliermarsh_
 
 `simplify_set` can itself simplify to the full range, so it seems like we should be checking if the set is `Range::full` _after_ simplifying rather than before.
 

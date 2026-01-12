@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-08T09:41:19Z
 updated_at: 2024-04-04T04:02:44Z
 url: https://github.com/astral-sh/uv/issues/827
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Lack of prerelease selection coerces older versions
 
 ---
 
-_Issue opened by @konstin on 2024-01-08 09:41_
+_@konstin_
 
 Puffin currently only uses prereleases that were explicitly selected on the top level. This means we reject any dependency version depending on a prerelease. E.g. for `transformers[accelerate,agents,audio,codecarbon,deepspeed,deepspeed-testing,dev,dev-tensorflow,dev-torch,flax,flax-speech,ftfy,integrations,ja,modelcreation,onnx,onnxruntime,optuna,quality,ray,retrieval,sagemaker,sentencepiece,sigopt,sklearn,speech,testing,tf,tf-cpu,tf-speech,timm,tokenizers,torch,torch-speech,torch-vision,torchhub,video,vision]` on python 3.8, we get a different resolution than pip coercing older versions, because `clldutils` 3.22.1 dependson bibtexparser>=2.0.0b4.
 

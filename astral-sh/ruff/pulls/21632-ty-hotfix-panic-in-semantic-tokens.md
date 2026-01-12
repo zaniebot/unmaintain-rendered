@@ -14,14 +14,14 @@ head: gankra/hotfix
 created_at: 2025-11-25T22:00:09Z
 updated_at: 2025-11-25T22:25:12Z
 url: https://github.com/astral-sh/ruff/pull/21632
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] hotfix panic in semantic tokens
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-25 22:00_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/1637
 

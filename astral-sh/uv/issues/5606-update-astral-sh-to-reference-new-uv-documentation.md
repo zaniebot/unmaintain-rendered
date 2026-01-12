@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T16:37:03Z
 updated_at: 2024-08-20T20:08:38Z
 url: https://github.com/astral-sh/uv/issues/5606
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Update `astral.sh` to reference new uv documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 16:37_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/ord
 created_at: 2024-10-16T14:02:10Z
 updated_at: 2024-10-16T15:52:27Z
 url: https://github.com/astral-sh/uv/pull/8256
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Respect index priority when storing credentials
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-16 14:02_
+_@charliermarsh_
 
 ## Summary
 

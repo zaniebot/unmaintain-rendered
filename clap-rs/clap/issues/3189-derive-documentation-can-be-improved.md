@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-16T15:54:06Z
 updated_at: 2022-08-18T14:07:54Z
 url: https://github.com/clap-rs/clap/issues/3189
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Derive documentation can be improved
 
 ---
 
-_Issue opened by @epage on 2021-12-16 15:54_
+_@epage_
 
 ### Please complete the following tasks
 

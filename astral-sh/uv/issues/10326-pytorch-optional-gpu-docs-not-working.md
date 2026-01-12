@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T13:33:54Z
 updated_at: 2025-01-22T21:32:13Z
 url: https://github.com/astral-sh/uv/issues/10326
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # PyTorch optional GPU docs not working
 
 ---
 
-_Issue opened by @jbohnslav on 2025-01-06 13:33_
+_@jbohnslav_
 
 I found the [Configuring accelerators with optional dependencies](https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies) section of the PyTorch docs didn't work in my case. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T20:29:37Z
 updated_at: 2024-03-08T05:12:16Z
 url: https://github.com/astral-sh/uv/issues/2286
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # ERROR: powershell -c "irm https://astral.sh/uv/install.ps1 | iex" Error: PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] to run uv.
 
 ---
 
-_Issue opened by @2zzly on 2024-03-07 20:29_
+_@2zzly_
 
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 Error: PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] to run uv. For example, to set the execution policy to 'RemoteSigned' please run:

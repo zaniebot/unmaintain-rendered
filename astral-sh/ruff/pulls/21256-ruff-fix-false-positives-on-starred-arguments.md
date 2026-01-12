@@ -14,14 +14,14 @@ head: ruf057
 created_at: 2025-11-03T15:09:56Z
 updated_at: 2025-11-05T17:08:00Z
 url: https://github.com/astral-sh/ruff/pull/21256
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [`ruff`] Fix false positives on starred arguments (`RUF057`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-11-03 15:09_
+_@chirizxc_
 
 ## Summary
 

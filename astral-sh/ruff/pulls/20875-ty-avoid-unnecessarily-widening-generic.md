@@ -14,14 +14,14 @@ head: ibraheem/generic-call-inference
 created_at: 2025-10-15T00:23:12Z
 updated_at: 2025-10-16T19:17:40Z
 url: https://github.com/astral-sh/ruff/pull/20875
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Avoid unnecessarily widening generic specializations
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-15 00:23_
+_@ibraheemdev_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: FURB118
 created_at: 2023-12-17T20:25:49Z
 updated_at: 2023-12-18T15:16:54Z
 url: https://github.com/astral-sh/ruff/pull/9171
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Implement `reimplemented_operator` (FURB118)
 
 ---
 
-_Pull request opened by @siiptuo on 2023-12-17 20:25_
+_@siiptuo_
 
 ## Summary
 

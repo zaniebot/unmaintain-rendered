@@ -13,14 +13,14 @@ head: fix-empty-uv-python-var
 created_at: 2024-10-02T19:11:05Z
 updated_at: 2024-10-05T01:16:40Z
 url: https://github.com/astral-sh/uv/pull/7878
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Coerce empty string values to `None` for `UV_PYTHON` env var
 
 ---
 
-_Pull request opened by @krishnan-chandra on 2024-10-02 19:11_
+_@krishnan-chandra_
 
 ## Summary
 

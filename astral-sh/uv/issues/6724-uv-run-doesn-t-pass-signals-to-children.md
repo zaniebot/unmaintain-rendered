@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T22:05:56Z
 updated_at: 2024-11-13T13:36:08Z
 url: https://github.com/astral-sh/uv/issues/6724
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv run doesn't pass signals to children
 
 ---
 
-_Issue opened by @overfl0 on 2024-08-27 22:05_
+_@overfl0_
 
 When you pass `uv run` as the command in `compose.yml`, you can't gracefully stop the process by pressing Ctrl+C. I'm guessing it's because it's not passing sigterm to its children.
 

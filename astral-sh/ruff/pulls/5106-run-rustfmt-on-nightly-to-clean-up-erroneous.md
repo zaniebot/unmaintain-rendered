@@ -13,14 +13,14 @@ head: charlie/rustfmt
 created_at: 2023-06-15T00:10:36Z
 updated_at: 2023-06-15T00:37:33Z
 url: https://github.com/astral-sh/ruff/pull/5106
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Run `rustfmt` on nightly to clean up erroneous comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-15 00:10_
+_@charliermarsh_
 
 ## Summary
 

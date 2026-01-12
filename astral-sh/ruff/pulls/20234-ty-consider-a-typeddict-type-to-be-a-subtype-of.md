@@ -13,14 +13,14 @@ head: david/typeddict-property-tests
 created_at: 2025-09-04T13:57:50Z
 updated_at: 2025-09-04T14:03:53Z
 url: https://github.com/astral-sh/ruff/pull/20234
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Consider a TypedDict type to be a subtype of itself
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-04 13:57_
+_@sharkdp_
 
 ## Summary
 

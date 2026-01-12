@@ -12,14 +12,14 @@ head: feat/detect-changes-in-project-files
 created_at: 2023-05-01T11:54:16Z
 updated_at: 2023-05-09T17:01:03Z
 url: https://github.com/astral-sh/ruff/pull/4169
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Feat: detect changes also in configuration files
 
 ---
 
-_Pull request opened by @mikeleppane on 2023-05-01 11:54_
+_@mikeleppane_
 
 Detect changes also in configuration files. Detected config files are: pyproject.toml, ruff.toml,.ruff.toml
 

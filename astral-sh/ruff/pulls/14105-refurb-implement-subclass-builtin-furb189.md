@@ -14,14 +14,14 @@ head: refurb-no-subclass-builtins
 created_at: 2024-11-05T12:21:22Z
 updated_at: 2024-11-07T11:59:23Z
 url: https://github.com/astral-sh/ruff/pull/14105
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`refurb`] Implement `subclass-builtin` (`FURB189`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-05 12:21_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

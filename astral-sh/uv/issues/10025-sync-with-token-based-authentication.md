@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-19T11:04:40Z
 updated_at: 2024-12-19T13:22:52Z
 url: https://github.com/astral-sh/uv/issues/10025
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # sync with token-based authentication
 
 ---
 
-_Issue opened by @zkurtz on 2024-12-19 11:04_
+_@zkurtz_
 
 I can install a package from a private repo at a specific git commit [as documented](https://docs.astral.sh/uv/configuration/authentication/#git-authentication) using my personal access token.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-03T21:41:02Z
 updated_at: 2025-08-07T11:15:14Z
 url: https://github.com/astral-sh/uv/issues/6981
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Allow conflicting optional dependencies and dependency groups
 
 ---
 
-_Issue opened by @zanieb on 2024-09-03 21:41_
+_@zanieb_
 
 A project should be able to declare mutually exclusive optional dependencies, which have conflicting requirements and are solved separately.
 

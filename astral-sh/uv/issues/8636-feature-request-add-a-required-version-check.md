@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T15:38:15Z
 updated_at: 2024-10-28T19:16:34Z
 url: https://github.com/astral-sh/uv/issues/8636
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # feature request: add a required version check option
 
 ---
 
-_Issue opened by @mjpieters on 2024-10-28 15:38_
+_@mjpieters_
 
 `uv` [version 0.4.27](https://github.com/astral-sh/uv/blob/main/CHANGELOG.md#0427) added support for [PEP 735 – Dependency Groups in pyproject.toml](https://peps.python.org/pep-0735/), which I very much appreciate. However, if any of our developers are still using an older version of `uv` locally, they may have issues with projects that start using the new standard syntax for dependency groups.
 

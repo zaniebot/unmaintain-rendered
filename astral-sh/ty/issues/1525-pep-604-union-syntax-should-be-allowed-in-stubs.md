@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-11T19:23:46Z
 updated_at: 2025-11-11T19:30:29Z
 url: https://github.com/astral-sh/ty/issues/1525
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # PEP 604 union syntax should be allowed in stubs (`.pyi`) on all Python versions
 
 ---
 
-_Issue opened by @Avasam on 2025-11-11 19:23_
+_@Avasam_
 
 ### Summary
 

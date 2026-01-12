@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T10:13:37Z
 updated_at: 2025-07-01T11:27:48Z
 url: https://github.com/astral-sh/uv/issues/14388
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Potential Gitee Mirror for Faster Installation in China
 
 ---
 
-_Issue opened by @machenme on 2025-07-01 10:13_
+_@machenme_
 
 ### Summary
 

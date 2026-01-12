@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-06T15:47:10Z
 updated_at: 2023-08-16T07:11:11Z
 url: https://github.com/astral-sh/ruff/issues/6377
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # End-of-line comments are ignored when breaking long lines in the formatter
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-06 15:47_
+_@charliermarsh_
 
 For example, we treat this as stable formatting:
 

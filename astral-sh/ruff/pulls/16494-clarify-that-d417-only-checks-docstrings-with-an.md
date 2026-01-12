@@ -13,14 +13,14 @@ head: micha/d417-documentation
 created_at: 2025-03-04T10:21:29Z
 updated_at: 2025-03-06T09:53:44Z
 url: https://github.com/astral-sh/ruff/pull/16494
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Clarify that D417 only checks docstrings with an arguments section
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-04 10:21_
+_@MichaReiser_
 
 ## Summary
 

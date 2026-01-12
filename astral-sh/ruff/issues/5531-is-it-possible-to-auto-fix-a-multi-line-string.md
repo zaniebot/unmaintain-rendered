@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-05T13:25:34Z
 updated_at: 2023-07-10T13:49:14Z
 url: https://github.com/astral-sh/ruff/issues/5531
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Is it possible to auto-fix a multi-line string `format` call with a single-line string template?
 
 ---
 
-_Issue opened by @harupy on 2023-07-05 13:25_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

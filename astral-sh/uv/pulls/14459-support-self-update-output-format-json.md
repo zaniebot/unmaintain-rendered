@@ -11,14 +11,14 @@ head: self-update-json
 created_at: 2025-07-04T10:06:06Z
 updated_at: 2025-07-09T20:05:50Z
 url: https://github.com/astral-sh/uv/pull/14459
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Support `self update --output-format=json`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-07-04 10:06_
+_@InSyncWithFoo_
 
 ## Summary
 

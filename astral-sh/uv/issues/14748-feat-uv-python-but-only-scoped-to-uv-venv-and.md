@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-19T16:16:55Z
 updated_at: 2025-09-06T17:44:19Z
 url: https://github.com/astral-sh/uv/issues/14748
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # feat: `UV_PYTHON` but only scoped to `uv venv` and similar internal commands which create a `venv`.
 
 ---
 
-_Issue opened by @gabyx on 2025-07-19 16:16_
+_@gabyx_
 
 ### Summary
 

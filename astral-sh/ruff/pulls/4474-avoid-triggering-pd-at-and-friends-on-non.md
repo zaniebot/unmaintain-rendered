@@ -12,14 +12,14 @@ head: charlie/pd
 created_at: 2023-05-17T16:12:15Z
 updated_at: 2023-05-17T16:43:18Z
 url: https://github.com/astral-sh/ruff/pull/4474
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid triggering `pd#at` and friends on non-subscripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-17 16:12_
+_@charliermarsh_
 
 Closes #4466.
 

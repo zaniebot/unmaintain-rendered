@@ -14,14 +14,14 @@ head: sim108-boolean-simplify
 created_at: 2024-08-10T15:44:01Z
 updated_at: 2024-08-10T18:06:40Z
 url: https://github.com/astral-sh/ruff/pull/12796
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [flake8-simplify] Further simplify to binary in preview for `if-else-block-instead-of-if-exp (SIM108)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-10 15:44_
+_@dylwil3_
 
 In most cases we should suggest a ternary operator, but there are three edge cases where a binary operator is more appropriate.
 

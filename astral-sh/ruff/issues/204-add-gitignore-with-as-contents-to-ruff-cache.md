@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-15T16:48:40Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/204
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add `.gitignore` with `*` as contents to `.ruff_cache`
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-15 16:48_
+_@Jackenmen_
 
 This is done by a lot of popular tools such as pytest (`.pytest_cache/.gitignore`), mypy (`.mypy_cache/.gitignore`), or virtualenv (`venv-name/.gitignore`) to make it unnecessary to exclude these folders in the repository root's .gitignore and to make it easier to use those tools for projects whose maintainers don't use it themselves as well as for new projects who are just adopting the new tool and want to be able to do so with minimal effort.
 

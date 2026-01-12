@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T09:40:24Z
 updated_at: 2024-02-22T20:31:52Z
 url: https://github.com/astral-sh/uv/issues/1860
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # 0.1.7 broke AWS CodeArtifact
 
 ---
 
-_Issue opened by @bra-fsn on 2024-02-22 09:40_
+_@bra-fsn_
 
 I use AWS CodeArtifact to store/get local Python packages.
 After getting a token for it and specifying the URL with uv's `--extra-index-url`, I can install those packages with `uv pip install $pkg_name --extra-index-url "$URL"` with uv version `0.1.6`, but I get the following error using `0.1.7`:

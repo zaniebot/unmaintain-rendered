@@ -13,14 +13,14 @@ head: charlie/git
 created_at: 2023-12-08T00:26:59Z
 updated_at: 2023-12-08T01:17:42Z
 url: https://github.com/astral-sh/uv/pull/588
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Restructure Git cache to include package name
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-08 00:26_
+_@charliermarsh_
 
 ## Summary
 

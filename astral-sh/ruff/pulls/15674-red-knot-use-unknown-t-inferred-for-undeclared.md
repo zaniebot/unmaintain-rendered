@@ -13,14 +13,14 @@ head: david/union-of-unknown-and-inferred-type
 created_at: 2025-01-22T15:39:14Z
 updated_at: 2025-01-24T11:48:04Z
 url: https://github.com/astral-sh/ruff/pull/15674
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Use `Unknown | T_inferred` for undeclared public symbols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-22 15:39_
+_@sharkdp_
 
 ## Summary
 

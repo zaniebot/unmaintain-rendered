@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-09T13:41:25Z
 updated_at: 2023-03-14T18:48:14Z
 url: https://github.com/astral-sh/ruff/issues/3418
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Keep `# noqa` comments when forcing single-line imports
 
 ---
 
-_Issue opened by @stinodego on 2023-03-09 13:41_
+_@stinodego_
 
 Consider the following file `repro.py`:
 

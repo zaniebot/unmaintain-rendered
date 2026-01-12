@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-08-27T19:49:07Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/636
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Having two unnamed arguments and making the first optional
 
 ---
 
-_Issue opened by @TomasHubelbauer on 2016-08-27 19:49_
+_@TomasHubelbauer_
 
 Forgive me if Issues are not meant for questions, neither the contributing guidelines nor the ReadMe say so, so please allow me to ask a question here. I'd like to make `clap` parse the following:
 - `todo TEST "Test things"` means `CODE` is _TEST_, `TEXT` is _Test things_.

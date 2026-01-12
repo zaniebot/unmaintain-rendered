@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T21:39:00Z
 updated_at: 2024-10-08T21:49:27Z
 url: https://github.com/astral-sh/uv/issues/8022
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # `--frozen` will change behaviour of `--only-dev`
 
 ---
 
-_Issue opened by @tonnico on 2024-10-08 21:39_
+_@tonnico_
 
 Recursive dev dependencies are removed when `--frozen` is set.
 

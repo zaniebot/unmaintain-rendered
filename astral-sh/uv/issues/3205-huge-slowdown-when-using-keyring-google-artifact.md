@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T12:16:35Z
 updated_at: 2024-04-24T19:27:38Z
 url: https://github.com/astral-sh/uv/issues/3205
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and auth problem in 0.1.36
 
 ---
 
-_Issue opened by @avelychko12 on 2024-04-23 12:16_
+_@avelychko12_
 
 I have a virtualenv where I already have `requests` installed from default pypi, and if I don't use any extra index url then everything is fine, with extra index url with token everything is fine as well
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T16:52:40Z
 updated_at: 2024-08-27T17:49:10Z
 url: https://github.com/astral-sh/uv/issues/6700
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv does not recognize dependencies declared in script
 
 ---
 
-_Issue opened by @bongomachine on 2024-08-27 16:52_
+_@bongomachine_
 
 Howdy and thanks for a great piece of software! I'm not sure if this is a bug or if I'm simply doing things wrong. Anyway..
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T10:46:39Z
 updated_at: 2023-06-03T14:13:02Z
 url: https://github.com/astral-sh/ruff/issues/4830
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Check for decorators
 
 ---
 
-_Issue opened by @Bendabir on 2023-06-03 10:46_
+_@Bendabir_
 
 Hi,
 I was wondering if Ruff would be able to check if a function, a method or a class is actually decorated by a given decorator. PyLint does support such thing through custom checkers and plugins (not native, but possible). Can we do the same with Ruff 🤔 ?

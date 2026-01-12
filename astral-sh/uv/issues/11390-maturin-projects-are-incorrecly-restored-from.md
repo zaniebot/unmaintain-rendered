@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T16:22:48Z
 updated_at: 2025-10-23T11:17:12Z
 url: https://github.com/astral-sh/uv/issues/11390
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Maturin projects are incorrecly restored from cache in editable mode
 
 ---
 
-_Issue opened by @polw-zi on 2025-02-10 16:22_
+_@polw-zi_
 
 ### Summary
 

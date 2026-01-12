@@ -13,14 +13,14 @@ head: zb/comment-safety
 created_at: 2024-06-14T16:58:21Z
 updated_at: 2024-06-14T17:11:54Z
 url: https://github.com/astral-sh/ruff/pull/11879
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Guard against malicious ecosystem comment artifacts
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 16:58_
+_@zanieb_
 
 _No description provided._
 

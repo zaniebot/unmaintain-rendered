@@ -12,14 +12,14 @@ head: ag/normalize-markers
 created_at: 2024-06-04T17:28:57Z
 updated_at: 2024-06-04T17:45:54Z
 url: https://github.com/astral-sh/uv/pull/4017
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # uv-resolver: normalize marker expressions
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-04 17:28_
+_@BurntSushi_
 
 This is a quick fix for some flaky tests where the output in the lock
 file isn't stable because marker expressions can be combined in a

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-13T15:44:33Z
 updated_at: 2024-02-13T18:28:07Z
 url: https://github.com/astral-sh/ruff/issues/9974
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF006 not emitted when using asyncio.new_event_loop
 
 ---
 
-_Issue opened by @tyilo on 2024-02-13 15:44_
+_@tyilo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

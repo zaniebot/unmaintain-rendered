@@ -13,14 +13,14 @@ head: charlie/full
 created_at: 2023-12-03T20:02:22Z
 updated_at: 2023-12-04T01:02:26Z
 url: https://github.com/astral-sh/uv/pull/528
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Use full Python version when determining compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-03 20:02_
+_@charliermarsh_
 
 ## Summary
 

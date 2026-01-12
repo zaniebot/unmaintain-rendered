@@ -14,14 +14,14 @@ head: exception-message-without-placeholder
 created_at: 2024-06-25T19:17:13Z
 updated_at: 2024-06-28T04:25:19Z
 url: https://github.com/astral-sh/ruff/pull/12032
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`ruff`] Add `exception-message-without-placeholder` rule (#11979)
 
 ---
 
-_Pull request opened by @denwong47 on 2024-06-25 19:17_
+_@denwong47_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

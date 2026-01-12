@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T01:18:08Z
 updated_at: 2024-11-20T14:05:51Z
 url: https://github.com/astral-sh/uv/issues/9259
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Configuring accelerators with optional dependencies does not work with build system
 
 ---
 
-_Issue opened by @eginhard on 2024-11-20 01:18_
+_@eginhard_
 
 Thank you for the improvements for installing Pytorch! The example at https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies works great. But it fails when I add a build system:
 

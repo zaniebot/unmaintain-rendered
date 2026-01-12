@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T17:17:05Z
 updated_at: 2025-09-04T15:47:35Z
 url: https://github.com/astral-sh/uv/issues/10202
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Client did not publish a checksum value when using uv publish
 
 ---
 
-_Issue opened by @OliverKleinBST on 2024-12-27 17:17_
+_@OliverKleinBST_
 
 When using uv publish to publish a python package to pypi on artifactory, I get a warning that the client did not publish a checksum value.
 

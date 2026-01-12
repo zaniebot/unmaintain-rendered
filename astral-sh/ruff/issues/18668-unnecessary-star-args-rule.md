@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T19:27:23Z
 updated_at: 2025-06-18T05:46:31Z
 url: https://github.com/astral-sh/ruff/issues/18668
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # unnecessary_star_args rule
 
 ---
 
-_Issue opened by @Andrej730 on 2025-06-13 19:27_
+_@Andrej730_
 
 ### Summary
 

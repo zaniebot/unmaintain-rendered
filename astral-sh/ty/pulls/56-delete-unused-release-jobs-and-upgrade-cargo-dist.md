@@ -13,14 +13,14 @@ head: delete-unused-release-jobs
 created_at: 2025-05-06T06:24:08Z
 updated_at: 2025-05-06T14:02:26Z
 url: https://github.com/astral-sh/ty/pull/56
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Delete unused release jobs and upgrade cargo-dist
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-06 06:24_
+_@MichaReiser_
 
 * `notify-dependents`: We don't have a pre-commit hook (and I don't think we want one at the moment)
 * `publish-playground`: We want to keep publishing new versions with every PR, at least for the short term and that's easier in the ty repo

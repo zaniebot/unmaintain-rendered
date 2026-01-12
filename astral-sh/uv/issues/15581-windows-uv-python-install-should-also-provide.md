@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T15:28:20Z
 updated_at: 2025-08-29T19:47:21Z
 url: https://github.com/astral-sh/uv/issues/15581
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Windows uv python install should also provide python and python3 binaries (symlinks)
 
 ---
 
-_Issue opened by @Tronic on 2025-08-29 15:28_
+_@Tronic_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-17T07:26:06Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/778
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Feature: cargo env simplified
 
 ---
 
-_Issue opened by @ishitatsuyuki on 2016-12-17 07:26_
+_@ishitatsuyuki_
 
 This is a proposal of a more clean wrapper around Cargo.toml.
 

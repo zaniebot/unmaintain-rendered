@@ -12,14 +12,14 @@ head: charlie/string-helper
 created_at: 2023-03-08T00:44:05Z
 updated_at: 2023-03-08T18:22:01Z
 url: https://github.com/astral-sh/ruff/pull/3396
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use shared `leading_quote` implementation in ruff_python_formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-08 00:44_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/flake8-to-ruff
 created_at: 2023-12-31T12:19:02Z
 updated_at: 2024-01-05T09:41:55Z
 url: https://github.com/astral-sh/ruff/pull/9329
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove `flake8-to-ruff`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 12:19_
+_@charliermarsh_
 
 ## Summary
 

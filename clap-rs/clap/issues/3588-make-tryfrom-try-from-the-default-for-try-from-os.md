@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-29T11:59:01Z
 updated_at: 2022-05-25T19:58:45Z
 url: https://github.com/clap-rs/clap/issues/3588
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Make TryFrom::try_from the default for try_from_os_str annotation
 
 ---
 
-_Issue opened by @aj-bagwell on 2022-03-29 11:59_
+_@aj-bagwell_
 
 ### Please complete the following tasks
 

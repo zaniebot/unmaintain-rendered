@@ -13,14 +13,14 @@ head: dependabot/cargo/insta-1.35.1
 created_at: 2024-02-26T09:06:37Z
 updated_at: 2024-02-26T09:25:07Z
 url: https://github.com/astral-sh/ruff/pull/10127
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Bump insta from 1.34.0 to 1.35.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-26 09:06_
+_@dependabot_
 
 Bumps [insta](https://github.com/mitsuhiko/insta) from 1.34.0 to 1.35.1.
 <details>

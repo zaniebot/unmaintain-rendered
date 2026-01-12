@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T11:59:31Z
 updated_at: 2024-08-22T08:57:47Z
 url: https://github.com/astral-sh/ruff/issues/13031
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Detect and prevent implicit string concatenations e.g. lists
 
 ---
 
-_Issue opened by @KennethEnevoldsen on 2024-08-21 11:59_
+_@KennethEnevoldsen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

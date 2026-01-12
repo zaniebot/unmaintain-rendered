@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-05T06:55:41Z
 updated_at: 2024-02-05T16:24:52Z
 url: https://github.com/astral-sh/ruff/issues/9823
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Segmentation fault: 11 with ruff 0.2.0
 
 ---
 
-_Issue opened by @jetli on 2024-02-05 06:55_
+_@jetli_
 
 when run ruff 0.2.0, it always return an error msg: Segmentation fault: 11, but ruff 0.1.15 is ok.
 ```bash

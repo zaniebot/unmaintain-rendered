@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T15:38:57Z
 updated_at: 2025-07-28T17:37:14Z
 url: https://github.com/astral-sh/uv/issues/14897
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # uv build failing CI/CD pipeline since last week
 
 ---
 
-_Issue opened by @Anon-jCqx on 2025-07-25 15:38_
+_@Anon-jCqx_
 
 ### Question
 

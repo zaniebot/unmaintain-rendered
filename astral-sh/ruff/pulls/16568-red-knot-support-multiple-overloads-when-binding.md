@@ -13,14 +13,14 @@ head: dcreager/overloads
 created_at: 2025-03-08T17:40:45Z
 updated_at: 2025-03-11T20:43:17Z
 url: https://github.com/astral-sh/ruff/pull/16568
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Support multiple overloads when binding parameters at call sites
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-08 17:40_
+_@dcreager_
 
 This updates the `Signature` and `CallBinding` machinery to support multiple overloads for a callable.  This is currently only used for `KnownFunction`s that we special-case in our type inference code.  It does **_not_** yet update the semantic index builder to handle `@overload` decorators and construct a multi-signature `Overloads` instance for real Python functions.
 

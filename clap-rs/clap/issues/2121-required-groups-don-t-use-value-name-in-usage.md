@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-31T05:57:30Z
 updated_at: 2021-01-26T18:16:48Z
 url: https://github.com/clap-rs/clap/issues/2121
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Required groups don't use value_name in usage
 
 ---
 
-_Issue opened by @enterprisey on 2020-08-31 05:57_
+_@enterprisey_
 
 ### Code
 

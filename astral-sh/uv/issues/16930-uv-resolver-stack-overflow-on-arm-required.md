@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T13:39:48Z
 updated_at: 2025-12-02T14:00:07Z
 url: https://github.com/astral-sh/uv/issues/16930
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # uv-resolver stack overflow on ARM required-environments
 
 ---
 
-_Issue opened by @Oblynx on 2025-12-02 13:39_
+_@Oblynx_
 
 ### Summary
 

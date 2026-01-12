@@ -13,14 +13,14 @@ head: charlie/lo
 created_at: 2024-12-24T13:19:44Z
 updated_at: 2024-12-24T13:29:31Z
 url: https://github.com/astral-sh/uv/pull/10143
-synced_at: 2026-01-10T11:44:36Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Update `Cargo.lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 13:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/lsp-mono-repo
 created_at: 2025-11-27T16:57:25Z
 updated_at: 2025-12-17T08:07:39Z
 url: https://github.com/astral-sh/ruff/pull/21666
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # Support nested projects within a single LSP session
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-27 16:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

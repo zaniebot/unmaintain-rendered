@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T08:55:01Z
 updated_at: 2025-12-31T15:46:41Z
 url: https://github.com/astral-sh/ty/issues/2272
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Hover on function calls reveals Never in unreachable code
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-12-30 08:55_
+_@hauntsaninja_
 
 ### Summary
 

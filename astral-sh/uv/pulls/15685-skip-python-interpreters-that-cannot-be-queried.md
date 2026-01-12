@@ -12,14 +12,14 @@ head: zb/python-find-denied
 created_at: 2025-09-04T16:48:24Z
 updated_at: 2025-09-05T14:03:43Z
 url: https://github.com/astral-sh/uv/pull/15685
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Skip Python interpreters that cannot be queried with permission errors
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-04 16:48_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15651
 

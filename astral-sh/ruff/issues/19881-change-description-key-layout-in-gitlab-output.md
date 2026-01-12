@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T16:34:24Z
 updated_at: 2025-08-13T15:19:27Z
 url: https://github.com/astral-sh/ruff/issues/19881
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Change "description" key layout in gitlab output format
 
 ---
 
-_Issue opened by @ppiasek on 2025-08-12 16:34_
+_@ppiasek_
 
 Hey! We are using Ruff in our project and have integrated it with Gitlab's codequality reports. Apart from that, we are using a few other tools using the same reports, and we have noticed that we struggle to find what kind of check is reported by Ruff in codequality report, because only the description is displayed there. 
 

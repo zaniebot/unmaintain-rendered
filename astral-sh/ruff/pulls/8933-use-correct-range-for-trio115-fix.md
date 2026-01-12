@@ -13,14 +13,14 @@ head: dhruv/fix-trio115
 created_at: 2023-12-01T01:37:33Z
 updated_at: 2023-12-01T03:03:41Z
 url: https://github.com/astral-sh/ruff/pull/8933
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Use correct range for `TRIO115` fix
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-01 01:37_
+_@dhruvmanila_
 
 ## Summary
 

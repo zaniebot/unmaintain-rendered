@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-05T15:32:31Z
 updated_at: 2024-11-05T16:35:49Z
 url: https://github.com/astral-sh/ruff/issues/14110
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM115 triggers when an ExitStack is passed into a function
 
 ---
 
-_Issue opened by @tjstum on 2024-11-05 15:32_
+_@tjstum_
 
 I am using ruff 0.7.2. I searched for  SIM115 and `ExitStack` before filing this issue (and found #1945).
 

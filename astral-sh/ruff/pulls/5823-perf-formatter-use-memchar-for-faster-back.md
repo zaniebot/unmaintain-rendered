@@ -14,14 +14,14 @@ head: back-tokenization-perf
 created_at: 2023-07-17T07:57:55Z
 updated_at: 2023-07-18T21:24:43Z
 url: https://github.com/astral-sh/ruff/pull/5823
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # perf(formatter): Use memchar for faster back tokenization
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-17 07:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T10:47:15Z
 updated_at: 2024-04-10T14:25:30Z
 url: https://github.com/astral-sh/uv/issues/2958
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # installing private packages from a custom pypi repo -  requirements are unsatisfiable.
 
 ---
 
-_Issue opened by @etele on 2024-04-10 10:47_
+_@etele_
 
 While testing fixes from [issue](https://github.com/astral-sh/uv/issues/2899) 
 the official mirrored packages seem to be installing, but getting an error with our private packages.

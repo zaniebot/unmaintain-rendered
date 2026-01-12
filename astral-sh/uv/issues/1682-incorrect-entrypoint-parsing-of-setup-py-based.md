@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T09:27:13Z
 updated_at: 2024-02-19T17:33:48Z
 url: https://github.com/astral-sh/uv/issues/1682
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Incorrect entrypoint parsing of `setup.py` based projects calling methods on a variable
 
 ---
 
-_Issue opened by @MartinBernstorff on 2024-02-19 09:27_
+_@MartinBernstorff_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

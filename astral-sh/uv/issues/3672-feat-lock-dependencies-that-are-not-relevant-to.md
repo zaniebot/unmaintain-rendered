@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-20T17:03:41Z
 updated_at: 2024-07-02T04:22:52Z
 url: https://github.com/astral-sh/uv/issues/3672
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # feat: lock dependencies that are not relevant to the platform the compile is running on 
 
 ---
 
-_Issue opened by @rbtcollins on 2024-05-20 17:03_
+_@rbtcollins_
 
 uv 0.1.44
 

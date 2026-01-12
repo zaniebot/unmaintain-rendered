@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T21:39:08Z
 updated_at: 2025-09-14T12:59:24Z
 url: https://github.com/astral-sh/uv/issues/15779
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Dependency groups ignore `project.name` and tries to pull it from registry
 
 ---
 
-_Issue opened by @ZzEeKkAa on 2025-09-10 21:39_
+_@ZzEeKkAa_
 
 ### Summary
 

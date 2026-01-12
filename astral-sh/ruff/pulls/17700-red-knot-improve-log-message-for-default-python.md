@@ -13,14 +13,14 @@ head: micha/default-platform-message
 created_at: 2025-04-29T08:22:43Z
 updated_at: 2025-04-29T08:26:42Z
 url: https://github.com/astral-sh/ruff/pull/17700
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Improve log message for default python platform
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-29 08:22_
+_@MichaReiser_
 
 _No description provided._
 

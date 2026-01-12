@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-01T12:53:56Z
 updated_at: 2024-06-01T17:37:32Z
 url: https://github.com/astral-sh/ruff/issues/11677
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Misleading error for non-existing directory when checking format
 
 ---
 
-_Issue opened by @Holt59 on 2024-06-01 12:53_
+_@Holt59_
 
 When running `ruff format --check XXX` on a directory that does not exist, the error currently is
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-11-24T18:04:55Z
 updated_at: 2025-07-09T14:11:25Z
 url: https://github.com/clap-rs/clap/issues/2222
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Support command chaining
 
 ---
 
-_Issue opened by @fkrauthan on 2020-11-24 18:04_
+_@fkrauthan_
 
 ### Describe your use case
 

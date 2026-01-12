@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-11T03:59:35Z
 updated_at: 2024-09-11T19:46:17Z
 url: https://github.com/astral-sh/uv/issues/7280
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv python list --all-versions` does not include `3.13.0rc2`
 
 ---
 
-_Issue opened by @j178 on 2024-09-11 03:59_
+_@j178_
 
 version: uv 0.4.9 (77d278f68 2024-09-10)
 

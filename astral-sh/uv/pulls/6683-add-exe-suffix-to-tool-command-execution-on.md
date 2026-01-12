@@ -12,14 +12,14 @@ head: zb/use-exe-on-windowss
 created_at: 2024-08-27T12:10:16Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/6683
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Add `.exe` suffix to tool command execution on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 12:10_
+_@zanieb_
 
 Should close https://github.com/astral-sh/uv/issues/6682
 

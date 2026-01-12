@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-23T09:54:20Z
 updated_at: 2023-01-23T20:08:50Z
 url: https://github.com/astral-sh/ruff/issues/2105
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F821 on a `Literal` type that isn't directly imported by the current module
 
 ---
 
-_Issue opened by @joerick on 2023-01-23 09:54_
+_@joerick_
 
 We're getting a F821 on a Literal type over in https://github.com/pypa/cibuildwheel/pull/1405 . I've isolated this to the following-
 

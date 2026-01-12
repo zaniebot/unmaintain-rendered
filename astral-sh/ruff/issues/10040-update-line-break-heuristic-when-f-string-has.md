@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T07:34:40Z
 updated_at: 2024-04-26T13:34:39Z
 url: https://github.com/astral-sh/ruff/issues/10040
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Update line break heuristic when f-string has format specifier
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-02-19 07:34_
+_@dhruvmanila_
 
 Given:
 

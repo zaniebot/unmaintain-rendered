@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T11:36:22Z
 updated_at: 2025-01-05T20:05:12Z
 url: https://github.com/astral-sh/uv/issues/10283
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Resolve order unclear (maybe bug) with multiple conflicting groups
 
 ---
 
-_Issue opened by @TheMrCodes on 2025-01-03 11:36_
+_@TheMrCodes_
 
 ## Goal
 A deep learning project that should use the same code with multiple hardware dependent library dependencies. 

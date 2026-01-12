@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-12T15:40:29Z
 updated_at: 2023-06-12T16:07:52Z
 url: https://github.com/astral-sh/ruff/issues/5026
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `W292` not work
 
 ---
 
-_Issue opened by @Pagliacii on 2023-06-12 15:40_
+_@Pagliacii_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

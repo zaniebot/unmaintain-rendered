@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-24T18:20:22Z
 updated_at: 2025-08-25T23:13:46Z
 url: https://github.com/astral-sh/uv/issues/15488
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # CMake `find_package(Python ...)` Failed with `uv` (Or, python-dev is not installed)
 
 ---
 
-_Issue opened by @jamesnulliu on 2025-08-24 18:20_
+_@jamesnulliu_
 
 ### Question
 

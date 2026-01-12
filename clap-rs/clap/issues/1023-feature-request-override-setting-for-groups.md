@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-08-09T03:26:35Z
 updated_at: 2021-12-09T17:08:31Z
 url: https://github.com/clap-rs/clap/issues/1023
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Feature Request: Override setting for groups
 
 ---
 
-_Issue opened by @Phlosioneer on 2017-08-09 03:26_
+_@Phlosioneer_
 
 There are many instances of command line utilities that have groups of flags, all able to override each other.
 

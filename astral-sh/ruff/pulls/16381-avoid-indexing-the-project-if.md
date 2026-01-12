@@ -13,14 +13,14 @@ head: issue-16267
 created_at: 2025-02-25T18:58:55Z
 updated_at: 2025-02-27T02:19:49Z
 url: https://github.com/astral-sh/ruff/pull/16381
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Avoid indexing the project if `configurationPreference` is `editorOnly`
 
 ---
 
-_Pull request opened by @dcarrier on 2025-02-25 18:58_
+_@dcarrier_
 
 ## Summary
 

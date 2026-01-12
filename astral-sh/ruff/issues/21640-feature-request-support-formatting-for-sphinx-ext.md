@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T13:48:56Z
 updated_at: 2025-11-27T07:25:16Z
 url: https://github.com/astral-sh/ruff/issues/21640
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feature Request: Support formatting for `sphinx.ext.doctest` (`.. testcode::`) in docstrings
 
 ---
 
-_Issue opened by @sawa3030 on 2025-11-26 13:48_
+_@sawa3030_
 
 ## Summary
 When formatting docstrings, Ruff currently does not recognize Python code inside `sphinx.ext.doctest` directive blocks (such as `.. testcode::`). It would be helpful if these doctest-style blocks were detected and formatted in the same way as other supported docstring code blocks.

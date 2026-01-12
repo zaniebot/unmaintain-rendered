@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T10:38:10Z
 updated_at: 2025-12-18T12:42:58Z
 url: https://github.com/astral-sh/ty/issues/2059
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # [idea] Create a configurable rule to ban access to certain APIs
 
 ---
 
-_Issue opened by @danielgafni on 2025-12-18 10:38_
+_@danielgafni_
 
 I have the following use case: I'm using [Narwhals](https://narwhals-dev.github.io/narwhals/) for my library code, and accessing `narwhals.LazyFrame.columns` emits a `PerformanceWarning` that advises to access `narwhals.LazyFrame.collect_schema().names()` instead. 
 

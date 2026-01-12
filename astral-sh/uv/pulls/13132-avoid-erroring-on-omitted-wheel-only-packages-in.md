@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-04-27T15:32:37Z
 updated_at: 2025-04-27T15:58:22Z
 url: https://github.com/astral-sh/uv/pull/13132
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Avoid erroring on omitted wheel-only packages in `pylock.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-27 15:32_
+_@charliermarsh_
 
 ## Summary
 

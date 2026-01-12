@@ -14,14 +14,14 @@ head: ret503-only-add-return-at-end-of-function
 created_at: 2024-04-21T16:27:48Z
 updated_at: 2024-08-14T10:04:16Z
 url: https://github.com/astral-sh/ruff/pull/11074
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [flake8-return] Only add return None at end of function (RET503)
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2024-04-21 16:27_
+_@JonathanPlasse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

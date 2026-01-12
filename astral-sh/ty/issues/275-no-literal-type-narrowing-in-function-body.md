@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T15:31:10Z
 updated_at: 2025-08-05T13:59:15Z
 url: https://github.com/astral-sh/ty/issues/275
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # No `Literal` type narrowing in function body
 
 ---
 
-_Issue opened by @janosh on 2025-05-08 15:31_
+_@janosh_
 
 ### Summary
 

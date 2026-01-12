@@ -13,14 +13,14 @@ head: zb/doc-nits
 created_at: 2025-08-27T18:11:24Z
 updated_at: 2025-08-27T18:16:53Z
 url: https://github.com/astral-sh/uv/pull/15556
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Tweak some documentation headings
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 18:11_
+_@zanieb_
 
 Just some nits I want to make incremental progress on
 

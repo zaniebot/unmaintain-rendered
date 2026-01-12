@@ -13,14 +13,14 @@ head: charlie/transitive
 created_at: 2024-02-21T05:39:47Z
 updated_at: 2024-02-22T02:27:59Z
 url: https://github.com/astral-sh/uv/pull/1796
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Move conflicting dependencies into PubGrub
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-21 05:39_
+_@charliermarsh_
 
 ## Summary
 

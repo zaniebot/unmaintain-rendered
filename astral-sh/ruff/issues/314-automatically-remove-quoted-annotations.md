@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T22:22:48Z
 updated_at: 2023-01-17T04:42:56Z
 url: https://github.com/astral-sh/ruff/issues/314
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically remove quoted annotations
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 22:22_
+_@charliermarsh_
 
 Source: https://github.com/asottile/pyupgrade
 

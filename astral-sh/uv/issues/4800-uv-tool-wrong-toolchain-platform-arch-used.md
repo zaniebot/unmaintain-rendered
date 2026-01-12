@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-04T12:26:52Z
 updated_at: 2024-07-05T21:13:59Z
 url: https://github.com/astral-sh/uv/issues/4800
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # uv tool: Wrong toolchain platform, arch used
 
 ---
 
-_Issue opened by @jooon on 2024-07-04 12:26_
+_@jooon_
 
 Looks like macos-aarch64-none is hardcoded somewhere.
 

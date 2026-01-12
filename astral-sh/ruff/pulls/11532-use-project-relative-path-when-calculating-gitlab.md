@@ -14,14 +14,14 @@ head: gitlab-relative-project-fingerprint
 created_at: 2024-05-24T13:12:59Z
 updated_at: 2024-05-27T10:05:52Z
 url: https://github.com/astral-sh/ruff/pull/11532
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use project-relative path when calculating gitlab message fingerprint
 
 ---
 
-_Pull request opened by @furgoose on 2024-05-24 13:12_
+_@furgoose_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

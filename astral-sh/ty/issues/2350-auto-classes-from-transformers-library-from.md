@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T17:10:09Z
 updated_at: 2026-01-06T17:10:44Z
 url: https://github.com/astral-sh/ty/issues/2350
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Auto classes from transformers library "from_pretrained" marked as possibly missing
 
 ---
 
-_Issue opened by @c-vongpaseut on 2026-01-05 17:10_
+_@c-vongpaseut_
 
 ### Summary
 

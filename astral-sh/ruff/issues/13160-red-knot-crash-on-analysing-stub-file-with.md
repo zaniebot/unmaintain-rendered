@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T12:51:38Z
 updated_at: 2024-09-03T18:20:44Z
 url: https://github.com/astral-sh/ruff/issues/13160
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red_knot] Crash on analysing stub file with explicitly derived class
 
 ---
 
-_Issue opened by @LordAro on 2024-08-30 12:51_
+_@LordAro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

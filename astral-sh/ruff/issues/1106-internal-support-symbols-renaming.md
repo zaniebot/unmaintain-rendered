@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-06T09:10:42Z
 updated_at: 2023-06-16T14:12:35Z
 url: https://github.com/astral-sh/ruff/issues/1106
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Internal: Support symbols renaming
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-12-06 09:10_
+_@JonathanPlasse_
 
 For example, to auto-fix #1098 module must be renamed everywhere in the file.
 We could take inspiration from [rope](https://pypi.org/project/rope/) to do it.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T09:41:13Z
 updated_at: 2025-07-14T14:47:51Z
 url: https://github.com/astral-sh/uv/issues/14602
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Can `uv venv` create a total independent env without $HOME/.local/share/uv
 
 ---
 
-_Issue opened by @ansvver on 2025-07-14 09:41_
+_@ansvver_
 
 ### Question
 

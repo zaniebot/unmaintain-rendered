@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T17:30:32Z
 updated_at: 2025-02-20T17:47:37Z
 url: https://github.com/astral-sh/uv/issues/11673
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # uv run does not automatically read .env file
 
 ---
 
-_Issue opened by @itviewer on 2025-02-20 17:30_
+_@itviewer_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: fix-PLR1730-autofix-and-suggestion
 created_at: 2025-02-04T11:49:24Z
 updated_at: 2025-02-05T09:31:45Z
 url: https://github.com/astral-sh/ruff/pull/15930
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [pylint] Fix PL1730: min/max auto-fix and suggestion
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-04 11:49_
+_@VascoSch92_
 
 ## Summary
 

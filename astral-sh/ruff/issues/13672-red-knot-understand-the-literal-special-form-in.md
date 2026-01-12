@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T19:38:31Z
 updated_at: 2024-11-05T01:45:47Z
 url: https://github.com/astral-sh/ruff/issues/13672
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] understand the `Literal[]` special form in annotations
 
 ---
 
-_Issue opened by @carljm on 2024-10-07 19:38_
+_@carljm_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T19:46:17Z
 updated_at: 2025-02-23T16:15:53Z
 url: https://github.com/astral-sh/uv/issues/11676
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # `uv pip list` option to show origin (PyPI, GitHub, etc)
 
 ---
 
-_Issue opened by @jamesbraza on 2025-02-20 19:46_
+_@jamesbraza_
 
 ### Summary
 

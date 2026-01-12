@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T19:44:38Z
 updated_at: 2025-10-15T19:44:38Z
 url: https://github.com/astral-sh/uv/issues/16324
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # uv init on NixOs fails to detect system python
 
 ---
 
-_Issue opened by @behrica on 2025-10-15 19:44_
+_@behrica_
 
 ### Summary
 

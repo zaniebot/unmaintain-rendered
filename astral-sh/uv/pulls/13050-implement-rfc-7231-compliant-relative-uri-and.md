@@ -14,14 +14,14 @@ head: jtfm/restore-and-fix-redirect-handling
 created_at: 2025-04-22T10:57:14Z
 updated_at: 2025-04-28T07:07:08Z
 url: https://github.com/astral-sh/uv/pull/13050
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Implement RFC 7231 compliant relative URI and fragment handling in redirects
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-22 10:57_
+_@jtfmumm_
 
 This PR restores #13041 and integrates two PRs from @zanieb:
 * #13038

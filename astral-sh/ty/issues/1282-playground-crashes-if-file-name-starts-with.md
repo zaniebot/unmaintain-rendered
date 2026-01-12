@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-30T00:25:06Z
 updated_at: 2025-10-01T13:55:40Z
 url: https://github.com/astral-sh/ty/issues/1282
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Playground crashes if file name starts with ////
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-30 00:25_
+_@MeGaGiGaGon_
 
 ### Summary
 

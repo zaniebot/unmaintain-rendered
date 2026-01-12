@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-11T07:40:26Z
 updated_at: 2023-07-20T15:05:23Z
 url: https://github.com/astral-sh/ruff/issues/5673
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Expression subscript gets additional whitespace where black doesn't insert any
 
 ---
 
-_Issue opened by @konstin on 2023-07-11 07:40_
+_@konstin_
 
 We format
 ```python

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-15T14:01:02Z
 updated_at: 2025-11-19T16:59:37Z
 url: https://github.com/astral-sh/ty/issues/1570
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [playground] External Python packages
 
 ---
 
-_Issue opened by @mtshiba on 2025-11-15 14:01_
+_@mtshiba_
 
 Being able to use external Python packages in the ty playground would be very useful for things like bug reports.
 

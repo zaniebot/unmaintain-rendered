@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-28T13:30:28Z
 updated_at: 2023-03-28T15:00:43Z
 url: https://github.com/astral-sh/ruff/issues/3769
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive in D402
 
 ---
 
-_Issue opened by @DeD1rk on 2023-03-28 13:30_
+_@DeD1rk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

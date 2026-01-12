@@ -13,14 +13,14 @@ head: charlie/setting
 created_at: 2025-08-05T18:04:31Z
 updated_at: 2025-08-05T18:17:31Z
 url: https://github.com/astral-sh/uv/pull/15089
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Use "option" instead of "setting" in `pylock` warning
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-05 18:04_
+_@charliermarsh_
 
 ## Summary
 

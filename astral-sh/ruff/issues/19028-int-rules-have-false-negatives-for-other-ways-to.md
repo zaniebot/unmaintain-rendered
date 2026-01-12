@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-29T15:55:34Z
 updated_at: 2025-10-20T22:24:56Z
 url: https://github.com/astral-sh/ruff/issues/19028
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # INT rules have false negatives for other ways to use gettext functions
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-29 15:55_
+_@dscorbett_
 
 ### Summary
 

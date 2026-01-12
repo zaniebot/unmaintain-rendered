@@ -13,14 +13,14 @@ head: zb/contributing-docs
 created_at: 2025-09-20T18:05:38Z
 updated_at: 2025-09-25T08:16:35Z
 url: https://github.com/astral-sh/uv/pull/15966
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Expand the contribution docs on issue selection
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-20 18:05_
+_@zanieb_
 
 _No description provided._
 

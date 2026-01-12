@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-27T01:22:55Z
 updated_at: 2024-02-20T22:14:34Z
 url: https://github.com/astral-sh/uv/issues/1143
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Support parsing `--find-links`, `--index-url`, and `--extra-index-url` from `requirements.txt`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-27 01:22_
+_@charliermarsh_
 
 _No description provided._
 

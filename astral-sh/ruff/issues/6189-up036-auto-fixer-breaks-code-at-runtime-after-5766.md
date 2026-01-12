@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T09:41:27Z
 updated_at: 2023-08-01T17:54:44Z
 url: https://github.com/astral-sh/ruff/issues/6189
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP036 auto-fixer breaks code at runtime after #5766
 
 ---
 
-_Issue opened by @mrcljx on 2023-07-31 09:41_
+_@mrcljx_
 
 After #5766 the auto-fixer for UP036 has broken some code for us:
 

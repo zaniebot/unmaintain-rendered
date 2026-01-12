@@ -14,14 +14,14 @@ head: use-opt-python-in-linux
 created_at: 2024-07-03T14:41:42Z
 updated_at: 2024-07-05T15:37:30Z
 url: https://github.com/astral-sh/uv/pull/4775
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Use optimized versions of managed Python on Linux
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-03 14:41_
+_@Di-Is_
 
 Fix #4774.
 

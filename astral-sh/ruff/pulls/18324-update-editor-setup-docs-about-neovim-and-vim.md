@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-05-26T16:49:48Z
 updated_at: 2025-06-06T06:39:30Z
 url: https://github.com/astral-sh/ruff/pull/18324
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # Update editor setup docs about Neovim and Vim
 
 ---
 
-_Pull request opened by @otakutyrant on 2025-05-26 16:49_
+_@otakutyrant_
 
 ## Summary
 

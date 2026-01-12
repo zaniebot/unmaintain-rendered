@@ -14,14 +14,14 @@ head: feature/split-static-string-whitespace-maxsplit
 created_at: 2025-08-10T22:23:06Z
 updated_at: 2025-08-15T19:18:07Z
 url: https://github.com/astral-sh/ruff/pull/19851
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [`flake8-simplify`] Implement fix for `maxsplit` without separator (`SIM905`)
 
 ---
 
-_Pull request opened by @RazerM on 2025-08-10 22:23_
+_@RazerM_
 
 **Stacked on top of #19849; diff will include that PR until it is merged.**
 

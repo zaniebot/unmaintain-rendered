@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T19:37:56Z
 updated_at: 2025-10-02T19:42:23Z
 url: https://github.com/astral-sh/uv/issues/16106
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # feat/fix: Make `uv` work better with Nix
 
 ---
 
-_Issue opened by @gabyx on 2025-10-02 19:37_
+_@gabyx_
 
 ### Summary
 

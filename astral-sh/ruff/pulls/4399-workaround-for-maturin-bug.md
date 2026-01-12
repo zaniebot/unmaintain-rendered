@@ -12,14 +12,14 @@ head: workaround_maturin_bug
 created_at: 2023-05-12T18:50:20Z
 updated_at: 2023-05-12T19:27:26Z
 url: https://github.com/astral-sh/ruff/pull/4399
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Workaround for maturin bug
 
 ---
 
-_Pull request opened by @konstin on 2023-05-12 18:50_
+_@konstin_
 
 I consider this a maturin bug, this is a quick fix for now, i'll debug into maturin later
 

@@ -12,14 +12,14 @@ head: charlie/dev
 created_at: 2024-01-18T22:17:40Z
 updated_at: 2024-01-18T22:20:49Z
 url: https://github.com/astral-sh/uv/pull/975
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Mark `puffin-dev` as `publish = false`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 22:17_
+_@charliermarsh_
 
 _No description provided._
 

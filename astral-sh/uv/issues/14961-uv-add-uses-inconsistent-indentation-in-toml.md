@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T21:21:41Z
 updated_at: 2025-07-31T11:50:06Z
 url: https://github.com/astral-sh/uv/issues/14961
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # `uv add` uses inconsistent indentation in toml after conversion to multiline list
 
 ---
 
-_Issue opened by @KRRT7 on 2025-07-29 21:21_
+_@KRRT7_
 
 ### Summary
 

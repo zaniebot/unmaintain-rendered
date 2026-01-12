@@ -14,14 +14,14 @@ head: micha/playground-simplify-editor
 created_at: 2025-04-05T17:43:34Z
 updated_at: 2025-04-05T17:49:09Z
 url: https://github.com/astral-sh/ruff/pull/17223
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Simplify playground editor state
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-05 17:43_
+_@MichaReiser_
 
 ## Summary
 Reduce the number of `useRef`s in `Editor`

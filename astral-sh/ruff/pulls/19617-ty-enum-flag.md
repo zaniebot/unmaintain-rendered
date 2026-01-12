@@ -13,14 +13,14 @@ head: david/enum-flag
 created_at: 2025-07-29T14:53:01Z
 updated_at: 2025-07-29T14:53:01Z
 url: https://github.com/astral-sh/ruff/pull/19617
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] enum.Flag
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-29 14:53_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

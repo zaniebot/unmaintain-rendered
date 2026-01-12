@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T01:52:10Z
 updated_at: 2025-06-04T03:14:50Z
 url: https://github.com/astral-sh/uv/issues/13774
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `[tool.uv.sources]` does not override transitive dependencies
 
 ---
 
-_Issue opened by @Avasam on 2025-06-02 01:52_
+_@Avasam_
 
 ### Summary
 

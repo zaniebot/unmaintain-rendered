@@ -13,14 +13,14 @@ head: charlie/prio
 created_at: 2024-11-21T22:47:31Z
 updated_at: 2024-11-26T14:51:33Z
 url: https://github.com/astral-sh/uv/pull/9339
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Treat less compatible tags as lower priority in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 22:47_
+_@charliermarsh_
 
 ## Summary
 

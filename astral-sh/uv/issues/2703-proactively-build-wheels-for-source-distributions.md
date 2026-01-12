@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T02:07:00Z
 updated_at: 2024-03-31T18:05:09Z
 url: https://github.com/astral-sh/uv/issues/2703
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Proactively build wheels for source distributions during `pip install` resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-28 02:07_
+_@charliermarsh_
 
 When we `pip install`, we first run the resolver, then use the resolution to install. If we encounter a source distribution while resolving, we'll attempt to get the metadata, which may involve running `prepare_metadata_for_build_wheel` as an optimization, to skip the wheel build. After the resolution, we need to install, so we go to build the wheel, which requires creating the build environment _again_.
 

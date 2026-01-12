@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T22:18:19Z
 updated_at: 2024-11-14T15:12:19Z
 url: https://github.com/astral-sh/uv/issues/8957
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # CodeArtifact install - 500 Internal server error
 
 ---
 
-_Issue opened by @delicb on 2024-11-08 22:18_
+_@delicb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

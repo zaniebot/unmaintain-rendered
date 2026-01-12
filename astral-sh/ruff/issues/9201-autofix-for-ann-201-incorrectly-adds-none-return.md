@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T17:57:24Z
 updated_at: 2023-12-20T21:22:32Z
 url: https://github.com/astral-sh/ruff/issues/9201
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Autofix for ANN 201 incorrectly adds `None` Return Type
 
 ---
 
-_Issue opened by @max-muoto on 2023-12-19 17:57_
+_@max-muoto_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

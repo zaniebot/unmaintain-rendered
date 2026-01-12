@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-04T15:05:57Z
 updated_at: 2025-02-06T08:38:50Z
 url: https://github.com/astral-sh/ruff/issues/15939
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive(?) N801 when using a __PrivateClass name
 
 ---
 
-_Issue opened by @Daraan on 2025-02-04 15:05_
+_@Daraan_
 
 ### Description
 

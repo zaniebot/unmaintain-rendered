@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T21:59:00Z
 updated_at: 2026-01-09T21:59:07Z
 url: https://github.com/astral-sh/uv/issues/17396
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # FreeBSD test flakes with failure to start with VM
 
 ---
 
-_Issue opened by @zanieb on 2026-01-09 21:59_
+_@zanieb_
 
 ```
 Run acj/freebsd-firecracker-action@a5a3fc1709c5b5368141a5699f10259aca3cd965

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-05-06T09:49:10Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/110
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # suggestion: less aggressive coloring
 
 ---
 
-_Issue opened by @Byron on 2015-05-06 09:49_
+_@Byron_
 
 In _v0.8.0_, text coloring was introduced which I generally am a great fan of. Having it in usage strings seems like something I definitely want to have.
 

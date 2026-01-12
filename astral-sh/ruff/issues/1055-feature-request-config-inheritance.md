@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T12:23:05Z
 updated_at: 2023-02-03T18:28:30Z
 url: https://github.com/astral-sh/ruff/issues/1055
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Config inheritance
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 12:23_
+_@smackesey_
 
 In monorepos, it can easily happen that some section of the codebase needs to maintain consistency with the rest of the code but vary in one dimension. For example, in [Dagster](https://github.com/dagster-io/dagster) we use a line length of 100, but shorten it to 88 for our `docs-snippets` package, which includes code snippets that are incorporated into built docs. The shorter length is to ensure readers don't need to scroll horizontally when reading a code block in the browser.
 

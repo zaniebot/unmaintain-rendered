@@ -13,14 +13,14 @@ head: set-durability-for-low-durability-fields
 created_at: 2024-08-02T12:36:14Z
 updated_at: 2024-08-02T17:50:14Z
 url: https://github.com/astral-sh/ruff/pull/12627
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Set durabilities for low-durability fields on high-durability inputs
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 12:36_
+_@MichaReiser_
 
 ## Summary
 

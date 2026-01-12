@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T20:33:40Z
 updated_at: 2025-09-30T11:25:55Z
 url: https://github.com/astral-sh/uv/issues/7275
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uv does not recognize __main__.py?
 
 ---
 
-_Issue opened by @seppzer0 on 2024-09-10 20:33_
+_@seppzer0_
 
 I have a Python project that I run directly from source. Dependencies are stored within a uv-managed .venv in the project directory.
 

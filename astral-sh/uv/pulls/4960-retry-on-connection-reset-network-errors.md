@@ -14,14 +14,14 @@ head: zb/retry-connection-reset
 created_at: 2024-07-10T14:20:12Z
 updated_at: 2024-07-10T15:08:50Z
 url: https://github.com/astral-sh/uv/pull/4960
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Retry on connection reset network errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-10 14:20_
+_@zanieb_
 
 See helpful discussion at https://github.com/seanmonstar/reqwest/issues/1602#issuecomment-1220990725 and https://github.com/astral-sh/uv/issues/3514#issuecomment-2216986250
 

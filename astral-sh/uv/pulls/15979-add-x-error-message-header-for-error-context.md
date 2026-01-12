@@ -12,14 +12,14 @@ head: Allow-error-details-in-header
 created_at: 2025-09-22T13:20:46Z
 updated_at: 2025-10-27T11:05:12Z
 url: https://github.com/astral-sh/uv/pull/15979
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # Add X-Error-Message header for error context
 
 ---
 
-_Pull request opened by @doddi on 2025-09-22 13:20_
+_@doddi_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

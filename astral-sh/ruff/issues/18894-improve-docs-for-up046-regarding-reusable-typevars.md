@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T12:30:56Z
 updated_at: 2025-10-29T19:56:51Z
 url: https://github.com/astral-sh/ruff/issues/18894
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Improve docs for UP046 regarding reusable TypeVars
 
 ---
 
-_Issue opened by @wardVD on 2025-06-23 12:30_
+_@wardVD_
 
 ### Summary
 

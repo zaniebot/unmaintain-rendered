@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-20T10:57:15Z
 updated_at: 2023-07-21T12:07:53Z
 url: https://github.com/astral-sh/ruff/issues/5916
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `Yield` / `YieldFrom` (good first issue)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-20 10:57_
+_@MichaReiser_
 
 * [ ] `yield`
 * [ ] `yield..from`

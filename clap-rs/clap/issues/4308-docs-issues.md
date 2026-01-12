@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-30T18:01:33Z
 updated_at: 2022-09-30T18:56:35Z
 url: https://github.com/clap-rs/clap/issues/4308
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Docs issues
 
 ---
 
-_Issue opened by @SUPERCILEX on 2022-09-30 18:01_
+_@SUPERCILEX_
 
 - Help fiddlings like [this](https://github.com/clap-rs/clap/issues/1127#issuecomment-1263580821) should be in the cookbook.
   - This is probably also a good place to show `max_term_width = 100` and `wrap_help` since everyone is going to want that.

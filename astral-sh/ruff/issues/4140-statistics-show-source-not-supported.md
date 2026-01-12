@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-28T10:38:55Z
 updated_at: 2024-06-28T06:34:57Z
 url: https://github.com/astral-sh/ruff/issues/4140
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 #  --statistics --show-source  not supported
 
 ---
 
-_Issue opened by @youknowone on 2023-04-28 10:38_
+_@youknowone_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

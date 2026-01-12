@@ -13,14 +13,14 @@ head: zb/build-system
 created_at: 2025-11-20T14:54:35Z
 updated_at: 2025-11-20T20:00:01Z
 url: https://github.com/astral-sh/uv/pull/16788
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Improve note about build system in publish guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 14:54_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/issues/5605#issuecomment-3549958048
 

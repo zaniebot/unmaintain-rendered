@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-02-14T17:05:22Z
 updated_at: 2023-10-25T03:03:44Z
 url: https://github.com/clap-rs/clap/issues/1695
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Specify default text for optional arguments in help
 
 ---
 
-_Issue opened by @emilazy on 2020-02-14 17:05_
+_@emilazy_
 
 ### Describe your use case
 

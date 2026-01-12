@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T21:48:34Z
 updated_at: 2025-01-06T20:15:33Z
 url: https://github.com/astral-sh/uv/issues/10043
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Add bootstrap functionality for environments (python version, plus uv inside environment)
 
 ---
 
-_Issue opened by @paxsali on 2024-12-19 21:48_
+_@paxsali_
 
 Hi all,
 

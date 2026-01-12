@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T21:56:36Z
 updated_at: 2025-05-22T17:02:19Z
 url: https://github.com/astral-sh/uv/issues/13546
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # `uv_build` cannot find stubs-only package
 
 ---
 
-_Issue opened by @jorenham on 2025-05-19 21:56_
+_@jorenham_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/clarify-preview
 created_at: 2024-10-30T21:39:37Z
 updated_at: 2024-10-30T21:48:35Z
 url: https://github.com/astral-sh/uv/pull/8709
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Clarify preview requirement for relevance of `uv python dir --bin`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-30 21:39_
+_@zanieb_
 
 _No description provided._
 

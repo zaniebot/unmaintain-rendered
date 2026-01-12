@@ -13,14 +13,14 @@ head: ag/fix-version-order
 created_at: 2024-02-22T20:56:49Z
 updated_at: 2024-02-23T12:30:07Z
 url: https://github.com/astral-sh/uv/pull/1883
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # pep440: fix version ordering
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-22 20:56_
+_@BurntSushi_
 
 A couple moons ago, I introduced an optimization for version comparisons
 by devising a format where *most* versions would be represented by a

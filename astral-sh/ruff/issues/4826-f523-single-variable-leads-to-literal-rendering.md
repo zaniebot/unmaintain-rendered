@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-03T05:10:35Z
 updated_at: 2023-06-06T00:44:31Z
 url: https://github.com/astral-sh/ruff/issues/4826
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F523: Single variable leads to literal rendering of newline
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-03 05:10_
+_@addisoncrump_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

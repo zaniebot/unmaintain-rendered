@@ -13,14 +13,14 @@ head: unreachable-attribute-assignments
 created_at: 2025-03-19T17:22:42Z
 updated_at: 2025-04-14T12:57:51Z
 url: https://github.com/astral-sh/ruff/pull/16852
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] detect unreachable attribute assignments
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-19 17:22_
+_@mtshiba_
 
 ## Summary
 

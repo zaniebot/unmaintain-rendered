@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T15:39:15Z
 updated_at: 2025-02-28T08:58:12Z
 url: https://github.com/astral-sh/ruff/issues/16417
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff` 0.9.8 raising error 'SyntaxError: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)' in Python 3.13
 
 ---
 
-_Issue opened by @aidangallagher4 on 2025-02-27 15:39_
+_@aidangallagher4_
 
 ### Summary
 

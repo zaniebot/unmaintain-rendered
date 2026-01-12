@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T19:26:37Z
 updated_at: 2025-06-24T09:02:41Z
 url: https://github.com/astral-sh/uv/issues/14138
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Overriding dependency with locally compiled *.whl
 
 ---
 
-_Issue opened by @PawelPeczek-Roboflow on 2025-06-18 19:26_
+_@PawelPeczek-Roboflow_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/range
 created_at: 2023-12-01T03:11:30Z
 updated_at: 2023-12-01T03:34:10Z
 url: https://github.com/astral-sh/ruff/pull/8937
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix doc formatting for zero-sleep-call
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 03:11_
+_@charliermarsh_
 
 _No description provided._
 

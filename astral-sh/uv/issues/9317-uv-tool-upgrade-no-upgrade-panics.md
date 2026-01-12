@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T14:19:49Z
 updated_at: 2024-11-21T14:35:58Z
 url: https://github.com/astral-sh/uv/issues/9317
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # `uv tool upgrade --no-upgrade` panics
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-21 14:19_
+_@charliermarsh_
 
 _No description provided._
 

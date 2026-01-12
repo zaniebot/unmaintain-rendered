@@ -13,14 +13,14 @@ head: plc-docs
 created_at: 2023-05-04T13:57:28Z
 updated_at: 2023-05-09T22:15:03Z
 url: https://github.com/astral-sh/ruff/pull/4224
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add docs for PLC rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-04 13:57_
+_@tjkuson_
 
 Add documentation to the Pylint Convention (PLC) rules.
 

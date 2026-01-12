@@ -14,14 +14,14 @@ head: token-source
 created_at: 2024-01-11T11:41:41Z
 updated_at: 2024-01-11T18:41:20Z
 url: https://github.com/astral-sh/ruff/pull/9466
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove type parameter from `parse_*` methods
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-11 11:41_
+_@MichaReiser_
 
 This PR removes the `I` (tokens iterator) type parameter from all `parse_*` methods. This is done in preparation for https://github.com/astral-sh/ruff/pull/9152 to avoid accidentally monomorphizing the parser more than once. 
 

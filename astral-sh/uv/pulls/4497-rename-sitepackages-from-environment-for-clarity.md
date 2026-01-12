@@ -13,14 +13,14 @@ head: zb/site-packages-from
 created_at: 2024-06-24T23:24:53Z
 updated_at: 2024-06-24T23:32:46Z
 url: https://github.com/astral-sh/uv/pull/4497
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Rename `SitePackages::from_environment` for clarity
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-24 23:24_
+_@zanieb_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-03T13:51:02Z
 updated_at: 2025-10-03T15:15:59Z
 url: https://github.com/astral-sh/ty/issues/1301
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Bound `self` should not be considered when checking assignability of bound methods
 
 ---
 
-_Issue opened by @dcreager on 2025-10-03 13:51_
+_@dcreager_
 
 This seems related to #1169 and #1172, but slightly different and more general. It does not require overloads, nor having other parameters or a return value that use `typing.Self`.
 

@@ -13,14 +13,14 @@ head: charlie/link-options
 created_at: 2023-07-13T17:31:26Z
 updated_at: 2023-07-13T18:03:29Z
 url: https://github.com/astral-sh/ruff/pull/5745
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add some additional Option links to the docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 17:31_
+_@charliermarsh_
 
 _No description provided._
 

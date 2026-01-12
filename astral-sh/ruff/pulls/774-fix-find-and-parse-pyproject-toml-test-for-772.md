@@ -12,14 +12,14 @@ head: pyproject-test
 created_at: 2022-11-16T18:30:44Z
 updated_at: 2022-11-16T18:59:45Z
 url: https://github.com/astral-sh/ruff/pull/774
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix find_and_parse_pyproject_toml test for #772
 
 ---
 
-_Pull request opened by @andersk on 2022-11-16 18:30_
+_@andersk_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: workspace-deps
 created_at: 2024-08-19T10:16:36Z
 updated_at: 2024-08-19T10:31:14Z
 url: https://github.com/astral-sh/ruff/pull/12985
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add the `testing` feature of `ruff_db` as a dev-dependency for `ruff_workspace`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-19 10:16_
+_@AlexWaygood_
 
 Without this, `cargo test -p ruff_workspace` fails, as it relies on the `testing` feature without this being listed as an explicit requirement
 

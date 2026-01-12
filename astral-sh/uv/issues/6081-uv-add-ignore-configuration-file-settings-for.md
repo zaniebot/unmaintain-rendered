@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T12:02:05Z
 updated_at: 2024-08-14T13:23:29Z
 url: https://github.com/astral-sh/uv/issues/6081
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv add` ignore configuration file settings for index-url and extra-index-url
 
 ---
 
-_Issue opened by @Magic-wei on 2024-08-14 12:02_
+_@Magic-wei_
 
 <!--
 * A minimal code snippet that reproduces the bug.

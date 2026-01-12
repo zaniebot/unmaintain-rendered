@@ -12,14 +12,14 @@ head: charlie/debug-flag
 created_at: 2023-03-21T15:18:01Z
 updated_at: 2023-03-21T16:16:43Z
 url: https://github.com/astral-sh/ruff/pull/3648
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Replace `logical_lines` feature with `debug_assertions`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-21 15:18_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/pull/3557#issuecomment-1473352587.
 

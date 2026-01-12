@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-23T22:43:43Z
 updated_at: 2025-02-16T15:34:49Z
 url: https://github.com/astral-sh/uv/issues/10128
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # `uv python install` should recognize the `UV_PYTHON` environment variable
 
 ---
 
-_Issue opened by @zeevro on 2024-12-23 22:43_
+_@zeevro_
 
 As of `uv 0.5.11`, `uv python install` installed the latest available Python, disregarding the value of `UV_PYTHON`.
 ```

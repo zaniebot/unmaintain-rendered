@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T18:03:22Z
 updated_at: 2025-12-11T18:04:39Z
 url: https://github.com/astral-sh/ty/issues/159
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support type of `self` on instance methods and type of `cls` on classmethods
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:03_
+_@carljm_
 
 Proper support here overlaps with generics (since `Self` operates like a bound typevar).
 

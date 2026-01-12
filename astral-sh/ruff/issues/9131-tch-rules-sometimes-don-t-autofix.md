@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T16:28:35Z
 updated_at: 2023-12-14T18:15:50Z
 url: https://github.com/astral-sh/ruff/issues/9131
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `TCH` rules sometimes don't autofix
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-12-14 16:28_
+_@tylerlaprade_
 
 I haven't figured out the pattern yet, but there are some edge cases where the CLI says the fixes are autofixable, but doesn't do so even with the `--fix` flag and the appropriate config:
 <img width="1167" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/a8a0942a-594a-4afa-b9d7-3e616ab8b0f1">

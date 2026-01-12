@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-12T01:28:52Z
 updated_at: 2024-10-13T00:41:43Z
 url: https://github.com/astral-sh/uv/issues/8139
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # Problem of install black[jupyter] as uv tool.
 
 ---
 
-_Issue opened by @partrita on 2024-10-12 01:28_
+_@partrita_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

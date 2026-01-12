@@ -13,14 +13,14 @@ head: charlie/up012
 created_at: 2023-03-29T23:00:54Z
 updated_at: 2023-03-29T23:24:33Z
 url: https://github.com/astral-sh/ruff/pull/3802
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Improve robustness of argument removal for `encode` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-29 23:00_
+_@charliermarsh_
 
 ## Summary
 

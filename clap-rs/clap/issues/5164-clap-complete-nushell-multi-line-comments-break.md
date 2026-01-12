@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-08T20:48:08Z
 updated_at: 2024-02-17T20:08:55Z
 url: https://github.com/clap-rs/clap/issues/5164
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete_nushell: multi line comments break with verbatim_doc_comment
 
 ---
 
-_Issue opened by @NyCodeGHG on 2023-10-08 20:48_
+_@NyCodeGHG_
 
 ### Please complete the following tasks
 

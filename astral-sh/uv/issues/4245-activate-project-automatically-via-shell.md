@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T17:57:32Z
 updated_at: 2024-06-11T17:57:37Z
 url: https://github.com/astral-sh/uv/issues/4245
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Activate project automatically via shell integration
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:57_
+_@zanieb_
 
 uv should provide an optional shell script that adjusts environment variables to activate virtual environments and place toolchains and tools on the path according to the working directory.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-27T05:07:07Z
 updated_at: 2025-08-27T23:48:19Z
 url: https://github.com/astral-sh/uv/issues/2686
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Allow per-package overrides
 
 ---
 
-_Issue opened by @adzenith on 2024-03-27 05:07_
+_@adzenith_
 
 [This comment](https://github.com/astral-sh/uv/issues/511#issuecomment-1831526605) discusses a second type of dependency overriding:
 > Replace the requirement on foo==1.2.3 in bar with foo==4.5.6. With this, you say "While bar wants foo 1.2.3, i have confirmed that it is actually compatible with foo 4.5.6, too". It requires more effort on the user side, but is less risky and gives good errors messages when new requirements on foo are added outside of bar.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T16:54:55Z
 updated_at: 2025-06-24T15:54:14Z
 url: https://github.com/astral-sh/uv/issues/13952
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # `wheelname_parsing_failure[flyte-long-extension]` benchmark flakes
 
 ---
 
-_Issue opened by @zanieb on 2025-06-10 16:54_
+_@zanieb_
 
 These benchmarks are all over the place and result in frequent false positives and negatives. We should do something about these.
 

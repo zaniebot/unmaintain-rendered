@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T12:45:30Z
 updated_at: 2025-10-29T10:00:28Z
 url: https://github.com/astral-sh/uv/issues/15304
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Package installation fails with os error 61
 
 ---
 
-_Issue opened by @srdecny on 2025-08-15 12:45_
+_@srdecny_
 
 ### Summary
 

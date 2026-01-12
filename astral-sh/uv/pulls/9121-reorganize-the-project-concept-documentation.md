@@ -13,14 +13,14 @@ head: zb/docs-collapsible-project
 created_at: 2024-11-14T16:20:59Z
 updated_at: 2024-11-19T19:52:16Z
 url: https://github.com/astral-sh/uv/pull/9121
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Reorganize the project concept documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-14 16:20_
+_@zanieb_
 
 - Adds a collapsible section for the project concept
 - Splits the project concept document into several child documents.

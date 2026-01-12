@@ -13,14 +13,14 @@ head: add-PLR0916
 created_at: 2023-10-16T06:31:03Z
 updated_at: 2023-10-17T04:50:36Z
 url: https://github.com/astral-sh/ruff/pull/7975
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] Implement PLR0916 (`too-many-boolean-expressions`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-16 06:31_
+_@diceroll123_
 
 ## Summary
 

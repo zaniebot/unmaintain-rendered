@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T05:24:30Z
 updated_at: 2024-07-09T05:51:31Z
 url: https://github.com/astral-sh/uv/issues/4915
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Python discovery error should comma-separate
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-09 05:24_
+_@charliermarsh_
 
 In:
 

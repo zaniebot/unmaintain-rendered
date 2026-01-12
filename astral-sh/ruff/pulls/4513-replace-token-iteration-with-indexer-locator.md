@@ -13,14 +13,14 @@ head: indexer_in_token_rules
 created_at: 2023-05-19T02:20:01Z
 updated_at: 2023-05-22T15:35:26Z
 url: https://github.com/astral-sh/ruff/pull/4513
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Replace token iteration with Indexer/Locator lookups for relevant rules
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-19 02:20_
+_@evanrittenhouse_
 
 [This comment](https://github.com/charliermarsh/ruff/pull/3921#discussion_r1181461746) raised the idea of using `Indexer`/`Locator` for comment-related rules based on token checks. I went through the rules examined in `checkers/tokens.rs` and changed it out for the ones I identified.
 

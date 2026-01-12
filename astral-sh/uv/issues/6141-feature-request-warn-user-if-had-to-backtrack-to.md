@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T03:21:41Z
 updated_at: 2024-08-16T14:32:51Z
 url: https://github.com/astral-sh/uv/issues/6141
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Feature Request: Warn user if had to backtrack to a very old version of a package for a newer version of Python
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-16 03:21_
+_@notatallshaw_
 
 My example here involves universal resolution, but I think this issue is a more general user experience issue any time backtracking is involved because newer packages don't satisfy newer Python versions.
 

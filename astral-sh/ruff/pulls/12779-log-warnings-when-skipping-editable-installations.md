@@ -13,14 +13,14 @@ head: warn-about-skipped-pth-files
 created_at: 2024-08-09T10:10:01Z
 updated_at: 2024-08-09T14:29:46Z
 url: https://github.com/astral-sh/ruff/pull/12779
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Log warnings when skipping editable installations
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-09 10:10_
+_@MichaReiser_
 
 ## Summary
 

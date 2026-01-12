@@ -13,14 +13,14 @@ head: renovate/anyhow-1.x-lockfile
 created_at: 2024-12-09T01:02:30Z
 updated_at: 2024-12-09T01:13:52Z
 url: https://github.com/astral-sh/uv/pull/9726
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Update Rust crate anyhow to v1.0.94
 
 ---
 
-_Pull request opened by @renovate on 2024-12-09 01:02_
+_@renovate_
 
 This PR contains the following updates:
 

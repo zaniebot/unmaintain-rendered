@@ -13,14 +13,14 @@ head: cjm/redbench
 created_at: 2024-08-02T17:26:21Z
 updated_at: 2024-08-02T18:23:54Z
 url: https://github.com/astral-sh/ruff/pull/12635
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] update benchmark to run on tomllib
 
 ---
 
-_Pull request opened by @carljm on 2024-08-02 17:26_
+_@carljm_
 
 Changes the red-knot benchmark to run on the stdlib "tomllib" library (which is self-contained, four files, uses type annotations) instead of on very small bits of handwritten code.
 

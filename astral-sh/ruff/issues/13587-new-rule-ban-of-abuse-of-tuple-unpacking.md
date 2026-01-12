@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-01T11:11:02Z
 updated_at: 2024-10-07T07:01:51Z
 url: https://github.com/astral-sh/ruff/issues/13587
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # New rule - ban of abuse of tuple unpacking
 
 ---
 
-_Issue opened by @spaceby on 2024-10-01 11:11_
+_@spaceby_
 
 In the project I work on, I sometimes find this
 ```python

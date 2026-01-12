@@ -13,14 +13,14 @@ head: dhruv/checker-comment-ranges
 created_at: 2024-06-04T16:56:10Z
 updated_at: 2024-06-05T08:34:19Z
 url: https://github.com/astral-sh/ruff/pull/11741
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Disallow access to `Parsed` output, use the API instead
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-04 16:56_
+_@dhruvmanila_
 
 ## Summary
 

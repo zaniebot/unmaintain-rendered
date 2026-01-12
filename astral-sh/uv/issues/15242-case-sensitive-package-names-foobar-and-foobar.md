@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T16:07:47Z
 updated_at: 2025-08-22T15:59:39Z
 url: https://github.com/astral-sh/uv/issues/15242
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # case sensitive package names, "foobar" and "FooBar" are seen as same package
 
 ---
 
-_Issue opened by @SamuelMarks on 2025-08-12 16:07_
+_@SamuelMarks_
 
 ### Summary
 

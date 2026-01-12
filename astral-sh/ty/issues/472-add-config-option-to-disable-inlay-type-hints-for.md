@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T01:11:34Z
 updated_at: 2025-08-07T13:46:52Z
 url: https://github.com/astral-sh/ty/issues/472
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add config option to disable inlay type hints for variable assignment targets
 
 ---
 
-_Issue opened by @pirate on 2025-05-20 01:11_
+_@pirate_
 
 I just installed the extension and was surprised to find it's trying to suggest inline type hints for a bunch of assignemnt expressions that don't need them:
 

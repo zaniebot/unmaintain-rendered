@@ -13,14 +13,14 @@ head: refactor/remove-unnecessary-string-hashes
 created_at: 2024-09-04T23:53:29Z
 updated_at: 2024-09-18T18:30:06Z
 url: https://github.com/astral-sh/ruff/pull/13250
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # refactor: remove unnecessary string hashes
 
 ---
 
-_Pull request opened by @hamirmahal on 2024-09-04 23:53_
+_@hamirmahal_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

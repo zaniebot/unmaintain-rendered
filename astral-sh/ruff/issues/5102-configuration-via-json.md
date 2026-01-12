@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-14T21:58:35Z
 updated_at: 2023-07-10T08:29:04Z
 url: https://github.com/astral-sh/ruff/issues/5102
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Configuration via JSON
 
 ---
 
-_Issue opened by @tgross35 on 2023-06-14 21:58_
+_@tgross35_
 
 This is my second (and I think improved) take on https://github.com/astral-sh/ruff/issues/4970
 

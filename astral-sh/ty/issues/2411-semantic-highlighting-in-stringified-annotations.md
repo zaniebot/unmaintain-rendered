@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T09:32:00Z
 updated_at: 2026-01-09T14:45:39Z
 url: https://github.com/astral-sh/ty/issues/2411
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Semantic highlighting in stringified annotations
 
 ---
 
-_Issue opened by @MichaReiser on 2026-01-09 09:32_
+_@MichaReiser_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: fix-statement-target-with-trailing-comment
 created_at: 2023-12-08T04:34:49Z
 updated_at: 2023-12-08T05:00:37Z
 url: https://github.com/astral-sh/ruff/pull/9051
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix handling of trailing target comment
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-08 04:34_
+_@MichaReiser_
 
 ## Summary
 

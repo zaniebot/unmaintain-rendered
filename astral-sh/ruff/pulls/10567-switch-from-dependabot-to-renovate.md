@@ -13,14 +13,14 @@ head: setup-renovate
 created_at: 2024-03-25T12:33:52Z
 updated_at: 2024-03-25T17:30:12Z
 url: https://github.com/astral-sh/ruff/pull/10567
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Switch from dependabot to renovate
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-25 12:33_
+_@AlexWaygood_
 
 ## Summary
 

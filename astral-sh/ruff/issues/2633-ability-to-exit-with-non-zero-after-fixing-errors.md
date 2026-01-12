@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T19:31:52Z
 updated_at: 2023-02-09T01:24:23Z
 url: https://github.com/astral-sh/ruff/issues/2633
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ability to exit with non-zero after fixing errors 
 
 ---
 
-_Issue opened by @stefanv on 2023-02-07 19:31_
+_@stefanv_
 
 This is one of those infuriating reports asking for behavior [opposite to that already requested](
 https://github.com/charliermarsh/ruff/issues/341).

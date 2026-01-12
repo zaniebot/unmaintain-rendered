@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-06T17:40:26Z
 updated_at: 2025-09-15T02:46:38Z
 url: https://github.com/astral-sh/ruff/issues/16539
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # mutable-dataclass-default (RUF008) not detecting mutable_default field
 
 ---
 
-_Issue opened by @neilmacintyre on 2025-03-06 17:40_
+_@neilmacintyre_
 
 ### Summary
 

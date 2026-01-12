@@ -12,14 +12,14 @@ head: charlie/exclude-allow
 created_at: 2022-12-14T21:31:58Z
 updated_at: 2022-12-14T21:32:03Z
 url: https://github.com/astral-sh/ruff/pull/1241
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Always check zero-depth CLI paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-14 21:31_
+_@charliermarsh_
 
 _No description provided._
 

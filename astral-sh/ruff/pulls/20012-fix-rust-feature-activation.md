@@ -13,14 +13,14 @@ head: brent/get-size-feature
 created_at: 2025-08-20T22:38:47Z
 updated_at: 2025-08-21T07:26:08Z
 url: https://github.com/astral-sh/ruff/pull/20012
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # Fix rust feature activation
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-20 22:38_
+_@ntBre_
 
 Summary
 --

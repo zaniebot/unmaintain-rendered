@@ -14,14 +14,14 @@ head: alex/generic-subclassof-display
 created_at: 2025-07-31T18:22:58Z
 updated_at: 2025-08-01T16:18:40Z
 url: https://github.com/astral-sh/ruff/pull/19667
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Improve the `Display` for generic `type[]` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-31 18:22_
+_@AlexWaygood_
 
 ## Summary
 

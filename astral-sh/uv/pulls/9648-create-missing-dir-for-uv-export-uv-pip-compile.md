@@ -13,14 +13,14 @@ head: create-missing-dir
 created_at: 2024-12-04T20:40:44Z
 updated_at: 2024-12-04T21:20:31Z
 url: https://github.com/astral-sh/uv/pull/9648
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Create missing dir for `uv export`/ `uv pip compile`
 
 ---
 
-_Pull request opened by @blueraft on 2024-12-04 20:40_
+_@blueraft_
 
 ## Summary
 

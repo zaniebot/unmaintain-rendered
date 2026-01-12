@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-31T16:36:58Z
 updated_at: 2024-06-22T09:10:14Z
 url: https://github.com/astral-sh/uv/issues/1209
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Show progress bar for slow downloads
 
 ---
 
-_Issue opened by @konstin on 2024-01-31 16:36_
+_@konstin_
 
 With fast internet and mainly small or cached packages, you barely even see the download spinner, but when e.g. trying to download torch on bad internet there is no indication how long this task is going to take or whether it got stuck.
 

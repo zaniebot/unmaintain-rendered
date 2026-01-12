@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T19:01:29Z
 updated_at: 2024-08-30T19:26:51Z
 url: https://github.com/astral-sh/uv/issues/6883
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `.python-version` overrides inline script metadata `required-python` for `uv run`
 
 ---
 
-_Issue opened by @dbohdan on 2024-08-30 19:01_
+_@dbohdan_
 
 I ran a script with `uv run`, and `.python-version` in the current directory overrode `required-python` in the inline script metadata. The version in `.python-version` wasn't in the range of `required-python`. When the script ran with the wrong Python version, it failed. The problem took me five minutes to debug. I am not sure what should happen in this situation, but it confused me, so I am reporting it. (I think I'd prefer uv to either report a conflict in the  Python version requirements and not run the script or to ignore `.python-version` in favor of `required-python`.)
 

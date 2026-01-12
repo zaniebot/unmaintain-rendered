@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T08:33:07Z
 updated_at: 2025-07-01T16:55:04Z
 url: https://github.com/astral-sh/uv/issues/14069
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Retry streaming distribution and Python downloads if failing mid-stream
 
 ---
 
-_Issue opened by @konstin on 2025-06-16 08:33_
+_@konstin_
 
 We have retry support if there is an IO or status code error in the initial request (https://github.com/astral-sh/uv/pull/13897). If the initial response succeeded (usually with status code 200) and we convert the response to a streaming download, the streaming download-and-unpack is not retried, and we lose the reliable retry information.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-02T13:25:32Z
 updated_at: 2023-03-02T18:53:24Z
 url: https://github.com/astral-sh/ruff/issues/3305
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D401: Support GObject.Property from PyGObject
 
 ---
 
-_Issue opened by @staticssleever668 on 2023-03-02 13:25_
+_@staticssleever668_
 
 * Ruff version: 3ed539d50ed6260358c97d2e00b49bad4abfa37e (0.0.253)
 

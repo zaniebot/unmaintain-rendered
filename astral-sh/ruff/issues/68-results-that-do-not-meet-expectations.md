@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T03:29:49Z
 updated_at: 2022-09-01T17:04:55Z
 url: https://github.com/astral-sh/ruff/issues/68
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Results that do not meet expectations
 
 ---
 
-_Issue opened by @kolapapa on 2022-09-01 03:29_
+_@kolapapa_
 
 `main.py`
 ```python

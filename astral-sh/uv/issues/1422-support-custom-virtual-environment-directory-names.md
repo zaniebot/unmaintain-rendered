@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T03:58:43Z
 updated_at: 2025-12-02T10:49:45Z
 url: https://github.com/astral-sh/uv/issues/1422
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support custom virtual environment directory names
 
 ---
 
-_Issue opened by @jkomalley on 2024-02-16 03:58_
+_@jkomalley_
 
 It is common for virtual environment directories to be either .venv/ or venv/, but only .venv/ is currently supported in without needing to activate the environment. Since both are common names for virtual environments, could both be supported by default in uv? And/Or could there potentially be a config/environment variable that holds a user defined default virtual environment directory name that gets checked along with .venv/VIRTUAL_ENV/CONDA_PREFIX?
 

@@ -14,14 +14,14 @@ head: add-autofix-for-E401
 created_at: 2024-01-15T01:52:12Z
 updated_at: 2024-01-21T20:33:39Z
 url: https://github.com/astral-sh/ruff/pull/9518
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pycodestyle`] Add fix for `multiple-imports-on-one-line` (`E401`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-15 01:52_
+_@diceroll123_
 
 ## Summary
 

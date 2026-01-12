@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-16T19:29:16Z
 updated_at: 2022-01-17T15:38:13Z
 url: https://github.com/clap-rs/clap/issues/3298
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `help help` is colorized with DisableColoredHelp
 
 ---
 
-_Issue opened by @ehuss on 2022-01-16 19:29_
+_@ehuss_
 
 ### Please complete the following tasks
 

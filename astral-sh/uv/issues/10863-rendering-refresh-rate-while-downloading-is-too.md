@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-22T16:04:24Z
 updated_at: 2025-09-16T02:07:27Z
 url: https://github.com/astral-sh/uv/issues/10863
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Rendering refresh rate while downloading is too high
 
 ---
 
-_Issue opened by @Marco-Sulla on 2025-01-22 16:04_
+_@Marco-Sulla_
 
 ### Summary
 

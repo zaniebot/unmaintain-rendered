@@ -13,14 +13,14 @@ head: zb/slow-tests
 created_at: 2025-01-21T23:29:59Z
 updated_at: 2025-01-22T07:10:55Z
 url: https://github.com/astral-sh/ruff/pull/15662
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add slow-test reporting to nextest in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 23:29_
+_@zanieb_
 
 This is helpful for spotting tests that are running slow. In uv, we use a 10s threshold. Here, it looks like we could use something smaller.
 

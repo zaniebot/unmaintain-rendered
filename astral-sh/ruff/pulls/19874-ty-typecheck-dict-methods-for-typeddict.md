@@ -14,14 +14,14 @@ head: ty-typeddict-methods
 created_at: 2025-08-12T09:43:06Z
 updated_at: 2025-08-29T14:25:04Z
 url: https://github.com/astral-sh/ruff/pull/19874
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] typecheck dict methods for `TypedDict`
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-12 09:43_
+_@PrettyWood_
 
 ## Summary
 

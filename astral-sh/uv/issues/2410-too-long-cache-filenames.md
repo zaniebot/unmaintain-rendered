@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-13T13:06:03Z
 updated_at: 2025-02-26T22:41:59Z
 url: https://github.com/astral-sh/uv/issues/2410
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Too long cache filenames
 
 ---
 
-_Issue opened by @potiuk on 2024-03-13 13:06_
+_@potiuk_
 
 Sorry - pressed enter too fast.
 

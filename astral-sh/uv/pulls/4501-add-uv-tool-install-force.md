@@ -13,14 +13,14 @@ head: zb/tool-install-force
 created_at: 2024-06-25T00:37:40Z
 updated_at: 2024-06-26T20:03:04Z
 url: https://github.com/astral-sh/uv/pull/4501
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Add `uv tool install --force`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 00:37_
+_@zanieb_
 
 Adds detection of existing entry points, avoiding clobbering entry points that were installed by another tool. If we see any existing entry point collisions, we'll stop instead of overwriting them. The `--force` flag can be used to opt-in to overwriting the files; we can't use `-f` because it's taken by `--find-links` which is silly.  The `--force` flag also implies replacing a tool previously installed by uv (the environment is rebuilt).
 

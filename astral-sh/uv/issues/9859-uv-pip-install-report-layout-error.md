@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T03:28:09Z
 updated_at: 2024-12-13T04:00:42Z
 url: https://github.com/astral-sh/uv/issues/9859
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # uv pip install report layout error
 
 ---
 
-_Issue opened by @cjdxhjj on 2024-12-13 03:28_
+_@cjdxhjj_
 
 i have use uv init, uv add -r ./requement.txt to transform my project from requirment to uv use pyproject.toml to manager deps
 ![Image](https://github.com/user-attachments/assets/91c000cf-310c-4990-948e-41031d7e9bfa)

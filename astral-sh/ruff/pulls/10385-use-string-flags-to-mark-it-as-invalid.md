@@ -13,14 +13,14 @@ head: dhruv/invalid-string
 created_at: 2024-03-13T14:57:23Z
 updated_at: 2024-03-14T03:28:01Z
 url: https://github.com/astral-sh/ruff/pull/10385
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Use string flags to mark it as invalid
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-13 14:57_
+_@dhruvmanila_
 
 ## Summary
 

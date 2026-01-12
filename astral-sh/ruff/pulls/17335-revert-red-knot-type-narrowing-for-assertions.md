@@ -13,14 +13,14 @@ head: cjm/revert-assert-narrowing
 created_at: 2025-04-10T15:00:16Z
 updated_at: 2025-04-10T15:06:27Z
 url: https://github.com/astral-sh/ruff/pull/17335
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Revert "[red-knot] Type narrowing for assertions (#17149)"
 
 ---
 
-_Pull request opened by @carljm on 2025-04-10 15:00_
+_@carljm_
 
 I merged #17149 without checking the ecosystem results, and it still caused a cycle panic in pybind11. Reverting for now until I fix that, so we don't lose the ecosystem signal on other PRs.
 

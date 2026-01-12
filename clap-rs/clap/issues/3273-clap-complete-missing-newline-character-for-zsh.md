@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-09T12:43:38Z
 updated_at: 2022-01-10T14:22:28Z
 url: https://github.com/clap-rs/clap/issues/3273
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [clap_complete] Missing newline character for zsh completion at the end
 
 ---
 
-_Issue opened by @xylous on 2022-01-09 12:43_
+_@xylous_
 
 ### Please complete the following tasks
 

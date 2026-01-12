@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T13:30:29Z
 updated_at: 2024-03-22T21:25:27Z
 url: https://github.com/astral-sh/uv/issues/1589
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Support `.` for paths
 
 ---
 
-_Issue opened by @Zethson on 2024-02-17 13:30_
+_@Zethson_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

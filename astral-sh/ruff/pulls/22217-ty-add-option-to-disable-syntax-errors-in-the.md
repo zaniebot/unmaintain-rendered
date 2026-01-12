@@ -14,14 +14,14 @@ head: disable-syntax-errors
 created_at: 2025-12-26T23:49:19Z
 updated_at: 2025-12-29T14:29:50Z
 url: https://github.com/astral-sh/ruff/pull/22217
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Add option to disable syntax errors in the language server
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-26 23:49_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T13:20:11Z
 updated_at: 2023-12-15T04:16:27Z
 url: https://github.com/astral-sh/uv/issues/269
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Develop a caching strategy for URL dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-01 13:20_
+_@charliermarsh_
 
 We can either respect HTTP caching, never cache, or always cache (and provide a mechanism for ignoring the cache)...
 

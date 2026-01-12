@@ -12,14 +12,14 @@ head: charlie/match
 created_at: 2023-06-16T04:04:22Z
 updated_at: 2023-06-16T12:57:21Z
 url: https://github.com/astral-sh/ruff/pull/5140
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Rewrite `suspicious_function_call` as a match statement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 04:04_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

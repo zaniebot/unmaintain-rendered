@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-02-23T17:12:56Z
 updated_at: 2019-07-17T18:41:39Z
 url: https://github.com/clap-rs/clap/issues/1421
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Display Help without exiting the program.
 
 ---
 
-_Issue opened by @omarabid on 2019-02-23 17:12_
+_@omarabid_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

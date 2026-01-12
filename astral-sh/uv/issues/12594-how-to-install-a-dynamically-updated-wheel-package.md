@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T05:22:46Z
 updated_at: 2025-04-03T01:59:32Z
 url: https://github.com/astral-sh/uv/issues/12594
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # how to install a dynamically updated wheel package
 
 ---
 
-_Issue opened by @pplmx on 2025-04-01 05:22_
+_@pplmx_
 
 ### Question
 

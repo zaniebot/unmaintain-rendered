@@ -13,14 +13,14 @@ head: konsti/fix-pypi-publish-test
 created_at: 2025-06-17T18:46:52Z
 updated_at: 2025-06-18T07:51:54Z
 url: https://github.com/astral-sh/uv/pull/14116
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Fix PyPI publish test script
 
 ---
 
-_Pull request opened by @konstin on 2025-06-17 18:46_
+_@konstin_
 
 The script stumbled over a newline introduced in https://github.com/pypi/warehouse/pull/18266 (which is valid).
 

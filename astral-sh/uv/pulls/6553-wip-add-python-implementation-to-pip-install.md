@@ -11,14 +11,14 @@ head: main
 created_at: 2024-08-23T22:24:48Z
 updated_at: 2024-08-24T07:51:37Z
 url: https://github.com/astral-sh/uv/pull/6553
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # [WIP] add --python-implementation to pip install
 
 ---
 
-_Pull request opened by @schlamar on 2024-08-23 22:24_
+_@schlamar_
 
 ## Summary
 

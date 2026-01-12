@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T15:28:53Z
 updated_at: 2025-09-18T12:05:50Z
 url: https://github.com/astral-sh/uv/issues/14318
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Unable to Authenticate and Install from AWS CodeArtifact via iPython Magic Commands
 
 ---
 
-_Issue opened by @nscipione-sumer on 2025-06-27 15:28_
+_@nscipione-sumer_
 
 ### Summary
 

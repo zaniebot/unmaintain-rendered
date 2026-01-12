@@ -14,14 +14,14 @@ head: brent/314
 created_at: 2025-10-06T16:31:11Z
 updated_at: 2025-10-07T16:23:13Z
 url: https://github.com/astral-sh/ruff/pull/20725
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Update default and latest Python versions for 3.14
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-06 16:31_
+_@ntBre_
 
 Summary
 --

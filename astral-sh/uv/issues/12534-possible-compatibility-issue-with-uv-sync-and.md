@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T15:57:26Z
 updated_at: 2025-03-31T02:04:01Z
 url: https://github.com/astral-sh/uv/issues/12534
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Possible compatibility issue with uv sync and pyO3 extension modules
 
 ---
 
-_Issue opened by @un4gt on 2025-03-28 15:57_
+_@un4gt_
 
 ### Question
 

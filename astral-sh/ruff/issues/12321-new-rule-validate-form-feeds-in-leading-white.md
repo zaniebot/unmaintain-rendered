@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T18:18:14Z
 updated_at: 2025-02-10T00:23:49Z
 url: https://github.com/astral-sh/ruff/issues/12321
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New rule: Validate form feeds in leading white space
 
 ---
 
-_Issue opened by @dscorbett on 2024-07-14 18:18_
+_@dscorbett_
 
 A form feed [has an undefined effect in leading white space except at the start of the line](https://docs.python.org/3/reference/lexical_analysis.html#indentation). A rule to validate that a form feed does not appear after indentation could be useful. A related rule is E113, but that doesn’t handle form feeds.
 

@@ -13,14 +13,14 @@ head: alex/protocol-members-abc
 created_at: 2025-06-04T18:30:37Z
 updated_at: 2025-06-04T19:34:10Z
 url: https://github.com/astral-sh/ruff/pull/18467
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Exclude members starting with `_abc_` from a protocol interface
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-04 18:30_
+_@AlexWaygood_
 
 ## Summary
 

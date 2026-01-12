@@ -13,14 +13,14 @@ head: micha/flake8-bandit-preview-tests
 created_at: 2025-11-26T09:09:32Z
 updated_at: 2025-11-26T09:13:46Z
 url: https://github.com/astral-sh/ruff/pull/21637
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Use `diagnostic_diff` testing for flake8-bandit preview tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-26 09:09_
+_@MichaReiser_
 
 ## Summary
 

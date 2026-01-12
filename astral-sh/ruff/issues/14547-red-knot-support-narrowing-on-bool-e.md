@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T23:04:39Z
 updated_at: 2024-12-03T03:05:00Z
 url: https://github.com/astral-sh/ruff/issues/14547
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support narrowing on bool(E)
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 23:04_
+_@carljm_
 
 We currently support type narrowing on various kinds of expressions in a test clause, e.g.
 

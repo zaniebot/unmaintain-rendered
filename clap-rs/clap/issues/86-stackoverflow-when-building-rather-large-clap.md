@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-29T08:04:26Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/86
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # stackoverflow when building rather large clap command trees
 
 ---
 
-_Issue opened by @Byron on 2015-04-29 08:04_
+_@Byron_
 
 Even though this issue is not due to a bug in `clap`, I thought I might post it here for your information only.
 

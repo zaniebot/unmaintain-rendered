@@ -13,14 +13,14 @@ head: refurb-stabilisations
 created_at: 2024-06-26T10:52:56Z
 updated_at: 2024-06-26T12:24:52Z
 url: https://github.com/astral-sh/ruff/pull/12043
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [Ruff 0.5] Stabilise 11 `FURB` rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-26 10:52_
+_@AlexWaygood_
 
 ## Summary
 

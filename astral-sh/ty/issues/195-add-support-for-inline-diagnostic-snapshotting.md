@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-02-19T14:57:16Z
 updated_at: 2025-11-18T16:10:21Z
 url: https://github.com/astral-sh/ty/issues/195
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # add support for inline diagnostic snapshotting for `mdtest`
 
 ---
 
-_Issue opened by @BurntSushi on 2025-02-19 14:57_
+_@BurntSushi_
 
 ## Summary
 

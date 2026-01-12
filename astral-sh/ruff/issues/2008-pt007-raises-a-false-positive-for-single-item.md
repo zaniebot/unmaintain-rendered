@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-20T02:04:44Z
 updated_at: 2023-01-20T03:13:19Z
 url: https://github.com/astral-sh/ruff/issues/2008
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PT007 raises a false positive for single-item strings
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-20 02:04_
+_@charliermarsh_
 
 Not sure if this is inherited from the flake8 plugin, but this is a false positive for PT007:
 

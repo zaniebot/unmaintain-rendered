@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-29T22:48:39Z
 updated_at: 2024-08-30T13:50:23Z
 url: https://github.com/astral-sh/uv/issues/6840
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # User display of paths drops `/` if in the root directory
 
 ---
 
-_Issue opened by @zanieb on 2024-08-29 22:48_
+_@zanieb_
 
 If I'm working in the root directory, I'd prefer to have these retained :)
 

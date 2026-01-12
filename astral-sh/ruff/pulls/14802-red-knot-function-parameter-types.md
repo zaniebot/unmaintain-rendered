@@ -13,14 +13,14 @@ head: cjm/funcparams
 created_at: 2024-12-06T01:19:28Z
 updated_at: 2024-12-09T16:00:58Z
 url: https://github.com/astral-sh/ruff/pull/14802
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] function parameter types
 
 ---
 
-_Pull request opened by @carljm on 2024-12-06 01:19_
+_@carljm_
 
 ## Summary
 

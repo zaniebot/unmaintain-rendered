@@ -13,14 +13,14 @@ head: charlie/mark_safe
 created_at: 2024-02-08T03:51:02Z
 updated_at: 2024-02-08T04:10:46Z
 url: https://github.com/astral-sh/ruff/pull/9887
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Detect `mark_safe` usages in decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-08 03:51_
+_@charliermarsh_
 
 ## Summary
 

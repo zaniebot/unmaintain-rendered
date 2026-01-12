@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-16T03:39:57Z
 updated_at: 2023-06-16T04:03:16Z
 url: https://github.com/astral-sh/ruff/issues/5138
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # DJ008 in model type stub is incompatible with PYI029
 
 ---
 
-_Issue opened by @federicobond on 2023-06-16 03:39_
+_@federicobond_
 
 When a Django model type stub contains a `__str__` method, ruff complains about PYI029.
 

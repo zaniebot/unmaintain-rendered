@@ -13,14 +13,14 @@ head: konsti/dont-unwrap-path-segments
 created_at: 2025-05-12T11:23:52Z
 updated_at: 2025-05-13T02:29:28Z
 url: https://github.com/astral-sh/uv/pull/13406
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Avoid panics for cannot-be-a-base URLs
 
 ---
 
-_Pull request opened by @konstin on 2025-05-12 11:23_
+_@konstin_
 
 Following #13376, avoid `.unwrap()` on `Url::path_segments()`.
 

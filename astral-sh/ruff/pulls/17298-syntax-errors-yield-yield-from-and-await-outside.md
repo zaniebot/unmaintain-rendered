@@ -13,14 +13,14 @@ head: brent/syn-yield-outside-function
 created_at: 2025-04-08T18:03:06Z
 updated_at: 2025-04-11T14:16:25Z
 url: https://github.com/astral-sh/ruff/pull/17298
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] `yield`, `yield from`, and `await` outside functions
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-08 18:03_
+_@ntBre_
 
 Summary
 --

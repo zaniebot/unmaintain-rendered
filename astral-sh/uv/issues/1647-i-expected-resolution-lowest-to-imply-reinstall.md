@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T14:07:49Z
 updated_at: 2024-04-23T19:45:37Z
 url: https://github.com/astral-sh/uv/issues/1647
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # I expected `--resolution=lowest` to imply `--reinstall` for an existing package
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-18 14:07_
+_@adamtheturtle_
 
 I ran:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T10:54:15Z
 updated_at: 2026-01-09T03:46:33Z
 url: https://github.com/astral-sh/ty/issues/89
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # LSP: Support Workspace folders
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-22 10:54_
+_@dhruvmanila_
 
 https://github.com/astral-sh/ruff/pull/13041 restricts the red knot server to only work when there's only one workspace opened in the editor. We should add support for multi-root workspaces.
 

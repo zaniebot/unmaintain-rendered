@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T13:19:55Z
 updated_at: 2024-10-04T13:52:24Z
 url: https://github.com/astral-sh/uv/issues/7809
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # `uv publish` times out when uploading large packages (~85MiB)
 
 ---
 
-_Issue opened by @benniekiss on 2024-09-30 13:19_
+_@benniekiss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

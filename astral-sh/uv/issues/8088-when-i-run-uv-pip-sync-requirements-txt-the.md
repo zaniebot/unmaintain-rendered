@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T12:36:47Z
 updated_at: 2024-10-12T14:59:33Z
 url: https://github.com/astral-sh/uv/issues/8088
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # when  I run  `uv  pip  sync requirements.txt`   , the  environment  is  not be  updated  
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-10-10 12:36_
+_@Super1Windcloud_
 
 win11
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T17:28:05Z
 updated_at: 2025-07-31T17:28:05Z
 url: https://github.com/astral-sh/uv/issues/15002
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Check if pylock.toml satisfies requirements.txt
 
 ---
 
-_Issue opened by @williamAlhant on 2025-07-31 17:28_
+_@williamAlhant_
 
 ### Summary
 

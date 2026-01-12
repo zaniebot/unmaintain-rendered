@@ -13,14 +13,14 @@ head: docs/mkdocs-material-insiders-free
 created_at: 2025-12-04T19:30:01Z
 updated_at: 2025-12-05T07:53:09Z
 url: https://github.com/astral-sh/ruff/pull/21797
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # Update mkdocs-material to 9.7.0 (Insiders now free)
 
 ---
 
-_Pull request opened by @mahiro72 on 2025-12-04 19:30_
+_@mahiro72_
 
 ## Summary
 

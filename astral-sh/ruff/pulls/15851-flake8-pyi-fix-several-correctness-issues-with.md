@@ -14,14 +14,14 @@ head: alex/pyi-panic
 created_at: 2025-01-31T13:34:03Z
 updated_at: 2025-01-31T14:21:37Z
 url: https://github.com/astral-sh/ruff/pull/15851
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pyi`] Fix several correctness issues with `custom-type-var-return-type` (`PYI019`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-31 13:34_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-31T08:08:59Z
 updated_at: 2024-09-01T18:24:38Z
 url: https://github.com/astral-sh/ruff/issues/13181
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F401 rule has a bug
 
 ---
 
-_Issue opened by @seriaati on 2024-08-31 08:08_
+_@seriaati_
 
 I'm not exactly sure if this is a bug.
 Consider the following file structure:

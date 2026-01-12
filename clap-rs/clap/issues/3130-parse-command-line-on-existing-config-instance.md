@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:34:03Z
 updated_at: 2021-12-09T16:40:45Z
 url: https://github.com/clap-rs/clap/issues/3130
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Parse command line on existing config instance
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:34_
+_@epage_
 
 <a href="https://github.com/Morganamilo"><img src="https://avatars.githubusercontent.com/u/16593899?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [Morganamilo](https://github.com/Morganamilo)**
 _Saturday Jul 25, 2020 at 10:26 GMT_

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T08:08:10Z
 updated_at: 2023-05-17T16:20:59Z
 url: https://github.com/astral-sh/ruff/issues/4466
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive `PD008` when using `zipfile.Path.at`
 
 ---
 
-_Issue opened by @m-roberts on 2023-05-17 08:08_
+_@m-roberts_
 
 `ruff==0.0.267` has a false positive `PD008`:
 

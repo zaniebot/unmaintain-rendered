@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-20T11:45:17Z
 updated_at: 2025-05-21T20:08:22Z
 url: https://github.com/astral-sh/ruff/issues/4045
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Potential conflicted rules between S602 and S603
 
 ---
 
-_Issue opened by @zeshuaro on 2023-04-20 11:45_
+_@zeshuaro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

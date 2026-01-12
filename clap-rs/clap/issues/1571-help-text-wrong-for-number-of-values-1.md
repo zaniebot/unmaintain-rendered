@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-10-10T15:34:54Z
 updated_at: 2021-08-17T09:17:18Z
 url: https://github.com/clap-rs/clap/issues/1571
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # help text wrong for number_of_values=1
 
 ---
 
-_Issue opened by @metajack on 2019-10-10 15:34_
+_@metajack_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

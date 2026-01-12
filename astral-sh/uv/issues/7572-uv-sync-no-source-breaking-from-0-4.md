@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T07:47:56Z
 updated_at: 2024-10-28T18:35:48Z
 url: https://github.com/astral-sh/uv/issues/7572
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv sync --no-source` breaking from 0.4
 
 ---
 
-_Issue opened by @lambda-science on 2024-09-20 07:47_
+_@lambda-science_
 
 Hello,
 

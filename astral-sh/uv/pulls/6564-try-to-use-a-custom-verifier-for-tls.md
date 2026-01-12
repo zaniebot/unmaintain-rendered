@@ -12,14 +12,14 @@ head: charlie/tls
 created_at: 2024-08-24T02:36:48Z
 updated_at: 2024-08-29T19:47:09Z
 url: https://github.com/astral-sh/uv/pull/6564
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Try to use a custom verifier for TLS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 02:36_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T12:55:50Z
 updated_at: 2024-03-22T21:27:33Z
 url: https://github.com/astral-sh/uv/issues/2356
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Failed to install wheel file: `Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.`
 
 ---
 
-_Issue opened by @licht1stein on 2024-03-11 12:55_
+_@licht1stein_
 
 I'm using this in Dockerfile
 

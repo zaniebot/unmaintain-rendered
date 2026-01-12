@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-10T14:41:22Z
 updated_at: 2023-05-10T14:53:08Z
 url: https://github.com/astral-sh/ruff/issues/4346
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [ruff.isort] Wrapping imports
 
 ---
 
-_Issue opened by @zombeer on 2023-05-10 14:41_
+_@zombeer_
 
 Hi!
 Can you please suggest an option to get result like:

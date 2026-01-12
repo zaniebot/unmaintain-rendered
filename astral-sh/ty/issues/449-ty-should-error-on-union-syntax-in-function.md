@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T13:27:43Z
 updated_at: 2025-11-14T14:44:28Z
 url: https://github.com/astral-sh/ty/issues/449
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty should error on Union syntax in function definition without annotations import in Python 3.9
 
 ---
 
-_Issue opened by @metaist on 2025-05-19 13:27_
+_@metaist_
 
 ### Summary
 

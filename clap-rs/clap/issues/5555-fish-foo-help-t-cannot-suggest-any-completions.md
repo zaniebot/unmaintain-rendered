@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T00:49:40Z
 updated_at: 2024-07-05T20:24:15Z
 url: https://github.com/clap-rs/clap/issues/5555
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fish: `foo help \t` cannot suggest any completions for subcommands
 
 ---
 
-_Issue opened by @tesuji on 2024-06-27 00:49_
+_@tesuji_
 
 Look at the generated completion
 

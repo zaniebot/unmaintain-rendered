@@ -13,14 +13,14 @@ head: zb/dep-fixup
 created_at: 2024-11-21T17:21:17Z
 updated_at: 2024-11-21T17:44:24Z
 url: https://github.com/astral-sh/uv/pull/9330
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Fix header level of "Conflicting dependencies" page
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-21 17:21_
+_@zanieb_
 
 _No description provided._
 

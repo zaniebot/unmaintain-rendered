@@ -13,14 +13,14 @@ head: charlie/req-p-2
 created_at: 2024-06-03T18:33:18Z
 updated_at: 2024-06-03T18:42:39Z
 url: https://github.com/astral-sh/uv/pull/3993
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Remove need to return Python version in `get_dependencies`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-03 18:33_
+_@charliermarsh_
 
 ## Summary
 

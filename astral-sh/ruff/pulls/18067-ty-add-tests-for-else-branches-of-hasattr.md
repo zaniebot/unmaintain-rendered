@@ -14,14 +14,14 @@ head: alex/hasattr-else-test
 created_at: 2025-05-13T13:13:51Z
 updated_at: 2025-05-13T13:58:41Z
 url: https://github.com/astral-sh/ruff/pull/18067
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Add tests for `else` branches of `hasattr()` narrowing
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-13 13:13_
+_@AlexWaygood_
 
 ## Summary
 

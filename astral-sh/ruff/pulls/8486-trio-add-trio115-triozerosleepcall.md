@@ -13,14 +13,14 @@ head: feat/TRIO115
 created_at: 2023-11-04T12:32:20Z
 updated_at: 2023-11-06T15:53:35Z
 url: https://github.com/astral-sh/ruff/pull/8486
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`TRIO`] Add `TRIO115`: TrioZeroSleepCall
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-11-04 12:32_
+_@qdegraaf_
 
 ## Summary
 

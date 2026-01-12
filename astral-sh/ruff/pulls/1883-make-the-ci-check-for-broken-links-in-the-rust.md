@@ -12,14 +12,14 @@ head: check-docs-in-ci
 created_at: 2023-01-15T03:50:02Z
 updated_at: 2023-01-15T04:18:18Z
 url: https://github.com/astral-sh/ruff/pull/1883
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Make the CI check for broken links in the Rust docs
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-15 03:50_
+_@not-my-profile_
 
 _No description provided._
 

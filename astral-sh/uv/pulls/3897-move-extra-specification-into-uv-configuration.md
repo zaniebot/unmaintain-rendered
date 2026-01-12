@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-05-29T04:41:10Z
 updated_at: 2024-05-29T04:49:58Z
 url: https://github.com/astral-sh/uv/pull/3897
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Move extra specification into `uv-configuration`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 04:41_
+_@charliermarsh_
 
 ## Summary
 

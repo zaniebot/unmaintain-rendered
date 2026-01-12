@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T09:48:01Z
 updated_at: 2025-07-24T10:07:51Z
 url: https://github.com/astral-sh/uv/issues/8884
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv fails to install `jupyter_contrib_nbextensions==0.7.0` while pip succeeds
 
 ---
 
-_Issue opened by @leodevian on 2024-11-07 09:48_
+_@leodevian_
 
 Hello,
 

@@ -12,14 +12,14 @@ head: typing-type-union
 created_at: 2024-12-07T15:13:40Z
 updated_at: 2024-12-07T18:06:18Z
 url: https://github.com/astral-sh/ruff/pull/14830
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Understand `type[A | B]` special form in annotations
 
 ---
 
-_Pull request opened by @Glyphack on 2024-12-07 15:13_
+_@Glyphack_
 
 resolves https://github.com/astral-sh/ruff/issues/14703
 

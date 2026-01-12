@@ -13,14 +13,14 @@ head: zb/fx-listings
 created_at: 2024-02-07T14:55:43Z
 updated_at: 2024-02-07T16:28:23Z
 url: https://github.com/astral-sh/uv/pull/1263
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Use "locations" instead of "listings" for find links errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-07 14:55_
+_@zanieb_
 
 _No description provided._
 

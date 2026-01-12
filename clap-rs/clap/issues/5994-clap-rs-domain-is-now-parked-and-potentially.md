@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T16:09:15Z
 updated_at: 2025-11-26T18:27:33Z
 url: https://github.com/clap-rs/clap/issues/5994
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap.rs domain is now parked and potentially unsafe
 
 ---
 
-_Issue opened by @fool-in-the-rain on 2025-05-08 16:09_
+_@fool-in-the-rain_
 
 The domain https://clap.rs, previously listed in documentation and tutorials as the official site for the clap crate, now appears to be parked or hijacked.
 

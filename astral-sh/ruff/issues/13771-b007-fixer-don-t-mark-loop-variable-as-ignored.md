@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T09:22:43Z
 updated_at: 2024-10-17T09:34:47Z
 url: https://github.com/astral-sh/ruff/issues/13771
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B007 fixer: don't mark loop variable as ignored when the dict iteration can be fixed
 
 ---
 
-_Issue opened by @xmo-odoo on 2024-10-16 09:22_
+_@xmo-odoo_
 
 Given code like
 ```python

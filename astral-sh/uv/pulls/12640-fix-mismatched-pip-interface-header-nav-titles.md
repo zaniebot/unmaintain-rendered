@@ -13,14 +13,14 @@ head: zb/headers
 created_at: 2025-04-02T21:41:04Z
 updated_at: 2025-04-08T22:44:46Z
 url: https://github.com/astral-sh/uv/pull/12640
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Fix mismatched pip interface header / nav titles
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-02 21:41_
+_@zanieb_
 
 _No description provided._
 

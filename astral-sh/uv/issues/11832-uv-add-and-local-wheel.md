@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T11:47:20Z
 updated_at: 2025-09-02T21:29:00Z
 url: https://github.com/astral-sh/uv/issues/11832
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # uv add and local wheel
 
 ---
 
-_Issue opened by @traits on 2025-02-27 11:47_
+_@traits_
 
 ### Summary
 

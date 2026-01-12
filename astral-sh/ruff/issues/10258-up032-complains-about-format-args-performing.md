@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-06T23:43:35Z
 updated_at: 2024-03-07T04:33:20Z
 url: https://github.com/astral-sh/ruff/issues/10258
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP032 complains about format args performing function calls
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-03-06 23:43_
+_@ThiefMaster_
 
 ```py
 x = 'CASE WHEN {0} > {1} THEN {0} ELSE {1} END'.format(process(arg1), process(arg2))

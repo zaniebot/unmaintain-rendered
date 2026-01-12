@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-24T21:28:16Z
 updated_at: 2024-01-25T16:44:23Z
 url: https://github.com/astral-sh/uv/issues/1084
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Strip windows prefixes from paths in messages
 
 ---
 
-_Issue opened by @konstin on 2024-01-24 21:28_
+_@konstin_
 
 We should strip the UNC path prefix for paths we print, e.g.
 

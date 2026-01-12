@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T14:35:46Z
 updated_at: 2025-01-24T21:16:39Z
 url: https://github.com/astral-sh/uv/issues/8503
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Move `BaseClientBuilder` into `run`
 
 ---
 
-_Issue opened by @konstin on 2024-10-23 14:35_
+_@konstin_
 
 We're building the same basic client builder in a lot of place:
 

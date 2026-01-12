@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-03-11T03:31:21Z
 updated_at: 2019-07-22T00:35:45Z
 url: https://github.com/clap-rs/clap/issues/1426
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # "require_equals" doesn't work in YAML config files
 
 ---
 
-_Issue opened by @rivy on 2019-03-11 03:31_
+_@rivy_
 
 ### Rust Version
 

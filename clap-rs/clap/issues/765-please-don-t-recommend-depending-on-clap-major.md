@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-05T04:41:05Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/765
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Please don't recommend depending on clap="~major.minor.patch"
 
 ---
 
-_Issue opened by @joshtriplett on 2016-12-05 04:41_
+_@joshtriplett_
 
 Clap's README.md recommends depending on `clap="~major.minor.patch"`, "to keep from being suprised of breaking changes".  However, any actual breakage that would prevent compiling code written against an old version of clap with a new version of clap would involve a *major* version bump, which a "compatible version" dependency like `clap="major.minor.patch"` would also prevent.  The only thing a "compatible version" dependency would allow would be a requirement on a new version of Rust or Cargo, which not every application needs to worry about.
 

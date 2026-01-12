@@ -12,14 +12,14 @@ head: fix-ast-visitor-order
 created_at: 2023-06-21T18:57:42Z
 updated_at: 2023-06-21T20:05:21Z
 url: https://github.com/astral-sh/ruff/pull/5265
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove visit_arg_with_default
 
 ---
 
-_Pull request opened by @jgberry on 2023-06-21 18:57_
+_@jgberry_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

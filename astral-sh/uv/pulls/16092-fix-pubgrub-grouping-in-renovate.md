@@ -13,14 +13,14 @@ head: konsti/renovate-root-cargo-toml
 created_at: 2025-10-01T20:37:51Z
 updated_at: 2025-10-02T07:40:26Z
 url: https://github.com/astral-sh/uv/pull/16092
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Fix pubgrub grouping in renovate
 
 ---
 
-_Pull request opened by @konstin on 2025-10-01 20:37_
+_@konstin_
 
 `packageName` was wrong, we need `depName`
 

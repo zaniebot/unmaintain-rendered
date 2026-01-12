@@ -12,14 +12,14 @@ head: charlie/script-env
 created_at: 2026-01-05T21:05:14Z
 updated_at: 2026-01-06T14:23:04Z
 url: https://github.com/astral-sh/uv/pull/17329
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Add support for `UV_SCRIPT_ENVIRONMENT`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 21:05_
+_@charliermarsh_
 
 ## Summary
 

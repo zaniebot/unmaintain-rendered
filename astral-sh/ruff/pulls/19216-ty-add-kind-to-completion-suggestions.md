@@ -14,14 +14,14 @@ head: ag/completion-kind
 created_at: 2025-07-08T19:54:53Z
 updated_at: 2025-07-11T14:48:03Z
 url: https://github.com/astral-sh/ruff/pull/19216
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Add "kind" to completion suggestions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-08 19:54_
+_@BurntSushi_
 
 This PR does some refactoring to expose a `Type` for each completion
 item. This is mostly unexciting, except for the case of determining the

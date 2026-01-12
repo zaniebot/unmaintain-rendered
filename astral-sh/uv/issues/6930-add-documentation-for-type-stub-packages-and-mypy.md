@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-02T09:02:45Z
 updated_at: 2025-09-22T10:20:03Z
 url: https://github.com/astral-sh/uv/issues/6930
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Add documentation for type stub packages and mypy invocation
 
 ---
 
-_Issue opened by @KDruzhkin on 2024-09-02 09:02_
+_@KDruzhkin_
 
 Type stubs can be provided in separate packages. For example, a package `foo` has a companion package `types-foo` or `foo-stubs`.
 

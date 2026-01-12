@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T09:39:38Z
 updated_at: 2024-12-28T09:10:37Z
 url: https://github.com/astral-sh/uv/issues/10022
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Trouble creating and managing venv
 
 ---
 
-_Issue opened by @jiwidi on 2024-12-19 09:39_
+_@jiwidi_
 
 Hi!
 

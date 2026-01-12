@@ -13,14 +13,14 @@ head: david/augmented-assignment
 created_at: 2025-03-13T22:33:18Z
 updated_at: 2025-03-14T19:36:12Z
 url: https://github.com/astral-sh/ruff/pull/16717
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Use `try_call_dunder` for augmented assignment
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-13 22:33_
+_@sharkdp_
 
 ## Summary
 

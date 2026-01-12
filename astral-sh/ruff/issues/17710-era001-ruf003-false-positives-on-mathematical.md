@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T14:42:31Z
 updated_at: 2025-04-30T06:44:02Z
 url: https://github.com/astral-sh/ruff/issues/17710
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ERA001 & RUF003 false positives on mathematical expressions in comments
 
 ---
 
-_Issue opened by @nicoonoclaste on 2025-04-29 14:42_
+_@nicoonoclaste_
 
 ### Summary
 

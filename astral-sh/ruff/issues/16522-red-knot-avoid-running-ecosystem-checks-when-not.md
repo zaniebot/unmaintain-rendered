@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T17:46:05Z
 updated_at: 2025-03-14T19:17:16Z
 url: https://github.com/astral-sh/ruff/issues/16522
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Avoid running ecosystem checks when not necessary
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-05 17:46_
+_@MichaReiser_
 
 Most recent example https://github.com/astral-sh/ruff/pull/16493#issuecomment-2700540847
 

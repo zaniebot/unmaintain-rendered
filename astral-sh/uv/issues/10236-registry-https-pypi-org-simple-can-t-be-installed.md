@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T10:45:41Z
 updated_at: 2024-12-30T15:31:01Z
 url: https://github.com/astral-sh/uv/issues/10236
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-12-30 10:45_
+_@Super1Windcloud_
 
 ##  When I  use  python 3.13  on  windows ,   and run  `uv add torch ` 
 ##  happened `@ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform` 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T07:21:35Z
 updated_at: 2025-05-26T18:17:20Z
 url: https://github.com/astral-sh/uv/issues/13614
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # `uv lock --check` fails even though `uv lock` gives no updates
 
 ---
 
-_Issue opened by @mikeweltevrede on 2025-05-23 07:21_
+_@mikeweltevrede_
 
 ### Summary
 

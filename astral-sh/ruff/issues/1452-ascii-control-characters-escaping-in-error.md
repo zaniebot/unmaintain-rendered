@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-29T23:02:39Z
 updated_at: 2022-12-31T03:11:02Z
 url: https://github.com/astral-sh/ruff/issues/1452
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ASCII control characters escaping in error messages
 
 ---
 
-_Issue opened by @AA-Turner on 2022-12-29 23:02_
+_@AA-Turner_
 
 Line feed literals, carriage returns, and tabs are all printed as their actual characters rather than the escaped sequence in error messages.
 

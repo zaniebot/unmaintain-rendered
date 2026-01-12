@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T15:21:35Z
 updated_at: 2024-06-10T14:36:15Z
 url: https://github.com/astral-sh/uv/issues/4131
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv lock` fails if the default python version doesn't match project python version
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 15:21_
+_@konstin_
 
 I have an environment where `python` is 3.12 and a project with `requires-python = "==3.11.*"`. This makes `uv lock` fail:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-04T16:40:41Z
 updated_at: 2025-11-21T15:52:06Z
 url: https://github.com/astral-sh/ty/issues/1305
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Bad autocomplete suggestions given for `from .<CURSOR>` (relative imports)
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-04 16:40_
+_@AlexWaygood_
 
 ### Summary
 

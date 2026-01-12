@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-04T23:02:24Z
 updated_at: 2023-10-05T16:01:42Z
 url: https://github.com/astral-sh/ruff/issues/7823
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # formatter deviation: regular/non-pragma comments and line-length
 
 ---
 
-_Issue opened by @raylu on 2023-10-04 23:02_
+_@raylu_
 
 with the default line-length of 88, this 119-wide line
 ```py

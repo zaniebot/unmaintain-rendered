@@ -13,14 +13,14 @@ head: david/test-db-builder
 created_at: 2024-12-04T20:05:40Z
 updated_at: 2024-12-04T20:36:56Z
 url: https://github.com/astral-sh/ruff/pull/14777
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Unify `setup_db()` functions, add `TestDb` builder
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-04 20:05_
+_@sharkdp_
 
 ## Summary
 

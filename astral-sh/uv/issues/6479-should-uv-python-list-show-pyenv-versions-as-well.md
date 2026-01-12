@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T00:34:57Z
 updated_at: 2025-02-01T05:38:25Z
 url: https://github.com/astral-sh/uv/issues/6479
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Should `uv python list` show `pyenv` versions as well?
 
 ---
 
-_Issue opened by @jimmcslim on 2024-08-23 00:34_
+_@jimmcslim_
 
 I'm using `uv 0.3.1 (Homebrew 2024-08-21)`
 

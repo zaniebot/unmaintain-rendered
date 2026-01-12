@@ -13,14 +13,14 @@ head: micha/upgrade-dependencies
 created_at: 2025-03-18T07:53:28Z
 updated_at: 2025-03-18T08:07:36Z
 url: https://github.com/astral-sh/ruff/pull/16825
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [playground] Upgrade dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-18 07:53_
+_@MichaReiser_
 
 _No description provided._
 

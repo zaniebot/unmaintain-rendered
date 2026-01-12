@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T11:04:17Z
 updated_at: 2024-05-31T14:53:13Z
 url: https://github.com/astral-sh/ruff/issues/11634
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Neovim configuration: Ruff LSP, formatexpr and gq command
 
 ---
 
-_Issue opened by @gzagatti on 2024-05-31 11:04_
+_@gzagatti_
 
 I am tring to use Ruff in Neovim via LSP, but I have been having trouble with `formatexpr`. Once ruff LSP is started, I can't reformat a long line by pressing `gq`.
 

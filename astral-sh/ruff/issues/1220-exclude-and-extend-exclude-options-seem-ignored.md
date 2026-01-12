@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-12T20:55:08Z
 updated_at: 2024-11-01T18:51:23Z
 url: https://github.com/astral-sh/ruff/issues/1220
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `exclude` and `extend-exclude` options seem ignored when running with pre-commit
 
 ---
 
-_Issue opened by @WilliamJamieson on 2022-12-12 20:55_
+_@WilliamJamieson_
 
 `ruff` is really awesome, and I have begun to use it in many of my projects as it is orders of magnitude faster than `flake8` and others like it.
 

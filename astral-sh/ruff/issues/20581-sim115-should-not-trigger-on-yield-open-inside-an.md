@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-25T18:32:38Z
 updated_at: 2025-09-25T19:48:37Z
 url: https://github.com/astral-sh/ruff/issues/20581
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM115 should not trigger on `yield open(...)` inside an @contextmanager function
 
 ---
 
-_Issue opened by @zackw on 2025-09-25 18:32_
+_@zackw_
 
 ### Summary
 

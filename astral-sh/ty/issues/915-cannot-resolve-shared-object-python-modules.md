@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-30T11:57:28Z
 updated_at: 2025-07-30T12:27:30Z
 url: https://github.com/astral-sh/ty/issues/915
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Cannot resolve shared object python modules
 
 ---
 
-_Issue opened by @seysn on 2025-07-30 11:57_
+_@seysn_
 
 ### Summary
 

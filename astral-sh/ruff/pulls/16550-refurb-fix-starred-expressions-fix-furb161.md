@@ -14,14 +14,14 @@ head: FURB161
 created_at: 2025-03-07T11:08:31Z
 updated_at: 2025-03-19T21:43:58Z
 url: https://github.com/astral-sh/ruff/pull/16550
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`refurb`] Fix starred expressions fix (`FURB161`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-07 11:08_
+_@VascoSch92_
 
 The PR partially solves issue #16457
 

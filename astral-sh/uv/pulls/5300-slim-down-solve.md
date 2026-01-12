@@ -13,14 +13,14 @@ head: konsti/slim-down-solve
 created_at: 2024-07-22T17:59:55Z
 updated_at: 2024-07-22T18:52:47Z
 url: https://github.com/astral-sh/uv/pull/5300
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Slim down `solve`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-22 17:59_
+_@konstin_
 
 Our everything-method `solve` tends to grow large, so before i'm adding more logic, i'm moving some code and some logging statements around to keep it manageable.
 

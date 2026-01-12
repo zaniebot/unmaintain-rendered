@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T07:46:33Z
 updated_at: 2024-02-05T19:21:47Z
 url: https://github.com/astral-sh/ruff/issues/7233
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Range formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 07:46_
+_@MichaReiser_
 
 For IDE integration, it would be great if it was possible to select a certain range of code and only format that range.
 

@@ -14,14 +14,14 @@ head: remove-tab-size-setting
 created_at: 2024-08-12T09:11:36Z
 updated_at: 2024-10-08T12:40:25Z
 url: https://github.com/astral-sh/ruff/pull/12835
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove tab-size setting
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 09:11_
+_@MichaReiser_
 
 ## Summary
 

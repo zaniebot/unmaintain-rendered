@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T16:05:03Z
 updated_at: 2024-11-22T09:24:10Z
 url: https://github.com/astral-sh/uv/issues/9279
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Document ways of having default dependency groups 
 
 ---
 
-_Issue opened by @awoimbee on 2024-11-20 16:05_
+_@awoimbee_
 
 The dependency-groups documentation (<https://docs.astral.sh/uv/concepts/dependencies/#dependency-groups>) should explain how to set default dependency groups included when running `uv synv`.
 

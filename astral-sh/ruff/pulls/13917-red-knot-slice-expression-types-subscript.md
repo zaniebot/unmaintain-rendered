@@ -13,14 +13,14 @@ head: david/infer-slice-expressions
 created_at: 2024-10-24T18:10:00Z
 updated_at: 2024-10-29T20:33:37Z
 url: https://github.com/astral-sh/ruff/pull/13917
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Slice expression types & subscript expressions with slices
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-24 18:10_
+_@sharkdp_
 
 ## Summary
 

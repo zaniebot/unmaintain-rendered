@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T08:44:07Z
 updated_at: 2026-01-08T08:45:31Z
 url: https://github.com/astral-sh/uv/issues/17357
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Azure cloud keyring auth fail - 401 Unauthorized
 
 ---
 
-_Issue opened by @teshanshanuka on 2026-01-08 08:44_
+_@teshanshanuka_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: david/attribute-access-on-intersections-again
 created_at: 2025-08-27T14:57:35Z
 updated_at: 2025-08-27T18:01:47Z
 url: https://github.com/astral-sh/ruff/pull/20114
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Preserve qualifiers when accessing attributes on unions/intersections
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-27 14:57_
+_@sharkdp_
 
 ## Summary
 

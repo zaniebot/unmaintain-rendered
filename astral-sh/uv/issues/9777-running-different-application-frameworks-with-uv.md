@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T15:40:50Z
 updated_at: 2025-01-07T19:21:27Z
 url: https://github.com/astral-sh/uv/issues/9777
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Running Different Application Frameworks with uv Command
 
 ---
 
-_Issue opened by @HeangSok-2 on 2024-12-10 15:40_
+_@HeangSok-2_
 
 At the moment, when we run our application using the uv command, for example:
 ````bash

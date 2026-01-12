@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T14:13:42Z
 updated_at: 2025-11-26T16:15:14Z
 url: https://github.com/astral-sh/uv/issues/16844
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # resolving a circular dependency as `lowest` results in an older version of the project being fetched
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-11-25 14:13_
+_@neutrinoceros_
 
 ### Summary
 

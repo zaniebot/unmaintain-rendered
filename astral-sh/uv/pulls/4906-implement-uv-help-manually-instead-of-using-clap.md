@@ -13,14 +13,14 @@ head: zb/cli-help-cmd
 created_at: 2024-07-08T19:46:36Z
 updated_at: 2024-07-09T17:43:15Z
 url: https://github.com/astral-sh/uv/pull/4906
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Implement `uv help` manually instead of using Clap default
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-08 19:46_
+_@zanieb_
 
 Extends #4772 
 

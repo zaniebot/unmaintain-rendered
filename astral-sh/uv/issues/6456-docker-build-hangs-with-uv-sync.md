@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T18:48:54Z
 updated_at: 2024-08-22T19:01:48Z
 url: https://github.com/astral-sh/uv/issues/6456
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Docker build hangs with uv sync
 
 ---
 
-_Issue opened by @jules-ch on 2024-08-22 18:48_
+_@jules-ch_
 
 Docker build hangs with this configuration.
 It's working outside of docker.

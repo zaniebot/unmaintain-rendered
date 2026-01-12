@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-03T17:41:17Z
 updated_at: 2024-04-15T08:23:50Z
 url: https://github.com/astral-sh/ruff/issues/10211
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Harmonize E301 check with format in --preview mode?
 
 ---
 
-_Issue opened by @jab on 2024-03-03 17:41_
+_@jab_
 
 `ruff format` allows overloaded method stubs to occur before the runtime definition with no blank line in between, which is good. But this style fails the E301 check (in preview mode only). Should these be harmonized?
 

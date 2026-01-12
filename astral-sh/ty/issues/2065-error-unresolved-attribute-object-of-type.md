@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T12:14:51Z
 updated_at: 2025-12-18T12:26:27Z
 url: https://github.com/astral-sh/ty/issues/2065
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[unresolved-attribute] Object of type `Callable` has no attribute `__name__`
 
 ---
 
-_Issue opened by @spaceone on 2025-12-18 12:14_
+_@spaceone_
 
 ### Summary
 

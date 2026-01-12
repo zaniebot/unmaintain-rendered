@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-21T11:15:47Z
 updated_at: 2024-11-21T11:43:41Z
 url: https://github.com/astral-sh/uv/issues/9310
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # uv torch installation breaking in cpu-gpu multiplatform scenario.
 
 ---
 
-_Issue opened by @EgonFerri on 2024-11-21 11:15_
+_@EgonFerri_
 
 First of all thanks for the tool, UV is simplifying immensely the package management.
 

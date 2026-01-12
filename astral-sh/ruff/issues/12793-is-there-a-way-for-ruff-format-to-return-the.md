@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-10T04:46:53Z
 updated_at: 2024-08-12T09:25:08Z
 url: https://github.com/astral-sh/ruff/issues/12793
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Is there a way for `ruff format` to return the formatted source files as outputs to `stdout` instead of formatting inplace?
 
 ---
 
-_Issue opened by @jymchng on 2024-08-10 04:46_
+_@jymchng_
 
 As titled, simple question - from the documentation, it seems like it can't do this but let's see.
 

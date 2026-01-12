@@ -13,14 +13,14 @@ head: charlie/too
 created_at: 2025-01-08T17:14:11Z
 updated_at: 2025-01-08T17:38:19Z
 url: https://github.com/astral-sh/uv/pull/10401
-synced_at: 2026-01-10T11:44:47Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Respect `requires-python` when installing tools
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-08 17:14_
+_@charliermarsh_
 
 ## Summary
 

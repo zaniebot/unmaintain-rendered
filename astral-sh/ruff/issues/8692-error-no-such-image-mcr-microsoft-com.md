@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T11:28:10Z
 updated_at: 2024-01-16T23:11:19Z
 url: https://github.com/astral-sh/ruff/issues/8692
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # "Error: No such image: mcr.microsoft.com/devcontainers/rust:0-1-bullseye" error when attempting to open devcontainer in vscode
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-15 11:28_
+_@DetachHead_
 
 to reproduce:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T18:42:04Z
 updated_at: 2024-07-30T18:42:24Z
 url: https://github.com/astral-sh/uv/issues/5624
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Write a guide on "creating a web server"
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 18:42_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

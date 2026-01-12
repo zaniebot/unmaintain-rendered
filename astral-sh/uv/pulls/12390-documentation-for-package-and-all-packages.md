@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-22T14:07:59Z
 updated_at: 2025-05-27T18:11:52Z
 url: https://github.com/astral-sh/uv/pull/12390
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Documentation for --package and --all-packages options for the sync command
 
 ---
 
-_Pull request opened by @uhurusurfa on 2025-03-22 14:07_
+_@uhurusurfa_
 
 ## Summary
 This provides documentation for the --package and --all-packages options for the sync command when using workspaces.

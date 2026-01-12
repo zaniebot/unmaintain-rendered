@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T00:29:04Z
 updated_at: 2024-07-30T18:24:54Z
 url: https://github.com/astral-sh/uv/issues/5581
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # shared env: executables perms problem on install
 
 ---
 
-_Issue opened by @stas00 on 2024-07-30 00:29_
+_@stas00_
 
 As a follow up to https://github.com/astral-sh/uv/issues/5496 - there is another (new?) perms issue.
 

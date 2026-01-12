@@ -12,14 +12,14 @@ head: charlie/owo
 created_at: 2023-10-18T18:53:01Z
 updated_at: 2023-10-18T18:57:08Z
 url: https://github.com/astral-sh/uv/pull/121
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Use `owo_colors` instead of `colored`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 18:53_
+_@charliermarsh_
 
 This is what `miette` uses so seems better to avoid two coloring crates.
 

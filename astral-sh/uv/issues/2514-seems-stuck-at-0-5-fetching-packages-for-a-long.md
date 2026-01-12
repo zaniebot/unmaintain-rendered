@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T16:18:10Z
 updated_at: 2024-04-02T18:16:46Z
 url: https://github.com/astral-sh/uv/issues/2514
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Seems stuck at ░░░░░░░░░░░░░░░░░░░░ [0/5] Fetching packages...   for a long time
 
 ---
 
-_Issue opened by @dheerajck on 2024-03-18 16:18_
+_@dheerajck_
 
 I am not sure if this is a bug or an ui/ux issue
 ```

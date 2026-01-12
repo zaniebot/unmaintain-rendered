@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-24T19:43:35Z
 updated_at: 2023-12-07T02:33:40Z
 url: https://github.com/astral-sh/ruff/issues/8833
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Do not flag `PLR0124` for floats
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-24 19:43_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

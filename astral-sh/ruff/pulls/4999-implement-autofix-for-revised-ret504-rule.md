@@ -14,14 +14,14 @@ head: charlie/return-fix
 created_at: 2023-06-10T03:24:06Z
 updated_at: 2023-06-10T04:32:05Z
 url: https://github.com/astral-sh/ruff/pull/4999
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Implement autofix for revised `RET504` rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-10 03:24_
+_@charliermarsh_
 
 ## Summary
 

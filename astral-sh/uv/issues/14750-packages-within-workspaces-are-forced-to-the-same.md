@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-20T02:18:55Z
 updated_at: 2025-07-20T02:32:38Z
 url: https://github.com/astral-sh/uv/issues/14750
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Packages within workspaces are forced to the same version constraints as unrelated packages
 
 ---
 
-_Issue opened by @winstxnhdw on 2025-07-20 02:18_
+_@winstxnhdw_
 
 ### Summary
 

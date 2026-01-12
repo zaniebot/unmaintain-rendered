@@ -13,14 +13,14 @@ head: alex/fixup-win
 created_at: 2024-08-06T19:07:12Z
 updated_at: 2024-08-06T19:21:27Z
 url: https://github.com/astral-sh/ruff/pull/12719
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Fix build on Windows
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-06 19:07_
+_@AlexWaygood_
 
 ## Summary
 

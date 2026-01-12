@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-05T20:58:51Z
 updated_at: 2025-07-08T07:16:08Z
 url: https://github.com/astral-sh/ruff/issues/17225
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # add rule to disallow right-hand side values in `TypedDict`
 
 ---
 
-_Issue opened by @vpoverennov on 2025-04-05 20:58_
+_@vpoverennov_
 
 ### Summary
 

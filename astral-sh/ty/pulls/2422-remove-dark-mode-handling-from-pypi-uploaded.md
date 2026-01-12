@@ -12,14 +12,14 @@ head: charlie/read
 created_at: 2026-01-09T19:17:13Z
 updated_at: 2026-01-09T20:35:29Z
 url: https://github.com/astral-sh/ty/pull/2422
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Remove dark-mode handling from PyPI-uploaded README
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 19:17_
+_@charliermarsh_
 
 ## Summary
 

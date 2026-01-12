@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T10:53:59Z
 updated_at: 2025-04-25T08:36:27Z
 url: https://github.com/astral-sh/ruff/issues/14752
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `implicit-namespace-package` (`INP001`) - error is not reported in the language server when a package is nested inside an implicit namespace package
 
 ---
 
-_Issue opened by @DetachHead on 2024-12-03 10:53_
+_@DetachHead_
 
 the scenario covered by #14236 seems to work in the CLI, but the error is not reported in vscode.
 

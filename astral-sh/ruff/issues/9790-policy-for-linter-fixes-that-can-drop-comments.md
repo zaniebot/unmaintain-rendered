@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T16:34:47Z
 updated_at: 2024-11-13T13:04:00Z
 url: https://github.com/astral-sh/ruff/issues/9790
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Policy for linter fixes that can drop comments
 
 ---
 
-_Issue opened by @zanieb on 2024-02-02 16:34_
+_@zanieb_
 
 In some cases, a lint fix can drop comments. Retaining all comments was a major goal in the Ruff formatter and we've learned that it is very hard to accomplish. There is significant foundational work that would need to be invested in the linter to prevent it from ever dropping comments. While we would like to accomplish this eventually, we're a small team with a lot of priorities to balance. In the meantime, we want to formalize a policy for fixes that may drop comments. 
 

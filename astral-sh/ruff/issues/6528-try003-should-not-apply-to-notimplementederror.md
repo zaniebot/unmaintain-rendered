@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-12T22:22:59Z
 updated_at: 2023-08-14T18:24:46Z
 url: https://github.com/astral-sh/ruff/issues/6528
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # TRY003 should not apply to `NotImplementedError`
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-08-12 22:22_
+_@benjamin-kirkbride_
 
 My understanding of the rationale according to https://beta.ruff.rs/docs/rules/raise-vanilla-args/ it's to prevent overloading exceptions to be used broadly, with the specifics of the exceptions being defined by the string passed to them.
 

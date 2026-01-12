@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T09:39:19Z
 updated_at: 2024-04-16T14:57:12Z
 url: https://github.com/astral-sh/uv/issues/3059
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv venv does not support choosing 32/64 bit Python versions
 
 ---
 
-_Issue opened by @bennyrowland on 2024-04-16 09:39_
+_@bennyrowland_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

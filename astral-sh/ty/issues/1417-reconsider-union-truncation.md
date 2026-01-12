@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T13:20:11Z
 updated_at: 2026-01-12T14:37:30Z
 url: https://github.com/astral-sh/ty/issues/1417
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reconsider union truncation
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-23 13:20_
+_@MichaReiser_
 
 Our current union truncation is too aggressive and it often makes diagnostics (e.g. when using `--output-format=concise` or in editors not supporting related information) unactionable. 
 

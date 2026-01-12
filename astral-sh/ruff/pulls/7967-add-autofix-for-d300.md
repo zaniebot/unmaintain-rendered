@@ -13,14 +13,14 @@ head: fix-D300
 created_at: 2023-10-15T23:12:04Z
 updated_at: 2023-10-17T13:37:47Z
 url: https://github.com/astral-sh/ruff/pull/7967
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add autofix for `D300`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-15 23:12_
+_@diceroll123_
 
 ## Summary
 

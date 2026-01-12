@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T06:38:49Z
 updated_at: 2025-05-09T06:42:50Z
 url: https://github.com/astral-sh/uv/issues/13360
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # macOS: `uv python list` trips mac's "library validation" (?) even after offending Python has been removed
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-09 06:38_
+_@dimaqq_
 
 ### Summary
 

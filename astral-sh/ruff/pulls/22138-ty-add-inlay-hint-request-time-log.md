@@ -14,14 +14,14 @@ head: inlay-hint-lsp-time-trace
 created_at: 2025-12-22T13:39:39Z
 updated_at: 2025-12-27T00:21:19Z
 url: https://github.com/astral-sh/ruff/pull/22138
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Add inlay hint request time log
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-22 13:39_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

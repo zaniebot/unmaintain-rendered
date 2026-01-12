@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T17:08:13Z
 updated_at: 2024-11-05T17:23:54Z
 url: https://github.com/astral-sh/uv/issues/8832
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # uv unable to download python due to corp proxy certificate
 
 ---
 
-_Issue opened by @bouianpe on 2024-11-05 17:08_
+_@bouianpe_
 
 Hi, I've looking into switching over from rye to uv for some of our projects for a bit, and I think the only thing stopping us now is that uv fails to install python in our corporate environment due to corporate proxy certificates. Rye is able to install python without those same issues, so it is able to find / load those certificates somewhere.
 There are no issues adding / syncing / locking dependencies, both from PyPI and private Gitlab package repositories.

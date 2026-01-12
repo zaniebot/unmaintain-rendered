@@ -13,14 +13,14 @@ head: redknot-async
 created_at: 2024-08-31T21:33:18Z
 updated_at: 2024-09-01T00:58:37Z
 url: https://github.com/astral-sh/ruff/pull/13187
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Fix async function edge case for inference of call expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-31 21:33_
+_@AlexWaygood_
 
 If we see an async function annotated as returning `int`, we'll need to infer objects returned from calls to that function as being of type `types.CoroutineType[Any, Any, int]` rather than simply `int`. This is a small oversight from #13164
 

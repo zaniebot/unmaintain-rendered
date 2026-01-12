@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T15:50:36Z
 updated_at: 2024-08-23T16:18:06Z
 url: https://github.com/astral-sh/ruff/issues/13081
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Instructions to enable auto formatting on Zed needs updating
 
 ---
 
-_Issue opened by @victorneo on 2024-08-23 15:50_
+_@victorneo_
 
 The existing setup instructions for enabling auto formatting with Ruff on Zed does not seem to work as of Zed version 0.149.5.
 

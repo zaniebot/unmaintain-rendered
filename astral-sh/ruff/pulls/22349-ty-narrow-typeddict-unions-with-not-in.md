@@ -14,14 +14,14 @@ head: feat/narrow-typeddict-unions-with-not-in
 created_at: 2026-01-02T21:59:42Z
 updated_at: 2026-01-03T13:12:58Z
 url: https://github.com/astral-sh/ruff/pull/22349
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] narrow `TypedDict` unions with `not in`
 
 ---
 
-_Pull request opened by @felixscherz on 2026-01-02 21:59_
+_@felixscherz_
 
 Hi, this fixes https://github.com/astral-sh/ty/issues/2191.
 

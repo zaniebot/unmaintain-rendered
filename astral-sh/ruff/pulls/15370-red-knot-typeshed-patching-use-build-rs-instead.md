@@ -14,14 +14,14 @@ head: david/typeshed_sync-copy-instead-of-symlink
 created_at: 2025-01-09T09:33:04Z
 updated_at: 2025-01-09T12:20:14Z
 url: https://github.com/astral-sh/ruff/pull/15370
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Typeshed patching: use build.rs instead of workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-09 09:33_
+_@sharkdp_
 
 ## Summary
 

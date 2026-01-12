@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T22:20:10Z
 updated_at: 2024-12-06T22:14:52Z
 url: https://github.com/astral-sh/ruff/issues/14545
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] understand type[a.X] in a type expression
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 22:20_
+_@carljm_
 
 We understand [the `type[C]` special form](https://typing.readthedocs.io/en/latest/spec/special-types.html#type) in an annotation. This spells the type consisting of the class `C` itself (not instances of the class, but the class object itself) and all of its subclasses.
 

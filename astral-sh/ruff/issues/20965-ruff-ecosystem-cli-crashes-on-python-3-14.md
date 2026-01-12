@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-19T04:09:42Z
 updated_at: 2025-10-29T21:37:40Z
 url: https://github.com/astral-sh/ruff/issues/20965
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff-ecosystem` CLI crashes on Python 3.14
 
 ---
 
-_Issue opened by @dylwil3 on 2025-10-19 04:09_
+_@dylwil3_
 
 This is not a big deal since I can just install the tool with 3.13, but this line 
 

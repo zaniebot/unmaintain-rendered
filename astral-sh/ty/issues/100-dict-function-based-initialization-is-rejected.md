@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-03T14:34:55Z
 updated_at: 2025-05-19T15:45:42Z
 url: https://github.com/astral-sh/ty/issues/100
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `dict` function-based initialization is rejected
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:34_
+_@charliermarsh_
 
 The following gives: No overload of bound method `__init__` matches arguments
 

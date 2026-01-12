@@ -13,14 +13,14 @@ head: renovate/actions-attest-build-provenance-digest
 created_at: 2025-11-03T00:27:45Z
 updated_at: 2025-12-29T21:15:42Z
 url: https://github.com/astral-sh/uv/pull/16556
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Update actions/attest-build-provenance digest to 00014ed
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 00:27_
+_@renovate_
 
 This PR contains the following updates:
 

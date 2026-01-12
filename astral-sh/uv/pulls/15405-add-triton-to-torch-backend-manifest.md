@@ -13,14 +13,14 @@ head: charlie/triton
 created_at: 2025-08-21T13:13:26Z
 updated_at: 2025-08-21T13:23:13Z
 url: https://github.com/astral-sh/uv/pull/15405
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Add `triton` to `torch-backend` manifest
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-21 13:13_
+_@charliermarsh_
 
 ## Summary
 

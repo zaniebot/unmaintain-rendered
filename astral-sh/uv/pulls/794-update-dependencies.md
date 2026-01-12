@@ -13,14 +13,14 @@ head: update-dependencies-2023-01-05
 created_at: 2024-01-05T16:08:31Z
 updated_at: 2024-01-05T16:40:13Z
 url: https://github.com/astral-sh/uv/pull/794
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Update dependencies
 
 ---
 
-_Pull request opened by @konstin on 2024-01-05 16:08_
+_@konstin_
 
 Pull in a bunch of updates so they get some testing before we announce the project. textwrap 0.16 is blocked on miette updating, http 1.0 on reqwest.
 

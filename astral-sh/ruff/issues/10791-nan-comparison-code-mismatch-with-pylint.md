@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-05T16:56:23Z
 updated_at: 2024-04-22T20:41:23Z
 url: https://github.com/astral-sh/ruff/issues/10791
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # nan-comparison code mismatch with Pylint
 
 ---
 
-_Issue opened by @BlindChickens on 2024-04-05 16:56_
+_@BlindChickens_
 
 In the (W)arning category of Pylint `nan-comparison` has code `W0177`. [Here](https://pylint.readthedocs.io/en/latest/user_guide/checkers/features.html#:~:text=nan%2Dcomparison%20(W0177)%3A)
 

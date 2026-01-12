@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T11:22:45Z
 updated_at: 2023-09-13T09:09:59Z
 url: https://github.com/astral-sh/ruff/issues/6069
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # 📋 Black-compatible formatting of django
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 11:22_
+_@konstin_
 
 We would like to format the black-user django as closely to black as possible. Below is a list the bugs to be solved and features necessary to reach black compatibility on django. This list is manually curated by checking `git diff` after `cargo run --bin ruff_dev -- format-dev --write django`
 

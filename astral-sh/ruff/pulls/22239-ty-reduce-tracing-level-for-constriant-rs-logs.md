@@ -14,14 +14,14 @@ head: micha/constraints-trace-level
 created_at: 2025-12-29T08:09:42Z
 updated_at: 2025-12-29T08:22:19Z
 url: https://github.com/astral-sh/ruff/pull/22239
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Reduce tracing level for `constriant.rs` logs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-29 08:09_
+_@MichaReiser_
 
 ## Summary
 

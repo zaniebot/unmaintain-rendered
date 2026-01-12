@@ -13,14 +13,14 @@ head: fix-empty-intersection-positive
 created_at: 2025-04-14T23:45:49Z
 updated_at: 2025-04-19T13:59:00Z
 url: https://github.com/astral-sh/ruff/pull/17400
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add object to intersection if positive is empty
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-14 23:45_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

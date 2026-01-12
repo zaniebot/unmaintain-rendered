@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-28T18:22:05Z
 updated_at: 2025-10-28T21:11:46Z
 url: https://github.com/astral-sh/ruff/issues/21113
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B008 triggers on immutable newtype when that type is imported from different file
 
 ---
 
-_Issue opened by @tristanls-tbp on 2025-10-28 18:22_
+_@tristanls-tbp_
 
 ### Summary
 

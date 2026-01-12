@@ -12,14 +12,14 @@ head: charlie/clippy
 created_at: 2022-11-22T22:04:11Z
 updated_at: 2022-11-22T23:55:58Z
 url: https://github.com/astral-sh/ruff/pull/878
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Enforce most pedantic lints on CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-22 22:04_
+_@charliermarsh_
 
 _No description provided._
 

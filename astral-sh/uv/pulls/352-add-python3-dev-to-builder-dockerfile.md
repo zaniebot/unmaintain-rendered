@@ -12,14 +12,14 @@ head: add-python-dev
 created_at: 2023-11-07T11:35:46Z
 updated_at: 2023-11-07T11:38:59Z
 url: https://github.com/astral-sh/uv/pull/352
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Add `python3-dev` to builder.dockerfile
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 11:35_
+_@konstin_
 
 Surprisingly few builds want `Python.h`, but they exist
 

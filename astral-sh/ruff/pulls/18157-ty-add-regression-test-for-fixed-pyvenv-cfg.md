@@ -15,14 +15,14 @@ head: alex/venv-regr-test
 created_at: 2025-05-17T21:07:14Z
 updated_at: 2025-05-17T21:10:17Z
 url: https://github.com/astral-sh/ruff/pull/18157
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Add regression test for fixed `pyvenv.cfg` parsing bug
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-17 21:07_
+_@AlexWaygood_
 
 ## Summary
 

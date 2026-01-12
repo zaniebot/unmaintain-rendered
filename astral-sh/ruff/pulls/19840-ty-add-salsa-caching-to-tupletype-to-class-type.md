@@ -14,14 +14,14 @@ head: alex/cache-tuple-to-class-type
 created_at: 2025-08-08T22:09:24Z
 updated_at: 2025-08-09T08:29:29Z
 url: https://github.com/astral-sh/ruff/pull/19840
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Add Salsa caching to `TupleType::to_class_type`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-08 22:09_
+_@AlexWaygood_
 
 ## Summary
 

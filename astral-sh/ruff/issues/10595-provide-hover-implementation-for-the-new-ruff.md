@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T03:41:28Z
 updated_at: 2024-04-23T20:18:11Z
 url: https://github.com/astral-sh/ruff/issues/10595
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Provide hover implementation for the new Ruff language server
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-26 03:41_
+_@dhruvmanila_
 
 
 <img width="1201" alt="Screenshot 2024-03-26 at 09 10 57" src="https://github.com/astral-sh/ruff/assets/67177269/ca56e44c-ecbe-429f-9d01-6a7b94fa5da5">

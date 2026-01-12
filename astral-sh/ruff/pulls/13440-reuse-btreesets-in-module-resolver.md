@@ -13,14 +13,14 @@ head: charlie/reuse
 created_at: 2024-09-21T18:23:53Z
 updated_at: 2024-09-21T20:23:32Z
 url: https://github.com/astral-sh/ruff/pull/13440
-synced_at: 2026-01-10T21:08:14Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Reuse `BTreeSets` in module resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-21 18:23_
+_@charliermarsh_
 
 ## Summary
 

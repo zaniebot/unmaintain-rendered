@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T10:15:23Z
 updated_at: 2025-04-28T23:22:49Z
 url: https://github.com/astral-sh/uv/issues/12802
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # `uv pip install` should show list of versions when required version doesn't exist
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-04-10 10:15_
+_@samuelcolvin_
 
 ### Summary
 

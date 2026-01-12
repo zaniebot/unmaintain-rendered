@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T17:48:21Z
 updated_at: 2025-04-22T19:34:23Z
 url: https://github.com/astral-sh/uv/issues/13058
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # uv installation of deepspeed breaks after 0.6.14
 
 ---
 
-_Issue opened by @mritterfigma on 2025-04-22 17:48_
+_@mritterfigma_
 
 ### Summary
 

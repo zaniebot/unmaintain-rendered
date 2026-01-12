@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-21T12:31:51Z
 updated_at: 2025-03-23T17:51:11Z
 url: https://github.com/astral-sh/ruff/issues/16895
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Protocol method return type is always inferred as `None`
 
 ---
 
-_Issue opened by @jorenham on 2025-03-21 12:31_
+_@jorenham_
 
 ### Summary
 

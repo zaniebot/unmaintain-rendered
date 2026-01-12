@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T08:43:57Z
 updated_at: 2024-05-04T12:24:29Z
 url: https://github.com/astral-sh/ruff/issues/11279
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # The official doc doesn't mentions that, is it safe to set a global same RUFF_CACHE_DIR for all projects?
 
 ---
 
-_Issue opened by @ChipZhang on 2024-05-04 08:43_
+_@ChipZhang_
 
 Hi, I am newbie to ruff.
 

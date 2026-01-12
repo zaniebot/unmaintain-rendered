@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-16T01:17:07Z
 updated_at: 2025-11-19T09:18:38Z
 url: https://github.com/astral-sh/uv/issues/16750
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # The uv command always gets stuck at the final step, but it works again when you cancel it and rerun the command.
 
 ---
 
-_Issue opened by @Bubbl3Bi on 2025-11-16 01:17_
+_@Bubbl3Bi_
 
 ### Question
 

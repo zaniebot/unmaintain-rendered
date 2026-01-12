@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-06T11:02:27Z
 updated_at: 2025-12-24T17:00:15Z
 url: https://github.com/astral-sh/ruff/issues/6371
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Support heading setting for isort
 
 ---
 
-_Issue opened by @applied-mathematician on 2023-08-06 11:02_
+_@applied-mathematician_
 
 The `isort` settings `import_heading_{section_name}` lets you specify heading comments for the sections, each defaulting to None.
 

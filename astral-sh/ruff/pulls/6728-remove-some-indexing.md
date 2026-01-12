@@ -13,14 +13,14 @@ head: remove-some-indexing
 created_at: 2023-08-21T14:41:19Z
 updated_at: 2023-08-21T15:23:14Z
 url: https://github.com/astral-sh/ruff/pull/6728
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove some indexing
 
 ---
 
-_Pull request opened by @konstin on 2023-08-21 14:41_
+_@konstin_
 
 **Summary** A common pattern in the code used to be
 ```rust

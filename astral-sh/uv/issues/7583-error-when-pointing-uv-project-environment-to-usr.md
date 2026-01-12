@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T12:08:02Z
 updated_at: 2024-09-20T17:40:35Z
 url: https://github.com/astral-sh/uv/issues/7583
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Error when pointing UV_PROJECT_ENVIRONMENT to /usr/local/ on latest UV version 0.4.13
 
 ---
 
-_Issue opened by @rosssgill on 2024-09-20 12:08_
+_@rosssgill_
 
 Hi there, 
 

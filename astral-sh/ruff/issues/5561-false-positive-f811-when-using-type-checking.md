@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-06T13:46:54Z
 updated_at: 2024-01-10T20:09:25Z
 url: https://github.com/astral-sh/ruff/issues/5561
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive F811 when using TYPE_CHECKING
 
 ---
 
-_Issue opened by @phil65 on 2023-07-06 13:46_
+_@phil65_
 
 For following code
 ```py

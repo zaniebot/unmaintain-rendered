@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T14:44:34Z
 updated_at: 2024-12-17T11:08:50Z
 url: https://github.com/astral-sh/uv/issues/5600
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # UV fails to install packages from some private index hosted on artifactory since version 0.1.36
 
 ---
 
-_Issue opened by @ghost on 2024-07-30 14:44_
+_@ghost_
 
 - Example command used: `uv pip install --native-tls --extra-index-url http://<User>:<API_KEY>@example.com/artifactory/api/pypi/<index>/simple `
 - Platform: Darwin arm64

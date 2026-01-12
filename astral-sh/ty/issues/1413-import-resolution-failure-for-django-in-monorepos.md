@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T02:28:25Z
 updated_at: 2025-10-24T17:25:34Z
 url: https://github.com/astral-sh/ty/issues/1413
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Import resolution failure for django in monorepos in Helix Editor
 
 ---
 
-_Issue opened by @rgasper on 2025-10-23 02:28_
+_@rgasper_
 
 ### Summary
 

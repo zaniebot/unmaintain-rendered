@@ -13,14 +13,14 @@ head: docs/update-dependency-bots
 created_at: 2024-09-30T20:53:32Z
 updated_at: 2024-10-10T22:21:29Z
 url: https://github.com/astral-sh/uv/pull/7819
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # docs(dependency-bots): mention PEP 723 + some improvements
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-30 20:53_
+_@mkniewallner_
 
 ## Summary
 

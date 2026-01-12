@@ -13,14 +13,14 @@ head: F702
 created_at: 2025-10-14T17:08:59Z
 updated_at: 2025-10-15T19:39:54Z
 url: https://github.com/astral-sh/ruff/pull/20869
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [syntax-errors]: implement F702 as semantic syntax error
 
 ---
 
-_Pull request opened by @11happy on 2025-10-14 17:08_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

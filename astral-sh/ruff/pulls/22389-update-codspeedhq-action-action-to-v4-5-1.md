@@ -13,14 +13,14 @@ head: renovate/codspeedhq-action-4.x
 created_at: 2026-01-05T07:53:45Z
 updated_at: 2026-01-05T08:10:08Z
 url: https://github.com/astral-sh/ruff/pull/22389
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # Update CodSpeedHQ/action action to v4.5.1
 
 ---
 
-_Pull request opened by @renovate on 2026-01-05 07:53_
+_@renovate_
 
 This PR contains the following updates:
 

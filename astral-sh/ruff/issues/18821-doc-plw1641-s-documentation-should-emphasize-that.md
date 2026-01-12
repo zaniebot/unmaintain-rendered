@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T10:02:36Z
 updated_at: 2025-11-23T16:21:05Z
 url: https://github.com/astral-sh/ruff/issues/18821
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # DOC: `PLW1641`'s documentation should emphasize that implementing `__hash__` for mutable objects is unsound
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-06-20 10:02_
+_@neutrinoceros_
 
 ### Summary
 

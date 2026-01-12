@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-03T03:58:03Z
 updated_at: 2023-10-03T04:18:51Z
 url: https://github.com/astral-sh/ruff/issues/7773
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # C415 doc and/or implementation is broken
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-10-03 03:58_
+_@JelleZijlstra_
 
 The documentation for C415 (https://docs.astral.sh/ruff/rules/unnecessary-subscript-reversal/) states that it makes the following changes:
 

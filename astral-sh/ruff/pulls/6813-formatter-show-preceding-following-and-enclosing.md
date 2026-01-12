@@ -13,14 +13,14 @@ head: collect_decorated_comments2
 created_at: 2023-08-23T11:54:15Z
 updated_at: 2023-09-06T10:55:53Z
 url: https://github.com/astral-sh/ruff/pull/6813
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 #  Formatter: Show preceding, following and enclosing nodes of comments, Attempt 2
 
 ---
 
-_Pull request opened by @konstin on 2023-08-23 11:54_
+_@konstin_
 
 This is a new attempt after https://github.com/astral-sh/ruff/pull/6337.
 

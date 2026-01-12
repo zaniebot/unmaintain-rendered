@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T21:07:12Z
 updated_at: 2024-03-28T11:14:19Z
 url: https://github.com/astral-sh/ruff/issues/10588
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` treats all diagnostics as errors
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-25 21:07_
+_@charliermarsh_
 
 In the existing LSP (yellow):
 

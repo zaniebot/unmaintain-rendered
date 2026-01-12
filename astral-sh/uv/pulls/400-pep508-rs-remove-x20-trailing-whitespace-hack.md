@@ -12,14 +12,14 @@ head: ag/remove-x20-whitespace-hack
 created_at: 2023-11-10T20:04:38Z
 updated_at: 2023-11-10T20:11:30Z
 url: https://github.com/astral-sh/uv/pull/400
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # pep508-rs: remove \x20 trailing whitespace hack
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-10 20:04_
+_@BurntSushi_
 
 ... we just remove the trailing whitespace from the input and that resolves things.
 

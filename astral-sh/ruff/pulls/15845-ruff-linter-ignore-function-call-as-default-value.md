@@ -12,14 +12,14 @@ head: RUF009-immutable-annotation
 created_at: 2025-01-31T06:00:58Z
 updated_at: 2025-02-02T21:39:15Z
 url: https://github.com/astral-sh/ruff/pull/15845
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff_linter`] ignore function call as default value for immutable annotation (RUF009)
 
 ---
 
-_Pull request opened by @BKCF on 2025-01-31 06:00_
+_@BKCF_
 
 ## Summary
 Resolves #15772 to sync the behavior of RUF009 and B008. When defining

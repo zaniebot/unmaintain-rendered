@@ -13,14 +13,14 @@ head: charlie/ecosystem
 created_at: 2023-08-13T21:06:45Z
 updated_at: 2023-08-13T21:19:16Z
 url: https://github.com/astral-sh/ruff/pull/6542
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add some additional projects to the ecosystem CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-13 21:06_
+_@charliermarsh_
 
 Adding five new projects. Some of these have seen issues filed, the others, I just tabbed through our dependency pain and looked for some reasonably-large projects that enabled rules beyond the default rule set.
 

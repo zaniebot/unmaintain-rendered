@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T19:37:11Z
 updated_at: 2025-02-17T08:42:46Z
 url: https://github.com/astral-sh/uv/issues/9581
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # `uv pip` ignores `.python-version` file
 
 ---
 
-_Issue opened by @oliversen on 2024-12-02 19:37_
+_@oliversen_
 
 Currently, for any `uv pip` commands, you must explicitly specify the `--python-version` option. The `.python-version` file is ignored. Why?
 

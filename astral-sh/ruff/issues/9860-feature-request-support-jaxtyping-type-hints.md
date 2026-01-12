@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T16:52:59Z
 updated_at: 2025-12-21T07:52:38Z
 url: https://github.com/astral-sh/ruff/issues/9860
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature request: support jaxtyping type hints (currently valid type hints flagged incorrectly)
 
 ---
 
-_Issue opened by @jaanli on 2024-02-06 16:52_
+_@jaanli_
 
 <img width="506" alt="image" src="https://github.com/astral-sh/ruff/assets/5317244/1314bebe-b77f-4b30-aacb-93fa57af32f9">
 

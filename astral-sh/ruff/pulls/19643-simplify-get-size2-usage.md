@@ -13,14 +13,14 @@ head: ibraheem/get-size-helper
 created_at: 2025-07-30T17:17:56Z
 updated_at: 2025-07-30T19:31:39Z
 url: https://github.com/astral-sh/ruff/pull/19643
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Simplify `get_size2` usage
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-07-30 17:17_
+_@ibraheemdev_
 
 ## Summary
 

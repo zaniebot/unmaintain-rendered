@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T17:40:03Z
 updated_at: 2025-12-23T00:34:45Z
 url: https://github.com/astral-sh/uv/issues/16709
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # `uv pip compile` does not install a python interpreter if a suitable one isn't found
 
 ---
 
-_Issue opened by @mikaylathompson on 2025-11-12 17:40_
+_@mikaylathompson_
 
 ### Summary
 

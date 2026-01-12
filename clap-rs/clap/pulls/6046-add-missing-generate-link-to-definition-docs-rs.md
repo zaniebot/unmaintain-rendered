@@ -12,14 +12,14 @@ head: generate-link-to-def
 created_at: 2025-06-25T14:53:31Z
 updated_at: 2025-06-25T15:13:45Z
 url: https://github.com/clap-rs/clap/pull/6046
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add missing `--generate-link-to-definition` docs.rs options
 
 ---
 
-_Pull request opened by @GuillaumeGomez on 2025-06-25 14:53_
+_@GuillaumeGomez_
 
 Follow-up of https://github.com/clap-rs/clap/pull/6045.
 

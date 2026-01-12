@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-28T15:33:51Z
 updated_at: 2023-01-28T15:47:49Z
 url: https://github.com/astral-sh/ruff/issues/2299
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Error with -V flag to display version
 
 ---
 
-_Issue opened by @lcheylus on 2023-01-28 15:33_
+_@lcheylus_
 
 With the latest version (commit 861df12269fbe73931b0b41ea2561f665f16e3ba), build OK on Debian/testing amd64 with Rust 1.65.
 

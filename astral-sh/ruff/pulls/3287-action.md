@@ -11,14 +11,14 @@ head: action
 created_at: 2023-03-01T00:29:37Z
 updated_at: 2023-03-17T20:57:15Z
 url: https://github.com/astral-sh/ruff/pull/3287
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Action
 
 ---
 
-_Pull request opened by @brucearctor on 2023-03-01 00:29_
+_@brucearctor_
 
 _No description provided._
 

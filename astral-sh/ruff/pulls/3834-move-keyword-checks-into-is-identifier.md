@@ -13,14 +13,14 @@ head: charlie/kw
 created_at: 2023-03-31T18:53:25Z
 updated_at: 2023-03-31T20:56:35Z
 url: https://github.com/astral-sh/ruff/pull/3834
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move keyword checks into `is_identifier`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-31 18:53_
+_@charliermarsh_
 
 ## Summary
 

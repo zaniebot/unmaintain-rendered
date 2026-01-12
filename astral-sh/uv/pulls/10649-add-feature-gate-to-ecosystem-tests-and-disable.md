@@ -13,14 +13,14 @@ head: zb/test-ecosystem
 created_at: 2025-01-15T21:24:12Z
 updated_at: 2025-01-16T16:02:07Z
 url: https://github.com/astral-sh/uv/pull/10649
-synced_at: 2026-01-10T11:45:01Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Add feature-gate to ecosystem tests and disable on Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 21:24_
+_@zanieb_
 
 These tests should be platform independent and are particularly expensive to run
 

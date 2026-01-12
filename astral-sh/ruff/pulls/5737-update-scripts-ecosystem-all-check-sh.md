@@ -13,14 +13,14 @@ head: update_ecosystem_scripts
 created_at: 2023-07-13T12:09:06Z
 updated_at: 2023-07-13T13:25:24Z
 url: https://github.com/astral-sh/ruff/pull/5737
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update scripts/ecosystem_all_check.sh
 
 ---
 
-_Pull request opened by @konstin on 2023-07-13 12:09_
+_@konstin_
 
 ## Summary
 

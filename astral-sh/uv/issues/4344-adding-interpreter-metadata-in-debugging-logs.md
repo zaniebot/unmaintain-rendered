@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-16T19:41:57Z
 updated_at: 2024-06-18T00:35:06Z
 url: https://github.com/astral-sh/uv/issues/4344
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Adding interpreter metadata in debugging logs
 
 ---
 
-_Issue opened by @kidrahahjo on 2024-06-16 19:41_
+_@kidrahahjo_
 
 ## Context
 Hey guys, I was going through how we compute interpreter information while creating virtual environment. 

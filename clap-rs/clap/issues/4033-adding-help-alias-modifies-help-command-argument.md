@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-06T00:01:51Z
 updated_at: 2022-08-11T01:46:53Z
 url: https://github.com/clap-rs/clap/issues/4033
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Adding help alias modifies help command argument rendering?
 
 ---
 
-_Issue opened by @SUPERCILEX on 2022-08-06 00:01_
+_@SUPERCILEX_
 
 Adding `#[clap(mut_arg("help", |arg| arg.short_alias('?')))]` changes the way the help command is rendered. See this diff: https://github.com/SUPERCILEX/ftzz/commit/6daf6aa7cc59b6c72a97ab34e3a76983691fee61. Seems like a bug that adding the alias makes the help command show up inside itself. Or not (as long as its consistent I don't mind).
 

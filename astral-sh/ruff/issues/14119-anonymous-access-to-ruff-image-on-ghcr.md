@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T00:56:24Z
 updated_at: 2024-11-07T13:23:16Z
 url: https://github.com/astral-sh/ruff/issues/14119
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Anonymous access to ruff image on ghcr
 
 ---
 
-_Issue opened by @mjbear on 2024-11-06 00:56_
+_@mjbear_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

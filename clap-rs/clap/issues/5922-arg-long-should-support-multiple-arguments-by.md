@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-21T02:36:04Z
 updated_at: 2025-02-21T14:36:01Z
 url: https://github.com/clap-rs/clap/issues/5922
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `#[arg(long)]` should support multiple arguments by default when specified for `Vec` types
 
 ---
 
-_Issue opened by @zhiqiangxu on 2025-02-21 02:36_
+_@zhiqiangxu_
 
 ### Please complete the following tasks
 

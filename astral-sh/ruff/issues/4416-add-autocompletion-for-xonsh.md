@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-13T16:07:35Z
 updated_at: 2023-05-13T17:39:04Z
 url: https://github.com/astral-sh/ruff/issues/4416
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add autocompletion for xonsh
 
 ---
 
-_Issue opened by @rpdelaney on 2023-05-13 16:07_
+_@rpdelaney_
 
 [xonsh](https://xon.sh/) is a python-powered shell. It would be nice to have autocompletion for xonsh too!
 

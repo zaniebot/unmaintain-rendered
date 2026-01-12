@@ -14,14 +14,14 @@ head: brent/wasm-pack
 created_at: 2025-02-20T15:02:41Z
 updated_at: 2025-02-20T15:18:01Z
 url: https://github.com/astral-sh/ruff/pull/16278
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Specify the `wasm-pack` version for release workflows
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-20 15:02_
+_@ntBre_
 
 This PR uses the same version specified in https://github.com/astral-sh/ruff/pull/14465 for the CI workflow to prevent random versions from being pulled like in the 0.9.7 [release](https://github.com/astral-sh/ruff/actions/runs/13436100909/job/37539387595).
 
@@ -33,6 +33,10 @@ _Label `release` added by @ntBre on 2025-02-20 15:02_
 ---
 
 _Label `ci` added by @ntBre on 2025-02-20 15:02_
+
+---
+
+_@MichaReiser approved on 2025-02-20 15:09_
 
 ---
 

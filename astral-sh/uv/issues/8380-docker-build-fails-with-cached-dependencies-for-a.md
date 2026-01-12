@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T12:07:21Z
 updated_at: 2025-04-29T15:46:21Z
 url: https://github.com/astral-sh/uv/issues/8380
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Docker build fails with cached dependencies for a workspace
 
 ---
 
-_Issue opened by @suhaskarnik on 2024-10-20 12:07_
+_@suhaskarnik_
 
 I've a project with the following structure:
 

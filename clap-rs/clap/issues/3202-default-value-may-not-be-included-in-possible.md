@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-21T12:36:47Z
 updated_at: 2023-07-18T20:01:55Z
 url: https://github.com/clap-rs/clap/issues/3202
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # default_value may not be included in possible_values and only checked in a runtime
 
 ---
 
-_Issue opened by @Gordon01 on 2021-12-21 12:36_
+_@Gordon01_
 
 ### Please complete the following tasks
 

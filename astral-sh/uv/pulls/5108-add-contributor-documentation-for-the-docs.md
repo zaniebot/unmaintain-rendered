@@ -13,14 +13,14 @@ head: charlie/contribute
 created_at: 2024-07-16T14:43:00Z
 updated_at: 2024-07-16T14:51:28Z
 url: https://github.com/astral-sh/uv/pull/5108
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Add contributor documentation for the docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 14:43_
+_@charliermarsh_
 
 _No description provided._
 

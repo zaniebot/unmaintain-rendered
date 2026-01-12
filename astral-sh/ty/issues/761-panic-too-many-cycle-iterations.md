@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-03T23:16:52Z
 updated_at: 2025-07-04T01:29:47Z
 url: https://github.com/astral-sh/ty/issues/761
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] too many cycle iterations
 
 ---
 
-_Issue opened by @bugzpodder on 2025-07-03 23:16_
+_@bugzpodder_
 
 ```
 error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/fc00eba/src/function/execute.rs:212:25 when checking `/Users/bugzpodder/dev/shipping_test.py`: `infer_definition_types(Id(69be7)): execute: too many cycle iterations`

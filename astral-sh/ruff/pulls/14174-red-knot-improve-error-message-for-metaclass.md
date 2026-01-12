@@ -13,14 +13,14 @@ head: alex/metaclass-nits
 created_at: 2024-11-07T17:37:06Z
 updated_at: 2024-11-08T12:08:04Z
 url: https://github.com/astral-sh/ruff/pull/14174
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Improve error message for metaclass conflict
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-07 17:37_
+_@AlexWaygood_
 
 ## Summary
 

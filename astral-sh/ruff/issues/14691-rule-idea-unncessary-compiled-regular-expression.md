@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-30T16:48:03Z
 updated_at: 2024-12-02T08:09:43Z
 url: https://github.com/astral-sh/ruff/issues/14691
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule idea: `unncessary-compiled-regular-expression`
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-30 16:48_
+_@sbrugman_
 
 The discussion in https://github.com/astral-sh/ruff/issues/14680 inspired a related pattern that's less tricky to detect.
 

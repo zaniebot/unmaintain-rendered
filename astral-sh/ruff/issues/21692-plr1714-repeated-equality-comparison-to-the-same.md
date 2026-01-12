@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T10:27:57Z
 updated_at: 2026-01-02T18:03:19Z
 url: https://github.com/astral-sh/ruff/issues/21692
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLR1714: Repeated equality comparison to the same literal value shouldn't convert to a set
 
 ---
 
-_Issue opened by @injust on 2025-11-29 10:27_
+_@injust_
 
 ### Summary
 

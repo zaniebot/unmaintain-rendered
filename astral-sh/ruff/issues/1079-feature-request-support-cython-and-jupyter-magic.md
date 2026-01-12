@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T21:30:17Z
 updated_at: 2024-03-06T16:22:27Z
 url: https://github.com/astral-sh/ruff/issues/1079
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature request: support Cython and Jupyter magic?
 
 ---
 
-_Issue opened by @9r0x on 2022-12-05 21:30_
+_@9r0x_
 
 Hi,
 

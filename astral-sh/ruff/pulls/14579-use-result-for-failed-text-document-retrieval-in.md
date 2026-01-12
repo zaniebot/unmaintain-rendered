@@ -14,14 +14,14 @@ head: dhruv/single-document-error
 created_at: 2024-11-25T03:54:03Z
 updated_at: 2024-11-25T09:44:32Z
 url: https://github.com/astral-sh/ruff/pull/14579
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Use `Result` for failed text document retrieval in LSP requests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-25 03:54_
+_@dhruvmanila_
 
 ## Summary
 

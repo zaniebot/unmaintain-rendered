@@ -12,14 +12,14 @@ head: unzipped-wheel-cache-tags-registry
 created_at: 2023-11-26T15:56:38Z
 updated_at: 2023-11-28T00:03:59Z
 url: https://github.com/astral-sh/uv/pull/501
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Check compatibility for cached unzipped wheels
 
 ---
 
-_Pull request opened by @konstin on 2023-11-26 15:56_
+_@konstin_
 
 **Motivation** Previously, we would install any wheel with the correct package name and version from the cache, even if it doesn't match the current python interpreter.
 

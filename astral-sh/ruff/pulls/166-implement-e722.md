@@ -12,14 +12,14 @@ head: E722
 created_at: 2022-09-12T09:48:12Z
 updated_at: 2022-09-12T13:04:40Z
 url: https://github.com/astral-sh/ruff/pull/166
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement E722
 
 ---
 
-_Pull request opened by @harupy on 2022-09-12 09:48_
+_@harupy_
 
 Implement E722.
 

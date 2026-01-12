@@ -13,14 +13,14 @@ head: david/attribute-write-access
 created_at: 2025-03-13T12:26:05Z
 updated_at: 2025-03-14T23:47:13Z
 url: https://github.com/astral-sh/ruff/pull/16705
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Assignments to attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-13 12:26_
+_@sharkdp_
 
 ## Summary
 

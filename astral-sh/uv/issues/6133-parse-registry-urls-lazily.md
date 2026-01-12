@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T01:08:47Z
 updated_at: 2025-01-01T17:35:31Z
 url: https://github.com/astral-sh/uv/issues/6133
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Parse registry URLs lazily
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-16 01:08_
+_@charliermarsh_
 
 Right now, we parse the URL in `File` to pass a `UrlString` to `FileLocation`. I think we should consider just storing the string, and parsing the URL when we try to fetch the file? The vast majority of `File` that we deserialize never get requested.
 

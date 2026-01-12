@@ -14,14 +14,14 @@ head: zb/python-pin
 created_at: 2024-07-09T23:18:02Z
 updated_at: 2024-07-10T16:52:25Z
 url: https://github.com/astral-sh/uv/pull/4950
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add `uv python pin`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 23:18_
+_@zanieb_
 
 Adds a `uv python pin` command to write to a `.python-version` file.
 

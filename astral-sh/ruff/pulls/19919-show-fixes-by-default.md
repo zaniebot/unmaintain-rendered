@@ -14,14 +14,14 @@ head: brent/show-fixes
 created_at: 2025-08-14T18:52:50Z
 updated_at: 2025-08-29T13:53:07Z
 url: https://github.com/astral-sh/ruff/pull/19919
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # Show fixes by default
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-14 18:52_
+_@ntBre_
 
 ## Summary
 

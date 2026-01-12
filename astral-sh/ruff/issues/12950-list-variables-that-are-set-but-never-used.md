@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-17T13:08:09Z
 updated_at: 2024-08-19T10:27:54Z
 url: https://github.com/astral-sh/ruff/issues/12950
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # List variables that are set but never used
 
 ---
 
-_Issue opened by @Beliavsky on 2024-08-17 13:08_
+_@Beliavsky_
 
 For the code
 

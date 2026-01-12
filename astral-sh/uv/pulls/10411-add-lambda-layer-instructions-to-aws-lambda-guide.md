@@ -13,14 +13,14 @@ head: charlie/aws-lambda
 created_at: 2025-01-08T21:53:55Z
 updated_at: 2025-01-08T22:12:53Z
 url: https://github.com/astral-sh/uv/pull/10411
-synced_at: 2026-01-10T11:44:47Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Add Lambda layer instructions to AWS Lambda guide
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-08 21:53_
+_@charliermarsh_
 
 ## Summary
 

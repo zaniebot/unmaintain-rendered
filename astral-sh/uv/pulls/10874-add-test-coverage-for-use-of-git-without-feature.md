@@ -13,14 +13,14 @@ head: zb/disable-git
 created_at: 2025-01-22T19:46:04Z
 updated_at: 2025-01-23T15:55:09Z
 url: https://github.com/astral-sh/uv/pull/10874
-synced_at: 2026-01-10T11:45:15Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Add test coverage for use of `git` without feature flag
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-22 19:46_
+_@zanieb_
 
 Shoves a broken `git` executable onto the front of the `PATH` in the test context when the `git` feature is disabled so they fail if they're missing the feature-gate.
 

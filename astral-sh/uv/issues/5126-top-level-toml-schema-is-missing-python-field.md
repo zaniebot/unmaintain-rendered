@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T19:45:14Z
 updated_at: 2024-07-16T20:07:29Z
 url: https://github.com/astral-sh/uv/issues/5126
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Top-level TOML schema is missing `python` field
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 19:45_
+_@charliermarsh_
 
 We have `tool.uv.pip.python`, but not `tool.uv.python`.
 

@@ -12,14 +12,14 @@ head: charlie/resolver
 created_at: 2023-01-12T18:13:50Z
 updated_at: 2023-01-12T18:15:46Z
 url: https://github.com/astral-sh/ruff/pull/1827
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid parsing pyproject.toml files when settings are fixed
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-12 18:13_
+_@charliermarsh_
 
 Apart from being wasteful, this can also cause problems (see the linked issue).
 

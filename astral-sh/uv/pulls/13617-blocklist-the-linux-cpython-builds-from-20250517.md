@@ -12,14 +12,14 @@ head: gankra/revert-pbs
 created_at: 2025-05-23T14:11:17Z
 updated_at: 2025-05-23T22:43:00Z
 url: https://github.com/astral-sh/uv/pull/13617
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # blocklist the linux cpython builds from 20250517
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-23 14:11_
+_@Gankra_
 
 There is a runtime issue with some of these builds
 

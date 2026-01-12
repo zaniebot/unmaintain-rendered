@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T19:21:05Z
 updated_at: 2025-03-30T14:59:45Z
 url: https://github.com/astral-sh/uv/issues/12547
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Support specifying path to project via CLI and env var
 
 ---
 
-_Issue opened by @AgentK9 on 2025-03-29 19:21_
+_@AgentK9_
 
 ### Summary
 

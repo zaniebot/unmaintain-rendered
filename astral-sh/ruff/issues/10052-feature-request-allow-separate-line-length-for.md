@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-19T13:53:16Z
 updated_at: 2024-02-19T15:08:48Z
 url: https://github.com/astral-sh/ruff/issues/10052
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature request: Allow separate line length for formatting
 
 ---
 
-_Issue opened by @Hubro on 2024-02-19 13:53_
+_@Hubro_
 
 At my job we use Ruff for linting and Black for formatting. I just recently discovered that Ruff can now be used for formatting too, which is amazing news :rocket: The performance of Black has gotten on my nerve many times.
 

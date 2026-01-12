@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-13T15:55:17Z
 updated_at: 2025-04-03T14:36:08Z
 url: https://github.com/astral-sh/ruff/issues/1852
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # E712 (Comparison to True should be cond is True) should be ignored when comparison is against pandas.Series
 
 ---
 
-_Issue opened by @rsokolewicz on 2023-01-13 15:55_
+_@rsokolewicz_
 
 using `ruff==0.0.215`
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T08:19:11Z
 updated_at: 2025-11-06T19:47:28Z
 url: https://github.com/clap-rs/clap/issues/6011
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Better suggestions for shorter subcommand misspellings
 
 ---
 
-_Issue opened by @samueltardieu on 2025-05-23 08:19_
+_@samueltardieu_
 
 (Some)? shorter subcommands don't seem to get useful suggestions. For example, adding this test in `clap_builder/src/parser/features/suggestions.rs` fails ("gti" is not corrected into "git"):
 

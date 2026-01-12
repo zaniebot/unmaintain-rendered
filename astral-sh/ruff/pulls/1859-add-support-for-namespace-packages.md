@@ -12,14 +12,14 @@ head: charlie/namespace-packages
 created_at: 2023-01-14T03:16:53Z
 updated_at: 2023-01-14T12:31:58Z
 url: https://github.com/astral-sh/ruff/pull/1859
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add support for namespace packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-14 03:16_
+_@charliermarsh_
 
 Closes #1817.
 

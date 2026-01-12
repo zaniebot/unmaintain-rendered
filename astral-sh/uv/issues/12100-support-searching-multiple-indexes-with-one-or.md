@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T17:31:40Z
 updated_at: 2025-09-02T16:31:02Z
 url: https://github.com/astral-sh/uv/issues/12100
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Support searching multiple indexes with one or more offline
 
 ---
 
-_Issue opened by @kimotorc on 2025-03-10 17:31_
+_@kimotorc_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T02:02:11Z
 updated_at: 2025-09-24T08:48:56Z
 url: https://github.com/astral-sh/uv/issues/6293
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Init project without src
 
 ---
 
-_Issue opened by @santigandolfo on 2024-08-21 02:02_
+_@santigandolfo_
 
 Hi, is there a way to init a uv project without a `src` directory and `[build-system]` in the `pyproject.toml`?
 

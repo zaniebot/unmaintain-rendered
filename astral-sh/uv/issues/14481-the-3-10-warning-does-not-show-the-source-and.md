@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T08:48:33Z
 updated_at: 2025-07-09T19:28:57Z
 url: https://github.com/astral-sh/uv/issues/14481
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # The `==3.10` warning does not show the source and might be misleading in case of invalid spec
 
 ---
 
-_Issue opened by @potiuk on 2025-07-07 08:48_
+_@potiuk_
 
 ### Summary
 

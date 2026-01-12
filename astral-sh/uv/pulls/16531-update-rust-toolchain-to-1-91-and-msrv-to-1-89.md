@@ -12,14 +12,14 @@ head: rust-191
 created_at: 2025-10-31T03:01:46Z
 updated_at: 2025-10-31T03:39:44Z
 url: https://github.com/astral-sh/uv/pull/16531
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Update Rust toolchain to 1.91 and MSRV to 1.89
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-31 03:01_
+_@samypr100_
 
 ## Summary
 

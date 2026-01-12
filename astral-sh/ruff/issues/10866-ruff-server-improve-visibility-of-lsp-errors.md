@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T23:43:24Z
 updated_at: 2024-04-16T18:32:55Z
 url: https://github.com/astral-sh/ruff/issues/10866
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server`: Improve visibility of LSP errors
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-10 23:43_
+_@snowsignal_
 
 As part of improving `ruff server`'s logging capabilities, we should implement a mechanism to send [`window/showMessage`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showMessage) notifications to the client. 
 

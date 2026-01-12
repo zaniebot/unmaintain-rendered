@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-28T04:43:39Z
 updated_at: 2018-08-02T03:29:37Z
 url: https://github.com/clap-rs/clap/issues/37
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Display all required arguments in usage
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-28 04:43_
+_@kbknapp_
 
 Currently, if an argument is "required by" a "required by default" argument it will not be shown in the usage string.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-23T21:53:29Z
 updated_at: 2025-11-14T09:09:22Z
 url: https://github.com/astral-sh/ty/issues/878
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Remove ty support for Python 3.7 (and 3.8?)
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-07-23 21:53_
+_@MatthewMckee4_
 
 In the [docs](https://docs.astral.sh/ty/reference/cli/#ty-check--python-version), it is said that you can supply `--python-version 3.7` but you cant pip install with python 3.7.
 

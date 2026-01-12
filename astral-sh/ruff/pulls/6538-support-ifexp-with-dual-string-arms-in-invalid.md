@@ -13,14 +13,14 @@ head: charlie/if-exp
 created_at: 2023-08-13T18:32:19Z
 updated_at: 2023-08-13T19:52:11Z
 url: https://github.com/astral-sh/ruff/pull/6538
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Support `IfExp` with dual string arms in `invalid-envvar-value`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-13 18:32_
+_@charliermarsh_
 
 ## Summary
 

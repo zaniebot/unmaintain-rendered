@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T21:18:33Z
 updated_at: 2023-01-18T23:19:25Z
 url: https://github.com/astral-sh/ruff/issues/1974
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # warning: Failed to converge after 100 iterations. in 240 files
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 21:18_
+_@spaceone_
 
 I have 240 occurrences of 
 ```

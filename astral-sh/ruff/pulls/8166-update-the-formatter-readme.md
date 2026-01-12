@@ -13,14 +13,14 @@ head: charlie/formatter-readme
 created_at: 2023-10-24T13:37:52Z
 updated_at: 2023-10-24T14:17:33Z
 url: https://github.com/astral-sh/ruff/pull/8166
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update the formatter README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-24 13:37_
+_@charliermarsh_
 
 We can decide whether we want to keep this at all, but for now, just making it consistent with the release.
 

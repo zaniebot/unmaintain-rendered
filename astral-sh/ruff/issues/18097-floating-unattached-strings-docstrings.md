@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T16:39:03Z
 updated_at: 2025-05-15T21:29:06Z
 url: https://github.com/astral-sh/ruff/issues/18097
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Floating/unattached strings/docstrings
 
 ---
 
-_Issue opened by @IlanCosman on 2025-05-14 16:39_
+_@IlanCosman_
 
 ### Summary
 

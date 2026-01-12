@@ -13,14 +13,14 @@ head: charlie/nf
 created_at: 2025-07-02T01:19:26Z
 updated_at: 2025-07-02T18:03:45Z
 url: https://github.com/astral-sh/uv/pull/14404
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Make project and interpreter lock acquisition non-fatal
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-02 01:19_
+_@charliermarsh_
 
 ## Summary
 

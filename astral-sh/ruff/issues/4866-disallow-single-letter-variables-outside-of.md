@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-05T14:47:31Z
 updated_at: 2025-12-05T18:45:20Z
 url: https://github.com/astral-sh/ruff/issues/4866
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Disallow single letter variables outside of comprehensions
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-05 14:47_
+_@gaborbernat_
 
 Single letter variables are not descriptive enough, so disallow them outside of list comprehensions; because explicit is better than implicit.
 

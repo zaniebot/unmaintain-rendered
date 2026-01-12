@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T12:35:38Z
 updated_at: 2025-06-26T17:24:20Z
 url: https://github.com/astral-sh/uv/issues/12363
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Clarification on recommended usage of uv for collaborative projects on network drives
 
 ---
 
-_Issue opened by @ryan-kipawa on 2025-03-21 12:35_
+_@ryan-kipawa_
 
 ### Question
 

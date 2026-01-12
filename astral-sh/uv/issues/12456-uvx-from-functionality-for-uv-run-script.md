@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T00:17:32Z
 updated_at: 2025-03-25T03:08:05Z
 url: https://github.com/astral-sh/uv/issues/12456
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # `uvx --from` functionality for `uv run --script`
 
 ---
 
-_Issue opened by @j99ca on 2025-03-25 00:17_
+_@j99ca_
 
 ### Summary
 

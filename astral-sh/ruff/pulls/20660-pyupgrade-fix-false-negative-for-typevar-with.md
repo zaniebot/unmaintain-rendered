@@ -14,14 +14,14 @@ head: fix-20656
 created_at: 2025-10-01T03:49:46Z
 updated_at: 2025-10-15T14:58:20Z
 url: https://github.com/astral-sh/ruff/pull/20660
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`pyupgrade`] Fix false negative for `TypeVar` with default argument in `non-pep695-generic-class` (`UP046`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-01 03:49_
+_@danparizher_
 
 ## Summary
 

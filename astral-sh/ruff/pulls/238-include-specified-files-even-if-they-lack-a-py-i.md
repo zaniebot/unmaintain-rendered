@@ -12,14 +12,14 @@ head: extension
 created_at: 2022-09-21T00:49:08Z
 updated_at: 2022-09-21T00:53:58Z
 url: https://github.com/astral-sh/ruff/pull/238
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Include specified files, even if they lack a .py[i] extension
 
 ---
 
-_Pull request opened by @andersk on 2022-09-21 00:49_
+_@andersk_
 
 Some Python scripts don’t have a `.py` extension (especially executables with `#!` lines).  We should only filter the extension of files found within a specified directory (`ruff .`), not of specified files (`ruff my-script`).
 

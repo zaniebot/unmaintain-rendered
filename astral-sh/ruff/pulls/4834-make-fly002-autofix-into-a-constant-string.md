@@ -12,14 +12,14 @@ head: 4769_fix_fly002
 created_at: 2023-06-03T15:27:44Z
 updated_at: 2023-06-03T21:22:41Z
 url: https://github.com/astral-sh/ruff/pull/4834
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Make FLY002 autofix into a constant string instead of an f-string if all `join()` arguments are strings
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-03 15:27_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

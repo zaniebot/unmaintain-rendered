@@ -14,14 +14,14 @@ head: ag/completion-builtins
 created_at: 2025-06-27T12:30:23Z
 updated_at: 2025-07-02T02:00:37Z
 url: https://github.com/astral-sh/ruff/pull/18982
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Add builtins to completions derived from scope
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-27 12:30_
+_@BurntSushi_
 
 Most of the work here was doing some light refactoring to facilitate
 sensible testing. That is, we don't want to list every builtin included

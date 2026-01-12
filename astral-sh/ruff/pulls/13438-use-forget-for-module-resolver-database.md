@@ -13,14 +13,14 @@ head: charlie/forget
 created_at: 2024-09-21T16:55:45Z
 updated_at: 2024-09-21T17:09:02Z
 url: https://github.com/astral-sh/ruff/pull/13438
-synced_at: 2026-01-10T21:08:14Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use `forget` for module resolver database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-21 16:55_
+_@charliermarsh_
 
 ## Summary
 

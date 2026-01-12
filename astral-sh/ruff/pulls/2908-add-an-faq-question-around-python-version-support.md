@@ -12,14 +12,14 @@ head: charlie/faq
 created_at: 2023-02-15T03:04:43Z
 updated_at: 2023-02-15T03:11:45Z
 url: https://github.com/astral-sh/ruff/pull/2908
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add an FAQ question around Python version support
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 03:04_
+_@charliermarsh_
 
 _No description provided._
 

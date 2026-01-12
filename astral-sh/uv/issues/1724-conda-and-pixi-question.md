@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T00:58:22Z
 updated_at: 2024-06-19T00:36:15Z
 url: https://github.com/astral-sh/uv/issues/1724
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Conda and pixi question
 
 ---
 
-_Issue opened by @amirhosseindavoody on 2024-02-20 00:58_
+_@amirhosseindavoody_
 
 I have been using conda as my package manager for years and I thought pip is king of for the old days. Then I found pixi recently which is kind of like conda bug with more speed and more repeatability which is great.
 

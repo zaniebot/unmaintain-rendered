@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T20:20:09Z
 updated_at: 2025-04-14T13:26:59Z
 url: https://github.com/astral-sh/uv/issues/12496
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Add `--build-constraints` to `uv tool`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-26 20:20_
+_@charliermarsh_
 
 _No description provided._
 

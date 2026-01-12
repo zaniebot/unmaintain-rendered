@@ -13,14 +13,14 @@ head: cjm/typevars
 created_at: 2024-11-08T00:21:44Z
 updated_at: 2025-05-07T15:23:06Z
 url: https://github.com/astral-sh/ruff/pull/14182
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] infer types for PEP695 typevars
 
 ---
 
-_Pull request opened by @carljm on 2024-11-08 00:21_
+_@carljm_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: cjm/cleanups
 created_at: 2024-11-09T19:06:19Z
 updated_at: 2024-11-10T04:18:33Z
 url: https://github.com/astral-sh/ruff/pull/14232
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] follow-ups to typevar types
 
 ---
 
-_Pull request opened by @carljm on 2024-11-09 19:06_
+_@carljm_
 
 A few follow-ups from post-land review of https://github.com/astral-sh/ruff/pull/14182.
 

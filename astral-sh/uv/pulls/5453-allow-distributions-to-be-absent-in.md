@@ -14,14 +14,14 @@ head: charlie/empty
 created_at: 2024-07-25T17:31:08Z
 updated_at: 2024-07-25T18:01:42Z
 url: https://github.com/astral-sh/uv/pull/5453
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Allow distributions to be absent in deserialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-25 17:31_
+_@charliermarsh_
 
 ## Summary
 

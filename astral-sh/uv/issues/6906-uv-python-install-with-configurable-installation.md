@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T02:46:35Z
 updated_at: 2024-09-01T16:55:27Z
 url: https://github.com/astral-sh/uv/issues/6906
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv python install with configurable installation path
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-09-01 02:46_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

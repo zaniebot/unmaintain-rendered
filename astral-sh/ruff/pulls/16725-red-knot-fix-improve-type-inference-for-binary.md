@@ -13,14 +13,14 @@ head: red-knot-handle-infer-special-binary-op-on-tuples
 created_at: 2025-03-14T09:05:23Z
 updated_at: 2025-03-14T11:29:57Z
 url: https://github.com/astral-sh/ruff/pull/16725
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] fix: improve type inference for binary ops on tuples
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-03-14 09:05_
+_@cake-monotone_
 
 ## Summary
 

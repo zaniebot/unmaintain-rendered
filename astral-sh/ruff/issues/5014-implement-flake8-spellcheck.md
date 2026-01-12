@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-11T15:05:01Z
 updated_at: 2025-11-12T15:56:55Z
 url: https://github.com/astral-sh/ruff/issues/5014
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Implement flake8-spellcheck 
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-11 15:05_
+_@gaborbernat_
 
 👍 or another spellcheck variant 😊 
 

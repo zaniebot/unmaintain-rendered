@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-28T21:21:51Z
 updated_at: 2022-06-16T21:11:51Z
 url: https://github.com/clap-rs/clap/issues/3359
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `clap_man` doesn't show the right number of value names
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:21_
+_@epage_
 
 ### Please complete the following tasks
 

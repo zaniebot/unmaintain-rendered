@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-04-18T10:24:46Z
 updated_at: 2022-01-11T18:45:31Z
 url: https://github.com/clap-rs/clap/issues/1251
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Format help option value as it's own column
 
 ---
 
-_Issue opened by @polarathene on 2018-04-18 10:24_
+_@polarathene_
 
 ### Rust Version
 

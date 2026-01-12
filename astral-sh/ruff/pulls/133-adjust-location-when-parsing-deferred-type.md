@@ -12,14 +12,14 @@ head: charlie/deferred
 created_at: 2022-09-08T15:26:18Z
 updated_at: 2022-09-08T15:37:20Z
 url: https://github.com/astral-sh/ruff/pull/133
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Adjust location when parsing deferred type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-08 15:26_
+_@charliermarsh_
 
 Resolves #132.
 

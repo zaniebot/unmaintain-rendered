@@ -12,14 +12,14 @@ head: charlie/yoda
 created_at: 2023-01-18T23:36:45Z
 updated_at: 2023-01-18T23:42:51Z
 url: https://github.com/astral-sh/ruff/pull/1980
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Replace misplaced-comparison-constant with SIM300
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 23:36_
+_@charliermarsh_
 
 Closes: #1954.
 

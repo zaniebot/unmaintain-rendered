@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T03:36:25Z
 updated_at: 2025-05-30T01:40:31Z
 url: https://github.com/astral-sh/ruff/issues/10290
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PEP 585 usages of `list`, `tuple`, `type`, etc. in type aliases are not flagged when `requires-python` includes `< 3.9`.
 
 ---
 
-_Issue opened by @jagerber48 on 2024-03-08 03:36_
+_@jagerber48_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

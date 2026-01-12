@@ -14,14 +14,14 @@ head: impl_deref_mut_for_WithNodeLevel
 created_at: 2023-08-09T09:20:52Z
 updated_at: 2023-08-14T13:51:15Z
 url: https://github.com/astral-sh/ruff/pull/6443
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Implement DerefMut for WithNodeLevel
 
 ---
 
-_Pull request opened by @konstin on 2023-08-09 09:20_
+_@konstin_
 
 **Summary** Implement `DerefMut` for `WithNodeLevel` so it can be used in the same way as `PyFormatter`. I want this for my WIP upstack branch to enable `.fmt(f)` on `WithNodeLevel` context. We could extend this to remove the other two method from `WithNodeLevel`.
 

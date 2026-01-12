@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T08:45:58Z
 updated_at: 2025-09-12T11:21:10Z
 url: https://github.com/astral-sh/uv/issues/15765
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Difference in file inclusion behavior between source distribution and wheel
 
 ---
 
-_Issue opened by @BartSchuurmans on 2025-09-10 08:45_
+_@BartSchuurmans_
 
 ### Question
 

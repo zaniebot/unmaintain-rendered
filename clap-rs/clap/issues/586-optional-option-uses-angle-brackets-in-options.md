@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-18T22:25:46Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/586
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Optional option uses angle brackets in OPTIONS list
 
 ---
 
-_Issue opened by @joshtriplett on 2016-07-18 22:25_
+_@joshtriplett_
 
 If I write the following:
 

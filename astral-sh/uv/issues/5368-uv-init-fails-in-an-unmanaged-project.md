@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-23T20:20:21Z
 updated_at: 2024-07-23T20:51:31Z
 url: https://github.com/astral-sh/uv/issues/5368
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` fails in an unmanaged project
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 20:20_
+_@zanieb_
 
 e.g.
 

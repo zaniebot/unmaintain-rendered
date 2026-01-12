@@ -13,14 +13,14 @@ head: charlie/get-all
 created_at: 2023-06-14T18:20:19Z
 updated_at: 2023-06-14T18:50:23Z
 url: https://github.com/astral-sh/ruff/pull/5095
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Improve names and documentation on scope API
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 18:20_
+_@charliermarsh_
 
 ## Summary
 

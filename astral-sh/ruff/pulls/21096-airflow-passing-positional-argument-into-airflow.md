@@ -12,14 +12,14 @@ head: extend-AIR301-pos-argument
 created_at: 2025-10-27T13:14:02Z
 updated_at: 2025-12-15T09:49:43Z
 url: https://github.com/astral-sh/ruff/pull/21096
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`airflow`] passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-10-27 13:14_
+_@Lee-W_
 
 …e_asset has positional arguments
 

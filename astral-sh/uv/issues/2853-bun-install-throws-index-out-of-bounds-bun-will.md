@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-06T17:31:47Z
 updated_at: 2024-04-06T18:30:42Z
 url: https://github.com/astral-sh/uv/issues/2853
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # 'bun install' throws index out of bounds bun will crash now
 
 ---
 
-_Issue opened by @AmitWiki on 2024-04-06 17:31_
+_@AmitWiki_
 
 On running bun install inside the virtual environment, bun throws following error. Verbose output is pasted below:
 

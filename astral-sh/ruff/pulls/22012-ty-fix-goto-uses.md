@@ -14,14 +14,14 @@ head: gankra/find-ref
 created_at: 2025-12-16T18:41:32Z
 updated_at: 2025-12-16T19:01:58Z
 url: https://github.com/astral-sh/ruff/pull/22012
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] fix goto-uses
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-16 18:41_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/1950
 

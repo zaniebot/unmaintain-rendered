@@ -12,14 +12,14 @@ head: gourgeist-use-shared-python
 created_at: 2023-10-24T15:46:13Z
 updated_at: 2023-10-25T20:11:37Z
 url: https://github.com/astral-sh/uv/pull/178
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Unify python interpreter abstractions
 
 ---
 
-_Pull request opened by @konstin on 2023-10-24 15:46_
+_@konstin_
 
 Previously, we had two python interpreter metadata structs, one in gourgeist and one in puffin. Both would spawn a subprocess to query overlapping metadata and both would appear in the cli crate, if you weren't careful you could even have to different base interpreters at once. This change unifies this to one set of metadata, queried and cached once.
 

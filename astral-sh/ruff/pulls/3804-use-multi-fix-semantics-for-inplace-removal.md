@@ -12,14 +12,14 @@ head: charlie/vet
 created_at: 2023-03-29T23:40:35Z
 updated_at: 2023-03-30T00:27:55Z
 url: https://github.com/astral-sh/ruff/pull/3804
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use multi-fix semantics for `inplace` removal
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-29 23:40_
+_@charliermarsh_
 
 ## Summary
 

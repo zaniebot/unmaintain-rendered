@@ -13,14 +13,14 @@ head: charlie/cycle
 created_at: 2024-06-27T18:19:46Z
 updated_at: 2024-06-29T09:25:57Z
 url: https://github.com/astral-sh/uv/pull/4595
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Handle cycles when propagating markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-27 18:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: rules-documentation-typo-fix
 created_at: 2023-10-28T10:50:39Z
 updated_at: 2023-10-28T11:17:43Z
 url: https://github.com/astral-sh/ruff/pull/8303
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Correct typo in rules documentation
 
 ---
 
-_Pull request opened by @Harmon758 on 2023-10-28 10:50_
+_@Harmon758_
 
 ## Summary
 

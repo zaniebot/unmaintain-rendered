@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T19:53:24Z
 updated_at: 2025-11-05T17:02:42Z
 url: https://github.com/astral-sh/uv/issues/16582
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path
 
 ---
 
-_Issue opened by @tsudol-plaid on 2025-11-03 19:53_
+_@tsudol-plaid_
 
 ### Summary
 

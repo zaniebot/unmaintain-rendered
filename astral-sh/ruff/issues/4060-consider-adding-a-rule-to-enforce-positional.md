@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-21T16:32:54Z
 updated_at: 2023-04-21T16:57:54Z
 url: https://github.com/astral-sh/ruff/issues/4060
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider adding a rule to enforce positional unpacking always precede keyword arguments
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-04-21 16:32_
+_@NeilGirdhar_
 
 ```python
 def f(a, b, c):

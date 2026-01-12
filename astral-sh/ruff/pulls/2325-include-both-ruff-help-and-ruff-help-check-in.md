@@ -12,14 +12,14 @@ head: charlie/help
 created_at: 2023-01-29T18:59:23Z
 updated_at: 2023-01-30T03:56:32Z
 url: https://github.com/astral-sh/ruff/pull/2325
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Include both `ruff help` and `ruff help check` in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-29 18:59_
+_@charliermarsh_
 
 See discussion in #2284.
 

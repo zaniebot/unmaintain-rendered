@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T09:19:25Z
 updated_at: 2023-02-09T16:22:17Z
 url: https://github.com/astral-sh/ruff/issues/2684
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TCH001 Re export x annotation
 
 ---
 
-_Issue opened by @g-as on 2023-02-09 09:19_
+_@g-as_
 
 When an import is used in an annotation but also is re exported in an `__all__` statement, **TCH001** rings.
 

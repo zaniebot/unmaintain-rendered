@@ -14,14 +14,14 @@ head: fix-19118
 created_at: 2025-07-17T20:07:53Z
 updated_at: 2025-08-06T12:36:21Z
 url: https://github.com/astral-sh/ruff/pull/19411
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`flake8_import_conventions`] Avoid false positives for NFKC-normalized `__debug__` import aliases in ICN001
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-17 20:07_
+_@danparizher_
 
 ## Summary
 

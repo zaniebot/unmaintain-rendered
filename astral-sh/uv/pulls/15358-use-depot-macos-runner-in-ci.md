@@ -13,14 +13,14 @@ head: zb/depot-macos
 created_at: 2025-08-18T18:14:06Z
 updated_at: 2025-08-18T19:25:00Z
 url: https://github.com/astral-sh/uv/pull/15358
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Use Depot macOS runner in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 18:14_
+_@zanieb_
 
 _No description provided._
 

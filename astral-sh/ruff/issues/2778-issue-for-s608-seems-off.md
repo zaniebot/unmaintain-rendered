@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-11T19:47:42Z
 updated_at: 2023-02-11T20:05:59Z
 url: https://github.com/astral-sh/ruff/issues/2778
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Issue for S608 seems off
 
 ---
 
-_Issue opened by @colin99d on 2023-02-11 19:47_
+_@colin99d_
 
 Running `ruff .` gives a weird warning, see below:
 

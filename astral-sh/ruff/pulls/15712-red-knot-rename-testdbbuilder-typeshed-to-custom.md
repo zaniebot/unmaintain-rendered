@@ -14,14 +14,14 @@ head: david/minor-rename
 created_at: 2025-01-24T10:20:34Z
 updated_at: 2025-01-24T10:25:24Z
 url: https://github.com/astral-sh/ruff/pull/15712
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Rename `TestDbBuilder::typeshed` to `.custom_typeshed`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-24 10:20_
+_@sharkdp_
 
 ## Summary
 

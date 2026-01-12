@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-01T11:50:25Z
 updated_at: 2026-01-01T15:43:55Z
 url: https://github.com/astral-sh/ruff/issues/22326
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Why are Neovim editor settings of ruff and ty not aligned?
 
 ---
 
-_Issue opened by @jamilraichouni on 2026-01-01 11:50_
+_@jamilraichouni_
 
 ### Question
 

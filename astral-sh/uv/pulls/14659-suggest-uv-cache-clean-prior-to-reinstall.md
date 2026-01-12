@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2025-07-16T14:40:25Z
 updated_at: 2025-07-16T16:02:31Z
 url: https://github.com/astral-sh/uv/pull/14659
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Suggest `uv cache clean` prior to `--reinstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-16 14:40_
+_@charliermarsh_
 
 ## Summary
 

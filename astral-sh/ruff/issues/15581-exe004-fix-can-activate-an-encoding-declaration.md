@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-19T00:35:03Z
 updated_at: 2025-01-20T06:23:32Z
 url: https://github.com/astral-sh/ruff/issues/15581
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # EXE004 fix can activate an encoding declaration
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-19 00:35_
+_@dscorbett_
 
 The fix for [`shebang-leading-whitespace` (EXE004)](https://docs.astral.sh/ruff/rules/shebang-leading-whitespace/) in Ruff 0.9.2 removes the white space before the shebang. If that white space contains a newline and the line after the shebang contains an encoding declaration, the fix moves the encoding declaration up to the second line, where it has an effect and can change the program’s behavior.
 ```console

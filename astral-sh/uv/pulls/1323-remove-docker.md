@@ -12,14 +12,14 @@ head: charlie/docker
 created_at: 2024-02-15T18:26:37Z
 updated_at: 2024-02-15T18:30:19Z
 url: https://github.com/astral-sh/uv/pull/1323
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Remove Docker
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-15 18:26_
+_@charliermarsh_
 
 I will revisit this later.
 

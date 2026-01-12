@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T12:17:50Z
 updated_at: 2024-10-30T19:12:24Z
 url: https://github.com/astral-sh/uv/issues/8087
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv sync` fails with conflicting URLs with Git workspace
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-10 12:17_
+_@charliermarsh_
 
 Here is an example:
 ```

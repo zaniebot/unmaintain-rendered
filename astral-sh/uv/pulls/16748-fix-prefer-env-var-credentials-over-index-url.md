@@ -11,14 +11,14 @@ head: MarthinusBosman/issue16733
 created_at: 2025-11-15T17:05:43Z
 updated_at: 2025-11-18T15:31:21Z
 url: https://github.com/astral-sh/uv/pull/16748
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # fix: prefer env var credentials over index URL username; guard cache & git-store; add tests
 
 ---
 
-_Pull request opened by @MarthinusBosman on 2025-11-15 17:05_
+_@MarthinusBosman_
 
 ## Summary
 

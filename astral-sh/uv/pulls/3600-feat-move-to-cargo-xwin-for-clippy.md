@@ -13,14 +13,14 @@ head: cargo-xwin-clippy
 created_at: 2024-05-15T03:19:19Z
 updated_at: 2024-05-17T02:32:03Z
 url: https://github.com/astral-sh/uv/pull/3600
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # feat: move to cargo-xwin for clippy
 
 ---
 
-_Pull request opened by @samypr100 on 2024-05-15 03:19_
+_@samypr100_
 
 ## Summary
 

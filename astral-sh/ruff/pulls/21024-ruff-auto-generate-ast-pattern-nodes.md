@@ -14,14 +14,14 @@ head: autogenerate-pattern-nodes
 created_at: 2025-10-21T20:09:54Z
 updated_at: 2025-10-22T06:49:23Z
 url: https://github.com/astral-sh/ruff/pull/21024
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`ruff`] Auto generate ast Pattern nodes
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-21 20:09_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dependabot/cargo/serde-1.0.190
 created_at: 2023-10-30T08:30:41Z
 updated_at: 2023-10-30T09:06:11Z
 url: https://github.com/astral-sh/ruff/pull/8346
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump serde from 1.0.188 to 1.0.190
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-30 08:30_
+_@dependabot_
 
 Bumps [serde](https://github.com/serde-rs/serde) from 1.0.188 to 1.0.190.
 <details>

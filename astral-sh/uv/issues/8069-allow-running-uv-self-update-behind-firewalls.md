@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T04:59:36Z
 updated_at: 2025-02-12T17:09:13Z
 url: https://github.com/astral-sh/uv/issues/8069
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Allow running uv self update behind firewalls
 
 ---
 
-_Issue opened by @gaborbernat on 2024-10-10 04:59_
+_@gaborbernat_
 
 So there's an implicit feature within the installation script that allows moving the standalone installer behind the firewall too, `ARTIFACT_DOWNLOAD_URL` can be configured via INSTALLER_DOWNLOAD_URL environment variable, so something like:
 

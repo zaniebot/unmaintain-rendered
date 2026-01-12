@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T18:52:44Z
 updated_at: 2024-08-03T12:23:23Z
 url: https://github.com/astral-sh/ruff/issues/12641
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Fix for Q003 can create an erroneous multiline string
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-02 18:52_
+_@dscorbett_
 
 The automated fix for [Q003](https://docs.astral.sh/ruff/rules/avoidable-escaped-quote/) can introduce a syntax error or change behavior.
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/serde_with-3.5.1
 created_at: 2024-01-29T09:08:37Z
 updated_at: 2024-01-29T10:23:25Z
 url: https://github.com/astral-sh/ruff/pull/9672
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump serde_with from 3.5.0 to 3.5.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-29 09:08_
+_@dependabot_
 
 Bumps [serde_with](https://github.com/jonasbb/serde_with) from 3.5.0 to 3.5.1.
 <details>

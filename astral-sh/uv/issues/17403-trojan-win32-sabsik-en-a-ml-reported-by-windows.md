@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T20:11:09Z
 updated_at: 2026-01-12T02:25:03Z
 url: https://github.com/astral-sh/uv/issues/17403
-synced_at: 2026-01-12T06:55:09Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # Trojan: Win32/Sabsik.EN.A!ml reported by Windows Security while updating to version 0.9.24
 
 ---
 
-_Issue opened by @zoliszabo on 2026-01-10 20:11_
+_@zoliszabo_
 
 ### Summary
 

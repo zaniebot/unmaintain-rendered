@@ -13,14 +13,14 @@ head: henryiii/ci/muslarm
 created_at: 2024-05-16T06:51:45Z
 updated_at: 2024-05-18T17:51:10Z
 url: https://github.com/astral-sh/uv/pull/3624
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # ci: retag the musl aarch64 for manylinux2014
 
 ---
 
-_Pull request opened by @henryiii on 2024-05-16 06:51_
+_@henryiii_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

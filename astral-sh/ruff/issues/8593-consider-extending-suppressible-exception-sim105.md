@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T00:29:10Z
 updated_at: 2026-01-05T23:32:30Z
 url: https://github.com/astral-sh/ruff/issues/8593
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider extending `suppressible-exception` (`SIM105`) to multi-line `try` blocks
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-10 00:29_
+_@DetachHead_
 
 ```py
 try: # error

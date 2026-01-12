@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-23T23:20:07Z
 updated_at: 2025-11-03T11:25:18Z
 url: https://github.com/astral-sh/uv/pull/12405
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Add JSON Output for uv sync --dry-run
 
 ---
 
-_Pull request opened by @x0rw on 2025-03-23 23:20_
+_@x0rw_
 
 UPDATE:
 ## Summary

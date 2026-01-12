@@ -12,14 +12,14 @@ head: feat/deferred-type-alias-uses
 created_at: 2025-03-26T13:01:55Z
 updated_at: 2025-06-05T08:01:14Z
 url: https://github.com/astral-sh/ruff/pull/16981
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`flake8-type-checking`] Treat type statement value as typing references
 
 ---
 
-_Pull request opened by @Daverball on 2025-03-26 13:01_
+_@Daverball_
 
 Closes #16886
 

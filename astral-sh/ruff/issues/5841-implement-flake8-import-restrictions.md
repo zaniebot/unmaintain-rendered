@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-17T21:03:06Z
 updated_at: 2025-05-28T13:04:55Z
 url: https://github.com/astral-sh/ruff/issues/5841
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Implement flake8-import-restrictions
 
 ---
 
-_Issue opened by @justinchuby on 2023-07-17 21:03_
+_@justinchuby_
 
 When following the Google style guide and to avoid cyclic imports, we would really like to see the rule from https://github.com/atollk/flake8-import-restrictions#imr241
 

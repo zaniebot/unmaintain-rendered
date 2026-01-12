@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-23T17:24:53Z
 updated_at: 2023-07-24T02:23:24Z
 url: https://github.com/astral-sh/ruff/issues/6017
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Metaclass methods incorrectly identified as classmethods
 
 ---
 
-_Issue opened by @jamesdow21 on 2023-07-23 17:24_
+_@jamesdow21_
 
 ruff incorrectly believes that the `__call__` method in a metaclass should be a classmethod and gives error N804 that the first argument should be named "cls" instead of "self", but only for immediate subclasses of `type` or `ABCMeta` (and possibly others, those were the only two I've tried)
 

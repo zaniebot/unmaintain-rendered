@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-07-20T21:53:32Z
 updated_at: 2025-07-21T16:25:51Z
 url: https://github.com/astral-sh/uv/pull/14764
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Create (e.g.) `python3.13t` executables in `uv venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 21:53_
+_@charliermarsh_
 
 ## Summary
 

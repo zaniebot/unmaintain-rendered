@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T14:59:11Z
 updated_at: 2025-08-22T16:32:15Z
 url: https://github.com/astral-sh/uv/issues/15455
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # FEAT: supporting module-level CLI execution (à la `python -m`) directly through `uvx` ?
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-08-22 14:59_
+_@neutrinoceros_
 
 ### Summary
 

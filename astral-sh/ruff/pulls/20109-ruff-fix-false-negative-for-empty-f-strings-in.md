@@ -14,14 +14,14 @@ head: fix-20050
 created_at: 2025-08-27T03:04:28Z
 updated_at: 2025-08-28T21:25:12Z
 url: https://github.com/astral-sh/ruff/pull/20109
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`ruff`] Fix false negative for empty f-strings in `deque` calls (`RUF037`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-27 03:04_
+_@danparizher_
 
 ## Summary
 

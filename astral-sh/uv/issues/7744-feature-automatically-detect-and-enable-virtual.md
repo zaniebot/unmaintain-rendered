@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-27T18:01:37Z
 updated_at: 2025-05-03T21:48:38Z
 url: https://github.com/astral-sh/uv/issues/7744
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Feature: Automatically detect and enable virtual environments
 
 ---
 
-_Issue opened by @aspeddro on 2024-09-27 18:01_
+_@aspeddro_
 
 The OCaml package manager `opam` has the concept of [`switch`](https://ocaml.org/docs/opam-switch-introduction) which are like virtual environments.
 

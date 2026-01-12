@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T18:06:56Z
 updated_at: 2024-11-04T20:23:46Z
 url: https://github.com/astral-sh/uv/issues/8758
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Pinning package to index without fallback
 
 ---
 
-_Issue opened by @wstrausser on 2024-11-01 18:06_
+_@wstrausser_
 
 I am trying to pin an internal package to our internal package registry. For the sake of testing how the pinning works, I've called the package pandas:
 

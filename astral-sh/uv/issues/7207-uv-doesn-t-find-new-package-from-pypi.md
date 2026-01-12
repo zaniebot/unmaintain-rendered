@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T00:29:10Z
 updated_at: 2025-11-25T10:41:16Z
 url: https://github.com/astral-sh/uv/issues/7207
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # UV doesn't find new package from PyPI
 
 ---
 
-_Issue opened by @JoshuaPurtell on 2024-09-09 00:29_
+_@JoshuaPurtell_
 
 I maintain a few packages mostly for personal use.
 

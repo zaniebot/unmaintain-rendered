@@ -14,14 +14,14 @@ head: brent/f-string-fix
 created_at: 2025-10-16T20:33:45Z
 updated_at: 2025-10-17T12:49:18Z
 url: https://github.com/astral-sh/ruff/pull/20930
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Avoid reusing nested, interpolated quotes before Python 3.12
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-16 20:33_
+_@ntBre_
 
 ## Summary
 

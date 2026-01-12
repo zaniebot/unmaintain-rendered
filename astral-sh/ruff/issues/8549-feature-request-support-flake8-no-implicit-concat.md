@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-07T21:43:55Z
 updated_at: 2023-11-07T23:08:14Z
 url: https://github.com/astral-sh/ruff/issues/8549
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [Feature request]: support `flake8-no-implicit-concat` (NIC)
 
 ---
 
-_Issue opened by @wtfzambo on 2023-11-07 21:43_
+_@wtfzambo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

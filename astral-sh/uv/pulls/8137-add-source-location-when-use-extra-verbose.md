@@ -12,14 +12,14 @@ head: add-source-location-in-extra-verbose
 created_at: 2024-10-12T01:01:58Z
 updated_at: 2024-10-28T15:54:51Z
 url: https://github.com/astral-sh/uv/pull/8137
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # add source location when use extra verbose
 
 ---
 
-_Pull request opened by @Renkai on 2024-10-12 01:01_
+_@Renkai_
 
 _No description provided._
 

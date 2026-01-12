@@ -14,14 +14,14 @@ head: alex/starred-tuples
 created_at: 2025-11-17T12:03:04Z
 updated_at: 2026-01-11T16:36:14Z
 url: https://github.com/astral-sh/ruff/pull/21499
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Fix `Todo` type for starred elements in tuple/list/set expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-17 12:03_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

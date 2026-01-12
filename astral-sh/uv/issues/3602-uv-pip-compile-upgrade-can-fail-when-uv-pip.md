@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T08:15:01Z
 updated_at: 2024-05-17T21:20:39Z
 url: https://github.com/astral-sh/uv/issues/3602
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `uv pip compile --upgrade` can fail when `uv pip compile` succeeds if `requirements.txt` contains pre-release
 
 ---
 
-_Issue opened by @Phlogistique on 2024-05-15 08:15_
+_@Phlogistique_
 
 My `requirements.in` contains a package which depends on `betterproto>=2.0.0b6`. The `requirements.txt` was initially generated using `pip` and contains `betterproto==2.0.0b6`.
 

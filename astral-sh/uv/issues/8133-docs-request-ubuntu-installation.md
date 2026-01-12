@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T21:35:57Z
 updated_at: 2024-10-12T03:47:54Z
 url: https://github.com/astral-sh/uv/issues/8133
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # Docs request: Ubuntu installation
 
 ---
 
-_Issue opened by @jamesbraza on 2024-10-11 21:35_
+_@jamesbraza_
 
 With `uv==0.4.20` on https://docs.astral.sh/uv/getting-started/installation/, there is no Ubuntu OS set up guide.
 

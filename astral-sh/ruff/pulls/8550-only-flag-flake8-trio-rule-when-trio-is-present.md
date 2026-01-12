@@ -13,14 +13,14 @@ head: charlie/trio
 created_at: 2023-11-07T22:19:59Z
 updated_at: 2023-11-07T22:40:49Z
 url: https://github.com/astral-sh/ruff/pull/8550
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Only flag flake8-trio rule when trio is present
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 22:19_
+_@charliermarsh_
 
 ## Summary
 

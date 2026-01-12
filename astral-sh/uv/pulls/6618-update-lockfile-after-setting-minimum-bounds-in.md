@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2024-08-25T20:43:24Z
 updated_at: 2024-08-25T21:04:26Z
 url: https://github.com/astral-sh/uv/pull/6618
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Update lockfile after setting minimum bounds in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 20:43_
+_@charliermarsh_
 
 ## Summary
 

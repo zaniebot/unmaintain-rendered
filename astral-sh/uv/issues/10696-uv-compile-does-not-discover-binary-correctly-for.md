@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T22:20:43Z
 updated_at: 2025-01-20T15:11:47Z
 url: https://github.com/astral-sh/uv/issues/10696
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # UV compile does not discover binary correctly for targeting macOS even though macOS binaries exist
 
 ---
 
-_Issue opened by @nmichlo on 2025-01-16 22:20_
+_@nmichlo_
 
 **1. setup**
 ```bash

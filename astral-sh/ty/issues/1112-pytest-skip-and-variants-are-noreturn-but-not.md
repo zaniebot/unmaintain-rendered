@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T09:42:53Z
 updated_at: 2025-12-03T19:39:10Z
 url: https://github.com/astral-sh/ty/issues/1112
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `pytest.skip` (and variants) are `NoReturn` but not properly detected
 
 ---
 
-_Issue opened by @mflova on 2025-09-01 09:42_
+_@mflova_
 
 ### Summary
 

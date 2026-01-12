@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-13T08:48:10Z
 updated_at: 2024-08-13T10:58:36Z
 url: https://github.com/astral-sh/ruff/issues/12854
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Indent multi-line expressions in function arguments
 
 ---
 
-_Issue opened by @edaqa-uncountable on 2024-08-13 08:48_
+_@edaqa-uncountable_
 
 Would it be possible to add an option to allow indentation of multi-line expressions in function arguments?  Currently it aligns everything to the left with the other arguments.
 

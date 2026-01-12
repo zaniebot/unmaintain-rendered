@@ -13,14 +13,14 @@ head: brent/version-refactor
 created_at: 2025-02-13T23:36:10Z
 updated_at: 2025-02-14T17:48:10Z
 url: https://github.com/astral-sh/ruff/pull/16147
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Move `red_knot_python_semantic::PythonVersion` to the `ruff_python_ast` crate
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-13 23:36_
+_@ntBre_
 
 ## Summary
 

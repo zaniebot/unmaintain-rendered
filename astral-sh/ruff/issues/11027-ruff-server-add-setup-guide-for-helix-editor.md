@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T05:54:16Z
 updated_at: 2024-04-30T17:15:31Z
 url: https://github.com/astral-sh/ruff/issues/11027
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` add setup guide for helix editor
 
 ---
 
-_Issue opened by @bluthej on 2024-04-19 05:54_
+_@bluthej_
 
 I'm very excited about the new Ruff LSP, and I would like to try it out in Helix, my editor of choice :)
 

@@ -14,14 +14,14 @@ head: micha/fix-analyze-direction-casing
 created_at: 2025-06-23T11:02:40Z
 updated_at: 2025-06-23T13:22:09Z
 url: https://github.com/astral-sh/ruff/pull/18892
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # fix casing of `analyze.direction` variant names
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-23 11:02_
+_@MichaReiser_
 
 ## Summary
 

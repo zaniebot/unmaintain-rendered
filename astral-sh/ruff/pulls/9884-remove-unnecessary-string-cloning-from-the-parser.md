@@ -13,14 +13,14 @@ head: charlie/string-parser
 created_at: 2024-02-07T22:05:35Z
 updated_at: 2024-02-09T21:14:16Z
 url: https://github.com/astral-sh/ruff/pull/9884
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove unnecessary string cloning from the parser
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-07 22:05_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9869.
 

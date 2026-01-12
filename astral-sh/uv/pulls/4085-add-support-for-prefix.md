@@ -13,14 +13,14 @@ head: charlie/prefix
 created_at: 2024-06-06T02:26:29Z
 updated_at: 2024-06-06T20:15:29Z
 url: https://github.com/astral-sh/uv/pull/4085
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Add support for `--prefix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 02:26_
+_@charliermarsh_
 
 ## Summary
 

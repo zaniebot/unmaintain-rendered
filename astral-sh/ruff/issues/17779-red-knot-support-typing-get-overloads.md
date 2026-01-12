@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T19:36:14Z
 updated_at: 2025-05-01T20:39:40Z
 url: https://github.com/astral-sh/ruff/issues/17779
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Support `typing.get_overloads`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 19:36_
+_@dhruvmanila_
 
 Documentation: https://docs.python.org/3/library/typing.html#typing.get_overloads
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T11:29:22Z
 updated_at: 2024-10-28T21:10:52Z
 url: https://github.com/astral-sh/uv/issues/5647
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # universal locking: allow forking when respecting Python version?
 
 ---
 
-_Issue opened by @alex on 2024-07-31 11:29_
+_@alex_
 
 ```
 ~ ❯❯❯ uv --version

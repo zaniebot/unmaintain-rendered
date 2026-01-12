@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-08-21T04:47:28Z
 updated_at: 2021-11-19T12:02:27Z
 url: https://github.com/clap-rs/clap/issues/1035
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `clap_app!` can't have default arguments with numbers/some characters.
 
 ---
 
-_Issue opened by @jaccarmac on 2017-08-21 04:47_
+_@jaccarmac_
 
 ### Rust Version
 

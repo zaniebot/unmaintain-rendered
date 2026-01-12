@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T00:55:44Z
 updated_at: 2023-06-10T04:32:06Z
 url: https://github.com/astral-sh/ruff/issues/2788
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [blocked, autofix] RET504 Aggressive fixing
 
 ---
 
-_Issue opened by @Sawbez on 2023-02-12 00:55_
+_@Sawbez_
 
 This relates to PR #2599 in which it is planned to have the fix work only for basic cases with comments and pretty much nothing else in between because some other cases break it. 
 

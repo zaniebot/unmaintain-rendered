@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-19T15:57:55Z
 updated_at: 2024-03-19T17:21:38Z
 url: https://github.com/astral-sh/uv/issues/2542
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # wheel on pypi.org not found when using `--extra-index-url` that includes non-compatible wheels
 
 ---
 
-_Issue opened by @altendky on 2024-03-19 15:57_
+_@altendky_
 
 I use a `--extra-index-url` that contains mostly arm and risc wheels not avilable from pypi.org, or compilations for new versions of python etc.  When a version is found at the extra index without it providing a usable wheel, the applicable wheel from pypi.org is not used.
 

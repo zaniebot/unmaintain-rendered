@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T18:29:44Z
 updated_at: 2025-02-11T20:01:56Z
 url: https://github.com/astral-sh/ruff/issues/15915
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # open-alias (UP020) has unexpected auto-fix behaviour
 
 ---
 
-_Issue opened by @RasmusNygren on 2025-02-03 18:29_
+_@RasmusNygren_
 
 ### Description
 

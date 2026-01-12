@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-09-28T07:29:42Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1056
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # default_value() and multiple(true) interact in surprising ways.
 
 ---
 
-_Issue opened by @Screwtapello on 2017-09-28 07:29_
+_@Screwtapello_
 
 ### Rust Version
 

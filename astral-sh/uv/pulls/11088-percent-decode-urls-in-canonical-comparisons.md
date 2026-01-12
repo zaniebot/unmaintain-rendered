@@ -13,14 +13,14 @@ head: charlie/percent
 created_at: 2025-01-30T03:44:16Z
 updated_at: 2025-01-31T20:45:50Z
 url: https://github.com/astral-sh/uv/pull/11088
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Percent-decode URLs in canonical comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 03:44_
+_@charliermarsh_
 
 ## Summary
 

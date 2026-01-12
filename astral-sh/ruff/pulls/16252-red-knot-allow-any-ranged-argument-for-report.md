@@ -13,14 +13,14 @@ head: micha/report-non-nodes
 created_at: 2025-02-19T13:14:35Z
 updated_at: 2025-02-19T13:34:58Z
 url: https://github.com/astral-sh/ruff/pull/16252
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Allow any `Ranged` argument for `report_lint` and `report_diagnostic`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-19 13:14_
+_@MichaReiser_
 
 ## Summary
 

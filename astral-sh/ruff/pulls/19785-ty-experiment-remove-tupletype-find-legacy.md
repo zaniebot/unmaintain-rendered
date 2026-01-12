@@ -12,14 +12,14 @@ head: alex/tuple-legacy-tvars
 created_at: 2025-08-06T14:03:07Z
 updated_at: 2025-08-07T10:20:43Z
 url: https://github.com/astral-sh/ruff/pull/19785
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] [experiment] Remove `TupleType::find_legacy_typevars`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-06 14:03_
+_@AlexWaygood_
 
 ## Summary
 

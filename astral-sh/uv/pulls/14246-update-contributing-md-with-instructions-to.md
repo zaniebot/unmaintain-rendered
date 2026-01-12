@@ -13,14 +13,14 @@ head: docs/contributing-md-formatting
 created_at: 2025-06-24T16:29:38Z
 updated_at: 2025-07-11T17:05:18Z
 url: https://github.com/astral-sh/uv/pull/14246
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Update CONTRIBUTING.md with instructions to format markdown files
 
 ---
 
-_Pull request opened by @iamdbychkov on 2025-06-24 16:29_
+_@iamdbychkov_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

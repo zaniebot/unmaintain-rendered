@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T16:28:41Z
 updated_at: 2025-09-22T20:41:09Z
 url: https://github.com/astral-sh/uv/issues/15987
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # uvx ruff check fails to spawn Ruff
 
 ---
 
-_Issue opened by @rogersei on 2025-09-22 16:28_
+_@rogersei_
 
 ### Summary
 

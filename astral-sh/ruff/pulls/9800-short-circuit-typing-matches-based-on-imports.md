@@ -13,14 +13,14 @@ head: charlie/type
 created_at: 2024-02-02T20:32:12Z
 updated_at: 2024-02-04T19:06:44Z
 url: https://github.com/astral-sh/ruff/pull/9800
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Short-circuit typing matches based on imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 20:32_
+_@charliermarsh_
 
 _No description provided._
 

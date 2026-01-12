@@ -12,14 +12,14 @@ head: konsti/ppc64le-zig
 created_at: 2024-12-11T08:48:16Z
 updated_at: 2024-12-11T14:37:26Z
 url: https://github.com/astral-sh/uv/pull/9802
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Use zig for ppc64le
 
 ---
 
-_Pull request opened by @konstin on 2024-12-11 08:48_
+_@konstin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

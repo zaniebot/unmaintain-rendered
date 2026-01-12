@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T09:42:08Z
 updated_at: 2024-08-25T16:07:05Z
 url: https://github.com/astral-sh/uv/issues/4379
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # UV editable install fails on databricks shared cluster 
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-06-18 09:42_
+_@ion-elgreco_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

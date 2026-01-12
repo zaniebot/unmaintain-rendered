@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-12T02:27:25Z
 updated_at: 2025-04-18T03:10:56Z
 url: https://github.com/astral-sh/uv/issues/12849
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv add fails with error : The file cannot be accessed by the system. (os error 1920)
 
 ---
 
-_Issue opened by @aprd21 on 2025-04-12 02:27_
+_@aprd21_
 
 ### Summary
 

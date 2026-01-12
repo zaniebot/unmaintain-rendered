@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T15:46:06Z
 updated_at: 2023-11-11T15:07:24Z
 url: https://github.com/astral-sh/ruff/issues/8605
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [D417] Missing argument descriptions in the docstring for `**kwargs` and `*args` should be allowed
 
 ---
 
-_Issue opened by @mikeweltevrede on 2023-11-10 15:46_
+_@mikeweltevrede_
 
 I would expect D417 to not require `*args` and `**kwargs` to be put in the descriptions. Maybe this is not good practice, in which case please let me know.
 

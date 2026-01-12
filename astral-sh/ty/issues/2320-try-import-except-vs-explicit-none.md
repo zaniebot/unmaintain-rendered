@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-04T11:59:28Z
 updated_at: 2026-01-04T20:11:47Z
 url: https://github.com/astral-sh/ty/issues/2320
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # try/import/except vs. explicit None
 
 ---
 
-_Issue opened by @smurfix on 2026-01-04 11:59_
+_@smurfix_
 
 ### Summary
 

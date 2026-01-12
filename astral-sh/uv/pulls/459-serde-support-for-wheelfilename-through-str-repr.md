@@ -12,14 +12,14 @@ head: wheel-filename-serde
 created_at: 2023-11-19T19:36:38Z
 updated_at: 2023-11-19T20:02:48Z
 url: https://github.com/astral-sh/uv/pull/459
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Serde support for WheelFilename through str repr
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 19:36_
+_@konstin_
 
 I need this later, splitting out for PR size
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T18:01:04Z
 updated_at: 2025-05-28T11:06:58Z
 url: https://github.com/astral-sh/ruff/issues/18338
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New rule `del-attr-with-constant`
 
 ---
 
-_Issue opened by @janosh on 2025-05-27 18:01_
+_@janosh_
 
 ### Summary
 

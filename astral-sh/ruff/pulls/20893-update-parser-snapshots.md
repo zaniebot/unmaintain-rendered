@@ -14,14 +14,14 @@ head: alex/snapshots-merge-race
 created_at: 2025-10-15T14:17:15Z
 updated_at: 2025-10-15T14:34:26Z
 url: https://github.com/astral-sh/ruff/pull/20893
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Update parser snapshots
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-15 14:17_
+_@AlexWaygood_
 
 ## Summary
 

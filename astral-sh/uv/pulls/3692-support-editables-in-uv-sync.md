@@ -13,14 +13,14 @@ head: konsti/support-editables-in-uv-run
 created_at: 2024-05-21T11:24:26Z
 updated_at: 2024-05-21T13:38:17Z
 url: https://github.com/astral-sh/uv/pull/3692
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Support editables in `uv sync`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 11:24_
+_@konstin_
 
 This is bare-bones support for editables in `uv sync` as basis for workspace support, notably without lockfile integration. It leverages the existing `ResolvedEditables` infrastructure.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T13:03:50Z
 updated_at: 2026-01-09T02:00:43Z
 url: https://github.com/astral-sh/ty/issues/2394
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # 0.0.9 -> 0.0.10 type checking regressions
 
 ---
 
-_Issue opened by @danielpopescu on 2026-01-08 13:03_
+_@danielpopescu_
 
 ### Summary
 

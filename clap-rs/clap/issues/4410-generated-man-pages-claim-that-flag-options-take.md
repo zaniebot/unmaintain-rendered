@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-20T19:55:01Z
 updated_at: 2022-10-31T19:29:24Z
 url: https://github.com/clap-rs/clap/issues/4410
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Generated man pages claim that flag options take values
 
 ---
 
-_Issue opened by @bgilbert on 2022-10-20 19:55_
+_@bgilbert_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: docs-ci
 created_at: 2023-04-26T12:16:58Z
 updated_at: 2023-04-26T14:11:38Z
 url: https://github.com/astral-sh/ruff/pull/4116
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add docs build validation stage to CI
 
 ---
 
-_Pull request opened by @calumy on 2023-04-26 12:16_
+_@calumy_
 
 Following on from #4097, this PR adds a docs build validation stage to CI.
 

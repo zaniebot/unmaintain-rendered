@@ -13,14 +13,14 @@ head: alex/eager-scopes
 created_at: 2025-02-10T14:54:50Z
 updated_at: 2025-05-07T15:22:27Z
 url: https://github.com/astral-sh/ruff/pull/16079
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Resolve references in eager nested scopes eagerly
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-10 14:54_
+_@dcreager_
 
 We now resolve references in "eager" scopes correctly — using the bindings and declarations that are visible at the point where the eager scope is created, not the "public" type of the symbol (typically the bindings visible at the end of the scope).
 

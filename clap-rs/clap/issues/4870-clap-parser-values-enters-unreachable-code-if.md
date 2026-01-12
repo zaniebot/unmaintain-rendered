@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-29T18:42:59Z
 updated_at: 2023-05-02T19:08:21Z
 url: https://github.com/clap-rs/clap/issues/4870
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap::parser::Values enters unreachable code if used inside zip and reversed
 
 ---
 
-_Issue opened by @nappa85 on 2023-04-29 18:42_
+_@nappa85_
 
 ### Please complete the following tasks
 

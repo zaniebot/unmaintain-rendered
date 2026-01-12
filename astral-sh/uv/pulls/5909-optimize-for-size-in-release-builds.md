@@ -11,14 +11,14 @@ head: task/optimize-for-size
 created_at: 2024-08-08T14:10:11Z
 updated_at: 2025-04-28T00:46:42Z
 url: https://github.com/astral-sh/uv/pull/5909
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Optimize for size in release builds
 
 ---
 
-_Pull request opened by @davfsa on 2024-08-08 14:10_
+_@davfsa_
 
 ## Summary
 

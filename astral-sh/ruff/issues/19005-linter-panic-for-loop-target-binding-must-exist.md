@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-27T23:37:09Z
 updated_at: 2025-06-30T14:47:50Z
 url: https://github.com/astral-sh/ruff/issues/19005
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Linter panic] “for-loop target binding must exist” for PERF403
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-27 23:37_
+_@dscorbett_
 
 ### Summary
 

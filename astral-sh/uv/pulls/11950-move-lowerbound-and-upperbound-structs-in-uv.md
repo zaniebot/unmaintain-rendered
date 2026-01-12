@@ -13,14 +13,14 @@ head: charlie/bounds
 created_at: 2025-03-04T15:11:06Z
 updated_at: 2025-03-04T17:35:19Z
 url: https://github.com/astral-sh/uv/pull/11950
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Move `LowerBound` and `UpperBound` structs in `uv-pep440`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-04 15:11_
+_@charliermarsh_
 
 ## Summary
 

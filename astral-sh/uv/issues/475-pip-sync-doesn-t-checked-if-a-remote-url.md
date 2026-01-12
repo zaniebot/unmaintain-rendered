@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T13:23:54Z
 updated_at: 2025-12-02T18:52:26Z
 url: https://github.com/astral-sh/uv/issues/475
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # pip-sync doesn't checked if a remote url distribution has changed
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 13:23_
+_@konstin_
 
 When using a remote distribution with pip-sync, e.g. `theano @ https://github.com/Theano/Theano/archive/master.zip`, we will accept any distribution that was installed from that url instead of checking that the installed distribution matches the remote distribution.
 

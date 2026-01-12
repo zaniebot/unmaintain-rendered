@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T01:19:39Z
 updated_at: 2025-12-04T01:20:07Z
 url: https://github.com/astral-sh/ruff/issues/21518
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E722 BaseException should also be considered as bare except
 
 ---
 
-_Issue opened by @typenoob on 2025-11-19 01:19_
+_@typenoob_
 
 ### Summary
 

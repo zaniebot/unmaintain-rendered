@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T07:25:23Z
 updated_at: 2025-02-21T09:28:20Z
 url: https://github.com/astral-sh/uv/issues/11691
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Clarify interaction of `--group` and default dev dependencies
 
 ---
 
-_Issue opened by @rsyring on 2025-02-21 07:25_
+_@rsyring_
 
 ### Question
 

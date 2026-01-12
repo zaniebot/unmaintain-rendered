@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-06T17:18:49Z
 updated_at: 2025-08-09T00:41:37Z
 url: https://github.com/astral-sh/ty/issues/948
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Hang in flax/nnx/variablelib.py
 
 ---
 
-_Issue opened by @marcelroed on 2025-08-06 17:18_
+_@marcelroed_
 
 ### Summary
 

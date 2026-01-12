@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T19:20:16Z
 updated_at: 2025-11-27T09:47:43Z
 url: https://github.com/astral-sh/uv/issues/3621
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `requirements.txt` allows editable paths to be quoted
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-15 19:20_
+_@charliermarsh_
 
 It seems like `requirements.txt` allows you to put editable paths in quotes (single or double). It does _not_ allow quotes elsewhere though:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-19T21:22:52Z
 updated_at: 2024-10-20T16:07:57Z
 url: https://github.com/astral-sh/uv/issues/8374
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # `uv` ignores the `requires_python` specification
 
 ---
 
-_Issue opened by @alphavector on 2024-10-19 21:22_
+_@alphavector_
 
 > Disclaimer: I am not the author of the dependencies being installed, install them at your own risk, in an isolated environment
 

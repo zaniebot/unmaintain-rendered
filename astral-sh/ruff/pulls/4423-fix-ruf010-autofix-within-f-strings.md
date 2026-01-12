@@ -12,14 +12,14 @@ head: fix-ruf010-auto-fix
 created_at: 2023-05-13T23:09:34Z
 updated_at: 2023-05-15T06:40:20Z
 url: https://github.com/astral-sh/ruff/pull/4423
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix `RUF010` autofix within f-strings
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-13 23:09_
+_@JonathanPlasse_
 
 - Close #4414
 

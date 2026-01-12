@@ -14,14 +14,14 @@ head: alex/no-redknot-ecosystem
 created_at: 2025-01-23T10:37:20Z
 updated_at: 2025-01-23T11:01:31Z
 url: https://github.com/astral-sh/ruff/pull/15687
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Don't run the linter ecosystem check on PRs that only touch red-knot crates
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-23 10:37_
+_@AlexWaygood_
 
 ## Summary
 

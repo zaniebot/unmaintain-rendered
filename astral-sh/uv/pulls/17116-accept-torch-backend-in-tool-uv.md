@@ -13,14 +13,14 @@ head: charlie/tool-uv
 created_at: 2025-12-13T02:46:06Z
 updated_at: 2025-12-19T14:40:59Z
 url: https://github.com/astral-sh/uv/pull/17116
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Accept `--torch-backend` in `[tool.uv]`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 02:46_
+_@charliermarsh_
 
 ## Summary
 

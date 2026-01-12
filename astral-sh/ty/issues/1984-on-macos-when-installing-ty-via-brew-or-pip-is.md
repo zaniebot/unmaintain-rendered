@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T08:26:08Z
 updated_at: 2025-12-17T08:49:20Z
 url: https://github.com/astral-sh/ty/issues/1984
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # On MacOS when installing ty via brew or pip is installing the older version
 
 ---
 
-_Issue opened by @mangiucugna on 2025-12-17 08:26_
+_@mangiucugna_
 
 ### Summary
 

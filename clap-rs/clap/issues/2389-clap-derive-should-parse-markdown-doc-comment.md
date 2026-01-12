@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-03-06T20:39:44Z
 updated_at: 2025-02-03T22:38:07Z
 url: https://github.com/clap-rs/clap/issues/2389
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Clap derive should parse markdown doc comment into normal text
 
 ---
 
-_Issue opened by @ducaale on 2021-03-06 20:39_
+_@ducaale_
 
 Maintainer's notes:
 - Workaround: `verbatim_doc_comment` attribute

@@ -14,14 +14,14 @@ head: konsti/reqwest-explicit-error
 created_at: 2024-10-22T10:48:47Z
 updated_at: 2024-10-25T09:10:19Z
 url: https://github.com/astral-sh/uv/pull/8444
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Always attach URL to network errors
 
 ---
 
-_Pull request opened by @konstin on 2024-10-22 10:48_
+_@konstin_
 
 Due to the enduring problems with #8144 and related issues, I've opted for a more systemic approach and switched all reqwest errors to not use the implicit-try-fallthrough `#[from]`, but an explicit `#[source]` with a URL attached (except for when there is only one or no URL). This guarantees that we get the URL that failed, and helps identifying the responsible code path.
 

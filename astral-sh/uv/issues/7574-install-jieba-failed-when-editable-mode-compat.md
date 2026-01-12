@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T09:08:10Z
 updated_at: 2024-09-21T01:46:14Z
 url: https://github.com/astral-sh/uv/issues/7574
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Install jieba failed, when `editable_mode = "compat"`
 
 ---
 
-_Issue opened by @fanck0605 on 2024-09-20 09:08_
+_@fanck0605_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

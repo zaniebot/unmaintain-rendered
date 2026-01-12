@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T10:10:21Z
 updated_at: 2025-08-04T01:36:55Z
 url: https://github.com/astral-sh/uv/issues/14414
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Fail to download python(3.11) on Windows platform
 
 ---
 
-_Issue opened by @PeerXu on 2025-07-02 10:10_
+_@PeerXu_
 
 ### Summary
 

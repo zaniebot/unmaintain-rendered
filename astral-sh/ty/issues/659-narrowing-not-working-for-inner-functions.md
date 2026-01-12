@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-15T07:02:50Z
 updated_at: 2025-07-25T07:11:12Z
 url: https://github.com/astral-sh/ty/issues/659
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Narrowing not working for inner functions
 
 ---
 
-_Issue opened by @galah92 on 2025-06-15 07:02_
+_@galah92_
 
 ### Summary
 

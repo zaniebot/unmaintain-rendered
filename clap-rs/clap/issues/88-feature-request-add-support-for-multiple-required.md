@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-04-29T16:26:57Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/88
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Feature request: Add support for multiple required arguments, e.g. [-u <mode> <file> <mime>]
 
 ---
 
-_Issue opened by @Byron on 2015-04-29 16:26_
+_@Byron_
 
 I need to support an optional argument like the one noted in the subject, but was unable to achieve this. Apparently there is no support for multiple arguments of a single flag. `docopt` can do this though, and I believe its a useful feature to have.
 

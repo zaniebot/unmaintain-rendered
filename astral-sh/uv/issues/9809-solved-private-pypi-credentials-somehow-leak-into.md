@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T13:50:45Z
 updated_at: 2024-12-17T16:53:55Z
 url: https://github.com/astral-sh/uv/issues/9809
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # [Solved] - Private PyPi Credentials Somehow Leak into `uv.lock'
 
 ---
 
-_Issue opened by @RoTorEx on 2024-12-11 13:50_
+_@RoTorEx_
 
 # BUG - Private PyPi Credentials Somehow Leak into `uv.lock'
 

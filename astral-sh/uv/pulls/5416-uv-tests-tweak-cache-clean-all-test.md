@@ -12,14 +12,14 @@ head: ag/cache-clear-tweak
 created_at: 2024-07-24T16:03:53Z
 updated_at: 2024-07-24T17:41:36Z
 url: https://github.com/astral-sh/uv/pull/5416
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # uv/tests: tweak cache clean all test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-24 16:03_
+_@BurntSushi_
 
 The test asserts that 28 files were removed. But on my system, 27 files
 are removed.

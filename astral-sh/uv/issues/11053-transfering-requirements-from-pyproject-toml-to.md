@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T08:52:09Z
 updated_at: 2025-01-29T13:54:06Z
 url: https://github.com/astral-sh/uv/issues/11053
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Transfering requirements from pyproject.toml to script drops index
 
 ---
 
-_Issue opened by @BenediktMaag on 2025-01-29 08:52_
+_@BenediktMaag_
 
 ### Summary
 

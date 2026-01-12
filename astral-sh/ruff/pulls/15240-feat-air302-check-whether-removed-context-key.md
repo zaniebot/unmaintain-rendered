@@ -13,14 +13,14 @@ head: context-get-invalid-key
 created_at: 2025-01-03T15:32:51Z
 updated_at: 2025-01-23T08:50:13Z
 url: https://github.com/astral-sh/ruff/pull/15240
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # feat(AIR302): check whether removed context key "conf" is access through context.get(...)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-03 15:32_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

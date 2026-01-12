@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-11T17:20:36Z
 updated_at: 2024-03-11T18:57:27Z
 url: https://github.com/astral-sh/ruff/issues/10343
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Allow trailing comments after supression comments
 
 ---
 
-_Issue opened by @zanieb on 2024-03-11 17:20_
+_@zanieb_
 
 We should allow content to follow suppression comments e.g. to provide a reason for the `# noqa`.
 

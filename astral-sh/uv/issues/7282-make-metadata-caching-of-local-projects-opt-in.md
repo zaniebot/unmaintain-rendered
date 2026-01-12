@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-11T06:15:56Z
 updated_at: 2024-10-16T19:38:33Z
 url: https://github.com/astral-sh/uv/issues/7282
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Make metadata caching of local projects opt-in when it is dynamic?
 
 ---
 
-_Issue opened by @sbidoul on 2024-09-11 06:15_
+_@sbidoul_
 
 I regularly hit caching gotchas with projects using dynamic dependencies.
 

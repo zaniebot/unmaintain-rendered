@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-11-23T11:22:44Z
 updated_at: 2020-02-02T02:12:10Z
 url: https://github.com/clap-rs/clap/issues/1387
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # yaml-rust dependency is outdated
 
 ---
 
-_Issue opened by @kpcyrd on 2018-11-23 11:22_
+_@kpcyrd_
 
 ### Affected Version of clap
 ```

@@ -14,14 +14,14 @@ head: micha/f-string-format-spec
 created_at: 2025-06-16T09:29:55Z
 updated_at: 2025-06-17T07:06:15Z
 url: https://github.com/astral-sh/ruff/pull/18704
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Hug closing `}` when f-string expression has a  format specifier
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-16 09:29_
+_@MichaReiser_
 
 ## Summary
 

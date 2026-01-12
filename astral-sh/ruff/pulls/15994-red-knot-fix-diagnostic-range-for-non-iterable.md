@@ -14,14 +14,14 @@ head: david/unpacking-diagnostic-range
 created_at: 2025-02-06T14:25:56Z
 updated_at: 2025-02-06T14:36:24Z
 url: https://github.com/astral-sh/ruff/pull/15994
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Fix diagnostic range for non-iterable unpacking assignments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-06 14:25_
+_@sharkdp_
 
 ## Summary
 

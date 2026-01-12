@@ -11,14 +11,14 @@ head: patch-2
 created_at: 2025-08-12T10:59:40Z
 updated_at: 2025-08-12T10:59:40Z
 url: https://github.com/astral-sh/uv/pull/15235
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # chore: replaced the license link
 
 ---
 
-_Pull request opened by @Olexandr88 on 2025-08-12 10:59_
+_@Olexandr88_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

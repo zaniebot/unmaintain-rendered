@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-23T04:13:40Z
 updated_at: 2025-05-13T12:35:39Z
 url: https://github.com/astral-sh/ruff/issues/13067
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Change default value for `ruff.configurationPreference` to `"filesystemFirst"`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-23 04:13_
+_@dhruvmanila_
 
 There have been multiple requests to change the default value for [`ruff.configurationPreference`](https://docs.astral.sh/ruff/editors/settings/#configurationpreference) server setting to `"filesystemFirst"`:
 * https://github.com/astral-sh/ruff/issues/12514

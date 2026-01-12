@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-08T02:12:58Z
 updated_at: 2022-12-08T17:07:28Z
 url: https://github.com/astral-sh/ruff/issues/1136
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PLW0120 (else clause on loop without a break statement) incorrectly flagged
 
 ---
 
-_Issue opened by @eddyg on 2022-12-08 02:12_
+_@eddyg_
 
 ```shell
 ❯ ruff --version

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T20:32:13Z
 updated_at: 2025-04-28T15:31:57Z
 url: https://github.com/astral-sh/uv/issues/12681
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Altering editable sources when building a docker image
 
 ---
 
-_Issue opened by @gibsondan on 2025-04-04 20:32_
+_@gibsondan_
 
 ### Question
 

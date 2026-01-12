@@ -12,14 +12,14 @@ head: master
 created_at: 2025-07-01T20:41:19Z
 updated_at: 2025-07-09T22:45:10Z
 url: https://github.com/clap-rs/clap/pull/6057
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(help): Allow styling for inline context
 
 ---
 
-_Pull request opened by @GilShoshan94 on 2025-07-01 20:41_
+_@GilShoshan94_
 
 Styles for [aliases], [default], [env], and [possible values] as well as their values
 

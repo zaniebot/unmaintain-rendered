@@ -12,14 +12,14 @@ head: fix-B025-location
 created_at: 2022-12-24T16:25:16Z
 updated_at: 2022-12-24T17:22:12Z
 url: https://github.com/astral-sh/ruff/pull/1360
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix B025 location
 
 ---
 
-_Pull request opened by @harupy on 2022-12-24 16:25_
+_@harupy_
 
 Closes #1359 
 

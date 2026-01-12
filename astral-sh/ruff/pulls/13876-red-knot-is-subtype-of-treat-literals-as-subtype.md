@@ -13,14 +13,14 @@ head: david/subtype-fixes
 created_at: 2024-10-22T10:16:34Z
 updated_at: 2024-10-22T11:32:54Z
 url: https://github.com/astral-sh/ruff/pull/13876
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] is_subtype_of: treat literals as subtype of 'object'
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-22 10:16_
+_@sharkdp_
 
 ## Summary
 

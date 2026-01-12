@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-05T21:53:46Z
 updated_at: 2024-11-05T22:00:50Z
 url: https://github.com/astral-sh/uv/issues/8846
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # `tool.uv.sources` ignored for `uv pip sync`
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2024-11-05 21:53_
+_@nathanjmcdougall_
 
 When using the following `pyproject.toml` file:
 

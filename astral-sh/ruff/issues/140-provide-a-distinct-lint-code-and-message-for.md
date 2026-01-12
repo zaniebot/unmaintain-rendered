@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-10T17:06:35Z
 updated_at: 2022-12-31T18:21:16Z
 url: https://github.com/astral-sh/ruff/issues/140
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Provide a distinct lint code and message for undefined names in starred-import contexts
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-10 17:06_
+_@charliermarsh_
 
 See: #138.
 

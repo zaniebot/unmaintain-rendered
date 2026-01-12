@@ -14,14 +14,14 @@ head: signature_help
 created_at: 2025-07-08T02:26:48Z
 updated_at: 2025-07-11T02:32:04Z
 url: https://github.com/astral-sh/ruff/pull/19194
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Initial implementation of signature help provider
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-08 02:26_
+_@UnboundVariable_
 
 This PR includes:
 * Implemented core signature help logic

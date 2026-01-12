@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T06:44:22Z
 updated_at: 2024-11-02T15:48:24Z
 url: https://github.com/astral-sh/uv/issues/8745
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # uv offers wrong Python when inside Docker with Rosetta in AMD linux on Mac ARM
 
 ---
 
-_Issue opened by @bepuca on 2024-11-01 06:44_
+_@bepuca_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T07:29:03Z
 updated_at: 2024-02-18T07:49:51Z
 url: https://github.com/astral-sh/uv/issues/1627
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Add homebrew install instructions to readme
 
 ---
 
-_Issue opened by @tekumara on 2024-02-18 07:29_
+_@tekumara_
 
 `brew install uv` will install uv on macos but isn't mentioned in README.md 
 

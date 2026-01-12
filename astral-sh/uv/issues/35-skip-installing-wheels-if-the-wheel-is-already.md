@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-07T01:56:27Z
 updated_at: 2023-10-07T19:26:47Z
 url: https://github.com/astral-sh/uv/issues/35
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Skip installing wheels if the wheel is already installed
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-07 01:56_
+_@charliermarsh_
 
 _No description provided._
 

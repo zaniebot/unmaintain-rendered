@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T14:37:25Z
 updated_at: 2024-10-04T15:53:49Z
 url: https://github.com/astral-sh/ruff/issues/13625
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # C416 incorrectly flags dict comprehension based on dict with tuple keys
 
 ---
 
-_Issue opened by @henribru on 2024-10-04 14:37_
+_@henribru_
 
 
 <!--

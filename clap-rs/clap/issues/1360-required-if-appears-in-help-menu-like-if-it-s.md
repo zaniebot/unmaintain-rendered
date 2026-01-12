@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-10-12T21:28:49Z
 updated_at: 2022-09-07T17:56:53Z
 url: https://github.com/clap-rs/clap/issues/1360
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # required_if() appears in help menu like if it's always required 
 
 ---
 
-_Issue opened by @ghost on 2018-10-12 21:28_
+_@ghost_
 
 ### Rust Version
 rustc 1.29.2 (17a9dc751 2018-10-05)

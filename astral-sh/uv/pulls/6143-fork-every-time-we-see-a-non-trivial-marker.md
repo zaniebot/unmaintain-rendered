@@ -12,14 +12,14 @@ head: ag/aggressive-forking
 created_at: 2024-08-16T12:14:01Z
 updated_at: 2025-07-22T11:34:08Z
 url: https://github.com/astral-sh/uv/pull/6143
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # fork every time we see a non-trivial marker ("aggressive" forking)
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-16 12:14_
+_@BurntSushi_
 
 This PR is a revival of #5733 on top of current `main`, as many things
 have changed since #5733.

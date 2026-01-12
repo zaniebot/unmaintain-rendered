@@ -13,14 +13,14 @@ head: dhruv/fix-ecosystem
 created_at: 2025-01-20T04:47:54Z
 updated_at: 2025-01-20T04:56:23Z
 url: https://github.com/astral-sh/ruff/pull/15604
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Ignore notebook with syntax error in ecosystem
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-20 04:47_
+_@dhruvmanila_
 
 I'll open a PR in `openai/openai-cookbook` to fix these syntax errors later but for now let's just ignore the notebook.
 

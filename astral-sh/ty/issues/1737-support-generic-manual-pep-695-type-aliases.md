@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T08:19:19Z
 updated_at: 2025-12-19T12:12:02Z
 url: https://github.com/astral-sh/ty/issues/1737
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support generic "manual" PEP 695 type aliases
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-03 08:19_
+_@sharkdp_
 
 Support generic PEP 695 aliases if they are manually constructed via `TypeAliasType(…)`:
 

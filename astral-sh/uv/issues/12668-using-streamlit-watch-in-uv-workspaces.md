@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T11:25:33Z
 updated_at: 2025-04-04T11:25:33Z
 url: https://github.com/astral-sh/uv/issues/12668
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Using streamlit watch in uv workspaces
 
 ---
 
-_Issue opened by @NixBiks on 2025-04-04 11:25_
+_@NixBiks_
 
 ### Question
 

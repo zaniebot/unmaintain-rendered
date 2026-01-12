@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T03:49:28Z
 updated_at: 2025-05-07T15:08:33Z
 url: https://github.com/astral-sh/ruff/issues/11912
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server`: Implement snapshot tests for linting
 
 ---
 
-_Issue opened by @snowsignal on 2024-06-18 03:49_
+_@snowsignal_
 
 Specifically, we need snapshot tests to verify that diagnostics remain consistent for various test documents.
 

@@ -13,14 +13,14 @@ head: brent/fast003-0.10
 created_at: 2025-03-11T13:45:26Z
 updated_at: 2025-03-11T14:59:47Z
 url: https://github.com/astral-sh/ruff/pull/16625
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`FastAPI`] Stabilize `fast-api-unused-path-parameter` (`FAST003`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 13:45_
+_@ntBre_
 
 ## Summary
 

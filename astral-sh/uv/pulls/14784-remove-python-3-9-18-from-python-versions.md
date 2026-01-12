@@ -13,14 +13,14 @@ head: konsti/remove-python-3.9.18
 created_at: 2025-07-21T10:52:37Z
 updated_at: 2025-07-21T12:28:01Z
 url: https://github.com/astral-sh/uv/pull/14784
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:24Z
 ```
 
 # Remove Python 3.9.18 from `.python-versions`
 
 ---
 
-_Pull request opened by @konstin on 2025-07-21 10:52_
+_@konstin_
 
 Python 3.9.18 is not used in the tests anymore.
 

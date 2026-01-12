@@ -13,14 +13,14 @@ head: dependabot/cargo/codspeed-criterion-compat-2.3.1
 created_at: 2023-11-06T08:29:52Z
 updated_at: 2023-11-06T14:32:55Z
 url: https://github.com/astral-sh/ruff/pull/8508
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump codspeed-criterion-compat from 2.3.0 to 2.3.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-06 08:29_
+_@dependabot_
 
 Bumps [codspeed-criterion-compat](https://github.com/CodSpeedHQ/codspeed-rust) from 2.3.0 to 2.3.1.
 <details>

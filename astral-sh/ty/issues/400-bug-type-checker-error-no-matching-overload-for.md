@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-15T06:52:31Z
 updated_at: 2025-05-15T12:27:24Z
 url: https://github.com/astral-sh/ty/issues/400
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Bug: Type Checker Error: "no-matching-overload" for dataclasses.asdict with keyword argument unpacking
 
 ---
 
-_Issue opened by @jonathanreichhealthscope on 2025-05-15 06:52_
+_@jonathanreichhealthscope_
 
 ## Summary
 

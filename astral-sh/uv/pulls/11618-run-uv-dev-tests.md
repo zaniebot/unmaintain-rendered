@@ -13,14 +13,14 @@ head: konsti/uv-dev-tests
 created_at: 2025-02-19T12:24:24Z
 updated_at: 2025-02-20T22:28:11Z
 url: https://github.com/astral-sh/uv/pull/11618
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Run uv-dev tests
 
 ---
 
-_Pull request opened by @konstin on 2025-02-19 12:24_
+_@konstin_
 
 In #6827, we switched the uv-dev binary to not being built by default. As an unintended side effect, we were also stopping to run the tests that ensured the schema was up-to-date.
 

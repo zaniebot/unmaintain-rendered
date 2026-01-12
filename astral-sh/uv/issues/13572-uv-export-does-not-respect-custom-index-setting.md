@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-21T11:47:15Z
 updated_at: 2025-09-08T16:50:58Z
 url: https://github.com/astral-sh/uv/issues/13572
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv export` does not respect custom index setting from `[tool.uv.sources]` when exporting to `requirements.txt`
 
 ---
 
-_Issue opened by @ShIRannx on 2025-05-21 11:47_
+_@ShIRannx_
 
 # `uv export` does not respect custom index setting from `[tool.uv.sources]` when exporting to `requirements.txt`
 

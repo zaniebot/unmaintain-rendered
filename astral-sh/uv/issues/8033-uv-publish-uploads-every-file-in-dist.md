@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T06:01:24Z
 updated_at: 2024-10-12T21:34:00Z
 url: https://github.com/astral-sh/uv/issues/8033
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv publish` uploads every file in `/dist`
 
 ---
 
-_Issue opened by @david-waterworth on 2024-10-09 06:01_
+_@david-waterworth_
 
 I'm not sure if this expected but I noticed `uv publish` uploaded every single file it found in `/dist` to (our private) pypi. On the plus side this surfaced a build script bug (post-build clean step not running) - but it was a little suprising.
 

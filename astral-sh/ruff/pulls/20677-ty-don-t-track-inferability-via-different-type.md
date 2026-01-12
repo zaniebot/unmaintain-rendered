@@ -15,14 +15,14 @@ head: dcreager/non-non-inferable
 created_at: 2025-10-02T00:28:54Z
 updated_at: 2025-10-16T19:59:48Z
 url: https://github.com/astral-sh/ruff/pull/20677
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Don't track inferability via different `Type` variants
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-02 00:28_
+_@dcreager_
 
 We have to track whether a typevar appears in a position where it's inferable or not. In a non-inferable position (in the body of the generic class or function that binds it), assignability must hold for every possible specialization of the typevar. In an inferable position, it only needs to hold for _some_ specialization. https://github.com/astral-sh/ruff/pull/20093 is working on using constraint sets to model assignability of typevars, and the constraint sets that we produce will be the same for inferable vs non-inferable typevars; what changes is what we _compare_ that constraint set to. (For a non-inferable typevar, the constraint set must equal the set of valid specializations; for an inferable typevar, it must not be `never`.)
 

@@ -14,14 +14,14 @@ head: david/narrowing-for-enum-methods
 created_at: 2025-10-29T20:29:02Z
 updated_at: 2025-10-30T14:38:59Z
 url: https://github.com/astral-sh/ruff/pull/21130
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Reachability and narrowing for enum methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-29 20:29_
+_@sharkdp_
 
 ## Summary
 

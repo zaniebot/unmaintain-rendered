@@ -13,14 +13,14 @@ head: charlie/formatter-ii
 created_at: 2023-02-13T23:32:01Z
 updated_at: 2023-02-15T03:27:54Z
 url: https://github.com/astral-sh/ruff/pull/2873
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add `StaticTextSlice` kind to `FormatElement` enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 23:32_
+_@charliermarsh_
 
 Given our current parser abstractions, we need the ability to tell `ruff_formatter` to print a pre-defined slice from a fixed string of source code, which we've introduced here as `FormatElement::StaticTextSlice`.
 

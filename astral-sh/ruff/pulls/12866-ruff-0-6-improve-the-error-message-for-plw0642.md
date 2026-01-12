@@ -12,14 +12,14 @@ head: self-assignment-message
 created_at: 2024-08-13T16:05:40Z
 updated_at: 2024-08-13T16:19:24Z
 url: https://github.com/astral-sh/ruff/pull/12866
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [ruff 0.6] Improve the error message for PLW0642
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-13 16:05_
+_@AlexWaygood_
 
 A followup to #12857, as suggested by @dhruvmanila in https://github.com/astral-sh/ruff/pull/12857#discussion_r1715313031
 

@@ -13,14 +13,14 @@ head: david/classmethods
 created_at: 2025-02-21T13:16:20Z
 updated_at: 2025-02-24T08:55:38Z
 url: https://github.com/astral-sh/ruff/pull/16305
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Add support for `@classmethod`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-21 13:16_
+_@sharkdp_
 
 ## Summary
 

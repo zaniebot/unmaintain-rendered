@@ -13,14 +13,14 @@ head: zb/freebsd-2
 created_at: 2024-12-04T04:55:44Z
 updated_at: 2024-12-04T05:26:11Z
 url: https://github.com/astral-sh/uv/pull/9627
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Disable checkout in and renable freebsd test
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-04 04:55_
+_@zanieb_
 
 Testing commit https://github.com/acj/freebsd-firecracker-action/commit/4121afd0dc0c96b86c2b3b27e70e50c9f3921387
 

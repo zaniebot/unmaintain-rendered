@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T09:10:17Z
 updated_at: 2025-12-08T09:21:23Z
 url: https://github.com/astral-sh/uv/issues/17023
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # `uv run` always syncs dev dependencies in docker container
 
 ---
 
-_Issue opened by @jcayzac on 2025-12-08 09:10_
+_@jcayzac_
 
 ### Summary
 

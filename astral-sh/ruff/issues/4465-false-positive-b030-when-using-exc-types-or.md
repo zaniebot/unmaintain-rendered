@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T06:28:52Z
 updated_at: 2023-05-18T00:54:10Z
 url: https://github.com/astral-sh/ruff/issues/4465
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive `B030` when using `*exc_types or ValueError`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-17 06:28_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

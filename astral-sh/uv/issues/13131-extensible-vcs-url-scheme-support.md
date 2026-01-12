@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-27T13:44:23Z
 updated_at: 2025-05-04T09:06:36Z
 url: https://github.com/astral-sh/uv/issues/13131
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Extensible VCS/URL scheme support.
 
 ---
 
-_Issue opened by @oh-ok on 2025-04-27 13:44_
+_@oh-ok_
 
 ### Summary
 

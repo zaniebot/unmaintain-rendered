@@ -13,14 +13,14 @@ head: charlie/value
 created_at: 2023-08-23T01:41:23Z
 updated_at: 2023-08-23T14:25:42Z
 url: https://github.com/astral-sh/ruff/pull/6799
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Implement `FormatPatternMatchValue`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 01:41_
+_@charliermarsh_
 
 ## Summary
 

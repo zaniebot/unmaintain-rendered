@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-28T14:27:20Z
 updated_at: 2025-07-29T00:21:33Z
 url: https://github.com/astral-sh/ruff/issues/19601
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM101 fix introduces errors by normalizing f-strings
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-28 14:27_
+_@dscorbett_
 
 ### Summary
 

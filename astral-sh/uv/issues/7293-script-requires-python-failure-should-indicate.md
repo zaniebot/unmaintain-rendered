@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T15:23:05Z
 updated_at: 2024-09-12T19:19:44Z
 url: https://github.com/astral-sh/uv/issues/7293
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Script `requires-python` failure should indicate Python version source
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-11 15:23_
+_@charliermarsh_
 
 Like #7218, but for PEP 723 scripts.
 

@@ -14,14 +14,14 @@ head: micha/code-actions-playground
 created_at: 2025-11-27T08:29:35Z
 updated_at: 2025-11-27T09:59:59Z
 url: https://github.com/astral-sh/ruff/pull/21655
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Add code action support to playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-27 08:29_
+_@MichaReiser_
 
 ## Summary
 

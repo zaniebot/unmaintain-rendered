@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T16:29:17Z
 updated_at: 2025-08-05T17:28:57Z
 url: https://github.com/astral-sh/uv/issues/15084
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Reflink failures on macOS 15.5
 
 ---
 
-_Issue opened by @mertdeveci5 on 2025-08-05 16:29_
+_@mertdeveci5_
 
 ### Summary
 

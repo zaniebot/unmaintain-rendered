@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-22T21:17:53Z
 updated_at: 2025-07-03T14:52:13Z
 url: https://github.com/clap-rs/clap/issues/5925
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support for multiple environment variables
 
 ---
 
-_Issue opened by @orhun on 2025-02-22 21:17_
+_@orhun_
 
 ### Please complete the following tasks
 

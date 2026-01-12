@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-25T14:43:04Z
 updated_at: 2025-12-01T16:44:48Z
 url: https://github.com/astral-sh/uv/issues/10154
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Conditionally allow dependencies to resolve where specific versions conflict with optional dependency bounds
 
 ---
 
-_Issue opened by @mjlbach on 2024-12-25 14:43_
+_@mjlbach_
 
 # Description of problem
 Some optional dependencies can introduce additional version constraints. E.g., I may introduce a package that requires numpy pinned to version 1.x.x. I would ideally like this not to impact the resolved packages when not using this optional dependency.

@@ -13,14 +13,14 @@ head: charlie/clo
 created_at: 2025-01-23T02:20:49Z
 updated_at: 2025-01-23T09:59:27Z
 url: https://github.com/astral-sh/uv/pull/10880
-synced_at: 2026-01-10T11:45:16Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Remove dependencies clone in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-23 02:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: feature/add-dlint
 created_at: 2023-05-17T22:02:57Z
 updated_at: 2023-05-24T07:56:25Z
 url: https://github.com/astral-sh/ruff/pull/4482
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-17 22:02_
+_@qdegraaf_
 
 Rules are listed below. Some still need to be checked for relevance, already filtered out some Python 2 modules. Putting them here to keep track of work while availability is scattered.
 

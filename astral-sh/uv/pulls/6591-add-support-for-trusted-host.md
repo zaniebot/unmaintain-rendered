@@ -15,14 +15,14 @@ head: charlie/trust
 created_at: 2024-08-24T21:51:11Z
 updated_at: 2024-08-27T19:21:05Z
 url: https://github.com/astral-sh/uv/pull/6591
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Add support for `--trusted-host`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 21:51_
+_@charliermarsh_
 
 ## Summary
 

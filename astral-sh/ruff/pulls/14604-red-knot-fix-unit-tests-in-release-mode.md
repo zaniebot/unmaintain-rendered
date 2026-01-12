@@ -13,14 +13,14 @@ head: david/fix-14594
 created_at: 2024-11-26T09:34:43Z
 updated_at: 2024-11-26T14:40:05Z
 url: https://github.com/astral-sh/ruff/pull/14604
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Fix unit tests in release mode
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-26 09:34_
+_@sharkdp_
 
 ## Summary
 

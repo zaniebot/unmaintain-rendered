@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-01T16:16:06Z
 updated_at: 2024-06-02T09:03:16Z
 url: https://github.com/astral-sh/ruff/issues/11679
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # File directive `# flake8: noqa` also suppresses isort errors
 
 ---
 
-_Issue opened by @albertvillanova on 2024-06-01 16:16_
+_@albertvillanova_
 
 The file directive `# flake8: noqa` does not only suppress `flake8` errors but also `isort` ones.
 

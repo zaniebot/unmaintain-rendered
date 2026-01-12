@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-19T20:25:06Z
 updated_at: 2024-06-19T21:25:46Z
 url: https://github.com/astral-sh/ruff/issues/11943
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff does not recognise the fictitious `builtins.ellipsis` type from typeshed
 
 ---
 
-_Issue opened by @RandallPittmanOrSt on 2024-06-19 20:25_
+_@RandallPittmanOrSt_
 
 `ellipsis` is a valid name in type signatures, but Ruff doesn't seem to have it its grammar.
 

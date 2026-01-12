@@ -12,14 +12,14 @@ head: fixup-invalid-quotes
 created_at: 2023-11-22T09:56:21Z
 updated_at: 2023-11-22T10:00:14Z
 url: https://github.com/astral-sh/uv/pull/485
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Fixup for `>= '2.7'`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-22 09:56_
+_@konstin_
 
 Fixup to allow parsing https://pypi.org/simple/shellingham/?format=application/vnd.pypi.simple.v1+json
 

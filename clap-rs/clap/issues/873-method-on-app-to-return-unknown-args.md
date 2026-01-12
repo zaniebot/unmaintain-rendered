@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-02-24T17:00:17Z
 updated_at: 2021-04-06T18:31:48Z
 url: https://github.com/clap-rs/clap/issues/873
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Method on App to return unknown args
 
 ---
 
-_Issue opened by @jsgf on 2017-02-24 17:00_
+_@jsgf_
 
 
 ### Rust Version

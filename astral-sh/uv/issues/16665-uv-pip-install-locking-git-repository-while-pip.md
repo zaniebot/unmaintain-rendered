@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T13:51:39Z
 updated_at: 2025-11-12T14:06:15Z
 url: https://github.com/astral-sh/uv/issues/16665
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # `uv pip install` locking git repository, while `pip` does not
 
 ---
 
-_Issue opened by @Luthaf on 2025-11-10 13:51_
+_@Luthaf_
 
 ### Summary
 

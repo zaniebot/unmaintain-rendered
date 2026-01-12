@@ -14,14 +14,14 @@ head: shallow-copy-environ
 created_at: 2024-11-10T08:05:31Z
 updated_at: 2024-11-15T10:31:38Z
 url: https://github.com/astral-sh/ruff/pull/14241
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pylint`] Implement `shallow-copy-environ` (`W1507`)
 
 ---
 
-_Pull request opened by @harupy on 2024-11-10 08:05_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

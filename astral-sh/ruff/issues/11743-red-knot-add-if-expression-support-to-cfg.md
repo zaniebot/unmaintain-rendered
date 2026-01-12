@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T19:27:57Z
 updated_at: 2024-06-06T10:40:45Z
 url: https://github.com/astral-sh/ruff/issues/11743
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] add if-expression support to CFG
 
 ---
 
-_Issue opened by @carljm on 2024-06-04 19:27_
+_@carljm_
 
 We have if statement support, it will be useful to see how control flow within an expression works, too.
 

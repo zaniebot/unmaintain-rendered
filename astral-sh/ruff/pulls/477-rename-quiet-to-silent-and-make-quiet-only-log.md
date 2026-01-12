@@ -12,14 +12,14 @@ head: silent
 created_at: 2022-10-26T19:04:03Z
 updated_at: 2022-11-20T01:59:35Z
 url: https://github.com/astral-sh/ruff/pull/477
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Rename --quiet to --silent and make --quiet only log errors
 
 ---
 
-_Pull request opened by @andersk on 2022-10-26 19:04_
+_@andersk_
 
 Fixes #476.
 

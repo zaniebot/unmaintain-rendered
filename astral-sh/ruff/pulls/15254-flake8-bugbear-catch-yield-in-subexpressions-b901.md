@@ -13,14 +13,14 @@ head: refactor/b901_missing_yield_subexpressions
 created_at: 2025-01-04T12:40:32Z
 updated_at: 2025-01-21T18:02:35Z
 url: https://github.com/astral-sh/ruff/pull/15254
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [flake8-bugbear] Catch yield in subexpressions (B901) (#14453)
 
 ---
 
-_Pull request opened by @kaspell on 2025-01-04 12:40_
+_@kaspell_
 
 ## Summary
 

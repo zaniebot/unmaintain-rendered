@@ -14,14 +14,14 @@ head: charlie/C417
 created_at: 2023-09-03T13:26:17Z
 updated_at: 2023-09-03T13:40:22Z
 url: https://github.com/astral-sh/ruff/pull/7081
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Support length-2 lists in dictionary comprehension rewrites
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 13:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7071.
 

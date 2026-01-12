@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-04-29T11:20:28Z
 updated_at: 2020-04-26T10:14:12Z
 url: https://github.com/clap-rs/clap/issues/1461
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Fatal internal error when running with some incorrect options
 
 ---
 
-_Issue opened by @agyx on 2019-04-29 11:20_
+_@agyx_
 
 ### Rust Version
 

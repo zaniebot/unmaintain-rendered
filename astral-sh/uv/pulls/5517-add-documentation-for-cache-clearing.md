@@ -14,14 +14,14 @@ head: charlie/cache-docs
 created_at: 2024-07-28T17:27:53Z
 updated_at: 2024-07-30T14:38:20Z
 url: https://github.com/astral-sh/uv/pull/5517
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Add documentation for cache clearing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 17:27_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/5391#issuecomment-2248757705
 

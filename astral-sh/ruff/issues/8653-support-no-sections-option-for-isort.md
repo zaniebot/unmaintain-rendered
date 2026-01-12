@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-13T15:05:39Z
 updated_at: 2023-11-14T21:45:52Z
 url: https://github.com/astral-sh/ruff/issues/8653
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # support no_sections option for isort
 
 ---
 
-_Issue opened by @jelmer on 2023-11-13 15:05_
+_@jelmer_
 
 ruff's isort doesn't support the ``no_sections`` option that isort upstream has.  This option puts all import sinto the same import bucket.
 

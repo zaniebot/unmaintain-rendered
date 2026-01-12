@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T22:51:43Z
 updated_at: 2024-02-09T21:03:28Z
 url: https://github.com/astral-sh/ruff/issues/9869
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Remove unnecessary string allocation from the parser
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-06 22:51_
+_@charliermarsh_
 
 _No description provided._
 

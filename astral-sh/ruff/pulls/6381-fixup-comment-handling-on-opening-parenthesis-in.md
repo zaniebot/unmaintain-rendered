@@ -13,14 +13,14 @@ head: charlie/inner-parenthesis-function
 created_at: 2023-08-07T02:17:36Z
 updated_at: 2023-08-07T20:03:46Z
 url: https://github.com/astral-sh/ruff/pull/6381
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fixup comment handling on opening parenthesis in function definition
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 02:17_
+_@charliermarsh_
 
 ## Summary
 

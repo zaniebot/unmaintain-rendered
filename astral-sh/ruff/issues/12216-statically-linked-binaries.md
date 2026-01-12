@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-06T14:40:03Z
 updated_at: 2024-07-06T15:32:51Z
 url: https://github.com/astral-sh/ruff/issues/12216
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Statically linked binaries
 
 ---
 
-_Issue opened by @Zaczero on 2024-07-06 14:40_
+_@Zaczero_
 
 I have decided to create a dedicated issue, as https://github.com/astral-sh/ruff-vscode/issues/563 and https://github.com/astral-sh/ruff/issues/1699 talk about it losly.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T20:47:43Z
 updated_at: 2024-07-02T21:10:52Z
 url: https://github.com/astral-sh/uv/issues/4739
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Connection retry support for `uv pip install`
 
 ---
 
-_Issue opened by @dannysepler on 2024-07-02 20:47_
+_@dannysepler_
 
 `pip install` supports the `--retries` command. According to `pip install --help`...
 

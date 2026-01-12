@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T16:21:08Z
 updated_at: 2025-01-17T08:02:36Z
 url: https://github.com/astral-sh/ruff/issues/15535
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Brace spacing when formatting f-strings is not idempotent
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-16 16:21_
+_@dscorbett_
 
 Formatting an f-string is not idempotent in Ruff 0.9.2 for an unparenthesized tuple whose first and only element starts with a brace.
 ```console

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T21:36:35Z
 updated_at: 2025-01-21T18:29:50Z
 url: https://github.com/astral-sh/uv/issues/10041
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Request: better error message when there's missing wheels
 
 ---
 
-_Issue opened by @thewh1teagle on 2024-12-19 21:36_
+_@thewh1teagle_
 
 Hello!
 I'm trying to install [`modelscope`](https://github.com/modelscope/modelscope?tab=readme-ov-file#setup-local-python-environment) on macOS m1 aarch64 using the following command:

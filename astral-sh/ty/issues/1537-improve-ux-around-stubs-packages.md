@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-13T00:26:16Z
 updated_at: 2025-12-18T00:50:47Z
 url: https://github.com/astral-sh/ty/issues/1537
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # improve UX around stubs packages
 
 ---
 
-_Issue opened by @carljm on 2025-11-13 00:26_
+_@carljm_
 
 For example, if we see that you are type-checking a project that depends on a package with a stubs package, but you don't have that stubs package installed, we could suggest that you install it.
 

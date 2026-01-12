@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T05:31:30Z
 updated_at: 2024-01-29T22:00:18Z
 url: https://github.com/astral-sh/ruff/issues/9666
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive of TCH003 on InitVar import
 
 ---
 
-_Issue opened by @jonyscathe on 2024-01-29 05:31_
+_@jonyscathe_
 
 TCH003 should not be raised on InitVar or ClassVar import even if they are only used for typing within a dataclass.
 This is because they are needed at runtime.

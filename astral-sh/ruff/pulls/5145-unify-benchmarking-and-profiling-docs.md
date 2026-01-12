@@ -14,14 +14,14 @@ head: benchmarking_and_profiling_docs
 created_at: 2023-06-16T11:38:26Z
 updated_at: 2023-06-21T10:07:00Z
 url: https://github.com/astral-sh/ruff/pull/5145
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Unify benchmarking and profiling docs
 
 ---
 
-_Pull request opened by @konstin on 2023-06-16 11:38_
+_@konstin_
 
 This moves all docs about benchmarking and profiling into CONTRIBUTING.md by moving the readme of `ruff_benchmark` and adding more information on profiling.
 

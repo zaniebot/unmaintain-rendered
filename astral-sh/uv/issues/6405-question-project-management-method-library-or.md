@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T03:58:25Z
 updated_at: 2024-08-23T13:36:54Z
 url: https://github.com/astral-sh/uv/issues/6405
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # [Question] Project management method (Library or Application)
 
 ---
 
-_Issue opened by @birdhackor on 2024-08-22 03:58_
+_@birdhackor_
 
 I test uv project management with little demo
 

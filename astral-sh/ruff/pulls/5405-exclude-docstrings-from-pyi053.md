@@ -13,14 +13,14 @@ head: PYI053-exclude-docstrings
 created_at: 2023-06-27T21:55:04Z
 updated_at: 2023-06-28T00:19:21Z
 url: https://github.com/astral-sh/ruff/pull/5405
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Exclude docstrings from PYI053
 
 ---
 
-_Pull request opened by @intgr on 2023-06-27 21:55_
+_@intgr_
 
 ## Summary
 

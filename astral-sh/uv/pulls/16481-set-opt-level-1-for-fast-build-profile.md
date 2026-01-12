@@ -13,14 +13,14 @@ head: konsti/fast-build-opt-level-1
 created_at: 2025-10-28T12:04:31Z
 updated_at: 2025-10-28T12:31:20Z
 url: https://github.com/astral-sh/uv/pull/16481
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Set opt-level 1 for fast build profile
 
 ---
 
-_Pull request opened by @konstin on 2025-10-28 12:04_
+_@konstin_
 
 Test cases:
 

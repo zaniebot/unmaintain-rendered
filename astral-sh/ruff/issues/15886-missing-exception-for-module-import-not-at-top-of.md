@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-02T21:57:24Z
 updated_at: 2025-02-06T17:29:59Z
 url: https://github.com/astral-sh/ruff/issues/15886
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Missing exception for `module-import-not-at-top-of-file-e402`
 
 ---
 
-_Issue opened by @janosh on 2025-02-02 21:57_
+_@janosh_
 
 ### Description
 

@@ -13,14 +13,14 @@ head: rename-airflow-plugin-extension-check
 created_at: 2025-01-03T04:16:48Z
 updated_at: 2025-01-23T08:50:11Z
 url: https://github.com/astral-sh/ruff/pull/15233
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # style(AIR302): rename removed_airflow_plugin_extension as check_airflow_plugin_extension
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-03 04:16_
+_@Lee-W_
 
 
 <!--

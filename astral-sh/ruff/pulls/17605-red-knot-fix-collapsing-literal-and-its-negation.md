@@ -13,14 +13,14 @@ head: cjm/unionfix
 created_at: 2025-04-24T12:36:13Z
 updated_at: 2025-04-24T13:56:08Z
 url: https://github.com/astral-sh/ruff/pull/17605
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] fix collapsing literal and its negation to object
 
 ---
 
-_Pull request opened by @carljm on 2025-04-24 12:36_
+_@carljm_
 
 ## Summary
 

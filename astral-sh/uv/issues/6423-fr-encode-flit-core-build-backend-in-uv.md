@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T12:03:01Z
 updated_at: 2024-08-22T15:41:25Z
 url: https://github.com/astral-sh/uv/issues/6423
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # FR: Encode `flit-core` build backend in `uv`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-22 12:03_
+_@chrisrodrigue_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

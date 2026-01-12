@@ -13,14 +13,14 @@ head: charlie/invert
 created_at: 2023-09-13T23:52:56Z
 updated_at: 2023-09-14T00:12:37Z
 url: https://github.com/astral-sh/ruff/pull/7372
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Invert reverse argument regardless of whether it's a boolean
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 23:52_
+_@charliermarsh_
 
 ## Summary
 

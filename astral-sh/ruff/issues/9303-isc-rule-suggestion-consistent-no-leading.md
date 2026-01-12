@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-28T20:24:45Z
 updated_at: 2023-12-31T12:38:56Z
 url: https://github.com/astral-sh/ruff/issues/9303
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ISC Rule suggestion: Consistent no leading whitespace for multiline concatenation
 
 ---
 
-_Issue opened by @mroeschke on 2023-12-28 20:24_
+_@mroeschke_
 
 As of ruff `0.1.6`, `ISC002` accepts both the following multi-line string concatenation
 

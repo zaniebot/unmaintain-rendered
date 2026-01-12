@@ -13,14 +13,14 @@ head: simplify-needs-parentheses-if-required
 created_at: 2023-08-18T16:30:15Z
 updated_at: 2023-08-21T07:34:08Z
 url: https://github.com/astral-sh/ruff/pull/6678
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Simplify IfRequired needs parentheses condition
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-18 16:30_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: cjm/unionlimit
 created_at: 2025-04-16T02:14:16Z
 updated_at: 2025-04-16T14:11:55Z
 url: https://github.com/astral-sh/ruff/pull/17418
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] make large-union benchmark slow again
 
 ---
 
-_Pull request opened by @carljm on 2025-04-16 02:14_
+_@carljm_
 
 ## Summary
 

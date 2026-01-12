@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T15:49:56Z
 updated_at: 2025-07-24T11:59:26Z
 url: https://github.com/astral-sh/ruff/issues/19287
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [pyupgrade] - UP046 incorrectly erroring for constrained TypeVars being used
 
 ---
 
-_Issue opened by @cgearing on 2025-07-11 15:49_
+_@cgearing_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T12:42:47Z
 updated_at: 2024-08-23T15:28:06Z
 url: https://github.com/astral-sh/uv/issues/1804
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Accept poetry and pipenv lockfiles for installation
 
 ---
 
-_Issue opened by @abondrn on 2024-02-21 12:42_
+_@abondrn_
 
 When `uv pip install` is passed `poetry.lock` or `Pipfile.lock` (and any optional dependency groups, or extras) instead of `requirements.txt`, it could attempt to install these in the uv environment. I can only speak for myself when I say this will speed up adoption of uv in some contexts we are using it, such as executing local tests or Docker pipelines.
 

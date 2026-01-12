@@ -14,14 +14,14 @@ head: alex/generic-protocols
 created_at: 2025-08-11T16:25:59Z
 updated_at: 2025-08-27T17:22:00Z
 url: https://github.com/astral-sh/ruff/pull/19866
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Fix the inferred interface of specialized generic protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-11 16:25_
+_@AlexWaygood_
 
 ## Summary
 

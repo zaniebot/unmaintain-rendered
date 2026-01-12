@@ -13,14 +13,14 @@ head: with-stmt-parentheses
 created_at: 2023-07-14T07:57:01Z
 updated_at: 2023-07-15T15:03:10Z
 url: https://github.com/astral-sh/ruff/pull/5758
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Parenthesize with statements
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-14 07:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

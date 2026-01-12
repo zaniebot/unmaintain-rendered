@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-09T06:56:37Z
 updated_at: 2025-03-09T15:03:24Z
 url: https://github.com/astral-sh/uv/issues/12074
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # uv add package fails with  ``package` (v0.1.1) was included because `eed-webscrapping-scripts` (v0.1.0) depends on `package``
 
 ---
 
-_Issue opened by @EED85 on 2025-03-09 06:56_
+_@EED85_
 
 ### Question
 

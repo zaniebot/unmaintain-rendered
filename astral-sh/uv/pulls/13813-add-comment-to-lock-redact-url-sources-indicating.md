@@ -13,14 +13,14 @@ head: zb/comment-red
 created_at: 2025-06-03T14:06:34Z
 updated_at: 2025-06-03T14:15:47Z
 url: https://github.com/astral-sh/uv/pull/13813
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Add comment to `lock_redact_url_sources` indicating that we do not redact the credentials
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-03 14:06_
+_@zanieb_
 
 This was previously present, but got removed at some point.
 

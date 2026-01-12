@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-24T08:07:36Z
 updated_at: 2025-10-29T10:53:43Z
 url: https://github.com/astral-sh/ruff/issues/6844
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule for missing PEP 698 `@override` decorators?
 
 ---
 
-_Issue opened by @guillp on 2023-08-24 08:07_
+_@guillp_
 
 An idea for a new rule: checking that methods in subclasses that override methods from the parent are decorated with `@override`.
 This decorator is defined in [PEP 698](https://peps.python.org/pep-0698/) and is meant to help both linters and developpers to recognize methods that are overriding methods from a parent class.

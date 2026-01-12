@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-04T19:26:51Z
 updated_at: 2023-05-08T11:56:19Z
 url: https://github.com/astral-sh/ruff/issues/4228
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Skip __debuggerskip__ variable
 
 ---
 
-_Issue opened by @propertone on 2023-05-04 19:26_
+_@propertone_
 
 [IPython 7.29](https://ipython.readthedocs.io/en/7.31.0/whatsnew/version7.html#ipython-7-29) added a feature to support a `__debuggerskip__` variable which give Pdb the ability to skip code in decorators. Similar to `__tracebackhide__`, can ruff be updated to allow the use of `__debuggerskip__` as an unused variable by default for rule F841? These are white listed [here](https://github.com/charliermarsh/ruff/blob/b71cc3789fbb91ede0fcbe2d09479feb82558d84/crates/ruff/src/rules/pyflakes/rules/unused_variable.rs#L327).
 

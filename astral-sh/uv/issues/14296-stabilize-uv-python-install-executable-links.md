@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T20:42:39Z
 updated_at: 2025-07-17T22:20:27Z
 url: https://github.com/astral-sh/uv/issues/14296
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Stabilize `uv python install` executable links
 
 ---
 
-_Issue opened by @zanieb on 2025-06-26 20:42_
+_@zanieb_
 
 This feature installs Python executables into the `bin/`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T14:46:58Z
 updated_at: 2024-10-15T23:56:26Z
 url: https://github.com/astral-sh/uv/issues/7899
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Respect named `--index` and `--default-index` values in `tool.uv.sources`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-03 14:46_
+_@charliermarsh_
 
 This is a TODO from #7481 that I want to track separately, since it's a meaningful amount of work.
 

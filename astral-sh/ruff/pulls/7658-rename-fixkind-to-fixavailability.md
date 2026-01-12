@@ -12,14 +12,14 @@ head: rename-fixkind
 created_at: 2023-09-25T14:38:52Z
 updated_at: 2023-10-02T14:57:44Z
 url: https://github.com/astral-sh/ruff/pull/7658
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Rename `FixKind` to `FixAvailability`
 
 ---
 
-_Pull request opened by @konstin on 2023-09-25 14:38_
+_@konstin_
 
 **Summary** `FixKind` feels to generic, i suggest renaming it to something like `FixAvailibility`.
 

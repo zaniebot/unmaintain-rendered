@@ -11,14 +11,14 @@ head: konsti/pubgrub-testing-script
 created_at: 2023-12-21T11:22:14Z
 updated_at: 2024-01-05T15:40:25Z
 url: https://github.com/astral-sh/uv/pull/718
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Add pubgrub testing script
 
 ---
 
-_Pull request opened by @konstin on 2023-12-21 11:22_
+_@konstin_
 
 I'm using this script to provide feedback to pubgrub changes, and it's better to have it in tree than only on my machine, even if i made it with the intent of being the only user.
 

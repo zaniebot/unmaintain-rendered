@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T10:04:04Z
 updated_at: 2025-12-29T18:00:46Z
 url: https://github.com/astral-sh/ruff/issues/21638
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Import Sorting not stable
 
 ---
 
-_Issue opened by @noahdormann on 2025-11-26 10:04_
+_@noahdormann_
 
 ### Question
 

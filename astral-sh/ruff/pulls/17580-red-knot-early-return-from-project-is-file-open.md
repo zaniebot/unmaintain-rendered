@@ -13,14 +13,14 @@ head: micha/is-file-open
 created_at: 2025-04-23T12:15:30Z
 updated_at: 2025-04-23T13:32:42Z
 url: https://github.com/astral-sh/ruff/pull/17580
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Early return from `project.is_file_open` for vendored files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-23 12:15_
+_@MichaReiser_
 
 This is partially addresses https://github.com/astral-sh/ty/issues/114
 

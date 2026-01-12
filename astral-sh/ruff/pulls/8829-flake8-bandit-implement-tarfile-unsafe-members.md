@@ -13,14 +13,14 @@ head: flake8-bandit
 created_at: 2023-11-23T16:26:35Z
 updated_at: 2023-11-25T04:03:42Z
 url: https://github.com/astral-sh/ruff/pull/8829
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`flake8-bandit`] Implement `tarfile-unsafe-members` (`S202`)
 
 ---
 
-_Pull request opened by @ischaojie on 2023-11-23 16:26_
+_@ischaojie_
 
 See: https://github.com/astral-sh/ruff/issues/1646.
 

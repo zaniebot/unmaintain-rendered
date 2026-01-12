@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T16:42:22Z
 updated_at: 2024-10-12T18:36:09Z
 url: https://github.com/astral-sh/uv/issues/8009
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # [Error]stream did not contain valid UTF-8
 
 ---
 
-_Issue opened by @sdbds on 2024-10-08 16:42_
+_@sdbds_
 
 #7726 
 

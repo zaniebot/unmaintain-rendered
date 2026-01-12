@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-07T11:03:53Z
 updated_at: 2024-03-07T16:11:21Z
 url: https://github.com/astral-sh/ruff/issues/10273
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Format breaks f-string with literal strings inside (versions 0.3.0 and 0.3.1)
 
 ---
 
-_Issue opened by @mvaled on 2024-03-07 11:03_
+_@mvaled_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

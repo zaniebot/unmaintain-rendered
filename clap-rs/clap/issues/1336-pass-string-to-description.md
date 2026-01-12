@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-08-28T18:06:25Z
 updated_at: 2021-07-22T04:50:59Z
 url: https://github.com/clap-rs/clap/issues/1336
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Pass `String` to `description`
 
 ---
 
-_Issue opened by @jmaargh on 2018-08-28 18:06_
+_@jmaargh_
 
 How do I send a heap `String` to `App::description`?
 

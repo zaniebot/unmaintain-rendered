@@ -13,14 +13,14 @@ head: charlie/eph
 created_at: 2025-07-03T19:36:20Z
 updated_at: 2025-07-14T17:18:41Z
 url: https://github.com/astral-sh/uv/pull/14447
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Use an ephemeral environment for `uv run --with` invocations
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-03 19:36_
+_@charliermarsh_
 
 ## Summary
 

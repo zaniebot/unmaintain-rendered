@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-06-23T08:22:57Z
 updated_at: 2023-01-07T00:21:48Z
 url: https://github.com/clap-rs/clap/issues/3864
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `ArgAction::Count` type error not caught at compile time
 
 ---
 
-_Issue opened by @cyqsimon on 2022-06-23 08:22_
+_@cyqsimon_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T21:22:14Z
 updated_at: 2025-02-13T01:44:16Z
 url: https://github.com/astral-sh/uv/issues/11460
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Dynamic version is not omitted when fields other than `version` are marked as dynamic
 
 ---
 
-_Issue opened by @edgarrmondragon on 2025-02-12 21:22_
+_@edgarrmondragon_
 
 ### Summary
 

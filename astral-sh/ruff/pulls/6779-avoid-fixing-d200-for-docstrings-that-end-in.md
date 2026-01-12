@@ -13,14 +13,14 @@ head: charlie/backslash
 created_at: 2023-08-22T16:15:35Z
 updated_at: 2023-08-22T16:47:11Z
 url: https://github.com/astral-sh/ruff/pull/6779
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid fixing D200 for docstrings that end in escapes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 16:15_
+_@charliermarsh_
 
 Appease the fuzzers! Closes https://github.com/astral-sh/ruff/issues/6755.
 

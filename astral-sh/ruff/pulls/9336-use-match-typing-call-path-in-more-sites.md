@@ -13,14 +13,14 @@ head: charlie/call
 created_at: 2023-12-31T19:41:56Z
 updated_at: 2023-12-31T19:54:33Z
 url: https://github.com/astral-sh/ruff/pull/9336
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use `match_typing_call_path` in more sites
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 19:41_
+_@charliermarsh_
 
 Preferable as it avoids multiple `resolve_call_path` calls internally.
 

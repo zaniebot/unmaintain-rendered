@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T18:06:53Z
 updated_at: 2026-01-09T15:53:18Z
 url: https://github.com/astral-sh/ty/issues/154
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support TypedDict (and Required, NotRequired, ReadOnly)
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:06_
+_@carljm_
 
 - [x] Introduce a new `Type` variant, basic support for class-based `TypedDict` syntax
   - [x] Parse a `TypedDict` specification from the class body

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-13T19:18:47Z
 updated_at: 2025-09-15T07:27:57Z
 url: https://github.com/astral-sh/ty/issues/1180
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Unrerported `error[invalid-assignment]` when calling class functions
 
 ---
 
-_Issue opened by @KevinDuarte on 2025-09-13 19:18_
+_@KevinDuarte_
 
 ### Summary
 

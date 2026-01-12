@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T04:12:27Z
 updated_at: 2025-03-02T10:50:02Z
 url: https://github.com/astral-sh/uv/issues/11820
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # what is the most recommended way to back up / version control venv created by uv
 
 ---
 
-_Issue opened by @binary-husky on 2025-02-27 04:12_
+_@binary-husky_
 
 ### Question
 

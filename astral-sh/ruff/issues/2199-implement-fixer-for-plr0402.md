@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T16:49:17Z
 updated_at: 2023-02-03T04:25:24Z
 url: https://github.com/astral-sh/ruff/issues/2199
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement fixer for PLR0402
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 16:49_
+_@spaceone_
 
 A fixer for `PLR0402` would be very nice and probably relatively easy:
 `import foo.bar as bar`

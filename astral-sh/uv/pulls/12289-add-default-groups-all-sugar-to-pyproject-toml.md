@@ -14,14 +14,14 @@ head: gankra/all-groups
 created_at: 2025-03-18T16:24:54Z
 updated_at: 2025-03-19T09:18:48Z
 url: https://github.com/astral-sh/uv/pull/12289
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # add `default-groups = "all"` sugar to `pyproject.toml`
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-18 16:24_
+_@Gankra_
 
 Suggested by @zanieb in #10934
 

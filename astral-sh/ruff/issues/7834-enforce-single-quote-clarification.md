@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-06T08:24:34Z
 updated_at: 2024-05-14T06:56:40Z
 url: https://github.com/astral-sh/ruff/issues/7834
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Enforce single quote - clarification
 
 ---
 
-_Issue opened by @Auric-Manteo on 2023-10-06 08:24_
+_@Auric-Manteo_
 
 I am trying to get ruff to complain about using double quotes.
 In this example I want to have single quotes instead of double quotes: `my_var="text"`

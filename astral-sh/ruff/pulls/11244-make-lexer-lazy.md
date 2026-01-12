@@ -13,14 +13,14 @@ head: dhruv/lazy-lexer
 created_at: 2024-05-02T09:12:52Z
 updated_at: 2024-05-17T11:34:12Z
 url: https://github.com/astral-sh/ruff/pull/11244
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Make `Lexer` lazy
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-02 09:12_
+_@dhruvmanila_
 
 ## Summary
 

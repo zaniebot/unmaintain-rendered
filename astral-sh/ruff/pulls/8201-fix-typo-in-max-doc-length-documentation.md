@@ -12,14 +12,14 @@ head: max-doc-length-fix-typeo
 created_at: 2023-10-25T06:17:21Z
 updated_at: 2023-10-25T06:35:02Z
 url: https://github.com/astral-sh/ruff/pull/8201
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix typo in max-doc-length documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-25 06:17_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T13:40:19Z
 updated_at: 2025-12-03T13:40:19Z
 url: https://github.com/astral-sh/uv/issues/16964
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Allow configuration of uv via loaded `.env` file
 
 ---
 
-_Issue opened by @zanieb on 2025-12-03 13:40_
+_@zanieb_
 
 This is a tracking issue for a sentiment expressed in
 

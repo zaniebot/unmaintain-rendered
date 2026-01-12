@@ -14,14 +14,14 @@ head: charlie/display
 created_at: 2023-12-29T22:22:07Z
 updated_at: 2023-12-29T22:38:08Z
 url: https://github.com/astral-sh/ruff/pull/9316
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use `Display` for formatter parse errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-29 22:22_
+_@charliermarsh_
 
 ## Summary
 

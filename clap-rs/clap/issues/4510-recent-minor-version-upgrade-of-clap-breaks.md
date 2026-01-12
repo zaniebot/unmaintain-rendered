@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-25T22:10:51Z
 updated_at: 2022-11-29T03:45:11Z
 url: https://github.com/clap-rs/clap/issues/4510
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Recent minor version upgrade of clap breaks building with a wasm target.
 
 ---
 
-_Issue opened by @0xForerunner on 2022-11-25 22:10_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

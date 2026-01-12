@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-15T09:35:16Z
 updated_at: 2024-02-29T17:57:08Z
 url: https://github.com/astral-sh/ruff/issues/9527
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Update GitHub Upload/Download artifact actions
 
 ---
 
-_Issue opened by @MichaReiser on 2024-01-15 09:35_
+_@MichaReiser_
 
 GitHub updated the upload/download artifact actions in a non-backward compatible way (the main issue is that artifacts now need a unique name). 
 

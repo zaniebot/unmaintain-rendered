@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-03-25T17:37:22Z
 updated_at: 2022-11-08T17:21:36Z
 url: https://github.com/clap-rs/clap/issues/1761
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow positional arguments from ArgGroup take value separately
 
 ---
 
-_Issue opened by @EverlastingBugstopper on 2020-03-25 17:37_
+_@EverlastingBugstopper_
 
 ### What are you trying to do?
 

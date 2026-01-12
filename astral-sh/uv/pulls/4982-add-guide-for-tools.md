@@ -14,14 +14,14 @@ head: zb/docs-tools
 created_at: 2024-07-10T22:55:29Z
 updated_at: 2024-07-15T22:04:19Z
 url: https://github.com/astral-sh/uv/pull/4982
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Add guide for tools
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-10 22:55_
+_@zanieb_
 
 _No description provided._
 

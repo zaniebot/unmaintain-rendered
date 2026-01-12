@@ -11,14 +11,14 @@ head: autofix-RUF034
 created_at: 2024-10-21T03:54:50Z
 updated_at: 2024-10-22T00:53:01Z
 url: https://github.com/astral-sh/ruff/pull/13852
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`ruff`] - add autofix for `useless-if-else` (`RUF034`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-10-21 03:54_
+_@diceroll123_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: autogenerate-visit-source-order
 created_at: 2025-04-03T15:08:54Z
 updated_at: 2025-04-20T13:03:23Z
 url: https://github.com/astral-sh/ruff/pull/17180
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Auto generate `visit_source_order`
 
 ---
 
-_Pull request opened by @Glyphack on 2025-04-03 15:08_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: isort-use-line-length
 created_at: 2023-10-26T01:05:56Z
 updated_at: 2023-10-26T01:19:55Z
 url: https://github.com/astral-sh/ruff/pull/8235
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use `line-length` setting for isort
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-26 01:05_
+_@MichaReiser_
 
 ## Summary
 

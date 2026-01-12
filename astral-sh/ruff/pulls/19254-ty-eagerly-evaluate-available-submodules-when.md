@@ -13,14 +13,14 @@ head: alex/moduletype-equivalence-2
 created_at: 2025-07-10T10:16:36Z
 updated_at: 2025-07-10T10:50:24Z
 url: https://github.com/astral-sh/ruff/pull/19254
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Eagerly evaluate available submodules when creating `ModuleLiteralType`s'
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-10 10:16_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

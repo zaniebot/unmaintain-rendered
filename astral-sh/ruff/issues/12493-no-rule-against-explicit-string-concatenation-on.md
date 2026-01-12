@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T15:51:22Z
 updated_at: 2024-07-25T06:19:13Z
 url: https://github.com/astral-sh/ruff/issues/12493
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # No rule against explicit string concatenation on same line
 
 ---
 
-_Issue opened by @DaniBodor on 2024-07-24 15:51_
+_@DaniBodor_
 
 There is currently no rule that flags explicit string concatenation if it occurs on a single line, even though this makes for very ugly code.
 

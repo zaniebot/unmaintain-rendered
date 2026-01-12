@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T15:02:36Z
 updated_at: 2025-06-04T14:24:17Z
 url: https://github.com/astral-sh/uv/issues/13822
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # What's the best way to cite this project?
 
 ---
 
-_Issue opened by @Pacatro on 2025-06-03 15:02_
+_@Pacatro_
 
 ### Question
 

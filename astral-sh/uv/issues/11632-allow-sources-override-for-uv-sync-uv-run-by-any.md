@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T18:41:19Z
 updated_at: 2025-12-03T08:19:10Z
 url: https://github.com/astral-sh/uv/issues/11632
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # Allow `sources` override for `uv sync` / `uv run` by any means [command line, environment variable or config file]
 
 ---
 
-_Issue opened by @jpedrick on 2025-02-19 18:41_
+_@jpedrick_
 
 ### Summary
 

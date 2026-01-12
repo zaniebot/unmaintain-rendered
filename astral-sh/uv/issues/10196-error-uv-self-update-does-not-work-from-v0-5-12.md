@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T15:31:25Z
 updated_at: 2024-12-27T20:35:23Z
 url: https://github.com/astral-sh/uv/issues/10196
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # [error] `uv self update` does not work from `v0.5.12` to `v0.5.13`
 
 ---
 
-_Issue opened by @lamteteeow on 2024-12-27 15:31_
+_@lamteteeow_
 
 ```
 $ uv self update

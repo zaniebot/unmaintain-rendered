@@ -13,14 +13,14 @@ head: micha/revert-no-type-check
 created_at: 2024-12-02T12:19:06Z
 updated_at: 2024-12-02T13:28:29Z
 url: https://github.com/astral-sh/ruff/pull/14726
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Revert: [pyflakes] Avoid false positives in `@no_type_check` contexts (F821, F722) (#14615)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-02 12:19_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: fix-pre-commit
 created_at: 2023-03-19T20:36:48Z
 updated_at: 2023-03-19T21:01:54Z
 url: https://github.com/astral-sh/ruff/pull/3614
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix C416 in check_ecosystem.py
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-19 20:36_
+_@JonathanPlasse_
 
 I ran pre-commit.
 

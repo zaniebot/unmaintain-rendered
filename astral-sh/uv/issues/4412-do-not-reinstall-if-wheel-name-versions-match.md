@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-19T14:47:33Z
 updated_at: 2024-06-19T21:13:56Z
 url: https://github.com/astral-sh/uv/issues/4412
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Do not reinstall if wheel name+versions match even if the filesystem path differs
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-06-19 14:47_
+_@ThiefMaster_
 
 See #4398 for the rest checking the current behavior and [these](https://github.com/astral-sh/uv/pull/4396#issuecomment-2176741999) two [comments](https://github.com/astral-sh/uv/pull/4396#issuecomment-2176749301).
 

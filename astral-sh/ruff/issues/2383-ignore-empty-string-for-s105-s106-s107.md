@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-31T08:37:56Z
 updated_at: 2023-01-31T21:56:05Z
 url: https://github.com/astral-sh/ruff/issues/2383
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Ignore empty string for `S105`/`S106`/`S107`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 08:37_
+_@ngnpope_
 
 Using `v0.0.237` I get: ```S105 Possible hardcoded password: ""```
 

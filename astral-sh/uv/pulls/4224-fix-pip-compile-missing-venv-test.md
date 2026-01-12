@@ -13,14 +13,14 @@ head: zb/fixup-main
 created_at: 2024-06-10T22:34:19Z
 updated_at: 2024-06-10T22:39:26Z
 url: https://github.com/astral-sh/uv/pull/4224
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Fix `pip_compile::missing_venv` test
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 22:34_
+_@zanieb_
 
 A merge kerfuffle from #4222  and #4218 
 

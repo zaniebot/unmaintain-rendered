@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-07-30T11:33:55Z
 updated_at: 2020-08-25T13:58:29Z
 url: https://github.com/clap-rs/clap/issues/2040
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Specifying a default value but no help text results in the default value being pushed one space to the right inside the help screen
 
 ---
 
-_Issue opened by @mainrs on 2020-07-30 11:33_
+_@mainrs_
 
 ## Output
 

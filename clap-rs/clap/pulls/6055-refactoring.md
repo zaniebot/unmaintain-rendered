@@ -11,14 +11,14 @@ head: master
 created_at: 2025-07-01T04:10:29Z
 updated_at: 2025-07-01T18:52:53Z
 url: https://github.com/clap-rs/clap/pull/6055
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Refactoring
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-07-01 04:10_
+_@adamnemecek_
 
 _No description provided._
 

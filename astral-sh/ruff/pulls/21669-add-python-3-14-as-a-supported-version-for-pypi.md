@@ -13,14 +13,14 @@ head: pyversion-314
 created_at: 2025-11-27T18:32:02Z
 updated_at: 2025-11-27T18:58:00Z
 url: https://github.com/astral-sh/ruff/pull/21669
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # Add python 3.14 as a supported version for PyPi
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-11-27 18:32_
+_@ShaharNaveh_
 
 ## Summary
 

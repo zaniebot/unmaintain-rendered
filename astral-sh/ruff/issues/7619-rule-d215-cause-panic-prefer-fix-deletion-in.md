@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-23T17:26:02Z
 updated_at: 2023-09-23T22:44:57Z
 url: https://github.com/astral-sh/ruff/issues/7619
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule D215 cause panic `Prefer Fix::deletion` in debug build
 
 ---
 
-_Issue opened by @qarmin on 2023-09-23 17:26_
+_@qarmin_
 
 
 Ruff 0.0.291 (latest changes from main branch)

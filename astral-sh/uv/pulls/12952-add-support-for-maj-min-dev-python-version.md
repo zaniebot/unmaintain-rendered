@@ -13,14 +13,14 @@ head: zb/python-dev
 created_at: 2025-04-17T21:07:17Z
 updated_at: 2025-04-17T21:15:44Z
 url: https://github.com/astral-sh/uv/pull/12952
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Add support for `<maj>.<min>-dev` Python version requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-17 21:07_
+_@zanieb_
 
 I'm a little hesitant to support this, but figured I could explore the shape of the refactor.
 

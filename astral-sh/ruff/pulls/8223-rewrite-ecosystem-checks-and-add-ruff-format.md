@@ -13,14 +13,14 @@ head: zanie/ecosystem-format
 created_at: 2023-10-25T17:47:16Z
 updated_at: 2023-10-27T22:28:03Z
 url: https://github.com/astral-sh/ruff/pull/8223
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Rewrite ecosystem checks and add `ruff format` reports
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-25 17:47_
+_@zanieb_
 
 Closes #7239 
 

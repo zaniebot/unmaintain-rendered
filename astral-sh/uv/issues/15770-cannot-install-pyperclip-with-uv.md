@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T17:33:49Z
 updated_at: 2025-09-14T12:56:26Z
 url: https://github.com/astral-sh/uv/issues/15770
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Cannot install Pyperclip with uv
 
 ---
 
-_Issue opened by @cleb98 on 2025-09-10 17:33_
+_@cleb98_
 
 ### Summary
 

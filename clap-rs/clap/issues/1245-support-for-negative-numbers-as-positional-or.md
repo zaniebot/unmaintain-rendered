@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-07T22:20:47Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1245
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for negative numbers as positional or named values.
 
 ---
 
-_Issue opened by @ddrscott on 2018-04-07 22:20_
+_@ddrscott_
 
 I can't seem to find a way to elegantly use negative numbers as a positional argument or named argument.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T19:00:23Z
 updated_at: 2024-10-22T14:51:59Z
 url: https://github.com/astral-sh/ruff/issues/13864
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # D204: enabled or disabled by default for Google convention?
 
 ---
 
-_Issue opened by @void-rooster on 2024-10-21 19:00_
+_@void-rooster_
 
 The docs have conflicting information about the default behavior for D204 in the Google convention. The rule page says D204 is enabled by default:
 

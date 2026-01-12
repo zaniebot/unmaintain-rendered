@@ -12,14 +12,14 @@ head: ag/bump
 created_at: 2023-12-21T17:33:16Z
 updated_at: 2023-12-21T19:01:11Z
 url: https://github.com/astral-sh/ruff/pull/9231
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump version to v0.1.9
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-21 17:33_
+_@BurntSushi_
 
 _No description provided._
 

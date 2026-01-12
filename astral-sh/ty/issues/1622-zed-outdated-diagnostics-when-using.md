@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T17:35:50Z
 updated_at: 2025-12-31T15:36:24Z
 url: https://github.com/astral-sh/ty/issues/1622
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Zed: Outdated diagnostics when using `diagnosticMode: "openFiles"`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-24 17:35_
+_@MichaReiser_
 
 
 Create a file `lib.py`:

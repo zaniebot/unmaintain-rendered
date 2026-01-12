@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-16T12:54:59Z
 updated_at: 2024-12-16T16:30:30Z
 url: https://github.com/astral-sh/uv/issues/9934
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `uv pip install` fails while `pip install` works
 
 ---
 
-_Issue opened by @ameya98 on 2024-12-16 12:54_
+_@ameya98_
 
 I am trying to install [PyEMMA](http://emma-project.org/latest/) in a new environment with `uv 0.5.5` on a Linux machine:
 

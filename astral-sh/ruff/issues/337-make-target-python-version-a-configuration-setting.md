@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-07T02:51:37Z
 updated_at: 2022-10-07T18:54:51Z
 url: https://github.com/astral-sh/ruff/issues/337
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Make "target Python version" a configuration setting
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 02:51_
+_@charliermarsh_
 
 Let's just follow Black's semantics / nomenclature for this ([link](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#command-line-options)).
 

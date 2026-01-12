@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-10T11:20:45Z
 updated_at: 2023-02-03T16:41:43Z
 url: https://github.com/clap-rs/clap/issues/4201
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Pager for help output
 
 ---
 
-_Issue opened by @epage on 2022-09-10 11:20_
+_@epage_
 
 ### Please complete the following tasks
 

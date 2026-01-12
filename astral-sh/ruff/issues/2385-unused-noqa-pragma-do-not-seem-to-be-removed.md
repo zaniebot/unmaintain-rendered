@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T09:55:46Z
 updated_at: 2023-01-31T18:06:57Z
 url: https://github.com/astral-sh/ruff/issues/2385
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Unused "noqa" pragma do not seem to be removed.
 
 ---
 
-_Issue opened by @KelSolaar on 2023-01-31 09:55_
+_@KelSolaar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

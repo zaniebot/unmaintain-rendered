@@ -13,14 +13,14 @@ head: refactor-infer-binary-comparison-to-fix-diagnotics
 created_at: 2024-10-19T12:57:36Z
 updated_at: 2024-10-24T14:58:51Z
 url: https://github.com/astral-sh/ruff/pull/13819
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Enhancing Diagnostics for Compare Expression Inference
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-10-19 12:57_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

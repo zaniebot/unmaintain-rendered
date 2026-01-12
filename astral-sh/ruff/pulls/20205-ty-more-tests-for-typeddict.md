@@ -14,14 +14,14 @@ head: david/more-typed-dict-tests
 created_at: 2025-09-02T13:40:29Z
 updated_at: 2025-09-04T15:55:43Z
 url: https://github.com/astral-sh/ruff/pull/20205
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] More tests for TypedDict
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-02 13:40_
+_@sharkdp_
 
 ## Summary
 

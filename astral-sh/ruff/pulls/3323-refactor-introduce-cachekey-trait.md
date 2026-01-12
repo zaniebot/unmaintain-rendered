@@ -12,14 +12,14 @@ head: cache-key
 created_at: 2023-03-03T17:25:13Z
 updated_at: 2023-03-03T18:29:51Z
 url: https://github.com/astral-sh/ruff/pull/3323
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor: Introduce `CacheKey` trait
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-03 17:25_
+_@MichaReiser_
 
 This PR introduces a new `CacheKey` trait for types that can be used as a cache key.
 

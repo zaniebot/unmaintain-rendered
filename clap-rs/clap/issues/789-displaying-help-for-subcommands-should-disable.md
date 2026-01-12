@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-28T13:31:38Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/789
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # displaying help for subcommands should disable top level argument requirements
 
 ---
 
-_Issue opened by @Geal on 2016-12-28 13:31_
+_@Geal_
 
 ### Rust Version
 

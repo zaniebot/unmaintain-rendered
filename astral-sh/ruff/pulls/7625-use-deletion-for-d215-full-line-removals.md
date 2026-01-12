@@ -14,14 +14,14 @@ head: charlie/D215
 created_at: 2023-09-23T22:36:03Z
 updated_at: 2023-09-23T22:53:37Z
 url: https://github.com/astral-sh/ruff/pull/7625
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use deletion for D215 full-line removals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-23 22:36_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7619.
 

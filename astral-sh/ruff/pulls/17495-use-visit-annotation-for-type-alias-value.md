@@ -13,14 +13,14 @@ head: visit-annotation
 created_at: 2025-04-20T12:32:09Z
 updated_at: 2025-10-22T15:47:27Z
 url: https://github.com/astral-sh/ruff/pull/17495
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Use `visit_annotation` for type alias value
 
 ---
 
-_Pull request opened by @Glyphack on 2025-04-20 12:32_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

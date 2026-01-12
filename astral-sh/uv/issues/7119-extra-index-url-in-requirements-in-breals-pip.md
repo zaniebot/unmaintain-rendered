@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T09:42:19Z
 updated_at: 2024-09-14T00:37:07Z
 url: https://github.com/astral-sh/uv/issues/7119
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # --extra-index-url in requirements.in breals pip compile
 
 ---
 
-_Issue opened by @esbennielsenkvantify on 2024-09-06 09:42_
+_@esbennielsenkvantify_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

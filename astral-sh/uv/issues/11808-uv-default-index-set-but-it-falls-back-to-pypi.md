@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T19:06:23Z
 updated_at: 2025-02-26T21:12:23Z
 url: https://github.com/astral-sh/uv/issues/11808
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # UV_DEFAULT_INDEX set but it falls back to pypi.org in some cases
 
 ---
 
-_Issue opened by @krpatter-intc on 2025-02-26 19:06_
+_@krpatter-intc_
 
 ### Summary
 

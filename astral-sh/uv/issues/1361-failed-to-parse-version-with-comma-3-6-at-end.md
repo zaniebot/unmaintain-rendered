@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:40:05Z
 updated_at: 2024-02-16T02:08:06Z
 url: https://github.com/astral-sh/uv/issues/1361
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Failed to parse version with 'comma', `>=3.6,` at end
 
 ---
 
-_Issue opened by @onjin on 2024-02-15 21:40_
+_@onjin_
 
 https://pypi.org/simple/openpyxl/?format=application/vnd.pypi.simple.v1+json
 

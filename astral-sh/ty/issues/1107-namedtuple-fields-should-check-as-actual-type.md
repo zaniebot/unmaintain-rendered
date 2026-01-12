@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-30T05:19:15Z
 updated_at: 2025-12-15T08:55:03Z
 url: https://github.com/astral-sh/ty/issues/1107
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # NamedTuple fields should check as actual type, instead of property
 
 ---
 
-_Issue opened by @y2kbugger on 2025-08-30 05:19_
+_@y2kbugger_
 
 ### Summary
 

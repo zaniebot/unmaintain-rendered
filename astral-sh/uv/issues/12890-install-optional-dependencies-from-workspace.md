@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T06:02:49Z
 updated_at: 2025-05-09T05:41:03Z
 url: https://github.com/astral-sh/uv/issues/12890
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Install optional dependencies from workspace
 
 ---
 
-_Issue opened by @andrew000 on 2025-04-15 06:02_
+_@andrew000_
 
 ### Question
 

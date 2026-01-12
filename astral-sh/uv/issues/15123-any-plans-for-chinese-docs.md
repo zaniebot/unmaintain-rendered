@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T07:58:34Z
 updated_at: 2025-08-07T07:58:34Z
 url: https://github.com/astral-sh/uv/issues/15123
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Any plans for Chinese docs?
 
 ---
 
-_Issue opened by @yumeminami on 2025-08-07 07:58_
+_@yumeminami_
 
 ### Summary
 

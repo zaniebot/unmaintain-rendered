@@ -14,14 +14,14 @@ head: micha/remove-infer-expression-query
 created_at: 2025-07-20T11:14:30Z
 updated_at: 2025-07-20T11:59:24Z
 url: https://github.com/astral-sh/ruff/pull/19436
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Experiment: Remove `infer_expression_type` query
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-20 11:14_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: fix-github-output-format-22074
 created_at: 2025-12-20T11:31:22Z
 updated_at: 2025-12-22T09:45:31Z
 url: https://github.com/astral-sh/ruff/pull/22108
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # Fix GitHub Actions output format for multi-line diagnostics
 
 ---
 
-_Pull request opened by @harupy on 2025-12-20 11:31_
+_@harupy_
 
 Fixes #22074
 

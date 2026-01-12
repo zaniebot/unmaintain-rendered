@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-17T01:12:51Z
 updated_at: 2023-11-21T23:44:25Z
 url: https://github.com/astral-sh/ruff/issues/8732
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # (🎁) `bad-dunder-method-name` config option
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-11-17 01:12_
+_@KotlinIsland_
 
 It would be logical that there is a configuration for `bad-dunder-method-name` as arbitrary libraries can 'define' them:
 ```py

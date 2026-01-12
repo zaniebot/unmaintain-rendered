@@ -13,14 +13,14 @@ head: zb/strip-trailing-3
 created_at: 2025-07-30T13:24:55Z
 updated_at: 2025-07-30T16:00:18Z
 url: https://github.com/astral-sh/uv/pull/14970
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Copy entrypoints that have a shebang that differs in `python` vs `python3`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-30 13:24_
+_@zanieb_
 
 In https://github.com/astral-sh/uv/issues/14919 it was reported that uv's behavior differed after the first invocation. I noticed we weren't copying entrypoints after the first invocation. It turns out the shebangs were written with `.../python` but on a subsequent invocation the `sys.executable` was `.../python3` so we didn't detect these as matching.
 

@@ -13,14 +13,14 @@ head: charlie/assign
 created_at: 2023-02-06T19:37:09Z
 updated_at: 2023-02-06T19:40:42Z
 url: https://github.com/astral-sh/ruff/pull/2607
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Visit deferred assignments after deferred type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-06 19:37_
+_@charliermarsh_
 
 Closes #2603.
 

@@ -14,14 +14,14 @@ head: cjm/heapsize
 created_at: 2025-12-11T01:19:55Z
 updated_at: 2025-12-11T02:34:01Z
 url: https://github.com/astral-sh/ruff/pull/21912
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] fix missing heap_size on Salsa query
 
 ---
 
-_Pull request opened by @carljm on 2025-12-11 01:19_
+_@carljm_
 
 _No description provided._
 

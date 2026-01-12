@@ -11,14 +11,14 @@ head: pim/pylock-deps
 created_at: 2025-07-21T09:14:19Z
 updated_at: 2025-12-09T17:40:28Z
 url: https://github.com/astral-sh/uv/pull/14783
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:24Z
 ```
 
 # In pylock.toml export, include dependencies (name, marker and version)
 
 ---
 
-_Pull request opened by @pimdh on 2025-07-21 09:14_
+_@pimdh_
 
 ## Summary
 

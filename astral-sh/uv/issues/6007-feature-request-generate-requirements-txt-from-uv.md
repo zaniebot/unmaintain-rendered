@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T14:32:54Z
 updated_at: 2025-12-06T00:11:47Z
 url: https://github.com/astral-sh/uv/issues/6007
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Feature request: Generate `requirements.txt` from `uv.lock`
 
 ---
 
-_Issue opened by @zeevro on 2024-08-11 14:32_
+_@zeevro_
 
 It would be beneficial to me (and I think in general) to be able to generate a `requirements.txt` file from the `uv.lock` file. It would be useful for installing requirements without having to resolve dependencies using a different installer in environments where `uv` is not installed, and also for having other tools that don't support the `uv.lock` file format (e.g. Dependabot) be able to know the project's pinned dependencies.
 

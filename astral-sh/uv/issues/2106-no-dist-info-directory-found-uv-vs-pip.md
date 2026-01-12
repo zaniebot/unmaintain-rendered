@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T10:08:30Z
 updated_at: 2024-03-04T09:00:36Z
 url: https://github.com/astral-sh/uv/issues/2106
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # No .dist-info directory found - uv vs. pip
 
 ---
 
-_Issue opened by @TheoBabilon on 2024-03-01 10:08_
+_@TheoBabilon_
 
 I noticed a difference in behavior between `uv` and `pip` (`uv` fails where `pip` succeeds)
 Note that because the underlying reason might be an incorrectly-built wheel, please feel free to close as "won't fixed"; I just thought it would be great to report here in case it is something you want to handle the same way as `pip` does currently.

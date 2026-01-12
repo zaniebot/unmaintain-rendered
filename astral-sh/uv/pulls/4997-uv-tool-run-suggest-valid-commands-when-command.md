@@ -15,14 +15,14 @@ head: uvx-list-commands
 created_at: 2024-07-11T19:20:19Z
 updated_at: 2024-07-12T03:31:40Z
 url: https://github.com/astral-sh/uv/pull/4997
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # `uv tool run` suggest valid commands when command is not found
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-11 19:20_
+_@blueraft_
 
 ## Summary
 

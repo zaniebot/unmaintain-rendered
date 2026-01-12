@@ -13,14 +13,14 @@ head: zb/venv-delete
 created_at: 2025-07-22T13:50:36Z
 updated_at: 2025-07-22T15:17:00Z
 url: https://github.com/astral-sh/uv/pull/14812
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Allow removal of virtual environments with missing interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 13:50_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: 1292-yank-warnings-at-end
 created_at: 2024-02-18T23:23:06Z
 updated_at: 2024-02-19T00:01:00Z
 url: https://github.com/astral-sh/uv/pull/1669
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Add yank warnings at end of messages
 
 ---
 
-_Pull request opened by @dwreeves on 2024-02-18 23:23_
+_@dwreeves_
 
 Resolves #1292.
 

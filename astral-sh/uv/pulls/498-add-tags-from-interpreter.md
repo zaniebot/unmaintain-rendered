@@ -12,14 +12,14 @@ head: puffin-dev-improvements
 created_at: 2023-11-24T11:07:24Z
 updated_at: 2023-11-24T11:36:02Z
 url: https://github.com/astral-sh/uv/pull/498
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Add `Tags::from_interpreter`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-24 11:07_
+_@konstin_
 
 Small refactoring
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T12:24:08Z
 updated_at: 2025-07-31T02:04:00Z
 url: https://github.com/astral-sh/uv/issues/14969
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # uv tool private index masked password leads to 401 on uv tool upgrade
 
 ---
 
-_Issue opened by @fellnerse on 2025-07-30 12:24_
+_@fellnerse_
 
 ### Summary
 

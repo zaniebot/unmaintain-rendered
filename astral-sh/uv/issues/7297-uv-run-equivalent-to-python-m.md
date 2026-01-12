@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T16:24:48Z
 updated_at: 2024-09-11T18:40:40Z
 url: https://github.com/astral-sh/uv/issues/7297
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uv run equivalent to python -m
 
 ---
 
-_Issue opened by @johnkangw on 2024-09-11 16:24_
+_@johnkangw_
 
 Is it possible to add a flag to `uv run` to make it equivalent to what happens when we run `python -m`.  When running pytest using `uv run` it does not work because I have some relative imports I am using in some of the testing files. It works when I use a `python -m` command. 
 

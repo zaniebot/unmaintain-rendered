@@ -13,14 +13,14 @@ head: gankra/ver-advanced
 created_at: 2025-05-21T14:51:38Z
 updated_at: 2025-07-10T15:02:15Z
 url: https://github.com/astral-sh/uv/pull/13578
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Expand the functionality of `uv version --bump` to support pre-releases
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-21 14:51_
+_@Gankra_
 
 This adds `alpha`, `beta`, `rc`, `stable`, `post`, and `dev` modes to `uv version --bump`.
 

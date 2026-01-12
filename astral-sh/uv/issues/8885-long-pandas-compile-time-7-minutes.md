@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T10:57:40Z
 updated_at: 2024-11-08T13:57:13Z
 url: https://github.com/astral-sh/uv/issues/8885
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Long Pandas compile time (>7 minutes)
 
 ---
 
-_Issue opened by @beoRich on 2024-11-07 10:57_
+_@beoRich_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

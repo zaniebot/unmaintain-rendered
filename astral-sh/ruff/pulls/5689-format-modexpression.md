@@ -13,14 +13,14 @@ head: format_mod_expression
 created_at: 2023-07-11T13:57:40Z
 updated_at: 2023-07-11T14:41:11Z
 url: https://github.com/astral-sh/ruff/pull/5689
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `ModExpression`
 
 ---
 
-_Pull request opened by @konstin on 2023-07-11 13:57_
+_@konstin_
 
 ## Summary
 

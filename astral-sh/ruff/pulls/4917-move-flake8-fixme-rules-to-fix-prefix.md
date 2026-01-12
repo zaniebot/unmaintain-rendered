@@ -13,14 +13,14 @@ head: charlie/fixme
 created_at: 2023-06-07T04:09:57Z
 updated_at: 2023-06-07T21:39:25Z
 url: https://github.com/astral-sh/ruff/pull/4917
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move flake8-fixme rules to FIX prefix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-07 04:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/fix-nightly-lints
 created_at: 2024-05-31T09:26:59Z
 updated_at: 2024-05-31T09:35:54Z
 url: https://github.com/astral-sh/uv/pull/3932
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Fix nightly cfg checker warnings
 
 ---
 
-_Pull request opened by @konstin on 2024-05-31 09:26_
+_@konstin_
 
 Fixes these two warnings on nightly:
 

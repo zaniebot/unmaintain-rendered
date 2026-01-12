@@ -12,14 +12,14 @@ head: logical-lines_Avoid_Regex_captures
 created_at: 2023-03-26T00:29:14Z
 updated_at: 2023-03-28T07:50:36Z
 url: https://github.com/astral-sh/ruff/pull/3735
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # perf(pycodestyle): Remove regex captures
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-26 00:29_
+_@MichaReiser_
 
 From the regex documentation:
 

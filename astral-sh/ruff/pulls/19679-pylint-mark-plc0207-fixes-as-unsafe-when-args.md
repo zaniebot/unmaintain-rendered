@@ -14,14 +14,14 @@ head: fix-19660
 created_at: 2025-08-01T04:18:53Z
 updated_at: 2025-08-06T18:27:04Z
 url: https://github.com/astral-sh/ruff/pull/19679
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [`pylint`] Mark `PLC0207` fixes as unsafe when `*args` unpacking is present
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-01 04:18_
+_@danparizher_
 
 ## Summary
 

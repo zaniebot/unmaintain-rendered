@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T21:20:15Z
 updated_at: 2024-08-07T20:33:07Z
 url: https://github.com/clap-rs/clap/issues/5626
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Arg::value_delimiter default value
 
 ---
 
-_Issue opened by @systemtrap on 2024-08-05 21:20_
+_@systemtrap_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: charlie/lock
 created_at: 2023-06-25T21:52:56Z
 updated_at: 2023-06-25T22:28:13Z
 url: https://github.com/astral-sh/ruff/pull/5357
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Run `cargo update`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-25 21:52_
+_@charliermarsh_
 
 _No description provided._
 

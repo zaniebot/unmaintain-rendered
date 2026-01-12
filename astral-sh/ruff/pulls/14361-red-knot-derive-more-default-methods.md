@@ -13,14 +13,14 @@ head: alex/more-default
 created_at: 2024-11-15T13:10:08Z
 updated_at: 2024-11-15T13:24:11Z
 url: https://github.com/astral-sh/ruff/pull/14361
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Derive more `Default` methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-15 13:10_
+_@AlexWaygood_
 
 Just a small cleanup. We have lots of handwritten `new()` methods that can just be derived if we use `Default` instead.
 

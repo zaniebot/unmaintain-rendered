@@ -13,14 +13,14 @@ head: david/decorators
 created_at: 2025-03-27T18:20:48Z
 updated_at: 2025-05-07T15:20:10Z
 url: https://github.com/astral-sh/ruff/pull/17017
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Decorators and properties
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-27 18:20_
+_@sharkdp_
 
 ## Summary
 

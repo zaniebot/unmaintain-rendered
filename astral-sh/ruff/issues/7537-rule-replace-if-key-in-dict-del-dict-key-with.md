@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T08:31:48Z
 updated_at: 2024-12-11T11:12:25Z
 url: https://github.com/astral-sh/ruff/issues/7537
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [rule] replace `if key in dict: del dict[key]` with `dict.pop(key, None)`
 
 ---
 
-_Issue opened by @dorschw on 2023-09-20 08:31_
+_@dorschw_
 
 I'd suggest it to flake8-simplify, but their repo seems inactive since late March 😞 
 If there's a better place to suggest it, please let me know and I'll copy it there.

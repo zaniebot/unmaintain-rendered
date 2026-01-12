@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T04:16:30Z
 updated_at: 2025-02-27T16:58:34Z
 url: https://github.com/astral-sh/uv/issues/10319
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Shell completion does not work in bash shell on wsl2 linux
 
 ---
 
-_Issue opened by @andersrmr on 2025-01-06 04:16_
+_@andersrmr_
 
 ```
 # completion command added to end of script

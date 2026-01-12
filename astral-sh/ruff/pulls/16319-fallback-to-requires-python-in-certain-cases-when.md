@@ -14,14 +14,14 @@ head: requires-python
 created_at: 2025-02-22T19:14:02Z
 updated_at: 2025-03-13T11:49:11Z
 url: https://github.com/astral-sh/ruff/pull/16319
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Fallback to `requires-python` in certain cases when `target-version` is not found
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-22 19:14_
+_@dylwil3_
 
 # Summary
 

@@ -14,14 +14,14 @@ head: david/update-mypy_primer
 created_at: 2025-06-23T10:32:09Z
 updated_at: 2025-06-23T11:08:12Z
 url: https://github.com/astral-sh/ruff/pull/18891
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Update mypy_primer, add two new projects
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-23 10:32_
+_@sharkdp_
 
 ## Summary
 

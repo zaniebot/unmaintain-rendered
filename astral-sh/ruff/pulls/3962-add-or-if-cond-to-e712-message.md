@@ -13,14 +13,14 @@ head: charlie/e712
 created_at: 2023-04-13T18:56:15Z
 updated_at: 2023-04-13T19:10:44Z
 url: https://github.com/astral-sh/ruff/pull/3962
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add 'or if cond' to `E712` message
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 18:56_
+_@charliermarsh_
 
 Closes #3899.
 

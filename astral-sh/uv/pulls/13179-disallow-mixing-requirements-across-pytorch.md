@@ -14,14 +14,14 @@ head: charlie/system-index
 created_at: 2025-04-28T14:50:24Z
 updated_at: 2025-04-28T20:06:19Z
 url: https://github.com/astral-sh/uv/pull/13179
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Disallow mixing requirements across PyTorch indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-28 14:50_
+_@charliermarsh_
 
 ## Summary
 

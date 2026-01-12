@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T17:49:43Z
 updated_at: 2024-05-21T19:28:24Z
 url: https://github.com/astral-sh/uv/issues/3710
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Confusing resolution error message
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-05-21 17:49_
+_@ibraheemdev_
 
 From [this CI failure](https://github.com/astral-sh/uv/actions/runs/9178311640/job/25237925377?pr=3643#step:6:361):
 

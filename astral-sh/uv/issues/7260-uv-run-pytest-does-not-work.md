@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T17:00:33Z
 updated_at: 2025-08-18T13:52:35Z
 url: https://github.com/astral-sh/uv/issues/7260
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv run pytest` does not work
 
 ---
 
-_Issue opened by @shinybrar on 2024-09-10 17:00_
+_@shinybrar_
 
 ## Ten words or less
 `uv run pytest` does not work in my project.

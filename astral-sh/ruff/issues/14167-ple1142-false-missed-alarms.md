@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:02:04Z
 updated_at: 2024-11-09T02:07:15Z
 url: https://github.com/astral-sh/ruff/issues/14167
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLE1142 false & missed alarms
 
 ---
 
-_Issue opened by @jakkdl on 2024-11-07 16:02_
+_@jakkdl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

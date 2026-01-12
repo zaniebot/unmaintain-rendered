@@ -13,14 +13,14 @@ head: konsti/cp3x
 created_at: 2024-10-02T10:47:59Z
 updated_at: 2024-10-03T17:02:16Z
 url: https://github.com/astral-sh/uv/pull/7867
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Allow `py3x-none` tags in newer than Python 3.x
 
 ---
 
-_Pull request opened by @konstin on 2024-10-02 10:47_
+_@konstin_
 
 Unlike `cp36-...`, which requires exactly CPython 3.6, `py36-none` is compatible with all versions starting at Python 3.6.
 

@@ -12,14 +12,14 @@ head: renovate/actions-setup-python-6.x
 created_at: 2025-11-01T01:53:14Z
 updated_at: 2025-11-01T02:43:04Z
 url: https://github.com/clap-rs/clap/pull/6172
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # chore(deps): Update actions/setup-python action to v6
 
 ---
 
-_Pull request opened by @renovate on 2025-11-01 01:53_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: charlie/join
 created_at: 2024-03-12T04:04:24Z
 updated_at: 2024-03-12T14:14:24Z
 url: https://github.com/astral-sh/uv/pull/2374
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Wait for request stream to flush before returning resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-12 04:04_
+_@charliermarsh_
 
 ## Summary
 

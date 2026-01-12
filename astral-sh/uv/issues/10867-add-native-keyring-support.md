@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-22T17:54:43Z
 updated_at: 2025-10-21T02:23:54Z
 url: https://github.com/astral-sh/uv/issues/10867
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Add native keyring support
 
 ---
 
-_Issue opened by @zanieb on 2025-01-22 17:54_
+_@zanieb_
 
 _No description provided._
 

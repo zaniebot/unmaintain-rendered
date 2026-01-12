@@ -12,14 +12,14 @@ head: geofft/release-0.7.21
 created_at: 2025-07-14T16:48:57Z
 updated_at: 2025-07-14T18:01:30Z
 url: https://github.com/astral-sh/uv/pull/14611
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Bump version to 0.7.21
 
 ---
 
-_Pull request opened by @geofft on 2025-07-14 16:48_
+_@geofft_
 
 _No description provided._
 

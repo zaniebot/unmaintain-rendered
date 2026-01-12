@@ -13,14 +13,14 @@ head: cargo-sort
 created_at: 2025-12-30T21:03:52Z
 updated_at: 2026-01-02T19:58:21Z
 url: https://github.com/astral-sh/ruff/pull/22310
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # Run `cargo sort`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-30 21:03_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

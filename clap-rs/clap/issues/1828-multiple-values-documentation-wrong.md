@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-15T22:51:55Z
 updated_at: 2021-06-16T08:08:40Z
 url: https://github.com/clap-rs/clap/issues/1828
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # multiple_values() documentation wrong
 
 ---
 
-_Issue opened by @intgr on 2020-04-15 22:51_
+_@intgr_
 
 ### Clap version
 

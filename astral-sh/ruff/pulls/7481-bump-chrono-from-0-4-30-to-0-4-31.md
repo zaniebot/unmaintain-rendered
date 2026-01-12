@@ -13,14 +13,14 @@ head: dependabot/cargo/chrono-0.4.31
 created_at: 2023-09-18T08:43:39Z
 updated_at: 2023-09-18T17:11:52Z
 url: https://github.com/astral-sh/ruff/pull/7481
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump chrono from 0.4.30 to 0.4.31
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-18 08:43_
+_@dependabot_
 
 Bumps [chrono](https://github.com/chronotope/chrono) from 0.4.30 to 0.4.31.
 <details>

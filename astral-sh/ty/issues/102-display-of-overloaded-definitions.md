@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-01T20:36:33Z
 updated_at: 2026-01-12T08:34:43Z
 url: https://github.com/astral-sh/ty/issues/102
-synced_at: 2026-01-12T08:52:43Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Display of overloaded definitions
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 20:36_
+_@dhruvmanila_
 
 Currently, an overloaded definition is displayed using the following format:
 

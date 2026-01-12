@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-17T12:22:15Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1248
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Failure to compile when using macro builder argument `possible_values`
 
 ---
 
-_Issue opened by @Jarngreipr on 2018-04-17 12:22_
+_@Jarngreipr_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

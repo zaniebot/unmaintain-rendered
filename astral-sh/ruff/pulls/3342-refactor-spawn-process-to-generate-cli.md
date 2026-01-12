@@ -12,14 +12,14 @@ head: spawn-process-for-help-documentation
 created_at: 2023-03-04T17:53:00Z
 updated_at: 2023-03-11T16:58:57Z
 url: https://github.com/astral-sh/ruff/pull/3342
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor: Spawn process to generate CLI documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-04 17:53_
+_@MichaReiser_
 
 This PR spawns the `ruff_cli` in the `dev generate-cli-help` command instead of linking against it. The benefit is that it removes the need that `ruff_cli` is a binary and library crate.
 

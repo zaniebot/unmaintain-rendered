@@ -13,14 +13,14 @@ head: charlie/async-zip
 created_at: 2024-01-29T00:39:08Z
 updated_at: 2024-01-29T12:33:47Z
 url: https://github.com/astral-sh/uv/pull/1157
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Stream unpacking of source distribution downloads
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 00:39_
+_@charliermarsh_
 
 This PR migrates our source distribution downloads to unzip as we stream, similar to our approach for wheels.
 

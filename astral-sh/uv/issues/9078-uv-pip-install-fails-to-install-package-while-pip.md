@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T06:26:22Z
 updated_at: 2024-11-14T11:05:34Z
 url: https://github.com/astral-sh/uv/issues/9078
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # `uv pip install` fails to install package while `pip install` succeeds
 
 ---
 
-_Issue opened by @arpitg-sh on 2024-11-13 06:26_
+_@arpitg-sh_
 
 **Description:** I'm encountering an issue when using uv pip to install Python packages. Specifically, the build process for jsmin==2.2.2 fails, while doing the same with native pip passes.
 

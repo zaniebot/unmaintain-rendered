@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-04T16:53:49Z
 updated_at: 2020-03-05T10:38:04Z
 url: https://github.com/clap-rs/clap/issues/1722
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `-- subcommand` does not work and clap suggests to use `-- subcommand` more.
 
 ---
 
-_Issue opened by @nagisa on 2020-03-04 16:53_
+_@nagisa_
 
 # Rust Version
 

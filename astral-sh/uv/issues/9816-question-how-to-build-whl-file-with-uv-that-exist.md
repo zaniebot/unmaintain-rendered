@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T16:16:27Z
 updated_at: 2024-12-13T16:30:51Z
 url: https://github.com/astral-sh/uv/issues/9816
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # [QUESTION] How to build whl file with uv that exist same name in pypi??
 
 ---
 
-_Issue opened by @hawksung1 on 2024-12-11 16:16_
+_@hawksung1_
 
 I am planning to create a project that uses a local .whl file with uv. 
 However, there is a .whl file with the same name available on PyPI. 

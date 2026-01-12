@@ -14,14 +14,14 @@ head: dcreager/predicates
 created_at: 2025-02-25T19:41:33Z
 updated_at: 2025-02-26T00:18:05Z
 url: https://github.com/astral-sh/ruff/pull/16382
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Rename constraint to predicate
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-25 19:41_
+_@dcreager_
 
 In https://github.com/astral-sh/ruff/pull/16306#discussion_r1966290700, @carljm pointed out that #16306 introduced a terminology problem, with too many things called a "constraint".  This is a follow-up PR that renames `Constraint` to `Predicate` to hopefully clear things up a bit.  So now we have that:
 

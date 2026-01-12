@@ -13,14 +13,14 @@ head: david/always-pass-no_instance_fallback
 created_at: 2025-05-26T11:06:37Z
 updated_at: 2025-05-26T11:20:29Z
 url: https://github.com/astral-sh/ruff/pull/18315
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Always pass `NO_INSTANCE_FALLBACK` in `try_call_dunder_with_policy`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-26 11:06_
+_@sharkdp_
 
 ## Summary
 

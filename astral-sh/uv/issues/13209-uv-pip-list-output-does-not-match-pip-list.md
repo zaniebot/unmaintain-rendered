@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T02:09:28Z
 updated_at: 2025-05-02T14:28:40Z
 url: https://github.com/astral-sh/uv/issues/13209
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # `uv pip list` output does not match `pip list`: distribution package names instead of import package names
 
 ---
 
-_Issue opened by @gjoseph92 on 2025-04-30 02:09_
+_@gjoseph92_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: except-handler-3
 created_at: 2024-10-13T15:52:36Z
 updated_at: 2024-10-16T13:15:20Z
 url: https://github.com/astral-sh/ruff/pull/13729
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Add control flow for try/except blocks (v3)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-13 15:52_
+_@AlexWaygood_
 
 ## Summary
 

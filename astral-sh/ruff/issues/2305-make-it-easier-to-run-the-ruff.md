@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-28T17:41:44Z
 updated_at: 2023-01-28T19:53:20Z
 url: https://github.com/astral-sh/ruff/issues/2305
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Make it easier to run the ruff
 
 ---
 
-_Issue opened by @chirag127 on 2023-01-28 17:41_
+_@chirag127_
 
 I would appreciate if a command `ruff .` can be there to lint all the files in the current working directory. 
 

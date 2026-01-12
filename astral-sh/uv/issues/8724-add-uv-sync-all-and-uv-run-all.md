@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T13:44:23Z
 updated_at: 2024-11-02T01:55:10Z
 url: https://github.com/astral-sh/uv/issues/8724
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Add `uv sync --all` and `uv run --all`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-31 13:44_
+_@charliermarsh_
 
 To sync the entire workspace.
 

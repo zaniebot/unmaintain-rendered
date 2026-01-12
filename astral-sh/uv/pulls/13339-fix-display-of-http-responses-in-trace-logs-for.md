@@ -13,14 +13,14 @@ head: zb/wrapped
 created_at: 2025-05-07T22:02:33Z
 updated_at: 2025-05-08T14:23:26Z
 url: https://github.com/astral-sh/uv/pull/13339
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Fix display of HTTP responses in trace logs for retry of errors
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 22:02_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/13228
 

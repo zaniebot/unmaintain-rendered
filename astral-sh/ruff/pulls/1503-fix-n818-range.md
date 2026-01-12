@@ -12,14 +12,14 @@ head: use-identifier_range-N818
 created_at: 2022-12-31T08:10:24Z
 updated_at: 2022-12-31T12:43:03Z
 url: https://github.com/astral-sh/ruff/pull/1503
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix N818 range
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 08:10_
+_@harupy_
 
 This PR fixes N818's range using `identifier_range`.
 

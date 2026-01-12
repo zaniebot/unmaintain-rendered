@@ -14,14 +14,14 @@ head: charlie/dev
 created_at: 2024-07-31T02:21:37Z
 updated_at: 2024-07-31T02:32:34Z
 url: https://github.com/astral-sh/uv/pull/5646
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Omit transitive development dependencies from workspace lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 02:21_
+_@charliermarsh_
 
 ## Summary
 

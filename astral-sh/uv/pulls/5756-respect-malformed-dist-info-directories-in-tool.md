@@ -14,14 +14,14 @@ head: charlie/babel
 created_at: 2024-08-03T23:23:05Z
 updated_at: 2024-08-05T18:23:52Z
 url: https://github.com/astral-sh/uv/pull/5756
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Respect malformed `.dist-info` directories in tool installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-03 23:23_
+_@charliermarsh_
 
 ## Summary
 

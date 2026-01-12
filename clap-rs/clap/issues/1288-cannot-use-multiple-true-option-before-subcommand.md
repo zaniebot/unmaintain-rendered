@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-06-07T10:51:29Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1288
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # cannot use multiple(true) option before subcommand
 
 ---
 
-_Issue opened by @lazyuser on 2018-06-07 10:51_
+_@lazyuser_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

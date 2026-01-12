@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T12:30:54Z
 updated_at: 2025-08-22T13:50:08Z
 url: https://github.com/astral-sh/uv/issues/15451
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # ZIP file contains trailing contents
 
 ---
 
-_Issue opened by @bra-fsn on 2025-08-22 12:30_
+_@bra-fsn_
 
 ### Summary
 

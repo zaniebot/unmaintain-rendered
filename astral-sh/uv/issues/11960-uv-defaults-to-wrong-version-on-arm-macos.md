@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T20:18:18Z
 updated_at: 2025-03-04T20:28:54Z
 url: https://github.com/astral-sh/uv/issues/11960
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # uv defaults to wrong version on arm macOS
 
 ---
 
-_Issue opened by @TomShlomi on 2025-03-04 20:18_
+_@TomShlomi_
 
 ### Summary
 

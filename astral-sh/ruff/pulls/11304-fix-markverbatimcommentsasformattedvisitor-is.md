@@ -13,14 +13,14 @@ head: fix-unused-warning-in-release
 created_at: 2024-05-06T07:34:50Z
 updated_at: 2024-05-06T07:45:05Z
 url: https://github.com/astral-sh/ruff/pull/11304
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Fix 'MarkVerbatimCommentsAsFormattedVisitor' is unused warning in release builds
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-06 07:34_
+_@MichaReiser_
 
 ## Summary
 

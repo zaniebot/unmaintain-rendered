@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T19:29:03Z
 updated_at: 2026-01-02T21:53:46Z
 url: https://github.com/astral-sh/uv/issues/17309
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Conflicting Python Requirements when workspace members have different Python requirements
 
 ---
 
-_Issue opened by @btakita on 2026-01-02 19:29_
+_@btakita_
 
 ### Question
 

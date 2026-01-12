@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-22T17:58:19Z
 updated_at: 2024-12-22T21:15:17Z
 url: https://github.com/astral-sh/uv/issues/10099
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # priority of packages that exist on multiple indexes
 
 ---
 
-_Issue opened by @youkaichao on 2024-12-22 17:58_
+_@youkaichao_
 
 Hi, I'm a developer from the https://github.com/vllm-project/vllm project, and we love `uv`! Thanks for the great project, it's really fast!
 

@@ -13,14 +13,14 @@ head: bidirectional-unicode
 created_at: 2023-02-05T20:45:11Z
 updated_at: 2023-02-07T03:49:19Z
 url: https://github.com/astral-sh/ruff/pull/2589
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`pylint`]: bidirectional-unicode
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-05 20:45_
+_@colin99d_
 
 Ref: #970 
 

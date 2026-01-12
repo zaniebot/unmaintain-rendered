@@ -12,14 +12,14 @@ head: charlie/logger
 created_at: 2023-01-27T23:35:14Z
 updated_at: 2023-01-27T23:41:18Z
 url: https://github.com/astral-sh/ruff/pull/2279
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Expand heuristic for detecting logging calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-27 23:35_
+_@charliermarsh_
 
 Closes #2273.
 

@@ -13,14 +13,14 @@ head: konsti/refactor-adding-bounds
 created_at: 2025-04-17T14:12:04Z
 updated_at: 2025-04-21T10:25:28Z
 url: https://github.com/astral-sh/uv/pull/12945
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Refactor adding bounds to dependencies in `pyproject.toml`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-17 14:12_
+_@konstin_
 
 Preparation work for making the kind of bound added configurable.
 

@@ -13,14 +13,14 @@ head: dhruv/callable-member-lookup
 created_at: 2025-03-11T08:47:35Z
 updated_at: 2025-03-12T06:31:39Z
 url: https://github.com/astral-sh/ruff/pull/16618
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Callable member lookup, meta type impl
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-11 08:47_
+_@dhruvmanila_
 
 ## Summary
 

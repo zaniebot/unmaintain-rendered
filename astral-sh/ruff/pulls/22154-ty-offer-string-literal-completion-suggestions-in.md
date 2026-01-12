@@ -11,16 +11,16 @@ assignees: []
 base: main
 head: string-literal-completions
 created_at: 2025-12-23T02:15:11Z
-updated_at: 2026-01-10T14:04:45Z
+updated_at: 2026-01-12T15:09:55Z
 url: https://github.com/astral-sh/ruff/pull/22154
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Offer string literal completion suggestions in function calls, annotated assignments, and TypedDict contexts
 
 ---
 
-_Pull request opened by @Minibrams on 2025-12-23 02:15_
+_@Minibrams_
 
 ## Summary
 
@@ -485,5 +485,105 @@ _@Minibrams reviewed on 2026-01-10 14:04_
 _Review comment by @Minibrams on `crates/ty_ide/src/completion.rs`:743 on 2026-01-10 14:04_
 
 Oof, 20% performance hit. Happy to hear ideas on how to optimize. Maybe we could lazyload expected types?
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:659 on 2026-01-12 14:19_
+
+I'm not following. If there's no `ExprStringLiteral`, then doesn't `cursor.string_literal()` return `None` and thus this function bails and no completions are provided?
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:375 on 2026-01-12 14:21_
+
+I think this should go away. I'm guessing it slipped in via a bad merge or something.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:659 on 2026-01-12 14:24_
+
+Basically, `string_literal()` starts by bailing when `cursor.is_in_string()` is `false`. But the _only_ call to `string_literal()` is guarded by the condition that `cursor.is_in_string()` is `true`. I think there should be a simplification here?
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1397 on 2026-01-12 14:41_
+
+I think this should be removed? It's available at `cursor.parsed` anyway.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1467 on 2026-01-12 14:45_
+
+It seems like you could accept `QuoteStyle` here and just do `QuoteStyle::as_char()`. And then delete the case analysis above.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1425 on 2026-01-12 14:47_
+
+If we're just going to create a `Box<str>` anyway, then why have `escape_for_quote` return a `Cow`?
+
+Even better, probably just have `escape_for_quote` return a `Name`, since that's ultimately what we want here.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1467 on 2026-01-12 14:51_
+
+Also, please add a contract to this function.
+
+It took me a minute to figure out why this was needed, so saying more about that would help too.
+
+Also, from a quick glance, I don't see tests that exercise a code path that uses this.
+
+Finally, are we sure a routine like this doesn't already exist? It looks like maybe there is something in `ruff_python_literal`. And if not, perhaps this routine should live there. cc @MichaReiser 
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1421 on 2026-01-12 14:54_
+
+Hmmm. Somewhat recently, I changed the completion display to prioritize the actual insertion text:
+
+https://github.com/astral-sh/ruff/blob/1094009790a799e8274e4088158c99c5273bd891/crates/ty_server/src/server/api/requests/completion.rs#L84
+
+But I think this implies that this will show escape quotes to the human when that really should be hidden.
+
+I guess this means that we probably _shouldn't_ show the insertion text in completions and instead have more sophistication around just improving `name` instead.
+
+I'd be fine ignoring this for now and creating an issue when this PR gets merged tracking a fix for this.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1462 on 2026-01-12 14:57_
+
+My understanding is that if we're doing recursion based on the structure of `Type`, then we need cycle detection. e.g.,
+
+https://github.com/astral-sh/ruff/blob/1094009790a799e8274e4088158c99c5273bd891/crates/ty_ide/src/completion.rs#L2331-L2387
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1458 on 2026-01-12 14:58_
+
+Should this only add values present in all branches of the intersection?
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:1464 on 2026-01-12 14:59_
+
+Can you add tests the cover each of these cases?
+
+---
+
+_@BurntSushi reviewed on 2026-01-12 15:03_
+
+Thank you for working on this! I feel like the new approach here is probably the right way to go about this instead of trying to write bespoke code for each type of string literal. I left a number of comments specifically on the completion side of things here.
+
+I'm less well equipped to review the changes for adding `HasExpectedType` though. It might make sense to land that in a separate PR and get review from probably @AlexWaygood. But I'll defer to Alex to whether a separate PR makes sense.
+
+---
+
+_Review request for @sharkdp removed by @BurntSushi on 2026-01-12 15:09_
+
+---
+
+_Review request for @dcreager removed by @BurntSushi on 2026-01-12 15:09_
 
 ---

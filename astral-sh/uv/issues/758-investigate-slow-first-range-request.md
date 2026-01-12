@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-03T21:53:13Z
 updated_at: 2024-04-08T08:36:50Z
 url: https://github.com/astral-sh/uv/issues/758
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Investigate slow first range request
 
 ---
 
-_Issue opened by @konstin on 2024-01-03 21:53_
+_@konstin_
 
 The first request of fetching range metadata is notably slow, in the no cache case sometimes the single biggest item (https://github.com/astral-sh/puffin/pull/744#issuecomment-1875153595). We should investigate why that is and if we can optimize it.
 

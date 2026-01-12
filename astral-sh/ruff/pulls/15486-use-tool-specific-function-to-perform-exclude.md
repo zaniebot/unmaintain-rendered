@@ -13,14 +13,14 @@ head: dhruv/tool-specific-exclude-fn
 created_at: 2025-01-15T06:29:22Z
 updated_at: 2025-01-15T07:48:47Z
 url: https://github.com/astral-sh/ruff/pull/15486
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Use tool specific function to perform exclude checks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-15 06:29_
+_@dhruvmanila_
 
 ## Summary
 

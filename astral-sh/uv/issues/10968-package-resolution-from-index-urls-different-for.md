@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-26T20:01:48Z
 updated_at: 2025-01-27T13:32:28Z
 url: https://github.com/astral-sh/uv/issues/10968
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Package resolution from Index URLs different for uv pip install and uv sync
 
 ---
 
-_Issue opened by @Fabma on 2025-01-26 20:01_
+_@Fabma_
 
 ### Summary
 

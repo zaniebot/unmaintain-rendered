@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T11:39:09Z
 updated_at: 2025-11-04T02:57:10Z
 url: https://github.com/astral-sh/uv/issues/16579
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # uv add spacy not working
 
 ---
 
-_Issue opened by @salmanshahid8 on 2025-11-03 11:39_
+_@salmanshahid8_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/explicit
 created_at: 2024-11-10T16:23:57Z
 updated_at: 2024-11-10T18:05:40Z
 url: https://github.com/astral-sh/uv/pull/8990
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Allow default indexes to be marked as explicit
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-10 16:23_
+_@charliermarsh_
 
 ## Summary
 

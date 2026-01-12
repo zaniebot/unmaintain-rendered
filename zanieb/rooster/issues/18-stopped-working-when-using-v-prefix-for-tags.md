@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-28T13:02:03Z
 updated_at: 2024-03-17T14:55:19Z
 url: https://github.com/zanieb/rooster/issues/18
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Stopped working when using `v` prefix for tags 
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-28 13:02_
+_@MichaReiser_
 
 Ruff uses rooster for its release management (as you probably know ;)) and it uses `v` as prefix for its tags. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T02:09:40Z
 updated_at: 2025-10-30T10:41:50Z
 url: https://github.com/astral-sh/uv/issues/2828
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # (🎁) Fail and show an error when an invalid extra is requested
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-04-05 02:09_
+_@KotlinIsland_
 
 ```console
 > uv --version

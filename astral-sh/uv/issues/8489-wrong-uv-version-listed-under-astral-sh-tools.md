@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T07:08:46Z
 updated_at: 2024-10-23T12:56:52Z
 url: https://github.com/astral-sh/uv/issues/8489
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Wrong uv version listed under astral.sh -> tools
 
 ---
 
-_Issue opened by @roteiro on 2024-10-23 07:08_
+_@roteiro_
 
 Astral.sh shows v0.4.16 under tools while v0.4.25 is the most recent at the time of issue creation
 ![image](https://github.com/user-attachments/assets/b398790c-134d-4245-8acd-af3fab806104)

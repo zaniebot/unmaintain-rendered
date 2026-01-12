@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T11:49:11Z
 updated_at: 2025-07-10T14:09:35Z
 url: https://github.com/astral-sh/ruff/issues/19175
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `match_continuation` breaks on form feed, making TC004 introduce a syntax error
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-07 11:49_
+_@dscorbett_
 
 ### Summary
 

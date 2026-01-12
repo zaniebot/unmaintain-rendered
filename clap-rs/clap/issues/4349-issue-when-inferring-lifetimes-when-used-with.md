@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-10-05T08:02:30Z
 updated_at: 2022-10-05T16:25:28Z
 url: https://github.com/clap-rs/clap/issues/4349
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Issue when inferring lifetimes when used with serde.
 
 ---
 
-_Issue opened by @0xForerunner on 2022-10-05 08:02_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-29T00:33:58Z
 updated_at: 2024-02-29T00:47:27Z
 url: https://github.com/astral-sh/uv/issues/2067
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Support remote url constraints?
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-29 00:33_
+_@notatallshaw_
 
 One feature pip has for constraints file is specifying a URL, it is used to effect in the Airflow installation guide: https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html
 

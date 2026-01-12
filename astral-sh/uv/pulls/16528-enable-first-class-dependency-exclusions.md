@@ -13,14 +13,14 @@ head: charlie/exclude
 created_at: 2025-10-31T01:06:26Z
 updated_at: 2025-12-11T19:51:11Z
 url: https://github.com/astral-sh/uv/pull/16528
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Enable first-class dependency exclusions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-31 01:06_
+_@charliermarsh_
 
 ## Summary
 

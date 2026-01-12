@@ -13,14 +13,14 @@ head: tomer/boolean-expression
 created_at: 2024-09-22T23:41:47Z
 updated_at: 2024-09-25T00:11:47Z
 url: https://github.com/astral-sh/ruff/pull/13449
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Add `Type::bool` and boolean expression inference
 
 ---
 
-_Pull request opened by @TomerBin on 2024-09-22 23:41_
+_@TomerBin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

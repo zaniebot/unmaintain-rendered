@@ -13,14 +13,14 @@ head: brent/forward-type-alias
 created_at: 2025-01-30T15:17:53Z
 updated_at: 2025-01-30T23:06:39Z
 url: https://github.com/astral-sh/ruff/pull/15829
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyflakes`] Visit forward annotations in `TypeAliasType` as types (`F401`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-30 15:17_
+_@ntBre_
 
 ## Summary
 

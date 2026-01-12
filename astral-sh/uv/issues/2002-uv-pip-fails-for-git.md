@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T05:00:49Z
 updated_at: 2024-02-27T06:45:49Z
 url: https://github.com/astral-sh/uv/issues/2002
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv pip fails for git+
 
 ---
 
-_Issue opened by @arunpatro on 2024-02-27 05:00_
+_@arunpatro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

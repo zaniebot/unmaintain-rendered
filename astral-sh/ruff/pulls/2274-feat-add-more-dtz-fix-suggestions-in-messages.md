@@ -12,14 +12,14 @@ head: feat/dtz-messages
 created_at: 2023-01-27T18:55:31Z
 updated_at: 2023-01-28T05:41:20Z
 url: https://github.com/astral-sh/ruff/pull/2274
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: add more DTZ fix suggestions in messages
 
 ---
 
-_Pull request opened by @scop on 2023-01-27 18:55_
+_@scop_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T22:30:36Z
 updated_at: 2024-11-20T15:50:27Z
 url: https://github.com/astral-sh/uv/issues/1022
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Re-enable `zlib-ng` on PowerPC and S390x
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-19 22:30_
+_@charliermarsh_
 
 Pretty low-priority.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T11:54:23Z
 updated_at: 2025-12-15T15:10:55Z
 url: https://github.com/astral-sh/uv/issues/15129
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # multiple sources for same package: local path dependency and regular dependency
 
 ---
 
-_Issue opened by @Ben-grmbl on 2025-08-07 11:54_
+_@Ben-grmbl_
 
 ### Question
 

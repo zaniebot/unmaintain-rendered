@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T01:02:45Z
 updated_at: 2025-11-08T03:11:17Z
 url: https://github.com/astral-sh/uv/issues/16260
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Consider making `uv cache clean` prompt for directories with non-cache contents
 
 ---
 
-_Issue opened by @charliermarsh on 2025-10-13 01:02_
+_@charliermarsh_
 
 If you accidentally set `UV_CACHE_DIR` to some working directory, `uv cache clean` will blow it away, since it's effectively an `rm -rf`. This matches the behavior of other tools (e.g., cargo), but we may want to consider guarding against these outcomes. It's not totally trivial, because `uv cache clean` is intended to clear out contents from _previous_ uv versions -- in other words, `uv cache clean` doesn't have a clear enumeration of "all contents that are part of the uv cache", since there might be other directories or files that were introduced and removed in prior uv versions. However, we could...
 

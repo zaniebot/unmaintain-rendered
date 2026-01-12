@@ -13,14 +13,14 @@ head: zb/anchor-cli-ref
 created_at: 2025-02-24T19:25:45Z
 updated_at: 2025-02-24T21:48:17Z
 url: https://github.com/astral-sh/uv/pull/11754
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Add anchor links to arguments and options in the CLI reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-24 19:25_
+_@zanieb_
 
 <img width="1427" alt="Screenshot 2025-02-24 at 1 26 01 PM" src="https://github.com/user-attachments/assets/9df589b6-79e4-478a-a404-043448a3bb3b" />
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-27T20:46:47Z
 updated_at: 2025-08-04T23:03:00Z
 url: https://github.com/astral-sh/ruff/issues/10638
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Warn about multiple imports of the same module
 
 ---
 
-_Issue opened by @Beliavsky on 2024-03-27 20:46_
+_@Beliavsky_
 
 I request that ruff warn of multiple imports of the same module, for example
 

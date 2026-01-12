@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T11:27:47Z
 updated_at: 2025-10-21T14:36:52Z
 url: https://github.com/astral-sh/uv/issues/16382
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Suggestion: remove `"uv pip"` completely
 
 ---
 
-_Issue opened by @ei-grad on 2025-10-21 11:27_
+_@ei-grad_
 
 ### Summary
 

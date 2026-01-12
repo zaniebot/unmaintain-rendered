@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T14:24:15Z
 updated_at: 2025-10-13T12:33:13Z
 url: https://github.com/astral-sh/uv/issues/13231
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Add the possibility of including local libraries
 
 ---
 
-_Issue opened by @XavierCLL on 2025-04-30 14:24_
+_@XavierCLL_
 
 ## Context
 

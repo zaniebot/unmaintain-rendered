@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-10T17:21:33Z
 updated_at: 2025-07-11T20:14:08Z
 url: https://github.com/astral-sh/ruff/issues/19267
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-comprehensions] Unnecessary literal within `set` call
 
 ---
 
-_Issue opened by @bluetech on 2025-07-10 17:21_
+_@bluetech_
 
 ### Summary
 

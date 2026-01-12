@@ -13,14 +13,14 @@ head: tar-entry-type
 created_at: 2025-12-09T08:17:08Z
 updated_at: 2025-12-11T10:37:36Z
 url: https://github.com/astral-sh/uv/pull/17043
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Explicitly set EntryType for file entries in tar
 
 ---
 
-_Pull request opened by @e-nomem on 2025-12-09 08:17_
+_@e-nomem_
 
 ## Summary
 This PR explicitly sets the entry type for files in an sdist. This changes the entry type from `AREGTYPE` (the 'legacy' regular file type) to `REGTYPE` (the 'normal' regular file type) in the generated tar.

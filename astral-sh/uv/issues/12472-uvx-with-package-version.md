@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-25T22:10:05Z
 updated_at: 2025-04-01T18:45:41Z
 url: https://github.com/astral-sh/uv/issues/12472
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # uvx --with "package@version" ?
 
 ---
 
-_Issue opened by @nickolay on 2025-03-25 22:10_
+_@nickolay_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-19T13:45:36Z
 updated_at: 2025-09-19T13:45:36Z
 url: https://github.com/astral-sh/uv/issues/15948
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Adding instructions for alternative indexes (Cloudsmith)
 
 ---
 
-_Issue opened by @pabloopez on 2025-09-19 13:45_
+_@pabloopez_
 
 Hi team, 
 

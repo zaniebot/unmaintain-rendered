@@ -13,14 +13,14 @@ head: charlie/dep
 created_at: 2023-11-17T17:23:04Z
 updated_at: 2023-11-17T17:34:56Z
 url: https://github.com/astral-sh/ruff/pull/8743
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove incorrect deprecation label for stdout and stderr
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 17:23_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8738.
 

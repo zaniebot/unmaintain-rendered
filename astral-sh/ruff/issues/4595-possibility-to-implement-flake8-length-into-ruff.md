@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-23T07:48:44Z
 updated_at: 2025-08-04T14:24:59Z
 url: https://github.com/astral-sh/ruff/issues/4595
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Possibility to implement flake8-length into ruff
 
 ---
 
-_Issue opened by @jsh9 on 2023-05-23 07:48_
+_@jsh9_
 
 Hi,
 

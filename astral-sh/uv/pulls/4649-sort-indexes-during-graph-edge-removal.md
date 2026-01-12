@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-06-29T17:14:44Z
 updated_at: 2024-06-29T17:31:56Z
 url: https://github.com/astral-sh/uv/pull/4649
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Sort indexes during graph edge removal
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-29 17:14_
+_@charliermarsh_
 
 ## Summary
 

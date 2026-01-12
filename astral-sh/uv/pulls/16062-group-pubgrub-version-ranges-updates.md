@@ -13,14 +13,14 @@ head: konsti/group-pubgrub-updates
 created_at: 2025-09-29T09:41:18Z
 updated_at: 2025-09-29T13:42:43Z
 url: https://github.com/astral-sh/uv/pull/16062
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Group pubgrub/version-ranges updates
 
 ---
 
-_Pull request opened by @konstin on 2025-09-29 09:41_
+_@konstin_
 
 To help with https://github.com/astral-sh/uv/pull/16056
 

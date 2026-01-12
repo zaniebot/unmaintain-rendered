@@ -11,14 +11,14 @@ head: jwh/toml-config-preview-features
 created_at: 2025-10-26T07:41:57Z
 updated_at: 2025-12-23T21:26:12Z
 url: https://github.com/astral-sh/uv/pull/16452
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Added support for [tool.uv.preview-features] in TOML configs (#15767)
 
 ---
 
-_Pull request opened by @j-helland on 2025-10-26 07:41_
+_@j-helland_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

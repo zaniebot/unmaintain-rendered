@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-28T15:53:42Z
 updated_at: 2024-09-29T15:11:52Z
 url: https://github.com/astral-sh/ruff/issues/13547
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Idea: replace integer value for month with constants
 
 ---
 
-_Issue opened by @hofrob on 2024-09-28 15:53_
+_@hofrob_
 
 # `calendar` package
 

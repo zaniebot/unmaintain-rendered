@@ -12,14 +12,14 @@ head: resolve-sdist
 created_at: 2023-10-19T15:04:35Z
 updated_at: 2023-10-25T20:05:15Z
 url: https://github.com/astral-sh/uv/pull/138
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Build source distributions in the resolver
 
 ---
 
-_Pull request opened by @konstin on 2023-10-19 15:04_
+_@konstin_
 
 This is isn't ready, but it can resolve `meine_stadt_transparent==0.2.14`.
 

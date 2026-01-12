@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-12T00:50:25Z
 updated_at: 2025-04-15T20:34:09Z
 url: https://github.com/astral-sh/ruff/issues/17364
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] `T & ~X` should be assignable to `T`
 
 ---
 
-_Issue opened by @carljm on 2025-04-12 00:50_
+_@carljm_
 
 [This](https://types.ruff.rs/327f3b66-7d85-452b-9af7-66c1ede9913f) does not type check, but it should:
 

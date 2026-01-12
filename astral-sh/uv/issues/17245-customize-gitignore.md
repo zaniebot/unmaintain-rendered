@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T07:00:28Z
 updated_at: 2026-01-02T09:29:55Z
 url: https://github.com/astral-sh/uv/issues/17245
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # customize .gitignore
 
 ---
 
-_Issue opened by @matin1099 on 2025-12-28 07:00_
+_@matin1099_
 
 ### Question
 

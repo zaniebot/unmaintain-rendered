@@ -14,14 +14,14 @@ head: zb/docs-logo
 created_at: 2024-07-24T20:12:01Z
 updated_at: 2024-07-24T20:45:12Z
 url: https://github.com/astral-sh/uv/pull/5421
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Use logo in documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-24 20:12_
+_@zanieb_
 
 Before
 <img width="728" alt="Screenshot 2024-07-24 at 3 12 28 PM" src="https://github.com/user-attachments/assets/2ad83857-a2a5-4c33-9fb2-f2580ccb10af">

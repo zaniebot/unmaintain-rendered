@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T22:42:33Z
 updated_at: 2025-12-16T22:50:05Z
 url: https://github.com/astral-sh/uv/issues/17138
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Helpful message when syncing lock file without having index metadata from `pyproject.toml`
 
 ---
 
-_Issue opened by @ketozhang on 2025-12-15 22:42_
+_@ketozhang_
 
 ### Summary
 

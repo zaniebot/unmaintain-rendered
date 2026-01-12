@@ -14,14 +14,14 @@ head: mdtest-hash-match
 created_at: 2025-08-06T21:48:03Z
 updated_at: 2025-11-06T11:48:15Z
 url: https://github.com/astral-sh/ruff/pull/19794
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Add support for using the test command emitted when a mdtest fails
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-08-06 21:48_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T09:35:48Z
 updated_at: 2025-05-16T10:47:02Z
 url: https://github.com/astral-sh/uv/issues/13486
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Is it possible to create two different wheels using the same pyproject.toml?
 
 ---
 
-_Issue opened by @Garrus990 on 2025-05-16 09:35_
+_@Garrus990_
 
 ### Question
 

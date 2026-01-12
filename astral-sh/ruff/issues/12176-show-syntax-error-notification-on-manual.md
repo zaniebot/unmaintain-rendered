@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T04:34:09Z
 updated_at: 2025-02-04T11:03:08Z
 url: https://github.com/astral-sh/ruff/issues/12176
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Show syntax error notification on manual invocation
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-04 04:34_
+_@dhruvmanila_
 
 To quote Micha:
 

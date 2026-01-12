@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-09-27T08:08:29Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1054
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Potentially unjustified `unsafe`
 
 ---
 
-_Issue opened by @H2CO3 on 2017-09-27 08:08_
+_@H2CO3_
 
 There are a couple of uses of `unsafe` in the code that I think are not strictly necessary. The prime example is this:
 

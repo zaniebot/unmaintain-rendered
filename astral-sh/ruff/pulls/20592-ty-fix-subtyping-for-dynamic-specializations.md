@@ -14,14 +14,14 @@ head: david/fix-subtyping-for-dynamic-specializations
 created_at: 2025-09-26T12:19:15Z
 updated_at: 2025-09-26T13:05:05Z
 url: https://github.com/astral-sh/ruff/pull/20592
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Fix subtyping for dynamic specializations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-26 12:19_
+_@sharkdp_
 
 ## Summary
 

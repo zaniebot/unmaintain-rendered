@@ -12,14 +12,14 @@ head: renovate/salsa-digest
 created_at: 2025-10-06T02:07:27Z
 updated_at: 2025-10-06T05:59:33Z
 url: https://github.com/astral-sh/ruff/pull/20706
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Update salsa digest to adf0556
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:07_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

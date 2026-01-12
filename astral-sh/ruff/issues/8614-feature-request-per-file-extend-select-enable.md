@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-11T09:42:10Z
 updated_at: 2025-11-06T22:05:45Z
 url: https://github.com/astral-sh/ruff/issues/8614
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Feature Request: `per-file-extend-select` - enable rule(s) for specific file(s).
 
 ---
 
-_Issue opened by @Warchant on 2023-11-11 09:42_
+_@Warchant_
 
 I am facing a use-case when I need to have 1 .py file very well documented, so I'd like to enable `D` rules only for that file. 
 

@@ -13,14 +13,14 @@ head: konsti/dont-use-a-global-mutable-credential-cache
 created_at: 2025-11-18T16:00:02Z
 updated_at: 2025-12-03T13:51:28Z
 url: https://github.com/astral-sh/uv/pull/16768
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Use explicit credentials cache instead of global static
 
 ---
 
-_Pull request opened by @konstin on 2025-11-18 16:00_
+_@konstin_
 
 Fixes https://github.com/astral-sh/uv/issues/16447
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-28T19:32:22Z
 updated_at: 2024-07-29T16:58:40Z
 url: https://github.com/astral-sh/uv/issues/5522
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # feat: remove the old uv binary when another one is installed
 
 ---
 
-_Issue opened by @ZeyadMoustafaKamal on 2024-07-28 19:32_
+_@ZeyadMoustafaKamal_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

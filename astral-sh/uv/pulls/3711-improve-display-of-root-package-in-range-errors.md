@@ -13,14 +13,14 @@ head: zb/err-root-range
 created_at: 2024-05-21T17:53:27Z
 updated_at: 2024-05-21T19:28:24Z
 url: https://github.com/astral-sh/uv/pull/3711
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Improve display of root package in range errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 17:53_
+_@zanieb_
 
 Instead of saying 
 

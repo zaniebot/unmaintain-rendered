@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-22T15:56:45Z
 updated_at: 2025-12-22T16:38:32Z
 url: https://github.com/astral-sh/ty/issues/2163
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # TypedDict: inconsistent inferred types for `values()`, and `items()`
 
 ---
 
-_Issue opened by @mflova on 2025-12-22 15:56_
+_@mflova_
 
 ### Summary
 

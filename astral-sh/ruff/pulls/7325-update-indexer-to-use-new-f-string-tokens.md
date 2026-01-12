@@ -14,14 +14,14 @@ head: dhruv/issue-7290
 created_at: 2023-09-13T04:41:42Z
 updated_at: 2023-09-28T03:58:50Z
 url: https://github.com/astral-sh/ruff/pull/7325
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update `Indexer` to use new f-string tokens
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-13 04:41_
+_@dhruvmanila_
 
 ## Summary
 

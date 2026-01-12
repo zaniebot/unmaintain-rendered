@@ -14,14 +14,14 @@ head: konsti/compile-option
 created_at: 2024-02-29T16:33:07Z
 updated_at: 2024-03-05T09:48:49Z
 url: https://github.com/astral-sh/uv/pull/2086
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Add an option to bytecode compile during installation
 
 ---
 
-_Pull request opened by @konstin on 2024-02-29 16:33_
+_@konstin_
 
 Add a `--compile` option to `pip install` and `pip sync`.
 

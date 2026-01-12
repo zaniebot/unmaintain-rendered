@@ -13,14 +13,14 @@ head: fix-s113-httpx
 created_at: 2024-07-06T04:05:36Z
 updated_at: 2024-07-06T19:56:16Z
 url: https://github.com/astral-sh/ruff/pull/12213
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bandit`] fix S113 false positive for httpx without `timeout` argument
 
 ---
 
-_Pull request opened by @trim21 on 2024-07-06 04:05_
+_@trim21_
 
 
 ## Summary

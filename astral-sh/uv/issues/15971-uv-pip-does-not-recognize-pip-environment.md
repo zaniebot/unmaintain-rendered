@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T00:51:33Z
 updated_at: 2025-09-22T01:02:11Z
 url: https://github.com/astral-sh/uv/issues/15971
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv pip` does not recognize `PIP_*` environment variables
 
 ---
 
-_Issue opened by @gandaro on 2025-09-22 00:51_
+_@gandaro_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dhruv/notebook-semicolon
 created_at: 2023-11-09T21:05:17Z
 updated_at: 2023-11-29T17:52:18Z
 url: https://github.com/astral-sh/ruff/pull/8590
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Preserve trailing semicolon for Notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-09 21:05_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/release-list
 created_at: 2025-05-13T09:35:36Z
 updated_at: 2025-05-13T10:12:12Z
 url: https://github.com/astral-sh/ty/pull/349
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Correctly indent the list in the "Releasing ty" section
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-13 09:35_
+_@MichaReiser_
 
 _No description provided._
 

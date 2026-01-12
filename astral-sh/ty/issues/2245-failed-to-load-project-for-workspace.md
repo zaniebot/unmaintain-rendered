@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T09:18:49Z
 updated_at: 2025-12-30T06:47:54Z
 url: https://github.com/astral-sh/ty/issues/2245
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Failed to load project for workspace
 
 ---
 
-_Issue opened by @amirhosseindavoody on 2025-12-28 09:18_
+_@amirhosseindavoody_
 
 ### Summary
 

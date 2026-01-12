@@ -12,14 +12,14 @@ head: charlie/per-file
 created_at: 2022-10-27T16:58:42Z
 updated_at: 2022-10-27T16:58:53Z
 url: https://github.com/astral-sh/ruff/pull/488
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add example of per-file ignores to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-27 16:58_
+_@charliermarsh_
 
 Resolves #486.
 

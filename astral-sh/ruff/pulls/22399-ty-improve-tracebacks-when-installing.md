@@ -14,14 +14,14 @@ head: alex/ty-benchmark-exceptions
 created_at: 2026-01-05T14:46:47Z
 updated_at: 2026-01-05T14:55:10Z
 url: https://github.com/astral-sh/ruff/pull/22399
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Improve tracebacks when installing dependencies fails in ty_benchmark
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-05 14:46_
+_@AlexWaygood_
 
 ## Summary
 

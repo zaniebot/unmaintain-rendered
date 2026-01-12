@@ -14,14 +14,14 @@ head: david/dataclass-unsafe_hash
 created_at: 2025-11-15T10:45:06Z
 updated_at: 2025-11-16T09:52:31Z
 url: https://github.com/astral-sh/ruff/pull/21470
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Dataclasses: `__hash__` semantics and `unsafe_hash`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-15 10:45_
+_@sharkdp_
 
 ## Summary
 

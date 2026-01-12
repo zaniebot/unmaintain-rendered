@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-18T12:39:43Z
 updated_at: 2025-08-11T14:28:25Z
 url: https://github.com/astral-sh/ruff/issues/18160
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff re-orders Jupyter notebook file's (*.ipynb) JSON representation
 
 ---
 
-_Issue opened by @keen85 on 2025-05-18 12:39_
+_@keen85_
 
 ### Summary
 

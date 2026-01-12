@@ -13,14 +13,14 @@ head: unify-env-vars
 created_at: 2024-10-12T19:50:13Z
 updated_at: 2024-10-14T22:11:03Z
 url: https://github.com/astral-sh/uv/pull/8151
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # chore: unify all env vars used
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-12 19:50_
+_@samypr100_
 
 ## Summary
 

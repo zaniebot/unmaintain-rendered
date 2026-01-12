@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-30T16:31:05Z
 updated_at: 2025-07-30T16:31:59Z
 url: https://github.com/astral-sh/ruff/issues/19641
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # test_multi_file_function_references fails on 32-bit platforms
 
 ---
 
-_Issue opened by @hannesbraun on 2025-07-30 16:31_
+_@hannesbraun_
 
 ### Summary
 

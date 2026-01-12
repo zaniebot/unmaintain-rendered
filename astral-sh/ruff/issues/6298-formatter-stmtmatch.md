@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-03T06:51:24Z
 updated_at: 2023-08-08T13:18:51Z
 url: https://github.com/astral-sh/ruff/issues/6298
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `StmtMatch`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-03 06:51_
+_@dhruvmanila_
 
 _No description provided._
 

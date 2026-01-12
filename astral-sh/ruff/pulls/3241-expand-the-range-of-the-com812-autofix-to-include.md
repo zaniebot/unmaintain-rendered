@@ -13,14 +13,14 @@ head: bug-fix-com812-up034-autofixes
 created_at: 2023-02-27T01:01:23Z
 updated_at: 2023-02-27T03:47:08Z
 url: https://github.com/astral-sh/ruff/pull/3241
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Expand the range of the COM812 autofix to include the preceding token
 
 ---
 
-_Pull request opened by @matthewlloyd on 2023-02-27 01:01_
+_@matthewlloyd_
 
 This prevents the UP034 autofix simultaneously stripping the parentheses from generators in the same linter pass, which causes a SyntaxError.
 

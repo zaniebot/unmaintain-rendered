@@ -12,14 +12,14 @@ head: fix-python-list
 created_at: 2024-07-13T14:31:25Z
 updated_at: 2024-07-19T06:29:50Z
 url: https://github.com/astral-sh/uv/pull/5036
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Respect the libc of the execution environment with `uv python list`
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-13 14:31_
+_@Di-Is_
 
 Fix #4988
 

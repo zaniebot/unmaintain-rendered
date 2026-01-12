@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T08:35:57Z
 updated_at: 2025-03-01T16:24:34Z
 url: https://github.com/astral-sh/uv/issues/11880
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Missing command in `uv --help`
 
 ---
 
-_Issue opened by @thezbm on 2025-03-01 08:35_
+_@thezbm_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/foo
 created_at: 2023-07-06T21:37:34Z
 updated_at: 2023-07-07T10:08:49Z
 url: https://github.com/astral-sh/ruff/pull/5573
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove checked-in scratch file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 21:37_
+_@charliermarsh_
 
 _No description provided._
 

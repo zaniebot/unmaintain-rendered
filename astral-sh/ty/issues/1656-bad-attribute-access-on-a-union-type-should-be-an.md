@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-27T13:12:44Z
 updated_at: 2026-01-09T15:38:53Z
 url: https://github.com/astral-sh/ty/issues/1656
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Bad attribute access on a union type should be an error, not a warning
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-27 13:12_
+_@AlexWaygood_
 
 ### Summary
 

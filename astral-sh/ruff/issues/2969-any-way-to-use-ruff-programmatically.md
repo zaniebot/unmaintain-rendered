@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T20:05:01Z
 updated_at: 2023-02-16T20:15:01Z
 url: https://github.com/astral-sh/ruff/issues/2969
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Any way to use Ruff programmatically?
 
 ---
 
-_Issue opened by @ghazpar on 2023-02-16 20:05_
+_@ghazpar_
 
 That is to be able to import ruff in Python and use it to lint the content of a string?
 

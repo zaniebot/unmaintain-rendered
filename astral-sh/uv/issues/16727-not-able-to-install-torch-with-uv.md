@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T17:58:03Z
 updated_at: 2025-11-13T18:07:56Z
 url: https://github.com/astral-sh/uv/issues/16727
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Not able to install torch with uv
 
 ---
 
-_Issue opened by @bk1205 on 2025-11-13 17:58_
+_@bk1205_
 
 ### Summary
 

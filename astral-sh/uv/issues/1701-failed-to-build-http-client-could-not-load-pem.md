@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T15:54:28Z
 updated_at: 2024-06-07T02:57:41Z
 url: https://github.com/astral-sh/uv/issues/1701
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Failed to build HTTP client, could not load PEM file
 
 ---
 
-_Issue opened by @mattmess1221 on 2024-02-19 15:54_
+_@mattmess1221_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

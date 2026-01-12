@@ -13,14 +13,14 @@ head: zb/request-any
 created_at: 2024-05-23T13:10:22Z
 updated_at: 2024-05-23T13:22:35Z
 url: https://github.com/astral-sh/uv/pull/3789
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Add `InterpreterRequest::Any` instead of using `VersionRequest::Any`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 13:10_
+_@zanieb_
 
 A follow-up to #3266 addressing some awkwardness where there was no "empty" or default interpreter request kind.
 

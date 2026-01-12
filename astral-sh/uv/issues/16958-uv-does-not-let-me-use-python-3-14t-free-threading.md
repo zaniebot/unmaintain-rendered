@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T07:48:10Z
 updated_at: 2025-12-03T09:03:40Z
 url: https://github.com/astral-sh/uv/issues/16958
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # `UV` Does not let me use python 3.14t (Free threading )
 
 ---
 
-_Issue opened by @Vedant-Bisen on 2025-12-03 07:48_
+_@Vedant-Bisen_
 
 ### Summary
 

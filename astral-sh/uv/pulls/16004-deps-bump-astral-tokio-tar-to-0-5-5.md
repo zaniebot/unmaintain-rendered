@@ -13,14 +13,14 @@ head: ww/bump-tokio-tar
 created_at: 2025-09-23T16:31:53Z
 updated_at: 2025-09-23T17:46:10Z
 url: https://github.com/astral-sh/uv/pull/16004
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # deps: bump astral-tokio-tar to 0.5.5
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-23 16:31_
+_@woodruffw_
 
 ## Summary
 

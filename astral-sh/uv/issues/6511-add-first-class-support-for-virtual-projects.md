@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T13:00:32Z
 updated_at: 2024-08-29T13:57:13Z
 url: https://github.com/astral-sh/uv/issues/6511
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Add first-class support for virtual projects
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-23 13:00_
+_@charliermarsh_
 
 A lot of users don't want to structure their projects as valid Python packages -- perhaps they're creating a web application, or a collection of scripts, etc. These all _can_ be structured as valid Python packages, but users tend not to do this. Requiring that projects are valid Python packages makes it harder for existing users to adopt uv.
 

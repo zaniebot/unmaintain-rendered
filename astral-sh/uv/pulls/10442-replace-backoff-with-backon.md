@@ -13,14 +13,14 @@ head: gankra/backon
 created_at: 2025-01-09T20:09:25Z
 updated_at: 2025-01-09T21:01:25Z
 url: https://github.com/astral-sh/uv/pull/10442
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # replace backoff with backon
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-09 20:09_
+_@Gankra_
 
 This should be essentially the exact same behaviour, but backon is a total API redesign, so things had to be expressed slightly differently. Overall I think the code is more readable, which is nice.
 

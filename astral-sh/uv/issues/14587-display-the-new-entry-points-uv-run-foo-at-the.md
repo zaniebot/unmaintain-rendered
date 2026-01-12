@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-13T13:38:03Z
 updated_at: 2025-09-08T14:39:23Z
 url: https://github.com/astral-sh/uv/issues/14587
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Display the new entry points (uv run foo) at the end of installing a project or package
 
 ---
 
-_Issue opened by @oxysoft on 2025-07-13 13:38_
+_@oxysoft_
 
 ### Summary
 

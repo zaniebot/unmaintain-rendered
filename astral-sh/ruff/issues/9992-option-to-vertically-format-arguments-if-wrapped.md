@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T01:13:21Z
 updated_at: 2025-09-15T09:12:33Z
 url: https://github.com/astral-sh/ruff/issues/9992
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Option to vertically format arguments if wrapped.
 
 ---
 
-_Issue opened by @funkybob on 2024-02-15 01:13_
+_@funkybob_
 
 Would it be possible to add a formatter option so that once it decides to split arguments to a call onto a new line, each argument goes on its own line?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-05T19:03:37Z
 updated_at: 2022-12-05T20:02:05Z
 url: https://github.com/astral-sh/ruff/issues/1071
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support `isort: skip_file`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-05 19:03_
+_@charliermarsh_
 
 _No description provided._
 

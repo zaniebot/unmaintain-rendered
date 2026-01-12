@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T20:49:48Z
 updated_at: 2024-05-27T00:15:14Z
 url: https://github.com/astral-sh/uv/issues/3802
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # [perf] differences in pip vs uv when installing package from src
 
 ---
 
-_Issue opened by @ryxli on 2024-05-23 20:49_
+_@ryxli_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

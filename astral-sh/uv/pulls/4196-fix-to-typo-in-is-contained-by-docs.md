@@ -14,14 +14,14 @@ head: charlie/star
 created_at: 2024-06-10T13:22:34Z
 updated_at: 2024-06-10T13:28:35Z
 url: https://github.com/astral-sh/uv/pull/4196
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Fix `>=` to `==` typo in `is_contained_by` docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 13:22_
+_@charliermarsh_
 
 _No description provided._
 

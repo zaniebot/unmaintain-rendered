@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T13:34:25Z
 updated_at: 2026-01-09T12:37:25Z
 url: https://github.com/astral-sh/uv/issues/17359
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Allow `uv version` bumping `post` and `dev` together at the same time
 
 ---
 
-_Issue opened by @jvacek on 2026-01-08 13:34_
+_@jvacek_
 
 ### Summary
 

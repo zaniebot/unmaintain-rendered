@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-25T05:59:44Z
 updated_at: 2025-07-07T11:07:17Z
 url: https://github.com/astral-sh/ty/issues/698
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Detect declared-only instance attributes
 
 ---
 
-_Issue opened by @graipher on 2025-06-25 05:59_
+_@graipher_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-04-20T10:42:11Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/935
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Provide a way to produce empty Values and OsValues iterators (possibly implement the Default trait?)
 
 ---
 
-_Issue opened by @golddranks on 2017-04-20 10:42_
+_@golddranks_
 
 Why? Because sometimes I need to be able to produce placeholder values to represent the case where there were no values. Currently this is possible using `Option<Values>`, but this is clunky since iterators support naturally the case of "length zero", iterating zero times.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-03T09:04:14Z
 updated_at: 2025-08-04T10:57:20Z
 url: https://github.com/astral-sh/uv/issues/15040
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # uv-build: default glob for `license-files`
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2025-08-03 09:04_
+_@DimitriPapadopoulos_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: add-pyflakes-extend-annotated-subscripts
 created_at: 2023-05-27T09:49:10Z
 updated_at: 2023-06-02T09:36:52Z
 url: https://github.com/astral-sh/ruff/pull/4677
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add `pyflakes.extend-generics` setting
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-27 09:49_
+_@JonathanPlasse_
 
 - Close #4654
 - [ ] Improve documentation

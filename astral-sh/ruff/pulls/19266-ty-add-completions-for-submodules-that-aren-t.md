@@ -14,14 +14,14 @@ head: ag/submodule-completions
 created_at: 2025-07-10T17:10:23Z
 updated_at: 2025-07-11T14:06:37Z
 url: https://github.com/astral-sh/ruff/pull/19266
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Add completions for submodules that aren't attributes of their parent
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-10 17:10_
+_@BurntSushi_
 
 While we did previously support submodule completions via our
 `all_members` API, that only works when submodules are attributes of

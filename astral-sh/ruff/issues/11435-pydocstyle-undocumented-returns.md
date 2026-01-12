@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-15T18:02:12Z
 updated_at: 2024-05-20T05:28:51Z
 url: https://github.com/astral-sh/ruff/issues/11435
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # pydocstyle: undocumented returns
 
 ---
 
-_Issue opened by @adamjstewart on 2024-05-15 18:02_
+_@adamjstewart_
 
 ### Feature Request
 

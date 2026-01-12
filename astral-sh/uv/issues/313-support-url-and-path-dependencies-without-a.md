@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T18:38:23Z
 updated_at: 2024-03-22T11:58:08Z
 url: https://github.com/astral-sh/uv/issues/313
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support URL and path dependencies without a package name
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-03 18:38_
+_@charliermarsh_
 
 Apparently this works with pip?
 

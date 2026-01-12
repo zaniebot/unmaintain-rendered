@@ -13,14 +13,14 @@ head: feature/uv-format-project-dir
 created_at: 2025-08-21T22:50:06Z
 updated_at: 2025-08-22T16:27:52Z
 url: https://github.com/astral-sh/uv/pull/15438
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Respect `--project` in `uv format`
 
 ---
 
-_Pull request opened by @jorgehermo9 on 2025-08-21 22:50_
+_@jorgehermo9_
 
 Closes https://github.com/astral-sh/uv/issues/15431
 

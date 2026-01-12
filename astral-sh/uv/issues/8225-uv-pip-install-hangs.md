@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T17:24:41Z
 updated_at: 2025-04-27T15:47:07Z
 url: https://github.com/astral-sh/uv/issues/8225
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # `uv pip install` hangs...
 
 ---
 
-_Issue opened by @milkpirate on 2024-10-15 17:24_
+_@milkpirate_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

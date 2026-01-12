@@ -13,14 +13,14 @@ head: brent/log015-0.10
 created_at: 2025-03-12T02:14:36Z
 updated_at: 2025-03-12T12:35:21Z
 url: https://github.com/astral-sh/ruff/pull/16654
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-logging`] Stabilize `root-logger-call` (`LOG015`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 02:14_
+_@ntBre_
 
 Summary
 --

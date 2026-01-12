@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-12T21:36:11Z
 updated_at: 2015-05-12T22:13:18Z
 url: https://github.com/clap-rs/clap/issues/116
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # No suggestion for misspelling of --help
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-12 21:36_
+_@kbknapp_
 
 If you misspell --help you do not get a suggestion.
 

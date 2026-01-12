@@ -13,14 +13,14 @@ head: zb/display-search
 created_at: 2024-05-22T18:16:24Z
 updated_at: 2024-05-22T18:26:36Z
 url: https://github.com/astral-sh/uv/pull/3751
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Add display of interpreter request
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 18:16_
+_@zanieb_
 
 e.g. 
 

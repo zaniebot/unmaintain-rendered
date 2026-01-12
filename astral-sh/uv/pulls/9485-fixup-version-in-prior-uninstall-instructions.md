@@ -13,14 +13,14 @@ head: zb/fixup-prior
 created_at: 2024-11-27T23:10:36Z
 updated_at: 2024-11-28T14:00:11Z
 url: https://github.com/astral-sh/uv/pull/9485
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Fixup version in prior uninstall instructions
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-27 23:10_
+_@zanieb_
 
 _No description provided._
 

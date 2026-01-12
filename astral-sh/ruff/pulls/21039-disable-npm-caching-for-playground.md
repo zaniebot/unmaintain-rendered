@@ -14,14 +14,14 @@ head: micha/disable-playground-caching
 created_at: 2025-10-23T07:44:08Z
 updated_at: 2025-10-23T09:51:31Z
 url: https://github.com/astral-sh/ruff/pull/21039
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Disable npm caching for playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-23 07:44_
+_@MichaReiser_
 
 ## Summary
 

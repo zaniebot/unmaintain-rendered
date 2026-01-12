@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-01-11T17:29:56Z
 updated_at: 2024-01-11T17:59:01Z
 url: https://github.com/astral-sh/ruff/pull/9473
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # docs: fix typo in formatter.md
 
 ---
 
-_Pull request opened by @rsyring on 2024-01-11 17:29_
+_@rsyring_
 
 I believe there was a typo in the formatter docs and I've attempted to fix it according to what I think was originally intended.
 

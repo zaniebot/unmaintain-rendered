@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-19T03:36:00Z
 updated_at: 2021-09-19T05:48:13Z
 url: https://github.com/clap-rs/clap/issues/2776
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # AppSettings::ColorNever does not works for "Did you mean --flag"
 
 ---
 
-_Issue opened by @leizongmin on 2021-09-19 03:36_
+_@leizongmin_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: move-bandit-violations
 created_at: 2023-02-03T10:46:59Z
 updated_at: 2023-02-03T12:39:49Z
 url: https://github.com/astral-sh/ruff/pull/2525
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-bandit violations
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 10:46_
+_@akx_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T06:56:23Z
 updated_at: 2025-11-21T02:33:43Z
 url: https://github.com/astral-sh/uv/issues/16732
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # `--with-requirements script` doesn't work if script doesn't end with `.py`
 
 ---
 
-_Issue opened by @janlarres on 2025-11-14 06:56_
+_@janlarres_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/pref
 created_at: 2024-05-16T15:59:21Z
 updated_at: 2024-05-16T16:13:10Z
 url: https://github.com/astral-sh/ruff/pull/11452
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Sort edits prior to deduplicating in quotation fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-16 15:59_
+_@charliermarsh_
 
 ## Summary
 

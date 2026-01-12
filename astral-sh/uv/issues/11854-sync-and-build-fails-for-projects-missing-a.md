@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T14:04:27Z
 updated_at: 2025-02-28T14:17:11Z
 url: https://github.com/astral-sh/uv/issues/11854
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # sync and build fails for projects missing a README.md
 
 ---
 
-_Issue opened by @bjeffrey92 on 2025-02-28 14:04_
+_@bjeffrey92_
 
 ### Summary
 

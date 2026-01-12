@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-28T13:03:25Z
 updated_at: 2025-04-29T13:30:48Z
 url: https://github.com/astral-sh/ruff/issues/17679
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Allow formatting only changed blocks (git)
 
 ---
 
-_Issue opened by @ahmedyasserays on 2025-04-28 13:03_
+_@ahmedyasserays_
 
 It would be very helpful to add a flag to format only the changed blocks detected by git, something like what darker does
 https://github.com/akaihola/darker

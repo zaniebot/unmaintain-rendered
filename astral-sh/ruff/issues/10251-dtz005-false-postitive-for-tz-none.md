@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-06T18:16:32Z
 updated_at: 2024-03-27T19:42:14Z
 url: https://github.com/astral-sh/ruff/issues/10251
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # DTZ005 false postitive for `tz=None`
 
 ---
 
-_Issue opened by @adriangb on 2024-03-06 18:16_
+_@adriangb_
 
 ```python
 import datetime

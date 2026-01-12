@@ -12,14 +12,14 @@ head: tool-exclude-directory-exclusion
 created_at: 2023-10-27T09:42:38Z
 updated_at: 2024-02-29T11:08:23Z
 url: https://github.com/astral-sh/ruff/pull/8276
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Exclude directories with `tool.exclude`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-27 09:42_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

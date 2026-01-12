@@ -13,14 +13,14 @@ head: micha/playground-diagnostics
 created_at: 2024-09-15T13:28:01Z
 updated_at: 2024-09-16T07:34:47Z
 url: https://github.com/astral-sh/ruff/pull/13357
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add diagnostics panel and navigation features to playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-15 13:28_
+_@MichaReiser_
 
 ## Summary
 

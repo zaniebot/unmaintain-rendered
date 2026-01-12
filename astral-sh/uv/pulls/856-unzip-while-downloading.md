@@ -13,14 +13,14 @@ head: bojan/unzip-async
 created_at: 2024-01-09T18:45:43Z
 updated_at: 2024-01-11T14:41:48Z
 url: https://github.com/astral-sh/uv/pull/856
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Unzip while downloading
 
 ---
 
-_Pull request opened by @bojanserafimov on 2024-01-09 18:45_
+_@bojanserafimov_
 
 Results:
 

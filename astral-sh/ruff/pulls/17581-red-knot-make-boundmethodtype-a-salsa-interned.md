@@ -13,14 +13,14 @@ head: micha/bound-method-interned
 created_at: 2025-04-23T12:57:25Z
 updated_at: 2025-04-23T13:11:22Z
 url: https://github.com/astral-sh/ruff/pull/17581
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Make `BoundMethodType` a salsa interned
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-23 12:57_
+_@MichaReiser_
 
 ## Summary
 

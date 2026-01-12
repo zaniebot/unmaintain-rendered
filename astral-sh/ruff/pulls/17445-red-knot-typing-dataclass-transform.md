@@ -13,14 +13,14 @@ head: david/dataclass_transform
 created_at: 2025-04-17T08:37:59Z
 updated_at: 2025-05-02T16:00:10Z
 url: https://github.com/astral-sh/ruff/pull/17445
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] `typing.dataclass_transform`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-17 08:37_
+_@sharkdp_
 
 ## Summary
 

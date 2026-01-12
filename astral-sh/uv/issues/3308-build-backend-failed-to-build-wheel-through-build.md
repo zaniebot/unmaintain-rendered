@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-29T13:48:08Z
 updated_at: 2024-12-05T18:49:31Z
 url: https://github.com/astral-sh/uv/issues/3308
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Build backend failed to build wheel through `build_wheel()` - wrong architecture
 
 ---
 
-_Issue opened by @CatamountJack on 2024-04-29 13:48_
+_@CatamountJack_
 
 Using `uv` (via `rye`), it can't create x86 wheels for (some) dependencies on my x64 machine.
 

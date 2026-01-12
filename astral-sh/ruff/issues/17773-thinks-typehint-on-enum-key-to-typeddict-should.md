@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T17:44:39Z
 updated_at: 2025-05-05T15:09:52Z
 url: https://github.com/astral-sh/ruff/issues/17773
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # thinks typehint on enum key to TypedDict should be an assignment
 
 ---
 
-_Issue opened by @theavey on 2025-05-01 17:44_
+_@theavey_
 
 ### Summary
 

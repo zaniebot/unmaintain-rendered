@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:10:55Z
 updated_at: 2024-07-17T06:55:18Z
 url: https://github.com/astral-sh/ruff/issues/11661
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] O(1) AST node reference lookup
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:10_
+_@carljm_
 
 Definitions need to reference AST nodes, but actual references would require dealing with lifetimes, which is awkward given our database structure. Arc would be another option, but our AST doesn't use it internally, so that doesn't work either.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T19:58:41Z
 updated_at: 2024-09-12T19:04:24Z
 url: https://github.com/astral-sh/uv/issues/7273
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Nexus PyPi causing early exit on package resolution
 
 ---
 
-_Issue opened by @JTCroft on 2024-09-10 19:58_
+_@JTCroft_
 
 I have an issue related to an internal nexus-hosted PyPi. When using a repo group in nexus the page returned when a package is NOT present in any of the PyPis grouped together in a repo group will cause `uv` to believe that the package WAS found in the repo but with no versions available, invariably causing it to fail to install anything hosted in any package index after the internal nexus one in resolution order
 

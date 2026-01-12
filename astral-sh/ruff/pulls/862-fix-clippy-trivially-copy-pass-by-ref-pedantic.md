@@ -12,14 +12,14 @@ head: clippy-trivially-copy-pass-by-ref
 created_at: 2022-11-21T19:22:09Z
 updated_at: 2022-11-21T20:59:52Z
 url: https://github.com/astral-sh/ruff/pull/862
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix clippy::trivially-copy-pass-by-ref (pedantic)
 
 ---
 
-_Pull request opened by @andersk on 2022-11-21 19:22_
+_@andersk_
 
 “this argument (8 byte) is passed by reference, but would be more efficient if passed by value (limit: 8 byte)”
 

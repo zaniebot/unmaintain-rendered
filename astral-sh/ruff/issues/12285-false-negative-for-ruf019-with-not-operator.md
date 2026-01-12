@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T00:08:47Z
 updated_at: 2024-07-12T12:53:38Z
 url: https://github.com/astral-sh/ruff/issues/12285
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False negative for RUF019 with `not` operator
 
 ---
 
-_Issue opened by @dscorbett on 2024-07-11 00:08_
+_@dscorbett_
 
 RUF019 checks for things like `"key" in dct and dct["key"]` in boolean contexts, like an `if` condition or the argument to `bool`. It should also detect it as the operand of `not`.
 ```console

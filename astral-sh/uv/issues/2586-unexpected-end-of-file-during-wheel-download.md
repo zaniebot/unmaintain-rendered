@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T10:25:57Z
 updated_at: 2024-11-23T03:38:36Z
 url: https://github.com/astral-sh/uv/issues/2586
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # `unexpected end of file` during wheel download
 
 ---
 
-_Issue opened by @newne on 2024-03-21 10:25_
+_@newne_
 
 ubuntu 22.04 
 uv  0.1.23

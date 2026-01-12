@@ -13,14 +13,14 @@ head: konsti/not-option-editable-bool
 created_at: 2024-05-21T11:34:14Z
 updated_at: 2024-05-21T14:34:45Z
 url: https://github.com/astral-sh/uv/pull/3693
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Let `RequirementSource::Path.editable` be `bool`, not `Option<bool>`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 11:34_
+_@konstin_
 
 Small refactoring of the internal representation. This does not change `tool.uv.sources`.
 

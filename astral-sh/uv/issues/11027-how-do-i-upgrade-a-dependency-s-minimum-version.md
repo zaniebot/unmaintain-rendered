@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T17:47:49Z
 updated_at: 2025-01-28T19:02:44Z
 url: https://github.com/astral-sh/uv/issues/11027
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # How do I upgrade a dependency's minimum version in my pyproject.toml?
 
 ---
 
-_Issue opened by @LukeGT on 2025-01-28 17:47_
+_@LukeGT_
 
 ### Question
 

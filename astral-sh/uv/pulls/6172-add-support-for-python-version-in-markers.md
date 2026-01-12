@@ -13,14 +13,14 @@ head: zb/python-in-markers
 created_at: 2024-08-17T17:36:30Z
 updated_at: 2024-08-19T14:10:21Z
 url: https://github.com/astral-sh/uv/pull/6172
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Add support for `python_version in ...` markers
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-17 17:36_
+_@zanieb_
 
 Closes #3683 
 

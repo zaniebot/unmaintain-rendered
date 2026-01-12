@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T05:44:51Z
 updated_at: 2025-12-10T07:10:06Z
 url: https://github.com/astral-sh/ty/issues/1833
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # received unknown options for workspace ^file:///D:/Master_Jobs/AI_Study /code/product-classify' : 'ty'. Refer to the logs for more details.
 
 ---
 
-_Issue opened by @hjqaixuexi on 2025-12-10 05:44_
+_@hjqaixuexi_
 
 ### Question
 

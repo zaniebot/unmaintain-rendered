@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-29T15:28:25Z
 updated_at: 2025-05-31T12:39:07Z
 url: https://github.com/astral-sh/ruff/issues/18372
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PYI029` and `@abstractmethod` implementations
 
 ---
 
-_Issue opened by @jorenham on 2025-05-29 15:28_
+_@jorenham_
 
 ### Summary
 

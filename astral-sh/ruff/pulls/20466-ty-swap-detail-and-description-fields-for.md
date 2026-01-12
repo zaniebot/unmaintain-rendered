@@ -14,14 +14,14 @@ head: ag/fix-weird-type-rendering
 created_at: 2025-09-18T12:30:44Z
 updated_at: 2025-09-18T13:11:20Z
 url: https://github.com/astral-sh/ruff/pull/20466
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Swap `detail` and `description` fields for `CompletionItemLabelDetails`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-18 12:30_
+_@BurntSushi_
 
 This seems to be more consistent with how other LSPs work (like
 `rust-analyzer`), and also I think is more consistent with how

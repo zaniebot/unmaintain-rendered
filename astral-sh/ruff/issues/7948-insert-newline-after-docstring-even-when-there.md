@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-13T15:50:12Z
 updated_at: 2023-10-30T13:18:56Z
 url: https://github.com/astral-sh/ruff/issues/7948
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Insert newline after docstring even when there are comments
 
 ---
 
-_Issue opened by @konstin on 2023-10-13 15:50_
+_@konstin_
 
 Ours:
 ```pyhton

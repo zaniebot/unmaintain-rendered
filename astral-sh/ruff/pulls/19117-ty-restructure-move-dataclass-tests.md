@@ -15,14 +15,14 @@ head: david/restructure-dataclass-md-tests
 created_at: 2025-07-03T10:33:09Z
 updated_at: 2025-07-03T10:42:55Z
 url: https://github.com/astral-sh/ruff/pull/19117
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Restructure/move dataclass tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-03 10:33_
+_@sharkdp_
 
 Before I'm adding even more dataclass-related files, let's  organize them in a separate folder.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T10:00:12Z
 updated_at: 2025-06-17T13:58:17Z
 url: https://github.com/astral-sh/ruff/issues/17909
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Exclude `rust-toolchain.toml` from `sdist`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-07 10:00_
+_@MichaReiser_
 
 > That said, if you say that rust-toolchain.toml is for development and to consume optimizations early for your binary artifacts, would you consider excluding the file from the Python sdist since based on the premise (and based on your backwards compatibility claim) it's irrelevant to have it there for released packages.
 

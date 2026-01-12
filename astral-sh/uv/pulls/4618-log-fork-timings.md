@@ -14,14 +14,14 @@ head: konsti/log-fork-timing
 created_at: 2024-06-28T14:37:41Z
 updated_at: 2024-06-28T15:31:24Z
 url: https://github.com/astral-sh/uv/pull/4618
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Log fork timings
 
 ---
 
-_Pull request opened by @konstin on 2024-06-28 14:37_
+_@konstin_
 
 This includes a functional change, we now skip the forked state pop/push if we didn't fork.
 

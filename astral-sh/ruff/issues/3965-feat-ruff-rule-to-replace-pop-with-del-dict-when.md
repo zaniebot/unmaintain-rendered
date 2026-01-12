@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-13T20:34:42Z
 updated_at: 2023-04-14T02:31:37Z
 url: https://github.com/astral-sh/ruff/issues/3965
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # feat: ruff rule to replace `.pop(...)` with `del dict[...]` when the return is unused
 
 ---
 
-_Issue opened by @markis on 2023-04-13 20:34_
+_@markis_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

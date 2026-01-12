@@ -13,14 +13,14 @@ head: dhruv/jupyter-docs
 created_at: 2023-06-27T20:32:11Z
 updated_at: 2023-06-28T00:27:26Z
 url: https://github.com/astral-sh/ruff/pull/5403
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add Jupyter integration to the docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-27 20:32_
+_@dhruvmanila_
 
 ## Summary
 

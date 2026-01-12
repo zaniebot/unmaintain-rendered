@@ -14,14 +14,14 @@ head: alex/dynamic-intersection-unions
 created_at: 2025-09-26T13:10:53Z
 updated_at: 2025-09-26T16:00:13Z
 url: https://github.com/astral-sh/ruff/pull/20593
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Simplify `Any | (Any & T)` to `Any`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-26 13:10_
+_@AlexWaygood_
 
 I think this may help reduce some of the fallout from https://github.com/astral-sh/ruff/pull/20368 by creating simpler types when we narrow unions
 

@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-08-27T19:14:39Z
 updated_at: 2023-08-28T15:08:40Z
 url: https://github.com/astral-sh/ruff/pull/6922
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Allow `Locator#slice` to take `Ranged`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 19:14_
+_@charliermarsh_
 
 ## Summary
 

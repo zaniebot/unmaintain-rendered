@@ -14,14 +14,14 @@ head: micha/fix-parameter-comment-placement
 created_at: 2024-09-17T09:50:58Z
 updated_at: 2024-09-18T06:26:08Z
 url: https://github.com/astral-sh/ruff/pull/13379
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix placement of inline parameter comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-17 09:50_
+_@MichaReiser_
 
 ## Summary
 

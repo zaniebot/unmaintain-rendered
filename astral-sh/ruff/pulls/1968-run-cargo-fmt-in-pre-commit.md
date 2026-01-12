@@ -12,14 +12,14 @@ head: pre-commit-rust-fmt
 created_at: 2023-01-18T17:32:36Z
 updated_at: 2023-01-18T18:14:52Z
 url: https://github.com/astral-sh/ruff/pull/1968
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Run cargo fmt in pre-commit
 
 ---
 
-_Pull request opened by @akx on 2023-01-18 17:32_
+_@akx_
 
 Since `cargo fmt` is a required CI check, we could just as well run it in `pre-commit`.
 

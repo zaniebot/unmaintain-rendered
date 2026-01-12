@@ -12,14 +12,14 @@ head: upgrade-is-macro
 created_at: 2023-09-13T13:13:00Z
 updated_at: 2023-09-13T13:53:25Z
 url: https://github.com/astral-sh/ruff/pull/7334
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Upgrade is-macros to 0.3.0
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-13 13:13_
+_@MichaReiser_
 
 
 ## Summary

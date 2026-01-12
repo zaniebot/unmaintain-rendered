@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T06:09:37Z
 updated_at: 2025-10-16T13:50:03Z
 url: https://github.com/astral-sh/ruff/issues/20883
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False positive with `UP007` and `ForwardRef` on python 3.10
 
 ---
 
-_Issue opened by @Liam-DeVoe on 2025-10-15 06:09_
+_@Liam-DeVoe_
 
 ### Summary
 

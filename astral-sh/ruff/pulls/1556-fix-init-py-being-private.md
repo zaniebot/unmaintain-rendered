@@ -12,14 +12,14 @@ head: fix-__init__.py-being-private
 created_at: 2023-01-02T14:20:53Z
 updated_at: 2023-01-02T19:39:24Z
 url: https://github.com/astral-sh/ruff/pull/1556
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix `__init__.py` being private
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-02 14:20_
+_@not-my-profile_
 
 Previously `visibility::module_visibility()` returned `Private`
 for any module name starting with an underscore, resulting in

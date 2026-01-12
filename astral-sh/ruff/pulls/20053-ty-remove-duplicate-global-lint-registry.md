@@ -14,14 +14,14 @@ head: ibraheem/default-lint-registry
 created_at: 2025-08-22T21:50:02Z
 updated_at: 2025-08-23T12:59:38Z
 url: https://github.com/astral-sh/ruff/pull/20053
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Remove duplicate global lint registry
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-08-22 21:50_
+_@ibraheemdev_
 
 ## Summary
 

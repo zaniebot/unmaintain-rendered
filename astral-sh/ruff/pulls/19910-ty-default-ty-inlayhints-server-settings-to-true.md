@@ -16,14 +16,14 @@ head: dhruv/default-inlay-hints-true
 created_at: 2025-08-14T08:09:45Z
 updated_at: 2025-08-14T10:22:18Z
 url: https://github.com/astral-sh/ruff/pull/19910
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Default `ty.inlayHints.*` server settings to true
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-14 08:09_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/retry
 created_at: 2024-01-23T15:30:58Z
 updated_at: 2024-01-23T16:35:17Z
 url: https://github.com/astral-sh/uv/pull/1063
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Improve retry of pip install scenario tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-23 15:30_
+_@zanieb_
 
 Follow-up to #996 with retries of the full `pip_install_scenario` module since there are a few tests that flake and tracking down the non-determinism is proving to be quite complicated.
 

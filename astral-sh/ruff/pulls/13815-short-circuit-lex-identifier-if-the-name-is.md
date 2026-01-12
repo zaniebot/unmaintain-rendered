@@ -14,14 +14,14 @@ head: micha/lexer-perf
 created_at: 2024-10-19T10:06:20Z
 updated_at: 2024-10-19T11:21:47Z
 url: https://github.com/astral-sh/ruff/pull/13815
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Short circuit `lex_identifier` if the name is longer or shorter than any known keyword
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-19 10:06_
+_@MichaReiser_
 
 
 ## Summary

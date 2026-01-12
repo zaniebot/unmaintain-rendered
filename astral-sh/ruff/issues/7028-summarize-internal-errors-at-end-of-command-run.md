@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-31T16:16:06Z
 updated_at: 2023-09-06T02:49:17Z
 url: https://github.com/astral-sh/ruff/issues/7028
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Summarize internal errors at end of command run
 
 ---
 
-_Issue opened by @zanieb on 2023-08-31 16:16_
+_@zanieb_
 
 In #7027 the panics were only noticeable when stdout was piped to another file so the panics on stderr were visible. The command did not otherwise indicate that it had encountered internal Ruff errors. It seems good for the linter to continue on error, but we should summarize internal errors at the end of the command run to ensure we notice that failures occurred.
 

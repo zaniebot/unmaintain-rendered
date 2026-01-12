@@ -13,14 +13,14 @@ head: charlie/implicit-class
 created_at: 2025-12-13T19:32:44Z
 updated_at: 2025-12-13T22:10:43Z
 url: https://github.com/astral-sh/ruff/pull/21966
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Add support for `__qualname__` and other implicit class attributes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 19:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/fix-ty-gitlab-diagnostics
 created_at: 2025-09-24T13:50:59Z
 updated_at: 2025-09-24T17:16:53Z
 url: https://github.com/astral-sh/ruff/pull/20550
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Make `FileResolver::path` return a full path
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-24 13:50_
+_@ntBre_
 
 ## Summary
 

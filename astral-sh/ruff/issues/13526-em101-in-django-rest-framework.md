@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T14:45:18Z
 updated_at: 2024-09-26T15:18:23Z
 url: https://github.com/astral-sh/ruff/issues/13526
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # EM101 in Django REST framework
 
 ---
 
-_Issue opened by @spaceby on 2024-09-26 14:45_
+_@spaceby_
 
 I used the EM101 rule in a DRF project and found some nuances
 

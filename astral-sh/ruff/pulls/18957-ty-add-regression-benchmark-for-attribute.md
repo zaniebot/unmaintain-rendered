@@ -14,14 +14,14 @@ head: david/regression-benchmark-627
 created_at: 2025-06-26T13:01:43Z
 updated_at: 2025-06-26T13:21:10Z
 url: https://github.com/astral-sh/ruff/pull/18957
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Add regression-benchmark for attribute-assignment hang
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-26 13:01_
+_@sharkdp_
 
 ## Summary
 

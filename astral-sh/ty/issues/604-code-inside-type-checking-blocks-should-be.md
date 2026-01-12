@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-07T13:41:18Z
 updated_at: 2025-06-07T13:50:40Z
 url: https://github.com/astral-sh/ty/issues/604
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # code inside `TYPE_CHECKING` blocks should be treated like stubs
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-07 13:41_
+_@DetachHead_
 
 ```py
 from typing import TYPE_CHECKING

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T12:43:26Z
 updated_at: 2024-09-03T12:53:55Z
 url: https://github.com/astral-sh/uv/issues/6967
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv can't find commands within virtualenv until executed once with uv run <command>
 
 ---
 
-_Issue opened by @klaytron on 2024-09-03 12:43_
+_@klaytron_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

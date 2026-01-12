@@ -14,14 +14,14 @@ head: charlie/cache-tool-run
 created_at: 2024-07-03T17:46:44Z
 updated_at: 2024-07-03T23:25:42Z
 url: https://github.com/astral-sh/uv/pull/4784
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Cache tool environments in `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 17:46_
+_@charliermarsh_
 
 ## Summary
 

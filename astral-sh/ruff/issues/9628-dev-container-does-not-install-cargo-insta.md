@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-23T18:35:52Z
 updated_at: 2024-01-23T18:37:06Z
 url: https://github.com/astral-sh/ruff/issues/9628
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Dev-container does not install `cargo insta`
 
 ---
 
-_Issue opened by @MartinBernstorff on 2024-01-23 18:35_
+_@MartinBernstorff_
 
 Just booted up the dev container, and get:
 

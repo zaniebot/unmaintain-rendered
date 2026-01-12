@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T08:19:34Z
 updated_at: 2025-03-13T14:37:40Z
 url: https://github.com/astral-sh/ruff/issues/15368
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rename `flake8-builtins` options to remove the "builtins" prefix
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-01-09 08:19_
+_@dhruvmanila_
 
 The "builtins" prefix for the `flake8-builtins` options is redundant and is inconsistent with other options like [`allowed-unused-imports`](https://docs.astral.sh/ruff/settings/#lint_pyflakes_allowed-unused-imports) or [`allowed-markup-calls`](https://docs.astral.sh/ruff/settings/#lint_ruff_allowed-markup-calls).
 

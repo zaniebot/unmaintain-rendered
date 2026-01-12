@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T19:00:28Z
 updated_at: 2025-07-10T20:10:24Z
 url: https://github.com/astral-sh/ruff/issues/14052
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RET504 false-positive when nested functions reference the variable
 
 ---
 
-_Issue opened by @Enegg on 2024-11-01 19:00_
+_@Enegg_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

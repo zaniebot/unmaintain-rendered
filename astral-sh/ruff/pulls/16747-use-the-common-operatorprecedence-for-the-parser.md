@@ -14,14 +14,14 @@ head: jjb-ast-precedence-in-parser
 created_at: 2025-03-14T13:36:55Z
 updated_at: 2025-03-21T04:10:38Z
 url: https://github.com/astral-sh/ruff/pull/16747
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Use the common `OperatorPrecedence` for the parser
 
 ---
 
-_Pull request opened by @junhsonjb on 2025-03-14 13:36_
+_@junhsonjb_
 
 ## Summary
 

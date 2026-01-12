@@ -12,14 +12,14 @@ head: charlie/eradicate
 created_at: 2022-11-28T22:10:17Z
 updated_at: 2022-11-29T01:54:34Z
 url: https://github.com/astral-sh/ruff/pull/947
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement eradicate
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 22:10_
+_@charliermarsh_
 
 Resolves #944.
 

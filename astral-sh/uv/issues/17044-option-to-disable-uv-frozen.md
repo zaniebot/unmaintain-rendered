@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T09:10:42Z
 updated_at: 2025-12-09T11:49:07Z
 url: https://github.com/astral-sh/uv/issues/17044
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Option to disable UV_FROZEN
 
 ---
 
-_Issue opened by @AndreuCodina on 2025-12-09 09:10_
+_@AndreuCodina_
 
 ### Summary
 

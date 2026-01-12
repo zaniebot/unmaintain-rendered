@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T21:39:56Z
 updated_at: 2024-11-15T09:56:25Z
 url: https://github.com/astral-sh/ruff/issues/11840
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New rule: Decimal with float argument
 
 ---
 
-_Issue opened by @kbaskett248 on 2024-06-11 21:39_
+_@kbaskett248_
 
 I'm interested in adding a new rule to check for `Decimal` being called with a float literal argument. For example:
 

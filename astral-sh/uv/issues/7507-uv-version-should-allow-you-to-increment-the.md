@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T16:36:27Z
 updated_at: 2024-09-18T16:47:46Z
 url: https://github.com/astral-sh/uv/issues/7507
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv version should allow you to increment the project version like the poetry version command
 
 ---
 
-_Issue opened by @krishan-patel001 on 2024-09-18 16:36_
+_@krishan-patel001_
 
 Currently the `uv version` command only prints out the current version. This could be updated to take in an argument or major, minor or patch or a custom version to increment the version in the `pyproject.toml` similarly to how poetry does this.
 

@@ -13,14 +13,14 @@ head: konsti/uv-export-no-editable
 created_at: 2025-08-06T12:27:57Z
 updated_at: 2025-08-06T13:06:50Z
 url: https://github.com/astral-sh/uv/pull/15107
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Support `UV_NO_EDITABLE` where `--no-editable` is supported
 
 ---
 
-_Pull request opened by @konstin on 2025-08-06 12:27_
+_@konstin_
 
 Specifically, support `UV_NO_EDITABLE=1 uv export`. It's now also supported in `uv add`, though it's default there anyway and the env var exists only for completeness.
 

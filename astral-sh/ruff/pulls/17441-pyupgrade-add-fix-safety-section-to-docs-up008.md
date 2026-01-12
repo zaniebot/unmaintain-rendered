@@ -13,14 +13,14 @@ head: doc_fix_safety_for_super_call_with_parameters_and_replace_stdout_stderr
 created_at: 2025-04-17T02:37:32Z
 updated_at: 2025-05-27T04:48:24Z
 url: https://github.com/astral-sh/ruff/pull/17441
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pyupgrade`] Add fix safety section to docs (`UP008`, `UP022`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-17 02:37_
+_@Kalmaegi_
 
 ## Summary
 

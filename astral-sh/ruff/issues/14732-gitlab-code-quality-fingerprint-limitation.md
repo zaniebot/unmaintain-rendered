@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T14:18:50Z
 updated_at: 2025-09-09T17:04:39Z
 url: https://github.com/astral-sh/ruff/issues/14732
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Gitlab code quality fingerprint limitation: multiple errors with identical message
 
 ---
 
-_Issue opened by @fin-gal on 2024-12-02 14:18_
+_@fin-gal_
 
 Context
 ---

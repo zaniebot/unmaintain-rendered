@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-27T11:36:08Z
 updated_at: 2025-12-28T11:31:58Z
 url: https://github.com/astral-sh/ruff/issues/22221
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # F401 fix causes infinite loop adding duplicates to `__all__`
 
 ---
 
-_Issue opened by @harupy on 2025-12-27 11:36_
+_@harupy_
 
 ### Summary
 

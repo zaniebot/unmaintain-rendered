@@ -12,14 +12,14 @@ head: venv-clear-flag
 created_at: 2024-02-21T18:47:55Z
 updated_at: 2024-05-02T00:55:36Z
 url: https://github.com/astral-sh/uv/pull/1824
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Rework --clear flag for venv command
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-02-21 18:47_
+_@flyaroundme_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

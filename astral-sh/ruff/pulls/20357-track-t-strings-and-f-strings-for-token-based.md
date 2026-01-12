@@ -16,14 +16,14 @@ head: t-string-isc
 created_at: 2025-09-11T21:05:41Z
 updated_at: 2025-09-12T18:00:13Z
 url: https://github.com/astral-sh/ruff/pull/20357
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # Track t-strings and f-strings for token-based rules and suppression comments
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-11 21:05_
+_@dylwil3_
 
 Our token-based rules and `noqa` extraction used an `Indexer` that kept track of f-string ranges but not t-strings. We've updated the `Indexer` and downstream uses thereof to handle both f-strings and t-strings.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-06T17:03:05Z
 updated_at: 2025-12-06T19:04:09Z
 url: https://github.com/astral-sh/uv/issues/17017
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Adding a conflict causes package to not be installed
 
 ---
 
-_Issue opened by @meastham on 2025-12-06 17:03_
+_@meastham_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/indent-wheels-like-dependencies
 created_at: 2024-06-27T10:15:50Z
 updated_at: 2024-06-27T20:26:49Z
 url: https://github.com/astral-sh/uv/pull/4582
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Indent wheels like dependencies in the lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-06-27 10:15_
+_@konstin_
 
 This PR contains two style changes to the lockfile:
 * Always indent lists of objects, even with they are only a single element.

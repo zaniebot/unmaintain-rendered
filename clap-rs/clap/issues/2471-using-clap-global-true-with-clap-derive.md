@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-07T17:28:59Z
 updated_at: 2021-05-08T08:38:47Z
 url: https://github.com/clap-rs/clap/issues/2471
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Using `clap(global = true)` with clap_derive
 
 ---
 
-_Issue opened by @kbknapp on 2021-05-07 17:28_
+_@kbknapp_
 
 ### Please complete the following tasks
 

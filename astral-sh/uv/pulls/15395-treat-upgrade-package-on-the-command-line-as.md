@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2025-08-20T16:58:15Z
 updated_at: 2025-08-21T15:20:57Z
 url: https://github.com/astral-sh/uv/pull/15395
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Treat `--upgrade-package` on the command-line as overriding `upgrade = false` in configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-20 16:58_
+_@charliermarsh_
 
 ## Summary
 

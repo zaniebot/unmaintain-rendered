@@ -12,14 +12,14 @@ head: charlie/rule-codes
 created_at: 2023-05-04T15:30:01Z
 updated_at: 2023-05-04T15:43:13Z
 url: https://github.com/astral-sh/ruff/pull/4225
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add space when joining rule codes for debug messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-04 15:30_
+_@charliermarsh_
 
 Also deduplicated the two formatting implementations.
 

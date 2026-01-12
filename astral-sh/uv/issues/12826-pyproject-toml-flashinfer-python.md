@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T03:39:55Z
 updated_at: 2025-04-11T05:23:10Z
 url: https://github.com/astral-sh/uv/issues/12826
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # 怎么在pyproject.toml 中 单独为 flashinfer-python 库设置 源
 
 ---
 
-_Issue opened by @shell-nlp on 2025-04-11 03:39_
+_@shell-nlp_
 
 ### Question
 

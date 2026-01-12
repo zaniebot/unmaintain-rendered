@@ -13,14 +13,14 @@ head: zb/rocky-debug
 created_at: 2025-10-08T15:09:07Z
 updated_at: 2025-10-08T17:24:28Z
 url: https://github.com/astral-sh/uv/pull/16190
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Retry on Rocky Linux Python install
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-08 15:09_
+_@zanieb_
 
 I'm not sure why these mirrors have been flaky lately.
 

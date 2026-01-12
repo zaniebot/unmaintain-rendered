@@ -14,14 +14,14 @@ head: brent/tc-fa100
 created_at: 2025-06-24T16:33:04Z
 updated_at: 2025-07-24T13:32:44Z
 url: https://github.com/astral-sh/ruff/pull/18919
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`flake8-future-annotations`] Add optional integration with `TC` rules (`FA100`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-24 16:33_
+_@ntBre_
 
 ## Summary
 

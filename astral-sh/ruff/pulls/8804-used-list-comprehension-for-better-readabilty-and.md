@@ -11,14 +11,14 @@ head: SiddheshDongare-list-comprehension
 created_at: 2023-11-21T08:28:26Z
 updated_at: 2023-11-22T00:23:55Z
 url: https://github.com/astral-sh/ruff/pull/8804
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Used List Comprehension for better readabilty and optimization
 
 ---
 
-_Pull request opened by @SiddheshDongare on 2023-11-21 08:28_
+_@SiddheshDongare_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

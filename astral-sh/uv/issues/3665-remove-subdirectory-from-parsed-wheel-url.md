@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-20T00:43:59Z
 updated_at: 2024-05-20T02:01:58Z
 url: https://github.com/astral-sh/uv/issues/3665
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Remove `subdirectory` from parsed wheel URL
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-20 00:43_
+_@charliermarsh_
 
 A `subdirectory` only makes sense for a source tree.
 

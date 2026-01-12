@@ -13,14 +13,14 @@ head: msrv-cleanup
 created_at: 2024-10-20T21:07:48Z
 updated_at: 2024-10-21T17:34:59Z
 url: https://github.com/astral-sh/ruff/pull/13834
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Simplify iteration idioms
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-20 21:07_
+_@AlexWaygood_
 
 ## Summary
 

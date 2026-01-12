@@ -15,14 +15,14 @@ head: gankra/test-over
 created_at: 2025-08-29T03:22:12Z
 updated_at: 2025-09-02T14:38:28Z
 url: https://github.com/astral-sh/ruff/pull/20148
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] add more lsp tests for overloads
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-29 03:22_
+_@Gankra_
 
 I decided to split out the addition of these tests from other PRs so that it's easier to follow changes to the LSP's function call handling. I'm not particularly concerned with whether the results produced by these tests are "good" or "bad" in this PR, I'm just establishing a baseline.
 

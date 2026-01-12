@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2023-12-05T01:26:14Z
 updated_at: 2023-12-05T08:53:46Z
 url: https://github.com/astral-sh/uv/pull/558
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Avoid returning zipped wheels from registry and URL indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 01:26_
+_@charliermarsh_
 
 ## Summary
 

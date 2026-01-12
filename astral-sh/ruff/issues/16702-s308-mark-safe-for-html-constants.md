@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T09:57:53Z
 updated_at: 2025-03-17T10:29:09Z
 url: https://github.com/astral-sh/ruff/issues/16702
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [S308] `mark_safe` for HTML constants
 
 ---
 
-_Issue opened by @mfontana-elem on 2025-03-13 09:57_
+_@mfontana-elem_
 
 ### Question
 

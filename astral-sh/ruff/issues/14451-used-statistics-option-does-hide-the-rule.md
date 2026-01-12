@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T13:26:34Z
 updated_at: 2024-11-20T08:12:10Z
 url: https://github.com/astral-sh/ruff/issues/14451
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Used --statistics option does hide the rule violations
 
 ---
 
-_Issue opened by @ssbarnea on 2024-11-19 13:26_
+_@ssbarnea_
 
 The fact that `ruff check --statistics` does disabled the output of effective line violations makes it impossible to us this as an addon option for improved output, especially when using ruff using as a pre-commit hook.
 

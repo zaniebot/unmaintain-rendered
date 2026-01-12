@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T15:18:15Z
 updated_at: 2024-10-17T15:27:12Z
 url: https://github.com/astral-sh/uv/issues/8290
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Cannot install with `uv pip install -r requirements.txt` when `--extra-index-url` is present
 
 ---
 
-_Issue opened by @NF-ada on 2024-10-17 15:18_
+_@NF-ada_
 
 Hey, 
 

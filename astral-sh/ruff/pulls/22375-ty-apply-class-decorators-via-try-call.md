@@ -14,14 +14,14 @@ head: charlie/class-decorator
 created_at: 2026-01-04T19:59:48Z
 updated_at: 2026-01-04T22:11:02Z
 url: https://github.com/astral-sh/ruff/pull/22375
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Apply class decorators via `try_call()`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 19:59_
+_@charliermarsh_
 
 ## Summary
 

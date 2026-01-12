@@ -12,14 +12,14 @@ head: charlie/semantic
 created_at: 2023-06-14T18:13:16Z
 updated_at: 2023-06-14T18:46:39Z
 url: https://github.com/astral-sh/ruff/pull/5094
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Re-export `ruff_python_semantic` members
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 18:13_
+_@charliermarsh_
 
 ## Summary
 

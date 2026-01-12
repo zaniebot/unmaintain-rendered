@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-03-26T11:12:47Z
 updated_at: 2024-03-26T11:26:06Z
 url: https://github.com/astral-sh/ruff/pull/10612
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove 404 links to settings.md
 
 ---
 
-_Pull request opened by @stefandoorn on 2024-03-26 11:12_
+_@stefandoorn_
 
 The settings.md seems gone, and I couldn't find a better link than the link already included at the end of the paragraph.
 

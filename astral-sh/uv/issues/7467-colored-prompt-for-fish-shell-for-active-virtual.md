@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T15:19:08Z
 updated_at: 2025-09-30T07:58:55Z
 url: https://github.com/astral-sh/uv/issues/7467
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Colored prompt for (fish) shell for active virtual environment
 
 ---
 
-_Issue opened by @Geo5 on 2024-09-17 15:19_
+_@Geo5_
 
 It is just a minor style thing, but for me it would be really nice, if the shell prompt for the active virtual env would be colored like in the CPython venv case: <https://github.com/python/cpython/blob/main/Lib/venv/scripts/common/activate.fish#L60>
 Currently it does not contain color: <https://github.com/astral-sh/uv/blob/main/crates/uv-virtualenv/src/activator/activate.fish#L118>

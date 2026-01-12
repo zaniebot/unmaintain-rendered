@@ -13,14 +13,14 @@ head: main
 created_at: 2023-04-19T18:08:59Z
 updated_at: 2023-04-19T18:38:15Z
 url: https://github.com/astral-sh/ruff/pull/4026
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # remove unnecessary f-string formatting
 
 ---
 
-_Pull request opened by @Xemnas0 on 2023-04-19 18:08_
+_@Xemnas0_
 
 _No description provided._
 

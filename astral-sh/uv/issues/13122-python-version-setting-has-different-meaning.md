@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T15:51:14Z
 updated_at: 2025-04-27T15:21:16Z
 url: https://github.com/astral-sh/uv/issues/13122
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # `python-version` setting has different meaning between `uv pip compile` and `uv pip install`
 
 ---
 
-_Issue opened by @watsonjj on 2025-04-26 15:51_
+_@watsonjj_
 
 ### Summary
 

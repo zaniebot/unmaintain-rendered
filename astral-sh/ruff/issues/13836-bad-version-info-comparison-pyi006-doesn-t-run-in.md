@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-20T21:25:30Z
 updated_at: 2024-11-03T11:47:37Z
 url: https://github.com/astral-sh/ruff/issues/13836
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # bad-version-info-comparison (PYI006) doesn't run in `.py` files
 
 ---
 
-_Issue opened by @Avasam on 2024-10-20 21:25_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

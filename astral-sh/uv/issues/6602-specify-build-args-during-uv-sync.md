@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T13:00:58Z
 updated_at: 2024-12-02T13:48:52Z
 url: https://github.com/astral-sh/uv/issues/6602
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Specify build args during uv sync
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-08-25 13:00_
+_@ion-elgreco_
 
 When we run uv sync it builds the package but sometimes we want to specify build args to the underlying build tool. Is there any way to allow this passthrough at the moment?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T14:16:52Z
 updated_at: 2025-02-02T05:48:58Z
 url: https://github.com/astral-sh/uv/issues/6329
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Consider adding documentation on using `uv ...` to use a `.venv` in Jupyter notebooks
 
 ---
 
-_Issue opened by @prrao87 on 2024-08-21 14:16_
+_@prrao87_
 
 Thank you for all the amazing updates!
 

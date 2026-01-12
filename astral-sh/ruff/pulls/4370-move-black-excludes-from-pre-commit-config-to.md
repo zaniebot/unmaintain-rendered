@@ -13,14 +13,14 @@ head: move-black-excludes
 created_at: 2023-05-11T10:48:05Z
 updated_at: 2023-05-11T13:06:02Z
 url: https://github.com/astral-sh/ruff/pull/4370
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move black excludes from pre-commit config to pyproject.toml
 
 ---
 
-_Pull request opened by @calumy on 2023-05-11 10:48_
+_@calumy_
 
 Currently, when black is run for the project with `black .`, it tries to format files in:
 - `crates/ruff/resources/test/fixtures` 

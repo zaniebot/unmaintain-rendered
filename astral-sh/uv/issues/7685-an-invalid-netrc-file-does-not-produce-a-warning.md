@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-25T13:16:12Z
 updated_at: 2024-10-20T16:27:45Z
 url: https://github.com/astral-sh/uv/issues/7685
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # An invalid netrc file does not produce a warning
 
 ---
 
-_Issue opened by @mathialo on 2024-09-25 13:16_
+_@mathialo_
 
 I recently migrated one of our projects from poetry to uv, and one thing that made me stumble was a syntax error in my netrc file. Uv would just silently ignore the error and move on as if the netrc file did not exist, which made it a bit hard to figure out what was going on.
 

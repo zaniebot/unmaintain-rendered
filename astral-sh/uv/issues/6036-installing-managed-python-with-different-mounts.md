@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T14:21:41Z
 updated_at: 2024-08-12T20:15:31Z
 url: https://github.com/astral-sh/uv/issues/6036
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Installing managed python with different mounts of `.local` and `.cache` fails.
 
 ---
 
-_Issue opened by @msw-kialo on 2024-08-12 14:21_
+_@msw-kialo_
 
 I have dedicated volumes mounted on `~/.cache` and `~/.local`: so `uv` fails to move files between them.
 I know it is probably a rare setup, but I like having better control about these important directories.

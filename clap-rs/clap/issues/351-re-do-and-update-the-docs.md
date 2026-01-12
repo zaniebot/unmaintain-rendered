@@ -12,14 +12,14 @@ assignees: []
 created_at: 2015-11-24T17:32:48Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/351
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Re-do and update the docs
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-24 17:32_
+_@kbknapp_
 
 The docs need some love.
 - [ ] `src/app/settings.rs`

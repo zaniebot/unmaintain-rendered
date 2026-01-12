@@ -14,14 +14,14 @@ head: test-for-breaking-in-preview-mode
 created_at: 2023-09-19T13:15:40Z
 updated_at: 2023-09-19T14:16:42Z
 url: https://github.com/astral-sh/ruff/pull/7516
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add a test for stmt assign breaking in preview mode
 
 ---
 
-_Pull request opened by @konstin on 2023-09-19 13:15_
+_@konstin_
 
 In preview mode, black will consistently break the right side first. This doesn't work yet, but we'll need the test later.
 

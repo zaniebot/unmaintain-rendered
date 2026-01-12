@@ -14,14 +14,14 @@ head: jtfm/disambiguate-index
 created_at: 2025-06-20T13:53:59Z
 updated_at: 2025-12-19T14:19:32Z
 url: https://github.com/astral-sh/uv/pull/14152
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Require disambiguated relative paths for `--index`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-20 13:53_
+_@jtfmumm_
 
 We do not currently support passing index names to `--index` for installing packages. However, we do accept relative paths that can look like index names. This PR adds the requirement that `--index` values must be disambiguated with a prefix (`./` or `../` on Unix and Windows or `.\\` or `..\\` on Windows). For now, if an ambiguous value is provided, uv will warn that this will not be supported in the future.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T22:31:52Z
 updated_at: 2025-09-12T14:17:55Z
 url: https://github.com/astral-sh/ruff/issues/20341
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `SIM910` doesn't recognize `get` access on dictionary when the key is a property/method call
 
 ---
 
-_Issue opened by @marianosimone on 2025-09-10 22:31_
+_@marianosimone_
 
 ### Summary
 

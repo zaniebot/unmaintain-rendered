@@ -14,14 +14,14 @@ head: range-formatting-parentheses
 created_at: 2024-02-01T12:35:50Z
 updated_at: 2024-02-02T16:56:26Z
 url: https://github.com/astral-sh/ruff/pull/9751
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Range formatting: Fix invalid syntax after parenthesizing expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-01 12:35_
+_@MichaReiser_
 
 ## Summary
 

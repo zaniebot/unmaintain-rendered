@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T06:38:55Z
 updated_at: 2024-11-19T10:19:38Z
 url: https://github.com/astral-sh/uv/issues/9216
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # (🐞) `uv python` doesn't do anything or output anything
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-11-19 06:38_
+_@KotlinIsland_
 
 ```
 > uv python install 3.9                

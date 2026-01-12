@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T19:57:34Z
 updated_at: 2026-01-09T15:29:51Z
 url: https://github.com/astral-sh/ty/issues/690
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # better narrowing from conditional terminals and NoReturn calls
 
 ---
 
-_Issue opened by @carljm on 2025-06-21 19:57_
+_@carljm_
 
 Currently, a narrowing constraint is just an expression. We don't support boolean connectives of narrowing constraints -- we just track an implicit AND of multiple narrowing constraints per definition. Since we have no way to represent an `OR` of narrowing constraints, when we merge control flow paths we just discard any narrowing constraint that is present on only one path.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:05:31Z
 updated_at: 2024-05-09T22:12:13Z
 url: https://github.com/astral-sh/uv/issues/1343
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip compile` does not annotate direct dependencies e.g. `via -r requirements.in`
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-15 21:05_
+_@ThiefMaster_
 
 I found this kind pretty useful to immediately see which entries in `requirements.txt` come from direct dependencies, and to also see which ones are both direct and transitive ones.
 

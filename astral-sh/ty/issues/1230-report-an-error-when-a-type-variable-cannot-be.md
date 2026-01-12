@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T01:27:10Z
 updated_at: 2025-09-22T07:45:20Z
 url: https://github.com/astral-sh/ty/issues/1230
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # report an error when a type variable cannot be resolved on a call-site
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-22 01:27_
+_@KotlinIsland_
 
 ### Summary
 

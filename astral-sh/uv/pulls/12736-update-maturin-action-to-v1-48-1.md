@@ -13,14 +13,14 @@ head: konsti/maturin-action-1.48.1
 created_at: 2025-04-08T07:43:33Z
 updated_at: 2025-04-08T16:10:50Z
 url: https://github.com/astral-sh/uv/pull/12736
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Update maturin-action to v1.48.1
 
 ---
 
-_Pull request opened by @konstin on 2025-04-08 07:43_
+_@konstin_
 
 Initially, this was for testing CI for #12688, but I think it makes sense to merge this independently and rebase #12688 on top of it.
 

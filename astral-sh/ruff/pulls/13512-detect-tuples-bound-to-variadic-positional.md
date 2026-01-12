@@ -13,14 +13,14 @@ head: zb/check-tuple
 created_at: 2024-09-25T13:51:05Z
 updated_at: 2024-09-25T15:03:28Z
 url: https://github.com/astral-sh/ruff/pull/13512
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Detect tuples bound to variadic positional arguments i.e. `*args`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-25 13:51_
+_@zanieb_
 
 In https://github.com/astral-sh/ruff/pull/13503, we added supported for detecting variadic keyword arguments as dictionaries, here we use the same strategy for detecting variadic positional arguments as tuples.
 

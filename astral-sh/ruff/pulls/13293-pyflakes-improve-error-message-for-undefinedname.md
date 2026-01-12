@@ -14,14 +14,14 @@ head: alex/f821-error-msg
 created_at: 2024-09-09T16:11:18Z
 updated_at: 2024-09-10T18:13:10Z
 url: https://github.com/astral-sh/ruff/pull/13293
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pyflakes`] Improve error message for `UndefinedName` when a builtin was added in a newer version than specified in Ruff config (`F821`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-09 16:11_
+_@AlexWaygood_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: micha/ty-server-document-key-api
 created_at: 2025-06-08T06:46:58Z
 updated_at: 2025-06-09T14:39:13Z
 url: https://github.com/astral-sh/ruff/pull/18544
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Fix stale documents on Windows
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-08 06:46_
+_@MichaReiser_
 
 ## Summary
 

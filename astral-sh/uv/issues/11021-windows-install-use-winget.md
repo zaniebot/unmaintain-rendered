@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T15:12:22Z
 updated_at: 2025-01-28T15:22:03Z
 url: https://github.com/astral-sh/uv/issues/11021
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Windows Install - Use winget
 
 ---
 
-_Issue opened by @jfmatth on 2025-01-28 15:12_
+_@jfmatth_
 
 ### Summary
 

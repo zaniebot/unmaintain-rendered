@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-04T11:19:36Z
 updated_at: 2026-01-08T21:56:50Z
 url: https://github.com/astral-sh/uv/issues/17314
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Installing torchvision CPU version from Pytorch PyPi registry is failing as it's targeting the wrong distribution
 
 ---
 
-_Issue opened by @mc51 on 2026-01-04 11:19_
+_@mc51_
 
 ### Summary
 

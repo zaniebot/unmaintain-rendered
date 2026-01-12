@@ -12,14 +12,14 @@ head: update-pypi-links
 created_at: 2023-07-07T05:55:17Z
 updated_at: 2023-07-07T15:52:27Z
 url: https://github.com/astral-sh/ruff/pull/5579
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Bugfix: Remove version numbers from pypi links
 
 ---
 
-_Pull request opened by @petermattia on 2023-07-07 05:55_
+_@petermattia_
 
 ## Summary
 

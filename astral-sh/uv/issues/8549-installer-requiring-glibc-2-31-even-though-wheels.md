@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T22:41:32Z
 updated_at: 2025-01-06T22:06:21Z
 url: https://github.com/astral-sh/uv/issues/8549
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Installer requiring glibc 2.31 (even though wheels work with 2.28)
 
 ---
 
-_Issue opened by @gaborbernat on 2024-10-24 22:41_
+_@gaborbernat_
 
 When installing on a system with <glibc 2.31 the installer fallbacks to the MUSL installer which is not a thing so install fails.
 

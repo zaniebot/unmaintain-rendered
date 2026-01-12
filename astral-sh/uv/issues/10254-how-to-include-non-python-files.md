@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-31T16:09:46Z
 updated_at: 2024-12-31T18:21:20Z
 url: https://github.com/astral-sh/uv/issues/10254
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # How to include non-python files
 
 ---
 
-_Issue opened by @huyndao on 2024-12-31 16:09_
+_@huyndao_
 
 Apologies if this has been posted somewhere but I could not find in the documentation or from search the issues.
 

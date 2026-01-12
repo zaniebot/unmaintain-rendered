@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-13T15:47:32Z
 updated_at: 2023-05-13T15:48:56Z
 url: https://github.com/astral-sh/ruff/issues/4415
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `PLW3301` auto-fix creates `TypeError`
 
 ---
 
-_Issue opened by @janosh on 2023-05-13 15:47_
+_@janosh_
 
 This line raises `PLW3301` (Nested `max` calls can be flattened)
 

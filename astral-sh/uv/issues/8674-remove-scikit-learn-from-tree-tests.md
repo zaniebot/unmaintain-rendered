@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T17:44:39Z
 updated_at: 2024-10-29T18:59:27Z
 url: https://github.com/astral-sh/uv/issues/8674
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Remove `scikit-learn` from `tree` tests
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-29 17:44_
+_@charliermarsh_
 
 These can be really slow and it's not at all necessary.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-24T07:45:06Z
 updated_at: 2025-11-09T07:24:52Z
 url: https://github.com/astral-sh/ruff/issues/20544
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # new rule - ban importing specific names from a module if the whole module is already imported (or vice versa)
 
 ---
 
-_Issue opened by @DetachHead on 2025-09-24 07:45_
+_@DetachHead_
 
 ### Summary
 

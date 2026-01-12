@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-12T19:52:48Z
 updated_at: 2025-11-13T17:54:08Z
 url: https://github.com/astral-sh/ruff/pull/21409
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # Update PyCharm setup instructions
 
 ---
 
-_Pull request opened by @charliecloudberry on 2025-11-12 19:52_
+_@charliecloudberry_
 
 ## Summary
 

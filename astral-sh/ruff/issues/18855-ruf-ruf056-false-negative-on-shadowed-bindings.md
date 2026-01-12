@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T20:35:36Z
 updated_at: 2025-06-24T06:16:09Z
 url: https://github.com/astral-sh/ruff/issues/18855
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`RUF`] `RUF056` false negative on shadowed bindings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-21 20:35_
+_@MeGaGiGaGon_
 
 ### Summary
 

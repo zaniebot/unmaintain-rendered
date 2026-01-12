@@ -13,14 +13,14 @@ head: dhruv/ruff-settings
 created_at: 2025-02-08T17:55:00Z
 updated_at: 2025-02-10T04:50:03Z
 url: https://github.com/astral-sh/ruff/pull/16042
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Directly include `Settings` struct for the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-08 17:55_
+_@dhruvmanila_
 
 ## Summary
 

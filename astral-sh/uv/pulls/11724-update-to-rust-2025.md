@@ -12,14 +12,14 @@ head: konsti/rust-2025
 created_at: 2025-02-23T16:02:30Z
 updated_at: 2025-03-03T10:55:10Z
 url: https://github.com/astral-sh/uv/pull/11724
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # Update to Rust 2025
 
 ---
 
-_Pull request opened by @konstin on 2025-02-23 16:02_
+_@konstin_
 
 Update to Rust 2025, replace one `|...| async` with `async |...|` (other interesting closures are tracing-instrumented) and all `|...| async move` with `async |...|`.
 

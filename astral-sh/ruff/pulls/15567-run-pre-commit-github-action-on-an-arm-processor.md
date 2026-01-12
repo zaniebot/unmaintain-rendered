@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-01-18T07:30:39Z
 updated_at: 2025-01-18T15:21:44Z
 url: https://github.com/astral-sh/ruff/pull/15567
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Run pre-commit GitHub Action on an ARM processor
 
 ---
 
-_Pull request opened by @cclauss on 2025-01-18 07:30_
+_@cclauss_
 
 Speed up a ~3 minute GitHub Action by running it on an ARM processor. https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 

@@ -13,14 +13,14 @@ head: charlie/return-type
 created_at: 2024-01-03T03:16:36Z
 updated_at: 2024-01-03T04:02:11Z
 url: https://github.com/astral-sh/ruff/pull/9377
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Handle raises with implicit alternate branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 03:16_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9304#issuecomment-1874739740.
 

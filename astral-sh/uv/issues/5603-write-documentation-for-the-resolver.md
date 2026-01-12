@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T15:23:37Z
 updated_at: 2024-08-03T13:47:12Z
 url: https://github.com/astral-sh/uv/issues/5603
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Write documentation for the resolver
 
 ---
 
-_Issue opened by @konstin on 2024-07-30 15:23_
+_@konstin_
 
 We should write a better explanation for the how the resolver and the lockfile work.
 

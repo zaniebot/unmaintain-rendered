@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-23T15:56:26Z
 updated_at: 2024-08-20T18:22:20Z
 url: https://github.com/astral-sh/uv/issues/5341
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv add` does not validate dependency range when source is present
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 15:56_
+_@zanieb_
 
 e.g. the following fails
 

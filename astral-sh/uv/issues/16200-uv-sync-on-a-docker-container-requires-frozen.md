@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-09T08:50:43Z
 updated_at: 2025-11-01T19:58:56Z
 url: https://github.com/astral-sh/uv/issues/16200
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # uv sync on a docker container requires `--frozen` instead of `--locked`
 
 ---
 
-_Issue opened by @gabriel-vanzandycke on 2025-10-09 08:50_
+_@gabriel-vanzandycke_
 
 Following the doc on how to use `uv` with `docker`, I have the following `Dockerfile`
 ```

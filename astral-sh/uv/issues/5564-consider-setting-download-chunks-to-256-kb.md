@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T16:01:32Z
 updated_at: 2024-07-29T18:06:11Z
 url: https://github.com/astral-sh/uv/issues/5564
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Consider setting download chunks to 256 KB
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-29 16:01_
+_@charliermarsh_
 
 To match pip: https://pip.pypa.io/en/stable/news/
 

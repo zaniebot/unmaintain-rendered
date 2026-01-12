@@ -12,14 +12,14 @@ head: david/make-infer_expression_type-a-separate-query
 created_at: 2025-02-04T15:46:56Z
 updated_at: 2025-05-07T15:22:16Z
 url: https://github.com/astral-sh/ruff/pull/15942
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Separate 'infer_expression_type' query
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-04 15:46_
+_@sharkdp_
 
 ## Summary
 

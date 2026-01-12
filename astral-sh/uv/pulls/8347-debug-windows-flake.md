@@ -12,14 +12,14 @@ head: zb/win-debug-ugh
 created_at: 2024-10-18T19:33:28Z
 updated_at: 2024-10-20T18:37:48Z
 url: https://github.com/astral-sh/uv/pull/8347
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # DEBUG: Windows flake
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 19:33_
+_@zanieb_
 
 Debugging #6940 
 

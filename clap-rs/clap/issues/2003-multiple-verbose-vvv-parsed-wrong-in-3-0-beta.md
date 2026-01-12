@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-07T02:46:18Z
 updated_at: 2020-07-10T12:54:35Z
 url: https://github.com/clap-rs/clap/issues/2003
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # multiple verbose (-vvv) parsed wrong in 3.0 beta release
 
 ---
 
-_Issue opened by @fragrans on 2020-07-07 02:46_
+_@fragrans_
 
 This following yaml file could recognize multiple level verbose argument (-vvv); but broke in 3.0 beta release.
 Please check this sample repository:

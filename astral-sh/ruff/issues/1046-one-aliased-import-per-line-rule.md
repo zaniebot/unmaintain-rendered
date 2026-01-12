@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-05T01:05:35Z
 updated_at: 2022-12-05T02:23:13Z
 url: https://github.com/astral-sh/ruff/issues/1046
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # One aliased import per line rule
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 01:05_
+_@smackesey_
 
 The codebase I work on uses code like this for explicit re-exports in many `__init__.py` files:
 

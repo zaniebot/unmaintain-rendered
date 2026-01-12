@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T22:47:58Z
 updated_at: 2025-03-28T12:50:15Z
 url: https://github.com/astral-sh/uv/issues/12122
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # uv tool run is giving "SyntaxError: Non-UTF-8 code starting with '\xe8' in file..."
 
 ---
 
-_Issue opened by @pfmoore on 2025-03-11 22:47_
+_@pfmoore_
 
 ### Question
 

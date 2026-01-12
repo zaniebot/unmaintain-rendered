@@ -13,14 +13,14 @@ head: zb/add-execution-bypass-version
 created_at: 2024-09-20T20:02:34Z
 updated_at: 2024-09-20T20:15:36Z
 url: https://github.com/astral-sh/uv/pull/7602
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Add the execution policy to powershell installs for single versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 20:02_
+_@zanieb_
 
 _No description provided._
 

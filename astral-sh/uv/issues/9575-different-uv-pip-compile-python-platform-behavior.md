@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T12:44:31Z
 updated_at: 2024-12-02T13:35:33Z
 url: https://github.com/astral-sh/uv/issues/9575
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Different `uv pip compile --python-platform` behavior between Homebrew-installed and python-installed versions
 
 ---
 
-_Issue opened by @kukushechkin on 2024-12-02 12:44_
+_@kukushechkin_
 
 It looks like python-installed `uv` does not respect the `--python-platform`.
 

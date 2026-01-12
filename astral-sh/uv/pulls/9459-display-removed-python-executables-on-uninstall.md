@@ -14,14 +14,14 @@ head: zb/python-default-uninstall
 created_at: 2024-11-27T00:30:56Z
 updated_at: 2024-12-03T01:17:23Z
 url: https://github.com/astral-sh/uv/pull/9459
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Display removed Python executables on uninstall
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-27 00:30_
+_@zanieb_
 
 Instead of always displaying `python{major}.{minor}` we display the executables we actually removed.
 

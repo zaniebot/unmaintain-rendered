@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T12:54:45Z
 updated_at: 2024-09-19T10:41:49Z
 url: https://github.com/astral-sh/ruff/issues/12859
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # TCH003 false-positive when using dataclasses.KW_ONLY
 
 ---
 
-_Issue opened by @flying-sheep on 2024-08-13 12:54_
+_@flying-sheep_
 
 Seen in Ruff 0.5.7
 

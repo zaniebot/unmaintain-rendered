@@ -13,14 +13,14 @@ head: charlie/ref
 created_at: 2024-06-24T20:06:15Z
 updated_at: 2024-06-24T20:18:17Z
 url: https://github.com/astral-sh/uv/pull/4490
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Add unowned settings variants
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 20:06_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T22:45:06Z
 updated_at: 2024-08-23T11:09:02Z
 url: https://github.com/astral-sh/ruff/issues/8265
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider requiring a uniform quote style for implicit string concatenations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 22:45_
+_@charliermarsh_
 
 Given a string concatenation, the formatter currently determines the quote style for each segment individually, which can result in different segments using different quote styles.
 

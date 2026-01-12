@@ -13,14 +13,14 @@ head: zb/gnueabi
 created_at: 2024-10-07T15:39:57Z
 updated_at: 2024-10-07T15:49:22Z
 url: https://github.com/astral-sh/uv/pull/7975
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Fix parsing of `gnueabi` libc variants in Python version requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 15:39_
+_@zanieb_
 
 ```
 ❯ cargo run -q -- python install cpython-3.12.6-linux-armv7-gnueabihf

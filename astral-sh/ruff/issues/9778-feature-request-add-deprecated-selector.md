@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T08:27:31Z
 updated_at: 2024-03-11T16:47:33Z
 url: https://github.com/astral-sh/ruff/issues/9778
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature request: add `DEPRECATED` selector
 
 ---
 
-_Issue opened by @bersbersbers on 2024-02-02 08:27_
+_@bersbersbers_
 
 `ruff check --isolated --select=ALL` selects `ANN101` which is deprecated. I would love to be able to do `ruff check --isolated --select=ALL --ignore=DEPRECATED`. (I know I could do `ruff check --isolated --select=ALL --preview`, but I don't want to add all preview rules.)
 

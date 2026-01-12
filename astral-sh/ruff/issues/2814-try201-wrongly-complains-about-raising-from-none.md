@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T14:55:46Z
 updated_at: 2023-02-12T16:48:15Z
 url: https://github.com/astral-sh/ruff/issues/2814
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TRY201 wrongly complains about raising from None
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-02-12 14:55_
+_@adamtheturtle_
 
 Take the following example:
 

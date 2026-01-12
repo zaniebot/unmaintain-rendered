@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-16T10:19:43Z
 updated_at: 2025-09-16T11:01:03Z
 url: https://github.com/astral-sh/ty/issues/1191
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] for recursive types
 
 ---
 
-_Issue opened by @chrreisinger on 2025-09-16 10:19_
+_@chrreisinger_
 
 Hi,
 

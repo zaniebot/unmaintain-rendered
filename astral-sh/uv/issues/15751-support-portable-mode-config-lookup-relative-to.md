@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-09T13:59:05Z
 updated_at: 2025-09-16T02:02:52Z
 url: https://github.com/astral-sh/uv/issues/15751
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Support portable mode: config lookup relative to uv binary & relocatable venv Python binaries
 
 ---
 
-_Issue opened by @PowerWordTree on 2025-09-09 13:59_
+_@PowerWordTree_
 
 **Support portable mode: config lookup relative to uv binary & relocatable venv Python binaries**
 

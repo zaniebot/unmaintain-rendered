@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T14:22:06Z
 updated_at: 2024-09-09T12:13:53Z
 url: https://github.com/astral-sh/ruff/issues/12631
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Multiline-quotes on docstrings
 
 ---
 
-_Issue opened by @karolyi on 2024-08-02 14:22_
+_@karolyi_
 
 Hello,
 

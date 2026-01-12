@@ -13,14 +13,14 @@ head: closing-paren
 created_at: 2024-02-02T18:54:53Z
 updated_at: 2024-02-09T21:27:48Z
 url: https://github.com/astral-sh/ruff/pull/9793
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # RUF022, RUF023: Ensure closing parentheses for multiline sequences are always on their own line
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-02-02 18:54_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: cjm/classmethod
 created_at: 2025-12-13T04:36:02Z
 updated_at: 2025-12-16T17:16:42Z
 url: https://github.com/astral-sh/ruff/pull/21958
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] propagate classmethod-ness through decorators returning Callables
 
 ---
 
-_Pull request opened by @carljm on 2025-12-13 04:36_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1787
 

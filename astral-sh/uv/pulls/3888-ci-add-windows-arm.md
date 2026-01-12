@@ -12,14 +12,14 @@ head: henryiii/ci/winarm
 created_at: 2024-05-28T19:46:09Z
 updated_at: 2024-05-28T20:58:16Z
 url: https://github.com/astral-sh/uv/pull/3888
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # ci: add Windows ARM
 
 ---
 
-_Pull request opened by @henryiii on 2024-05-28 19:46_
+_@henryiii_
 
 
 <!--

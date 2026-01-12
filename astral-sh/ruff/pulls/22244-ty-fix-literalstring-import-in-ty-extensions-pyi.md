@@ -14,14 +14,14 @@ head: alex/literalstring-import
 created_at: 2025-12-29T14:50:25Z
 updated_at: 2025-12-29T14:59:20Z
 url: https://github.com/astral-sh/ruff/pull/22244
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # [ty] Fix `LiteralString` import in `ty_extensions.pyi`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-29 14:50_
+_@AlexWaygood_
 
 ## Summary
 

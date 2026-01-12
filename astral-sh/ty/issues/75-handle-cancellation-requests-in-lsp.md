@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T08:23:29Z
 updated_at: 2025-05-28T08:59:31Z
 url: https://github.com/astral-sh/ty/issues/75
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Handle cancellation requests in LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-06 08:23_
+_@MichaReiser_
 
 The LSP supports cancellation requests to "cancel" requested information that the client no longer needs, e.g. because the document was closed or changed since the request was sent. 
 

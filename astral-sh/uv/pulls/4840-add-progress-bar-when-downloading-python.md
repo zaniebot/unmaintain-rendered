@@ -14,14 +14,14 @@ head: download-progress
 created_at: 2024-07-05T22:06:15Z
 updated_at: 2024-07-07T20:01:35Z
 url: https://github.com/astral-sh/uv/pull/4840
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Add progress bar when downloading python
 
 ---
 
-_Pull request opened by @j178 on 2024-07-05 22:06_
+_@j178_
 
 ## Summary
 

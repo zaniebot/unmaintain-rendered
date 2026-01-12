@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T09:51:36Z
 updated_at: 2024-10-23T12:59:25Z
 url: https://github.com/astral-sh/uv/issues/8494
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Also add `.gitignore` if I am in an existing git repository
 
 ---
 
-_Issue opened by @kamulos on 2024-10-23 09:51_
+_@kamulos_
 
 My `uv` versuin is `0.4.25`.
 

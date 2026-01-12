@@ -14,14 +14,14 @@ head: decimal-unwrap
 created_at: 2025-03-16T15:39:23Z
 updated_at: 2025-03-17T10:09:08Z
 url: https://github.com/astral-sh/ruff/pull/16777
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [`refurb`] Avoid panicking `unwrap` in `verbose-decimal-constructor` (`FURB157`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-16 15:39_
+_@dylwil3_
 
 Removes `find`/`unwrap` in creating fix for [verbose-decimal-constructor (FURB157)](https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/#verbose-decimal-constructor-furb157).
 

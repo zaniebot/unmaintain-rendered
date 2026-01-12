@@ -14,14 +14,14 @@ head: dhruv/exclude-root
 created_at: 2025-02-08T17:59:44Z
 updated_at: 2025-02-10T05:00:40Z
 url: https://github.com/astral-sh/ruff/pull/16043
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Root exclusions in the server to project root
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-08 17:59_
+_@dhruvmanila_
 
 ## Summary
 

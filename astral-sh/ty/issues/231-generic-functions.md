@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T15:30:40Z
 updated_at: 2025-05-29T23:41:00Z
 url: https://github.com/astral-sh/ty/issues/231
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # generic functions
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 15:30_
+_@carljm_
 
 Support definition of, and inference of calls to, generic functions.
 

@@ -13,14 +13,14 @@ head: henryiii/ci/othermusl
 created_at: 2024-05-13T04:25:40Z
 updated_at: 2024-05-15T03:39:41Z
 url: https://github.com/astral-sh/uv/pull/3537
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # ci: add musl ppc64le
 
 ---
 
-_Pull request opened by @henryiii on 2024-05-13 04:25_
+_@henryiii_
 
 
 <!--

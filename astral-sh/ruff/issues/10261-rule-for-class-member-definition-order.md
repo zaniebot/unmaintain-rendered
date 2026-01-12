@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T00:15:02Z
 updated_at: 2024-03-12T01:01:32Z
 url: https://github.com/astral-sh/ruff/issues/10261
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # (🎁) Rule for class member definition order
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-03-07 00:15_
+_@KotlinIsland_
 
 ```py
 class A:

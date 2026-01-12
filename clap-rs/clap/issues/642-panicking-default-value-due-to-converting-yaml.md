@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-09-01T15:07:17Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/642
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Panicking default_value due to converting YAML Real to String
 
 ---
 
-_Issue opened by @SuperFluffy on 2016-09-01 15:07_
+_@SuperFluffy_
 
 Given the minimal example below, I get the following error message:
 

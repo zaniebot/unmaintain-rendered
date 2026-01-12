@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T20:33:36Z
 updated_at: 2025-12-18T00:51:51Z
 url: https://github.com/astral-sh/ty/issues/2033
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[unresolved-attribute]: Module `signal` has no member `CTRL_C_EVENT`
 
 ---
 
-_Issue opened by @kracekumar on 2025-12-17 20:33_
+_@kracekumar_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: cache/permissions-2
 created_at: 2023-07-19T20:48:45Z
 updated_at: 2023-07-25T17:46:06Z
 url: https://github.com/astral-sh/ruff/pull/5901
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Include file permissions in key for cached files
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-19 20:48_
+_@zanieb_
 
 Reimplements https://github.com/astral-sh/ruff/pull/3104
 Closes https://github.com/astral-sh/ruff/issues/5726

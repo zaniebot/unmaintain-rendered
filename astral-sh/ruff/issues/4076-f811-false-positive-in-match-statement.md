@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-24T08:45:48Z
 updated_at: 2023-04-30T18:39:47Z
 url: https://github.com/astral-sh/ruff/issues/4076
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F811 false positive in match statement
 
 ---
 
-_Issue opened by @cgahr on 2023-04-24 08:45_
+_@cgahr_
 
 Hi,
 

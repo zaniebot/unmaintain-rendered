@@ -12,14 +12,14 @@ head: add-unicode-benchmark
 created_at: 2023-08-30T06:13:44Z
 updated_at: 2023-08-30T07:57:59Z
 url: https://github.com/astral-sh/ruff/pull/7002
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add unicode benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-30 06:13_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T17:46:11Z
 updated_at: 2025-01-27T18:34:39Z
 url: https://github.com/astral-sh/ruff/issues/15774
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add rule to forbid `asyncio.create_task`
 
 ---
 
-_Issue opened by @Tinche on 2025-01-27 17:46_
+_@Tinche_
 
 ### Description
 

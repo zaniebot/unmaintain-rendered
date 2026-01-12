@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-01-23T00:10:50Z
 updated_at: 2024-01-23T00:14:30Z
 url: https://github.com/astral-sh/uv/pull/1055
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Use `fs_err::tokio` consistently in distribution database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 00:10_
+_@charliermarsh_
 
 _No description provided._
 

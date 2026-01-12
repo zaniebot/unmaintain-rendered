@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T08:22:39Z
 updated_at: 2024-11-04T12:12:02Z
 url: https://github.com/astral-sh/ruff/issues/10749
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # TCH rules triggered even if class is declared in `runtime-evaluated-base-classes`
 
 ---
 
-_Issue opened by @mtvx on 2024-04-03 08:22_
+_@mtvx_
 
 Despite declaring `datetime.date` as needed for runtime evaluation in `runtime-evaluated-base-classes`, Ruff nags about it and wants to move it to `if TYPE_CHECKING` block.
 

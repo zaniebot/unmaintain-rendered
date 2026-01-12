@@ -13,14 +13,14 @@ head: implicit-optional-safe
 created_at: 2025-05-04T22:34:08Z
 updated_at: 2025-05-05T10:28:21Z
 url: https://github.com/astral-sh/ruff/pull/17836
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [`ruff`] Make fix for `implicit-optional` (`RUF013`) safe in preview
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-05-04 22:34_
+_@dylwil3_
 
 The fix for [implicit-optional (RUF013)](https://docs.astral.sh/ruff/rules/implicit-optional/#implicit-optional-ruf013), introduced in https://github.com/astral-sh/ruff/pull/4831, was marked as unsafe, but I can't actually see a reason why it would be. So this PR makes the fix safe when `preview` is enabled.
 

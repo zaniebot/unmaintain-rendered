@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-18T08:10:48Z
 updated_at: 2024-10-18T17:37:51Z
 url: https://github.com/astral-sh/uv/issues/8321
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `UV_FROZEN` env var please
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-10-18 08:10_
+_@samuelcolvin_
 
 uv is great, thank you!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T04:41:14Z
 updated_at: 2025-03-10T08:31:43Z
 url: https://github.com/astral-sh/ruff/issues/16561
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `useless-try-except (TRY203)` false negative?
 
 ---
 
-_Issue opened by @harupy on 2025-03-08 04:41_
+_@harupy_
 
 ### Summary
 

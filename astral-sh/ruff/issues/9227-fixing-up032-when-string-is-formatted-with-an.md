@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-21T09:57:17Z
 updated_at: 2023-12-21T21:52:18Z
 url: https://github.com/astral-sh/ruff/issues/9227
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Fixing UP032 when string is formatted with an element selected from a dict literal introduces a syntax error
 
 ---
 
-_Issue opened by @lshug on 2023-12-21 09:57_
+_@lshug_
 
 Fix for rule UP032 tried to replace instance of `"some string literal".format` with equivalent f-strings, by converting the string literal intro an f-string and placing the argument expression of `format` directly into the curly braces inside the f-string. This can cause a syntax error due to not all argument expressions being valid contents of curly braces within an f-string (at least until Python 3.12, where f-string parsing rules were updated, but I haven't checked). Specifically, f-strings such as `f"{{0: 1}[0]}"` are not valid.
 

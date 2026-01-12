@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T13:14:33Z
 updated_at: 2025-02-17T14:12:49Z
 url: https://github.com/astral-sh/uv/issues/11577
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # What is the equivalent of poetry install in uv?
 
 ---
 
-_Issue opened by @karkinissan on 2025-02-17 13:14_
+_@karkinissan_
 
 ### Question
 

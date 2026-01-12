@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T15:51:59Z
 updated_at: 2025-02-01T19:37:30Z
 url: https://github.com/astral-sh/uv/issues/10714
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # uv called through hatch or tox-uv writes debug to stderr
 
 ---
 
-_Issue opened by @JohnStokes228 on 2025-01-17 15:51_
+_@JohnStokes228_
 
 links to [tox-uv](https://github.com/tox-dev/tox-uv/issues/156) and [hatch](https://github.com/pypa/hatch/issues/1888) issues for posterity, same issue comes when running either tool, tox-uv bounced me here.
 

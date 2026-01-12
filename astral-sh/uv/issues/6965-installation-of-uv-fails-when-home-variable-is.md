@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T10:22:27Z
 updated_at: 2025-06-09T15:49:27Z
 url: https://github.com/astral-sh/uv/issues/6965
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Installation of uv fails when $HOME variable is not set
 
 ---
 
-_Issue opened by @kishaningithub on 2024-09-03 10:22_
+_@kishaningithub_
 
 When I Tried running the following command (mentioned in the docs) to install uv in amazon linux box where $HOME directory is unset for reasons unknown i get a failure saying $HOME is unset
 

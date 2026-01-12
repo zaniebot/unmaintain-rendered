@@ -13,14 +13,14 @@ head: cjm/nounionany
 created_at: 2025-11-02T17:37:40Z
 updated_at: 2025-11-02T23:21:56Z
 url: https://github.com/astral-sh/ruff/pull/21208
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] don't union in default type for annotated parameters
 
 ---
 
-_Pull request opened by @carljm on 2025-11-02 17:37_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1013
 

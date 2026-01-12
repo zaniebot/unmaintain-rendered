@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T11:23:18Z
 updated_at: 2025-05-09T12:58:04Z
 url: https://github.com/astral-sh/uv/issues/13365
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Command that only downloads deps to the cache
 
 ---
 
-_Issue opened by @nordewal on 2025-05-09 11:23_
+_@nordewal_
 
 ### Summary
 

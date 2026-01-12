@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-19T09:40:09Z
 updated_at: 2023-08-21T16:27:52Z
 url: https://github.com/clap-rs/clap/issues/5081
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `UnknownArgumentValueParser` can only be used with string value argument
 
 ---
 
-_Issue opened by @weihanglo on 2023-08-19 09:40_
+_@weihanglo_
 
 ### Please complete the following tasks
 

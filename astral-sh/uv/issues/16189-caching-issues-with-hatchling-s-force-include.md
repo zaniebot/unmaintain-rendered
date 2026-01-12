@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T15:07:25Z
 updated_at: 2025-10-21T21:09:14Z
 url: https://github.com/astral-sh/uv/issues/16189
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # Caching issues with hatchling's `--force-include`
 
 ---
 
-_Issue opened by @Mr-Pepe on 2025-10-08 15:07_
+_@Mr-Pepe_
 
 ### Summary
 

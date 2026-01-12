@@ -14,14 +14,14 @@ head: format_dev_on_tracing
 created_at: 2023-07-30T12:43:06Z
 updated_at: 2023-07-31T19:26:11Z
 url: https://github.com/astral-sh/ruff/pull/6177
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use tracing for format_dev
 
 ---
 
-_Pull request opened by @konstin on 2023-07-30 12:43_
+_@konstin_
 
 ## Summary
 

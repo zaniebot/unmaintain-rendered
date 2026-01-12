@@ -13,14 +13,14 @@ head: fix-20097
 created_at: 2025-08-27T02:16:10Z
 updated_at: 2025-08-28T20:54:53Z
 url: https://github.com/astral-sh/ruff/pull/20108
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`pycodestyle`] Preserve return type annotation for `ParamSpec` (`E731`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-27 02:16_
+_@danparizher_
 
 ## Summary
 

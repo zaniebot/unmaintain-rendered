@@ -13,14 +13,14 @@ head: zb/fix-release
 created_at: 2024-07-03T04:43:19Z
 updated_at: 2024-07-03T12:35:36Z
 url: https://github.com/astral-sh/ruff/pull/12162
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Fix latest version detection during Rooster invocations
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 04:43_
+_@zanieb_
 
 We no longer use the "v" prefix so Rooster detects the wrong version.
 

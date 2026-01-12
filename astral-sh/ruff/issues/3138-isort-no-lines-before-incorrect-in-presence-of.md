@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-22T19:14:48Z
 updated_at: 2023-02-22T19:35:55Z
 url: https://github.com/astral-sh/ruff/issues/3138
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # isort no-lines-before incorrect in presence of preceding empty sections
 
 ---
 
-_Issue opened by @bluetech on 2023-02-22 19:14_
+_@bluetech_
 
 Version: 0.0.251
 

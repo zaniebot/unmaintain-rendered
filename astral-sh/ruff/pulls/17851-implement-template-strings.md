@@ -13,14 +13,14 @@ head: template-strings
 created_at: 2025-05-05T11:04:36Z
 updated_at: 2025-05-30T21:33:02Z
 url: https://github.com/astral-sh/ruff/pull/17851
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Implement template strings
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-05-05 11:04_
+_@dylwil3_
 
 This PR implements template strings (t-strings) in the parser and formatter for Ruff.
 

@@ -14,14 +14,14 @@ head: charlie/install-message
 created_at: 2024-07-19T00:40:53Z
 updated_at: 2024-07-19T00:48:36Z
 url: https://github.com/astral-sh/uv/pull/5201
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Use +- install output for Python versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 00:40_
+_@charliermarsh_
 
 ## Summary
 

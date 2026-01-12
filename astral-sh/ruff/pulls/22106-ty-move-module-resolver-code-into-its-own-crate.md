@@ -14,14 +14,14 @@ head: micha/split-out-resolver
 created_at: 2025-12-20T09:11:20Z
 updated_at: 2025-12-21T11:00:35Z
 url: https://github.com/astral-sh/ruff/pull/22106
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Move module resolver code into its own crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-20 09:11_
+_@MichaReiser_
 
 ## Summary
 

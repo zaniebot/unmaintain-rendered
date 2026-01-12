@@ -13,14 +13,14 @@ head: charlie/star
 created_at: 2024-09-23T14:07:32Z
 updated_at: 2024-09-23T22:09:02Z
 url: https://github.com/astral-sh/ruff/pull/13486
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Detect basic wildcard imports in ruff analyze graph
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-23 14:07_
+_@charliermarsh_
 
 ## Summary
 

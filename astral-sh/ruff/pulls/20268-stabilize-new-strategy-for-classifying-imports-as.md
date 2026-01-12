@@ -14,14 +14,14 @@ head: dylan/stabilize-match-source
 created_at: 2025-09-05T18:31:56Z
 updated_at: 2025-09-08T17:32:38Z
 url: https://github.com/astral-sh/ruff/pull/20268
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # Stabilize new strategy for classifying imports as first party
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 18:31_
+_@dylwil3_
 
 This stabilizes the behavior introduced in #16565 which (roughly) tries to match an import like `import a.b.c` to an actual directory path `a/b/c` in order to label it as first-party, rather than simply looking for a directory `a`.
 

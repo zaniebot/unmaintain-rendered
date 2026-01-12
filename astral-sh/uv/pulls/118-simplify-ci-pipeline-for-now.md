@@ -12,14 +12,14 @@ head: charlie/ci
 created_at: 2023-10-18T14:37:56Z
 updated_at: 2023-10-18T14:56:47Z
 url: https://github.com/astral-sh/uv/pull/118
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Simplify CI pipeline for now
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 14:37_
+_@charliermarsh_
 
 Removes Windows at least, to avoid unneeded builds.
 

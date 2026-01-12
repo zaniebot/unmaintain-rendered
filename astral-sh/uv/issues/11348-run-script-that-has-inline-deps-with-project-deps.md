@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-09T08:40:52Z
 updated_at: 2025-02-09T18:05:23Z
 url: https://github.com/astral-sh/uv/issues/11348
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Run script that has inline deps with project deps
 
 ---
 
-_Issue opened by @cibere on 2025-02-09 08:40_
+_@cibere_
 
 ### Summary
 

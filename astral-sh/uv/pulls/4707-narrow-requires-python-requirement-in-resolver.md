@@ -13,14 +13,14 @@ head: charlie/req-python
 created_at: 2024-07-01T20:43:24Z
 updated_at: 2024-07-02T12:23:40Z
 url: https://github.com/astral-sh/uv/pull/4707
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Narrow `requires-python` requirement in resolver forks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 20:43_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T12:08:10Z
 updated_at: 2025-11-24T14:36:40Z
 url: https://github.com/astral-sh/ty/issues/1619
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Allow the server in buffer not tied to actual file
 
 ---
 
-_Issue opened by @klonuo on 2025-11-24 12:08_
+_@klonuo_
 
 Hi,
 

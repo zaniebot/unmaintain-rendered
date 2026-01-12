@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T18:42:09Z
 updated_at: 2025-01-07T14:51:35Z
 url: https://github.com/clap-rs/clap/issues/5395
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Deprecate and remove `clap_complete_fig`?
 
 ---
 
-_Issue opened by @epage on 2024-03-13 18:42_
+_@epage_
 
 Fig is sunsetted, see https://news.ycombinator.com/item?id=39683889
 

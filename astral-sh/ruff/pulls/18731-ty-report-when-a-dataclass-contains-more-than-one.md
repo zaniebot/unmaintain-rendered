@@ -13,14 +13,14 @@ head: ty-dataclasses-duplicate-kw-only
 created_at: 2025-06-17T17:43:25Z
 updated_at: 2025-06-20T02:42:31Z
 url: https://github.com/astral-sh/ruff/pull/18731
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Report when a dataclass contains more than one `KW_ONLY` field
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-06-17 17:43_
+_@InSyncWithFoo_
 
 ## Summary
 

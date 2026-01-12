@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-29T20:25:03Z
 updated_at: 2020-08-30T07:06:18Z
 url: https://github.com/clap-rs/clap/issues/2119
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # DeriveDisplayOrder does not affect usage line
 
 ---
 
-_Issue opened by @AndreKR on 2020-08-29 20:25_
+_@AndreKR_
 
 ### Code
 

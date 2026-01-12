@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T06:28:34Z
 updated_at: 2025-02-28T01:06:12Z
 url: https://github.com/astral-sh/uv/issues/11821
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # uv add package
 
 ---
 
-_Issue opened by @Yangeki on 2025-02-27 06:28_
+_@Yangeki_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-22T18:55:18Z
 updated_at: 2024-06-29T16:33:41Z
 url: https://github.com/astral-sh/uv/issues/3757
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Add changeset detection to CI
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-22 18:55_
+_@charliermarsh_
 
 We do this in CI, at least to avoid running tests etc. for documentation changes. Some small wins here.
 

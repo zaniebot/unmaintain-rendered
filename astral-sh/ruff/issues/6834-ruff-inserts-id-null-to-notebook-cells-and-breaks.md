@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T02:53:16Z
 updated_at: 2023-08-24T13:20:27Z
 url: https://github.com/astral-sh/ruff/issues/6834
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff inserts `"id": null` to notebook cells and breaks GitHub notebook viewer
 
 ---
 
-_Issue opened by @harupy on 2023-08-24 02:53_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

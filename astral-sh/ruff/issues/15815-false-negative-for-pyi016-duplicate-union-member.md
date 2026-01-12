@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T18:50:20Z
 updated_at: 2025-02-02T18:53:29Z
 url: https://github.com/astral-sh/ruff/issues/15815
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False negative for PYI016 Duplicate union member
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-29 18:50_
+_@nickdrozd_
 
 ### Description
 

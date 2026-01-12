@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-18T23:07:55Z
 updated_at: 2025-11-17T07:20:11Z
 url: https://github.com/astral-sh/ruff/issues/19980
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff formatter still removes semicolon in Jupyter notebooks
 
 ---
 
-_Issue opened by @jsh9 on 2025-08-18 23:07_
+_@jsh9_
 
 ### Summary
 

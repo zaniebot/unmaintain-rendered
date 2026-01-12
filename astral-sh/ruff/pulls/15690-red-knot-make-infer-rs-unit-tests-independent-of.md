@@ -13,14 +13,14 @@ head: david/infer-unit-tests-no-public-symbol-dependence
 created_at: 2025-01-23T13:22:20Z
 updated_at: 2025-01-23T13:30:21Z
 url: https://github.com/astral-sh/ruff/pull/15690
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Make `infer.rs` unit tests independent of public symbol inference
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-23 13:22_
+_@sharkdp_
 
 ## Summary
 

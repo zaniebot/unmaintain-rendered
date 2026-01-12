@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T11:14:47Z
 updated_at: 2024-10-24T14:33:42Z
 url: https://github.com/astral-sh/ruff/issues/7540
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Linter: Add warning when attempting to set module attributes
 
 ---
 
-_Issue opened by @tomasalagoa on 2023-09-20 11:14_
+_@tomasalagoa_
 
 As mentioned in https://lwn.net/Articles/943619/ some developers had an issue distinguishing between a module object and a context object from the module
 

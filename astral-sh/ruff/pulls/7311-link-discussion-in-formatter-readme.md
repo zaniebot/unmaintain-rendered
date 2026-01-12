@@ -14,14 +14,14 @@ head: charlie/readme
 created_at: 2023-09-12T16:27:45Z
 updated_at: 2023-09-12T16:50:23Z
 url: https://github.com/astral-sh/ruff/pull/7311
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Link discussion in formatter README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-12 16:27_
+_@charliermarsh_
 
 _No description provided._
 

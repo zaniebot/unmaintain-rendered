@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-15T19:07:43Z
 updated_at: 2024-05-15T19:09:47Z
 url: https://github.com/astral-sh/uv/issues/3620
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Failed to download and build `fasttext` 
 
 ---
 
-_Issue opened by @masonkirchner on 2024-05-15 19:07_
+_@masonkirchner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

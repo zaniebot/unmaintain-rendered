@@ -13,14 +13,14 @@ head: zb/--user
 created_at: 2024-05-07T13:26:02Z
 updated_at: 2024-05-07T13:50:24Z
 url: https://github.com/astral-sh/uv/pull/3418
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Add hint to use a venv to `pip sync --user`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-07 13:26_
+_@zanieb_
 
 _No description provided._
 

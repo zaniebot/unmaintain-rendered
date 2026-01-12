@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T19:30:56Z
 updated_at: 2024-02-02T20:01:11Z
 url: https://github.com/astral-sh/uv/issues/179
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Ensure that we can resolve and install the top N PyPI packages
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-24 19:30_
+_@charliermarsh_
 
 This should include some kind of automated testing, triaging failures, and then addressing those failures.
 

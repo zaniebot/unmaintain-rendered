@@ -13,14 +13,14 @@ head: charlie/caveats
 created_at: 2023-09-15T01:21:13Z
 updated_at: 2023-09-15T01:38:38Z
 url: https://github.com/astral-sh/ruff/pull/7395
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add known problems to UP040 documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-15 01:21_
+_@charliermarsh_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-01T10:19:39Z
 updated_at: 2024-12-02T23:28:42Z
 url: https://github.com/astral-sh/uv/issues/9550
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Different package names produced by uv pip freeze
 
 ---
 
-_Issue opened by @LordAro on 2024-12-01 10:19_
+_@LordAro_
 
 Seems to produce different outputs for packages containing `.` or `_` or `-`
 

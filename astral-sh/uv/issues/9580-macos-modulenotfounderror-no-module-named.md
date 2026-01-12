@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T18:43:45Z
 updated_at: 2025-04-29T14:05:43Z
 url: https://github.com/astral-sh/uv/issues/9580
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # [macOS] ModuleNotFoundError: No module named 'encodings' when compiling with meson
 
 ---
 
-_Issue opened by @ben-xD on 2024-12-02 18:43_
+_@ben-xD_
 
 I'm trying to build gstreamer locally with python 3.11 from uv. I've managed to build gstreamer locally with the **homebrew** python. I use python 3.11 because the gstreamer version im using has a dependency that relies on distutils, removed in python3.12.
 

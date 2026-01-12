@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-28T05:06:36Z
 updated_at: 2025-07-12T15:15:33Z
 url: https://github.com/astral-sh/uv/issues/7753
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # build for Android/ARM
 
 ---
 
-_Issue opened by @bolinocroustibat on 2024-09-28 05:06_
+_@bolinocroustibat_
 
 Is there a build or a planned build for Android/ARM type machines?
 

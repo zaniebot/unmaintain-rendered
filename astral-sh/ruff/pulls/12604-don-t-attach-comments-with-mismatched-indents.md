@@ -13,14 +13,14 @@ head: charlie/start
 created_at: 2024-08-01T01:45:47Z
 updated_at: 2024-08-01T02:09:07Z
 url: https://github.com/astral-sh/ruff/pull/12604
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Don't attach comments with mismatched indents
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 01:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T15:50:25Z
 updated_at: 2025-06-20T20:50:07Z
 url: https://github.com/astral-sh/ruff/issues/18823
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # conflict between RUF100 and PGH003
 
 ---
 
-_Issue opened by @MarcelWilson on 2025-06-20 15:50_
+_@MarcelWilson_
 
 ### Summary
 

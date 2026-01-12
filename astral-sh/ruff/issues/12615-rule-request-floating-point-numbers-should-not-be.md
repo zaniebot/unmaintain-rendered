@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T15:42:22Z
 updated_at: 2024-08-01T21:13:17Z
 url: https://github.com/astral-sh/ruff/issues/12615
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule request: Floating point numbers should not be tested for equality (Sonar - `RSPEC-1244`)
 
 ---
 
-_Issue opened by @daria-shaw on 2024-08-01 15:42_
+_@daria-shaw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

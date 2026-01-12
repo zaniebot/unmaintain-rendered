@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T20:57:43Z
 updated_at: 2024-04-12T09:39:49Z
 url: https://github.com/astral-sh/uv/issues/2429
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv` should exclude `abi3` wheels in free-threaded Python 3.13+
 
 ---
 
-_Issue opened by @colesbury on 2024-03-13 20:57_
+_@colesbury_
 
 Starting with the version 3.13 alpha releases, CPython can optionally be configured to run without the global interpreter lock. This build configuration ("free-threaded") is not compatible with `abi3` wheels. 
 

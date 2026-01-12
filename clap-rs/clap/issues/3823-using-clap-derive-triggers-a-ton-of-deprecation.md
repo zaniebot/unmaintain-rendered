@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-06-13T16:15:22Z
 updated_at: 2022-06-13T16:27:28Z
 url: https://github.com/clap-rs/clap/issues/3823
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Using clap derive triggers a ton of deprecation warnings since 3.2
 
 ---
 
-_Issue opened by @Ten0 on 2022-06-13 16:15_
+_@Ten0_
 
 ### Please complete the following tasks
 

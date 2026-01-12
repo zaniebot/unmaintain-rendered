@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-04T18:14:29Z
 updated_at: 2024-08-05T18:51:19Z
 url: https://github.com/astral-sh/uv/issues/5760
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Add a platform filter for `uv tree`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-04 18:14_
+_@charliermarsh_
 
 _No description provided._
 

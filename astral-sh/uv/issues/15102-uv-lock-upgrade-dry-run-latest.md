@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T10:07:59Z
 updated_at: 2025-08-06T10:07:59Z
 url: https://github.com/astral-sh/uv/issues/15102
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # uv lock --upgrade --dry-run --latest
 
 ---
 
-_Issue opened by @jdslv on 2025-08-06 10:07_
+_@jdslv_
 
 ### Summary
 

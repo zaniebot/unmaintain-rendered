@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T08:21:33Z
 updated_at: 2025-10-10T10:04:38Z
 url: https://github.com/astral-sh/ty/issues/1331
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `CallableTypeOf` generates wrong signature for custom callables
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-10 08:21_
+_@sharkdp_
 
 Our `CallableTypeOf` type form creates `Callable` types with the wrong signature when used on custom `__call__`-able classes:
 

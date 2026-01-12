@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T15:48:04Z
 updated_at: 2024-12-02T17:44:59Z
 url: https://github.com/astral-sh/ruff/issues/14735
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule to prohibit closures?
 
 ---
 
-_Issue opened by @s-banach on 2024-12-02 15:48_
+_@s-banach_
 
 Sometimes I accidentally write a python script like this:
 

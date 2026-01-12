@@ -13,14 +13,14 @@ head: ag/moar-refactoring
 created_at: 2024-11-23T15:57:55Z
 updated_at: 2024-11-23T18:14:30Z
 url: https://github.com/astral-sh/uv/pull/9386
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # small refactoring in pursuit of fixing conflicting extras/groups
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-23 15:57_
+_@BurntSushi_
 
 This PR splits off some commits from #9370. These are smaller
 refactoring commits that shouldn't change any behavior. This is just in

@@ -14,14 +14,14 @@ head: david/migrate-assignable_to-tests
 created_at: 2025-01-08T13:52:11Z
 updated_at: 2025-01-08T19:25:10Z
 url: https://github.com/astral-sh/ruff/pull/15353
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] More comprehensive `is_assignable_to` tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-08 13:52_
+_@sharkdp_
 
 ## Summary
 

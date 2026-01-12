@@ -13,14 +13,14 @@ head: zb/trampoline-move
 created_at: 2025-12-02T09:09:12Z
 updated_at: 2025-12-02T14:14:23Z
 url: https://github.com/astral-sh/uv/pull/16922
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Fix `uv-trampoline-builder` builds from crates.io by moving bundled executables
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-02 09:09_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16836
 

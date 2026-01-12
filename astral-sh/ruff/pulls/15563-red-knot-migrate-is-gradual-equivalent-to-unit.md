@@ -12,14 +12,14 @@ head: rk-pt-is-gradual-equivalent-to
 created_at: 2025-01-18T00:10:18Z
 updated_at: 2025-01-18T12:47:52Z
 url: https://github.com/astral-sh/ruff/pull/15563
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Migrate `is_gradual_equivalent_to` unit tests to Markdown tests
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-18 00:10_
+_@InSyncWithFoo_
 
 ## Summary
 

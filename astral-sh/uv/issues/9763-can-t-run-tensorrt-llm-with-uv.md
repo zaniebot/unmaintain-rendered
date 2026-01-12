@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T04:02:55Z
 updated_at: 2025-08-08T17:34:44Z
 url: https://github.com/astral-sh/uv/issues/9763
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Can't run tensorrt_llm with uv
 
 ---
 
-_Issue opened by @twmht on 2024-12-10 04:02_
+_@twmht_
 
 Hi,
 

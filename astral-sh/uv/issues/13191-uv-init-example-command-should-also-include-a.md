@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T11:01:44Z
 updated_at: 2025-05-04T12:47:34Z
 url: https://github.com/astral-sh/uv/issues/13191
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # uv init example command should also include a .gitignore file
 
 ---
 
-_Issue opened by @beyg1 on 2025-04-29 11:01_
+_@beyg1_
 
 ### Summary
 

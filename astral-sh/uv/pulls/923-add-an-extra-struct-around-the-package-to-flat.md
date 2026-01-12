@@ -13,14 +13,14 @@ head: charlie/flat-index
 created_at: 2024-01-15T04:19:04Z
 updated_at: 2024-01-15T14:48:12Z
 url: https://github.com/astral-sh/uv/pull/923
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Add an extra struct around the package-to-flat index map
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 04:19_
+_@charliermarsh_
 
 ## Summary
 

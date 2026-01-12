@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T09:51:24Z
 updated_at: 2025-07-01T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/14270
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Too long equal-star Python version marker is considered false
 
 ---
 
-_Issue opened by @konstin on 2025-06-26 09:51_
+_@konstin_
 
 The following test case with a nonsensical marker currently fails in uv-pep508, as the marker is normalized to false, even though there is a possible match:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-25T19:12:16Z
 updated_at: 2024-03-25T19:46:25Z
 url: https://github.com/astral-sh/uv/issues/2655
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Cannot install CPU version of `torchvision`
 
 ---
 
-_Issue opened by @olokobayusuf on 2024-03-25 19:12_
+_@olokobayusuf_
 
 This is pretty similar to #1497 , but now that installing `torch` works, installing `torchvision` doesn't. In my Dockerfile, I run the following:
 ```

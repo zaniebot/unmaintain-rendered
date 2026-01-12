@@ -13,14 +13,14 @@ head: zb/regex-filtered
 created_at: 2025-03-21T18:47:58Z
 updated_at: 2025-03-23T02:57:18Z
 url: https://github.com/astral-sh/uv/pull/12379
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Add comments to the `with_filtered_python_keys` regex
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 18:47_
+_@zanieb_
 
 I need to edit this thing and it's a nightmare as written.
 

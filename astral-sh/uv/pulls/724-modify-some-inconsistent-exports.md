@@ -13,14 +13,14 @@ head: charlie/lib
 created_at: 2023-12-24T22:24:24Z
 updated_at: 2023-12-24T22:30:04Z
 url: https://github.com/astral-sh/uv/pull/724
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Modify some inconsistent exports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-24 22:24_
+_@charliermarsh_
 
 _No description provided._
 

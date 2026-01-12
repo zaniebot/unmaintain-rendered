@@ -12,14 +12,14 @@ head: charlie/convention
 created_at: 2022-12-27T16:45:35Z
 updated_at: 2022-12-27T16:50:29Z
 url: https://github.com/astral-sh/ruff/pull/1408
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Allow specification of explicit docstring convention
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-27 16:45_
+_@charliermarsh_
 
 Resolves #1406.
 

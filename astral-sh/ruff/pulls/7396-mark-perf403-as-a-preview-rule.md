@@ -13,14 +13,14 @@ head: charlie/perf403
 created_at: 2023-09-15T01:48:04Z
 updated_at: 2023-09-15T02:04:00Z
 url: https://github.com/astral-sh/ruff/pull/7396
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Mark `PERF403` as a preview rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-15 01:48_
+_@charliermarsh_
 
 _No description provided._
 

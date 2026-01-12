@@ -13,14 +13,14 @@ head: zb/reference-sections
 created_at: 2024-11-22T20:03:58Z
 updated_at: 2024-12-03T17:33:16Z
 url: https://github.com/astral-sh/uv/pull/9367
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Add policies reference section and license document
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-22 20:03_
+_@zanieb_
 
 In preparation for adding more pages to the reference section
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T10:59:41Z
 updated_at: 2024-07-20T15:47:12Z
 url: https://github.com/astral-sh/uv/issues/5242
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # "prefix not found" in nested uv init
 
 ---
 
-_Issue opened by @bluss on 2024-07-20 10:59_
+_@bluss_
 
 Using uv 0.2.27
 platform: linux (x86_64)

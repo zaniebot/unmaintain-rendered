@@ -14,14 +14,14 @@ head: alex/did-you-mean
 created_at: 2025-11-23T20:21:27Z
 updated_at: 2025-11-25T10:29:03Z
 url: https://github.com/astral-sh/ruff/pull/21597
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Improve several "Did you mean?" suggestions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-23 20:21_
+_@AlexWaygood_
 
 ## Summary
 

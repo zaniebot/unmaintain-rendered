@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T03:58:50Z
 updated_at: 2025-01-06T08:05:49Z
 url: https://github.com/astral-sh/ruff/issues/15294
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `import-private-name (PLC2701)` does not respect `@type_check_only`
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 03:58_
+_@Avasam_
 
 [import-private-name (PLC2701)](https://docs.astral.sh/ruff/rules/import-private-name/#import-private-name-plc2701) says that
 > This rule ignores private name imports that are exclusively used in type annotations. Ideally, types would be public; however, this is not always possible when using third-party libraries.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T12:36:37Z
 updated_at: 2025-05-20T12:46:09Z
 url: https://github.com/astral-sh/ty/issues/460
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Context manager contextlib.nullcontext causes diagnostic
 
 ---
 
-_Issue opened by @behrenhoff on 2025-05-20 12:36_
+_@behrenhoff_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: dhruv/async-stmt
 created_at: 2024-04-07T15:49:33Z
 updated_at: 2024-04-09T16:33:45Z
 url: https://github.com/astral-sh/ruff/pull/10819
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `async` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 15:49_
+_@dhruvmanila_
 
 ## Summary
 

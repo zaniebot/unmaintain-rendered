@@ -13,14 +13,14 @@ head: konsti/move-copy_dir_all
 created_at: 2024-11-14T17:56:29Z
 updated_at: 2024-11-14T18:05:17Z
 url: https://github.com/astral-sh/uv/pull/9124
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Support `copy_dir_all` in unit tests too
 
 ---
 
-_Pull request opened by @konstin on 2024-11-14 17:56_
+_@konstin_
 
 Refactoring for https://github.com/astral-sh/uv/pull/9091
 

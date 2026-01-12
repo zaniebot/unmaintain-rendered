@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-12T15:34:32Z
 updated_at: 2017-01-14T01:17:03Z
 url: https://github.com/clap-rs/clap/issues/740
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # what is the policy around minimum supported version of Rust?
 
 ---
 
-_Issue opened by @BurntSushi on 2016-11-12 15:34_
+_@BurntSushi_
 
 When clap gets an addition that requires a newer version of Rust, what is the policy regarding semver updates?
 

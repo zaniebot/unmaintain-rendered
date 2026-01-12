@@ -14,14 +14,14 @@ head: charlie/ignore
 created_at: 2025-01-02T16:40:13Z
 updated_at: 2025-01-02T17:43:16Z
 url: https://github.com/astral-sh/uv/pull/10276
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Ignore empty or missing hrefs in Simple HTML
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 16:40_
+_@charliermarsh_
 
 ## Summary
 

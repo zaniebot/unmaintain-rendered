@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-05-13T13:17:07Z
 updated_at: 2021-05-21T11:47:53Z
 url: https://github.com/clap-rs/clap/issues/2479
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_generate an incorrect autocomplete zsh script
 
 ---
 
-_Issue opened by @mothsART on 2021-05-13 13:17_
+_@mothsART_
 
 ### Please complete the following tasks
 

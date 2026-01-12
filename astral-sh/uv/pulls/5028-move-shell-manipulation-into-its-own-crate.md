@@ -13,14 +13,14 @@ head: charlie/windows-path
 created_at: 2024-07-13T00:44:46Z
 updated_at: 2024-07-13T01:13:00Z
 url: https://github.com/astral-sh/uv/pull/5028
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Move shell manipulation into its own crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 00:44_
+_@charliermarsh_
 
 ## Summary
 

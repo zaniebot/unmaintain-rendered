@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-19T19:03:28Z
 updated_at: 2025-10-20T13:47:45Z
 url: https://github.com/astral-sh/ruff/issues/20970
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add rule to support multiple dispatch
 
 ---
 
-_Issue opened by @ShalokShalom on 2025-10-19 19:03_
+_@ShalokShalom_
 
 ### Summary
 

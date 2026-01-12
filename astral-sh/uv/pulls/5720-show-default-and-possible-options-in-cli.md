@@ -14,14 +14,14 @@ head: doc-help-value
 created_at: 2024-08-02T08:56:46Z
 updated_at: 2024-08-02T13:20:34Z
 url: https://github.com/astral-sh/uv/pull/5720
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Show default and possible options in CLI reference documentation
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-02 08:56_
+_@eth3lbert_
 
 ## Summary
 

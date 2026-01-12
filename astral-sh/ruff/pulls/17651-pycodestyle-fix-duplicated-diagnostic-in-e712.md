@@ -14,14 +14,14 @@ head: fix-E712
 created_at: 2025-04-26T23:09:42Z
 updated_at: 2025-04-30T20:55:30Z
 url: https://github.com/astral-sh/ruff/pull/17651
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`pycodestyle`] Fix duplicated diagnostic in `E712`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-26 23:09_
+_@LaBatata101_
 
 
 

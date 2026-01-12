@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-28T12:49:19Z
 updated_at: 2025-11-05T15:19:16Z
 url: https://github.com/astral-sh/uv/issues/11018
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # failed to rename file [...] Permission denied (os error 13)
 
 ---
 
-_Issue opened by @pierre-eliep-met on 2025-01-28 12:49_
+_@pierre-eliep-met_
 
 ### Summary
 

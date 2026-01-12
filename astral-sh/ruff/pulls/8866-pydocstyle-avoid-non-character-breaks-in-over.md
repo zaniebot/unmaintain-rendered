@@ -14,14 +14,14 @@ head: charlie/D208
 created_at: 2023-11-28T05:40:40Z
 updated_at: 2023-11-28T06:04:50Z
 url: https://github.com/astral-sh/ruff/pull/8866
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pydocstyle`] Avoid non-character breaks in `over-indentation` (`D208`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-28 05:40_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8844.
 

@@ -13,14 +13,14 @@ head: charlie/local-index
 created_at: 2024-01-13T03:53:01Z
 updated_at: 2024-01-13T20:19:01Z
 url: https://github.com/astral-sh/uv/pull/907
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Remove erroneous local `Index` in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-13 03:53_
+_@charliermarsh_
 
 _No description provided._
 

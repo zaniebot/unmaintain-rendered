@@ -13,14 +13,14 @@ head: cjm/litlit
 created_at: 2025-11-02T16:35:00Z
 updated_at: 2025-11-02T17:39:56Z
 url: https://github.com/astral-sh/ruff/pull/21207
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] support subscripting typing.Literal with a type alias
 
 ---
 
-_Pull request opened by @carljm on 2025-11-02 16:35_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1368
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T03:56:28Z
 updated_at: 2024-08-16T15:54:57Z
 url: https://github.com/astral-sh/ruff/issues/12915
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `ruff server` hangs when performing "code actions" in Helix
 
 ---
 
-_Issue opened by @schlich on 2024-08-16 03:56_
+_@schlich_
 
 
 Might be related to [Issue #416](https://github.com/astral-sh/ruff-lsp/issues/416) in `ruff-lsp`, particularly @ssmsossah's comment [here](https://github.com/astral-sh/ruff-lsp/issues/416#issuecomment-2143850769) that the same thing is happening in NeoVim.

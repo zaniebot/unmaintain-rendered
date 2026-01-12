@@ -13,14 +13,14 @@ head: feat/ruff-linter-to-use-optimized-parenthesized-range
 created_at: 2025-12-08T00:57:11Z
 updated_at: 2025-12-11T12:04:58Z
 url: https://github.com/astral-sh/ruff/pull/21836
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # Remove `BackwardsTokenizer` based `parenthesized_range` references in `ruff_linter`
 
 ---
 
-_Pull request opened by @denyszhak on 2025-12-08 00:57_
+_@denyszhak_
 
 ## Summary
 

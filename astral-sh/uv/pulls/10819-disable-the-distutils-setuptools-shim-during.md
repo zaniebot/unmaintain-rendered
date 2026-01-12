@@ -13,14 +13,14 @@ head: zb/fix-distutils
 created_at: 2025-01-21T17:29:55Z
 updated_at: 2025-01-21T18:34:14Z
 url: https://github.com/astral-sh/uv/pull/10819
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Disable the distutils setuptools shim during interpreter query
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 17:29_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/issues/4204#issuecomment-2604983670
 

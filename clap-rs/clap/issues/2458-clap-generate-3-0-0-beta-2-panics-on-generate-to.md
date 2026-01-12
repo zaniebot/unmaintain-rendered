@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-04-29T17:26:22Z
 updated_at: 2021-04-29T17:38:56Z
 url: https://github.com/clap-rs/clap/issues/2458
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_generate 3.0.0-beta.2 panics on generate_to
 
 ---
 
-_Issue opened by @timvisee on 2021-04-29 17:26_
+_@timvisee_
 
 ### Rust Version
 

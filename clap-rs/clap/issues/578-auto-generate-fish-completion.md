@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-10T13:56:27Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/578
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Auto generate fish completion
 
 ---
 
-_Issue opened by @wdv4758h on 2016-07-10 13:56_
+_@wdv4758h_
 
 As clap support generating Bash completion now, I hope it will have [fish](https://github.com/fish-shell/fish-shell) completion, too.
 (I'll spend some time trying to implement it :P)

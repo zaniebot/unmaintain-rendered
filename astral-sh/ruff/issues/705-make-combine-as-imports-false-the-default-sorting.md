@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-12T17:32:53Z
 updated_at: 2022-12-04T13:02:58Z
 url: https://github.com/astral-sh/ruff/issues/705
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Make `combine_as_imports = false` the default sorting behavior
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 17:32_
+_@charliermarsh_
 
 This would make our import sorting drop-in compatible with `isort`, but it's a bit more complicated, I don't prefer the behavior, and there are a variety of comments on the `isort` repo suggesting they wanted to make `true` the default anyway.
 

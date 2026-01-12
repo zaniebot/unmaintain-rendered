@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T14:46:45Z
 updated_at: 2025-10-30T23:20:00Z
 url: https://github.com/astral-sh/ty/issues/1457
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Disable auto-import completions in definition places
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-30 14:46_
+_@MichaReiser_
 
 ### Summary
 

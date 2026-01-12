@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-05-05T14:56:17Z
 updated_at: 2019-09-26T09:37:45Z
 url: https://github.com/clap-rs/clap/issues/1467
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Could not compile `clap`. process didn't exit successfully
 
 ---
 
-_Issue opened by @asmarcz on 2019-05-05 14:56_
+_@asmarcz_
 
 Hi, I am a bit unsure where to put this issue as it happens when using `tether` crate but only `bindgen` is dependent on `clap`.
 

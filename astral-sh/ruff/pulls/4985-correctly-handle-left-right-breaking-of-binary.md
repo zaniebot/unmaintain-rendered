@@ -14,14 +14,14 @@ head: more-bin-op-formatting
 created_at: 2023-06-09T16:08:48Z
 updated_at: 2023-06-21T08:00:26Z
 url: https://github.com/astral-sh/ruff/pull/4985
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Correctly handle left/right breaking of binary expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-09 16:08_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

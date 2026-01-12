@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-30T20:47:34Z
 updated_at: 2025-01-11T16:38:23Z
 url: https://github.com/astral-sh/ruff/issues/9719
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # TOML parse error source reference is unhelpful
 
 ---
 
-_Issue opened by @zanieb on 2024-01-30 20:47_
+_@zanieb_
 
 e.g. in https://github.com/astral-sh/ruff/issues/9718 the provided source context is one line early and in a simple example
 

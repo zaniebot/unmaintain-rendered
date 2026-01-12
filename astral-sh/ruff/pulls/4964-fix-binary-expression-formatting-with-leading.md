@@ -14,14 +14,14 @@ head: fix-bin-oip-with-leading-comments
 created_at: 2023-06-08T15:27:58Z
 updated_at: 2023-06-09T09:26:44Z
 url: https://github.com/astral-sh/ruff/pull/4964
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix binary expression formatting with leading comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-08 15:27_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

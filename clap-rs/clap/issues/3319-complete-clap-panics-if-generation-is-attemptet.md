@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-19T10:41:57Z
 updated_at: 2022-01-20T07:28:26Z
 url: https://github.com/clap-rs/clap/issues/3319
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [complete] clap panics if generation is attemptet without having `bin_name` set for app and subcommands (non-descriptive errors)
 
 ---
 
-_Issue opened by @hasezoey on 2022-01-19 10:41_
+_@hasezoey_
 
 ### Please complete the following tasks
 

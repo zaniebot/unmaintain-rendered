@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T10:50:41Z
 updated_at: 2025-07-04T02:09:05Z
 url: https://github.com/astral-sh/uv/issues/14149
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # uv behavior does not match pip
 
 ---
 
-_Issue opened by @DataSailor on 2025-06-20 10:50_
+_@DataSailor_
 
 ### Summary
 

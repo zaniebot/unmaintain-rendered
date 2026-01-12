@@ -13,14 +13,14 @@ head: konsti/warn-unconstrained-transitive-after-resolution
 created_at: 2024-07-17T09:11:46Z
 updated_at: 2024-07-18T03:44:54Z
 url: https://github.com/astral-sh/uv/pull/5142
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Warn about unconstrained direct deps in lowest resolution
 
 ---
 
-_Pull request opened by @konstin on 2024-07-17 09:11_
+_@konstin_
 
 Warn when there is a direct dependency without a lower bound and `--resolution lowest` is set.
 

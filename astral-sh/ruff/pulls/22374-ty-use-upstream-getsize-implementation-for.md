@@ -14,14 +14,14 @@ head: micha/remove-order-map-get-size
 created_at: 2026-01-04T19:50:11Z
 updated_at: 2026-01-04T19:54:04Z
 url: https://github.com/astral-sh/ruff/pull/22374
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Use upstream `GetSize` implementation for `OrderMap` and `OrderSet`
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-04 19:50_
+_@MichaReiser_
 
 This should also be more accurate for `OrderMap` or `OrderSet` that store any `Arc`s because it avoids double counting.
 

@@ -13,14 +13,14 @@ head: zb/sync-scen
 created_at: 2024-04-02T22:57:14Z
 updated_at: 2024-04-02T23:27:06Z
 url: https://github.com/astral-sh/uv/pull/2788
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Move scenario sync script to top-level scripts
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 22:57_
+_@zanieb_
 
 Same idea as https://github.com/astral-sh/uv/pull/2787
 

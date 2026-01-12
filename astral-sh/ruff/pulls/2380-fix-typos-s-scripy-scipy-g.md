@@ -12,14 +12,14 @@ head: s/scripy/scipy/g
 created_at: 2023-01-31T06:06:25Z
 updated_at: 2023-01-31T12:17:19Z
 url: https://github.com/astral-sh/ruff/pull/2380
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix typos: s/scripy/scipy/g
 
 ---
 
-_Pull request opened by @eriknw on 2023-01-31 06:06_
+_@eriknw_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T10:50:46Z
 updated_at: 2025-02-11T03:32:10Z
 url: https://github.com/astral-sh/uv/issues/11352
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Pin/Lock Package to existing version in venv
 
 ---
 
-_Issue opened by @ChromoX on 2025-02-09 10:50_
+_@ChromoX_
 
 ### Question
 

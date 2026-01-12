@@ -13,14 +13,14 @@ head: noqa
 created_at: 2025-03-12T17:41:23Z
 updated_at: 2025-03-12T18:18:50Z
 url: https://github.com/astral-sh/ruff/pull/16687
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Use inline snapshots in `# noqa` unit tests
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-12 17:41_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: jane/linter/RUF027/method-call-fix
 created_at: 2024-02-06T21:12:38Z
 updated_at: 2024-02-08T15:00:21Z
 url: https://github.com/astral-sh/ruff/pull/9865
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # RUF027 no longer has false negatives with string literals inside of method calls
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-06 21:12_
+_@snowsignal_
 
 Fixes #9857.
 

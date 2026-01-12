@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-22T11:15:36Z
 updated_at: 2023-05-22T12:20:50Z
 url: https://github.com/clap-rs/clap/issues/4932
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Confused about how to get `--help` to show `enum` variants with `clap` v4 (Doc issue?)
 
 ---
 
-_Issue opened by @U007D on 2023-05-22 11:15_
+_@U007D_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/4931
 

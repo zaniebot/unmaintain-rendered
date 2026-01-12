@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-06T15:44:57Z
 updated_at: 2026-01-09T03:06:35Z
 url: https://github.com/astral-sh/ty/issues/1313
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # add a way to panic without the "this is a bug" message
 
 ---
 
-_Issue opened by @carljm on 2025-10-06 15:44_
+_@carljm_
 
 We have some user-triggerable cases that we just don't want to support at all (e.g. a custom typeshed without `object`), and want to just fail with an error. Currently we do this by panicking, but this emits an error message indicating that there's a bug in ty, which isn't the case here. We should have another way to "fatal error" that doesn't emit the "this is a bug in ty, please report it" message.
 

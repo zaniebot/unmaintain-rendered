@@ -12,14 +12,14 @@ head: charlie/isort-comments
 created_at: 2022-11-15T05:09:01Z
 updated_at: 2022-11-16T03:02:53Z
 url: https://github.com/astral-sh/ruff/pull/749
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Preserve comments when sorting imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 05:09_
+_@charliermarsh_
 
 It's tough to come up with a strategy that does the "right" thing in all cases (in part, because it's hard to even define the "right" output in every case), but this PR preserves _all_ comments, is stable across re-runs, and tries to do sensible things when merging across imports.
 

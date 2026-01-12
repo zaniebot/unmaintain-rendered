@@ -13,14 +13,14 @@ head: charlie/plat
 created_at: 2025-12-13T02:58:50Z
 updated_at: 2025-12-14T21:55:56Z
 url: https://github.com/astral-sh/uv/pull/17118
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Avoid allowing package-versions with no wheels in supported environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 02:58_
+_@charliermarsh_
 
 ## Summary
 

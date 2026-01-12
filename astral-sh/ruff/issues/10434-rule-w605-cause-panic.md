@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-17T11:49:33Z
 updated_at: 2024-03-19T18:46:36Z
 url: https://github.com/astral-sh/ruff/issues/10434
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule W605 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-03-17 11:49_
+_@qarmin_
 
 ruff 0.3.3
  (latest changes from main branch)

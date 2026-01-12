@@ -13,14 +13,14 @@ head: alex/filter-ffff
 created_at: 2026-01-03T13:29:40Z
 updated_at: 2026-01-03T13:39:38Z
 url: https://github.com/astral-sh/ruff/pull/22355
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Does this make diagnostics go away on prefect?
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 13:29_
+_@AlexWaygood_
 
 (Ignore this, I'm just debugging)
 

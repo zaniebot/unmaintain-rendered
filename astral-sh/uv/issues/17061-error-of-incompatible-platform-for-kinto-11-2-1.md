@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T07:26:32Z
 updated_at: 2025-12-11T15:19:33Z
 url: https://github.com/astral-sh/uv/issues/17061
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Error of incompatible platform for `kinto-11.2.1-cp3-none-any.whl` package
 
 ---
 
-_Issue opened by @mjamroz on 2025-12-10 07:26_
+_@mjamroz_
 
 ### Summary
 

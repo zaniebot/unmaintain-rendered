@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T16:33:48Z
 updated_at: 2024-09-17T13:28:41Z
 url: https://github.com/astral-sh/uv/issues/7170
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Can not install an earlier futures version with uv
 
 ---
 
-_Issue opened by @selimt on 2024-09-07 16:33_
+_@selimt_
 
 Installing a package that has the "futures" package dependency results in the following error:
 ```

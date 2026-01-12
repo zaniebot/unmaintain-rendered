@@ -13,14 +13,14 @@ head: charlie/no-return
 created_at: 2023-12-20T04:50:15Z
 updated_at: 2023-12-22T06:57:18Z
 url: https://github.com/astral-sh/ruff/pull/9206
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add support for `NoReturn` in auto-return-typing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 04:50_
+_@charliermarsh_
 
 ## Summary
 

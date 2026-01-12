@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T19:34:34Z
 updated_at: 2026-01-03T13:12:59Z
 url: https://github.com/astral-sh/ty/issues/2191
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # narrow tagged `TypedDict` unions with `not in`
 
 ---
 
-_Issue opened by @oconnor663 on 2025-12-23 19:34_
+_@oconnor663_
 
 Related to this TODO: https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/typed_dict.md?plain=1#L2139
 

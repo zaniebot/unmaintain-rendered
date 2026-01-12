@@ -14,14 +14,14 @@ head: alex/document-false-positives
 created_at: 2025-12-19T18:31:31Z
 updated_at: 2025-12-19T18:45:20Z
 url: https://github.com/astral-sh/ruff/pull/22095
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Document that several rules are disabled by default because of the number of false positives they produce
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 18:31_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: list-plus-to-splat
 created_at: 2023-01-18T14:24:50Z
 updated_at: 2023-01-19T22:47:17Z
 url: https://github.com/astral-sh/ruff/pull/1957
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add RUF005 "unpack instead of concatenating" check
 
 ---
 
-_Pull request opened by @akx on 2023-01-18 14:24_
+_@akx_
 
 This PR adds a new check that turns expressions such as `[1, 2, 3] + foo` into `[1, 2, 3, *foo]`, since the latter is easier to read and faster:
 

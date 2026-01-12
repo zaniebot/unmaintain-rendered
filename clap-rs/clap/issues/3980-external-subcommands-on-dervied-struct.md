@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-07-23T15:39:34Z
 updated_at: 2022-09-28T16:16:33Z
 url: https://github.com/clap-rs/clap/issues/3980
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # External Subcommands on Dervied Struct
 
 ---
 
-_Issue opened by @Tony-Goat on 2022-07-23 15:39_
+_@Tony-Goat_
 
 Howdy,
 

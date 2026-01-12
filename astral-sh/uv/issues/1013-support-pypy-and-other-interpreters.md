@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-19T20:04:45Z
 updated_at: 2024-01-22T14:22:29Z
 url: https://github.com/astral-sh/uv/issues/1013
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Support pypy and other interpreters
 
 ---
 
-_Issue opened by @konstin on 2024-01-19 20:04_
+_@konstin_
 
 This requires conditionally switch the `cp` prefixes in the wheel tags for the appropriate pypy or other prefixes.
 

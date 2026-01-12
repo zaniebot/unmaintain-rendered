@@ -13,14 +13,14 @@ head: charlie/mie
 created_at: 2024-02-11T02:46:07Z
 updated_at: 2024-02-12T04:23:28Z
 url: https://github.com/astral-sh/uv/pull/1272
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Upgrade to miette v6.0.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-11 02:46_
+_@charliermarsh_
 
 _No description provided._
 

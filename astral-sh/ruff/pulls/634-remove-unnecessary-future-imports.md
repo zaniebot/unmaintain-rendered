@@ -12,14 +12,14 @@ head: rm-future-imports
 created_at: 2022-11-07T03:45:17Z
 updated_at: 2022-11-08T03:26:57Z
 url: https://github.com/astral-sh/ruff/pull/634
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # remove unnecessary __future__ imports
 
 ---
 
-_Pull request opened by @chammika-become on 2022-11-07 03:45_
+_@chammika-become_
 
 This PR addresses Issue #312
 - Only perform checks

@@ -13,14 +13,14 @@ head: cjm/bumpsalsa2
 created_at: 2025-04-03T14:43:11Z
 updated_at: 2025-04-03T16:07:40Z
 url: https://github.com/astral-sh/ruff/pull/17179
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] update to latest Salsa with fixpoint caching fix
 
 ---
 
-_Pull request opened by @carljm on 2025-04-03 14:43_
+_@carljm_
 
 With this PR, we no longer "hang" (not actually a hang, just an explosion in execution time) when checking pylint.
 

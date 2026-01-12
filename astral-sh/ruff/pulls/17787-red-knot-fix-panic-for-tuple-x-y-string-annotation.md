@@ -13,14 +13,14 @@ head: david/fix-17775
 created_at: 2025-05-02T07:22:08Z
 updated_at: 2025-05-02T11:28:43Z
 url: https://github.com/astral-sh/ruff/pull/17787
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Fix panic for `tuple[x[y]]` string annotation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-02 07:22_
+_@sharkdp_
 
 ## Summary
 

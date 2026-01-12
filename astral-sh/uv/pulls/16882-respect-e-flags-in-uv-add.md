@@ -13,14 +13,14 @@ head: charlie/flag
 created_at: 2025-11-28T14:28:25Z
 updated_at: 2025-11-28T15:03:07Z
 url: https://github.com/astral-sh/uv/pull/16882
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Respect `-e` flags in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 14:28_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/magic
 created_at: 2023-01-19T01:42:49Z
 updated_at: 2023-01-19T01:44:25Z
 url: https://github.com/astral-sh/ruff/pull/1987
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Enable suppression of magic values by type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-19 01:42_
+_@charliermarsh_
 
 Closes #1949.
 

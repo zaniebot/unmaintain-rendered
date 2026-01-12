@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-05T18:17:55Z
 updated_at: 2024-04-05T18:29:55Z
 url: https://github.com/astral-sh/ruff/issues/10792
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # I001 doesn't sort values as expected.
 
 ---
 
-_Issue opened by @emmceemoore on 2024-04-05 18:17_
+_@emmceemoore_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T18:26:20Z
 updated_at: 2023-04-20T13:53:26Z
 url: https://github.com/astral-sh/ruff/issues/3546
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature: rewrite dict.get(key, None) as dict.get(key)
 
 ---
 
-_Issue opened by @janosh on 2023-03-15 18:26_
+_@janosh_
 
 This is not in [`flake8-simplify`](https://github.com/MartinThoma/flake8-simplify) AFAIK but would prob best fit in that rule class.
 

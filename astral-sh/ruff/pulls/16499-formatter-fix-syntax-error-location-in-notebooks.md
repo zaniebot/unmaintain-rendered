@@ -14,14 +14,14 @@ head: micha/fix-formatter-panic-syntax-error
 created_at: 2025-03-04T15:05:30Z
 updated_at: 2025-03-04T17:00:34Z
 url: https://github.com/astral-sh/ruff/pull/16499
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Formatter: Fix syntax error location in notebooks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-04 15:05_
+_@MichaReiser_
 
 ## Summary
 

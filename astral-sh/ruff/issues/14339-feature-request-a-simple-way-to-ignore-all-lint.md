@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T15:42:29Z
 updated_at: 2024-11-14T15:50:30Z
 url: https://github.com/astral-sh/ruff/issues/14339
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: A simple way to `ignore` all lint rules that conflict with the formatter
 
 ---
 
-_Issue opened by @zeevro on 2024-11-14 15:42_
+_@zeevro_
 
 Would be nice to not have to add all 14 (or 15 if you include `E501`) of the formatter-conflicting rules individually to the `ignore` list. Having them individually stated also means I have to check in the docs that the list of conflicting rules hasn't changed when I update Ruff. Could be a special keyword in the `ignore` list or maybe something like `ignore-formatter-conflicts` in the `lint` section.
 

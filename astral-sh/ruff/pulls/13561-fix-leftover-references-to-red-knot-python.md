@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-30T02:21:48Z
 updated_at: 2024-10-18T04:07:18Z
 url: https://github.com/astral-sh/ruff/pull/13561
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix leftover references to `red_knot_python_semantic/vendor/`
 
 ---
 
-_Pull request opened by @pilleye on 2024-09-30 02:21_
+_@pilleye_
 
 ## Summary
 

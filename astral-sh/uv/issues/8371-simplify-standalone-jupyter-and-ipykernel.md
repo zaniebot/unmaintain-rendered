@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-19T20:23:32Z
 updated_at: 2024-10-27T19:44:18Z
 url: https://github.com/astral-sh/uv/issues/8371
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Simplify standalone Jupyter and ipykernel environments setup: nb_conda_kernels but for uv
 
 ---
 
-_Issue opened by @rbavery on 2024-10-19 20:23_
+_@rbavery_
 
 Thank you for the detailed docs on using uv with jupyter. I read through them and was wondering if the setup process could be simplified for what I think is the most common use of jupyter as a standalone tool.
 

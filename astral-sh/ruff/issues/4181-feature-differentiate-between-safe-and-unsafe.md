@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-02T09:07:02Z
 updated_at: 2024-01-10T17:07:17Z
 url: https://github.com/astral-sh/ruff/issues/4181
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [feature] Differentiate between safe and unsafe fixes
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:07_
+_@MichaReiser_
 
 This task tracks the work implementing safe and unsafe fixes as described in #1997. 
 

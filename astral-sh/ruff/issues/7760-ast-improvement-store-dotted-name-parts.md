@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-02T09:50:01Z
 updated_at: 2023-10-27T02:54:44Z
 url: https://github.com/astral-sh/ruff/issues/7760
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # AST Improvement: Store dotted name parts
 
 ---
 
-_Issue opened by @konstin on 2023-10-02 09:50_
+_@konstin_
 
 Currently, the path of imports is not formatted, e.g.
 ```python

@@ -13,14 +13,14 @@ head: fix-incorrect-venv-check
 created_at: 2025-05-16T22:03:40Z
 updated_at: 2025-06-28T23:12:31Z
 url: https://github.com/astral-sh/ruff/pull/18144
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Remove pyvenv.cfg validation check for lines with multiple `=`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-16 22:03_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

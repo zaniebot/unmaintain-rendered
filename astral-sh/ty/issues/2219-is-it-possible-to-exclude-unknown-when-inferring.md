@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-25T11:33:40Z
 updated_at: 2025-12-26T17:43:31Z
 url: https://github.com/astral-sh/ty/issues/2219
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Is it possible to exclude unknown when inferring a signature of a variable?
 
 ---
 
-_Issue opened by @AndBoyS on 2025-12-25 11:33_
+_@AndBoyS_
 
 ### Question
 

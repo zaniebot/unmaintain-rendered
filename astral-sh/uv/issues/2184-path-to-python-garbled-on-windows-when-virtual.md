@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-04T22:27:13Z
 updated_at: 2024-03-13T10:15:11Z
 url: https://github.com/astral-sh/uv/issues/2184
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Path to python garbled on Windows when virtual environment activated
 
 ---
 
-_Issue opened by @daniel-bartley on 2024-03-04 22:27_
+_@daniel-bartley_
 
 Path to python gets messed up somewhere. I installed python310 with chocolatey.
 

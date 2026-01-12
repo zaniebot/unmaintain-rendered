@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T12:08:24Z
 updated_at: 2025-07-18T01:27:55Z
 url: https://github.com/astral-sh/uv/issues/14564
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Allow `config-settings` on a per-package basis
 
 ---
 
-_Issue opened by @MrNaif2018 on 2025-07-11 12:08_
+_@MrNaif2018_
 
 ### Summary
 

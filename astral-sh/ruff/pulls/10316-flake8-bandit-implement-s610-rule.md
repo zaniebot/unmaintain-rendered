@@ -14,14 +14,14 @@ head: feat/add-flake8-bandit-S610
 created_at: 2024-03-09T18:14:49Z
 updated_at: 2024-03-12T00:23:00Z
 url: https://github.com/astral-sh/ruff/pull/10316
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`flake8-bandit`]: Implement `S610` rule
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-03-09 18:14_
+_@mkniewallner_
 
 Part of https://github.com/astral-sh/ruff/issues/1646.
 

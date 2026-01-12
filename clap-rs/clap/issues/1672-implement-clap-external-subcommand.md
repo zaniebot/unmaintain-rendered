@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-02-04T16:19:10Z
 updated_at: 2020-05-06T22:01:16Z
 url: https://github.com/clap-rs/clap/issues/1672
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Implement `#[clap(external_subcommand)]`
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-04 16:19_
+_@CreepySkeleton_
 
 I'm not exporting it directly from structopt because it doesn't seem to work, but I'll get to it later.
 

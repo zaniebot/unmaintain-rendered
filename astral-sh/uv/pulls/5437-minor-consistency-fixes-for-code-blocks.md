@@ -14,14 +14,14 @@ head: main
 created_at: 2024-07-25T08:03:42Z
 updated_at: 2024-08-23T15:47:41Z
 url: https://github.com/astral-sh/uv/pull/5437
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Minor consistency fixes for code blocks
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-07-25 08:03_
+_@InSyncWithFoo_
 
 ...as well as some typo fixes. I verified the changes manually.
 

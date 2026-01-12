@@ -13,14 +13,14 @@ head: reduce-normalization-allocation
 created_at: 2024-06-23T22:14:32Z
 updated_at: 2024-06-24T12:08:02Z
 url: https://github.com/astral-sh/ruff/pull/11992
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Reduce allocations when normalizing `VendoredPath`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-23 22:14_
+_@AlexWaygood_
 
 ## Summary
 

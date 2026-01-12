@@ -13,14 +13,14 @@ head: charlie/tuple-narrow
 created_at: 2025-12-21T14:51:24Z
 updated_at: 2025-12-22T20:44:50Z
 url: https://github.com/astral-sh/ruff/pull/22129
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Exclude parameterized tuple types from narrowing when disjoint from comparison values
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-21 14:51_
+_@charliermarsh_
 
 ## Summary
 

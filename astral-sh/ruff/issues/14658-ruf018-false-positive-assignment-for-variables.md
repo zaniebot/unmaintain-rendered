@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T15:52:20Z
 updated_at: 2024-11-29T13:37:01Z
 url: https://github.com/astral-sh/ruff/issues/14658
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `RUF018` false positive. Assignment for variables only used in other asserts
 
 ---
 
-_Issue opened by @Skylion007 on 2024-11-28 15:52_
+_@Skylion007_
 
 `RUF018` flags any asserts which assigns values in them, which is sensible. However, there are two cases where value assignment is actually fine, and even makes the code more readable. This rule is to prevent code breakages when asserts are disabled. I ran it on the sympy code and found two use cases that make sense.
 

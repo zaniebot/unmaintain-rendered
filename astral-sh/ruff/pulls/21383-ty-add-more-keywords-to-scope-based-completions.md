@@ -14,14 +14,14 @@ head: ag/more-keyword-completions
 created_at: 2025-11-11T15:52:53Z
 updated_at: 2025-11-11T22:20:57Z
 url: https://github.com/astral-sh/ruff/pull/21383
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Add more keywords to scope-based completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-11-11 15:52_
+_@BurntSushi_
 
 This PR adds more keyword completions when asking for scoped-based
 completions. This makes things like `pas<CURSOR>` return `pass`, among

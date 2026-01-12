@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T12:21:32Z
 updated_at: 2023-02-15T20:19:05Z
 url: https://github.com/astral-sh/ruff/issues/2809
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # New rule: warning accidental garbage collection of `asyncio.create_task`
 
 ---
 
-_Issue opened by @Glyphack on 2023-02-12 12:21_
+_@Glyphack_
 
 I wanted to purpose a new lint rule. The `asyncio.create_task` function has a caveat, which is when you create a task in order to make sure it finishes you need to take a reference to it.
 ![image](https://textual.textualize.io/blog/images/async-create-task.jpeg)

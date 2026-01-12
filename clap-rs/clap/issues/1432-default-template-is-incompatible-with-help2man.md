@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-03-18T22:41:12Z
 updated_at: 2021-02-27T17:19:31Z
 url: https://github.com/clap-rs/clap/issues/1432
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Default template is incompatible with help2man
 
 ---
 
-_Issue opened by @ssokolow on 2019-03-18 22:41_
+_@ssokolow_
 
 ### Rust Version
 

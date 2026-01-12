@@ -12,14 +12,14 @@ head: charlie/errors
 created_at: 2022-11-23T00:07:20Z
 updated_at: 2022-11-23T00:21:37Z
 url: https://github.com/astral-sh/ruff/pull/881
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Log errors in add_noqa and autoformat calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-23 00:07_
+_@charliermarsh_
 
 _No description provided._
 

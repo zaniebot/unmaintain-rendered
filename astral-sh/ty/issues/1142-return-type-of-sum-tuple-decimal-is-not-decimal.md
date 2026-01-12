@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-07T16:43:04Z
 updated_at: 2026-01-09T02:44:46Z
 url: https://github.com/astral-sh/ty/issues/1142
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Return type of sum(tuple[Decimal, ...]) is not Decimal
 
 ---
 
-_Issue opened by @JoanPuig on 2025-09-07 16:43_
+_@JoanPuig_
 
 ### Summary
 

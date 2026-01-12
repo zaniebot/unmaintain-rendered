@@ -14,14 +14,14 @@ head: fix-mdtest-revealed-line
 created_at: 2025-11-12T23:14:48Z
 updated_at: 2025-11-16T08:42:39Z
 url: https://github.com/astral-sh/ruff/pull/21416
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Fix panic for unmatched trailing revealed assertions in mdtests
 
 ---
 
-_Pull request opened by @Hugo-Polloli on 2025-11-12 23:14_
+_@Hugo-Polloli_
 
 ## Summary
 

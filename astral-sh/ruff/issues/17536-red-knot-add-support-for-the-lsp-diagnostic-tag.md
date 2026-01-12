@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-22T05:53:19Z
 updated_at: 2025-05-03T18:35:04Z
 url: https://github.com/astral-sh/ruff/issues/17536
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Add support for the LSP diagnostic tag
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-22 05:53_
+_@MichaReiser_
 
 The LSP protocol defines an optional `tag` field on `Diagnostic` that stores a list of `DiagnosticTag`:
 

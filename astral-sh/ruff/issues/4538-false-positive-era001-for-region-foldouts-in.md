@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-20T04:35:43Z
 updated_at: 2023-05-20T16:45:51Z
 url: https://github.com/astral-sh/ruff/issues/4538
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive ERA001 for #region foldouts in PyCharm
 
 ---
 
-_Issue opened by @bshishov on 2023-05-20 04:35_
+_@bshishov_
 
 Hello, 
 

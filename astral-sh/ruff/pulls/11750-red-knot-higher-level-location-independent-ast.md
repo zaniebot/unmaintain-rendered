@@ -12,14 +12,14 @@ head: red-knot-hir
 created_at: 2024-06-05T11:42:40Z
 updated_at: 2024-08-12T07:53:09Z
 url: https://github.com/astral-sh/ruff/pull/11750
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # red-knot: Higher level, location independent AST
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-05 11:42_
+_@MichaReiser_
 
 ## Summary
 

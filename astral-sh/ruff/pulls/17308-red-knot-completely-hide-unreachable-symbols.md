@@ -13,14 +13,14 @@ head: david/hide-unreachable-symbols-completely
 created_at: 2025-04-09T10:34:33Z
 updated_at: 2025-04-09T19:38:15Z
 url: https://github.com/astral-sh/ruff/pull/17308
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Completely hide unreachable symbols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-09 10:34_
+_@sharkdp_
 
 ## Summary
 

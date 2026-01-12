@@ -14,14 +14,14 @@ head: charlie/functools
 created_at: 2025-12-24T19:24:22Z
 updated_at: 2026-01-06T03:47:06Z
 url: https://github.com/astral-sh/ruff/pull/22181
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add support for `@total_ordering`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-24 19:24_
+_@charliermarsh_
 
 ## Summary
 

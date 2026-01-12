@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-24T21:10:28Z
 updated_at: 2023-07-25T15:55:34Z
 url: https://github.com/astral-sh/ruff/issues/6043
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # isort clash with ruff I001 when module has digit
 
 ---
 
-_Issue opened by @mmarras on 2023-07-24 21:10_
+_@mmarras_
 
 isort sorts imports in a way that induces ruff to flag `I001`, aka ruff and isort want to sort the imports in different ways (I suspect when module has a number in name). 
 

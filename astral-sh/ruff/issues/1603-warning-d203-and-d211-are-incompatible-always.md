@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-03T16:27:35Z
 updated_at: 2023-01-25T23:21:26Z
 url: https://github.com/astral-sh/ruff/issues/1603
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Warning `D203` and `D211` are incompatible always raised
 
 ---
 
-_Issue opened by @ManonMarchand on 2023-01-03 16:27_
+_@ManonMarchand_
 
 Here is a minimal non working example for the issue discussed [here](https://github.com/charliermarsh/ruff/pull/1576#issuecomment-1369937183 "https://github.com/charliermarsh/ruff/pull/1576#issuecomment-1369937183"). 
 

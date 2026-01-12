@@ -13,14 +13,14 @@ head: zb/docs-fastapi
 created_at: 2024-08-28T14:27:54Z
 updated_at: 2024-08-28T15:33:40Z
 url: https://github.com/astral-sh/uv/pull/6751
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Remove build system from FastAPI guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 14:27_
+_@zanieb_
 
 Matches https://github.com/astral-sh/uv-fastapi-example/pull/2
 

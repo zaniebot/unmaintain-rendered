@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-31T02:31:48Z
 updated_at: 2026-01-10T10:17:07Z
 url: https://github.com/astral-sh/ty/issues/2290
-synced_at: 2026-01-10T11:36:40Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Go to definition cannot solve relative import in third-party files when using a virtual env location other than `.venv`
 
 ---
 
-_Issue opened by @winlaic on 2025-12-31 02:31_
+_@winlaic_
 
 When I ctrl click into the source of some installed packages, it turns out that if there are relative import in the source code, `ty` could not infer where the definition of the symbol. Here is a example of the `transformers` library:
 

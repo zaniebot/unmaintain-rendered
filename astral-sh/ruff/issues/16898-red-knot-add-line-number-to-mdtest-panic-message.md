@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-21T14:12:11Z
 updated_at: 2025-03-22T12:05:32Z
 url: https://github.com/astral-sh/ruff/issues/16898
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Add line number to mdtest panic message about language tag mismatch
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-21 14:12_
+_@AlexWaygood_
 
 I just hit this panic message while writing an mdtest:
 

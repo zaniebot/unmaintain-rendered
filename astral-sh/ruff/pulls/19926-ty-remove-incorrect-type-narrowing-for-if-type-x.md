@@ -14,14 +14,14 @@ head: alex/type-narrow-genericalias
 created_at: 2025-08-15T08:31:40Z
 updated_at: 2025-08-15T16:52:16Z
 url: https://github.com/astral-sh/ruff/pull/19926
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Remove incorrect type narrowing for `if type(x) is C[int]`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-15 08:31_
+_@AlexWaygood_
 
 ## Summary
 

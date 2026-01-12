@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T21:52:42Z
 updated_at: 2024-09-15T11:24:46Z
 url: https://github.com/astral-sh/ruff/issues/13297
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Feature: Check for unintended non-printing characters
 
 ---
 
-_Issue opened by @jaraco on 2024-09-09 21:52_
+_@jaraco_
 
 In https://github.com/jaraco/zipp/pull/125, I learned that users can, intentionally or not, sneak non-printable characters into the code through otherwise innocuous pull requests. This particular one was caught by `mach lint` in a downstream system. It would be nice if ruff could catch such changes. I'm not confident it's possible, but I wanted to flag it as a feature for consideration.
 

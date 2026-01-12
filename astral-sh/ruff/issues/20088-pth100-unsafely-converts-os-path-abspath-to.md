@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-25T19:08:56Z
 updated_at: 2025-08-26T18:59:14Z
 url: https://github.com/astral-sh/ruff/issues/20088
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PTH100 unsafely converts `os.path.abspath` to `pathlib.Path.resolve`
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-25 19:08_
+_@dscorbett_
 
 ### Summary
 

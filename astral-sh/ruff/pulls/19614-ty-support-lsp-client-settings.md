@@ -15,14 +15,14 @@ head: dhruv/client-settings
 created_at: 2025-07-29T09:13:37Z
 updated_at: 2025-08-06T13:07:23Z
 url: https://github.com/astral-sh/ruff/pull/19614
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Support LSP client settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-29 09:13_
+_@dhruvmanila_
 
 ## Summary
 

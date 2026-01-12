@@ -12,14 +12,14 @@ head: sim-114-fix-typo
 created_at: 2023-02-12T23:15:32Z
 updated_at: 2023-02-12T23:35:29Z
 url: https://github.com/astral-sh/ruff/pull/2833
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # docs(SIM114): fix typo in python code
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-12 23:15_
+_@spaceone_
 
 _No description provided._
 

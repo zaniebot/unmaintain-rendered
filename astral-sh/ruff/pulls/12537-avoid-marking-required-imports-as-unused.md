@@ -13,14 +13,14 @@ head: charlie/required-import-remove
 created_at: 2024-07-26T17:15:43Z
 updated_at: 2024-07-26T18:23:44Z
 url: https://github.com/astral-sh/ruff/pull/12537
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Avoid marking required imports as unused
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 17:15_
+_@charliermarsh_
 
 ## Summary
 

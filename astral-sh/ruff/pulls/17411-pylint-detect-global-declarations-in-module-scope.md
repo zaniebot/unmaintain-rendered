@@ -13,14 +13,14 @@ head: brent/ple0118-in-module-scope
 created_at: 2025-04-15T16:43:06Z
 updated_at: 2025-04-25T12:37:18Z
 url: https://github.com/astral-sh/ruff/pull/17411
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pylint`] Detect `global` declarations in module scope (`PLE0118`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-15 16:43_
+_@ntBre_
 
 Summary
 --

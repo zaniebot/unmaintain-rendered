@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T09:26:34Z
 updated_at: 2024-02-23T00:53:46Z
 url: https://github.com/astral-sh/uv/issues/1460
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv pip install -C`/`--config-settings`
 
 ---
 
-_Issue opened by @nschloe on 2024-02-16 09:26_
+_@nschloe_
 
 `pip install -C` (or `--config-settings`) allows one to pass config settings to the build backend. From the pip `--help`:
 

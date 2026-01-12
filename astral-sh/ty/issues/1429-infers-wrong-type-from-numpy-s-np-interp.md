@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T04:30:41Z
 updated_at: 2025-12-20T09:21:51Z
 url: https://github.com/astral-sh/ty/issues/1429
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Infers wrong type from numpy's `np.interp`
 
 ---
 
-_Issue opened by @cooperoptigrid on 2025-10-24 04:30_
+_@cooperoptigrid_
 
 `ty`  incorrectly infer `numpy.interp`’s return type as a scalar `float64` instead of an `NDArray[float64]`
 

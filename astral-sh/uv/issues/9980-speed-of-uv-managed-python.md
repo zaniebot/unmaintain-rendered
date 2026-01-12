@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T19:08:06Z
 updated_at: 2025-01-06T20:44:40Z
 url: https://github.com/astral-sh/uv/issues/9980
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Speed of uv-managed python
 
 ---
 
-_Issue opened by @arogozhnikov on 2024-12-17 19:08_
+_@arogozhnikov_
 
 Thx again for the tool. I think having uv-managed python is very convenient, and I'd be happy to have this level of control which is less independent on OS, and more straightforward than using deadsnakes.
 

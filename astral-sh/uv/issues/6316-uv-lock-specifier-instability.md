@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T10:34:58Z
 updated_at: 2024-08-21T20:24:13Z
 url: https://github.com/astral-sh/uv/issues/6316
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv lock specifier instability?
 
 ---
 
-_Issue opened by @bluss on 2024-08-21 10:34_
+_@bluss_
 
 In some cases I see the following diff in my project's lock file. The order of the specifiers is flipping back and forth. (Both sides of the diff are using uv 0.3.0).
 

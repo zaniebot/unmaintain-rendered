@@ -14,14 +14,14 @@ head: micha/handle-configuration-errors
 created_at: 2025-07-10T13:43:59Z
 updated_at: 2025-07-14T10:27:54Z
 url: https://github.com/astral-sh/ruff/pull/19262
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Handle configuration errors in LSP more gracefully
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-10 13:43_
+_@MichaReiser_
 
 ## Summary
 

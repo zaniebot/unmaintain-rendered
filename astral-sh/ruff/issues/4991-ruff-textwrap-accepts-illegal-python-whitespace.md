@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T21:23:41Z
 updated_at: 2023-06-10T02:17:53Z
 url: https://github.com/astral-sh/ruff/issues/4991
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # ruff_textwrap accepts illegal Python whitespace
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-09 21:23_
+_@addisoncrump_
 
 Python does not consider `U+00a0` to be whitespace, but this character *is* whitespace according to Rust's `trim_start` (which uses Unicode character classes): https://doc.rust-lang.org/std/string/struct.String.html#method.trim_start
 

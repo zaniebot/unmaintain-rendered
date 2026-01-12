@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T10:30:01Z
 updated_at: 2025-09-14T13:57:55Z
 url: https://github.com/astral-sh/uv/issues/6506
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add support for configuring python install dir with `UV_PYTHON_INSTALL_DIR` on `uv.toml`
 
 ---
 
-_Issue opened by @rainzee on 2024-08-23 10:30_
+_@rainzee_
 
 Please add this persistence configuration item instead of setting it in the environment variable
 

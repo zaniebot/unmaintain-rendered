@@ -12,14 +12,14 @@ head: renovate/stable-1.x
 created_at: 2025-06-26T19:38:17Z
 updated_at: 2025-06-26T19:45:28Z
 url: https://github.com/clap-rs/clap/pull/6048
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Update Rust Stable to v1.88
 
 ---
 
-_Pull request opened by @renovate on 2025-06-26 19:38_
+_@renovate_
 
 This PR contains the following updates:
 

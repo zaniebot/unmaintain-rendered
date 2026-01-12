@@ -14,14 +14,14 @@ head: brent/notebook-diff
 created_at: 2025-08-21T23:39:49Z
 updated_at: 2025-08-25T13:20:43Z
 url: https://github.com/astral-sh/ruff/pull/20036
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # Improve diff rendering for notebooks
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-21 23:39_
+_@ntBre_
 
 ## Summary
 

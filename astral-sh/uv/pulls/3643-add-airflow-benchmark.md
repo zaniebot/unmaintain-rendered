@@ -15,14 +15,14 @@ head: airflow-bench
 created_at: 2024-05-17T16:36:38Z
 updated_at: 2024-05-23T17:25:55Z
 url: https://github.com/astral-sh/uv/pull/3643
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add airflow benchmark
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-17 16:36_
+_@ibraheemdev_
 
 ## Summary
 

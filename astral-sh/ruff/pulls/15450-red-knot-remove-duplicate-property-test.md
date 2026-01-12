@@ -13,14 +13,14 @@ head: red-knot-remove-same-property-tests
 created_at: 2025-01-13T02:53:24Z
 updated_at: 2025-01-13T10:45:49Z
 url: https://github.com/astral-sh/ruff/pull/15450
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Remove duplicate property test
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-01-13 02:53_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: fix-1688
 created_at: 2025-12-01T03:20:24Z
 updated_at: 2025-12-05T02:07:42Z
 url: https://github.com/astral-sh/ruff/pull/21718
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] do nothing with `store_expression_type` if `inner_expression_inference_state` is `Get`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-01 03:20_
+_@mtshiba_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: alex/except-flow
 created_at: 2024-09-12T09:38:15Z
 updated_at: 2024-10-04T18:19:34Z
 url: https://github.com/astral-sh/ruff/pull/13338
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Add control flow for `try`/`except` blocks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-12 09:38_
+_@AlexWaygood_
 
 ## Summary
 

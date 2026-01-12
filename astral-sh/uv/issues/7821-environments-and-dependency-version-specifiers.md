@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T22:30:55Z
 updated_at: 2024-10-01T00:52:58Z
 url: https://github.com/astral-sh/uv/issues/7821
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Environments and dependency version specifiers don't work with workspaces
 
 ---
 
-_Issue opened by @chadrik on 2024-09-30 22:30_
+_@chadrik_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

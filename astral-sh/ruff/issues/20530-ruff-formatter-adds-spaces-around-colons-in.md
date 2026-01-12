@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T08:04:05Z
 updated_at: 2025-11-06T13:28:56Z
 url: https://github.com/astral-sh/ruff/issues/20530
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff formatter adds spaces around colons in complex slice expressions, violating PEP 8
 
 ---
 
-_Issue opened by @ten24bytes on 2025-09-23 08:04_
+_@ten24bytes_
 
 ### Summary
 

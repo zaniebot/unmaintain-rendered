@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T18:11:15Z
 updated_at: 2025-08-20T19:22:04Z
 url: https://github.com/astral-sh/ruff/issues/19561
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP010 should not report future features as unnecessary if they are used
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-25 18:11_
+_@dscorbett_
 
 ### Summary
 

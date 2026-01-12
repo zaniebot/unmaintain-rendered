@@ -13,14 +13,14 @@ head: zb/lc
 created_at: 2024-02-15T19:35:35Z
 updated_at: 2024-02-15T19:58:00Z
 url: https://github.com/astral-sh/uv/pull/1328
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Drop license badge for now; cached as UNKNOWN on CDNs
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 19:35_
+_@zanieb_
 
 We don't want to confuse people.
 

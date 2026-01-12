@@ -14,14 +14,14 @@ head: add-fix-for-PLR5501
 created_at: 2024-01-20T22:44:00Z
 updated_at: 2024-01-22T00:53:15Z
 url: https://github.com/astral-sh/ruff/pull/9594
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Add fix for `collapsible-else-if` (`PLR5501`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-20 22:44_
+_@diceroll123_
 
 ## Summary
 

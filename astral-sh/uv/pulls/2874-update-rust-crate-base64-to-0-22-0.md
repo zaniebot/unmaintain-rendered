@@ -13,14 +13,14 @@ head: renovate/base64-0.x
 created_at: 2024-04-08T02:18:28Z
 updated_at: 2024-04-08T03:02:36Z
 url: https://github.com/astral-sh/uv/pull/2874
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Update Rust crate base64 to 0.22.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 02:18_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -13,14 +13,14 @@ head: david/descriptor-protocol-merge-16268
 created_at: 2025-02-20T15:41:15Z
 updated_at: 2025-02-20T21:55:51Z
 url: https://github.com/astral-sh/ruff/pull/16279
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Method calls and the descriptor protocol + 16268
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-20 15:41_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

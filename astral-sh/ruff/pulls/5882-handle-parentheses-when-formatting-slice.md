@@ -12,14 +12,14 @@ head: Fix_slice_formatting_with_parentheses
 created_at: 2023-07-19T14:15:06Z
 updated_at: 2023-07-19T15:47:29Z
 url: https://github.com/astral-sh/ruff/pull/5882
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Handle parentheses when formatting slice expressions
 
 ---
 
-_Pull request opened by @konstin on 2023-07-19 14:15_
+_@konstin_
 
 **Summary** Fix the formatter crash with `x[(1) :: ]` and related code.
 

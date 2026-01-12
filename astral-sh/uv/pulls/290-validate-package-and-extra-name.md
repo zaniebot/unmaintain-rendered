@@ -12,14 +12,14 @@ head: validate-package-and-extra-name
 created_at: 2023-11-02T12:24:37Z
 updated_at: 2023-11-06T10:04:33Z
 url: https://github.com/astral-sh/uv/pull/290
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Validate package and extra name
 
 ---
 
-_Pull request opened by @konstin on 2023-11-02 12:24_
+_@konstin_
 
 `PackageName` and `ExtraName` can now only be constructed from valid names. They share the same rules, so i gave them the same implementation. Constructors are split between `new` (owned) and `from_str` (borrowed), with the owned version avoiding allocations.
 

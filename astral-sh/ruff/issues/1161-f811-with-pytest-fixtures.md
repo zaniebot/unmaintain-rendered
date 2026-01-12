@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-09T10:45:14Z
 updated_at: 2022-12-09T11:17:37Z
 url: https://github.com/astral-sh/ruff/issues/1161
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F811 with pytest fixtures
 
 ---
 
-_Issue opened by @jiwidi on 2022-12-09 10:45_
+_@jiwidi_
 
 Hi!
 

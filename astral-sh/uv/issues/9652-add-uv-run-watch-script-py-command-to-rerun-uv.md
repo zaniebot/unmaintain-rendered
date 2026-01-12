@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-05T01:00:28Z
 updated_at: 2025-06-04T13:01:55Z
 url: https://github.com/astral-sh/uv/issues/9652
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Add `uv run --watch script.py` command to rerun `uv run` on `.py` file changes
 
 ---
 
-_Issue opened by @nikivdev on 2024-12-05 01:00_
+_@nikivdev_
 
 Essentially [Bun watch mode](https://bun.sh/docs/runtime/hot) but with `uv`.
 

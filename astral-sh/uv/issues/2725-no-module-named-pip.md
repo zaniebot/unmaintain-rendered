@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-29T08:52:45Z
 updated_at: 2024-03-29T14:23:40Z
 url: https://github.com/astral-sh/uv/issues/2725
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # No module named 'pip'
 
 ---
 
-_Issue opened by @shenwpo on 2024-03-29 08:52_
+_@shenwpo_
 
 Error when installing certain dependencies in uv.
 

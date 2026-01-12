@@ -15,14 +15,14 @@ head: dhruv/move-server-capabilities
 created_at: 2025-08-07T04:24:38Z
 updated_at: 2025-08-07T04:28:23Z
 url: https://github.com/astral-sh/ruff/pull/19798
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Move server capabilities creation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-07 04:24_
+_@dhruvmanila_
 
 _No description provided._
 

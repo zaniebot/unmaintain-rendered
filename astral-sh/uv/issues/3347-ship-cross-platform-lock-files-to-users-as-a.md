@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T14:20:19Z
 updated_at: 2024-08-09T14:03:04Z
 url: https://github.com/astral-sh/uv/issues/3347
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # ship cross platform lock files to users as a preview feature
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 14:20_
+_@BurntSushi_
 
 This issue tracks progress toward shipping robust cross platform lock files in `uv`. This is not something that is planned to be added to the `uv pip` CLI, but rather, as part of the workspace-aware `uv`. (Which hasn't been built out yet.)
 

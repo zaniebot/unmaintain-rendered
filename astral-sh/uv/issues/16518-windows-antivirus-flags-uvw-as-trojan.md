@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-30T16:17:33Z
 updated_at: 2025-10-30T17:02:38Z
 url: https://github.com/astral-sh/uv/issues/16518
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Windows antivirus flags uvw as trojan
 
 ---
 
-_Issue opened by @samuel-deal-tisseo on 2025-10-30 16:17_
+_@samuel-deal-tisseo_
 
 # Description
 

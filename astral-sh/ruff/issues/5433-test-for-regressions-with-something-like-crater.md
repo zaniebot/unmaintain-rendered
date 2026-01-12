@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-29T05:29:36Z
 updated_at: 2023-06-29T08:18:52Z
 url: https://github.com/astral-sh/ruff/issues/5433
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Test for regressions with something like crater/mypy_primer
 
 ---
 
-_Issue opened by @qarmin on 2023-06-29 05:29_
+_@qarmin_
 
 Currently, regressions in new versions are automatically checked by running tests in CI.
 

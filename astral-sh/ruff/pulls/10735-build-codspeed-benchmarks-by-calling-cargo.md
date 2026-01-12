@@ -13,14 +13,14 @@ head: manual-codspeed-build
 created_at: 2024-04-02T12:19:59Z
 updated_at: 2024-04-02T12:59:35Z
 url: https://github.com/astral-sh/ruff/pull/10735
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Build codspeed benchmarks by calling cargo directly
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-02 12:19_
+_@MichaReiser_
 
 ## Summary
 

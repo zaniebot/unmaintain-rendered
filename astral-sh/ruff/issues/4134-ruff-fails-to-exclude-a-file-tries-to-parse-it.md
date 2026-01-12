@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-27T15:22:13Z
 updated_at: 2023-04-28T10:01:04Z
 url: https://github.com/astral-sh/ruff/issues/4134
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff fails to exclude a file, tries to parse it, and bails
 
 ---
 
-_Issue opened by @flying-sheep on 2023-04-27 15:22_
+_@flying-sheep_
 
 I have a git repository. Since it’s a cookiecutter template, it contains a directory called `{{cookiecutter.project_name}}`[sic]. I try to run Ruff on the other files in the repo like this:
 

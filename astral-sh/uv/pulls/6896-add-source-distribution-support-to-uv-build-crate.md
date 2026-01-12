@@ -13,14 +13,14 @@ head: charlie/sdist
 created_at: 2024-08-31T18:05:56Z
 updated_at: 2024-09-02T18:14:51Z
 url: https://github.com/astral-sh/uv/pull/6896
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Add source distribution support to `uv-build` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-31 18:05_
+_@charliermarsh_
 
 ## Summary
 

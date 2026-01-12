@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-29T01:54:17Z
 updated_at: 2024-10-29T13:51:01Z
 url: https://github.com/astral-sh/uv/issues/8652
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Create venv from script metadata
 
 ---
 
-_Issue opened by @satwell on 2024-10-29 01:54_
+_@satwell_
 
 Being able to `uv run` a script with PEP 723 metadata is really cool.
 

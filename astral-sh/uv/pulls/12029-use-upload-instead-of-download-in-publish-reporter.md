@@ -14,14 +14,14 @@ head: charlie/rep
 created_at: 2025-03-07T01:30:40Z
 updated_at: 2025-03-07T15:48:36Z
 url: https://github.com/astral-sh/uv/pull/12029
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Use 'Upload' instead of 'Download' in publish reporter
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-07 01:30_
+_@charliermarsh_
 
 ## Summary
 

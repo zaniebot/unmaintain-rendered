@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T09:19:13Z
 updated_at: 2024-10-13T14:02:59Z
 url: https://github.com/astral-sh/ruff/issues/13675
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Multiline f-strings and prefixing all with `f`
 
 ---
 
-_Issue opened by @PatrickJordanNutanix on 2024-10-08 09:19_
+_@PatrickJordanNutanix_
 
 We have soft rule in our code base that means we should prefix all multiline f-strings with an `f` even if no interpolation is happening on part of the string. For example, instead of doing this:
 

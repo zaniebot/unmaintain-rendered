@@ -13,14 +13,14 @@ head: short-circuit-more
 created_at: 2024-04-17T14:40:33Z
 updated_at: 2024-04-17T14:54:43Z
 url: https://github.com/astral-sh/ruff/pull/11001
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Optimise `SemanticModel::match_builtin_expr`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-17 14:40_
+_@AlexWaygood_
 
 Short-circuit more aggressively if `builtins` has not been imported
 

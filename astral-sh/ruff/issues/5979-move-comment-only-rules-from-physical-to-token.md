@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T13:50:23Z
 updated_at: 2023-07-26T22:42:38Z
 url: https://github.com/astral-sh/ruff/issues/5979
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Move comment-only rules from physical to token checker
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-22 13:50_
+_@charliermarsh_
 
 E.g., anything in the:
 

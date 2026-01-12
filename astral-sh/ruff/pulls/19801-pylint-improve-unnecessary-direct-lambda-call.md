@@ -13,14 +13,14 @@ head: fix(#19135)/PLC3002-causes-false-positive
 created_at: 2025-08-07T11:00:20Z
 updated_at: 2025-10-12T06:29:39Z
 url: https://github.com/astral-sh/ruff/pull/19801
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [`pylint`] Improve `unnecessary-direct-lambda-call` (`PLC3002`) to ha…
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-07 11:00_
+_@mikeleppane_
 
 ## Summary
 

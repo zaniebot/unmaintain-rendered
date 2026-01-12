@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-20T23:39:34Z
 updated_at: 2024-08-12T17:25:22Z
 url: https://github.com/clap-rs/clap/issues/5370
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # (clap_complete) Make `Shell` ValueEnum Parser also Accept $SHELL Output (Path Prefixed Shell Names) 
 
 ---
 
-_Issue opened by @ultrabear on 2024-02-20 23:39_
+_@ultrabear_
 
 ### Please complete the following tasks
 

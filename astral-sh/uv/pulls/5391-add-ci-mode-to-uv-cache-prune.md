@@ -14,14 +14,14 @@ head: charlie/extract
 created_at: 2024-07-24T01:52:42Z
 updated_at: 2024-07-24T19:35:30Z
 url: https://github.com/astral-sh/uv/pull/5391
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Add `--ci` mode to `uv cache prune`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 01:52_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T12:01:48Z
 updated_at: 2024-11-14T12:23:21Z
 url: https://github.com/astral-sh/ruff/issues/14336
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # C414 Misinterprets Type Annotations as Unnecessary Nesting
 
 ---
 
-_Issue opened by @laipz8200 on 2024-11-14 12:01_
+_@laipz8200_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

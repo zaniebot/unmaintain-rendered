@@ -13,14 +13,14 @@ head: konsti/build-backend-test-package
 created_at: 2024-11-13T16:53:47Z
 updated_at: 2024-11-14T19:15:33Z
 url: https://github.com/astral-sh/uv/pull/9091
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 #  Build backend: Add source tree -> source dist -> wheel tests
 
 ---
 
-_Pull request opened by @konstin on 2024-11-13 16:53_
+_@konstin_
 
 A first milestone: source tree -> source dist -> wheel -> install works. This PR adds a test for this.
 

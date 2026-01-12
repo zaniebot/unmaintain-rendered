@@ -13,14 +13,14 @@ head: zb/ci-ft
 created_at: 2025-03-25T22:02:45Z
 updated_at: 2025-04-10T21:51:51Z
 url: https://github.com/astral-sh/uv/pull/12471
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Add integration test for GitHub provided free-threaded Python
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-25 22:02_
+_@zanieb_
 
 _No description provided._
 

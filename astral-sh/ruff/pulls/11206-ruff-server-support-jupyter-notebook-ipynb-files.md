@@ -13,14 +13,14 @@ head: jupyter-notebook
 created_at: 2024-04-29T17:49:46Z
 updated_at: 2024-05-21T22:44:43Z
 url: https://github.com/astral-sh/ruff/pull/11206
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server`: Support Jupyter Notebook (`*.ipynb`) files
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-29 17:49_
+_@snowsignal_
 
 ## Summary
 

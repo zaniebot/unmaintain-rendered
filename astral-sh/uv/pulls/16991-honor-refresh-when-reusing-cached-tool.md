@@ -11,14 +11,14 @@ head: uv-tool-cache
 created_at: 2025-12-04T21:00:05Z
 updated_at: 2025-12-09T04:02:57Z
 url: https://github.com/astral-sh/uv/pull/16991
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Honor `--refresh` when reusing cached tool environments for `uvx`/`uv` tool run
 
 ---
 
-_Pull request opened by @terror on 2025-12-04 21:00_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16974
 

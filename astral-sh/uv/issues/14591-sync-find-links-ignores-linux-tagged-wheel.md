@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T00:04:22Z
 updated_at: 2025-07-14T01:58:31Z
 url: https://github.com/astral-sh/uv/issues/14591
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # sync: `--find-links` ignores 'linux'-tagged wheel
 
 ---
 
-_Issue opened by @craigds on 2025-07-14 00:04_
+_@craigds_
 
 ### Summary
 

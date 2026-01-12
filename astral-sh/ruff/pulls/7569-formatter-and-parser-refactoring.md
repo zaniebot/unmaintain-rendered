@@ -14,14 +14,14 @@ head: _formatter-and-parser-refactorings
 created_at: 2023-09-21T11:33:24Z
 updated_at: 2023-09-26T13:29:45Z
 url: https://github.com/astral-sh/ruff/pull/7569
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Formatter and parser refactoring
 
 ---
 
-_Pull request opened by @konstin on 2023-09-21 11:33_
+_@konstin_
 
 I got confused and refactored a bit, now the naming should be more consistent. This is the basis for the range formatting work.
 

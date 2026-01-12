@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T15:36:54Z
 updated_at: 2025-06-20T07:34:04Z
 url: https://github.com/astral-sh/uv/issues/14078
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Running with JIT compilation enabled?
 
 ---
 
-_Issue opened by @michealroberts on 2025-06-16 15:36_
+_@michealroberts_
 
 ### Question
 

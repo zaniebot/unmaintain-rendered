@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-25T11:04:00Z
 updated_at: 2024-05-08T06:34:50Z
 url: https://github.com/astral-sh/uv/issues/3262
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # uv pip install fails on network drive
 
 ---
 
-_Issue opened by @BenediktMaag on 2024-04-25 11:04_
+_@BenediktMaag_
 
 I'm developing a plugin called pymat built with maturin and deployed as a wheel to a (company) network drive. The folder contains all versions of the plugin and im trying to install the most recent one. This works in pip as expected. When trying to install it with uv (Windows, 0.1.38 (0b23caa18 2024-04-24)), uv panics. Currently two wheels are in the folder, 0.1.0 and 0.2.0.
 

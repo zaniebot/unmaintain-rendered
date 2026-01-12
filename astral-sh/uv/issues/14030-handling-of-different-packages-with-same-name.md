@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T15:37:52Z
 updated_at: 2025-06-13T16:55:25Z
 url: https://github.com/astral-sh/uv/issues/14030
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Handling of different packages with same name (Pillow and Pillow-SIMD) is confusing.
 
 ---
 
-_Issue opened by @MalteEbner on 2025-06-13 15:37_
+_@MalteEbner_
 
 ### Summary
 

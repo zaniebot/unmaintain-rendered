@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T15:23:39Z
 updated_at: 2025-05-03T16:04:42Z
 url: https://github.com/astral-sh/uv/issues/13275
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # venv management
 
 ---
 
-_Issue opened by @JulioPeixoto on 2025-05-03 15:23_
+_@JulioPeixoto_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: charlie/tests
 created_at: 2023-10-22T02:57:54Z
 updated_at: 2023-10-22T03:25:01Z
 url: https://github.com/astral-sh/uv/pull/161
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Add tests for `puffin sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-22 02:57_
+_@charliermarsh_
 
 Closes #158.
 

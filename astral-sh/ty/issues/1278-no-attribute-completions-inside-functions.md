@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-29T13:43:37Z
 updated_at: 2025-10-20T09:46:50Z
 url: https://github.com/astral-sh/ty/issues/1278
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # No attribute completions inside functions
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-29 13:43_
+_@sharkdp_
 
 This seems to be specific to the playground? I would expect completions for `msg.<CURSOR>` here:
 

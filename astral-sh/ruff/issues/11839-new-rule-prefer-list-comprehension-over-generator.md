@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T17:32:40Z
 updated_at: 2025-07-12T13:01:03Z
 url: https://github.com/astral-sh/ruff/issues/11839
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New Rule: Prefer list comprehension over generator comprehensions to create tuples
 
 ---
 
-_Issue opened by @Avasam on 2024-06-11 17:32_
+_@Avasam_
 
 I was recently working on some bits of codes where most of my data had to be "readonly" (so I'm using immutable types like frozen dataclasses, frozensets, tuples, etc.) but also using plenty of comprehensions. Which made me wonder, since there's no "tuple comprehension" in Python, how I should be writing this code. I did a bit of performance testing, and here's the results:
 

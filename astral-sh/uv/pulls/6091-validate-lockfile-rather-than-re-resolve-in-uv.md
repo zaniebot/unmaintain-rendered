@@ -14,14 +14,14 @@ head: charlie/val
 created_at: 2024-08-14T18:21:30Z
 updated_at: 2024-08-15T00:00:17Z
 url: https://github.com/astral-sh/uv/pull/6091
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Validate lockfile (rather than re-resolve) in `uv lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-14 18:21_
+_@charliermarsh_
 
 ## Summary
 

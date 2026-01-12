@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T15:28:01Z
 updated_at: 2025-02-14T21:53:03Z
 url: https://github.com/astral-sh/uv/issues/11511
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv tool run iam_role_assumer with uv 0.5.30 works & 0.5.31 fails
 
 ---
 
-_Issue opened by @snowman2 on 2025-02-14 15:28_
+_@snowman2_
 
 ### Summary
 

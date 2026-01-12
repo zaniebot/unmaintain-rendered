@@ -14,14 +14,14 @@ head: micha/optimize-salsa-in-dev
 created_at: 2025-05-15T09:42:43Z
 updated_at: 2025-05-15T10:31:48Z
 url: https://github.com/astral-sh/ruff/pull/18117
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Enable optimizations for salsa in debug profile
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-15 09:42_
+_@MichaReiser_
 
 ## Summary
 

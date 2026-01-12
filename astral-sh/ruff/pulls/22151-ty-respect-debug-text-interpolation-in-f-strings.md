@@ -13,14 +13,14 @@ head: charlie/debug-texts
 created_at: 2025-12-23T00:28:46Z
 updated_at: 2025-12-23T01:21:29Z
 url: https://github.com/astral-sh/ruff/pull/22151
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Respect debug text interpolation in f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-23 00:28_
+_@charliermarsh_
 
 ## Summary
 

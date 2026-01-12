@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T08:38:33Z
 updated_at: 2023-04-28T01:23:07Z
 url: https://github.com/astral-sh/ruff/issues/4091
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF009: False positives in case of immutable objects
 
 ---
 
-_Issue opened by @aberres on 2023-04-25 08:38_
+_@aberres_
 
 I'd argue the following code is ok, as all default parameters are immutable.
 

@@ -12,14 +12,14 @@ head: charlie/multi-noqa
 created_at: 2022-09-22T16:15:45Z
 updated_at: 2022-09-22T16:56:16Z
 url: https://github.com/astral-sh/ruff/pull/257
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable noqa directives on logical lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-22 16:15_
+_@charliermarsh_
 
 Resolves #252.
 

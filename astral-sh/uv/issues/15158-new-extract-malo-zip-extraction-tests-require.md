@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T03:59:43Z
 updated_at: 2025-08-08T11:26:19Z
 url: https://github.com/astral-sh/uv/issues/15158
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # New extract::malo_* zip extraction tests require network access
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-08-08 03:59_
+_@musicinmybrain_
 
 ### Summary
 

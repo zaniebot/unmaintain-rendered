@@ -14,14 +14,14 @@ head: micha/deprecate-up038
 created_at: 2025-03-12T15:42:19Z
 updated_at: 2025-03-13T07:42:17Z
 url: https://github.com/astral-sh/ruff/pull/16681
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pyupgrade`]: Deprecate `non-pep604-isinstance` (`UP038`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 15:42_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/union-filter-cycle-recovery
 created_at: 2026-01-03T14:00:26Z
 updated_at: 2026-01-03T17:20:05Z
 url: https://github.com/astral-sh/ruff/pull/22356
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Never add elements to a `UnionBuilder` before setting `recursively_defined`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 14:00_
+_@AlexWaygood_
 
 ## Summary
 

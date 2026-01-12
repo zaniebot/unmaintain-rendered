@@ -13,14 +13,14 @@ head: alex/bad-iter-msg-2
 created_at: 2025-02-22T22:05:51Z
 updated_at: 2025-07-25T18:32:11Z
 url: https://github.com/astral-sh/ruff/pull/16321
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Rewrite `Type::try_iterate()` to improve type inference and diagnostic messages
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-22 22:05_
+_@AlexWaygood_
 
 ## Summary
 

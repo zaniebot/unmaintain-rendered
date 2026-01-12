@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T15:53:19Z
 updated_at: 2025-07-22T12:13:15Z
 url: https://github.com/astral-sh/uv/issues/14729
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # uv 0.8.0 --with behaviour not finding current project
 
 ---
 
-_Issue opened by @Zaloog on 2025-07-18 15:53_
+_@Zaloog_
 
 ### Summary
 

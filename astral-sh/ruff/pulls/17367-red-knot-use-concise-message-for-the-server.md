@@ -14,14 +14,14 @@ head: dhruv/server-concise-message
 created_at: 2025-04-12T04:46:21Z
 updated_at: 2025-04-12T04:49:29Z
 url: https://github.com/astral-sh/ruff/pull/17367
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Use concise message for the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-12 04:46_
+_@dhruvmanila_
 
 ## Summary
 

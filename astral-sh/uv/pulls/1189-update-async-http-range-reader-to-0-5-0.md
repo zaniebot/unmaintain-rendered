@@ -13,14 +13,14 @@ head: async_http_range_reader-0-5-0
 created_at: 2024-01-30T16:28:59Z
 updated_at: 2024-01-30T16:32:54Z
 url: https://github.com/astral-sh/uv/pull/1189
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Update async_http_range_reader to 0.5.0
 
 ---
 
-_Pull request opened by @konstin on 2024-01-30 16:28_
+_@konstin_
 
 Removes a git dep and removes itertools 0.11
 

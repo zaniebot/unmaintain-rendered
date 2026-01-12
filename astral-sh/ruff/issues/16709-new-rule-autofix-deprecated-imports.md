@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-13T13:59:40Z
 updated_at: 2025-03-13T14:57:59Z
 url: https://github.com/astral-sh/ruff/issues/16709
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [new-rule] Autofix deprecated imports
 
 ---
 
-_Issue opened by @tkukushkin on 2025-03-13 13:59_
+_@tkukushkin_
 
 ### Summary
 

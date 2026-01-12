@@ -13,14 +13,14 @@ head: zb/tool-help
 created_at: 2024-09-27T15:11:30Z
 updated_at: 2024-09-27T17:02:24Z
 url: https://github.com/astral-sh/uv/pull/7740
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Tweaks to the `uvx` help menu when no command is provided
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-27 15:11_
+_@zanieb_
 
 Follow-up to #7641 with some minor changes to the implementation and a simplification of the output
 

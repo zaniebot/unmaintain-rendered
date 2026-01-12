@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-09-27T08:40:57Z
 updated_at: 2021-10-09T00:01:27Z
 url: https://github.com/clap-rs/clap/issues/2795
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Arguments that allow multiple_occurrences(true) do not align properly with other arguments
 
 ---
 
-_Issue opened by @0x7FFFFFFFFFFFFFFF on 2021-09-27 08:40_
+_@0x7FFFFFFFFFFFFFFF_
 
 ### Please complete the following tasks
 

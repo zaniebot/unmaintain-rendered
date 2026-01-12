@@ -13,14 +13,14 @@ head: unicode_names2-1-2-0
 created_at: 2023-10-16T08:45:16Z
 updated_at: 2023-10-16T09:02:15Z
 url: https://github.com/astral-sh/ruff/pull/7983
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use released unicode_name2 1.2.0
 
 ---
 
-_Pull request opened by @konstin on 2023-10-16 08:45_
+_@konstin_
 
 We can remove the git dependency (again). See https://github.com/progval/unicode_names2/pull/34#issuecomment-1763141541
 

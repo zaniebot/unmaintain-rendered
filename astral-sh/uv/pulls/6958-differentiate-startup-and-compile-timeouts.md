@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-03T08:17:43Z
 updated_at: 2024-09-03T17:38:37Z
 url: https://github.com/astral-sh/uv/pull/6958
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Differentiate startup and compile timeouts
 
 ---
 
-_Pull request opened by @nijel on 2024-09-03 08:17_
+_@nijel_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

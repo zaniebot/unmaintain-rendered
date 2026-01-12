@@ -14,14 +14,14 @@ head: ag/auto-import-reexports
 created_at: 2025-12-03T20:36:33Z
 updated_at: 2025-12-04T18:21:29Z
 url: https://github.com/astral-sh/ruff/pull/21779
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Support re-exports in auto-import
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-03 20:36_
+_@BurntSushi_
 
 This PR principally makes auto-import aware of re-exports in modules.
 Here are some examples of re-exports that we previously ignored.

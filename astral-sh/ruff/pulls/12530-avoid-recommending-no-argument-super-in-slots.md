@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2024-07-26T13:54:15Z
 updated_at: 2024-07-26T14:09:53Z
 url: https://github.com/astral-sh/ruff/pull/12530
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Avoid recommending no-argument super in `slots=True` dataclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 13:54_
+_@charliermarsh_
 
 ## Summary
 

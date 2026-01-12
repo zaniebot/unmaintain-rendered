@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T04:42:54Z
 updated_at: 2025-02-13T23:11:42Z
 url: https://github.com/astral-sh/uv/issues/11233
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # uv pip install fails from external drive
 
 ---
 
-_Issue opened by @robinjhuang on 2025-02-05 04:42_
+_@robinjhuang_
 
 uv: 0.5.26
 

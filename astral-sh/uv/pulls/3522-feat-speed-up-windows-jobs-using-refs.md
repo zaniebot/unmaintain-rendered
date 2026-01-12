@@ -14,14 +14,14 @@ head: windows-fs-speedup
 created_at: 2024-05-11T04:32:00Z
 updated_at: 2024-05-15T02:09:07Z
 url: https://github.com/astral-sh/uv/pull/3522
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # feat: speed up windows jobs using ReFS
 
 ---
 
-_Pull request opened by @samypr100 on 2024-05-11 04:32_
+_@samypr100_
 
 ## Summary
 

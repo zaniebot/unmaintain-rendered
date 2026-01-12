@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-18T23:47:58Z
 updated_at: 2023-06-12T18:12:12Z
 url: https://github.com/astral-sh/ruff/issues/1983
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Missing check and fix for pep 484 implicit optional
 
 ---
 
-_Issue opened by @rytilahti on 2023-01-18 23:47_
+_@rytilahti_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/header
 created_at: 2024-07-12T00:55:34Z
 updated_at: 2024-07-13T15:27:33Z
 url: https://github.com/astral-sh/uv/pull/5000
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Fall back to streaming wheel when `Content-Length` header is absent
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 00:55_
+_@charliermarsh_
 
 ## Summary
 

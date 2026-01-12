@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-29T04:26:28Z
 updated_at: 2025-11-01T12:05:31Z
 url: https://github.com/astral-sh/ruff/issues/21120
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP037 not working with SQLAlchemy in 3.14
 
 ---
 
-_Issue opened by @extrange on 2025-10-29 04:26_
+_@extrange_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-06-24T11:53:57Z
 updated_at: 2024-06-24T12:03:39Z
 url: https://github.com/astral-sh/uv/pull/4468
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Respect index strategy in source distribution builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 11:53_
+_@charliermarsh_
 
 ## Summary
 

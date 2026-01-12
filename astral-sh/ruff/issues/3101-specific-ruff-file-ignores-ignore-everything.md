@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T22:11:36Z
 updated_at: 2023-02-22T01:56:59Z
 url: https://github.com/astral-sh/ruff/issues/3101
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Specific ruff file ignores ignore everything
 
 ---
 
-_Issue opened by @henryiii on 2023-02-21 22:11_
+_@henryiii_
 
 The following file:
 

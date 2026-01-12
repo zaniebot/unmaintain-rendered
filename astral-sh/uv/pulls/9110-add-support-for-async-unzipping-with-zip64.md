@@ -13,14 +13,14 @@ head: charlie/eocdr
 created_at: 2024-11-14T02:22:16Z
 updated_at: 2024-11-14T21:45:42Z
 url: https://github.com/astral-sh/uv/pull/9110
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Add support for async unzipping with ZIP64 archives
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-14 02:22_
+_@charliermarsh_
 
 ## Summary
 

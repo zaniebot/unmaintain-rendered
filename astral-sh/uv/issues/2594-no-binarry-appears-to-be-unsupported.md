@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-21T17:37:54Z
 updated_at: 2024-03-21T17:39:58Z
 url: https://github.com/astral-sh/uv/issues/2594
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # --no-binarry appears to be unsupported
 
 ---
 
-_Issue opened by @ionelmc on 2024-03-21 17:37_
+_@ionelmc_
 
 Using `uv 0.1.23`.
 

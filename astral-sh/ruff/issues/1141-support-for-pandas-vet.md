@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-08T14:23:42Z
 updated_at: 2022-12-15T19:01:03Z
 url: https://github.com/astral-sh/ruff/issues/1141
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support for pandas-vet
 
 ---
 
-_Issue opened by @delulu52 on 2022-12-08 14:23_
+_@delulu52_
 
 Would be nice to have support for pandas-vet check, know have found them useful in my projects (this question likely interesting one where this perhaps has argument if should be included or not that of course fine in flake8 as has plugins but with ruff from my understanding plugins wouldn't really be possible let me know if that understanding is wrong)
 

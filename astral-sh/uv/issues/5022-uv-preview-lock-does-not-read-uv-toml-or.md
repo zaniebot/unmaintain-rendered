@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T19:44:35Z
 updated_at: 2024-07-12T21:50:05Z
 url: https://github.com/astral-sh/uv/issues/5022
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # "uv --preview lock" does not read uv.toml or pyproject.toml settings
 
 ---
 
-_Issue opened by @dsully on 2024-07-12 19:44_
+_@dsully_
 
 The `uv --preview lock` command does not find/respect settings in either a `pyproject.toml` or a `uv.toml` file, and thus resolution fails for internal Pypi repositories:
 

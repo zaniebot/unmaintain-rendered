@@ -12,14 +12,14 @@ head: charlie/SIM118
 created_at: 2023-09-07T14:53:54Z
 updated_at: 2023-09-07T15:16:25Z
 url: https://github.com/astral-sh/ruff/pull/7223
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Change SIM118 to delete `.keys()` rather than replace expression
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-07 14:53_
+_@charliermarsh_
 
 Also improves the suggestion text. Closes https://github.com/astral-sh/ruff/issues/7200.
 

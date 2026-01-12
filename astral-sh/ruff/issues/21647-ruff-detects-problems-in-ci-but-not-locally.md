@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T21:24:37Z
 updated_at: 2025-12-10T21:52:50Z
 url: https://github.com/astral-sh/ruff/issues/21647
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff detects problems in CI, but not locally
 
 ---
 
-_Issue opened by @vadimkantorov on 2025-11-26 21:24_
+_@vadimkantorov_
 
 ### Summary
 

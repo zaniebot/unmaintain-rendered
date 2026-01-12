@@ -14,14 +14,14 @@ head: david/match-exhaustiveness
 created_at: 2025-07-23T13:00:28Z
 updated_at: 2025-07-23T20:48:21Z
 url: https://github.com/astral-sh/ruff/pull/19508
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Exhaustiveness checking & reachability for `match` statements
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-23 13:00_
+_@sharkdp_
 
 ## Summary
 

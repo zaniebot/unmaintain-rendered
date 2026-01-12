@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T13:40:27Z
 updated_at: 2025-09-03T16:12:17Z
 url: https://github.com/astral-sh/uv/issues/15662
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Issue while updatnig `ty`
 
 ---
 
-_Issue opened by @klonuo on 2025-09-03 13:40_
+_@klonuo_
 
 ### Summary
 

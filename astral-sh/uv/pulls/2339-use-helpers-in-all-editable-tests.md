@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-03-10T14:32:45Z
 updated_at: 2024-03-10T14:59:08Z
 url: https://github.com/astral-sh/uv/pull/2339
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Use helpers in all editable tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 14:32_
+_@charliermarsh_
 
 ## Summary
 

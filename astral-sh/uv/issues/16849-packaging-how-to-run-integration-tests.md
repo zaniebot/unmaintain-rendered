@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T19:16:33Z
 updated_at: 2025-12-02T11:19:09Z
 url: https://github.com/astral-sh/uv/issues/16849
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # packaging: How to run integration tests?
 
 ---
 
-_Issue opened by @mtelka on 2025-11-25 19:16_
+_@mtelka_
 
 I'm packaging `uv-build` for OpenIndiana and I'd like to run integration tests to make sure the package is working properly.  How can I do that?
 

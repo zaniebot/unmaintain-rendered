@@ -11,14 +11,14 @@ head: 2730-ldap-injections
 created_at: 2023-02-12T12:30:45Z
 updated_at: 2023-10-19T13:56:35Z
 url: https://github.com/astral-sh/ruff/pull/2811
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # feat: add rule which detects LDAP injections
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-12 12:30_
+_@spaceone_
 
 Issue #2730
 

@@ -13,14 +13,14 @@ head: compile-scheduler
 created_at: 2024-06-04T00:11:02Z
 updated_at: 2024-06-04T14:48:24Z
 url: https://github.com/astral-sh/uv/pull/4004
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Avoid work-stealing in bytecode compilation
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-04 00:11_
+_@ibraheemdev_
 
 ## Summary
 

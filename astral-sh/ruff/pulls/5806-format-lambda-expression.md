@@ -13,14 +13,14 @@ head: expr-lambda
 created_at: 2023-07-16T13:22:23Z
 updated_at: 2023-07-19T12:09:18Z
 url: https://github.com/astral-sh/ruff/pull/5806
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `lambda` expression
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-16 13:22_
+_@cnpryer_
 
 ## Summary
 

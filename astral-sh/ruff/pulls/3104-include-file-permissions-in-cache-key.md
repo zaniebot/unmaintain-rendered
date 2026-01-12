@@ -13,14 +13,14 @@ head: charlie/ctime
 created_at: 2023-02-21T22:43:19Z
 updated_at: 2023-02-21T23:20:08Z
 url: https://github.com/astral-sh/ruff/pull/3104
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Include file permissions in cache key
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 22:43_
+_@charliermarsh_
 
 Closes #3086.
 

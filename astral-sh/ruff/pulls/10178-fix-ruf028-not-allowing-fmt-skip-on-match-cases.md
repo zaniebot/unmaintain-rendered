@@ -13,14 +13,14 @@ head: jane/linter/ruf028/match-case-header
 created_at: 2024-03-01T05:56:53Z
 updated_at: 2024-03-01T08:36:24Z
 url: https://github.com/astral-sh/ruff/pull/10178
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix RUF028 not allowing `# fmt: skip` on match cases
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-01 05:56_
+_@snowsignal_
 
 ## Summary
 

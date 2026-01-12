@@ -13,14 +13,14 @@ head: charlie/uip
 created_at: 2024-09-17T03:06:39Z
 updated_at: 2024-09-17T10:40:00Z
 url: https://github.com/astral-sh/uv/pull/7448
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Run `cargo upgrade`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-17 03:06_
+_@charliermarsh_
 
 ## Summary
 

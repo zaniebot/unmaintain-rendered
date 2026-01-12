@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-12T11:09:57Z
 updated_at: 2024-06-13T00:23:29Z
 url: https://github.com/astral-sh/ruff/issues/11378
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff unconditionally assumes any string in a type parameter is a forward annotation
 
 ---
 
-_Issue opened by @lanzz on 2024-05-12 11:09_
+_@lanzz_
 
 I have an alias for `Annotated`, to be used in a container class:
 

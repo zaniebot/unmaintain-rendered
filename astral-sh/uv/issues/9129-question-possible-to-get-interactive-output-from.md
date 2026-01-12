@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T19:24:05Z
 updated_at: 2024-11-15T19:49:00Z
 url: https://github.com/astral-sh/uv/issues/9129
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Question: Possible to get interactive output from stdout/stderr?
 
 ---
 
-_Issue opened by @robinjhuang on 2024-11-14 19:24_
+_@robinjhuang_
 
 I am using uv to install a python environment in an Electron application.
 

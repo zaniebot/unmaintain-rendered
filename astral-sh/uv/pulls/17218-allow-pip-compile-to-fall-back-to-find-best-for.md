@@ -13,14 +13,14 @@ head: tk/pip-compile-missing-py-2
 created_at: 2025-12-22T19:16:52Z
 updated_at: 2025-12-29T13:16:22Z
 url: https://github.com/astral-sh/uv/pull/17218
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Allow `pip compile` to fall back to `find_best` for `--python`
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-22 19:16_
+_@EliteTK_
 
 ## Summary
 

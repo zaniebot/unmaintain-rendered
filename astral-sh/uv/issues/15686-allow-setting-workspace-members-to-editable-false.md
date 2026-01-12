@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T16:51:09Z
 updated_at: 2025-09-07T15:41:18Z
 url: https://github.com/astral-sh/uv/issues/15686
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Allow setting workspace members to `editable = false` in sources
 
 ---
 
-_Issue opened by @zanieb on 2025-09-04 16:51_
+_@zanieb_
 
 _No description provided._
 

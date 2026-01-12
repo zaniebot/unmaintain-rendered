@@ -13,14 +13,14 @@ head: S102
 created_at: 2025-01-12T16:49:45Z
 updated_at: 2025-01-13T00:56:18Z
 url: https://github.com/astral-sh/ruff/pull/15443
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-bandit`] Check for `builtins` instead of `builtin` (`S102`, `PTH123`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-12 16:49_
+_@InSyncWithFoo_
 
 ## Summary
 

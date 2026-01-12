@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T07:43:15Z
 updated_at: 2025-04-06T07:57:44Z
 url: https://github.com/astral-sh/uv/issues/12689
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # forget to deactive before rm -rf .venv
 
 ---
 
-_Issue opened by @yangislet on 2025-04-06 07:43_
+_@yangislet_
 
 ### Summary
 

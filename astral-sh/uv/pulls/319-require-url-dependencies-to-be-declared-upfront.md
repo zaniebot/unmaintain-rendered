@@ -12,14 +12,14 @@ head: charlie/strict-dependency
 created_at: 2023-11-04T19:31:26Z
 updated_at: 2023-11-05T17:09:59Z
 url: https://github.com/astral-sh/uv/pull/319
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Require URL dependencies to be declared upfront
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-04 19:31_
+_@charliermarsh_
 
 In the resolver, our current model for solving URL dependencies requires that we visit the URL dependency _before_ the registry-based dependency. This PR encodes a strict requirement that all URL dependencies be declared upfront, either as requirements or constraints.
 

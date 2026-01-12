@@ -12,14 +12,14 @@ head: feature/per-file-ignores
 created_at: 2022-09-23T12:17:41Z
 updated_at: 2022-09-26T15:15:19Z
 url: https://github.com/astral-sh/ruff/pull/261
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Feature/per file ignores
 
 ---
 
-_Pull request opened by @Seamooo on 2022-09-23 12:17_
+_@Seamooo_
 
 resolves #241
 

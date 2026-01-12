@@ -13,14 +13,14 @@ head: cache-stable-hasing
 created_at: 2023-09-20T07:58:11Z
 updated_at: 2023-09-20T13:20:00Z
 url: https://github.com/astral-sh/ruff/pull/7533
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use portable hash function for `CacheKey`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-20 07:58_
+_@MichaReiser_
 
 ## Summary
 Use [seahash](https://docs.rs/seahash/4.1.0/seahash/) as stable and portable cache key function. 

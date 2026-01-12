@@ -13,14 +13,14 @@ head: zb/mold-macos
 created_at: 2024-04-10T15:13:26Z
 updated_at: 2024-04-10T16:39:21Z
 url: https://github.com/astral-sh/uv/pull/2968
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Use mold on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 15:13_
+_@zanieb_
 
 _No description provided._
 

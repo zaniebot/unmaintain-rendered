@@ -11,14 +11,14 @@ head: zanie/validate-package-name
 created_at: 2023-11-01T16:43:07Z
 updated_at: 2023-11-02T17:04:23Z
 url: https://github.com/astral-sh/uv/pull/279
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Add `PackageName::validate`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 16:43_
+_@zanieb_
 
 This is not used anywhere yet, as we need to decide _when_ package names should be enforced as valid
 

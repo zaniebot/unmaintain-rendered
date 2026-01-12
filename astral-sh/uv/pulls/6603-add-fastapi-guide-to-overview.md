@@ -13,14 +13,14 @@ head: charlie/index-a
 created_at: 2024-08-25T13:10:21Z
 updated_at: 2024-08-25T13:11:11Z
 url: https://github.com/astral-sh/uv/pull/6603
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Add FastAPI guide to overview
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 13:10_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: alex/final-instances
 created_at: 2025-01-16T19:54:02Z
 updated_at: 2025-01-16T23:50:54Z
 url: https://github.com/astral-sh/ruff/pull/15539
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Implement disjointness for Instance types where the underlying class is `@final`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-16 19:54_
+_@AlexWaygood_
 
 ## Summary
 

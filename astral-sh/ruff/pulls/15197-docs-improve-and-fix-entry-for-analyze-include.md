@@ -13,14 +13,14 @@ head: 20241230-include-dependencies-docs
 created_at: 2024-12-30T07:04:32Z
 updated_at: 2024-12-31T19:45:32Z
 url: https://github.com/astral-sh/ruff/pull/15197
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [docs] improve and fix entry for `analyze.include-dependencies`
 
 ---
 
-_Pull request opened by @purajit on 2024-12-30 07:04_
+_@purajit_
 
 ## Summary
 

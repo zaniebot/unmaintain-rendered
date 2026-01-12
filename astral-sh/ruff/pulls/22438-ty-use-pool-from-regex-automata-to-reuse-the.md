@@ -14,14 +14,14 @@ head: micha/include-match-pool
 created_at: 2026-01-07T15:37:14Z
 updated_at: 2026-01-07T16:22:36Z
 url: https://github.com/astral-sh/ruff/pull/22438
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Use `Pool` from `regex_automata` to reuse the `matches` allocations
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-07 15:37_
+_@MichaReiser_
 
 ## Summary
 We alreaedy do this for `exclude`, so it feels like we should do for `include` and it's easy enough.

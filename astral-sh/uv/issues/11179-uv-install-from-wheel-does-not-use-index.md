@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T09:46:20Z
 updated_at: 2025-02-11T03:16:18Z
 url: https://github.com/astral-sh/uv/issues/11179
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # uv install from wheel does not use index specified in pyproject.toml
 
 ---
 
-_Issue opened by @alksndrglk on 2025-02-03 09:46_
+_@alksndrglk_
 
 ### Question
 

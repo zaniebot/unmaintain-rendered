@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2025-05-18T22:15:15Z
 updated_at: 2025-05-18T22:41:19Z
 url: https://github.com/astral-sh/uv/pull/13517
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:43Z
 ```
 
 # Update pre-release hint
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-18 22:15_
+_@charliermarsh_
 
 ## Summary
 

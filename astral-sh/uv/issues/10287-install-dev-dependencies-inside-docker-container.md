@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T14:19:37Z
 updated_at: 2025-01-03T15:36:34Z
 url: https://github.com/astral-sh/uv/issues/10287
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Install dev dependencies inside docker container's system python
 
 ---
 
-_Issue opened by @rivershah on 2025-01-03 14:19_
+_@rivershah_
 
 This installs dependencies only:
 `uv pip install --system --all-extras -r pyproject.toml`

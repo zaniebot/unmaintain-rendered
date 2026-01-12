@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T06:55:51Z
 updated_at: 2024-09-09T16:08:07Z
 url: https://github.com/astral-sh/uv/issues/7071
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Workspace exclusion does not work
 
 ---
 
-_Issue opened by @blinkseb on 2024-09-05 06:55_
+_@blinkseb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

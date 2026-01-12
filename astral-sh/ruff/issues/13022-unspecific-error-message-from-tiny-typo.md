@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T05:59:58Z
 updated_at: 2024-08-21T10:06:17Z
 url: https://github.com/astral-sh/ruff/issues/13022
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Unspecific error message from tiny typo
 
 ---
 
-_Issue opened by @turkishmaid on 2024-08-21 05:59_
+_@turkishmaid_
 
 Using Ruff 0.6.1 as native server in VSCode 1.92.1, Ruff extension v2024.42.0, on MacOS 14.4 (but I guess all of that is irrelevant).
 

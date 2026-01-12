@@ -13,14 +13,14 @@ head: add-fedora-build
 created_at: 2025-09-04T10:40:49Z
 updated_at: 2025-09-04T12:23:39Z
 url: https://github.com/astral-sh/uv/pull/15674
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Add C compiler instructions to Fedora-based distros
 
 ---
 
-_Pull request opened by @mdevino on 2025-09-04 10:40_
+_@mdevino_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

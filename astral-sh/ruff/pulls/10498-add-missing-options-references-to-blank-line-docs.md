@@ -13,14 +13,14 @@ head: charlie/opt
 created_at: 2024-03-21T00:41:07Z
 updated_at: 2024-03-21T00:54:17Z
 url: https://github.com/astral-sh/ruff/pull/10498
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add missing `Options` references to blank line docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-21 00:41_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/10427.
 

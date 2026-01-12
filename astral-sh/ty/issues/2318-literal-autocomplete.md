@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-03T18:29:17Z
 updated_at: 2026-01-03T18:33:36Z
 url: https://github.com/astral-sh/ty/issues/2318
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Literal autocomplete
 
 ---
 
-_Issue opened by @benomahony on 2026-01-03 18:29_
+_@benomahony_
 
 ty doesn't provide autocomplete for Literal type alias values when typing inside strings. This works fine in basedpyright/pyright.
 

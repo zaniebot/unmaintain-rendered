@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-04-26T16:49:46Z
 updated_at: 2023-04-26T16:50:29Z
 url: https://github.com/clap-rs/clap/issues/4862
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `Error::new` takes a `Display` rather than a `StyledStr`
 
 ---
 
-_Issue opened by @epage on 2023-04-26 16:49_
+_@epage_
 
 ### Please complete the following tasks
 

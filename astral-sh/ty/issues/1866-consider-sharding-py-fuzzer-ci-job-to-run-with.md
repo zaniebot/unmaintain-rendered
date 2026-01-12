@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-12T14:34:48Z
 updated_at: 2025-12-12T14:35:00Z
 url: https://github.com/astral-sh/ty/issues/1866
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Consider sharding py-fuzzer CI job to run with multiple Python versions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-12 14:34_
+_@AlexWaygood_
 
 > I'd be inclined to hard code the Python version to 3.8 or shard the benchmark to check multiple versions (both seem equally likely to catch bugs IMO because we default to an old Python version in mdtests)
 

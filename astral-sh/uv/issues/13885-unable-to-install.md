@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T13:08:37Z
 updated_at: 2025-06-06T13:56:53Z
 url: https://github.com/astral-sh/uv/issues/13885
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Unable to install
 
 ---
 
-_Issue opened by @Konev-359 on 2025-06-06 13:08_
+_@Konev-359_
 
 ### Summary
 

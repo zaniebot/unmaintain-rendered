@@ -13,14 +13,14 @@ head: david/fix-bool-literal-subtype-int
 created_at: 2024-11-07T22:09:47Z
 updated_at: 2024-11-07T22:29:05Z
 url: https://github.com/astral-sh/ruff/pull/14177
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Minor: fix `Literal[True] <: int`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-07 22:09_
+_@sharkdp_
 
 ## Summary
 

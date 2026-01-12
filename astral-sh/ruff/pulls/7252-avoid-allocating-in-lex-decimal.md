@@ -13,14 +13,14 @@ head: lex-decimal-avoid-allocating
 created_at: 2023-09-09T10:36:14Z
 updated_at: 2023-09-11T07:36:28Z
 url: https://github.com/astral-sh/ruff/pull/7252
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid allocating in lex_decimal
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-09 10:36_
+_@MichaReiser_
 
 ## Summary
 

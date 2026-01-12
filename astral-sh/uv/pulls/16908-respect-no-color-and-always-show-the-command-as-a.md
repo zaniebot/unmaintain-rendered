@@ -13,14 +13,14 @@ head: fix-16879-less-P
 created_at: 2025-12-01T12:28:24Z
 updated_at: 2025-12-01T18:11:44Z
 url: https://github.com/astral-sh/uv/pull/16908
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Respect `NO_COLOR` and always show the command as a header when paging `uv help` output
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-01 12:28_
+_@EliteTK_
 
 ## Summary
 

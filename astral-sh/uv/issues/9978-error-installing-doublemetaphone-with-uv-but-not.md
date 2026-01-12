@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-17T18:31:30Z
 updated_at: 2024-12-17T18:38:31Z
 url: https://github.com/astral-sh/uv/issues/9978
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Error installing `DoubleMetaphone` with uv but not with poetry or pip
 
 ---
 
-_Issue opened by @lewis-wf on 2024-12-17 18:31_
+_@lewis-wf_
 
 **Context**
 * MacOS 15.2

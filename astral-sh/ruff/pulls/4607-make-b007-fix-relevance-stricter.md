@@ -12,14 +12,14 @@ head: charlie/after
 created_at: 2023-05-23T15:32:49Z
 updated_at: 2023-05-23T16:07:29Z
 url: https://github.com/astral-sh/ruff/pull/4607
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Make B007 fix relevance stricter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 15:32_
+_@charliermarsh_
 
 ## Summary
 

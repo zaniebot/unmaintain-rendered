@@ -13,14 +13,14 @@ head: alex/is-property
 created_at: 2024-07-30T13:39:37Z
 updated_at: 2024-07-30T16:54:47Z
 url: https://github.com/astral-sh/ruff/pull/12581
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Improve consistency between linter rules in determining whether a function is property
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 13:39_
+_@AlexWaygood_
 
 ## Summary
 

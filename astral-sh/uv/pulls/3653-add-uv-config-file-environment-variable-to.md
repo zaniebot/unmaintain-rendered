@@ -13,14 +13,14 @@ head: charlie/config-file
 created_at: 2024-05-18T17:21:53Z
 updated_at: 2024-05-19T02:25:34Z
 url: https://github.com/astral-sh/uv/pull/3653
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add `UV_CONFIG_FILE` environment variable to documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-18 17:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: homogenize_PLR_error_message
 created_at: 2023-12-29T11:32:49Z
 updated_at: 2023-12-29T12:45:35Z
 url: https://github.com/astral-sh/ruff/pull/9308
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Change PLR0917 error message to match other PLR09XX messages
 
 ---
 
-_Pull request opened by @mikaelarguedas on 2023-12-29 11:32_
+_@mikaelarguedas_
 
 ## Summary
 

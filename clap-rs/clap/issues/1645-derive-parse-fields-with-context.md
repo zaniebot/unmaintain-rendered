@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-01-26T19:53:56Z
 updated_at: 2020-02-10T12:32:18Z
 url: https://github.com/clap-rs/clap/issues/1645
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # [Derive] Parse fields with context
 
 ---
 
-_Issue opened by @Ayplow on 2020-01-26 19:53_
+_@Ayplow_
 
 Currently, the `Clap` macro deserializes options with `FromStr`. While fine for simple use cases, this doesn't provide the parser the context that the option came from, and precludes common patterns that make use of this information.
 

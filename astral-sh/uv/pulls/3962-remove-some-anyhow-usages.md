@@ -13,14 +13,14 @@ head: charlie/any
 created_at: 2024-06-01T20:02:53Z
 updated_at: 2024-06-01T20:11:24Z
 url: https://github.com/astral-sh/uv/pull/3962
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Remove some `anyhow` usages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-01 20:02_
+_@charliermarsh_
 
 _No description provided._
 

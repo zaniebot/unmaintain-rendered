@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-28T16:57:22Z
 updated_at: 2025-04-22T17:26:37Z
 url: https://github.com/astral-sh/uv/issues/9506
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Enable configuration of additional paths when detecting system pythons
 
 ---
 
-_Issue opened by @Stealthii on 2024-11-28 16:57_
+_@Stealthii_
 
 The high level ask here is to provide a **setting** configuration option to provide additional paths to search when resolving system Pythons.
 

@@ -14,14 +14,14 @@ head: fix-FURB116
 created_at: 2025-04-27T22:06:16Z
 updated_at: 2025-05-03T14:00:48Z
 url: https://github.com/astral-sh/ruff/pull/17661
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`refurb`] Fix false positive for float and complex numbers in `FURB116`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-27 22:06_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

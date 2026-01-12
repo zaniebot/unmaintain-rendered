@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T19:11:49Z
 updated_at: 2024-08-01T20:56:30Z
 url: https://github.com/astral-sh/uv/issues/5630
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Consistent usage of "pre-release" vs. "prerelease"
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-30 19:11_
+_@ibraheemdev_
 
 Similar to https://github.com/astral-sh/uv/pull/5629. Also `pre_release` vs. `prerelease` and `PreRelease` vs. `Prerelease` in code.
 

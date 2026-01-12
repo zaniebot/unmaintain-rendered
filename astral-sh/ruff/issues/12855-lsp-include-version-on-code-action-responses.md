@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T09:06:54Z
 updated_at: 2024-08-13T14:32:37Z
 url: https://github.com/astral-sh/ruff/issues/12855
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # LSP: include `version` on code action responses
 
 ---
 
-_Issue opened by @LDAP on 2024-08-13 09:06_
+_@LDAP_
 
 Including `version` on code action responses would prevent outdated code actions being applied if the document has changed in the meantime.
 

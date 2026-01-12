@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-11T08:19:54Z
 updated_at: 2024-12-23T08:22:00Z
 url: https://github.com/astral-sh/ruff/issues/14905
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # N816 doesn't flag lower-case variable names
 
 ---
 
-_Issue opened by @isaacag on 2024-12-11 08:19_
+_@isaacag_
 
 Context managers are not taken into consideration for variable naming conventions, despite PEP8 not making exceptions for them. The only way to trigger variable rules is to wrap them in other structures like a `def`.
 

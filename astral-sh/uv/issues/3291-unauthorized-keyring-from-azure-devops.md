@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-28T09:57:49Z
 updated_at: 2024-04-28T14:06:44Z
 url: https://github.com/astral-sh/uv/issues/3291
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Unauthorized keyring from Azure DevOps
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-04-28 09:57_
+_@AndreuCodina_
 
 When I use the keyring authentication and try to install packages from a private registry in Azure DevOps, I receive `401 Unauthorized`.
 I log in with my Microsoft account with `az login`.

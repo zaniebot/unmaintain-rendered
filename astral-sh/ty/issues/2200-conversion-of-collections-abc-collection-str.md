@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T09:28:59Z
 updated_at: 2025-12-27T00:28:28Z
 url: https://github.com/astral-sh/ty/issues/2200
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Conversion of `collections.abc.Collection[str] & ~AlwaysFalsy` to `set()` results in `set[Unknown]` instead of `set[str]`
 
 ---
 
-_Issue opened by @sinon on 2025-12-24 09:28_
+_@sinon_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: fix-doc-typo
 created_at: 2023-07-22T01:14:36Z
 updated_at: 2023-07-22T01:40:51Z
 url: https://github.com/astral-sh/ruff/pull/5961
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix typo in documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-22 01:14_
+_@tjkuson_
 
 ## Summary
 

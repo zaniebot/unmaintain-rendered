@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T02:53:09Z
 updated_at: 2025-07-16T21:51:01Z
 url: https://github.com/astral-sh/uv/issues/9902
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Bug: ModuleNotFoundError related to venv uv_cache.json when store in iCloud
 
 ---
 
-_Issue opened by @cvanea on 2024-12-15 02:53_
+_@cvanea_
 
 ### Description
 

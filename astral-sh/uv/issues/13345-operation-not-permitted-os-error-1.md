@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T11:17:22Z
 updated_at: 2025-05-09T09:37:42Z
 url: https://github.com/astral-sh/uv/issues/13345
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Operation not permitted (os error 1)
 
 ---
 
-_Issue opened by @Cheiklf on 2025-05-08 11:17_
+_@Cheiklf_
 
 ### Summary
 

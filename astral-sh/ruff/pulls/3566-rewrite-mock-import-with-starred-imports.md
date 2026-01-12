@@ -13,14 +13,14 @@ head: charlie/mock-import
 created_at: 2023-03-17T00:23:20Z
 updated_at: 2023-03-17T00:54:31Z
 url: https://github.com/astral-sh/ruff/pull/3566
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Rewrite mock import with starred imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 00:23_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-requires-python-explicit
 created_at: 2025-07-14T13:46:15Z
 updated_at: 2025-07-14T14:07:32Z
 url: https://github.com/astral-sh/uv/pull/14606
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Do not re-resolve with a new Python version in `uv tool` if it is incompatible with `--python`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-14 13:46_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14604
 

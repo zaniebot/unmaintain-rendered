@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-29T08:39:57Z
 updated_at: 2022-11-29T12:54:42Z
 url: https://github.com/clap-rs/clap/issues/4519
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Docs for 4.0.28 failed to build
 
 ---
 
-_Issue opened by @jaskij on 2022-11-29 08:39_
+_@jaskij_
 
 ### Please complete the following tasks
 

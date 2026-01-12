@@ -12,14 +12,14 @@ head: F707
 created_at: 2022-09-04T15:51:34Z
 updated_at: 2022-09-04T15:59:51Z
 url: https://github.com/astral-sh/ruff/pull/101
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F707 (DefaultExceptNotLast)
 
 ---
 
-_Pull request opened by @harupy on 2022-09-04 15:51_
+_@harupy_
 
 Implement F707 (DefaultExceptNotLast).
 

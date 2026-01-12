@@ -13,14 +13,14 @@ head: remove-import-map
 created_at: 2024-05-01T18:36:36Z
 updated_at: 2024-05-02T18:26:03Z
 url: https://github.com/astral-sh/ruff/pull/11234
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Remove ImportMap
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-01 18:36_
+_@MichaReiser_
 
 ## Summary
 

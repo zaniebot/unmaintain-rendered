@@ -13,14 +13,14 @@ head: cjm/scope-lookups
 created_at: 2024-07-18T03:22:32Z
 updated_at: 2024-07-18T17:50:46Z
 url: https://github.com/astral-sh/ruff/pull/12374
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] support implicit global name lookups
 
 ---
 
-_Pull request opened by @carljm on 2024-07-18 03:22_
+_@carljm_
 
 Support falling back to a global name lookup if a name isn't defined in the local scope, in the cases where that is correct according to Python semantics.
 

@@ -13,14 +13,14 @@ head: cjm/anyclass
 created_at: 2025-04-01T01:27:48Z
 updated_at: 2025-04-01T16:38:25Z
 url: https://github.com/astral-sh/ruff/pull/17107
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] support Any as a class in typeshed
 
 ---
 
-_Pull request opened by @carljm on 2025-04-01 01:27_
+_@carljm_
 
 ## Summary
 

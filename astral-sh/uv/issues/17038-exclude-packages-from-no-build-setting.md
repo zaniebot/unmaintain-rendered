@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T21:04:56Z
 updated_at: 2025-12-09T22:20:52Z
 url: https://github.com/astral-sh/uv/issues/17038
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Exclude packages from `no-build` setting
 
 ---
 
-_Issue opened by @mkniewallner on 2025-12-08 21:04_
+_@mkniewallner_
 
 ### Summary
 

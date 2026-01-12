@@ -13,14 +13,14 @@ head: fix-docs
 created_at: 2025-05-23T15:46:22Z
 updated_at: 2025-06-11T07:14:05Z
 url: https://github.com/astral-sh/uv/pull/13620
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Fix and improve docs
 
 ---
 
-_Pull request opened by @ShapelessCat on 2025-05-23 15:46_
+_@ShapelessCat_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

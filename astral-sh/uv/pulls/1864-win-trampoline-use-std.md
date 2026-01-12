@@ -12,14 +12,14 @@ head: std-trampoline
 created_at: 2024-02-22T13:10:09Z
 updated_at: 2024-02-23T15:30:02Z
 url: https://github.com/astral-sh/uv/pull/1864
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Win-Trampoline: Use Std
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-22 13:10_
+_@MichaReiser_
 
 ## Summary
 

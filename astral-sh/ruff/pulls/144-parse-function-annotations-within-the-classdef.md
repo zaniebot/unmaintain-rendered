@@ -12,14 +12,14 @@ head: charlie/defns
 created_at: 2022-09-10T19:14:27Z
 updated_at: 2022-09-10T19:20:40Z
 url: https://github.com/astral-sh/ruff/pull/144
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Parse function annotations within the ClassDef scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-10 19:14_
+_@charliermarsh_
 
 Resolves #142.
 

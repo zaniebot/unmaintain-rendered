@@ -12,14 +12,14 @@ head: fix-tests
 created_at: 2023-11-19T12:07:15Z
 updated_at: 2023-11-19T12:10:55Z
 url: https://github.com/astral-sh/uv/pull/451
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Fix tests: Certifi got an update
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 12:07_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: simplify-fail_call
 created_at: 2024-11-23T13:26:50Z
 updated_at: 2024-11-23T14:18:25Z
 url: https://github.com/astral-sh/ruff/pull/14556
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Simplify `flake8_pytest_style::rules::fail_call` implementation
 
 ---
 
-_Pull request opened by @harupy on 2024-11-23 13:26_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

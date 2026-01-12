@@ -11,14 +11,14 @@ head: PL1501
 created_at: 2023-10-02T02:07:29Z
 updated_at: 2023-10-02T03:01:48Z
 url: https://github.com/astral-sh/ruff/pull/7752
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Implement PLW1501
 
 ---
 
-_Pull request opened by @aspizu on 2023-10-02 02:07_
+_@aspizu_
 
 _No description provided._
 

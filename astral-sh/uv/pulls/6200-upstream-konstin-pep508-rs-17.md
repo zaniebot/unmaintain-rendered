@@ -13,14 +13,14 @@ head: konsti/upstream-pep508-17
 created_at: 2024-08-19T11:24:09Z
 updated_at: 2024-08-19T11:31:15Z
 url: https://github.com/astral-sh/uv/pull/6200
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Upstream konstin/pep508_rs#17
 
 ---
 
-_Pull request opened by @konstin on 2024-08-19 11:24_
+_@konstin_
 
 Upstream https://github.com/konstin/pep508_rs/pull/17
 

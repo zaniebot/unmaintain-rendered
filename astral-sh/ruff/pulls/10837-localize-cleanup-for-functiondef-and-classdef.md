@@ -13,14 +13,14 @@ head: cjm/simplify
 created_at: 2024-04-08T19:15:55Z
 updated_at: 2024-04-11T23:35:35Z
 url: https://github.com/astral-sh/ruff/pull/10837
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Localize cleanup for FunctionDef and ClassDef
 
 ---
 
-_Pull request opened by @carljm on 2024-04-08 19:15_
+_@carljm_
 
 ## Summary
 

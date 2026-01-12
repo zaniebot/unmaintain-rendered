@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T00:41:57Z
 updated_at: 2025-10-14T07:23:24Z
 url: https://github.com/astral-sh/ruff/issues/20853
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fixes between E302 and I001 disagree
 
 ---
 
-_Issue opened by @mcdigman on 2025-10-14 00:41_
+_@mcdigman_
 
 [ruff_test_failure.py](https://github.com/user-attachments/files/22894619/ruff_test_failure.py)
 

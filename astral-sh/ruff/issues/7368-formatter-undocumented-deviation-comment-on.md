@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T20:57:43Z
 updated_at: 2025-01-10T07:19:35Z
 url: https://github.com/astral-sh/ruff/issues/7368
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: comment on function arguments forces wrapping
 
 ---
 
-_Issue opened by @andersk on 2023-09-13 20:57_
+_@andersk_
 
 Input, unchanged under Black:
 

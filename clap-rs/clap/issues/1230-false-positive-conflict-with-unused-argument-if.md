@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-03-25T02:05:38Z
 updated_at: 2020-04-21T17:13:50Z
 url: https://github.com/clap-rs/clap/issues/1230
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # False positive: conflict with unused argument if in required group
 
 ---
 
-_Issue opened by @ghost on 2018-03-25 02:05_
+_@ghost_
 
 ### Rust Version
 ```

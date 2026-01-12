@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-02-28T11:07:31Z
 updated_at: 2020-02-07T14:22:50Z
 url: https://github.com/clap-rs/clap/issues/1422
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cargo subcommand ideal error messages
 
 ---
 
-_Issue opened by @daxpedda on 2019-02-28 11:07_
+_@daxpedda_
 
 ### Affected Version of clap
 

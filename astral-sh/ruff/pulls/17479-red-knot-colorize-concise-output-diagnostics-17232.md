@@ -14,14 +14,14 @@ head: red_knot_colorize_concise_output
 created_at: 2025-04-19T13:29:15Z
 updated_at: 2025-04-29T14:07:16Z
 url: https://github.com/astral-sh/ruff/pull/17479
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] colorize concise output diagnostics (#17232)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-19 13:29_
+_@Kalmaegi_
 
 ## Summary
 

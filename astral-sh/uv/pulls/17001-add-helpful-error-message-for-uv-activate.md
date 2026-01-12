@@ -11,14 +11,14 @@ head: feature/uv-activate-helpful-error
 created_at: 2025-12-05T16:05:03Z
 updated_at: 2025-12-07T06:30:54Z
 url: https://github.com/astral-sh/uv/pull/17001
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Add helpful error message for 'uv activate'
 
 ---
 
-_Pull request opened by @nooscraft on 2025-12-05 16:05_
+_@nooscraft_
 
 When users try to run 'uv activate', show a helpful error message
 instead of the generic unknown command error. The message explains

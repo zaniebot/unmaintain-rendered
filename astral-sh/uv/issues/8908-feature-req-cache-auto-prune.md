@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T00:30:58Z
 updated_at: 2025-05-13T14:15:06Z
 url: https://github.com/astral-sh/uv/issues/8908
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Feature req: cache auto-prune
 
 ---
 
-_Issue opened by @dimaqq on 2024-11-08 00:30_
+_@dimaqq_
 
 uv 0.4.30 (Homebrew 2024-11-05)
 

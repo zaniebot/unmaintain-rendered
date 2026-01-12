@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T13:46:27Z
 updated_at: 2025-06-17T05:58:57Z
 url: https://github.com/astral-sh/uv/issues/13577
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # System global .python-version `uv python pin --system`
 
 ---
 
-_Issue opened by @MattiasDC on 2025-05-21 13:46_
+_@MattiasDC_
 
 ### Summary
 

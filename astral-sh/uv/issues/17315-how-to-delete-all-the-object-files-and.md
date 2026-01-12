@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-04T17:02:34Z
 updated_at: 2026-01-05T22:10:24Z
 url: https://github.com/astral-sh/uv/issues/17315
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # How to delete all the object files and executables so that the directory is ‘clean’ like `make clean` or `mvn clean`
 
 ---
 
-_Issue opened by @aihua on 2026-01-04 17:02_
+_@aihua_
 
 ### Question
 

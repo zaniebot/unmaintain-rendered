@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T17:02:23Z
 updated_at: 2025-09-23T12:12:34Z
 url: https://github.com/astral-sh/uv/issues/15952
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # uv cannot find packages in venv in windows when cache dir was changed
 
 ---
 
-_Issue opened by @Hoshino-Yumetsuki on 2025-09-19 17:02_
+_@Hoshino-Yumetsuki_
 
 ### Summary
 

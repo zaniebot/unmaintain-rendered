@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T20:45:34Z
 updated_at: 2025-01-13T02:40:49Z
 url: https://github.com/astral-sh/uv/issues/10547
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # A way for `uv self update` to respect `required-version`
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2025-01-12 20:45_
+_@nathanjmcdougall_
 
 At the moment, with the following configuration:
 

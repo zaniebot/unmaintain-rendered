@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T08:48:45Z
 updated_at: 2025-05-05T06:26:01Z
 url: https://github.com/astral-sh/uv/issues/12332
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # uv tool list - possiblity to show python versions
 
 ---
 
-_Issue opened by @tkossak on 2025-03-20 08:48_
+_@tkossak_
 
 ### Summary
 

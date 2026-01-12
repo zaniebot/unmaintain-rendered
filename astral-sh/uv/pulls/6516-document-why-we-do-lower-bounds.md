@@ -13,14 +13,14 @@ head: konsti/why-lower-bounds
 created_at: 2024-08-23T14:01:54Z
 updated_at: 2024-08-23T20:28:39Z
 url: https://github.com/astral-sh/uv/pull/6516
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Document why we do lower bounds
 
 ---
 
-_Pull request opened by @konstin on 2024-08-23 14:01_
+_@konstin_
 
 Document in the resolution concept documentation why we add lower bounds
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T10:18:02Z
 updated_at: 2025-08-15T22:00:56Z
 url: https://github.com/astral-sh/uv/issues/15301
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Install non-build-isolation packages in a second phase
 
 ---
 
-_Issue opened by @charliermarsh on 2025-08-15 10:18_
+_@charliermarsh_
 
 This is a nice idea discussed in #15248. I think it's better to _discourage_ build isolation with `extra-build-dependencies`, but this will "do the right thing" in some common cases, like `flash-attn`.
 

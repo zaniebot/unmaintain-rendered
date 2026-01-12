@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T02:00:24Z
 updated_at: 2024-10-21T21:41:14Z
 url: https://github.com/astral-sh/uv/issues/6993
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Undocumented change to workspaces?
 
 ---
 
-_Issue opened by @brynbellomy on 2024-09-04 02:00_
+_@brynbellomy_
 
 I followed the workspaces documentation with versions 0.4.3 and 0.4.4, and it seems that importing modules from the same workspace is broken (perhaps only for certain directory structures?) in recent versions, whereas 0.3.5 worked exactly as expected.
 

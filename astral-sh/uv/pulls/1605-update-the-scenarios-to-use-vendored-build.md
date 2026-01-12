@@ -13,14 +13,14 @@ head: zb/find-links-scenarios
 created_at: 2024-02-17T17:54:59Z
 updated_at: 2024-02-19T21:55:04Z
 url: https://github.com/astral-sh/uv/pull/1605
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Update the scenarios to use vendored build dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-17 17:54_
+_@zanieb_
 
 Uses `--find-links` to discover vendored scenario build dependencies and allows us to use `--index-url` instead of `--extra-index-url` to avoid hitting the real PyPI in scenario tests.
 

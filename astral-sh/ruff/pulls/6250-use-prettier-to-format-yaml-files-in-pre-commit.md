@@ -12,14 +12,14 @@ head: prettier-yaml
 created_at: 2023-08-01T16:12:02Z
 updated_at: 2023-08-01T17:29:04Z
 url: https://github.com/astral-sh/ruff/pull/6250
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use prettier to format yaml files in pre-commit
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-01 16:12_
+_@zanieb_
 
 Prompted by https://github.com/astral-sh/ruff/pull/6248#discussion_r1280855848
 

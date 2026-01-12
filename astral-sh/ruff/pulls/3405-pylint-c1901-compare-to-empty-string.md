@@ -13,14 +13,14 @@ head: C1901
 created_at: 2023-03-08T16:19:21Z
 updated_at: 2023-04-24T15:32:28Z
 url: https://github.com/astral-sh/ruff/pull/3405
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`pylint`] C1901: compare-to-empty-string
 
 ---
 
-_Pull request opened by @AreamanM on 2023-03-08 16:19_
+_@AreamanM_
 
 There's a few finishing touches left to make(docs, diagnostic message,  make the logic a little cleaner) and I think this is autofixable, so if the diagnostic impl itself looks good, I'll have a go at autofix for this as well.
 

@@ -12,14 +12,14 @@ head: stmt-assign
 created_at: 2023-09-03T19:34:19Z
 updated_at: 2023-09-04T01:45:20Z
 url: https://github.com/astral-sh/ruff/pull/7106
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use `OptionalParentheses::Multiline` for certain constants
 
 ---
 
-_Pull request opened by @cnpryer on 2023-09-03 19:34_
+_@cnpryer_
 
 Closes #7067
 

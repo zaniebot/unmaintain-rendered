@@ -14,14 +14,14 @@ head: alex/proto-perf
 created_at: 2025-12-11T19:56:19Z
 updated_at: 2025-12-11T20:25:16Z
 url: https://github.com/astral-sh/ruff/pull/21929
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Improve the performance of equivalence checks between two protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-11 19:56_
+_@AlexWaygood_
 
 ## Summary
 

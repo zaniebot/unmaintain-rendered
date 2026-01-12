@@ -13,14 +13,14 @@ head: charlie/lax
 created_at: 2025-01-20T21:02:14Z
 updated_at: 2025-01-20T21:36:20Z
 url: https://github.com/astral-sh/uv/pull/10789
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Avoid deserialization error for paths above the root
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 21:02_
+_@charliermarsh_
 
 ## Summary
 

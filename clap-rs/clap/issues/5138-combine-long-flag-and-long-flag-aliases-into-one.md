@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-09-25T20:16:00Z
 updated_at: 2023-09-25T20:48:56Z
 url: https://github.com/clap-rs/clap/issues/5138
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Combine long_flag and long_flag_aliases into one API?
 
 ---
 
-_Issue opened by @SUPERCILEX on 2023-09-25 20:16_
+_@SUPERCILEX_
 
 Clap currently has https://docs.rs/clap/latest/clap/struct.Command.html#method.long_flag and https://docs.rs/clap/latest/clap/struct.Command.html#method.long_flag_aliases where `long_flag_aliases` does nothing without `long_flag` being specified. One could add a runtime warning/crash, but it's usually better to make bad states unrepresentable. ~~The proposed solution is to unify these APIs into a `long_flags` method.~~
 

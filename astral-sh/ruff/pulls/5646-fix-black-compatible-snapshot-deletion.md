@@ -12,14 +12,14 @@ head: fix-black-snapshot-deletion
 created_at: 2023-07-10T12:35:53Z
 updated_at: 2023-07-10T13:07:57Z
 url: https://github.com/astral-sh/ruff/pull/5646
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix Black compatible snapshot deletion
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-10 12:35_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

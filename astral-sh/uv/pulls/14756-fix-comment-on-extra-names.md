@@ -13,14 +13,14 @@ head: charlie/args-name
 created_at: 2025-07-20T17:44:17Z
 updated_at: 2025-07-20T17:53:37Z
 url: https://github.com/astral-sh/uv/pull/14756
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Fix comment on `extra_names`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 17:44_
+_@charliermarsh_
 
 _No description provided._
 

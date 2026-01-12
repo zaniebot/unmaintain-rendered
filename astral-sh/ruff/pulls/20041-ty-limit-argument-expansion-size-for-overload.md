@@ -13,14 +13,14 @@ head: dhruv/limit-argument-expansion-size
 created_at: 2025-08-22T09:26:12Z
 updated_at: 2025-08-25T09:43:18Z
 url: https://github.com/astral-sh/ruff/pull/20041
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Limit argument expansion size for overload call evaluation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-22 09:26_
+_@dhruvmanila_
 
 ## Summary
 

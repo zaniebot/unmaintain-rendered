@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T16:49:20Z
 updated_at: 2024-08-20T00:28:22Z
 url: https://github.com/astral-sh/uv/issues/6212
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Python interpreter download is a bottleneck 
 
 ---
 
-_Issue opened by @konstin on 2024-08-19 16:49_
+_@konstin_
 
 When performing an uncached install, the majority of the time is spent on waiting for python to download and unpack. This download is a bottleneck, because nothing else happens in parallel. We should parallelize the python download to run in parallel with package downloads and unpacks, while stalling package builds. We have to add the interpreter info for each interpreter we can download to uv (or make it available online) so we start evaluating wheel tags without having a physical interpreter.
 

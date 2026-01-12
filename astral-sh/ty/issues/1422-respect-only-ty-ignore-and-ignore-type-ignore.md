@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T16:07:08Z
 updated_at: 2025-12-23T07:36:52Z
 url: https://github.com/astral-sh/ty/issues/1422
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Respect only `ty:ignore` and ignore `type:ignore`
 
 ---
 
-_Issue opened by @nth10sd on 2025-10-23 16:07_
+_@nth10sd_
 
 ### Question
 

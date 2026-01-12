@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T07:04:29Z
 updated_at: 2023-11-25T17:57:16Z
 url: https://github.com/astral-sh/ruff/issues/6930
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `no-indented-block` (`E112`) false positive on docstring followed by comment
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-28 07:04_
+_@DetachHead_
 
 ```py
 def asdf():

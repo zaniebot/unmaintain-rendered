@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-19T19:06:18Z
 updated_at: 2025-02-23T13:56:46Z
 url: https://github.com/astral-sh/ruff/issues/3040
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PyCharm inspections
 
 ---
 
-_Issue opened by @matthewlloyd on 2023-02-19 19:06_
+_@matthewlloyd_
 
 (Opening a new issue to continue the discussion from #2972 which will be closed by https://github.com/charliermarsh/ruff/pull/3022)
 

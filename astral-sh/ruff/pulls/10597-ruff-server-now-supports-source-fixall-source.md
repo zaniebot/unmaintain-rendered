@@ -13,14 +13,14 @@ head: jane/server/code-actions/source-level
 created_at: 2024-03-26T05:15:45Z
 updated_at: 2024-04-03T16:26:34Z
 url: https://github.com/astral-sh/ruff/pull/10597
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` now supports `source.fixAll` source action
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-26 05:15_
+_@snowsignal_
 
 ## Summary
 

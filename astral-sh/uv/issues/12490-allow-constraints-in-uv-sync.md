@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T15:19:45Z
 updated_at: 2025-12-11T23:09:34Z
 url: https://github.com/astral-sh/uv/issues/12490
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Allow `--constraints` in `uv sync`
 
 ---
 
-_Issue opened by @D3nn3 on 2025-03-26 15:19_
+_@D3nn3_
 
 ### Summary
 

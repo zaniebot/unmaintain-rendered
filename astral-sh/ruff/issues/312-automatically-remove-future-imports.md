@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T22:22:07Z
 updated_at: 2022-11-12T16:28:06Z
 url: https://github.com/astral-sh/ruff/issues/312
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically remove __future__ imports
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 22:22_
+_@charliermarsh_
 
 This may require adding target Python versions to the configuration settings.
 

@@ -12,14 +12,14 @@ head: txt_str_alias
 created_at: 2022-12-26T19:44:12Z
 updated_at: 2022-12-27T00:55:42Z
 url: https://github.com/astral-sh/ruff/pull/1391
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Now replace typing.Text with str
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-26 19:44_
+_@colin99d_
 
 This PR allows typing.Text with str, as requested on #827. This upgrade will NOT remove the import of typing.Text (I checked and pyupgrade does not remove the import, so I kept with what they did).
 

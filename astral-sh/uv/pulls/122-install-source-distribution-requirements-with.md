@@ -12,14 +12,14 @@ head: build-with-puffin-install
 created_at: 2023-10-18T19:06:51Z
 updated_at: 2023-10-18T19:11:18Z
 url: https://github.com/astral-sh/uv/pull/122
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Install source distribution requirements with puffin itself instead of pip
 
 ---
 
-_Pull request opened by @konstin on 2023-10-18 19:06_
+_@konstin_
 
 This is also a lot faster. Unfortunately it copies a lot of code from the sync cli since the `Printer` is private.
 

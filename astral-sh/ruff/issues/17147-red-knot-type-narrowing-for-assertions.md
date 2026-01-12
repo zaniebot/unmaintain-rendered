@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T11:28:02Z
 updated_at: 2025-04-10T14:15:53Z
 url: https://github.com/astral-sh/ruff/issues/17147
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Type narrowing for assertions
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-02 11:28_
+_@sharkdp_
 
 It is fairly common (often in test code, but also in regular code) to use `assert`ions to encode invariants that are hard/impossible to detect statically. So we should be able to perform type narrowing via `assert` statements:
 

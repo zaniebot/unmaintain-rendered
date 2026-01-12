@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T13:37:42Z
 updated_at: 2023-06-04T02:03:38Z
 url: https://github.com/astral-sh/ruff/issues/4832
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # pep8-naming: configuring classmethod-decorators
 
 ---
 
-_Issue opened by @olliemath on 2023-06-03 13:37_
+_@olliemath_
 
 # Issue
 

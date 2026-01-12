@@ -13,14 +13,14 @@ head: fix-callable-union-display
 created_at: 2025-03-22T00:34:51Z
 updated_at: 2025-03-22T12:21:20Z
 url: https://github.com/astral-sh/ruff/pull/16907
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Fix disambiguate display for union types
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-22 00:34_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-17T18:57:56Z
 updated_at: 2024-09-17T20:16:02Z
 url: https://github.com/clap-rs/clap/issues/5730
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Bash outputs everything as one completion, rather than a list of completions
 
 ---
 
-_Issue opened by @epage on 2024-09-17 18:57_
+_@epage_
 
 This is with `clap_complete` 4.5.26, reproduced with `cargo` and the `exhaustive` example
 

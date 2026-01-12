@@ -13,14 +13,14 @@ head: zb/tc-doc-install
 created_at: 2025-12-16T15:09:41Z
 updated_at: 2025-12-16T15:17:16Z
 url: https://github.com/astral-sh/ty/pull/1939
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Include a ref to the installation document in the type checking guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 15:09_
+_@zanieb_
 
 _No description provided._
 

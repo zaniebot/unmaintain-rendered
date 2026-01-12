@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-13T11:38:02Z
 updated_at: 2022-10-13T12:12:19Z
 url: https://github.com/clap-rs/clap/issues/4379
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Error message quality regresssion from clap2 to clap3/4
 
 ---
 
-_Issue opened by @matklad on 2022-10-13 11:38_
+_@matklad_
 
 ### Please complete the following tasks
 

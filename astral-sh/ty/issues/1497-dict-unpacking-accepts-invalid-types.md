@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-06T23:09:33Z
 updated_at: 2025-11-07T04:11:38Z
 url: https://github.com/astral-sh/ty/issues/1497
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Dict unpacking accepts invalid types
 
 ---
 
-_Issue opened by @refi64 on 2025-11-06 23:09_
+_@refi64_
 
 ### Summary
 

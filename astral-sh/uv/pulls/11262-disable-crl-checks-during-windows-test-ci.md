@@ -12,14 +12,14 @@ head: zb/windows-no-revoke
 created_at: 2025-02-05T20:48:59Z
 updated_at: 2025-02-10T23:49:40Z
 url: https://github.com/astral-sh/uv/pull/11262
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Disable CRL checks during Windows test CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 20:48_
+_@zanieb_
 
 Resolving
 

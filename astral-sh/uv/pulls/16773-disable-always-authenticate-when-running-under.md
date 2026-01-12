@@ -12,14 +12,14 @@ head: zb/authenticate
 created_at: 2025-11-18T19:18:39Z
 updated_at: 2025-11-19T02:53:01Z
 url: https://github.com/astral-sh/uv/pull/16773
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Disable always-authenticate when running under Dependabot
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-18 19:18_
+_@zanieb_
 
 Dependabot appears to run a proxy which intercepts all requests and adds credentials — credentials are _not_ provided via the CLI or environment variables and there's no way for a user to do so. This means that when `authenticate = "always"` is used (or when the index URL is on a pyx domain), uv will fail even though Dependabot may intercept the request and add credentials.
 

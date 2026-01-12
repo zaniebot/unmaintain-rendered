@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T17:22:33Z
 updated_at: 2024-09-10T21:31:41Z
 url: https://github.com/astral-sh/uv/issues/7261
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `source venv/bin/activate` overrides a direct `uv` call
 
 ---
 
-_Issue opened by @jsonar-cpapke on 2024-09-10 17:22_
+_@jsonar-cpapke_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

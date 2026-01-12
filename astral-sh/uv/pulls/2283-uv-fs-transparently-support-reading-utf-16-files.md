@@ -14,14 +14,14 @@ head: ag/read-utf16
 created_at: 2024-03-07T18:05:50Z
 updated_at: 2024-03-08T15:51:50Z
 url: https://github.com/astral-sh/uv/pull/2283
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # uv-fs: transparently support reading UTF-16 files
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-07 18:05_
+_@BurntSushi_
 
 This PR tweaks uv to support reading `requirements.txt` regardless of
 whether it is encoded as UTF-8 or UTF-16. This is particularly relevant

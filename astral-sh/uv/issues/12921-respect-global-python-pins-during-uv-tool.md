@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T16:14:06Z
 updated_at: 2025-05-23T07:05:16Z
 url: https://github.com/astral-sh/uv/issues/12921
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Respect --global Python pins during uv tool operations
 
 ---
 
-_Issue opened by @jtfmumm on 2025-04-16 16:14_
+_@jtfmumm_
 
 We currently support pinning a global Python version via `uv python pin 3.12 --global`. But `uv tool` operations do not use this global pin. They should also respect the global pin (when a local Python version pin is not found in the working directory or an ancestor directory).
 

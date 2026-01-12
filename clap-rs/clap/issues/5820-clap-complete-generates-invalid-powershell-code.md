@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-11-15T22:06:36Z
 updated_at: 2025-01-27T15:21:12Z
 url: https://github.com/clap-rs/clap/issues/5820
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_complete generates invalid powershell code when docs have RIGHT_SINGLE_QUOTATION_MARK
 
 ---
 
-_Issue opened by @fnando on 2024-11-15 22:06_
+_@fnando_
 
 ### Please complete the following tasks
 

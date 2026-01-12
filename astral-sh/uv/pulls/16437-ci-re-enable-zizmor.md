@@ -12,14 +12,14 @@ head: ww/reenable-zizmor
 created_at: 2025-10-24T15:01:04Z
 updated_at: 2025-10-24T15:34:35Z
 url: https://github.com/astral-sh/uv/pull/16437
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # ci: re-enable zizmor
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-24 15:01_
+_@woodruffw_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: test
 created_at: 2025-02-19T17:47:37Z
 updated_at: 2025-02-19T17:53:17Z
 url: https://github.com/clap-rs/clap/pull/5918
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # test(parser): Correct misleading test names
 
 ---
 
-_Pull request opened by @epage on 2025-02-19 17:47_
+_@epage_
 
 <!--
 Thanks for helping out!

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-23T01:42:02Z
 updated_at: 2023-07-23T03:13:12Z
 url: https://github.com/astral-sh/ruff/issues/6000
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive ISC001 in unmatched f-string
 
 ---
 
-_Issue opened by @janosh on 2023-07-23 01:42_
+_@janosh_
 
 Never mind that this thing raises a SyntaxError, it also triggers [ISC001](https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation).
 

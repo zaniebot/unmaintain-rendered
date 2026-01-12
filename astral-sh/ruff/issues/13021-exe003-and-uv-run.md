@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T04:16:13Z
 updated_at: 2025-03-19T16:53:11Z
 url: https://github.com/astral-sh/ruff/issues/13021
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # EXE003 and uv run?
 
 ---
 
-_Issue opened by @fschulze on 2024-08-21 04:16_
+_@fschulze_
 
 Should EXE003 be extended for ``uv run``?
 

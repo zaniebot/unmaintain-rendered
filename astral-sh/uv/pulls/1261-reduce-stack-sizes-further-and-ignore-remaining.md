@@ -14,14 +14,14 @@ head: konsti/even-more-stack-sizes
 created_at: 2024-02-06T21:39:39Z
 updated_at: 2024-02-06T22:08:19Z
 url: https://github.com/astral-sh/uv/pull/1261
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Reduce stack sizes further and ignore remaining tests
 
 ---
 
-_Pull request opened by @konstin on 2024-02-06 21:39_
+_@konstin_
 
 This PR reduces the stack sizes a windows a little further using the stack traces from stack overflows combined with looking at the type sizes. Ultimately, it ignore the three remaining tests failing in debug on windows due to stack overflows to unblock `cargo test` for windows on CI.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T21:44:30Z
 updated_at: 2025-12-04T23:09:50Z
 url: https://github.com/astral-sh/ty/issues/1763
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `__builtins__` as the `builtins` module, instead of `Any`
 
 ---
 
-_Issue opened by @jorenham on 2025-12-04 21:44_
+_@jorenham_
 
 this follows https://github.com/astral-sh/ty/issues/393, which added partial support for `__builtins__` by having it resolve to `Any`:
 

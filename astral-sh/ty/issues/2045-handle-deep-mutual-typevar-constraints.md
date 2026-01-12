@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T00:42:15Z
 updated_at: 2025-12-18T00:42:30Z
 url: https://github.com/astral-sh/ty/issues/2045
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Handle "deep" mutual typevar constraints
 
 ---
 
-_Issue opened by @dcreager on 2025-12-18 00:42_
+_@dcreager_
 
 Pulling this out from https://github.com/astral-sh/ruff/pull/21551#discussion_r2566717765 into a standalone issue.
 

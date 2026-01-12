@@ -13,14 +13,14 @@ head: alex/any-meta-type
 created_at: 2024-12-12T18:54:54Z
 updated_at: 2024-12-12T19:55:13Z
 url: https://github.com/astral-sh/ruff/pull/14942
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Fixes to `Type::to_meta_type`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-12 18:54_
+_@AlexWaygood_
 
 ## Summary
 

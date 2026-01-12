@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T14:35:44Z
 updated_at: 2026-01-09T13:53:39Z
 url: https://github.com/astral-sh/ty/issues/940
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # improve diagnostics for possibly-unbound call-dunder with union
 
 ---
 
-_Issue opened by @carljm on 2025-08-05 14:35_
+_@carljm_
 
 When we have an implicit dunder call with a union type, where some types in the union implement the dunder and others do not, we currently report an error that the dunder methods are possibly unbound: https://play.ty.dev/e412c8da-cc72-47b5-af98-9db45800ff73
 

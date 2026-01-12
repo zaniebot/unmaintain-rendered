@@ -13,14 +13,14 @@ head: msrv
 created_at: 2024-11-06T05:24:50Z
 updated_at: 2024-11-07T03:07:44Z
 url: https://github.com/astral-sh/uv/pull/8855
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add MSRV build to CI
 
 ---
 
-_Pull request opened by @j178 on 2024-11-06 05:24_
+_@j178_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: 12638/dependency-object-specifier
 created_at: 2025-04-10T16:27:38Z
 updated_at: 2025-04-10T20:59:09Z
 url: https://github.com/astral-sh/uv/pull/12811
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # feat: Error on dependency object specifier
 
 ---
 
-_Pull request opened by @kiran-4444 on 2025-04-10 16:27_
+_@kiran-4444_
 
 ## Summary
 

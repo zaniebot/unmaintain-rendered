@@ -13,14 +13,14 @@ head: ag/couple-file-with-range
 created_at: 2025-02-11T18:02:31Z
 updated_at: 2025-02-11T19:55:15Z
 url: https://github.com/astral-sh/ruff/pull/16101
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # add diagnostic `Span` (couples `File` and `TextRange`)
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-11 18:02_
+_@BurntSushi_
 
 This essentially makes it impossible to construct a `Diagnostic`
 that has a `TextRange` but no `File`.

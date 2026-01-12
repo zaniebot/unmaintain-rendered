@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T16:13:27Z
 updated_at: 2023-11-08T10:54:15Z
 url: https://github.com/astral-sh/ruff/issues/1820
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Splitting up the `ruff_linter` crate for faster compile times
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-12 16:13_
+_@not-my-profile_
 
 @squiddy commented on #1547 with:
 

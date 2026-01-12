@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-05T13:20:00Z
 updated_at: 2025-09-28T13:45:04Z
 url: https://github.com/astral-sh/uv/issues/15702
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # 🐛 Bug: `uv build` fails with invalid Python module path with no clear error message
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-09-05 13:20_
+_@DhavalGojiya_
 
 ### Summary
 

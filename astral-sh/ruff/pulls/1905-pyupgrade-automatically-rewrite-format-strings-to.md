@@ -12,14 +12,14 @@ head: fstrings
 created_at: 2023-01-16T03:11:34Z
 updated_at: 2023-01-17T04:06:40Z
 url: https://github.com/astral-sh/ruff/pull/1905
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [pyupgrade] Automatically rewrite format-strings to f-strings
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-16 03:11_
+_@colin99d_
 
 Draft opened for visibility. This is a part of #827. This PR is currently affected by the \N{emoji} bug that we are searching for a fix for.
 

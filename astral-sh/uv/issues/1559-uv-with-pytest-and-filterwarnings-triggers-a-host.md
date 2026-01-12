@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-17T01:23:02Z
 updated_at: 2024-03-05T03:35:26Z
 url: https://github.com/astral-sh/uv/issues/1559
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv` with `pytest` and `filterwarnings` triggers a host of `SyntaxWarning`s as errors; `pip-tools` does not
 
 ---
 
-_Issue opened by @dycw on 2024-02-17 01:23_
+_@dycw_
 
 I've made a [repo](https://github.com/dycw/test-pip-tools-vs-uv) to demonstrate this, as it tests a few setups.
 

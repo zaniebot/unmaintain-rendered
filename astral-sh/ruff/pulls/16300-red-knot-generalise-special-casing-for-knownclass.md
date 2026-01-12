@@ -13,14 +13,14 @@ head: alex/type-bool-generalise
 created_at: 2025-02-21T11:48:53Z
 updated_at: 2025-02-21T20:46:39Z
 url: https://github.com/astral-sh/ruff/pull/16300
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Generalise special-casing for `KnownClass`es in `Type::bool`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-21 11:48_
+_@AlexWaygood_
 
 ## Summary
 

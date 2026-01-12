@@ -13,14 +13,14 @@ head: charlie/copy
 created_at: 2024-11-30T15:36:59Z
 updated_at: 2024-11-30T19:07:09Z
 url: https://github.com/astral-sh/uv/pull/9542
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Make `MarkerTree` `Copy`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-30 15:36_
+_@charliermarsh_
 
 ## Summary
 

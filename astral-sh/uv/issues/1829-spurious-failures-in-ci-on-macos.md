@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T20:57:04Z
 updated_at: 2024-06-27T12:07:48Z
 url: https://github.com/astral-sh/uv/issues/1829
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Spurious failures in CI on macOS
 
 ---
 
-_Issue opened by @zanieb on 2024-02-21 20:57_
+_@zanieb_
 
 7 tests failed with
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T23:22:13Z
 updated_at: 2024-09-06T01:41:09Z
 url: https://github.com/astral-sh/uv/issues/7105
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # When I click `Docs ⌄` from the blog I'm taken to the ruff docs, but I was looking for the uv docs
 
 ---
 
-_Issue opened by @notatallshaw on 2024-09-05 23:22_
+_@notatallshaw_
 
 1. Go to https://astral.sh/blog
 2. Click here:

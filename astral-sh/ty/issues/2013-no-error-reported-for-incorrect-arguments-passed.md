@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T14:16:39Z
 updated_at: 2026-01-08T07:09:49Z
 url: https://github.com/astral-sh/ty/issues/2013
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # No error reported for incorrect arguments passed to function generic over a `ParamSpec`
 
 ---
 
-_Issue opened by @WillDuke on 2025-12-17 14:16_
+_@WillDuke_
 
 ### Summary
 

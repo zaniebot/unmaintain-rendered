@@ -14,14 +14,14 @@ head: david/statically-known-branches
 created_at: 2024-12-03T15:07:47Z
 updated_at: 2025-01-23T16:50:15Z
 url: https://github.com/astral-sh/ruff/pull/14759
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Statically known branches (first take)
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-03 15:07_
+_@sharkdp_
 
 ## Summary
 

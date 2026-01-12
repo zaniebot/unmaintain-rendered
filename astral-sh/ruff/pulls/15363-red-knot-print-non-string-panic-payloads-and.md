@@ -13,14 +13,14 @@ head: dcreager/panic-payload
 created_at: 2025-01-08T22:59:17Z
 updated_at: 2025-01-09T09:24:50Z
 url: https://github.com/astral-sh/ruff/pull/15363
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Print non-string panic payloads and (sometimes) backtraces
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-08 22:59_
+_@dcreager_
 
 More refinements to the panic messages for failing mdtests to mimic the output of the default panic hook more closely:
 

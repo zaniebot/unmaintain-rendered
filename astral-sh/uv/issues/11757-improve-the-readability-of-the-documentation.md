@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-24T20:09:58Z
 updated_at: 2025-02-25T10:08:17Z
 url: https://github.com/astral-sh/uv/issues/11757
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Improve the readability of the documentation navigation
 
 ---
 
-_Issue opened by @zanieb on 2025-02-24 20:09_
+_@zanieb_
 
 Split out from https://github.com/astral-sh/uv/issues/5605#issuecomment-2673805201
 

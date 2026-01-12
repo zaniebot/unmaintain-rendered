@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T19:01:33Z
 updated_at: 2025-10-17T00:48:32Z
 url: https://github.com/astral-sh/uv/issues/7515
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Automate updating of minimum dependencies based on time since initial minor release 
 
 ---
 
-_Issue opened by @namurphy on 2024-09-18 19:01_
+_@namurphy_
 
 ## Feature request
 

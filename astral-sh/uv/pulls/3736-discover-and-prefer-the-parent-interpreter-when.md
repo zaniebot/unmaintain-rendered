@@ -13,14 +13,14 @@ head: zb/parent-interp
 created_at: 2024-05-22T14:12:33Z
 updated_at: 2024-05-22T16:34:25Z
 url: https://github.com/astral-sh/uv/pull/3736
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Discover and prefer the parent interpreter when invoked with `python -m uv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 14:12_
+_@zanieb_
 
 Closes #2222
 Closes https://github.com/astral-sh/uv/issues/2058

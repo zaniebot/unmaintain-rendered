@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T15:56:28Z
 updated_at: 2025-02-16T18:06:56Z
 url: https://github.com/astral-sh/ruff/issues/16188
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add `usedforsecurity=False` flag to `S324` docs
 
 ---
 
-_Issue opened by @Skylion007 on 2025-02-16 15:56_
+_@Skylion007_
 
 ### Description
 

@@ -13,14 +13,14 @@ head: charlie/local-test
 created_at: 2024-03-14T18:17:35Z
 updated_at: 2024-03-14T20:13:48Z
 url: https://github.com/astral-sh/uv/pull/2462
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Update packse to pull in additional local version tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-14 18:17_
+_@charliermarsh_
 
 Precursor to #2430.
 

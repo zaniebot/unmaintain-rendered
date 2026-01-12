@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T16:53:40Z
 updated_at: 2025-06-05T11:13:38Z
 url: https://github.com/astral-sh/uv/issues/13843
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # A package (`RoboVerse`) can only be installed with editable flag with `uv add` but can be installed with both editable and no-editable flag with `uv pip install`.
 
 ---
 
-_Issue opened by @YouJiacheng on 2025-06-04 16:53_
+_@YouJiacheng_
 
 ### Summary
 

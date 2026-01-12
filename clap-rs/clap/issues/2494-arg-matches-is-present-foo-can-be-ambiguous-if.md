@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-20T17:54:12Z
 updated_at: 2021-05-25T23:40:49Z
 url: https://github.com/clap-rs/clap/issues/2494
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # arg_matches.is_present("foo") can be ambiguous if there are an arg and a subcommand named foo
 
 ---
 
-_Issue opened by @felipesere on 2021-05-20 17:54_
+_@felipesere_
 
 ### Please complete the following tasks
 

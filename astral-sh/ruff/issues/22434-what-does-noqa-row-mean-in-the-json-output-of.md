@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T09:38:21Z
 updated_at: 2026-01-07T09:42:26Z
 url: https://github.com/astral-sh/ruff/issues/22434
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # What does `noqa_row` mean in the json output of `ruff check`?
 
 ---
 
-_Issue opened by @peanutfun on 2026-01-07 09:38_
+_@peanutfun_
 
 ### Question
 

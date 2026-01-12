@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-04T12:45:35Z
 updated_at: 2024-06-04T13:21:47Z
 url: https://github.com/astral-sh/uv/issues/4013
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # No warning is output even if parsing the workspace settings fails.
 
 ---
 
-_Issue opened by @Di-Is on 2024-06-04 12:45_
+_@Di-Is_
 
 The implementation has been designed to output a warning if the parsing of the workspace configuration files (pyproject.toml/uv.toml) fails.
 

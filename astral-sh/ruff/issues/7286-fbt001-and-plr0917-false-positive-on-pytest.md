@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T04:46:21Z
 updated_at: 2025-01-05T10:03:20Z
 url: https://github.com/astral-sh/ruff/issues/7286
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `FBT001` and `PLR0917` - false positive on pytest functions
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-12 04:46_
+_@DetachHead_
 
 ```py
 # test_foo.py

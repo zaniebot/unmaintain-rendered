@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-21T18:14:32Z
 updated_at: 2025-07-25T02:05:34Z
 url: https://github.com/astral-sh/ty/issues/865
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Server panics when encountering invalid syntax related to `Callable` annotations
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-21 18:14_
+_@AlexWaygood_
 
 ### Summary
 

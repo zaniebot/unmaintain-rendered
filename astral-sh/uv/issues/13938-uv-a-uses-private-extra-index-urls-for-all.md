@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T02:39:26Z
 updated_at: 2025-06-13T12:21:19Z
 url: https://github.com/astral-sh/uv/issues/13938
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # uv a uses private extra index URLs for all packages in the uv.lock instead of the main index URL
 
 ---
 
-_Issue opened by @Ark-kun on 2025-06-10 02:39_
+_@Ark-kun_
 
 ### Summary
 

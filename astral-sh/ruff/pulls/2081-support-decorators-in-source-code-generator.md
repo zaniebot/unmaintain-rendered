@@ -12,14 +12,14 @@ head: charlie/decorator
 created_at: 2023-01-22T04:23:07Z
 updated_at: 2023-01-22T04:26:34Z
 url: https://github.com/astral-sh/ruff/pull/2081
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Support decorators in source code generator
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-22 04:23_
+_@charliermarsh_
 
 _No description provided._
 

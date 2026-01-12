@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-20T00:26:00Z
 updated_at: 2024-02-20T05:14:28Z
 url: https://github.com/astral-sh/uv/issues/1723
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # pip compile: --prerelease and/or --extra-index-url not getting correct dependency version
 
 ---
 
-_Issue opened by @sebslight on 2024-02-20 00:26_
+_@sebslight_
 
 
 

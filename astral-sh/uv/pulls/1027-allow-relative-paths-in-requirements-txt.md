@@ -13,14 +13,14 @@ head: charlie/relative
 created_at: 2024-01-20T19:22:08Z
 updated_at: 2024-02-22T20:36:05Z
 url: https://github.com/astral-sh/uv/pull/1027
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Allow relative paths in requirements.txt
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-20 19:22_
+_@charliermarsh_
 
 This PR attempts to fix a common footgun in `requirements.txt` files. Previously, to provide a file, you had to use `package_name @ file:///Users/crmarsh/...` -- in other words, an absolute path.
 

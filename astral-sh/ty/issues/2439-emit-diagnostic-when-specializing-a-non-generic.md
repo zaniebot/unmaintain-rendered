@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-11T03:56:05Z
 updated_at: 2026-01-12T09:35:18Z
 url: https://github.com/astral-sh/ty/issues/2439
-synced_at: 2026-01-12T09:56:38Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostic when specializing a non-generic class
 
 ---
 
-_Issue opened by @tamireinhorn on 2026-01-11 03:56_
+_@tamireinhorn_
 
 I wrote a function like:
 ```py

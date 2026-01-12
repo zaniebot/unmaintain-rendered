@@ -13,14 +13,14 @@ head: zb/build-bins
 created_at: 2024-12-10T23:03:58Z
 updated_at: 2024-12-11T02:13:37Z
 url: https://github.com/astral-sh/uv/pull/9792
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Test binary builds on `Cargo.lock` changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 23:03_
+_@zanieb_
 
 This would be helpful to know if the regression was caused by a dependency update.
 

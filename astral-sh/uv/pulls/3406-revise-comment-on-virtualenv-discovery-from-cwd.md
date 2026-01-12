@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-05-06T13:56:33Z
 updated_at: 2024-05-06T14:07:12Z
 url: https://github.com/astral-sh/uv/pull/3406
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Revise comment on virtualenv discovery from cwd
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-06 13:56_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/3379/files/37d229b2c2e849370d3ff0fa858bd7837c3b6cf6..cd53a28181fd0de3c02e849ceda1038f2c34a3c5#r1590746360
 

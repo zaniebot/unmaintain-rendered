@@ -12,14 +12,14 @@ head: charlie/useless-iii
 created_at: 2023-04-01T03:10:00Z
 updated_at: 2023-04-01T04:07:22Z
 url: https://github.com/astral-sh/ruff/pull/3841
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Combine `operations.rs` and `helpers.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 03:10_
+_@charliermarsh_
 
 I despise both of these files, but it's confusing that they both exist, since they both contain arbitrary collections of utilities. This PR just combines them to remove _that_ confusion, though all of these utilities need to be properly categorized.
 

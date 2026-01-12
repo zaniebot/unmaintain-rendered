@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-27T08:10:20Z
 updated_at: 2025-08-27T14:35:15Z
 url: https://github.com/clap-rs/clap/issues/6112
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Invalid completion generation for nushell when option is of style `--option.suboption <value>`
 
 ---
 
-_Issue opened by @0xferrous on 2025-08-27 08:10_
+_@0xferrous_
 
 ### Please complete the following tasks
 

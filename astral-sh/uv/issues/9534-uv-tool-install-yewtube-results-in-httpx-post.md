@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T22:52:50Z
 updated_at: 2025-01-29T15:37:27Z
 url: https://github.com/astral-sh/uv/issues/9534
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # uv tool install yewtube results in httpx post failure
 
 ---
 
-_Issue opened by @feoh on 2024-11-29 22:52_
+_@feoh_
 
 OS: MacOS Sonoma 14.6.1
 UV version:

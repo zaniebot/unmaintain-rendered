@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T10:38:50Z
 updated_at: 2024-05-07T09:06:21Z
 url: https://github.com/astral-sh/ruff/issues/11306
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff removes valid noqa blocks
 
 ---
 
-_Issue opened by @sandeshhardikar on 2024-05-06 10:38_
+_@sandeshhardikar_
 
 Hello ,
 

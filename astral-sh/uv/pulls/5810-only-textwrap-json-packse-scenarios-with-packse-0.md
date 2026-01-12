@@ -13,14 +13,14 @@ head: konsti/packse-textwrap
 created_at: 2024-08-06T09:20:13Z
 updated_at: 2024-08-08T13:49:53Z
 url: https://github.com/astral-sh/uv/pull/5810
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Only textwrap json packse scenarios with packse 0.3.32
 
 ---
 
-_Pull request opened by @konstin on 2024-08-06 09:20_
+_@konstin_
 
 Companion change to https://github.com/astral-sh/packse/pull/205 to correctly format lock scenario doc comments.
 

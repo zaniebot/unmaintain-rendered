@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T16:34:39Z
 updated_at: 2025-01-16T23:48:54Z
 url: https://github.com/astral-sh/ruff/issues/15508
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] `type & ~Literal[True] & bool` should simplify to `Never`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-15 16:34_
+_@AlexWaygood_
 
 ...but we currently don't do that.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T14:21:43Z
 updated_at: 2024-11-05T13:28:47Z
 url: https://github.com/astral-sh/uv/issues/8765
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # precommit-hook: Syntax checker for pyproject.toml - equivalent for "poetry check"
 
 ---
 
-_Issue opened by @woutervh on 2024-11-02 14:21_
+_@woutervh_
 
 Using uv 0.4.29
 

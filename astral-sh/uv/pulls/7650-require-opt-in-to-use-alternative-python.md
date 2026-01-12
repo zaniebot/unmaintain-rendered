@@ -13,14 +13,14 @@ head: zb/pypy-managed
 created_at: 2024-09-23T23:40:10Z
 updated_at: 2024-09-24T17:54:07Z
 url: https://github.com/astral-sh/uv/pull/7650
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Require opt-in to use alternative Python implementations
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-23 23:40_
+_@zanieb_
 
 Closes #7118 
 

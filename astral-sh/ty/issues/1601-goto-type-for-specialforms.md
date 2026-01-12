@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T15:25:13Z
 updated_at: 2025-11-20T18:14:31Z
 url: https://github.com/astral-sh/ty/issues/1601
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # goto-type for SpecialForms
 
 ---
 
-_Issue opened by @Gankra on 2025-11-20 15:25_
+_@Gankra_
 
 Point of terminology: goto-definition, goto-declaration, and goto-type are 3 different operations with very similar behaviour. cmd+click prefers those options in that order, if they have a result. goto-type has been a bit neglected because it's the last in the chain, and so users largely don't interact with it.
 

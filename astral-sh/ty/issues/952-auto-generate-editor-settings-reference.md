@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T13:56:58Z
 updated_at: 2025-08-08T06:58:41Z
 url: https://github.com/astral-sh/ty/issues/952
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Auto-generate editor settings reference
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-08-07 13:56_
+_@dhruvmanila_
 
 Currently, the editor settings reference are being manually added and updated: https://docs.astral.sh/ty/reference/editor-settings/
 

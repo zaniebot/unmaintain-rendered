@@ -12,14 +12,14 @@ head: 17462-fix-constructor-calls-on-classes-with-metaclasses
 created_at: 2025-04-28T01:50:44Z
 updated_at: 2025-04-30T15:27:34Z
 url: https://github.com/astral-sh/ruff/pull/17662
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Fix constructor calls on classes with metaclasses 
 
 ---
 
-_Pull request opened by @mishamsk on 2025-04-28 01:50_
+_@mishamsk_
 
 ## Summary
 

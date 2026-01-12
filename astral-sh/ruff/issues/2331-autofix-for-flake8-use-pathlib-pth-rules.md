@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T23:44:48Z
 updated_at: 2025-08-20T18:35:48Z
 url: https://github.com/astral-sh/ruff/issues/2331
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # autofix for flake8-use-pathlib (PTH) rules
 
 ---
 
-_Issue opened by @LefterisJP on 2023-01-29 23:44_
+_@LefterisJP_
 
 I enabled PTH rules and there was a few hits in rotki's codebase.
 

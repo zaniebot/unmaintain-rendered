@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-08-13T19:27:22Z
 updated_at: 2022-08-06T00:22:52Z
 url: https://github.com/clap-rs/clap/issues/2687
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Remove magic arg type in `Args`
 
 ---
 
-_Issue opened by @epage on 2021-08-13 19:27_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2674
 

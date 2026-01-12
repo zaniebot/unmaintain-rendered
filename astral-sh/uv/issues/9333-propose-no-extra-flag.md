@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T18:04:01Z
 updated_at: 2024-11-27T21:29:20Z
 url: https://github.com/astral-sh/uv/issues/9333
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Propose `--no-extra` Flag
 
 ---
 
-_Issue opened by @paultreadel on 2024-11-21 18:04_
+_@paultreadel_
 
 The new conflicting depencies handling introduced in 0.5.3 is great.  Able to solve several project challenges with it.
 

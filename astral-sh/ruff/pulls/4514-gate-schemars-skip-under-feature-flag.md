@@ -12,14 +12,14 @@ head: charlie/skip
 created_at: 2023-05-19T02:54:16Z
 updated_at: 2023-05-19T03:22:08Z
 url: https://github.com/astral-sh/ruff/pull/4514
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Gate `schemars` skip under feature flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-19 02:54_
+_@charliermarsh_
 
 This snuck in due to merging against a non-updated main.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T15:46:05Z
 updated_at: 2023-01-04T15:46:05Z
 url: https://github.com/astral-sh/ruff/issues/1632
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add rule to detect type annotations as default variable assignments
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-04 15:46_
+_@charliermarsh_
 
 See the thread [here](https://twitter.com/samuel_colvin/status/1610420303028707328).
 

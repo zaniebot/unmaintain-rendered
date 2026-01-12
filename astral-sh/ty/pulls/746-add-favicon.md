@@ -13,14 +13,14 @@ head: zb/docs-ii-favico
 created_at: 2025-07-01T16:59:35Z
 updated_at: 2025-07-01T19:17:17Z
 url: https://github.com/astral-sh/ty/pull/746
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add favicon
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 16:59_
+_@zanieb_
 
 This needs to be the Astral icon since all of the documentation pages are on the same subdomain
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T13:19:39Z
 updated_at: 2025-12-23T21:42:01Z
 url: https://github.com/astral-sh/ty/issues/2069
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # functool partial and jax jit decorator interfere with argument types of function
 
 ---
 
-_Issue opened by @chris-RNG on 2025-12-18 13:19_
+_@chris-RNG_
 
 ### Summary
 

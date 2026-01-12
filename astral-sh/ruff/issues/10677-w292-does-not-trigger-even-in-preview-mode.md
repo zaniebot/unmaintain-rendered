@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T23:25:49Z
 updated_at: 2024-04-01T03:44:48Z
 url: https://github.com/astral-sh/ruff/issues/10677
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # W292 does not trigger even in preview mode
 
 ---
 
-_Issue opened by @yrahul3910 on 2024-03-30 23:25_
+_@yrahul3910_
 
 I want to configure Ruff so that it ensures one empty newline at the end of each file in Python. This should be `W292` (`missing-newline-at-end-of-file`), and is implemented in preview mode (so my understanding goes from #2402). My current `pyproject.toml` is below.
 

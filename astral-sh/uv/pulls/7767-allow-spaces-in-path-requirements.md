@@ -13,14 +13,14 @@ head: charlie/spaces
 created_at: 2024-09-28T21:23:29Z
 updated_at: 2024-10-02T23:00:20Z
 url: https://github.com/astral-sh/uv/pull/7767
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Allow spaces in path requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-28 21:23_
+_@charliermarsh_
 
 ## Summary
 

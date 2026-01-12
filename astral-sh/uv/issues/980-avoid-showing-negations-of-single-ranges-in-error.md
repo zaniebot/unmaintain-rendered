@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-18T23:47:32Z
 updated_at: 2024-01-19T17:07:16Z
 url: https://github.com/astral-sh/uv/issues/980
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Avoid showing negations of single ranges in error messages
 
 ---
 
-_Issue opened by @zanieb on 2024-01-18 23:47_
+_@zanieb_
 
 e.g. in https://github.com/astral-sh/puffin/blob/6cad0f609caba5354f528cc3dba813f0c26a0e27/crates/puffin-cli/tests/pip_install_scenarios.rs#L688 
 

@@ -12,14 +12,14 @@ head: charlie/import-pref
 created_at: 2023-05-30T01:35:01Z
 updated_at: 2023-05-30T16:58:09Z
 url: https://github.com/astral-sh/ruff/pull/4717
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Enable callers to specify import-style preferences in `Importer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 01:35_
+_@charliermarsh_
 
 ## Summary
 

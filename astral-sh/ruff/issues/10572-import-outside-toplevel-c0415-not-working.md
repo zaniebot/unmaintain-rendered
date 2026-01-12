@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T16:31:10Z
 updated_at: 2024-03-29T19:56:59Z
 url: https://github.com/astral-sh/ruff/issues/10572
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # import-outside-toplevel / C0415 not working
 
 ---
 
-_Issue opened by @darkanthey on 2024-03-25 16:31_
+_@darkanthey_
 
 * The current Ruff version => ruff 0.3.4
 * According to ruff implemented [pylint options](https://github.com/astral-sh/ruff/issues/970). 

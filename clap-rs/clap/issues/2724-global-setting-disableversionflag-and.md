@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-08-18T22:14:39Z
 updated_at: 2021-12-13T22:15:59Z
 url: https://github.com/clap-rs/clap/issues/2724
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # global_setting DisableVersionFlag and DisableHelpFlag don't remove auto completion for subcommands fully
 
 ---
 
-_Issue opened by @ModProg on 2021-08-18 22:14_
+_@ModProg_
 
 ### Please complete the following tasks
 

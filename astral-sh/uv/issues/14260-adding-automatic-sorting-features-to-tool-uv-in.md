@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T13:15:12Z
 updated_at: 2025-06-27T14:09:40Z
 url: https://github.com/astral-sh/uv/issues/14260
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Adding automatic sorting features to [tool.uv] in pyproject.toml
 
 ---
 
-_Issue opened by @ya7010 on 2025-06-25 13:15_
+_@ya7010_
 
 ### Summary
 

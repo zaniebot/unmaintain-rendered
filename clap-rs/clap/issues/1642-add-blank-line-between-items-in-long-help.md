@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-01-23T22:35:25Z
 updated_at: 2020-08-12T04:39:30Z
 url: https://github.com/clap-rs/clap/issues/1642
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add blank line between items in long help
 
 ---
 
-_Issue opened by @casey on 2020-01-23 22:35_
+_@casey_
 
 Currently, items in a long help message sometimes have a blank line between them, and sometimes run together. Compare this output from clap:
 

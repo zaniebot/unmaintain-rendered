@@ -13,14 +13,14 @@ head: zb/list-dim
 created_at: 2024-12-12T15:25:54Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/9841
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Dim uninstalled Python keys in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-12 15:25_
+_@zanieb_
 
 Attempted to improve the experience in https://github.com/astral-sh/uv/issues/9830 by dimming the key as well as the `<download available>` bit
 

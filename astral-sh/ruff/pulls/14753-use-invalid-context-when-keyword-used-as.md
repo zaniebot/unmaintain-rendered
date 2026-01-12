@@ -14,14 +14,14 @@ head: dhruv/identifier-parse-result
 created_at: 2024-12-03T11:12:44Z
 updated_at: 2024-12-03T11:41:48Z
 url: https://github.com/astral-sh/ruff/pull/14753
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Use `Invalid` context when keyword used as identifier
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-03 11:12_
+_@dhruvmanila_
 
 ## Summary
 

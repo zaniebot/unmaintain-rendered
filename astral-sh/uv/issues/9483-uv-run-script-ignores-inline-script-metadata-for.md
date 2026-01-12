@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T19:45:28Z
 updated_at: 2024-11-27T19:53:06Z
 url: https://github.com/astral-sh/uv/issues/9483
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `uv run <script>` ignores inline script metadata for scripts with no file extension
 
 ---
 
-_Issue opened by @Julian on 2024-11-27 19:45_
+_@Julian_
 
 PEP 722 inline script metadata seems like it's ignored if the script does not have a `.py` file extension. Here's a short reproduction, showing it doesn't work :
 

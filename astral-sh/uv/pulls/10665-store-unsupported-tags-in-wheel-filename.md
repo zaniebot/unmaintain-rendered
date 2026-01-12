@@ -13,14 +13,14 @@ head: charlie/small-tags
 created_at: 2025-01-16T02:26:12Z
 updated_at: 2025-01-17T04:41:54Z
 url: https://github.com/astral-sh/uv/pull/10665
-synced_at: 2026-01-10T11:45:03Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Store unsupported tags in wheel filename
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-16 02:26_
+_@charliermarsh_
 
 ## Summary
 

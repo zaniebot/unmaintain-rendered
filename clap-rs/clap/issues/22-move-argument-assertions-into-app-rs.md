@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-19T12:19:55Z
 updated_at: 2018-08-02T03:29:36Z
 url: https://github.com/clap-rs/clap/issues/22
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Move argument assertions into app.rs
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-19 12:19_
+_@kbknapp_
 
 Argument assertions to determine if incompatible options have been used are currently evaluated inside arg.rs within the individual method. This allows for certain assertions to pass, that shouldn't, depending on the order in which argument options are listed. 
 

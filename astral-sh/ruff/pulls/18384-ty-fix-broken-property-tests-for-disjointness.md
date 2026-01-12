@@ -14,14 +14,14 @@ head: alex/property-test-failure
 created_at: 2025-05-30T12:28:04Z
 updated_at: 2025-07-25T18:33:52Z
 url: https://github.com/astral-sh/ruff/pull/18384
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Fix broken property tests for disjointness
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-30 12:28_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-25T09:48:44Z
 updated_at: 2024-04-25T19:29:27Z
 url: https://github.com/astral-sh/uv/issues/3261
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Segmentation fault on MacOS 11.7.10 (BigSur)
 
 ---
 
-_Issue opened by @fbehrens on 2024-04-25 09:48_
+_@fbehrens_
 
 Hi, thanks for `uv`.
 I am using it, unfortunately today on my late 2013 MacBook Pro (which has latest updates offered by apple )

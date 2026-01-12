@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T00:05:49Z
 updated_at: 2025-12-18T15:40:16Z
 url: https://github.com/astral-sh/uv/issues/12795
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Does UV provide any tooling to make packaging easier in a monorepo?
 
 ---
 
-_Issue opened by @risky-rickman on 2025-04-10 00:05_
+_@risky-rickman_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: RUF013
 created_at: 2024-11-08T00:05:31Z
 updated_at: 2024-11-10T04:36:55Z
 url: https://github.com/astral-sh/ruff/pull/14181
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Do not report when `Optional` has no type arguments (`RUF013`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-08 00:05_
+_@InSyncWithFoo_
 
 ## Summary
 

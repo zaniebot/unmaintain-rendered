@@ -15,14 +15,14 @@ head: main
 created_at: 2024-03-01T15:57:33Z
 updated_at: 2024-03-06T03:17:59Z
 url: https://github.com/astral-sh/uv/pull/2115
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Implement `uv pip show`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-03-01 15:57_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

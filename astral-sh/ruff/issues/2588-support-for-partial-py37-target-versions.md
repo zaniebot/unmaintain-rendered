@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-05T20:13:34Z
 updated_at: 2023-02-06T06:01:26Z
 url: https://github.com/astral-sh/ruff/issues/2588
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support for (partial) < py37 target-versions?
 
 ---
 
-_Issue opened by @scop on 2023-02-05 20:13_
+_@scop_
 
 Is there interest towards partial support for Python < 3.7 target-versions?
 

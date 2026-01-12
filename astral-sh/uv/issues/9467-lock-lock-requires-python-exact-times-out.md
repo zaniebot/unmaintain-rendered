@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T12:40:10Z
 updated_at: 2024-11-27T18:39:40Z
 url: https://github.com/astral-sh/uv/issues/9467
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `lock::lock_requires_python_exact` times out
 
 ---
 
-_Issue opened by @konstin on 2024-11-27 12:40_
+_@konstin_
 
 On my local machine, `lock::lock_requires_python_exact` tends to run into the 90s timeout, making the test suite fail.
 

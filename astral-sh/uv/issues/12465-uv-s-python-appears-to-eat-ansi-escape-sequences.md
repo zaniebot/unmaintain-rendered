@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-25T14:20:46Z
 updated_at: 2025-05-11T10:28:36Z
 url: https://github.com/astral-sh/uv/issues/12465
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # uv's python appears to eat ansi escape sequences on WSL? (looks like cmd.Cmd)
 
 ---
 
-_Issue opened by @waynew on 2025-03-25 14:20_
+_@waynew_
 
 ### Summary
 

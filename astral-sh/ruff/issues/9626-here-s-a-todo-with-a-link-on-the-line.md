@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-23T17:33:44Z
 updated_at: 2024-01-23T17:34:09Z
 url: https://github.com/astral-sh/ruff/issues/9626
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # here's a TODO with a link on the line
 
 ---
 
-_Issue opened by @MartinBernstorff on 2024-01-23 17:33_
+_@MartinBernstorff_
 
 ```
 # TODO:  here's a TODO with a link on the line

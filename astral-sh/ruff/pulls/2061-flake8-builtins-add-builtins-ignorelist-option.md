@@ -12,14 +12,14 @@ head: builtins-ignorelist
 created_at: 2023-01-21T15:42:14Z
 updated_at: 2023-01-21T16:10:32Z
 url: https://github.com/astral-sh/ruff/pull/2061
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`flake8-builtins`] Add `builtins-ignorelist` Option
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-21 15:42_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/2053
 

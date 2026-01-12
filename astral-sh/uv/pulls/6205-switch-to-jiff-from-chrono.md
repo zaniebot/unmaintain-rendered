@@ -13,14 +13,14 @@ head: ag/jiff
 created_at: 2024-08-19T13:58:21Z
 updated_at: 2024-08-19T17:36:01Z
 url: https://github.com/astral-sh/uv/pull/6205
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # switch to jiff from chrono
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-19 13:58_
+_@BurntSushi_
 
 This PR migrates uv's use of `chrono` to `jiff`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-19T15:10:28Z
 updated_at: 2023-10-27T11:11:45Z
 url: https://github.com/astral-sh/ruff/issues/8065
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Panic with unfinished f-string
 
 ---
 
-_Issue opened by @konstin on 2023-10-19 15:10_
+_@konstin_
 
 Running ruff with
 ```python

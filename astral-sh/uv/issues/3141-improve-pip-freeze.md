@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-19T14:46:09Z
 updated_at: 2024-04-19T14:53:23Z
 url: https://github.com/astral-sh/uv/issues/3141
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Improve `pip freeze`
 
 ---
 
-_Issue opened by @T-256 on 2024-04-19 14:46_
+_@T-256_
 
 - [ ] Add `--exclude-seed` as same as pip's default behavior and as opposite of pip's `freeze --all`.
 - [ ] Add `--exclude <EXCLUDE>` as same as uv's `pip list`.

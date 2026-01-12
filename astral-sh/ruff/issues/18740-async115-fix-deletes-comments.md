@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-18T01:47:17Z
 updated_at: 2025-06-19T11:01:35Z
 url: https://github.com/astral-sh/ruff/issues/18740
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ASYNC115 fix deletes comments
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 01:47_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-04T06:53:52Z
 updated_at: 2025-04-04T06:55:54Z
 url: https://github.com/astral-sh/ruff/issues/17193
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Regression (0.11.2 → 0.11.3: SyntaxError on match statement
 
 ---
 
-_Issue opened by @sfermigier on 2025-04-04 06:53_
+_@sfermigier_
 
 ### Summary
 

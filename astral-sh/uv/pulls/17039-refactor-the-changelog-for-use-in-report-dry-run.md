@@ -13,14 +13,14 @@ head: tk/dry-run-refactor-2
 created_at: 2025-12-08T22:11:56Z
 updated_at: 2025-12-12T10:37:32Z
 url: https://github.com/astral-sh/uv/pull/17039
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Refactor the Changelog for use in `report_dry_run` 
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-08 22:11_
+_@EliteTK_
 
 ## Summary
 

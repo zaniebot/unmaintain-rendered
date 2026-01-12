@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-17T19:58:13Z
 updated_at: 2023-10-17T20:30:11Z
 url: https://github.com/astral-sh/ruff/issues/8023
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Pandas boolean if statement correction bug 
 
 ---
 
-_Issue opened by @Stas1beat on 2023-10-17 19:58_
+_@Stas1beat_
 
 Currently Ruff changes the boolean if statement from the format `if <field> == True:` (or False). to the format `if <field> is True:`
 This format doesn't work in Pandas, `if <field> is True:` always returns a False result.

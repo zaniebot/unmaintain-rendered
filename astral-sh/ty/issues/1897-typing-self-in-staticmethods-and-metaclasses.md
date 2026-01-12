@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T18:16:39Z
 updated_at: 2025-12-15T18:20:47Z
 url: https://github.com/astral-sh/ty/issues/1897
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `typing.Self` in staticmethods and metaclasses should be rejected
 
 ---
 
-_Issue opened by @stefanboca on 2025-12-15 18:16_
+_@stefanboca_
 
 According to the typing documentation, [`Self` in staticmethods and metaclasses is rejected](https://typing.python.org/en/latest/spec/generics.html#self:~:text=Note%20that%20we%20reject%20Self%20in%20staticmethods%2E%20Self).
 ```python

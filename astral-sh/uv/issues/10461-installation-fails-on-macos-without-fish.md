@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-10T08:09:15Z
 updated_at: 2025-02-19T13:32:10Z
 url: https://github.com/astral-sh/uv/issues/10461
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Installation fails on macOS without fish
 
 ---
 
-_Issue opened by @TinsFox on 2025-01-10 08:09_
+_@TinsFox_
 
 I am trying to install uv. On a macOS M1 computer, I executed the command `curl -LsSf https://astral.sh/uv/install.sh | sh` but an error occurred.
 

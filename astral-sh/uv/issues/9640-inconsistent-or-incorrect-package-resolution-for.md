@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T14:08:51Z
 updated_at: 2024-12-10T15:57:25Z
 url: https://github.com/astral-sh/uv/issues/9640
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Inconsistent or incorrect package resolution for PyTorch when using environment markers
 
 ---
 
-_Issue opened by @asalaria-cisco on 2024-12-04 14:08_
+_@asalaria-cisco_
 
 I am following the [instructions in documentations](https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies), to allow CPU-only builds in some cases, but CUDA-enabled builds in others.
 

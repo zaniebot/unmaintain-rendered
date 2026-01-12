@@ -13,14 +13,14 @@ head: charlie/isort
 created_at: 2023-11-02T03:15:37Z
 updated_at: 2023-11-02T03:22:35Z
 url: https://github.com/astral-sh/ruff/pull/8432
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add caveat around action comments within docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 03:15_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8417.
 

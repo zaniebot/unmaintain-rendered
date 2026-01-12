@@ -13,14 +13,14 @@ head: charlie/change
 created_at: 2024-05-22T18:30:00Z
 updated_at: 2024-05-22T18:40:08Z
 url: https://github.com/astral-sh/uv/pull/3752
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Move modification reporting into a helper method
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 18:30_
+_@charliermarsh_
 
 _No description provided._
 

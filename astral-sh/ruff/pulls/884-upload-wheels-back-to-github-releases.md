@@ -12,14 +12,14 @@ head: charlie/releases
 created_at: 2022-11-23T01:11:29Z
 updated_at: 2022-11-24T01:34:06Z
 url: https://github.com/astral-sh/ruff/pull/884
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Upload wheels back to GitHub Releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-23 01:11_
+_@charliermarsh_
 
 Part of #873.
 

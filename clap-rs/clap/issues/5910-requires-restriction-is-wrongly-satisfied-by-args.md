@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-15T17:15:26Z
 updated_at: 2025-02-17T19:31:46Z
 url: https://github.com/clap-rs/clap/issues/5910
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # "Requires" restriction is wrongly satisfied by args that share a required group
 
 ---
 
-_Issue opened by @12yanogden on 2025-02-15 17:15_
+_@12yanogden_
 
 ### Please complete the following tasks
 

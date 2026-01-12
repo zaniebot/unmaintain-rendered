@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T10:29:51Z
 updated_at: 2025-03-20T18:59:47Z
 url: https://github.com/astral-sh/uv/issues/12336
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Is it intentional that UV_MANAGED_PYTHON can be set only to "true" and "false"?
 
 ---
 
-_Issue opened by @Yura52 on 2025-03-20 10:29_
+_@Yura52_
 
 ### Question
 

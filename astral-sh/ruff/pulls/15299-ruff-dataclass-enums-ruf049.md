@@ -14,14 +14,14 @@ head: RUF049
 created_at: 2025-01-06T11:51:21Z
 updated_at: 2025-01-06T13:44:45Z
 url: https://github.com/astral-sh/ruff/pull/15299
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Dataclass enums (`RUF049`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-06 11:51_
+_@InSyncWithFoo_
 
 ## Summary
 

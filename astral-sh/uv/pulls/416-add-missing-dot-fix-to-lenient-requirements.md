@@ -12,14 +12,14 @@ head: charlie/missing-dot
 created_at: 2023-11-13T20:06:32Z
 updated_at: 2023-11-13T20:17:03Z
 url: https://github.com/astral-sh/uv/pull/416
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Add missing-dot fix to lenient requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 20:06_
+_@charliermarsh_
 
 Part of https://github.com/astral-sh/puffin/issues/408.
 

@@ -13,14 +13,14 @@ head: zb/preview
 created_at: 2024-06-10T16:24:58Z
 updated_at: 2024-06-10T16:40:47Z
 url: https://github.com/astral-sh/uv/pull/4202
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Exclude preview items from changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 16:24_
+_@zanieb_
 
 These were not excluded explicitly, so they were landing in "Other changes" or the relevant other section if multiple labels were applied.
 

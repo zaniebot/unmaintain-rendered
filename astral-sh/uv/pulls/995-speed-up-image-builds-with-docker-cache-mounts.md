@@ -12,14 +12,14 @@ head: zb/docker-cache
 created_at: 2024-01-19T02:21:03Z
 updated_at: 2024-01-19T23:40:03Z
 url: https://github.com/astral-sh/uv/pull/995
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Speed up image builds with Docker cache mounts
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-19 02:21_
+_@zanieb_
 
 Inspired by the slightly disturbing discussion at https://github.com/rust-lang/cargo/issues/2644
 

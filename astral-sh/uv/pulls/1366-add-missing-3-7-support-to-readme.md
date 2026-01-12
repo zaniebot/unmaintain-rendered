@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-02-15T21:58:09Z
 updated_at: 2024-02-15T22:05:46Z
 url: https://github.com/astral-sh/uv/pull/1366
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add missing 3.7 support to README
 
 ---
 
-_Pull request opened by @T-256 on 2024-02-15 21:58_
+_@T-256_
 
 _No description provided._
 

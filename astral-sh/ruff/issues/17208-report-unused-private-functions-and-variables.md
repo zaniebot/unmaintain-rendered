@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-04T16:06:21Z
 updated_at: 2025-04-04T18:55:18Z
 url: https://github.com/astral-sh/ruff/issues/17208
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Report unused private functions and variables
 
 ---
 
-_Issue opened by @sk- on 2025-04-04 16:06_
+_@sk-_
 
 ### Summary
 

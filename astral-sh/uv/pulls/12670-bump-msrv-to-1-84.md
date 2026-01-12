@@ -13,14 +13,14 @@ head: charlie/msrv
 created_at: 2025-04-04T12:43:52Z
 updated_at: 2025-04-04T15:49:28Z
 url: https://github.com/astral-sh/uv/pull/12670
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Bump MSRV to 1.84
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-04 12:43_
+_@charliermarsh_
 
 ## Summary
 

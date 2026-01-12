@@ -13,14 +13,14 @@ head: charlie/multi-statement-lines
 created_at: 2023-09-07T14:08:14Z
 updated_at: 2023-09-07T15:16:44Z
 url: https://github.com/astral-sh/ruff/pull/7221
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use full range for SIM105 fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-07 14:08_
+_@charliermarsh_
 
 Avoids inserting an accidental extra newline after the fix _and_ addresses the case of a trailing semicolon.
 

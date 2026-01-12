@@ -14,14 +14,14 @@ head: zb/bold-active-nav
 created_at: 2024-07-31T20:48:01Z
 updated_at: 2024-07-31T21:16:49Z
 url: https://github.com/astral-sh/uv/pull/5673
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Bold active nav links for accessibility
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 20:48_
+_@zanieb_
 
 Before
 <img width="412" alt="Screenshot 2024-07-31 at 3 47 38 PM" src="https://github.com/user-attachments/assets/d95ebb62-079b-4e20-964c-9876b5978e4c">

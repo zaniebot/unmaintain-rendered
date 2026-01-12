@@ -14,14 +14,14 @@ head: dcreager/nondeterminism
 created_at: 2025-12-01T23:39:37Z
 updated_at: 2025-12-03T15:19:40Z
 url: https://github.com/astral-sh/ruff/pull/21744
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix non-determinism in `ConstraintSet.specialize_constrained`
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-01 23:39_
+_@dcreager_
 
 This fixes a non-determinism that we were seeing in the constraint set tests in https://github.com/astral-sh/ruff/pull/21715.
 

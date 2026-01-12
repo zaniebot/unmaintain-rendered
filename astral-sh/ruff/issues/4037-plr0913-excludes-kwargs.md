@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T02:50:45Z
 updated_at: 2023-05-23T07:35:46Z
 url: https://github.com/astral-sh/ruff/issues/4037
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLR0913 excludes kwargs
 
 ---
 
-_Issue opened by @trag1c on 2023-04-20 02:50_
+_@trag1c_
 
 ...unless this is expected behavior (both Ruff and Pylint's docs never specify if this check is for positional args only).
 

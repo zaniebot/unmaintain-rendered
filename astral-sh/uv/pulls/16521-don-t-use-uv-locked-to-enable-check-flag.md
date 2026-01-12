@@ -12,14 +12,14 @@ head: 16517
 created_at: 2025-10-30T18:08:28Z
 updated_at: 2025-10-30T19:45:50Z
 url: https://github.com/astral-sh/uv/pull/16521
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Don't use UV_LOCKED to enable `--check` flag
 
 ---
 
-_Pull request opened by @AlexVndnblcke on 2025-10-30 18:08_
+_@AlexVndnblcke_
 
 Env var UV_LOCKED should only be used to enable `--locked` for the `uv lock` command. Previously `--check` was also enabled by specifying UV_LOCKED.
 

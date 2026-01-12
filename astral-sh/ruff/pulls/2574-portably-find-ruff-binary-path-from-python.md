@@ -12,14 +12,14 @@ head: find-ruff-bin
 created_at: 2023-02-04T21:32:53Z
 updated_at: 2023-02-04T22:20:09Z
 url: https://github.com/astral-sh/ruff/pull/2574
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Portably find ruff binary path from Python
 
 ---
 
-_Pull request opened by @andersk on 2023-02-04 21:32_
+_@andersk_
 
 Prefer the version from a currently active virtualenv over a version from `pip install --user`.  Add the .exe extension on Windows, and find the path for `pip install --user` correctly on Windows.
 

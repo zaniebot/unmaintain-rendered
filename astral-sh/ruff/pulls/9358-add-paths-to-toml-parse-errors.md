@@ -13,14 +13,14 @@ head: paths-in-toml-path-errors
 created_at: 2024-01-02T16:07:53Z
 updated_at: 2024-01-02T16:56:56Z
 url: https://github.com/astral-sh/ruff/pull/9358
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add paths to toml parse errors
 
 ---
 
-_Pull request opened by @konstin on 2024-01-02 16:07_
+_@konstin_
 
 **Summary** Previously, the information which toml file failed to parse was missing in errors.
 

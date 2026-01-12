@@ -13,14 +13,14 @@ head: fix_shell_autocompletion_windows_docs
 created_at: 2024-08-23T04:21:42Z
 updated_at: 2024-08-23T04:25:24Z
 url: https://github.com/astral-sh/uv/pull/6491
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Fix to miss string termination in PowerShell commands for shell autocompletion docs.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-08-23 04:21_
+_@FishAlchemist_
 
 
 ## Summary

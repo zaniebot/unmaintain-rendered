@@ -13,14 +13,14 @@ head: charlie/else-on-loop
 created_at: 2023-02-22T19:10:12Z
 updated_at: 2023-02-22T19:12:46Z
 url: https://github.com/astral-sh/ruff/pull/3136
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid useless-else-on-loop for break within match
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 19:10_
+_@charliermarsh_
 
 Closes #3131.
 

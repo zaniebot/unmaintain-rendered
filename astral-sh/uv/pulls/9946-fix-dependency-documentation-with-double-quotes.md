@@ -14,14 +14,14 @@ head: updating-single-quotes-to-double
 created_at: 2024-12-16T22:11:39Z
 updated_at: 2024-12-16T23:39:09Z
 url: https://github.com/astral-sh/uv/pull/9946
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # FIX: Dependency documentation with double quotes where required
 
 ---
 
-_Pull request opened by @mattdeform on 2024-12-16 22:11_
+_@mattdeform_
 
 ## Summary
 Documentation steps resulted in errors due to single quotes when adding project dependencies:

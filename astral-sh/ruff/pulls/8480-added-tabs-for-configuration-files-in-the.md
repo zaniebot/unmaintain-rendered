@@ -13,14 +13,14 @@ head: config-tabs
 created_at: 2023-11-03T21:08:18Z
 updated_at: 2023-11-05T18:48:17Z
 url: https://github.com/astral-sh/ruff/pull/8480
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Added tabs for configuration files in the documentation
 
 ---
 
-_Pull request opened by @trag1c on 2023-11-03 21:08_
+_@trag1c_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

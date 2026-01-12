@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T03:25:27Z
 updated_at: 2024-07-28T00:49:30Z
 url: https://github.com/astral-sh/uv/issues/2538
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # "No solution found when resolving dependencies", but pip installs readily
 
 ---
 
-_Issue opened by @reece on 2024-03-19 03:25_
+_@reece_
 
 Summary: uv pip install fails to install a package that pip installs without issue. The package is an alpha release that I pushed to pypi a few minutes ago.
 

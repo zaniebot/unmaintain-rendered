@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T16:48:54Z
 updated_at: 2025-08-21T14:16:58Z
 url: https://github.com/astral-sh/uv/issues/15394
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Add option for `uv export` to also support --index-url --extra-index-url in exported requirements.txt
 
 ---
 
-_Issue opened by @adychar on 2025-08-20 16:48_
+_@adychar_
 
 ### Summary
 

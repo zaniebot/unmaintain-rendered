@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T11:42:42Z
 updated_at: 2025-11-10T21:56:26Z
 url: https://github.com/astral-sh/ty/issues/494
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Verbosity of inlay hints for Literals
 
 ---
 
-_Issue opened by @rushter on 2025-05-23 11:42_
+_@rushter_
 
 It would be nice to be able to tune the verbosity of inlay hints for literals.
 Right now, the whole string is shown, which is usually not very useful, especially for very long strings.

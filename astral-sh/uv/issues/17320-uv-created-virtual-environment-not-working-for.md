@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T00:12:56Z
 updated_at: 2026-01-06T18:27:00Z
 url: https://github.com/astral-sh/uv/issues/17320
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # uv created virtual environment not working for uWSGI when using --uid --gid
 
 ---
 
-_Issue opened by @liszca on 2026-01-05 00:12_
+_@liszca_
 
 ### Question
 

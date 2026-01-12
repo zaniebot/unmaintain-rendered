@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-18T17:45:15Z
 updated_at: 2024-11-21T15:54:51Z
 url: https://github.com/astral-sh/ruff/issues/14439
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Possible error when trying to fix with ICN001
 
 ---
 
-_Issue opened by @tpgillam on 2024-11-18 17:45_
+_@tpgillam_
 
 I obtain errors with [ICN001](https://docs.astral.sh/ruff/rules/unconventional-import-alias/) when trying to apply autofix (in 'unsafe' mode) that should ideally convert the import from `from A1.A2.AN import B` to `import A1.A2.AN`.
 

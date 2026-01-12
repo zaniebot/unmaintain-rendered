@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-10T01:34:29Z
 updated_at: 2025-02-11T20:22:38Z
 url: https://github.com/astral-sh/ruff/issues/7881
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # idea: Add rule for flattening nested `Literal`s
 
 ---
 
-_Issue opened by @diceroll123 on 2023-10-10 01:34_
+_@diceroll123_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

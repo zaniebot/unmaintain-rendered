@@ -13,14 +13,14 @@ head: docs/fix-safety-sys-exit-alias
 created_at: 2025-05-04T04:16:50Z
 updated_at: 2025-06-07T01:47:46Z
 url: https://github.com/astral-sh/ruff/pull/17826
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [`pylint`] add fix safety section (`PLR1722`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-04 04:16_
+_@yunchipang_
 
 parent: #15584 
 fix introduced at: #816 

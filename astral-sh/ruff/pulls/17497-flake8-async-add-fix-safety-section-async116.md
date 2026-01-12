@@ -13,14 +13,14 @@ head: doc_fix_safety_for_long_sleep_not_forever
 created_at: 2025-04-20T14:55:27Z
 updated_at: 2025-04-26T15:40:51Z
 url: https://github.com/astral-sh/ruff/pull/17497
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`flake8-async`] Add fix safety section (`ASYNC116`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 14:55_
+_@Kalmaegi_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: format-exclude-remove-note
 created_at: 2023-10-28T09:39:06Z
 updated_at: 2023-10-28T13:08:51Z
 url: https://github.com/astral-sh/ruff/pull/8302
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove `exclude` suggestion to use `extend-exclude` in `tool.ruff.format` config docs
 
 ---
 
-_Pull request opened by @Giuzzilla on 2023-10-28 09:39_
+_@Giuzzilla_
 
 ## Summary
 

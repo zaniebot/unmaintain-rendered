@@ -13,14 +13,14 @@ head: schemastore-update-fixes
 created_at: 2024-05-09T17:54:49Z
 updated_at: 2024-05-13T17:18:09Z
 url: https://github.com/astral-sh/ruff/pull/11353
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Improve the `update_schemastore` script
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-09 17:54_
+_@AlexWaygood_
 
 ## Summary
 

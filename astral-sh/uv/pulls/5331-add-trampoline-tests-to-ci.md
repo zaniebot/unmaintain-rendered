@@ -13,14 +13,14 @@ head: konsti/add-uv-trampoline-tests-to-ci
 created_at: 2024-07-23T08:18:24Z
 updated_at: 2024-07-29T09:43:52Z
 url: https://github.com/astral-sh/uv/pull/5331
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Add trampoline tests to CI
 
 ---
 
-_Pull request opened by @konstin on 2024-07-23 08:18_
+_@konstin_
 
 Add the tests added in #5204 to CI. The crate is not part of the workspace (it requires nightly) and is windows only, so we have to test it separately.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-16T08:42:02Z
 updated_at: 2024-12-16T10:56:41Z
 url: https://github.com/astral-sh/ruff/issues/15013
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Remove hardcoded `workspace_refresh` client capability
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-12-16 08:42_
+_@dhruvmanila_
 
 Resolve the following todo:
 

@@ -14,14 +14,14 @@ head: fmt-skip-suite-v2
 created_at: 2026-01-03T21:14:32Z
 updated_at: 2026-01-05T15:50:19Z
 url: https://github.com/astral-sh/ruff/pull/22362
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [WIP] fmt skip suite v2
 
 ---
 
-_Pull request opened by @dylwil3 on 2026-01-03 21:14_
+_@dylwil3_
 
 testing some perf things, don't mind me
 

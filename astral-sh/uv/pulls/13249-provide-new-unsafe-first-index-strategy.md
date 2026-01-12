@@ -12,14 +12,14 @@ head: jtfm/unsafe-first-index
 created_at: 2025-05-01T07:45:04Z
 updated_at: 2025-06-13T14:31:33Z
 url: https://github.com/astral-sh/uv/pull/13249
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Provide new unsafe-first-index strategy
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-01 07:45_
+_@jtfmumm_
 
 This PR adds a new index strategy called `unsafe-first-index`. This is the same as the default `first-index` strategy except that it continues searching indexes when encountering authentication failures. This provides a way to ignore these failures without configuring an index in `pyproject.toml`, but also makes clear that it is more insecure than our default.
 

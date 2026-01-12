@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T13:02:29Z
 updated_at: 2025-09-07T05:11:37Z
 url: https://github.com/astral-sh/ruff/issues/20228
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Indent being trimmed away under my caret
 
 ---
 
-_Issue opened by @CorentinJ on 2025-09-04 13:02_
+_@CorentinJ_
 
 ### Question
 

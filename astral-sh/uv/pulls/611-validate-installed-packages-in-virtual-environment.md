@@ -12,14 +12,14 @@ head: charlie/pip-install-verify
 created_at: 2023-12-12T02:57:15Z
 updated_at: 2023-12-12T17:33:39Z
 url: https://github.com/astral-sh/uv/pull/611
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Validate installed packages in virtual environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 02:57_
+_@charliermarsh_
 
 ## Summary
 

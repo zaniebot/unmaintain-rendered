@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-07T10:27:54Z
 updated_at: 2025-01-07T12:05:14Z
 url: https://github.com/astral-sh/ruff/issues/15315
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Please allow to address rules by names instead of codes, too
 
 ---
 
-_Issue opened by @fraunhofersociety on 2025-01-07 10:27_
+_@fraunhofersociety_
 
 Hello,
 could you please support addressing warnings by rule names instead of rule codes?

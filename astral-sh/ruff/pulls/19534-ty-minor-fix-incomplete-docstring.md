@@ -14,14 +14,14 @@ head: david/fix-docstring
 created_at: 2025-07-24T18:03:58Z
 updated_at: 2025-07-24T19:01:17Z
 url: https://github.com/astral-sh/ruff/pull/19534
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Minor: fix incomplete docstring
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-24 18:03_
+_@sharkdp_
 
 _No description provided._
 

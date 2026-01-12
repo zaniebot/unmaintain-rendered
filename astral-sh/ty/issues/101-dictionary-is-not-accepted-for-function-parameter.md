@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:32:45Z
 updated_at: 2025-05-07T19:21:12Z
 url: https://github.com/astral-sh/ty/issues/101
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Dictionary is not accepted for function parameter annotated with `Mapping`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:32_
+_@charliermarsh_
 
 ```python
 from typing import Mapping

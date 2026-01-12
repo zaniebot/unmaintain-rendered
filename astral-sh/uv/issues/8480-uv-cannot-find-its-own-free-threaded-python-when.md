@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T21:31:55Z
 updated_at: 2024-10-24T14:08:52Z
 url: https://github.com/astral-sh/uv/issues/8480
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # uv cannot find its own free-threaded Python when installing tools
 
 ---
 
-_Issue opened by @layday on 2024-10-22 21:31_
+_@layday_
 
 ```
 $ uv python install 3.13t

@@ -13,14 +13,14 @@ head: pyi-docs-2
 created_at: 2024-03-20T17:37:50Z
 updated_at: 2024-03-21T11:54:44Z
 url: https://github.com/astral-sh/ruff/pull/10494
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Spruce up docs for flake8-pyi rules (part 2)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-20 17:37_
+_@AlexWaygood_
 
 A followup PR to #10422, auditing all the docs for our PYI rules that I didn't get to in that PR.
 

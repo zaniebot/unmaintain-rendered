@@ -13,14 +13,14 @@ head: dylan/stabilize-furb122
 created_at: 2025-06-08T19:18:22Z
 updated_at: 2025-06-09T20:10:20Z
 url: https://github.com/astral-sh/ruff/pull/18565
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `for-loop-writes` (`FURB122`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:18_
+_@dylwil3_
 
 _No description provided._
 

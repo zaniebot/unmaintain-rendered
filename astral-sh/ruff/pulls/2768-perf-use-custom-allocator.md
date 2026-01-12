@@ -12,14 +12,14 @@ head: perf/custom-allocator
 created_at: 2023-02-11T16:21:29Z
 updated_at: 2023-02-15T11:38:37Z
 url: https://github.com/astral-sh/ruff/pull/2768
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # perf: Use custom allocator
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-02-11 16:21_
+_@MichaReiser_
 
 This PR replaces the system allocator with a custom allocator to improve performance:
 

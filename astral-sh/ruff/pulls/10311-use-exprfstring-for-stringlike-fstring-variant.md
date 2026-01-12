@@ -13,14 +13,14 @@ head: dhruv/string-like-f-string
 created_at: 2024-03-09T11:29:30Z
 updated_at: 2024-03-14T08:01:14Z
 url: https://github.com/astral-sh/ruff/pull/10311
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Use `ExprFString` for `StringLike::FString` variant
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-09 11:29_
+_@dhruvmanila_
 
 ## Summary
 

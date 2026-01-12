@@ -12,14 +12,14 @@ head: proper-unzip-error-type
 created_at: 2023-12-13T12:51:13Z
 updated_at: 2023-12-13T12:56:01Z
 url: https://github.com/astral-sh/uv/pull/636
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Proper unzip error type
 
 ---
 
-_Pull request opened by @konstin on 2023-12-13 12:51_
+_@konstin_
 
 Move the `Unzip` trait from anyhow to `ZipError|io::Error`.
 

@@ -12,14 +12,14 @@ head: charlie/caps
 created_at: 2023-02-17T17:57:48Z
 updated_at: 2023-02-17T18:05:50Z
 url: https://github.com/astral-sh/ruff/pull/2992
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Enforce D403 on methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 17:57_
+_@charliermarsh_
 
 Closes #2989.
 

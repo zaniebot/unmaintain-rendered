@@ -12,14 +12,14 @@ head: ag/move-conflict-tests
 created_at: 2024-11-27T15:34:35Z
 updated_at: 2024-11-27T15:51:13Z
 url: https://github.com/astral-sh/uv/pull/9474
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # uv/tests: move `conflicts` tests to its own file
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-27 15:34_
+_@BurntSushi_
 
 There are already a fair number and I'm planning to add more. And
 `lock.rs` is already quite big.

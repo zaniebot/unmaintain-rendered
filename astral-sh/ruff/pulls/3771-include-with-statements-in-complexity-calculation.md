@@ -13,14 +13,14 @@ head: charlie/with
 created_at: 2023-03-28T15:11:12Z
 updated_at: 2023-03-28T15:41:31Z
 url: https://github.com/astral-sh/ruff/pull/3771
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Include `with` statements in complexity calculation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 15:11_
+_@charliermarsh_
 
 ## Summary
 

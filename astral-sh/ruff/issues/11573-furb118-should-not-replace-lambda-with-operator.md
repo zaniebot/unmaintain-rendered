@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-27T18:07:45Z
 updated_at: 2024-05-28T01:34:53Z
 url: https://github.com/astral-sh/ruff/issues/11573
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FURB118: Should not replace lambda with operator.itemgetter when the itemgetter use the lambda arguments
 
 ---
 
-_Issue opened by @nasyxx on 2024-05-27 18:07_
+_@nasyxx_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

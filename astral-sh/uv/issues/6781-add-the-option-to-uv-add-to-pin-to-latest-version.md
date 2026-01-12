@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T22:39:56Z
 updated_at: 2025-10-08T11:12:38Z
 url: https://github.com/astral-sh/uv/issues/6781
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Add the option to `uv add` to pin to latest version of package
 
 ---
 
-_Issue opened by @SamEdwardes on 2024-08-28 22:39_
+_@SamEdwardes_
 
 ## Current behaviour
 

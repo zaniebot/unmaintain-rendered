@@ -13,14 +13,14 @@ head: unicode_names2_0-6-0
 created_at: 2023-08-10T12:53:11Z
 updated_at: 2023-10-03T04:21:55Z
 url: https://github.com/astral-sh/ruff/pull/6478
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use crates.io unicode_names2 0.6.0
 
 ---
 
-_Pull request opened by @konstin on 2023-08-10 12:53_
+_@konstin_
 
 Update `unicode_names2` to the crates.io release 0.6.0, removing a git dependency.
 

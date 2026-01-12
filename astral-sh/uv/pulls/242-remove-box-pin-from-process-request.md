@@ -12,14 +12,14 @@ head: charlie/box
 created_at: 2023-10-30T20:21:12Z
 updated_at: 2023-10-30T21:55:01Z
 url: https://github.com/astral-sh/uv/pull/242
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Remove `Box<Pin<...>>` from `process_request`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 20:21_
+_@charliermarsh_
 
 _No description provided._
 

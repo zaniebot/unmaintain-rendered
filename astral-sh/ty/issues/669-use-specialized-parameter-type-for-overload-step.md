@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T09:32:01Z
 updated_at: 2025-08-20T04:09:06Z
 url: https://github.com/astral-sh/ty/issues/669
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Use specialized parameter type for overload step 5 filtering
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-17 09:32_
+_@dhruvmanila_
 
 Reference: https://github.com/astral-sh/ruff/pull/18607#discussion_r2151140469
 

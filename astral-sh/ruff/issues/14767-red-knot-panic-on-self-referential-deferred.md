@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-04T09:03:08Z
 updated_at: 2025-04-22T16:20:54Z
 url: https://github.com/astral-sh/ruff/issues/14767
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Panic on self-referential deferred annotation (call expression)
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-12-04 09:03_
+_@dhruvmanila_
 
 The following code panics:
 ```py

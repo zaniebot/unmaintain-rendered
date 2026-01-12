@@ -13,14 +13,14 @@ head: konsti/workspaces-maybe
 created_at: 2024-10-22T19:31:43Z
 updated_at: 2024-10-23T00:45:55Z
 url: https://github.com/astral-sh/uv/pull/8478
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # More specific workspaces recommendation
 
 ---
 
-_Pull request opened by @konstin on 2024-10-22 19:31_
+_@konstin_
 
 Workspaces should be used over editable installs if the packages are all part of the same repository.
 

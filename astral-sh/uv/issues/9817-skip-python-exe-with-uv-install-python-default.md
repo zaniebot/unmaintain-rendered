@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T17:19:19Z
 updated_at: 2024-12-11T21:52:03Z
 url: https://github.com/astral-sh/uv/issues/9817
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Skip `python.exe` with `uv install python --default`
 
 ---
 
-_Issue opened by @Vynce on 2024-12-11 17:19_
+_@Vynce_
 
 I love the `uv python install --default` feature (https://github.com/astral-sh/uv/pull/8650), but it creates a `python.exe` executable in addition to a `python3.exe` executable. Unfortunately, we still need `python.exe` to resolve to a Python 2.7 interpreter for the time being. Would you be willing to add a `uv.toml` setting or an alternative `--default-py3only` arg or something that limits the feature to only managing `python3.exe`. Similar issue on Linux, but I'm specifically looking at the Windows behavior.
 

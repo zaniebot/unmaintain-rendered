@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-08-13T17:46:15Z
 updated_at: 2021-10-06T13:55:00Z
 url: https://github.com/clap-rs/clap/issues/2064
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Compile time verification of default value
 
 ---
 
-_Issue opened by @diegobernardes on 2020-08-13 17:46_
+_@diegobernardes_
 
 ### Describe your use case
 It would be nice to validate at compile time the `default_value`.

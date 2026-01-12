@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-28T18:58:53Z
 updated_at: 2024-07-28T21:26:48Z
 url: https://github.com/astral-sh/uv/issues/5521
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # workspace exclude mismatch on linux vs windows
 
 ---
 
-_Issue opened by @bluss on 2024-07-28 18:58_
+_@bluss_
 
 pyprojects like this:
 

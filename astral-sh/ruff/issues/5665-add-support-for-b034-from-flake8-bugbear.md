@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-10T18:48:50Z
 updated_at: 2023-07-11T03:52:57Z
 url: https://github.com/astral-sh/ruff/issues/5665
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add support for `B034` from `flake8-bugbear`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-10 18:48_
+_@dhruvmanila_
 
 Ref: https://github.com/PyCQA/flake8-bugbear/releases/tag/23.7.10
 

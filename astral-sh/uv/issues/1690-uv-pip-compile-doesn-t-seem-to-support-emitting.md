@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T13:18:34Z
 updated_at: 2024-02-20T20:05:47Z
 url: https://github.com/astral-sh/uv/issues/1690
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `uv pip compile` doesn't seem to support emitting its results to stdout
 
 ---
 
-_Issue opened by @kvelicka on 2024-02-19 13:18_
+_@kvelicka_
 
 When running `uv pip compile requirements.in --output-file=-` I expected to have the ouptut printed in stdout like it does with `pip-compile`. Instead, it gets written to a file called `-` on the filesystem.
 

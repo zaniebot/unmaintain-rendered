@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-05T21:30:24Z
 updated_at: 2025-05-06T15:57:37Z
 url: https://github.com/clap-rs/clap/issues/5986
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Bash completion offers subcommand suggestions ahead of time
 
 ---
 
-_Issue opened by @mernen on 2025-05-05 21:30_
+_@mernen_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T13:56:32Z
 updated_at: 2024-04-24T12:49:40Z
 url: https://github.com/astral-sh/ruff/issues/11042
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Apply all, or some rules, to a specific package/folder
 
 ---
 
-_Issue opened by @ggravlingen on 2024-04-19 13:56_
+_@ggravlingen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

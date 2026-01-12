@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T00:10:38Z
 updated_at: 2023-03-24T03:12:00Z
 url: https://github.com/astral-sh/ruff/issues/3704
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLR1711, RET501 should exempt annotated function where return type isn’t `-> None`
 
 ---
 
-_Issue opened by @andersk on 2023-03-24 00:10_
+_@andersk_
 
 Ruff flags PLR1711 useless-return and RET501 unnecessary-return-none in this code:
 

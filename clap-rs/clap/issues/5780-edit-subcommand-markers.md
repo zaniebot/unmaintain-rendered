@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T20:27:21Z
 updated_at: 2024-10-18T02:40:16Z
 url: https://github.com/clap-rs/clap/issues/5780
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Edit subcommand markers
 
 ---
 
-_Issue opened by @mondeja on 2024-10-17 20:27_
+_@mondeja_
 
 ### Please complete the following tasks
 

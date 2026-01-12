@@ -12,14 +12,14 @@ head: update_docs
 created_at: 2025-01-19T20:52:21Z
 updated_at: 2025-01-21T22:46:19Z
 url: https://github.com/astral-sh/uv/pull/10756
-synced_at: 2026-01-10T11:45:08Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Update pre-commit documentation 
 
 ---
 
-_Pull request opened by @3shv on 2025-01-19 20:52_
+_@3shv_
 
 ## Summary
 

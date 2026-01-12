@@ -13,14 +13,14 @@ head: jtfm/log-safe-url-uv-auth
 created_at: 2025-05-21T12:37:58Z
 updated_at: 2025-05-26T21:43:59Z
 url: https://github.com/astral-sh/uv/pull/13576
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Extend use of safe URL logging types to `uv-auth` crate
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-21 12:37_
+_@jtfmumm_
 
 Extends PR #13560 by using the `DisplaySafeUrl` and new `DisplaySafeUrlRef` types in the `uv-auth` crate. 
 

@@ -15,14 +15,14 @@ head: micha/fix-case-sensitive-fast-check-unc-paths
 created_at: 2025-12-24T14:30:23Z
 updated_at: 2025-12-24T15:36:20Z
 url: https://github.com/astral-sh/ruff/pull/22173
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Fix module resolution on network drives
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-24 14:30_
+_@MichaReiser_
 
 ## Summary
 

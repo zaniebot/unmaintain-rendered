@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-01T11:00:27Z
 updated_at: 2025-03-01T16:37:34Z
 url: https://github.com/astral-sh/uv/pull/11882
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Do not hide `generate-shell-completion` in `uv --help`
 
 ---
 
-_Pull request opened by @xsjk on 2025-03-01 11:00_
+_@xsjk_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-28T20:12:18Z
 updated_at: 2022-09-30T14:55:16Z
 url: https://github.com/clap-rs/clap/issues/4279
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Flatten structs causes "Argument group name must be unique" if has same name
 
 ---
 
-_Issue opened by @repi on 2022-09-28 20:12_
+_@repi_
 
 ### Please complete the following tasks
 

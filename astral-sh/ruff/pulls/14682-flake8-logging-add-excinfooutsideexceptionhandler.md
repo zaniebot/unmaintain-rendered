@@ -13,14 +13,14 @@ head: AVK/ExcInfoOutsideExceptionHandler
 created_at: 2024-11-29T16:57:00Z
 updated_at: 2025-02-04T10:41:20Z
 url: https://github.com/astral-sh/ruff/pull/14682
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [flake8-logging] Add `ExcInfoOutsideExceptionHandler` (LOG014)
 
 ---
 
-_Pull request opened by @snowdrop4 on 2024-11-29 16:57_
+_@snowdrop4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

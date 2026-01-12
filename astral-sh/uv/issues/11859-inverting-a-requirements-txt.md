@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T15:43:40Z
 updated_at: 2025-03-01T15:23:20Z
 url: https://github.com/astral-sh/uv/issues/11859
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Inverting a requirements.txt
 
 ---
 
-_Issue opened by @EricDepagne on 2025-02-28 15:43_
+_@EricDepagne_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-20T20:16:23Z
 updated_at: 2025-12-24T06:54:32Z
 url: https://github.com/astral-sh/ty/issues/2135
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Windows | VSCode | Code completion doesn't work for local variables
 
 ---
 
-_Issue opened by @LittleLittleCloud on 2025-12-20 20:16_
+_@LittleLittleCloud_
 
 ### Summary
 

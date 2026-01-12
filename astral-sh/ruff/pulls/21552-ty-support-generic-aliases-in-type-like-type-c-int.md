@@ -14,14 +14,14 @@ head: jack/type_slice_slice
 created_at: 2025-11-21T00:42:24Z
 updated_at: 2025-11-24T21:56:44Z
 url: https://github.com/astral-sh/ruff/pull/21552
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] support generic aliases in `type[...]`, like `type[C[int]]`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-11-21 00:42_
+_@oconnor663_
 
 Closes https://github.com/astral-sh/ty/issues/1101.
 

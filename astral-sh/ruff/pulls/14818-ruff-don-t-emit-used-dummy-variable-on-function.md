@@ -14,14 +14,14 @@ head: alex/ruf052-parameters
 created_at: 2024-12-06T13:56:09Z
 updated_at: 2024-12-06T14:54:45Z
 url: https://github.com/astral-sh/ruff/pull/14818
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Don't emit `used-dummy-variable` on function parameters (`RUF052`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-06 13:56_
+_@AlexWaygood_
 
 ## Summary
 

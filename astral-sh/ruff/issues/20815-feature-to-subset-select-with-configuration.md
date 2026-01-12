@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-12T03:41:00Z
 updated_at: 2025-10-14T04:37:32Z
 url: https://github.com/astral-sh/ruff/issues/20815
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feature to subset `--select` with configuration ignores
 
 ---
 
-_Issue opened by @fmigneault on 2025-10-12 03:41_
+_@fmigneault_
 
 ### Summary
 

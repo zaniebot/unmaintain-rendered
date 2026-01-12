@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T16:59:38Z
 updated_at: 2025-07-25T16:03:45Z
 url: https://github.com/astral-sh/uv/issues/1514
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Private git dependency URLs with credentials do not resolve
 
 ---
 
-_Issue opened by @meridionaljet on 2024-02-16 16:59_
+_@meridionaljet_
 
 Working with private git repos that require a username and token to resolve seems to fail in `uv`:
 

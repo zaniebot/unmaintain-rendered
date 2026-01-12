@@ -13,14 +13,14 @@ head: charlie/combine
 created_at: 2024-05-15T18:25:10Z
 updated_at: 2024-05-15T18:40:56Z
 url: https://github.com/astral-sh/uv/pull/3616
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Add `Combine` implementations for non-`Vec` types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 18:25_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-02-02T02:24:58Z
 updated_at: 2024-02-02T02:27:31Z
 url: https://github.com/astral-sh/ruff/pull/9771
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix references to deprecated `ANN` rules in changelog
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 02:24_
+_@charliermarsh_
 
 We deprecated `ANN101` and `ANN102`, but the changelog says `ANN001` and `ANN002`. (I've confirmed that the code reflects the correct deprecation; it's just a documentation error.)
 

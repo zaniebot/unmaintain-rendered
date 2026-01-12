@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-07T17:29:53Z
 updated_at: 2025-10-14T12:27:54Z
 url: https://github.com/astral-sh/ty/issues/1143
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `torch.tensor` errors on power operator
 
 ---
 
-_Issue opened by @janosh on 2025-09-07 17:29_
+_@janosh_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/actions-checkout-digest
 created_at: 2026-01-12T01:43:29Z
 updated_at: 2026-01-12T05:56:20Z
 url: https://github.com/astral-sh/ty/pull/2452
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update actions/checkout digest to 0c366fd
 
 ---
 
-_Pull request opened by @renovate on 2026-01-12 01:43_
+_@renovate_
 
 This PR contains the following updates:
 

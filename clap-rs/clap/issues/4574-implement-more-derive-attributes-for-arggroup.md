@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-23T17:43:46Z
 updated_at: 2023-03-27T23:39:11Z
 url: https://github.com/clap-rs/clap/issues/4574
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Implement more derive attributes for ArgGroup
 
 ---
 
-_Issue opened by @calavera on 2022-12-23 17:43_
+_@calavera_
 
 ### Please complete the following tasks
 

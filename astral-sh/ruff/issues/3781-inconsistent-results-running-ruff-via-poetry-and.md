@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T18:33:38Z
 updated_at: 2023-03-28T19:56:33Z
 url: https://github.com/astral-sh/ruff/issues/3781
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Inconsistent results running ruff via `poetry` and `pre-commit`
 
 ---
 
-_Issue opened by @ghost on 2023-03-28 18:33_
+_@ghost_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

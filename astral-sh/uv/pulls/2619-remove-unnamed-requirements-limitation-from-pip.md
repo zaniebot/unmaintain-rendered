@@ -13,14 +13,14 @@ head: charlie/read
 created_at: 2024-03-22T19:03:53Z
 updated_at: 2024-03-22T19:32:20Z
 url: https://github.com/astral-sh/uv/pull/2619
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Remove unnamed requirements limitation from PIP_COMPATIBILITY.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-22 19:03_
+_@charliermarsh_
 
 We now support `uv pip install .` and friends.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T16:08:42Z
 updated_at: 2024-04-03T18:25:04Z
 url: https://github.com/astral-sh/uv/issues/2812
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Unable to install Pytorch
 
 ---
 
-_Issue opened by @pedrocg42 on 2024-04-03 16:08_
+_@pedrocg42_
 
 I am using Python 3.11.7 and at the moment I am not being able to install pytorch using the recommended command:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-18T01:46:46Z
 updated_at: 2024-07-18T02:34:25Z
 url: https://github.com/astral-sh/uv/issues/5172
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # [BUG] importlib.metadata does not exist
 
 ---
 
-_Issue opened by @17Reset on 2024-07-18 01:46_
+_@17Reset_
 
 When I use pyinstaller to package the library after installing it with uv, I get the error shown below, The solution is a separate uv pip install importlib.metadata :
 

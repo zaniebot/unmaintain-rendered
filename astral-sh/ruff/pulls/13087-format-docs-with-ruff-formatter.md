@@ -13,14 +13,14 @@ head: format-with-ruff
 created_at: 2024-08-24T16:24:45Z
 updated_at: 2024-08-26T16:04:02Z
 url: https://github.com/astral-sh/ruff/pull/13087
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Format docs with ruff formatter
 
 ---
 
-_Pull request opened by @calumy on 2024-08-24 16:24_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

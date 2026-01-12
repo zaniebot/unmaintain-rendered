@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-04T14:33:59Z
 updated_at: 2020-02-05T10:34:34Z
 url: https://github.com/clap-rs/clap/issues/1668
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # v2-master branch is broken on 1.33
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-04 14:33_
+_@CreepySkeleton_
 
 MSRV for 2.x is 1.33, but current `v2-master` branch doesn't build with 1.33. Does it worth fixing it?
 

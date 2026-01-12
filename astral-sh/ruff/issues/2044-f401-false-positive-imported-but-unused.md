@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T23:07:12Z
 updated_at: 2023-07-05T23:11:48Z
 url: https://github.com/astral-sh/ruff/issues/2044
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F401 false positive (imported but unused)
 
 ---
 
-_Issue opened by @dllu on 2023-01-20 23:07_
+_@dllu_
 
 ```python
 from functools import reduce

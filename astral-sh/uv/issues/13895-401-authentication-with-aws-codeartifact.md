@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T00:30:29Z
 updated_at: 2025-06-09T18:56:55Z
 url: https://github.com/astral-sh/uv/issues/13895
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # 401 authentication with AWS CodeArtifact
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-06-07 00:30_
+_@kurt-rhee_
 
 ### Summary
 

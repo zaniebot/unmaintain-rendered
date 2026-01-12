@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T13:57:08Z
 updated_at: 2025-12-09T12:18:32Z
 url: https://github.com/astral-sh/ty/issues/1582
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Improve and test diagnostic rendering in editors that can show annotations
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-18 13:57_
+_@sharkdp_
 
 In IDEs that can display annotations, we currently show a mixture of "concise" and "full" diagnostic information. This can lead to duplication of information:
 

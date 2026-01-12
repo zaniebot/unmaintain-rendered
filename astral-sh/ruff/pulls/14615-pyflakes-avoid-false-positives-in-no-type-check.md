@@ -13,14 +13,14 @@ head: brent/fix-13824
 created_at: 2024-11-26T17:45:18Z
 updated_at: 2024-11-26T19:14:50Z
 url: https://github.com/astral-sh/ruff/pull/14615
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [pyflakes] Avoid false positives in `@no_type_check` contexts (F821, F722)
 
 ---
 
-_Pull request opened by @ntBre on 2024-11-26 17:45_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

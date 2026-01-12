@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T11:40:35Z
 updated_at: 2023-01-24T21:37:35Z
 url: https://github.com/astral-sh/ruff/issues/2024
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-executable`
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-20 11:40_
+_@sbrugman_
 
 - [x] [`EXE001`](https://github.com/xuhdev/flake8-executable): Shebang is present but the file is not executable.
 - [x] [`EXE002`](https://github.com/xuhdev/flake8-executable): The file is executable but no shebang is present.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T08:29:25Z
 updated_at: 2025-07-03T16:04:03Z
 url: https://github.com/astral-sh/uv/issues/12774
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # UV PyTorch indexes not found for cu126
 
 ---
 
-_Issue opened by @bakas-george on 2025-04-09 08:29_
+_@bakas-george_
 
 ### Summary
 

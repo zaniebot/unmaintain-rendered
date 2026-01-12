@@ -13,14 +13,14 @@ head: zb/pin-python
 created_at: 2025-02-05T22:18:32Z
 updated_at: 2025-02-05T23:21:59Z
 url: https://github.com/astral-sh/uv/pull/11265
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Allow opt-in to `.python-version` in `uv init` with `--pin-python`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 22:18_
+_@zanieb_
 
 For use with `--bare`
 

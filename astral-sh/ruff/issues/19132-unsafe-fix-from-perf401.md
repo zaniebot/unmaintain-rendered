@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-03T21:28:31Z
 updated_at: 2025-07-04T13:09:10Z
 url: https://github.com/astral-sh/ruff/issues/19132
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Unsafe fix from PERF401
 
 ---
 
-_Issue opened by @corrylc on 2025-07-03 21:28_
+_@corrylc_
 
 ### Summary
 

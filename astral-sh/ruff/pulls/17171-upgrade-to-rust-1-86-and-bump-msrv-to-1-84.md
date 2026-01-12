@@ -13,14 +13,14 @@ head: micha/rust-1.86
 created_at: 2025-04-03T11:44:33Z
 updated_at: 2025-05-07T10:37:21Z
 url: https://github.com/astral-sh/ruff/pull/17171
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Upgrade to Rust 1.86 and bump MSRV to 1.84
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-03 11:44_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

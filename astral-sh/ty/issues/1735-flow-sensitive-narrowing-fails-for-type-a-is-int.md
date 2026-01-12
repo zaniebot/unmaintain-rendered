@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-03T03:11:40Z
 updated_at: 2025-12-03T03:19:33Z
 url: https://github.com/astral-sh/ty/issues/1735
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Flow-sensitive narrowing fails for `type(a) is int` check in `if/else` on union types
 
 ---
 
-_Issue opened by @5j9 on 2025-12-03 03:11_
+_@5j9_
 
 ### Summary
 

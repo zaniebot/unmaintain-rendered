@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-07T20:37:50Z
 updated_at: 2022-10-07T20:57:11Z
 url: https://github.com/astral-sh/ruff/issues/352
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # M001 is not working
 
 ---
 
-_Issue opened by @adriangb on 2022-10-07 20:37_
+_@adriangb_
 
 With ruff v0.0.59 given a file like:
 

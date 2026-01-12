@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-16T12:43:37Z
 updated_at: 2024-05-25T16:21:52Z
 url: https://github.com/astral-sh/ruff/issues/5803
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # ANN401 doesn't work in overloads
 
 ---
 
-_Issue opened by @ItsDrike on 2023-07-16 12:43_
+_@ItsDrike_
 
 Note that some of the points I made here were moved to be addressed from another issue: #5871, as requested. These points were not actually bugs, and this behavior was intentionally not a part of ANN401, as these weren't a part of this rule in the original `flake8-annotations` extension. The new issue is a feature request, asking for these to be added, leaving this issue purely as a bug report from one of the points I listed, which was indeed a valid bug. I've marked the points that were moved as strikethrough and you can ignore those when reading the issue description. If you're interested in those, check out the linked issue instead.
 

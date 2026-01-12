@@ -13,14 +13,14 @@ head: fix-d413-issue
 created_at: 2024-02-29T07:12:46Z
 updated_at: 2024-02-29T13:41:31Z
 url: https://github.com/astral-sh/ruff/pull/10162
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pydocstyle`] Trim whitespace when removing blank lines after section (`D413`)
 
 ---
 
-_Pull request opened by @jusexton on 2024-02-29 07:12_
+_@jusexton_
 
 ## Summary
 

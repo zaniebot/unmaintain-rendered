@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-08-18T14:30:45Z
 updated_at: 2025-08-19T00:02:27Z
 url: https://github.com/astral-sh/uv/pull/15351
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # chore: add trixie base images and alpine 3.22 support
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-18 14:30_
+_@samypr100_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: no-completions-in-definitions
 created_at: 2025-10-30T16:50:17Z
 updated_at: 2025-11-01T15:07:32Z
 url: https://github.com/astral-sh/ruff/pull/21146
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Don't provide completions when in class or function definition
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-10-30 16:50_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: parens-comment-attr-fmt-bug
 created_at: 2025-09-15T14:53:33Z
 updated_at: 2025-11-17T15:11:36Z
 url: https://github.com/astral-sh/ruff/pull/20418
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Avoid syntax error when formatting attribute expressions with outer parentheses, parenthesized value, and trailing comment on value
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-15 14:53_
+_@dylwil3_
 
 Closes #19350 
 

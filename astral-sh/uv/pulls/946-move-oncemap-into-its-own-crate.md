@@ -13,14 +13,14 @@ head: charlie/once-map
 created_at: 2024-01-17T04:06:15Z
 updated_at: 2024-01-17T04:09:17Z
 url: https://github.com/astral-sh/uv/pull/946
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Move `OnceMap` into its own crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 04:06_
+_@charliermarsh_
 
 ## Summary
 

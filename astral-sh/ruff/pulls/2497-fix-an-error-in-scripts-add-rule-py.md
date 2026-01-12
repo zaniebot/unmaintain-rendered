@@ -12,14 +12,14 @@ head: pre-commit/fix-ruff-errors
 created_at: 2023-02-02T20:15:03Z
 updated_at: 2023-02-13T06:34:17Z
 url: https://github.com/astral-sh/ruff/pull/2497
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix an error in scripts/add_rule.py
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-02 20:15_
+_@JonathanPlasse_
 
 Ignore `PLR0915` Too many statements in `add_rule.py`.
 Add `RUF100` to unfixable to avoid removing on `Fix all` `# noqa: PLR0915` which is not recognized by old Ruff versions.

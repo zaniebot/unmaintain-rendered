@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-27T21:44:26Z
 updated_at: 2025-11-27T22:24:13Z
 url: https://github.com/astral-sh/ty/issues/1660
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # invalid-method-override - subclassing with kwargs
 
 ---
 
-_Issue opened by @brentonmcs on 2025-11-27 21:44_
+_@brentonmcs_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: parenthesize-generator-expr
 created_at: 2025-07-14T09:57:31Z
 updated_at: 2025-07-23T16:08:15Z
 url: https://github.com/astral-sh/ruff/pull/19325
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`perflint`] Parenthesize generator expressions (`PERF401`)
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-14 09:57_
+_@CodeMan62_
 
 ## Summary
 closes #19204 

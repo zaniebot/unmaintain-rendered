@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-28T10:38:41Z
 updated_at: 2025-02-03T19:23:31Z
 url: https://github.com/astral-sh/ruff/issues/7695
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `enum.global_enum` members are not added to global scope
 
 ---
 
-_Issue opened by @petrem on 2023-09-28 10:38_
+_@petrem_
 
 Consider this `foo.py`:
 ```python

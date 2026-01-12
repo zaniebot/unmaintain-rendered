@@ -13,14 +13,14 @@ head: zb/python-download-env
 created_at: 2024-08-22T14:02:07Z
 updated_at: 2024-08-23T14:19:33Z
 url: https://github.com/astral-sh/uv/pull/6436
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Add support for configuring `python-downloads` with `UV_PYTHON_DOWNLOADS`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 14:02_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/6406
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-04T00:44:39Z
 updated_at: 2023-04-04T09:06:32Z
 url: https://github.com/astral-sh/ruff/issues/3872
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PGH004 rule requires colon in `noqa`
 
 ---
 
-_Issue opened by @jurasofish on 2023-04-04 00:44_
+_@jurasofish_
 
 If you run `ruff check scratch_171.py --isolated --select PGH004` on the snippet below you get the output
 

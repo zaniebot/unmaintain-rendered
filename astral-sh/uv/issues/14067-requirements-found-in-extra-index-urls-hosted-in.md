@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T07:29:45Z
 updated_at: 2025-06-16T13:36:01Z
 url: https://github.com/astral-sh/uv/issues/14067
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # requirements found in extra index urls hosted in private s3 buckets backed by cloudfront fail to get downloaded
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-16 07:29_
+_@Ryang20718_
 
 ### Summary
 

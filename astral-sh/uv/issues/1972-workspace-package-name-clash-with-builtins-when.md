@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-25T21:21:13Z
 updated_at: 2024-02-28T15:43:14Z
 url: https://github.com/astral-sh/uv/issues/1972
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Workspace package name clash with builtins - when uv is enabled
 
 ---
 
-_Issue opened by @mihalikv on 2024-02-25 21:21_
+_@mihalikv_
 
 ### Steps to Reproduce
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T16:56:41Z
 updated_at: 2025-11-10T14:33:16Z
 url: https://github.com/astral-sh/ruff/issues/21300
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ICN rules miss some conventions from flake8-import-conventions
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-06 16:56_
+_@dscorbett_
 
 ### Summary
 

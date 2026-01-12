@@ -12,14 +12,14 @@ head: main
 created_at: 2024-06-14T11:30:45Z
 updated_at: 2024-06-14T11:35:39Z
 url: https://github.com/astral-sh/ruff/pull/11870
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # UPDATE latest supported versions to 3.13
 
 ---
 
-_Pull request opened by @yairp03 on 2024-06-14 11:30_
+_@yairp03_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: cjm/test-framework-docs
 created_at: 2024-10-09T23:04:12Z
 updated_at: 2024-10-10T19:02:03Z
 url: https://github.com/astral-sh/ruff/pull/13695
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] document test framework
 
 ---
 
-_Pull request opened by @carljm on 2024-10-09 23:04_
+_@carljm_
 
 This adds documentation for the new test framework.
 

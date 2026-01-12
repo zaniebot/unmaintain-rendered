@@ -13,14 +13,14 @@ head: charlie/dep-id
 created_at: 2024-06-06T20:15:10Z
 updated_at: 2024-06-07T18:28:55Z
 url: https://github.com/astral-sh/uv/pull/4114
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Rename `Dependency.id` to `Dependency.distribution_id`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 20:15_
+_@charliermarsh_
 
 ## Summary
 

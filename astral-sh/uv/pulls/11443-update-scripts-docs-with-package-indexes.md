@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-02-12T12:27:23Z
 updated_at: 2025-02-12T13:52:26Z
 url: https://github.com/astral-sh/uv/pull/11443
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Update scripts docs with package indexes
 
 ---
 
-_Pull request opened by @lewis-wf on 2025-02-12 12:27_
+_@lewis-wf_
 
 ## Summary
 

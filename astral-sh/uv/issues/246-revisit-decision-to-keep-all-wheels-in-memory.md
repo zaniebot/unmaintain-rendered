@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T22:28:56Z
 updated_at: 2023-11-07T00:50:02Z
 url: https://github.com/astral-sh/uv/issues/246
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Revisit decision to keep all wheels in-memory
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-30 22:28_
+_@charliermarsh_
 
 Right now, we keep all wheels in-memory when downloading-and-unzipping them. This needs to be stress tested... We may want to write to disk if the wheel exceeds a certain size.
 

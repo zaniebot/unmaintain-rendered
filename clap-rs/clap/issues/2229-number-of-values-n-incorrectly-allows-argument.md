@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-11-28T07:24:50Z
 updated_at: 2021-02-18T21:07:27Z
 url: https://github.com/clap-rs/clap/issues/2229
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # `number_of_values(n)` incorrectly allows argument counts that are integer multiples of `n`
 
 ---
 
-_Issue opened by @elldritch on 2020-11-28 07:24_
+_@elldritch_
 
 ## Reproducing the bug
 

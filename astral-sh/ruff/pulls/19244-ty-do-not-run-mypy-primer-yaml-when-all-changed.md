@@ -14,14 +14,14 @@ head: mypy-primer
 created_at: 2025-07-09T18:33:21Z
 updated_at: 2025-07-09T18:40:48Z
 url: https://github.com/astral-sh/ruff/pull/19244
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Do not run `mypy_primer.yaml` when all changed files are Markdown files
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-07-09 18:33_
+_@InSyncWithFoo_
 
 ## Summary
 

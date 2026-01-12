@@ -12,14 +12,14 @@ head: charlie/lock
 created_at: 2023-11-03T00:12:49Z
 updated_at: 2023-11-03T16:33:15Z
 url: https://github.com/astral-sh/uv/pull/304
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Use locks to prevent concurrent accesses to the same Git repo
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 00:12_
+_@charliermarsh_
 
 Ensures that if we need to access the same Git repo twice in a resolution, we only have one handler to that repo at a time. (Otherwise, `git2` panics.)
 

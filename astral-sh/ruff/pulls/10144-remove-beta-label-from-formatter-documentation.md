@@ -13,14 +13,14 @@ head: remove-formatter-beta-terminology
 created_at: 2024-02-27T13:10:07Z
 updated_at: 2024-02-28T12:51:35Z
 url: https://github.com/astral-sh/ruff/pull/10144
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove "Beta" Label from formatter documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-27 13:10_
+_@MichaReiser_
 
 ## Summary
 

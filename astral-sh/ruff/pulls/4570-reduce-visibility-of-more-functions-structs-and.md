@@ -12,14 +12,14 @@ head: charlie/pub
 created_at: 2023-05-22T03:30:05Z
 updated_at: 2023-05-22T04:03:02Z
 url: https://github.com/astral-sh/ruff/pull/4570
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Reduce visibility of more functions, structs, and fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-22 03:30_
+_@charliermarsh_
 
 _No description provided._
 

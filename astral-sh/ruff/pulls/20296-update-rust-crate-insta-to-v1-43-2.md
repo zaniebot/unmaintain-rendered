@@ -13,14 +13,14 @@ head: renovate/insta-1.x-lockfile
 created_at: 2025-09-08T01:30:14Z
 updated_at: 2025-09-08T05:28:54Z
 url: https://github.com/astral-sh/ruff/pull/20296
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # Update Rust crate insta to v1.43.2
 
 ---
 
-_Pull request opened by @renovate on 2025-09-08 01:30_
+_@renovate_
 
 This PR contains the following updates:
 

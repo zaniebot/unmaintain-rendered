@@ -14,14 +14,14 @@ head: bin-op-no-best-fitting
 created_at: 2023-06-08T07:31:05Z
 updated_at: 2023-06-08T10:45:04Z
 url: https://github.com/astral-sh/ruff/pull/4952
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Implement Binary expression without `best_fitting`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-08 07:31_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

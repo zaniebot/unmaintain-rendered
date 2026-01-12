@@ -12,14 +12,14 @@ head: zb/executables-rom
 created_at: 2025-12-10T14:43:42Z
 updated_at: 2025-12-11T17:01:45Z
 url: https://github.com/astral-sh/uv/pull/17072
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Allow missing executables in tool install target when `--with-executables-from` is used
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-10 14:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/17069
 

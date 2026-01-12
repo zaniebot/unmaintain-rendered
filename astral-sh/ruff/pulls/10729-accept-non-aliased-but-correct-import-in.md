@@ -13,14 +13,14 @@ head: charlie/inc
 created_at: 2024-04-02T03:34:13Z
 updated_at: 2024-04-02T03:47:20Z
 url: https://github.com/astral-sh/ruff/pull/10729
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Accept non-aliased (but correct) import in unconventional-import-alias
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 03:34_
+_@charliermarsh_
 
 ## Summary
 

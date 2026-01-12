@@ -13,14 +13,14 @@ head: zb/no-color
 created_at: 2024-01-22T21:40:50Z
 updated_at: 2024-01-23T04:56:53Z
 url: https://github.com/astral-sh/uv/pull/1048
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Add `--no-color` support for `pip` compatibility
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 21:40_
+_@zanieb_
 
 Adds `--no-color` as provided by `pip`.
 

@@ -13,14 +13,14 @@ head: micha/argfile-wild
 created_at: 2025-02-24T19:02:39Z
 updated_at: 2025-02-25T07:43:16Z
 url: https://github.com/astral-sh/ruff/pull/16353
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Add argfile and windows glob path support
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-24 19:02_
+_@MichaReiser_
 
 ## Summary
 

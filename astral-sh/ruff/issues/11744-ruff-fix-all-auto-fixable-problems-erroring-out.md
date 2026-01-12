@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-04T22:07:40Z
 updated_at: 2024-06-11T18:50:02Z
 url: https://github.com/astral-sh/ruff/issues/11744
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `Ruff: Fix all auto-fixable problems` erroring out in VSCode
 
 ---
 
-_Issue opened by @MadhavVij on 2024-06-04 22:07_
+_@MadhavVij_
 
 ## Error When Running `Ruff: Fix all auto-fixable problems` in VSCode
 

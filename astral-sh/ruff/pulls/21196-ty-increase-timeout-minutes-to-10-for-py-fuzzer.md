@@ -14,14 +14,14 @@ head: fuzz-timeout
 created_at: 2025-11-02T01:34:25Z
 updated_at: 2025-11-02T02:06:04Z
 url: https://github.com/astral-sh/ruff/pull/21196
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Increase timeout-minutes to 10 for py-fuzzer job
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-02 01:34_
+_@AlexWaygood_
 
 In https://github.com/astral-sh/ruff/pull/20937, we reduced this from 20 to 5, so that it would become obvious if ty was now taking a pathological amount of time to type-check a given seed. 5 minutes is easily long enough if there are no new bugs, but it turns out to be too low if there _are_ new bugs, because on encountering a new bug the fuzzer must repeatedly run ty on a smaller and smaller snippet in order to try to minimize the reproducible example. That means that the fuzzer job is timing out on https://github.com/astral-sh/ruff/pull/20962, not because of pathological performance issues but because we're not giving the script enough time to minimize the bugs that it's found.
 

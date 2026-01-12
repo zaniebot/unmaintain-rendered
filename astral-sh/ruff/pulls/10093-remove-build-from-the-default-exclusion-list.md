@@ -14,14 +14,14 @@ head: charlie/build
 created_at: 2024-02-23T05:10:26Z
 updated_at: 2024-02-28T16:36:40Z
 url: https://github.com/astral-sh/ruff/pull/10093
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove `build` from the default exclusion list
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 05:10_
+_@charliermarsh_
 
 ## Summary
 

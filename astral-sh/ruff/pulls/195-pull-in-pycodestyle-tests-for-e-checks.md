@@ -12,14 +12,14 @@ head: charlie/tests
 created_at: 2022-09-15T01:35:45Z
 updated_at: 2022-09-15T02:22:54Z
 url: https://github.com/astral-sh/ruff/pull/195
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Pull in pycodestyle tests for E checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-15 01:35_
+_@charliermarsh_
 
 There are a few incompatibilities here (apart from column numbers), but I prefer ruff's flagging in those cases.
 

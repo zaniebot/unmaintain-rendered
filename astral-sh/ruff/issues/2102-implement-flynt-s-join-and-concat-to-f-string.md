@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T08:28:00Z
 updated_at: 2024-08-19T05:51:13Z
 url: https://github.com/astral-sh/ruff/issues/2102
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement flynt's "join and concat to f-string" transforms
 
 ---
 
-_Issue opened by @akx on 2023-01-23 08:28_
+_@akx_
 
 [`flynt`](https://github.com/ikamensh/flynt#readme) is a specialized linter for f-string usage.
 

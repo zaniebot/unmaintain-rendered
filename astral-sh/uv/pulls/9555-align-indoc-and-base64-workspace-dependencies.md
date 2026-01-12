@@ -13,14 +13,14 @@ head: align-indoc-base64
 created_at: 2024-12-01T17:21:56Z
 updated_at: 2024-12-01T22:20:36Z
 url: https://github.com/astral-sh/uv/pull/9555
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Align `indoc` and `base64` workspace dependencies with root project
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-12-01 17:21_
+_@Coruscant11_
 
 ## Summary
 After #9524, I noticed two other dependencies were misaligned.

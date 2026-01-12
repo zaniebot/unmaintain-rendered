@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T13:56:48Z
 updated_at: 2025-06-18T20:16:13Z
 url: https://github.com/astral-sh/ruff/issues/18647
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`isort-I001`] Discrepancy between local ruff and GitHub action
 
 ---
 
-_Issue opened by @gstrauss-zscaler on 2025-06-12 13:56_
+_@gstrauss-zscaler_
 
 ### Summary
 

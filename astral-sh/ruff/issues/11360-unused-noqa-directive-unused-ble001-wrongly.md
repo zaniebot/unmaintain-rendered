@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T12:27:19Z
 updated_at: 2024-05-22T02:50:10Z
 url: https://github.com/astral-sh/ruff/issues/11360
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Unused `noqa` directive (unused: `BLE001`) wrongly detected
 
 ---
 
-_Issue opened by @revliscano on 2024-05-10 12:27_
+_@revliscano_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

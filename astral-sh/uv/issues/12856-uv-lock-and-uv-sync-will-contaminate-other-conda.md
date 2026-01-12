@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T01:54:58Z
 updated_at: 2025-04-14T16:19:37Z
 url: https://github.com/astral-sh/uv/issues/12856
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # `uv lock` and `uv sync` will contaminate other conda environments when installing an editable package locally
 
 ---
 
-_Issue opened by @zhuoqun-chen on 2025-04-14 01:54_
+_@zhuoqun-chen_
 
 ### Summary
 

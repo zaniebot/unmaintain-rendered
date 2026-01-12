@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-14T17:39:21Z
 updated_at: 2022-10-14T18:29:20Z
 url: https://github.com/astral-sh/ruff/issues/430
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `SourceCodeLocator` doesn't handle multi-byte characters
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-14 17:39_
+_@charliermarsh_
 
 If you have a file like:
 

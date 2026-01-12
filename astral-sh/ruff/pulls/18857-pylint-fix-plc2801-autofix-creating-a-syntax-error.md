@@ -14,14 +14,14 @@ head: fix-PLC2801
 created_at: 2025-06-21T21:22:51Z
 updated_at: 2025-06-23T14:19:51Z
 url: https://github.com/astral-sh/ruff/pull/18857
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`pylint`] Fix `PLC2801` autofix creating a syntax error
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-21 21:22_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

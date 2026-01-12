@@ -14,14 +14,14 @@ head: charlie/no-binary
 created_at: 2024-03-27T00:01:21Z
 updated_at: 2024-10-27T16:48:22Z
 url: https://github.com/astral-sh/uv/pull/2680
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Add `--no-binary` and `--only-binary` support to `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 00:01_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: brent/tc008-0.10
 created_at: 2025-03-11T17:29:29Z
 updated_at: 2025-05-01T15:32:03Z
 url: https://github.com/astral-sh/ruff/pull/16639
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-type-checking`] Stabilize `quoted-type-alias` (`TC008`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 17:29_
+_@ntBre_
 
 Summary
 --

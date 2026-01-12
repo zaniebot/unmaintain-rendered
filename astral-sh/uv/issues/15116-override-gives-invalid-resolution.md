@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T19:23:00Z
 updated_at: 2025-08-09T20:49:54Z
 url: https://github.com/astral-sh/uv/issues/15116
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `override` gives invalid resolution?
 
 ---
 
-_Issue opened by @DanielYang59 on 2025-08-06 19:23_
+_@DanielYang59_
 
 ### Summary
 

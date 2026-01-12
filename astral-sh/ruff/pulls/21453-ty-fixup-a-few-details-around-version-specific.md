@@ -13,14 +13,14 @@ head: alex/dataclass-params-version
 created_at: 2025-11-14T14:09:16Z
 updated_at: 2025-11-15T10:21:25Z
 url: https://github.com/astral-sh/ruff/pull/21453
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Fixup a few details around version-specific dataclass features
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-14 14:09_
+_@AlexWaygood_
 
 ## Summary
 

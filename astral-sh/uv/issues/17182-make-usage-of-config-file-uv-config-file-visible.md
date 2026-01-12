@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-18T20:40:13Z
 updated_at: 2025-12-19T09:21:40Z
 url: https://github.com/astral-sh/uv/issues/17182
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Make usage of `--config-file`/`UV_CONFIG_FILE` visible in verbose output
 
 ---
 
-_Issue opened by @cmarqu on 2025-12-18 20:40_
+_@cmarqu_
 
 ### Summary
 

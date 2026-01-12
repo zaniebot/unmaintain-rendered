@@ -13,14 +13,14 @@ head: hoel/improve_preview_docs
 created_at: 2024-02-29T10:41:54Z
 updated_at: 2024-03-05T03:14:32Z
 url: https://github.com/astral-sh/ruff/pull/10168
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Improve documentation of the preview mode
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-02-29 10:41_
+_@hoel-bagard_
 
 ## Summary
 

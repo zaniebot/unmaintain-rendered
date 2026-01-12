@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-13T17:20:55Z
 updated_at: 2024-12-04T00:19:05Z
 url: https://github.com/astral-sh/uv/pull/9093
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Docs(GitLab): add entrypoint for distroless image
 
 ---
 
-_Pull request opened by @Tsafaras on 2024-11-13 17:20_
+_@Tsafaras_
 
 ## Summary
 

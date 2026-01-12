@@ -11,14 +11,14 @@ head: w3601-bad-chained-comparison
 created_at: 2025-09-26T21:25:46Z
 updated_at: 2025-09-29T20:46:21Z
 url: https://github.com/astral-sh/ruff/pull/20597
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [`pylint`] Implement `bad-chained-comparison` (`PLW3601`)
 
 ---
 
-_Pull request opened by @kapkekes on 2025-09-26 21:25_
+_@kapkekes_
 
 ## Summary
 

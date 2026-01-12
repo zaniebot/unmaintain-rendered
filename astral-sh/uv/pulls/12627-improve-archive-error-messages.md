@@ -13,14 +13,14 @@ head: gankra/fix-msg
 created_at: 2025-04-02T15:48:48Z
 updated_at: 2025-04-02T15:57:01Z
 url: https://github.com/astral-sh/uv/pull/12627
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # improve archive error messages
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-02 15:48_
+_@Gankra_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T10:41:08Z
 updated_at: 2024-09-27T12:27:10Z
 url: https://github.com/astral-sh/ruff/issues/13535
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ISC001 in case of explicit string concatenation
 
 ---
 
-_Issue opened by @spaceby on 2024-09-27 10:41_
+_@spaceby_
 
 ```python
 # ISC001 working

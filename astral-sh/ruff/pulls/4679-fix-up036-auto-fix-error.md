@@ -14,14 +14,14 @@ head: fix-up036-auto-fix-error
 created_at: 2023-05-27T13:04:11Z
 updated_at: 2023-05-28T05:22:25Z
 url: https://github.com/astral-sh/ruff/pull/4679
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix UP036 auto-fix error
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-27 13:04_
+_@JonathanPlasse_
 
 - Close #4522
 <!--

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T08:58:02Z
 updated_at: 2023-10-01T08:20:33Z
 url: https://github.com/astral-sh/ruff/issues/6717
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for FormatLiterals: Unable to identify format literals
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 08:58_
+_@qarmin_
 
 Ruff 0.0.285
 

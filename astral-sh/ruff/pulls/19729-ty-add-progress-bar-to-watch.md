@@ -14,14 +14,14 @@ head: add-progress-bar-to-watch
 created_at: 2025-08-04T07:24:41Z
 updated_at: 2025-08-04T07:31:15Z
 url: https://github.com/astral-sh/ruff/pull/19729
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Add progress bar to watch
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-04 07:24_
+_@MichaReiser_
 
 ## Summary
 

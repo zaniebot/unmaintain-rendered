@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-09-22T16:02:42Z
 updated_at: 2024-09-23T13:58:26Z
 url: https://github.com/astral-sh/uv/issues/7621
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv add pkg` adds extraneous new lines in `project.dependencies` if the pyproject.toml has `CRLF` ending
 
 ---
 
-_Issue opened by @Ravencentric on 2024-09-22 16:02_
+_@Ravencentric_
 
 I encountered this when I ported my existing `pyproject.toml` to use uv on Windows 11. Here's the reproduction with powershell on Windows 11:
 

@@ -13,14 +13,14 @@ head: charlie/script-stdin
 created_at: 2024-12-19T17:14:06Z
 updated_at: 2024-12-19T17:52:59Z
 url: https://github.com/astral-sh/uv/pull/10035
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Allow `--script` to be provided with `uv run -`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-19 17:14_
+_@charliermarsh_
 
 ## Summary
 

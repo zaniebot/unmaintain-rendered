@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T05:41:35Z
 updated_at: 2023-09-29T09:45:04Z
 url: https://github.com/astral-sh/ruff/issues/6588
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Comprehension leading if comments
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-15 05:41_
+_@MichaReiser_
 
 This is not a bug per se but something I found rather confusing. The comprehension comment placement associates leading and trailing comments on the `if`s as dangling comments of the condition node:
 

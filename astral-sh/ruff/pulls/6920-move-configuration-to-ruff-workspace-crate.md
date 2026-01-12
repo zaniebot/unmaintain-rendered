@@ -13,14 +13,14 @@ head: ruff-project
 created_at: 2023-08-27T16:45:45Z
 updated_at: 2023-08-28T06:21:50Z
 url: https://github.com/astral-sh/ruff/pull/6920
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Move `Configuration` to `ruff_workspace` crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-27 16:45_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-06-12T03:45:30Z
 updated_at: 2019-06-26T00:11:49Z
 url: https://github.com/clap-rs/clap/issues/1487
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Required group can duplicate items in help text
 
 ---
 
-_Issue opened by @TyPR124 on 2019-06-12 03:45_
+_@TyPR124_
 
 ### Affected Version of clap
 

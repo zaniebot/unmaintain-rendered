@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T06:37:46Z
 updated_at: 2024-07-25T18:01:42Z
 url: https://github.com/astral-sh/uv/issues/5434
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv sync in empty workspace succeeds and fails
 
 ---
 
-_Issue opened by @bluss on 2024-07-25 06:37_
+_@bluss_
 
 Papercut type thing, not important.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-24T11:22:31Z
 updated_at: 2025-12-13T17:44:52Z
 url: https://github.com/astral-sh/uv/issues/4466
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # UV upgrades packages inherited with --system-site-packages
 
 ---
 
-_Issue opened by @lkoelman on 2024-06-24 11:22_
+_@lkoelman_
 
 Hi there, I'm encountering the following behaviour where uv deviates from `pip` and is causing one of our builds to fail: when you create a virtual environment with `--system-site-packages`, and then install a package without specifying a version, UV chooses the upgrade path (install the latest version in the virtual environment), whereas pip just uses the older version inherited from the base environment.
 

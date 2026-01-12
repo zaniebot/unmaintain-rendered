@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-24T09:24:54Z
 updated_at: 2025-04-26T11:56:28Z
 url: https://github.com/astral-sh/ruff/issues/17601
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consistent quoting when strings are implicitly concatenated
 
 ---
 
-_Issue opened by @pekkaklarck on 2025-04-24 09:24_
+_@pekkaklarck_
 
 I believe Ruff should use consistent quoting when long strings are constructed using implicit concatenation. That obviously isn't possible if fragments use both single and double quotes as literal values, but that's not the common case.
 

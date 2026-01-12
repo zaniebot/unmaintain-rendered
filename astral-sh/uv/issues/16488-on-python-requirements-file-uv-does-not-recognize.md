@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-28T21:01:47Z
 updated_at: 2025-10-29T15:23:31Z
 url: https://github.com/astral-sh/uv/issues/16488
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # on python requirements file: uv does not recognize extra-index-url in combination with environment markers, treating them as a whole index, which fails
 
 ---
 
-_Issue opened by @loscrossos on 2025-10-28 21:01_
+_@loscrossos_
 
 ### Summary
 

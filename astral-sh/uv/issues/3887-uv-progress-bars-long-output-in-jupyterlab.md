@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T19:15:36Z
 updated_at: 2024-05-29T18:17:46Z
 url: https://github.com/astral-sh/uv/issues/3887
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Uv progress bars: long output in jupyterlab
 
 ---
 
-_Issue opened by @bluss on 2024-05-28 19:15_
+_@bluss_
 
 Hi team, sorry for not doing this test before release, but I'm not normally working with a dev version of Uv.
 

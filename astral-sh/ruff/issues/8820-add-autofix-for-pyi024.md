@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-22T16:05:51Z
 updated_at: 2023-11-22T18:29:51Z
 url: https://github.com/astral-sh/ruff/issues/8820
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add autofix for `PYI024`
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-22 16:05_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

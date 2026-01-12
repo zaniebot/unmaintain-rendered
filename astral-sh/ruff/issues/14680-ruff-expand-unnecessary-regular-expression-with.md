@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T15:14:27Z
 updated_at: 2024-11-29T19:28:28Z
 url: https://github.com/astral-sh/ruff/issues/14680
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [`ruff`] Expand `unnecessary-regular-expression` with `re.compile` (RUF055)
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-29 15:14_
+_@sbrugman_
 
 Often users use [`re.compile`](https://docs.python.org/3/library/re.html#re.compile
 ) to compile a regex pattern. The returned regular expression object can be then used for the methods already caught by this rule. This is more efficient when the same pattern is reused.

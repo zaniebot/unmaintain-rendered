@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T23:58:01Z
 updated_at: 2025-07-01T06:37:53Z
 url: https://github.com/astral-sh/ty/issues/182
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # handle types inheriting Any in assignability
 
 ---
 
-_Issue opened by @carljm on 2025-03-11 23:58_
+_@carljm_
 
 An instance of a type inheriting Any/Unknown should be assignable to any non-final type, because it might inherit from it.
 

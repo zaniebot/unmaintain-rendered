@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-23T12:41:45Z
 updated_at: 2023-05-23T14:37:13Z
 url: https://github.com/clap-rs/clap/issues/4933
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Change help message when prompt skippable
 
 ---
 
-_Issue opened by @dariocurr on 2023-05-23 12:41_
+_@dariocurr_
 
 ### Please complete the following tasks
 

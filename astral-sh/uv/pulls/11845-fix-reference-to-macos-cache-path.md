@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2025-02-28T02:06:26Z
 updated_at: 2025-02-28T02:14:10Z
 url: https://github.com/astral-sh/uv/pull/11845
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Fix reference to macOS cache path
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-28 02:06_
+_@charliermarsh_
 
 ## Summary
 

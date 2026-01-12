@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-19T18:58:56Z
 updated_at: 2023-08-24T12:31:04Z
 url: https://github.com/astral-sh/ruff/issues/5893
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Unstable formatting of parenthesized implicit string concatenation
 
 ---
 
-_Issue opened by @konstin on 2023-07-19 18:58_
+_@konstin_
 
 This snippet causes unstable formatting:
 ```python

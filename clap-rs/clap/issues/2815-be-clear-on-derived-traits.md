@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-05T15:22:20Z
 updated_at: 2021-10-12T16:28:21Z
 url: https://github.com/clap-rs/clap/issues/2815
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Be clear on derived traits
 
 ---
 
-_Issue opened by @epage on 2021-10-05 15:22_
+_@epage_
 
 ### Please complete the following tasks
 

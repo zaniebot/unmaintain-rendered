@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-12T13:02:32Z
 updated_at: 2025-09-02T21:09:14Z
 url: https://github.com/astral-sh/ruff/issues/18646
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`flake8-logging`] Handle closures in `log-exception-outside-except-handler` (`LOG004`)
 
 ---
 
-_Issue opened by @dylwil3 on 2025-06-12 13:02_
+_@dylwil3_
 
 I think this example might be a false positive:
 

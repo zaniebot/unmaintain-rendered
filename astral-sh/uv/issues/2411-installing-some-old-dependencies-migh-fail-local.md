@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T13:22:11Z
 updated_at: 2024-03-14T01:45:21Z
 url: https://github.com/astral-sh/uv/issues/2411
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Installing some old dependencies migh fail local builds
 
 ---
 
-_Issue opened by @potiuk on 2024-03-13 13:22_
+_@potiuk_
 
 Installing some old, dependencies that require buidling local wheels, might lead to failures of the build project - especially when `--lowest-direct` resolution is used.
 

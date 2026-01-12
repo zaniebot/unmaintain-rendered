@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-22T21:49:18Z
 updated_at: 2025-12-22T21:49:18Z
 url: https://github.com/astral-sh/uv/issues/17223
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Find some way to give nextest a list of tests which are io bound from more sophisticated heuristics than the name
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-22 21:49_
+_@EliteTK_
 
 ### Summary
 

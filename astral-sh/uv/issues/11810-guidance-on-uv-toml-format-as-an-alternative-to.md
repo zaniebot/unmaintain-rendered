@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T21:22:33Z
 updated_at: 2025-02-27T09:38:18Z
 url: https://github.com/astral-sh/uv/issues/11810
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Guidance on `uv.toml` format as an alternative to `pyproject.toml`
 
 ---
 
-_Issue opened by @juan-op on 2025-02-26 21:22_
+_@juan-op_
 
 ### Question
 

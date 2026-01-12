@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T16:45:34Z
 updated_at: 2025-07-25T17:26:37Z
 url: https://github.com/astral-sh/ty/issues/893
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type inference doesn't work for `self` in class instance methods
 
 ---
 
-_Issue opened by @scosman on 2025-07-25 16:45_
+_@scosman_
 
 ### Summary
 

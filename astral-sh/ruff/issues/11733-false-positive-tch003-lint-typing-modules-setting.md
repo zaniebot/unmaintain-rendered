@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T07:25:10Z
 updated_at: 2025-02-07T09:07:14Z
 url: https://github.com/astral-sh/ruff/issues/11733
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False-positive `TCH003`: `lint.typing-modules` setting is not honored in the typing module itself
 
 ---
 
-_Issue opened by @bersbersbers on 2024-06-04 07:25_
+_@bersbersbers_
 
 `lint.typing-modules` allows defining compatibility modules whose exports will be treated the same as the exports from the `typing` module. However, this does not seem to work in the module itself - `ruff` does not seem to understand that `TYPE_CHECKING` defines a type-checking block in this example:
 

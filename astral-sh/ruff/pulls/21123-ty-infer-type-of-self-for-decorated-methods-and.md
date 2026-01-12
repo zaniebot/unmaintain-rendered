@@ -14,14 +14,14 @@ head: david/fix-1448
 created_at: 2025-10-29T13:45:20Z
 updated_at: 2025-10-29T21:33:43Z
 url: https://github.com/astral-sh/ruff/pull/21123
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Infer type of `self` for decorated methods and properties
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-29 13:45_
+_@sharkdp_
 
 ## Summary
 

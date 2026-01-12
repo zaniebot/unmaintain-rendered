@@ -13,14 +13,14 @@ head: charlie/arg
 created_at: 2024-04-17T02:02:27Z
 updated_at: 2024-04-17T02:07:28Z
 url: https://github.com/astral-sh/uv/pull/3085
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Avoid `#[clap]` macro
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 02:02_
+_@charliermarsh_
 
 ## Summary
 

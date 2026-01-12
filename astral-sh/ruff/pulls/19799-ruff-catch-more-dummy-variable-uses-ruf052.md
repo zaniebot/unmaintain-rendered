@@ -14,14 +14,14 @@ head: feat(#19732)/flag-dummy-variables-in-loops
 created_at: 2025-08-07T06:48:30Z
 updated_at: 2025-11-21T17:57:02Z
 url: https://github.com/astral-sh/ruff/pull/19799
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [`ruff`] Catch more dummy variable uses (`RUF052`)
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-07 06:48_
+_@mikeleppane_
 
 ## Summary
 

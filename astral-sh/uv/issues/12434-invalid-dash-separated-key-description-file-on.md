@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T15:47:16Z
 updated_at: 2025-03-25T01:50:31Z
 url: https://github.com/astral-sh/uv/issues/12434
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Invalid dash-separated key 'description-file' on aiosonic, pytest-watch appeared in last hour
 
 ---
 
-_Issue opened by @thundergolfer on 2025-03-24 15:47_
+_@thundergolfer_
 
 ### Summary
 

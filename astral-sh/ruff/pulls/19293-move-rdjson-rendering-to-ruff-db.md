@@ -14,14 +14,14 @@ head: brent/rdjson
 created_at: 2025-07-11T21:19:59Z
 updated_at: 2025-07-15T12:47:46Z
 url: https://github.com/astral-sh/ruff/pull/19293
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # Move RDJSON rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-11 21:19_
+_@ntBre_
 
 ## Summary
 

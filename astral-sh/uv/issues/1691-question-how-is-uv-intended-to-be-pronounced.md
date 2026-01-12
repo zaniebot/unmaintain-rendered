@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T13:43:36Z
 updated_at: 2024-02-19T15:33:28Z
 url: https://github.com/astral-sh/uv/issues/1691
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Question: How is "uv" intended to be pronounced? 
 
 ---
 
-_Issue opened by @bwanshoom on 2024-02-19 13:43_
+_@bwanshoom_
 
 Is it "you-vee"? Or like "of"? Or something else entirely?
 

@@ -14,14 +14,14 @@ head: rule-ruff-split-of-static-string
 created_at: 2024-10-30T19:41:34Z
 updated_at: 2024-11-03T13:32:37Z
 url: https://github.com/astral-sh/ruff/pull/14008
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`flake8-simplify`] Implementation for `split-of-static-string` (SIM905)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-10-30 19:41_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-27T06:31:09Z
 updated_at: 2024-09-18T15:11:15Z
 url: https://github.com/astral-sh/uv/pull/6673
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Clear 
 
 ---
 
-_Pull request opened by @Filimoa on 2024-08-27 06:31_
+_@Filimoa_
 
 ## Summary
 

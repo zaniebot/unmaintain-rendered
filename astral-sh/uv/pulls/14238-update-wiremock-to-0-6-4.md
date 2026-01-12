@@ -13,14 +13,14 @@ head: no-wiremock-fork
 created_at: 2025-06-24T12:55:05Z
 updated_at: 2025-06-24T13:04:56Z
 url: https://github.com/astral-sh/uv/pull/14238
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Update wiremock to 0.6.4
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-06-24 12:55_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

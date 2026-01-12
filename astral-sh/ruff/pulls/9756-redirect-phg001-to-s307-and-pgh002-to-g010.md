@@ -13,14 +13,14 @@ head: zb/pgh-redirect
 created_at: 2024-02-01T15:56:41Z
 updated_at: 2024-02-01T17:47:47Z
 url: https://github.com/astral-sh/ruff/pull/9756
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Redirect `PHG001` to `S307` and `PGH002` to `G010`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-01 15:56_
+_@zanieb_
 
 Follow-up to #9754 and #9689. Alternative to #9714.
 Replaces #7506 and #7507

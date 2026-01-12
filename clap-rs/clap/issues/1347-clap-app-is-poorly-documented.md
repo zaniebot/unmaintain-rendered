@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-09-27T18:06:51Z
 updated_at: 2020-04-12T22:28:26Z
 url: https://github.com/clap-rs/clap/issues/1347
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # clap_app! is poorly documented
 
 ---
 
-_Issue opened by @noyez on 2018-09-27 18:06_
+_@noyez_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

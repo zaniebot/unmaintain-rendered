@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-08T20:04:54Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/949
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # AppSettings::DeriveDisplayOrder not ordering options by defined order.
 
 ---
 
-_Issue opened by @Dragonrun1 on 2017-05-08 20:04_
+_@Dragonrun1_
 
 ### Rust Version
 

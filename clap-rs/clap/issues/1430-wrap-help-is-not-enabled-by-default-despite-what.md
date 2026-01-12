@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-03-15T11:13:50Z
 updated_at: 2020-04-05T11:03:09Z
 url: https://github.com/clap-rs/clap/issues/1430
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `wrap_help` is not enabled by default (despite what the docs say)
 
 ---
 
-_Issue opened by @stepchowfun on 2019-03-15 11:13_
+_@stepchowfun_
 
 ### Rust Version
 

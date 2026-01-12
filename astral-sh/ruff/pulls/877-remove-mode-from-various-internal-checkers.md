@@ -12,14 +12,14 @@ head: charlie/mode
 created_at: 2022-11-22T21:57:10Z
 updated_at: 2022-11-22T21:57:48Z
 url: https://github.com/astral-sh/ruff/pull/877
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove Mode from various internal checkers
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-22 21:57_
+_@charliermarsh_
 
 _No description provided._
 

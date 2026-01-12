@@ -12,14 +12,14 @@ head: charlie/if-exp
 created_at: 2023-08-13T20:40:24Z
 updated_at: 2023-08-13T22:11:33Z
 url: https://github.com/astral-sh/ruff/pull/6541
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add support for unions to our Python builtins type system
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-13 20:40_
+_@charliermarsh_
 
 ## Summary
 

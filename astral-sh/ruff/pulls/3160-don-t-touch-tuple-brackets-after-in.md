@@ -13,14 +13,14 @@ head: charlie/tuple-brackets
 created_at: 2023-02-23T03:07:58Z
 updated_at: 2023-02-23T03:14:11Z
 url: https://github.com/astral-sh/ruff/pull/3160
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Don't touch tuple brackets after `in`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 03:07_
+_@charliermarsh_
 
 _No description provided._
 

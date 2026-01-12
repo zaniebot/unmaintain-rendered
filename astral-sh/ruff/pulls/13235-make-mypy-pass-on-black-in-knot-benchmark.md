@@ -13,14 +13,14 @@ head: alex/black-bench
 created_at: 2024-09-03T20:07:17Z
 updated_at: 2024-09-04T09:35:59Z
 url: https://github.com/astral-sh/ruff/pull/13235
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Make mypy pass on black in `knot_benchmark`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-03 20:07_
+_@AlexWaygood_
 
 ## Summary
 

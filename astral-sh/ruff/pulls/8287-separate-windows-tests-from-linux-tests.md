@@ -13,14 +13,14 @@ head: zanie/ci-split-win32
 created_at: 2023-10-27T18:24:16Z
 updated_at: 2023-10-27T20:11:37Z
 url: https://github.com/astral-sh/ruff/pull/8287
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Separate Windows tests from Linux tests
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-27 18:24_
+_@zanieb_
 
 Windows tests take much longer and downstream CI jobs that require the build from the Linux tests must wait to start.
 

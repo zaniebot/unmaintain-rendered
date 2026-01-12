@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T09:25:06Z
 updated_at: 2024-04-26T01:00:13Z
 url: https://github.com/astral-sh/ruff/issues/11031
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule G004 doesn't work with inline instantiated logger
 
 ---
 
-_Issue opened by @Spenhouet on 2024-04-19 09:25_
+_@Spenhouet_
 
 Given the following code:
 ```python

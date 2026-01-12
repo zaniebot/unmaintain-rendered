@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T20:34:08Z
 updated_at: 2025-04-16T02:53:10Z
 url: https://github.com/astral-sh/uv/issues/12904
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Expected Impact of --compile-bytecode
 
 ---
 
-_Issue opened by @robertclaus on 2025-04-15 20:34_
+_@robertclaus_
 
 ### Question
 

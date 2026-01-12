@@ -13,14 +13,14 @@ head: micha/symbol_by_id_query
 created_at: 2024-12-20T10:42:59Z
 updated_at: 2024-12-21T10:33:49Z
 url: https://github.com/astral-sh/ruff/pull/15080
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Make `symbol_by_id` a salsa query
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 10:42_
+_@MichaReiser_
 
 ## Summary
 

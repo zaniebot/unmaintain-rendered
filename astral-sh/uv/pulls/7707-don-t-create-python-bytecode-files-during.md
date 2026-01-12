@@ -13,14 +13,14 @@ head: discovery-without-bytecode
 created_at: 2024-09-26T12:38:44Z
 updated_at: 2024-09-26T13:53:00Z
 url: https://github.com/astral-sh/uv/pull/7707
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Don't create Python bytecode files during interpreter discovery
 
 ---
 
-_Pull request opened by @akx on 2024-09-26 12:38_
+_@akx_
 
 ## Summary
 

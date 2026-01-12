@@ -13,14 +13,14 @@ head: charlie/req-txt
 created_at: 2024-06-25T01:17:40Z
 updated_at: 2024-06-25T20:56:00Z
 url: https://github.com/astral-sh/uv/pull/4503
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Add support for `--no-strip-markers` in `pip compile` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 01:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-31T12:48:28Z
 updated_at: 2023-11-02T01:20:33Z
 url: https://github.com/astral-sh/uv/issues/252
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Python version isn't applied properly
 
 ---
 
-_Issue opened by @konstin on 2023-10-31 12:48_
+_@konstin_
 
 requirements.txt:
 

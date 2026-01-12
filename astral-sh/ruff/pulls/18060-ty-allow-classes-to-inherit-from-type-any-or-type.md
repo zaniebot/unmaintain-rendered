@@ -13,14 +13,14 @@ head: alex/type-any-inheritance
 created_at: 2025-05-13T00:06:01Z
 updated_at: 2025-05-13T00:30:23Z
 url: https://github.com/astral-sh/ruff/pull/18060
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Allow classes to inherit from `type[Any]` or `type[Unknown]`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-13 00:06_
+_@AlexWaygood_
 
 ## Summary
 

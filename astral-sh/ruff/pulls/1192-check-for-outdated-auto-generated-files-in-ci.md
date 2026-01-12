@@ -12,14 +12,14 @@ head: ci-check-for-outdated-files
 created_at: 2022-12-11T07:54:18Z
 updated_at: 2022-12-13T19:24:29Z
 url: https://github.com/astral-sh/ruff/pull/1192
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Check for outdated auto-generated files in CI
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-11 07:54_
+_@squiddy_
 
 I've noticed that sometimes those generated files become out of sync with the code. I've adjusted the CI workflow to put notice messages on those files if it detects changes.
 

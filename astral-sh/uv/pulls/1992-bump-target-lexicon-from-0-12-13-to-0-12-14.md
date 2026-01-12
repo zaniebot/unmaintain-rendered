@@ -13,14 +13,14 @@ head: dependabot/cargo/target-lexicon-0.12.14
 created_at: 2024-02-26T21:30:19Z
 updated_at: 2024-02-26T23:01:02Z
 url: https://github.com/astral-sh/uv/pull/1992
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Bump target-lexicon from 0.12.13 to 0.12.14
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-26 21:30_
+_@dependabot_
 
 Bumps [target-lexicon](https://github.com/bytecodealliance/target-lexicon) from 0.12.13 to 0.12.14.
 <details>

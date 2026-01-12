@@ -13,14 +13,14 @@ head: konsti/remove-flyte-short-incompatible
 created_at: 2025-04-28T15:37:46Z
 updated_at: 2025-04-28T16:01:36Z
 url: https://github.com/astral-sh/uv/pull/13181
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Remove flyte-short-incompatible benchmark for too many false positives
 
 ---
 
-_Pull request opened by @konstin on 2025-04-28 15:37_
+_@konstin_
 
 The benchmark has recurring false positives (https://github.com/astral-sh/uv/issues?q=flyte-short-incompatible%20), so we're removing it.
 

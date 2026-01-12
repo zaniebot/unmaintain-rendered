@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T14:37:10Z
 updated_at: 2023-12-22T03:44:16Z
 url: https://github.com/astral-sh/ruff/issues/8357
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `dummy_implementations` preview style
 
 ---
 
-_Issue opened by @jab on 2023-10-30 14:37_
+_@jab_
 
 Add support for Black's [`dummy_implementations`](https://github.com/psf/black/pull/3796) preview style. It introduces new rules around blank lines. Violates [`E704`](https://github.com/psf/black/issues/3887) that Ruff does not implement. 
 

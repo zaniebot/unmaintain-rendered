@@ -13,14 +13,14 @@ head: charlie/formatter-doc
 created_at: 2023-10-02T21:36:24Z
 updated_at: 2023-10-02T21:46:06Z
 url: https://github.com/astral-sh/ruff/pull/7767
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Document one-call chaining deviation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-02 21:36_
+_@charliermarsh_
 
 
 ## Summary

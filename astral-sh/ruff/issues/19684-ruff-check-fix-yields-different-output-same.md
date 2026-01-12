@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T11:56:03Z
 updated_at: 2025-08-04T05:47:06Z
 url: https://github.com/astral-sh/ruff/issues/19684
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff check --fix yields different output (same version)
 
 ---
 
-_Issue opened by @N-Pahlke on 2025-08-01 11:56_
+_@N-Pahlke_
 
 ### Summary
 

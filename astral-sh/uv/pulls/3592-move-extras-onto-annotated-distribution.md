@@ -13,14 +13,14 @@ head: charlie/extras
 created_at: 2024-05-14T20:51:37Z
 updated_at: 2024-05-14T23:25:07Z
 url: https://github.com/astral-sh/uv/pull/3592
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Move `extras` onto annotated distribution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 20:51_
+_@charliermarsh_
 
 ## Summary
 

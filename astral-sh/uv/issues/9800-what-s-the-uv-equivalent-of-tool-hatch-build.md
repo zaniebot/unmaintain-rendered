@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-11T04:47:38Z
 updated_at: 2024-12-11T20:59:50Z
 url: https://github.com/astral-sh/uv/issues/9800
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # What's the uv equivalent of tool.hatch.build.include = [...]?
 
 ---
 
-_Issue opened by @rdong8 on 2024-12-11 04:47_
+_@rdong8_
 
 I want to include extra non-code files into my package (ie. JSON configuration files), and access them in code as `import resources; config_path = resources.files("config")`. In hatch I can do stuff this:
 

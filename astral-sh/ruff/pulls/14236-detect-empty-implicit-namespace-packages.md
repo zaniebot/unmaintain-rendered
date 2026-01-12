@@ -14,14 +14,14 @@ head: charlie/nested
 created_at: 2024-11-10T01:26:53Z
 updated_at: 2024-11-12T11:07:47Z
 url: https://github.com/astral-sh/ruff/pull/14236
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Detect empty implicit namespace packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-10 01:26_
+_@charliermarsh_
 
 ## Summary
 

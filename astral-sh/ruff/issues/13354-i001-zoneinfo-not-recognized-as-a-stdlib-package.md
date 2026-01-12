@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-14T21:14:16Z
 updated_at: 2024-09-15T00:54:54Z
 url: https://github.com/astral-sh/ruff/issues/13354
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # I001: `zoneinfo` not recognized as a stdlib package for PEP-8 compliant import formatting.
 
 ---
 
-_Issue opened by @gtkacz on 2024-09-14 21:14_
+_@gtkacz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: fix-format-lambda-start-arg-bug
 created_at: 2023-08-01T21:35:15Z
 updated_at: 2023-08-02T20:16:28Z
 url: https://github.com/astral-sh/ruff/pull/6257
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix formatting of `lambda` star arguments
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-01 21:35_
+_@LaBatata101_
 
 ## Summary
 Previously, the ruff formatter was removing the star argument of `lambda` expressions when formatting.

@@ -14,14 +14,14 @@ head: konsti/retry-broken-pipe
 created_at: 2025-05-03T23:34:29Z
 updated_at: 2025-05-04T12:56:17Z
 url: https://github.com/astral-sh/uv/pull/13281
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Retry streaming downloads on broken pipe errors
 
 ---
 
-_Pull request opened by @konstin on 2025-05-03 23:34_
+_@konstin_
 
 Educated guess at #12359
 

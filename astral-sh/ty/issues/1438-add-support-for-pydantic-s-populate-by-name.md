@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T01:12:36Z
 updated_at: 2026-01-09T03:12:03Z
 url: https://github.com/astral-sh/ty/issues/1438
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add support for Pydantic's `populate_by_name`, `validate_by_name`, etc.
 
 ---
 
-_Issue opened by @moredatarequired on 2025-10-27 01:12_
+_@moredatarequired_
 
 ### Summary
 

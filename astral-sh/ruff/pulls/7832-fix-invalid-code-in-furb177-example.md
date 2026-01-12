@@ -13,14 +13,14 @@ head: docs/FURB177
 created_at: 2023-10-05T23:58:36Z
 updated_at: 2023-10-06T00:25:11Z
 url: https://github.com/astral-sh/ruff/pull/7832
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix invalid code in `FURB177` example
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-05 23:58_
+_@zanieb_
 
 _No description provided._
 

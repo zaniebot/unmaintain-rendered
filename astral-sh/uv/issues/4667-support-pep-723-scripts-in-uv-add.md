@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-30T20:34:49Z
 updated_at: 2024-08-11T01:41:00Z
 url: https://github.com/astral-sh/uv/issues/4667
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Support PEP 723 scripts in `uv add`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 20:34_
+_@charliermarsh_
 
 E.g., `uv add --script foo.py` could add a dependency to the `foo.py` script.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-12T04:47:59Z
 updated_at: 2018-08-02T03:29:56Z
 url: https://github.com/clap-rs/clap/issues/738
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Backwards-incompatible change made.
 
 ---
 
-_Issue opened by @jrvanwhy on 2016-11-12 04:47_
+_@jrvanwhy_
 
 Commit 1ced2a7433ea8937a1b260ea65d708f32ca7c95e introduced a " + Clone" trait bound to many functions, including App::get_matches_with(), which is a breaking change and technically requires a major version increase.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-18T14:35:18Z
 updated_at: 2022-10-03T20:21:57Z
 url: https://github.com/clap-rs/clap/issues/4228
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Getter methods for ArgGroup.
 
 ---
 
-_Issue opened by @aobatact on 2022-09-18 14:35_
+_@aobatact_
 
 ### Please complete the following tasks
 

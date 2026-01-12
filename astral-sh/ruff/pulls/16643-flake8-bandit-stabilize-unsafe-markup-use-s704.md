@@ -13,14 +13,14 @@ head: brent/s704-0.10
 created_at: 2025-03-11T19:04:59Z
 updated_at: 2025-03-12T18:48:37Z
 url: https://github.com/astral-sh/ruff/pull/16643
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-bandit`] Stabilize `unsafe-markup-use` (`S704`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 19:04_
+_@ntBre_
 
 Summary
 --

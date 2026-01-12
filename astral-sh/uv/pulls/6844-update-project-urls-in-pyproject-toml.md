@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-30T00:25:17Z
 updated_at: 2024-08-30T12:52:59Z
 url: https://github.com/astral-sh/uv/pull/6844
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Update project.urls in pyproject.toml 
 
 ---
 
-_Pull request opened by @cning112 on 2024-08-30 00:25_
+_@cning112_
 
 ## Summary
 

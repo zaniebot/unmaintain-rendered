@@ -13,14 +13,14 @@ head: PLE-docs
 created_at: 2023-05-15T11:43:59Z
 updated_at: 2023-07-10T09:55:36Z
 url: https://github.com/astral-sh/ruff/pull/4437
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add PLE rule docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-15 11:43_
+_@tjkuson_
 
 Add documentation to the Pylint Error (PLE) rules. Complete the PLE ruleset.
 

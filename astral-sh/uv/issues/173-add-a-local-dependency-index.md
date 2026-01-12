@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-23T21:52:44Z
 updated_at: 2023-12-13T22:03:34Z
 url: https://github.com/astral-sh/uv/issues/173
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add a local dependency index
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-23 21:52_
+_@charliermarsh_
 
 To avoid repeatedly deserializing metadata, we could create a local index of (package, version)-to-requirements.
 

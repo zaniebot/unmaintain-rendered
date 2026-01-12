@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T10:31:31Z
 updated_at: 2025-06-22T02:24:35Z
 url: https://github.com/astral-sh/uv/issues/12424
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Bug in pre-release compatibility
 
 ---
 
-_Issue opened by @schlamar on 2025-03-24 10:31_
+_@schlamar_
 
 ### Summary
 

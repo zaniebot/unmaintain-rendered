@@ -13,14 +13,14 @@ head: PIE794-docs-cleanup
 created_at: 2025-06-20T18:19:01Z
 updated_at: 2025-06-20T18:57:22Z
 url: https://github.com/astral-sh/ruff/pull/18829
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`flake8-pie`] Small docs fix to `PIE794`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 18:19_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/macos-version
 created_at: 2025-06-12T13:36:11Z
 updated_at: 2025-06-12T15:16:25Z
 url: https://github.com/astral-sh/uv/pull/13993
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Add supported macOS version to the platform reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-12 13:36_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13807
 

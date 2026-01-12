@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-14T14:08:55Z
 updated_at: 2024-05-14T18:33:45Z
 url: https://github.com/astral-sh/uv/issues/3578
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # `uv venv` does not create a lib64 directory
 
 ---
 
-_Issue opened by @AtomBaf on 2024-05-14 14:08_
+_@AtomBaf_
 
 # Context
 Platform: linux rocky 9

@@ -13,14 +13,14 @@ head: fix/docs-gitlab-typo
 created_at: 2024-11-12T09:15:10Z
 updated_at: 2024-11-13T06:16:16Z
 url: https://github.com/astral-sh/uv/pull/9047
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Fix typo in GitLab integration docs
 
 ---
 
-_Pull request opened by @RafaelWO on 2024-11-12 09:15_
+_@RafaelWO_
 
 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-18T08:26:14Z
 updated_at: 2023-09-26T14:14:01Z
 url: https://github.com/astral-sh/ruff/issues/6673
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Notebooks: Inconsistent cell indices
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-18 08:26_
+_@MichaReiser_
 
 Diagnostics use one based cell indices:
 

@@ -12,14 +12,14 @@ head: add_blank_lines_E30
 created_at: 2023-05-28T17:08:35Z
 updated_at: 2023-11-16T13:55:49Z
 url: https://github.com/astral-sh/ruff/pull/4694
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`pycodestyle`] Add blank line(s) rules (`E301`, `E302`, `E303`, `E304`, `E305`, `E306`)
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-28 17:08_
+_@hoel-bagard_
 
 ## Summary
 

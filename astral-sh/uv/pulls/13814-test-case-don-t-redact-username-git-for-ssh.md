@@ -13,14 +13,14 @@ head: konsti/test-dont-redact-ssh-git-username
 created_at: 2025-06-03T14:08:25Z
 updated_at: 2025-06-04T14:54:01Z
 url: https://github.com/astral-sh/uv/pull/13814
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Test case: Don't redact username `git` for SSH
 
 ---
 
-_Pull request opened by @konstin on 2025-06-03 14:08_
+_@konstin_
 
 _No description provided._
 

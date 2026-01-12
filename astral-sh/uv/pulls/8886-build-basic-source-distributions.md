@@ -13,14 +13,14 @@ head: konsti/uv-build-backend-source-dist
 created_at: 2024-11-07T13:02:15Z
 updated_at: 2024-11-08T09:16:34Z
 url: https://github.com/astral-sh/uv/pull/8886
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Build basic source distributions
 
 ---
 
-_Pull request opened by @konstin on 2024-11-07 13:02_
+_@konstin_
 
 Very basic source distribution support. What's included:
 

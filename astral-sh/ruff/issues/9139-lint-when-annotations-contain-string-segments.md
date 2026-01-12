@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:58:48Z
 updated_at: 2023-12-16T21:22:08Z
 url: https://github.com/astral-sh/ruff/issues/9139
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Lint when `|` annotations contain string segments
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-12-14 18:58_
+_@tylerlaprade_
 
 <img width="1138" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/4fffbbd1-c71b-427e-819c-3d0f5cd67009">
 

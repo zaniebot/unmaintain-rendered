@@ -14,14 +14,14 @@ head: charlie/src
 created_at: 2024-08-12T17:36:18Z
 updated_at: 2024-08-26T17:47:27Z
 url: https://github.com/astral-sh/ruff/pull/12848
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Detect imports in `src` layouts by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 17:36_
+_@charliermarsh_
 
 ## Summary
 

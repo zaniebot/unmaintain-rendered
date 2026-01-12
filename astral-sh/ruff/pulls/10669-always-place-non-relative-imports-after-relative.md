@@ -14,14 +14,14 @@ head: charlie/local
 created_at: 2024-03-30T01:45:23Z
 updated_at: 2024-03-30T02:13:55Z
 url: https://github.com/astral-sh/ruff/pull/10669
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Always place non-relative imports after relative imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-30 01:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: comprehension-line-break
 created_at: 2023-07-20T09:48:09Z
 updated_at: 2023-07-20T10:20:05Z
 url: https://github.com/astral-sh/ruff/pull/5912
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Avoid line break before `for` in comprehension if outer expression expands
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 09:48_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

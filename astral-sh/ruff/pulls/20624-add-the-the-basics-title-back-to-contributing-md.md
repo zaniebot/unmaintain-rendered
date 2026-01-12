@@ -13,14 +13,14 @@ head: micha/contributing-basics
 created_at: 2025-09-29T07:42:14Z
 updated_at: 2025-09-29T07:46:02Z
 url: https://github.com/astral-sh/ruff/pull/20624
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # Add the *The Basics* title back to CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-29 07:42_
+_@MichaReiser_
 
 ## Summary
 

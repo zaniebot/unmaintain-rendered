@@ -14,14 +14,14 @@ head: add-autofix-for-PGH002
 created_at: 2024-01-15T02:44:45Z
 updated_at: 2024-01-16T03:00:22Z
 url: https://github.com/astral-sh/ruff/pull/9519
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pygrep_hooks`] Add fix for `deprecated-log-warn` (`PGH002`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-15 02:44_
+_@diceroll123_
 
 ## Summary
 

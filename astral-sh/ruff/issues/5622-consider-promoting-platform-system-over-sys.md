@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-08T18:28:53Z
 updated_at: 2025-03-27T02:39:03Z
 url: https://github.com/astral-sh/ruff/issues/5622
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Consider promoting platform.system over sys.platform and os.name
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-07-08 18:28_
+_@NeilGirdhar_
 
 See [this explanation](https://stackoverflow.com/questions/1854/how-to-identify-which-os-python-is-running-on/58071295#58071295).
 

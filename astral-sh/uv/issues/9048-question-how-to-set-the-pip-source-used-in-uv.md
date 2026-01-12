@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T09:17:54Z
 updated_at: 2025-10-08T14:34:17Z
 url: https://github.com/astral-sh/uv/issues/9048
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Question: How to set the pip source used in uv?
 
 ---
 
-_Issue opened by @slgxmh on 2024-11-12 09:17_
+_@slgxmh_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

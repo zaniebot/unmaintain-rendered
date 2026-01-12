@@ -14,14 +14,14 @@ head: unsafe-fixes-FURB161
 created_at: 2025-04-06T19:14:42Z
 updated_at: 2025-04-18T18:00:56Z
 url: https://github.com/astral-sh/ruff/pull/17240
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`refurb`] Mark the `FURB161` fix unsafe except for integers and booleans
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-06 19:14_
+_@VascoSch92_
 
 The PR fixes #16457 .
 

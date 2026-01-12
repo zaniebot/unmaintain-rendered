@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-30T17:15:07Z
 updated_at: 2024-07-18T18:40:36Z
 url: https://github.com/astral-sh/ruff/issues/11217
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Document supported settings for `ruff server`
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-30 17:15_
+_@snowsignal_
 
 Right now, we don't have any centralized documentation for `ruff server`'s client settings, similar to what [`ruff-lsp` has in its README](https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#settings). This would be a useful resource for users to have, especially for clients that require settings to be added manually in configuration.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-25T14:03:31Z
 updated_at: 2024-09-30T08:22:58Z
 url: https://github.com/clap-rs/clap/issues/5749
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Inconsistency in showing command description when using `about`
 
 ---
 
-_Issue opened by @teamplayer3 on 2024-09-25 14:03_
+_@teamplayer3_
 
 ### Please complete the following tasks
 

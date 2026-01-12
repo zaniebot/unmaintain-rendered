@@ -14,14 +14,14 @@ head: alex/property-tests
 created_at: 2024-12-14T15:44:48Z
 updated_at: 2024-12-14T19:28:11Z
 url: https://github.com/astral-sh/ruff/pull/14970
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] `ClassLiteral(<T>)` is not a disjoint type from `Instance(<metaclass of T>)`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-14 15:44_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: redundant-continue
 created_at: 2023-09-30T23:14:39Z
 updated_at: 2023-09-30T23:14:44Z
 url: https://github.com/astral-sh/ruff/pull/7726
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Create structure
 
 ---
 
-_Pull request opened by @danparizher on 2023-09-30 23:14_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

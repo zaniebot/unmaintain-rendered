@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T10:29:33Z
 updated_at: 2025-01-21T00:45:57Z
 url: https://github.com/astral-sh/uv/issues/10776
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Possibly broken uv lock after upgrading from 0.5.20 to 0.5.21
 
 ---
 
-_Issue opened by @flangr-lucid on 2025-01-20 10:29_
+_@flangr-lucid_
 
 Hello,
 

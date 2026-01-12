@@ -13,14 +13,14 @@ head: zb/docs-ii-logo
 created_at: 2025-07-01T17:00:46Z
 updated_at: 2025-07-01T19:17:24Z
 url: https://github.com/astral-sh/ty/pull/747
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add ty letter logo asset
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 17:00_
+_@zanieb_
 
 <img width="471" alt="Screenshot 2025-07-01 at 12 01 07 PM" src="https://github.com/user-attachments/assets/404eaeaa-9d8a-4307-82c4-d9757d4d7f43" />
 

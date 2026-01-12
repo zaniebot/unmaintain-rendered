@@ -13,14 +13,14 @@ head: lint-options
 created_at: 2023-09-20T16:04:50Z
 updated_at: 2023-09-27T06:46:29Z
 url: https://github.com/astral-sh/ruff/pull/7549
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add `lint` section to Ruff configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-20 16:04_
+_@MichaReiser_
 
 ## Summary
 

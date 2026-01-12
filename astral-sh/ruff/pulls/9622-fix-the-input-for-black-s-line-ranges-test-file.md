@@ -14,14 +14,14 @@ head: fix-line-range-input-files
 created_at: 2024-01-23T10:34:05Z
 updated_at: 2024-01-23T10:44:20Z
 url: https://github.com/astral-sh/ruff/pull/9622
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Fix the input for black's line ranges test file
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-23 10:34_
+_@MichaReiser_
 
 ## Summary
 

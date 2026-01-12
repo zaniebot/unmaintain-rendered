@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T16:59:49Z
 updated_at: 2023-10-28T22:50:05Z
 url: https://github.com/astral-sh/ruff/issues/8222
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter should respect extend-ignore
 
 ---
 
-_Issue opened by @tinovyatkin on 2023-10-25 16:59_
+_@tinovyatkin_
 
 ruff 0.1.2 emits warning `warning: The following rules may cause conflicts when used with the formatter: 'D206', 'ISC001', 'Q000', 'Q001', 'Q002', 'Q003'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.` even while I have all those rules in `extend-ignore`
 

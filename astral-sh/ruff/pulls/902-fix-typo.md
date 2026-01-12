@@ -12,14 +12,14 @@ head: fix-expr_content
 created_at: 2022-11-25T04:23:11Z
 updated_at: 2022-11-25T04:39:32Z
 url: https://github.com/astral-sh/ruff/pull/902
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix typo
 
 ---
 
-_Pull request opened by @harupy on 2022-11-25 04:23_
+_@harupy_
 
 This PR fixes `expr_content` to `expr_context`.
 

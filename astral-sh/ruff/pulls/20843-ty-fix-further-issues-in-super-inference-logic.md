@@ -14,14 +14,14 @@ head: alex/more-super-fixes
 created_at: 2025-10-13T12:33:48Z
 updated_at: 2025-10-14T12:48:49Z
 url: https://github.com/astral-sh/ruff/pull/20843
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Fix further issues in `super()` inference logic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-13 12:33_
+_@AlexWaygood_
 
 ## Summary
 

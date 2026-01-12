@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-26T22:32:09Z
 updated_at: 2025-08-11T12:34:52Z
 url: https://github.com/astral-sh/ruff/issues/6906
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # New rule request: Remove redundant parentheses 
 
 ---
 
-_Issue opened by @Garrett-R on 2023-08-26 22:32_
+_@Garrett-R_
 
 It would be really cool if Ruff could catch this:
 ```python

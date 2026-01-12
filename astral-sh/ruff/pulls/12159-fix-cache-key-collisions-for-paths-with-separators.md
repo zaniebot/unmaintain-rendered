@@ -13,14 +13,14 @@ head: zb/hash-path
 created_at: 2024-07-03T00:39:16Z
 updated_at: 2024-07-03T12:36:48Z
 url: https://github.com/astral-sh/ruff/pull/12159
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Fix cache key collisions for paths with separators
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 00:39_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/12158
 

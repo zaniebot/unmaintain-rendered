@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-19T07:46:28Z
 updated_at: 2024-08-28T15:29:01Z
 url: https://github.com/astral-sh/ruff/issues/12982
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [FAST002] FastAPI dependency without `Annotated` unsafe fix error
 
 ---
 
-_Issue opened by @mbrulatout on 2024-08-19 07:46_
+_@mbrulatout_
 
 Hello,
 

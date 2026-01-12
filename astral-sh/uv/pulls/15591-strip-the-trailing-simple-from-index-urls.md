@@ -12,14 +12,14 @@ head: zb/auth-index-url
 created_at: 2025-08-30T14:16:21Z
 updated_at: 2025-08-30T17:05:27Z
 url: https://github.com/astral-sh/uv/pull/15591
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Strip the trailing `/simple` from index URLs provided to `uv auth login`
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 14:16_
+_@zanieb_
 
 I'm pretty sure we need to do this for robust lookups of URLs served by indexes.
 

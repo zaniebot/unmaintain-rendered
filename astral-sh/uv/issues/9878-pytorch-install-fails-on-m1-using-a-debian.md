@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T19:37:26Z
 updated_at: 2024-12-15T16:17:23Z
 url: https://github.com/astral-sh/uv/issues/9878
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # PyTorch install fails on M1 using a Debian container ?
 
 ---
 
-_Issue opened by @santi-mir on 2024-12-13 19:37_
+_@santi-mir_
 
 Here trying to set up the pyproject to install torch. Currently I just tried installing within a Debian Container, on an M1. 
 

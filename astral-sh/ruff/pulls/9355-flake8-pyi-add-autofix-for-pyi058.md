@@ -14,14 +14,14 @@ head: pyi058-autofix
 created_at: 2024-01-02T12:01:14Z
 updated_at: 2024-01-03T16:30:36Z
 url: https://github.com/astral-sh/ruff/pull/9355
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [flake8-pyi] Add autofix for PYI058
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-02 12:01_
+_@AlexWaygood_
 
 ## Summary
 

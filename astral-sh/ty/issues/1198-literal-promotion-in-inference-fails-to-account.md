@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T00:13:22Z
 updated_at: 2025-10-09T20:53:55Z
 url: https://github.com/astral-sh/ty/issues/1198
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # literal promotion in inference fails to account for type context
 
 ---
 
-_Issue opened by @carljm on 2025-09-18 00:13_
+_@carljm_
 
 > A similar issue came up in https://github.com/astral-sh/ruff/pull/20360. We now unconditionally promote any literals within the elements of a list/set literal, partly for performance reasons with large list literals. However, this means that we fail to typecheck against literal annotations, e.g.,
 > ```py

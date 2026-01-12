@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-15T09:45:48Z
 updated_at: 2024-01-26T02:38:00Z
 url: https://github.com/astral-sh/uv/issues/927
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # pip install should verify that dependencies are present
 
 ---
 
-_Issue opened by @konstin on 2024-01-15 09:45_
+_@konstin_
 
 When a prior `pip install` with let's say a single package aborts after the root package is installed but before all dependencies are installed, subsequent runs will only print `Audited 1 package`, even though the venv is clearly broken. We can perform this check by reading the `METADATA` files for the root dependency and then transitively for all dependencies, i.e. fast without any network requests.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-02T18:15:49Z
 updated_at: 2024-05-11T18:10:53Z
 url: https://github.com/astral-sh/uv/issues/2134
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Intermittent "channel closed" errors when using `pypiserver` with high levels of concurrency
 
 ---
 
-_Issue opened by @zanieb on 2024-03-02 18:15_
+_@zanieb_
 
 When testing against a local [`pypiserver`](https://pypi.org/project/pypiserver/), `uv` errors with
 

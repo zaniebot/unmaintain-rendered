@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T18:33:46Z
 updated_at: 2023-04-06T17:54:54Z
 url: https://github.com/astral-sh/ruff/issues/3716
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] Panic when trying to fix code with arabic letters
 
 ---
 
-_Issue opened by @qarmin on 2023-03-24 18:33_
+_@qarmin_
 
 Ruff  1bac206995043d7d533338b7f8b7db37f37bf43b
 

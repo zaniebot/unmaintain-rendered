@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T17:21:40Z
 updated_at: 2023-02-17T22:16:27Z
 url: https://github.com/astral-sh/ruff/issues/2720
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `SLF001` triggered on namedtuple methods
 
 ---
 
-_Issue opened by @hurlenko on 2023-02-10 17:21_
+_@hurlenko_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

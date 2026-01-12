@@ -13,14 +13,14 @@ head: renovate/rustix-0.x-lockfile
 created_at: 2024-10-28T00:47:18Z
 updated_at: 2024-10-28T01:01:22Z
 url: https://github.com/astral-sh/uv/pull/8615
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Update Rust crate rustix to v0.38.38
 
 ---
 
-_Pull request opened by @renovate on 2024-10-28 00:47_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -12,14 +12,14 @@ head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
 updated_at: 2026-01-03T07:27:43Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
 
 ---
 
-_Pull request opened by @akawd on 2025-12-28 11:38_
+_@akawd_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

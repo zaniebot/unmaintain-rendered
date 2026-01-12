@@ -13,14 +13,14 @@ head: charlie/named
 created_at: 2023-08-11T05:03:11Z
 updated_at: 2023-08-11T05:54:48Z
 url: https://github.com/astral-sh/ruff/pull/6494
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Force parentheses for named expressions in more contexts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 05:03_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/pull/6436#issuecomment-1673583888.
 

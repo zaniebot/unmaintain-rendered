@@ -13,14 +13,14 @@ head: brent/pep695-string-fix
 created_at: 2025-01-30T22:54:54Z
 updated_at: 2025-01-31T13:10:55Z
 url: https://github.com/astral-sh/ruff/pull/15840
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyupgrade`] Reuse replacement logic from `UP046` and `UP047` (`UP040`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-30 22:54_
+_@ntBre_
 
 ## Summary
 

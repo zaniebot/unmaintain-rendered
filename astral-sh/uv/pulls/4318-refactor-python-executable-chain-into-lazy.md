@@ -13,14 +13,14 @@ head: zb/discover-chain
 created_at: 2024-06-13T22:36:09Z
 updated_at: 2024-06-19T20:27:03Z
 url: https://github.com/astral-sh/uv/pull/4318
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Refactor Python executable chain into lazy variables
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-13 22:36_
+_@zanieb_
 
 In preparation for changing the order dynamically in #4416 
 

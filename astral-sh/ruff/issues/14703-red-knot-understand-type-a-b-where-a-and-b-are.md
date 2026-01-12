@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T20:32:31Z
 updated_at: 2024-12-07T17:34:51Z
 url: https://github.com/astral-sh/ruff/issues/14703
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] understand `type[A | B]` where A and B are both classes
 
 ---
 
-_Issue opened by @Glyphack on 2024-12-01 20:32_
+_@Glyphack_
 
 (part of https://github.com/astral-sh/ruff/issues/14172)
 `type[A | B]` Is equivalent to an enum of `type[A]` | `type[B]`.

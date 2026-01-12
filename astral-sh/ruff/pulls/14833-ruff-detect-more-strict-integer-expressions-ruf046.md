@@ -14,14 +14,14 @@ head: RUF046-2
 created_at: 2024-12-08T04:18:59Z
 updated_at: 2024-12-21T19:00:11Z
 url: https://github.com/astral-sh/ruff/pull/14833
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Detect more strict-integer expressions (`RUF046`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-08 04:18_
+_@InSyncWithFoo_
 
 ## Summary
 

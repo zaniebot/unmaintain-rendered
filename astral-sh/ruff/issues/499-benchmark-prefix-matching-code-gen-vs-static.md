@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-28T23:30:13Z
 updated_at: 2023-01-16T08:19:33Z
 url: https://github.com/astral-sh/ruff/issues/499
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Benchmark prefix matching (code-gen vs. static initialization)
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-28 23:30_
+_@charliermarsh_
 
 _No description provided._
 

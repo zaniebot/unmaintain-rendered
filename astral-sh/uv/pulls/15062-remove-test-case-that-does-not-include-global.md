@@ -13,14 +13,14 @@ head: zb/fix-compile-test
 created_at: 2025-08-04T14:46:01Z
 updated_at: 2025-08-04T15:03:11Z
 url: https://github.com/astral-sh/uv/pull/15062
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Remove test case that does not include global exclude newer
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-04 14:46_
+_@zanieb_
 
 Of course, this would flake over time.
 

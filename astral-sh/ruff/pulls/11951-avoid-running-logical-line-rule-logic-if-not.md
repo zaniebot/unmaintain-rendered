@@ -13,14 +13,14 @@ head: dhruv/logical-line-rules
 created_at: 2024-06-20T12:22:17Z
 updated_at: 2024-06-20T16:38:42Z
 url: https://github.com/astral-sh/ruff/pull/11951
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Avoid running logical line rule logic if not enabled
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-20 12:22_
+_@dhruvmanila_
 
 ## Summary
 

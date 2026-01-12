@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-12-17T22:43:15Z
 updated_at: 2025-12-18T13:15:06Z
 url: https://github.com/astral-sh/uv/pull/17165
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Add CPython 3.15.0a3
 
 ---
 
-_Pull request opened by @github-actions on 2025-12-17 22:43_
+_@github-actions_
 
 Automated update for Python releases.
 

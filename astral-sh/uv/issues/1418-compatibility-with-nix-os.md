@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T03:41:47Z
 updated_at: 2024-02-16T14:55:41Z
 url: https://github.com/astral-sh/uv/issues/1418
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Compatibility with Nix(OS)?
 
 ---
 
-_Issue opened by @gkze on 2024-02-16 03:41_
+_@gkze_
 
 Hi, very excited to try this tool. Unfortunately Nix doesn't expose common executables on standard paths (`/bin/ls`, `/bin/ld`, etc.) so I'm not sure how to proceed. Any advice? I'm going to try to change the logic to perform a `$PATH`-based lookup, but not sure if absolute paths are desired. Would appreciate advice.
 

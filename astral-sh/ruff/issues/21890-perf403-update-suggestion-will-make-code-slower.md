@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T09:21:20Z
 updated_at: 2025-12-15T17:54:52Z
 url: https://github.com/astral-sh/ruff/issues/21890
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # PERF403 update suggestion will make code slower
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-12-10 09:21_
+_@hauntsaninja_
 
 ### Summary
 

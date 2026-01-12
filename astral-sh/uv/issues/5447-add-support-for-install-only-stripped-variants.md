@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T15:03:39Z
 updated_at: 2024-07-25T17:29:32Z
 url: https://github.com/astral-sh/uv/issues/5447
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Add support for `install_only_stripped` variants
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-25 15:03_
+_@charliermarsh_
 
 See: https://github.com/indygreg/python-build-standalone/releases/tag/20240725
 

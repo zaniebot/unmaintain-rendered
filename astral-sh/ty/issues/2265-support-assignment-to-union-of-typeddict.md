@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-29T22:07:07Z
 updated_at: 2026-01-09T05:29:47Z
 url: https://github.com/astral-sh/ty/issues/2265
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support assignment to union of `TypedDict`
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-12-29 22:07_
+_@ibraheemdev_
 
 We currently only consider the type context if there is a single `TypedDict` element. We should support the following:
 

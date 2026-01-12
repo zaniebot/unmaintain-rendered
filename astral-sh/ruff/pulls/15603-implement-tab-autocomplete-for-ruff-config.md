@@ -13,14 +13,14 @@ head: 4551-add-shell-completions-for-config
 created_at: 2025-01-20T03:46:47Z
 updated_at: 2025-01-27T15:33:08Z
 url: https://github.com/astral-sh/ruff/pull/15603
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Implement tab autocomplete for `ruff config`
 
 ---
 
-_Pull request opened by @mishamsk on 2025-01-20 03:46_
+_@mishamsk_
 
 ## Summary
 

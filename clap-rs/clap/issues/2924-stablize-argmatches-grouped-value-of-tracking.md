@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-23T14:57:49Z
 updated_at: 2023-01-13T12:52:32Z
 url: https://github.com/clap-rs/clap/issues/2924
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Stablize `ArgMatches::grouped_value_of` Tracking Issue
 
 ---
 
-_Issue opened by @epage on 2021-10-23 14:57_
+_@epage_
 
 Original request: https://github.com/clap-rs/clap/issues/1026
 

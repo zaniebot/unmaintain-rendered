@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T06:31:37Z
 updated_at: 2025-12-29T20:53:50Z
 url: https://github.com/astral-sh/ruff/issues/13039
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # C408 recomendations sometimes end in hard to find bugs
 
 ---
 
-_Issue opened by @klausmyrseth on 2024-08-22 06:31_
+_@klausmyrseth_
 
 I checked for C408 which is several issues on but not this perticular issue which the recommendation potentialy introduse grave bugs in your code.
 

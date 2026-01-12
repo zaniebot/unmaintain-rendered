@@ -14,14 +14,14 @@ head: pytlint/singledispatch-method-E1519
 created_at: 2024-02-26T20:22:10Z
 updated_at: 2024-03-01T08:51:25Z
 url: https://github.com/astral-sh/ruff/pull/10140
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pylint`] Implement `singledispatch-method` (`E1519`)
 
 ---
 
-_Pull request opened by @Glyphack on 2024-02-26 20:22_
+_@Glyphack_
 
 Implementing the rule 
 https://pylint.readthedocs.io/en/stable/user_guide/messages/error/singledispatch-method.html#singledispatch-method-e1519

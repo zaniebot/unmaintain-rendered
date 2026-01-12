@@ -15,14 +15,14 @@ head: zb/cli-docs-remove
 created_at: 2024-08-08T15:58:30Z
 updated_at: 2024-08-08T18:12:52Z
 url: https://github.com/astral-sh/uv/pull/5916
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Improve the CLI documentation for `uv remove`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 15:58_
+_@zanieb_
 
 Also, renames a `requirements` variable to `packages` for clarity and fixes the definition of `frozen` for `uv add`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-30T17:08:42Z
 updated_at: 2023-01-30T21:32:02Z
 url: https://github.com/astral-sh/ruff/issues/2356
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # False positive for `G201` and `G202`?
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-30 17:08_
+_@ngnpope_
 
 We may have a situation where we have a callback function defined to handle exception, e.g. this generic catch-all when using a resolver from `aws-lambda-powertools`:
 

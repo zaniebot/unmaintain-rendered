@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-28T15:06:49Z
 updated_at: 2016-03-29T02:58:20Z
 url: https://github.com/clap-rs/clap/issues/466
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # running help <command> leaves out help/version flags
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-28 15:06_
+_@kbknapp_
 
 _No description provided._
 

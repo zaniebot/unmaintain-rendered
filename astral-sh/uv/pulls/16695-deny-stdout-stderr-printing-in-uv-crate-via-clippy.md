@@ -13,14 +13,14 @@ head: uv-deny-println
 created_at: 2025-11-12T00:36:02Z
 updated_at: 2025-11-12T13:54:53Z
 url: https://github.com/astral-sh/uv/pull/16695
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Deny stdout/stderr printing in `uv` crate via clippy
 
 ---
 
-_Pull request opened by @terror on 2025-11-12 00:36_
+_@terror_
 
 Follow-up from https://github.com/astral-sh/uv/pull/16690, in `uv` every command should be using `write!(...)/writeln!(...)` with the `Printer` abstraction instead of bypassing control with the standard printing functions. This lint ensures that.
 

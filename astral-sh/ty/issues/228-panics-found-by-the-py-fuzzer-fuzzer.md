@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-02T17:27:29Z
 updated_at: 2025-12-07T15:22:49Z
 url: https://github.com/astral-sh/ty/issues/228
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # panics found by the `py-fuzzer` fuzzer
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-02 17:27_
+_@AlexWaygood_
 
 The following code snippets surfaced by the `py-fuzzer` script all produce red-knot panics. Some of these may be duplicates in terms of their syntax structure; I haven't tried hard to deduplicate them. I've only gone through panics found in the first 500 seeds.
 

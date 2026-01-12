@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T09:22:01Z
 updated_at: 2023-11-27T16:02:54Z
 url: https://github.com/astral-sh/ruff/issues/6847
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Break in compatibility with jupyterlab-lsp + python-lsp-ruff since 0.0.285
 
 ---
 
-_Issue opened by @felix-cw on 2023-08-24 09:22_
+_@felix-cw_
 
 I'm not 100% sure this is the right project to raise this, since the problem comes from interaction with `python-lsp-ruff` and `juptyerlab-lsp`. I only raised it here since the issue arose from a change in ruff.
 

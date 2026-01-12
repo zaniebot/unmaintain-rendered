@@ -12,14 +12,14 @@ head: implement-backend-path
 created_at: 2023-11-10T09:14:02Z
 updated_at: 2023-11-10T10:54:24Z
 url: https://github.com/astral-sh/uv/pull/385
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Implement PEP 517 backend-path
 
 ---
 
-_Pull request opened by @konstin on 2023-11-10 09:14_
+_@konstin_
 
 Closes #192
 

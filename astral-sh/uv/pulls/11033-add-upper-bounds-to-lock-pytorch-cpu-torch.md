@@ -13,14 +13,14 @@ head: zb/torch-again-again
 created_at: 2025-01-28T18:43:19Z
 updated_at: 2025-01-28T18:53:00Z
 url: https://github.com/astral-sh/uv/pull/11033
-synced_at: 2026-01-10T11:45:24Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Add upper bounds to `lock_pytorch_cpu` torch versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 18:43_
+_@zanieb_
 
 Presumably this is a better alternative to https://github.com/astral-sh/uv/pull/11031
 

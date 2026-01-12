@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-14T20:30:49Z
 updated_at: 2025-05-15T00:42:20Z
 url: https://github.com/astral-sh/ty/issues/396
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Using hasattr gives an object type instead of Any
 
 ---
 
-_Issue opened by @skraeven on 2025-05-14 20:30_
+_@skraeven_
 
 ### Summary
 

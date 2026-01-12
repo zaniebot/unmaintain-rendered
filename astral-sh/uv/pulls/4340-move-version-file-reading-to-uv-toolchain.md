@@ -13,14 +13,14 @@ head: zb/toolchain-version-files
 created_at: 2024-06-16T15:13:48Z
 updated_at: 2024-06-17T18:54:24Z
 url: https://github.com/astral-sh/uv/pull/4340
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Move version file reading to `uv-toolchain`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-16 15:13_
+_@zanieb_
 
 In preparation for using this in other commands.
 

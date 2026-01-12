@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-03T21:58:01Z
 updated_at: 2024-10-31T23:00:42Z
 url: https://github.com/astral-sh/ruff/issues/8481
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: Bug with Pragma Comment for pyright being moved to invalid position
 
 ---
 
-_Issue opened by @roshanjrajan-zip on 2023-11-03 21:58_
+_@roshanjrajan-zip_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-21T14:47:04Z
 updated_at: 2023-12-06T17:03:38Z
 url: https://github.com/astral-sh/ruff/issues/6730
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `ctypes.WinError()` returns false positive for RSE102
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-21 14:47_
+_@charliermarsh_
 
 Raising [`ctypes.WinError()`](https://docs.python.org/3/library/ctypes.html#ctypes.WinError) also triggers this. There is a [code snippet here](https://code.activestate.com/recipes/577972-disk-usage/) for example.
 

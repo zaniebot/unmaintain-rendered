@@ -12,14 +12,14 @@ head: main
 created_at: 2023-01-27T07:46:39Z
 updated_at: 2023-01-28T03:58:33Z
 url: https://github.com/astral-sh/ruff/pull/2244
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # add: MkDocs GitHub Pages
 
 ---
 
-_Pull request opened by @juftin on 2023-01-27 07:46_
+_@juftin_
 
 ## Summary
 

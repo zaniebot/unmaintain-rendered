@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-11-04T16:09:35Z
 updated_at: 2018-08-02T03:30:14Z
 url: https://github.com/clap-rs/clap/issues/1092
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Fatal internal error when using requires outside subcommand boundary
 
 ---
 
-_Issue opened by @clux on 2017-11-04 16:09_
+_@clux_
 
 There seems to be other similar issue related to `requires`, but just posting this simple one which seems to have a slightly different `SubCommand` origin:
 

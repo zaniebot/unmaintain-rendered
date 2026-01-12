@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T14:37:10Z
 updated_at: 2024-05-31T19:04:37Z
 url: https://github.com/astral-sh/ruff/issues/11641
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule A003 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-05-31 14:37_
+_@qarmin_
 
 ruff 0.4.6 (latest changes from main branch)
 ```

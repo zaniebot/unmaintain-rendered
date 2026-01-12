@@ -13,14 +13,14 @@ head: alex/better-mdtest-output
 created_at: 2024-11-08T22:31:59Z
 updated_at: 2024-11-11T11:03:43Z
 url: https://github.com/astral-sh/ruff/pull/14213
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Improve mdtest output
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-08 22:31_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: childprocess-graceful-shutdown
 created_at: 2024-07-23T14:08:21Z
 updated_at: 2024-08-01T11:22:48Z
 url: https://github.com/astral-sh/uv/pull/5333
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Add signal hander in `uv run`
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-23 14:08_
+_@Di-Is_
 
 Fix #5257 
 

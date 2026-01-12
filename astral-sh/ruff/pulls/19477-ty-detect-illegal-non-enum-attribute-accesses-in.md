@@ -13,14 +13,14 @@ head: david/illegal-attribute-access-literal
 created_at: 2025-07-22T07:21:35Z
 updated_at: 2025-07-22T09:42:05Z
 url: https://github.com/astral-sh/ruff/pull/19477
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Detect illegal non-enum attribute accesses in Literal annotation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 07:21_
+_@sharkdp_
 
 ## Summary
 

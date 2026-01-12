@@ -13,14 +13,14 @@ head: fix-format-named-expr-comments
 created_at: 2023-07-12T08:50:44Z
 updated_at: 2023-08-23T23:16:59Z
 url: https://github.com/astral-sh/ruff/pull/5705
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix format named expr comments
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-12 08:50_
+_@davidszotten_
 
 fixes #5695
 

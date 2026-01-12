@@ -11,14 +11,14 @@ head: add-W2402
 created_at: 2023-10-19T04:21:18Z
 updated_at: 2023-10-20T21:51:41Z
 url: https://github.com/astral-sh/ruff/pull/8059
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] - implement `non-ascii-file-name` (`W2402`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-19 04:21_
+_@diceroll123_
 
 ## Summary
 

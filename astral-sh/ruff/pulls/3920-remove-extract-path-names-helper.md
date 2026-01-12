@@ -13,14 +13,14 @@ head: charlie/file-name
 created_at: 2023-04-08T14:46:05Z
 updated_at: 2023-04-08T15:14:43Z
 url: https://github.com/astral-sh/ruff/pull/3920
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove `extract_path_names` helper
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-08 14:46_
+_@charliermarsh_
 
 It turns out that we can pass any `AsRef<Path>` to `globset::GlobSet::is_match`, which lets us simplify a lot of the logic here.
 

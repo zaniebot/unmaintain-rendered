@@ -13,14 +13,14 @@ head: charlie/serde-untagged
 created_at: 2024-09-30T23:32:49Z
 updated_at: 2024-09-30T23:40:22Z
 url: https://github.com/astral-sh/uv/pull/7822
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Use `serde-untagged` to improve some untagged enum error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-30 23:32_
+_@charliermarsh_
 
 ## Summary
 

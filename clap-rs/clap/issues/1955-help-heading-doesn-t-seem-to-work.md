@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-05-31T15:43:08Z
 updated_at: 2020-06-01T10:14:16Z
 url: https://github.com/clap-rs/clap/issues/1955
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # help_heading doesn't seem to work
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-05-31 15:43_
+_@CreepySkeleton_
 
 ### Make sure you completed the following tasks
 

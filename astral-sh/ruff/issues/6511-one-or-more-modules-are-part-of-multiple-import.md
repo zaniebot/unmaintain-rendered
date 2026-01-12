@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-11T19:00:08Z
 updated_at: 2024-07-25T18:58:08Z
 url: https://github.com/astral-sh/ruff/issues/6511
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # One or more modules are part of multiple import sections, including: `src`.
 
 ---
 
-_Issue opened by @zhou13 on 2023-08-11 19:00_
+_@zhou13_
 
 When I run ruff against my codebase, I got the following:
 ```

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T03:53:52Z
 updated_at: 2026-01-08T13:27:03Z
 url: https://github.com/astral-sh/ty/issues/2390
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # feat: better diagnostics when instance does not satisfy `abc.collections.<Class>`
 
 ---
 
-_Issue opened by @NickCrews on 2026-01-08 03:53_
+_@NickCrews_
 
 I am working in the ibis project, trying to fix up its typing so that [it's `Schema` class](https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25) typechecks against a `collections.abc.Mapping[str, ibis.DataType]`. It currently does not.
 

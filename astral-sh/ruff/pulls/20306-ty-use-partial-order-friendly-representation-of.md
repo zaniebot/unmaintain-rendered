@@ -14,14 +14,14 @@ head: dcreager/incomparable
 created_at: 2025-09-08T15:03:27Z
 updated_at: 2025-09-09T19:54:49Z
 url: https://github.com/astral-sh/ruff/pull/20306
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Use partial-order-friendly representation of typevar constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-08 15:03_
+_@dcreager_
 
 The constraint representation that we added in #19997 was subtly wrong, in that it didn't correctly model that type assignability is a _partial_ order — it's possible for two types to be incomparable, with neither a subtype of the other. That means the negation of a constraint like `T ≤ t` (typevar `T` must be a subtype of `t`) is **_not_** `t < T`, but rather `t < T ∨ T ≁ t` (using ≁ to mean "not comparable to").
 

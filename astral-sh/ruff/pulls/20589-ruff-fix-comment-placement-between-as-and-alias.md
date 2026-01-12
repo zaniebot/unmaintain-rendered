@@ -11,14 +11,14 @@ head: formatter-import-from-alias-dangling
 created_at: 2025-09-26T05:07:44Z
 updated_at: 2025-09-26T06:47:07Z
 url: https://github.com/astral-sh/ruff/pull/20589
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [`ruff`] Fix comment placement between as and alias name in from import
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-26 05:07_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

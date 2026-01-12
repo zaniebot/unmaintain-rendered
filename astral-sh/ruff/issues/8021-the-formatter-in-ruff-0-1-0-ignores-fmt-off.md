@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T17:46:06Z
 updated_at: 2023-10-17T23:57:39Z
 url: https://github.com/astral-sh/ruff/issues/8021
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # The formatter in ruff 0.1.0 ignores `# fmt: off` pragma inside of an assert statement
 
 ---
 
-_Issue opened by @blakeNaccarato on 2023-10-17 17:46_
+_@blakeNaccarato_
 
 The formatter in ruff 0.1.0 ignores `# fmt: off` pragma inside of an assert statement. Ruff respects the pragma when running `ruff format --isolated test.py` when `test.py` looks like this:
 

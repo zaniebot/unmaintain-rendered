@@ -13,14 +13,14 @@ head: gankra/shellcheck
 created_at: 2025-01-08T15:13:41Z
 updated_at: 2025-01-11T01:12:23Z
 url: https://github.com/astral-sh/uv/pull/10397
-synced_at: 2026-01-10T11:44:46Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # improve shell compatibility of venv activate scripts
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-08 15:13_
+_@Gankra_
 
 The shellcheck action we uses misses some files, so they fell out of spec for what we support. This PR first and foremost adds them to the scanning list, and then fixes the issues found.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-23T21:44:35Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/538
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # "help help" doesn't use color
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-23 21:44_
+_@joshtriplett_
 
 When clap provides a `help` subcommand, running `command help help` produces help for the `help` subcommand:
 

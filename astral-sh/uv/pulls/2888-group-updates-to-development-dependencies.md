@@ -13,14 +13,14 @@ head: zb/group-dev
 created_at: 2024-04-08T03:45:04Z
 updated_at: 2024-04-08T06:21:51Z
 url: https://github.com/astral-sh/uv/pull/2888
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Group updates to development dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 03:45_
+_@zanieb_
 
 I don't think we need to audit these individually since they're not user-facing.
 

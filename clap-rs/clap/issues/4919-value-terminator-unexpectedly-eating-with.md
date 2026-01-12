@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T22:03:51Z
 updated_at: 2023-05-21T09:17:18Z
 url: https://github.com/clap-rs/clap/issues/4919
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # value_terminator unexpectedly eating with multiple multi-length arguments
 
 ---
 
-_Issue opened by @kleptog on 2023-05-18 22:03_
+_@kleptog_
 
 ### Please complete the following tasks
 

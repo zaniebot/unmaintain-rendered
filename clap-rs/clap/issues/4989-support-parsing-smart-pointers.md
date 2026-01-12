@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-27T14:30:59Z
 updated_at: 2023-06-27T15:34:12Z
 url: https://github.com/clap-rs/clap/issues/4989
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support parsing smart pointers
 
 ---
 
-_Issue opened by @KSXGitHub on 2023-06-27 14:30_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

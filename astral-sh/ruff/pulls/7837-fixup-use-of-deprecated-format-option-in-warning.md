@@ -12,14 +12,14 @@ head: zanie/fixup
 created_at: 2023-10-06T16:02:21Z
 updated_at: 2023-10-06T16:18:51Z
 url: https://github.com/astral-sh/ruff/pull/7837
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fixup use of deprecated `--format` option in warning
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-06 16:02_
+_@zanieb_
 
 _No description provided._
 

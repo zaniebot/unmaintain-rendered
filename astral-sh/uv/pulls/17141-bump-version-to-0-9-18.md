@@ -13,14 +13,14 @@ head: konsti/release-0.9.18
 created_at: 2025-12-16T11:58:14Z
 updated_at: 2025-12-16T13:32:37Z
 url: https://github.com/astral-sh/uv/pull/17141
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Bump version to 0.9.18
 
 ---
 
-_Pull request opened by @konstin on 2025-12-16 11:58_
+_@konstin_
 
 It's been a week.
 

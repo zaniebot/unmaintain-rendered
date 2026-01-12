@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T21:49:03Z
 updated_at: 2023-03-03T19:22:17Z
 url: https://github.com/astral-sh/ruff/issues/3099
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Treat each match case as its own scope
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-21 21:49_
+_@charliermarsh_
 
 Given:
 

@@ -13,14 +13,14 @@ head: dcreager/subscript-types
 created_at: 2025-04-16T19:29:43Z
 updated_at: 2025-04-18T15:51:13Z
 url: https://github.com/astral-sh/ruff/pull/17434
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Handle explicit class specialization in type expressions
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-16 19:29_
+_@dcreager_
 
 You can now use subscript expressions in a type expression to explicitly specialize generic classes, just like you could already do in value expressions.
 

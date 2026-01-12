@@ -12,14 +12,14 @@ head: charlie/call-path-option
 created_at: 2023-04-01T15:51:02Z
 updated_at: 2023-04-02T02:29:34Z
 url: https://github.com/astral-sh/ruff/pull/3849
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Make `collect_call_path` return an `Option`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 15:51_
+_@charliermarsh_
 
 ## Summary
 

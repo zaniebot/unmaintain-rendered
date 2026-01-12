@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T19:17:10Z
 updated_at: 2025-05-18T21:29:03Z
 url: https://github.com/astral-sh/ruff/issues/18105
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule proposal: subclasses of a `@dataclass` should be a `@dataclass`
 
 ---
 
-_Issue opened by @netanel-haber on 2025-05-14 19:17_
+_@netanel-haber_
 
 ### Summary
 

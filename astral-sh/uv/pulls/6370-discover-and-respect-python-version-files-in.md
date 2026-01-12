@@ -13,14 +13,14 @@ head: zb/version-file-discover
 created_at: 2024-08-21T19:15:57Z
 updated_at: 2024-11-04T19:48:15Z
 url: https://github.com/astral-sh/uv/pull/6370
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Discover and respect `.python-version` files in parent directories
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 19:15_
+_@zanieb_
 
 Uses #6369 for test coverage.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T04:51:18Z
 updated_at: 2024-10-15T01:04:31Z
 url: https://github.com/astral-sh/uv/issues/3686
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Hint to "try: `--prerelease=allow`" when I already am
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-05-21 04:51_
+_@adamtheturtle_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

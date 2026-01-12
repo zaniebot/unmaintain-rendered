@@ -13,14 +13,14 @@ head: charlie/per
 created_at: 2024-07-19T13:41:55Z
 updated_at: 2024-07-19T14:43:51Z
 url: https://github.com/astral-sh/uv/pull/5218
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Remove trailing period from user-facing messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 13:41_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T21:43:32Z
 updated_at: 2023-10-22T18:59:22Z
 url: https://github.com/astral-sh/ruff/issues/4768
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLR1701: can be automatically fixed
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-31 21:43_
+_@saippuakauppias_
 
 Rule: https://beta.ruff.rs/docs/rules/repeated-isinstance-calls/
 

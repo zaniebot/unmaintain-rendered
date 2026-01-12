@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-08T07:13:44Z
 updated_at: 2023-06-08T09:53:13Z
 url: https://github.com/clap-rs/clap/issues/4957
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # #[clap(flatten, next_help_heading)] affects adjacent fields
 
 ---
 
-_Issue opened by @fsandhei on 2023-06-08 07:13_
+_@fsandhei_
 
 ### Please complete the following tasks
 

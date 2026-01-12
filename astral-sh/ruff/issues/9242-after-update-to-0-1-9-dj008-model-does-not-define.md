@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-22T08:43:51Z
 updated_at: 2023-12-31T22:25:10Z
 url: https://github.com/astral-sh/ruff/issues/9242
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # After update to 0.1.9 "DJ008 Model does not define `__str__` method" appears
 
 ---
 
-_Issue opened by @sshishov on 2023-12-22 08:43_
+_@sshishov_
 
 After release of 0.1.9 the issue with base class inheritance start appearing (same file)
 

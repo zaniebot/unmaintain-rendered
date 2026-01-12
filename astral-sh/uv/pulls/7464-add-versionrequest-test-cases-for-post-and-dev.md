@@ -13,14 +13,14 @@ head: zb/test-cases-post-dev
 created_at: 2024-09-17T14:48:33Z
 updated_at: 2024-09-17T15:59:44Z
 url: https://github.com/astral-sh/uv/pull/7464
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Add `VersionRequest` test cases for post and dev segments
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-17 14:48_
+_@zanieb_
 
 _No description provided._
 

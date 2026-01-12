@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T00:07:46Z
 updated_at: 2025-02-13T20:34:04Z
 url: https://github.com/astral-sh/uv/issues/6733
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `uv run` with a different root directory
 
 ---
 
-_Issue opened by @haarisr on 2024-08-28 00:07_
+_@haarisr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

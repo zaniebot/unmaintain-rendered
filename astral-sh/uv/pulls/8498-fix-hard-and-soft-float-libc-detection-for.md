@@ -13,14 +13,14 @@ head: detect_hardfloat
 created_at: 2024-10-23T11:34:58Z
 updated_at: 2024-10-30T09:51:32Z
 url: https://github.com/astral-sh/uv/pull/8498
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Fix hard and soft float libc detection for managed Python distributions on ARM
 
 ---
 
-_Pull request opened by @zarch on 2024-10-23 11:34_
+_@zarch_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-27T14:21:45Z
 updated_at: 2024-10-07T08:11:30Z
 url: https://github.com/astral-sh/ruff/issues/8852
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Support `__builtins__.pyi` mechanism to provide additional builtins
 
 ---
 
-_Issue opened by @hassec on 2023-11-27 14:21_
+_@hassec_
 
 Sometimes one has to work in a python environment that exposes additional builtins. 
 In pyright on can provide such information via a `__builtins__.pyi` file, [see their docs](https://github.com/microsoft/pyright/blob/main/docs/builtins.md) 

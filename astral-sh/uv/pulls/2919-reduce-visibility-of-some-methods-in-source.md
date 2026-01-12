@@ -13,14 +13,14 @@ head: charlie/vis
 created_at: 2024-04-08T23:38:25Z
 updated_at: 2024-04-08T23:49:24Z
 url: https://github.com/astral-sh/uv/pull/2919
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Reduce visibility of some methods in source database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 23:38_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T19:33:01Z
 updated_at: 2025-08-02T02:05:50Z
 url: https://github.com/astral-sh/uv/issues/15005
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Allow script dependencies to be locked with `uv pip compile`
 
 ---
 
-_Issue opened by @Ian-Costa18 on 2025-07-31 19:33_
+_@Ian-Costa18_
 
 ### Summary
 

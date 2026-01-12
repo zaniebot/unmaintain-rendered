@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-04-30T10:52:16Z
 updated_at: 2021-04-30T11:10:24Z
 url: https://github.com/clap-rs/clap/issues/2459
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Positional argument and subcommands interfere with each other
 
 ---
 
-_Issue opened by @htejun on 2021-04-30 10:52_
+_@htejun_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

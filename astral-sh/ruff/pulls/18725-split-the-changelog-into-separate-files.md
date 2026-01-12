@@ -13,14 +13,14 @@ head: brent/split-changelog
 created_at: 2025-06-17T15:34:11Z
 updated_at: 2025-06-17T17:27:38Z
 url: https://github.com/astral-sh/ruff/pull/18725
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Split the changelog into separate files
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-17 15:34_
+_@ntBre_
 
 Summary
 --

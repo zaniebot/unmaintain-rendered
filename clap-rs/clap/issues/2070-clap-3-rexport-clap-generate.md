@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-08-14T14:43:57Z
 updated_at: 2020-08-14T15:11:57Z
 url: https://github.com/clap-rs/clap/issues/2070
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Clap 3 rexport clap_generate
 
 ---
 
-_Issue opened by @nikoneufeld on 2020-08-14 14:43_
+_@nikoneufeld_
 
 ### Make sure you completed the following tasks
 

@@ -14,14 +14,14 @@ head: add-skip-dunders-to-completions-test
 created_at: 2025-12-29T23:04:54Z
 updated_at: 2025-12-30T08:10:14Z
 url: https://github.com/astral-sh/ruff/pull/22293
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Add skip_dunders option to CompletionTestBuilder
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-29 23:04_
+_@RasmusNygren_
 
 This is useful to remove noise when asserting
 snapshots on method or attribute completions.

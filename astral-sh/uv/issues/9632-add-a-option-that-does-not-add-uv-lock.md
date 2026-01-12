@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T07:33:02Z
 updated_at: 2024-12-11T03:43:31Z
 url: https://github.com/astral-sh/uv/issues/9632
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # add a option that does NOT add uv.lock
 
 ---
 
-_Issue opened by @DinhHuy2010 on 2024-12-04 07:33_
+_@DinhHuy2010_
 
 Hi, could uv add a option not creating a uv.lock file via cli arguments or config file?
 

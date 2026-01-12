@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-13T17:06:01Z
 updated_at: 2018-10-19T23:54:06Z
 url: https://github.com/clap-rs/clap/issues/747
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # `clap` fails to compile if `serde_yaml` is used, because of `preserve_order` feature of `yaml-rust`
 
 ---
 
-_Issue opened by @emk on 2016-11-13 17:06_
+_@emk_
 
 ### Rust Version
 

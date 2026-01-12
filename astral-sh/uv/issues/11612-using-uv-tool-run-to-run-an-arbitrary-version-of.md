@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T01:46:24Z
 updated_at: 2025-02-19T20:51:58Z
 url: https://github.com/astral-sh/uv/issues/11612
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Using `uv tool run` to run an arbitrary version of a tool using a compatible version of Python doesn't work unless you explicitly specify the python version
 
 ---
 
-_Issue opened by @taranlu-houzz on 2025-02-19 01:46_
+_@taranlu-houzz_
 
 ### Summary
 

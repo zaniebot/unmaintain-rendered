@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T15:34:20Z
 updated_at: 2025-03-17T16:21:23Z
 url: https://github.com/astral-sh/uv/issues/12242
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `uv sync` fails where `uv build` succeeds on specified module root and name
 
 ---
 
-_Issue opened by @nbaju1 on 2025-03-17 15:34_
+_@nbaju1_
 
 ### Summary
 

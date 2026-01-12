@@ -13,14 +13,14 @@ head: renovate/extractions-setup-just-3.x
 created_at: 2025-05-19T06:17:01Z
 updated_at: 2025-05-19T06:26:44Z
 url: https://github.com/astral-sh/ruff/pull/18186
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # Update extractions/setup-just action to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-05-19 06:17_
+_@renovate_
 
 This PR contains the following updates:
 

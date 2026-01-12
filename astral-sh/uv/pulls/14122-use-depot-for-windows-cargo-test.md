@@ -13,14 +13,14 @@ head: zb/depot-win
 created_at: 2025-06-18T02:15:47Z
 updated_at: 2025-06-18T14:55:10Z
 url: https://github.com/astral-sh/uv/pull/14122
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Use Depot for Windows `cargo test`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-18 02:15_
+_@zanieb_
 
 Replaces https://github.com/astral-sh/uv/pull/12320
 

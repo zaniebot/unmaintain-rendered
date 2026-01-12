@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T22:06:39Z
 updated_at: 2024-04-19T08:30:49Z
 url: https://github.com/astral-sh/uv/issues/3127
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Dependency resolution regression in 0.1.33
 
 ---
 
-_Issue opened by @burgholzer on 2024-04-18 22:06_
+_@burgholzer_
 
 Hey 👋🏼 
 

@@ -12,14 +12,14 @@ head: charlie/parameters
 created_at: 2023-08-02T17:54:13Z
 updated_at: 2023-08-03T06:42:49Z
 url: https://github.com/astral-sh/ruff/pull/6282
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Move `includes_arg_name` onto `Parameters`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 17:54_
+_@charliermarsh_
 
 ## Summary
 

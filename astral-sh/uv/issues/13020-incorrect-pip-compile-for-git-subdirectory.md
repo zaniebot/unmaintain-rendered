@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T18:52:38Z
 updated_at: 2025-06-26T19:48:13Z
 url: https://github.com/astral-sh/uv/issues/13020
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Incorrect pip compile for git subdirectory dependency
 
 ---
 
-_Issue opened by @bnaul on 2025-04-21 18:52_
+_@bnaul_
 
 ### Summary
 

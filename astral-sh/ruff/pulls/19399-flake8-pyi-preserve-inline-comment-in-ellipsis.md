@@ -14,14 +14,14 @@ head: fix/19385_piy013_deletes_comments
 created_at: 2025-07-17T14:11:27Z
 updated_at: 2025-07-29T19:06:05Z
 url: https://github.com/astral-sh/ruff/pull/19399
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [`flake8-pyi`] Preserve inline comment in ellipsis removal (`PYI013`)
 
 ---
 
-_Pull request opened by @Luunynliny on 2025-07-17 14:11_
+_@Luunynliny_
 
 ## Summary
 

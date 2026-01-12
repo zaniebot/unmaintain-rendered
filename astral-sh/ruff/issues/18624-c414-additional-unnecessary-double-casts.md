@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T11:00:50Z
 updated_at: 2025-06-11T11:03:53Z
 url: https://github.com/astral-sh/ruff/issues/18624
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # C414: additional unnecessary double casts
 
 ---
 
-_Issue opened by @xmo-odoo on 2025-06-11 11:00_
+_@xmo-odoo_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-30T12:37:54Z
 updated_at: 2024-09-30T13:18:32Z
 url: https://github.com/clap-rs/clap/issues/5756
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # 🏁 Race of Sloths: The Open Source Developer Challenge is about to start
 
 ---
 
-_Issue opened by @akorchyn on 2024-09-30 12:37_
+_@akorchyn_
 
 As a team of Rust developers from [Race of Sloths](https://race-of-sloths.com/),  we recognized this repo to be highly valuable in the open-source movement.
 

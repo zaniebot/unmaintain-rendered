@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T19:24:05Z
 updated_at: 2023-09-19T19:23:54Z
 url: https://github.com/astral-sh/ruff/issues/7470
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Inserting whitespace in multiline lambda 
 
 ---
 
-_Issue opened by @shughes-uk on 2023-09-17 19:24_
+_@shughes-uk_
 
 With ruff 0.0.289
 

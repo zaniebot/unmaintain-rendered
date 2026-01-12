@@ -13,14 +13,14 @@ head: cjm/tuplerec
 created_at: 2025-09-10T15:00:14Z
 updated_at: 2025-09-11T13:51:24Z
 url: https://github.com/astral-sh/ruff/pull/20333
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] use Type::Divergent to avoid panic in infinitely-nested-tuple implicit attribute
 
 ---
 
-_Pull request opened by @carljm on 2025-09-10 15:00_
+_@carljm_
 
 ## Summary
 

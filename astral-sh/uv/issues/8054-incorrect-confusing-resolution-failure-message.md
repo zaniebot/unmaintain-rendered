@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T19:26:00Z
 updated_at: 2024-10-09T21:31:40Z
 url: https://github.com/astral-sh/uv/issues/8054
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Incorrect/Confusing resolution failure message when constraint conflicts with dependency
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-10-09 19:26_
+_@notatallshaw-gts_
 
 **Environment**: uv 0.4.20 / Linux
 

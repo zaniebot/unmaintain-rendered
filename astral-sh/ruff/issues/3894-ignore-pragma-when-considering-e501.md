@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-06T07:40:41Z
 updated_at: 2023-10-01T01:17:50Z
 url: https://github.com/astral-sh/ruff/issues/3894
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ignore pragma when considering E501
 
 ---
 
-_Issue opened by @baggiponte on 2023-04-06 07:40_
+_@baggiponte_
 
 I wrote this snippet of code and the `<- !` line triggers `E501`.
 

@@ -16,14 +16,14 @@ head: brent/future-annotations-2
 created_at: 2025-07-02T19:38:53Z
 updated_at: 2025-07-16T12:50:54Z
 url: https://github.com/astral-sh/ruff/pull/19100
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`flake8-type-checking`, `pyupgrade`, `ruff`] Add `from __future__ import annotations` when it would allow new fixes (`TC001`, `TC002`, `TC003`, `UP037`, `RUF013`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-02 19:38_
+_@ntBre_
 
 ## Summary
 

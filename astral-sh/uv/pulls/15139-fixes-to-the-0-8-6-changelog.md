@@ -13,14 +13,14 @@ head: zb/fix-changelog
 created_at: 2025-08-07T15:19:40Z
 updated_at: 2025-08-07T15:21:13Z
 url: https://github.com/astral-sh/uv/pull/15139
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Fixes to the 0.8.6 changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-07 15:19_
+_@zanieb_
 
 _No description provided._
 

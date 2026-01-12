@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-21T23:16:15Z
 updated_at: 2024-12-22T14:54:33Z
 url: https://github.com/astral-sh/uv/issues/10088
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Is it possible to avoid re-checking direct URL dependencies each command?
 
 ---
 
-_Issue opened by @MrNaif2018 on 2024-12-21 23:16_
+_@MrNaif2018_
 
 Hi! Basically the package I want to install is not being updated on PyPI anymore, and I tried adding it using git url:
 If I try to install a package via git, it fails because the package's .gitmodules dependends on some enterprise packages I have no access to (there is an open issue in pip about similar thing, but from what I understand it is not yet implemented anywhere in packaging standards to fix this issue)

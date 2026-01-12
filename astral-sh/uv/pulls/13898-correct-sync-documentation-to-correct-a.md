@@ -11,14 +11,14 @@ head: avallbona-patch-1
 created_at: 2025-06-08T07:53:20Z
 updated_at: 2025-06-09T08:00:34Z
 url: https://github.com/astral-sh/uv/pull/13898
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Correct sync documentation to correct a misleading comment on `uv lock --check`
 
 ---
 
-_Pull request opened by @avallbona on 2025-06-08 07:53_
+_@avallbona_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T16:21:33Z
 updated_at: 2024-06-10T12:40:52Z
 url: https://github.com/astral-sh/uv/issues/4137
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Setuptools is installed conditionally when it should be installed unconditionally
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 16:21_
+_@konstin_
 
 Resolving this [pyproject.toml](https://gist.github.com/konstin/365b137c572a718e342b6635e49840fa) (needs minification) with `uv lock` on ubuntu, i get this [uv.lock](https://gist.github.com/konstin/90a99e5911e30b0cc90a681de71ca91a). If i `uv sync` it, it installs `pyramid`, but not setuptools, even though pyramid depends on setuptools. This does not happen if `pyramid` is the sole dependency.
 

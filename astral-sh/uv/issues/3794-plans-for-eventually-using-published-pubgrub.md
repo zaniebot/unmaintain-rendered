@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T14:11:18Z
 updated_at: 2024-05-23T14:50:00Z
 url: https://github.com/astral-sh/uv/issues/3794
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Plans for eventually using published pubgrub?
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-05-23 14:11_
+_@musicinmybrain_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

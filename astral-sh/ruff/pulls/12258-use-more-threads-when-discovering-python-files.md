@@ -13,14 +13,14 @@ head: reduce-lock-congestion
 created_at: 2024-07-09T12:55:13Z
 updated_at: 2024-07-10T07:29:18Z
 url: https://github.com/astral-sh/ruff/pull/12258
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use more threads when discovering python files
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-09 12:55_
+_@MichaReiser_
 
 ## Summary
 

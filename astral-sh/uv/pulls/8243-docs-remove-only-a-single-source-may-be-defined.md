@@ -13,14 +13,14 @@ head: doc
 created_at: 2024-10-16T07:04:56Z
 updated_at: 2024-10-16T14:34:08Z
 url: https://github.com/astral-sh/uv/pull/8243
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # docs: remove "Only a single source may be defined for each dependency"
 
 ---
 
-_Pull request opened by @j178 on 2024-10-16 07:04_
+_@j178_
 
 After #7745, mutiple sources are supported.
 

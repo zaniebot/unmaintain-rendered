@@ -13,14 +13,14 @@ head: function-type-subtype-callable
 created_at: 2025-03-25T16:26:37Z
 updated_at: 2025-03-27T00:21:59Z
 url: https://github.com/astral-sh/ruff/pull/16970
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] A `FunctionType` can be a subtype of `Callable`  (but never the other way around)
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-25 16:26_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T06:53:43Z
 updated_at: 2025-02-05T14:54:22Z
 url: https://github.com/astral-sh/uv/issues/11235
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # uv sync ignores user config file
 
 ---
 
-_Issue opened by @mneumei on 2025-02-05 06:53_
+_@mneumei_
 
 ### Summary
 

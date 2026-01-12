@@ -13,14 +13,14 @@ head: flake8-2020
 created_at: 2023-06-26T10:22:33Z
 updated_at: 2023-07-10T09:55:06Z
 url: https://github.com/astral-sh/ruff/pull/5366
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add documentation for `flake8-2020`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-26 10:22_
+_@tjkuson_
 
 ## Summary
 

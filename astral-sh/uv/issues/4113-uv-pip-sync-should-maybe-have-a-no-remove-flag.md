@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T20:12:51Z
 updated_at: 2024-06-07T03:52:59Z
 url: https://github.com/astral-sh/uv/issues/4113
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv pip sync` should maybe have a `--no-remove` flag?
 
 ---
 
-_Issue opened by @thejcannon on 2024-06-06 20:12_
+_@thejcannon_
 
 👋 Howdy!
 

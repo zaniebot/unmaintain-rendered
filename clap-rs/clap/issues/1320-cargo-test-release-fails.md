@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-07-18T13:42:41Z
 updated_at: 2018-08-02T03:30:26Z
 url: https://github.com/clap-rs/clap/issues/1320
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # cargo test --release fails
 
 ---
 
-_Issue opened by @matthiaskrgr on 2018-07-18 13:42_
+_@matthiaskrgr_
 
 Found this while trying to gather info on another ticket.
 

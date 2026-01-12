@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T10:55:54Z
 updated_at: 2025-10-17T15:47:54Z
 url: https://github.com/astral-sh/ruff/issues/1912
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement import-linter
 
 ---
 
-_Issue opened by @jankatins on 2023-01-16 10:55_
+_@jankatins_
 
 > Import Linter allows you to define and enforce rules for the internal and external imports within your Python project.
 

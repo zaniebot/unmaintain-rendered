@@ -13,14 +13,14 @@ head: gp/autofix-PLE0241
 created_at: 2024-06-29T14:44:09Z
 updated_at: 2024-06-29T22:18:53Z
 url: https://github.com/astral-sh/ruff/pull/12105
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`pylint`] Add fix for `duplicate-bases` (`PLE0241`)
 
 ---
 
-_Pull request opened by @Peiffap on 2024-06-29 14:44_
+_@Peiffap_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: fix-avoid-raising-S310-on-safe-f-strings
 created_at: 2024-07-12T14:54:27Z
 updated_at: 2024-07-13T20:57:05Z
 url: https://github.com/astral-sh/ruff/pull/12305
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bandit`] Avoid `S310` violations for HTTP-safe f-strings
 
 ---
 
-_Pull request opened by @zzztimbo on 2024-07-12 14:54_
+_@zzztimbo_
 
 this resolves https://github.com/astral-sh/ruff/issues/12245
 

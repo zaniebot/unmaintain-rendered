@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T05:58:46Z
 updated_at: 2024-05-21T06:31:26Z
 url: https://github.com/astral-sh/uv/issues/2706
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # slower than poetry on downloading wheels
 
 ---
 
-_Issue opened by @messense on 2024-03-28 05:58_
+_@messense_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

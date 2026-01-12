@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-10T17:04:29Z
 updated_at: 2024-07-19T18:17:43Z
 url: https://github.com/astral-sh/uv/issues/4969
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv python pin` should check for compatibility with `Requires-Python` if present
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 17:04_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

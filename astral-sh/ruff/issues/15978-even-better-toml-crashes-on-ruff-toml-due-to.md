@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T19:31:23Z
 updated_at: 2025-02-06T15:00:52Z
 url: https://github.com/astral-sh/ruff/issues/15978
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Even Better TOML crashes on `ruff.toml` due to `allOf` usage
 
 ---
 
-_Issue opened by @DavisVaughan on 2025-02-05 19:31_
+_@DavisVaughan_
 
 ### Description
 

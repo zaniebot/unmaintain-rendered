@@ -13,14 +13,14 @@ head: brent/ruff-analyze-workspace
 created_at: 2025-04-30T17:26:28Z
 updated_at: 2025-05-01T15:29:54Z
 url: https://github.com/astral-sh/ruff/pull/17743
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # Allow passing a virtual environment to `ruff analyze graph`
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-30 17:26_
+_@ntBre_
 
 Summary
 --

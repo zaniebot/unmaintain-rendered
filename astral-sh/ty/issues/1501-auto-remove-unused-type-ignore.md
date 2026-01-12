@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T03:10:46Z
 updated_at: 2025-11-23T14:09:44Z
 url: https://github.com/astral-sh/ty/issues/1501
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-remove unused `type: ignore`
 
 ---
 
-_Issue opened by @janosh on 2025-11-08 03:10_
+_@janosh_
 
 going one step beyond #278 (which would be much appreciated!), would be great if there was a flag to enable automatically remove any unused `# type: ignore` comments
 

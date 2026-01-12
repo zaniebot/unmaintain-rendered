@@ -12,14 +12,14 @@ head: fix-E711-E712
 created_at: 2022-11-17T11:47:40Z
 updated_at: 2022-11-18T04:15:15Z
 url: https://github.com/astral-sh/ruff/pull/784
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement auto-fix for E711 and E712
 
 ---
 
-_Pull request opened by @harupy on 2022-11-17 11:47_
+_@harupy_
 
 #722
 

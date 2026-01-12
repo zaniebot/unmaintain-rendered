@@ -13,14 +13,14 @@ head: charlie/option
 created_at: 2023-08-28T21:04:26Z
 updated_at: 2023-08-28T21:20:51Z
 url: https://github.com/astral-sh/ruff/pull/6957
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Clean up some misc. code in NamedTuple and TypedDict conversion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 21:04_
+_@charliermarsh_
 
 - Use `Option` instead of `Result` everywhere.
 - Use `field` instead of `property` (to match the nomenclature of `NamedTuple` and `TypedDict`).

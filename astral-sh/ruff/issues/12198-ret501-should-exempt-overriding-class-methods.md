@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-05T07:23:14Z
 updated_at: 2024-10-24T14:33:06Z
 url: https://github.com/astral-sh/ruff/issues/12198
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RET501 should exempt overriding class methods
 
 ---
 
-_Issue opened by @epenet on 2024-07-05 07:23_
+_@epenet_
 
 If a parent class defines a return type hint for a method, then it makes sense to keep the return None explicit.
 This is similar to #3704/#3705, but it involves looking also at the parent classes.

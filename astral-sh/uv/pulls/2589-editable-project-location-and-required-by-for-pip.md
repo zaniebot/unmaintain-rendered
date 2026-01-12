@@ -14,14 +14,14 @@ head: pip-show
 created_at: 2024-03-21T14:00:50Z
 updated_at: 2024-03-26T11:18:47Z
 url: https://github.com/astral-sh/uv/pull/2589
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # `Editable project location` and `Required-by` for `pip show`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-03-21 14:00_
+_@eth3lbert_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

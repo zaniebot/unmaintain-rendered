@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T16:54:53Z
 updated_at: 2025-03-06T03:46:11Z
 url: https://github.com/astral-sh/uv/issues/11983
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # authentication using SSH: failed to parse url to GitLab repo
 
 ---
 
-_Issue opened by @MttBallu on 2025-03-05 16:54_
+_@MttBallu_
 
 ### Summary
 

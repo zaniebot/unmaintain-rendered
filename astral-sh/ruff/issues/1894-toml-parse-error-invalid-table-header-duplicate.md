@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-15T12:38:57Z
 updated_at: 2023-01-24T16:34:01Z
 url: https://github.com/astral-sh/ruff/issues/1894
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # TOML parse error: Invalid table header: Duplicate key `version`
 
 ---
 
-_Issue opened by @hugovk on 2023-01-15 12:38_
+_@hugovk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

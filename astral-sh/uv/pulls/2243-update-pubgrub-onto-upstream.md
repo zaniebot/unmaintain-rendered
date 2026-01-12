@@ -12,14 +12,14 @@ head: konsti/update-pubgrub
 created_at: 2024-03-06T16:01:46Z
 updated_at: 2024-03-06T16:06:36Z
 url: https://github.com/astral-sh/uv/pull/2243
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Update pubgrub onto upstream
 
 ---
 
-_Pull request opened by @konstin on 2024-03-06 16:01_
+_@konstin_
 
 No functional changes, just pulling in the upstream changes in preparation of new changes.
 

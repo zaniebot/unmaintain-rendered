@@ -13,14 +13,14 @@ head: zb/registry-flake
 created_at: 2025-10-08T16:01:18Z
 updated_at: 2025-10-08T17:24:38Z
 url: https://github.com/astral-sh/uv/pull/16194
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Treat deleted Windows registry keys as equivalent to missing ones
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-08 16:01_
+_@zanieb_
 
 I noticed this flaked in a snapshot.
 

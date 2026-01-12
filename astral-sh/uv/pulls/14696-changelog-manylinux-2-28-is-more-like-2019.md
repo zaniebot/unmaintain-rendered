@@ -14,14 +14,14 @@ head: geofft/manylinux-changelog
 created_at: 2025-07-17T22:19:34Z
 updated_at: 2025-07-17T22:25:03Z
 url: https://github.com/astral-sh/uv/pull/14696
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # CHANGELOG: manylinux_2_28 is more like 2019
 
 ---
 
-_Pull request opened by @geofft on 2025-07-17 22:19_
+_@geofft_
 
 I must have Googled something too fast, sorry. glibc 2.28 came out August 2018, Fedora 29 was the earliest to ship with it in October 2018, Debian 10 shipped with it in July 2019, and CentOS 8 shipped with it in September 2019.
 

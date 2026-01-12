@@ -13,14 +13,14 @@ head: zb/uv-config
 created_at: 2024-04-09T02:55:39Z
 updated_at: 2024-04-09T16:35:54Z
 url: https://github.com/astral-sh/uv/pull/2924
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Split configuration options out of `uv-types`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 02:55_
+_@zanieb_
 
 Needed to prevent circular dependencies in my toolchain work (#2931). I think this is probably a reasonable change as we move towards persistent configuration too?
 

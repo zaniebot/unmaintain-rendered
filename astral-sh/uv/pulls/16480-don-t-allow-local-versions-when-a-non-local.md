@@ -13,14 +13,14 @@ head: konsti/mismatch-local-versions-in-sync
 created_at: 2025-10-28T11:42:39Z
 updated_at: 2025-12-05T18:37:51Z
 url: https://github.com/astral-sh/uv/pull/16480
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Don't allow local versions when a non-local version is pinned
 
 ---
 
-_Pull request opened by @konstin on 2025-10-28 11:42_
+_@konstin_
 
 See https://github.com/astral-sh/uv/issues/16368
 

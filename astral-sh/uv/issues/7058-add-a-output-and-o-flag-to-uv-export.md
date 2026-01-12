@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-05T01:18:14Z
 updated_at: 2024-12-12T14:26:44Z
 url: https://github.com/astral-sh/uv/issues/7058
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Add a `--output` and `-o` flag to `uv export`
 
 ---
 
-_Issue opened by @SamEdwardes on 2024-09-05 01:18_
+_@SamEdwardes_
 
 **Background**
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-27T18:43:39Z
 updated_at: 2025-06-30T14:32:30Z
 url: https://github.com/astral-sh/uv/issues/14323
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # uv reads and validates uv_build options
 
 ---
 
-_Issue opened by @konstin on 2025-06-27 18:43_
+_@konstin_
 
 It seems that currently, the uv frontend reads `BuildBackendSettings`, which would mean that uv would start complaining if we ever made a breaking change to `BuildBackendSettings` and a user was working with a project with a mismatching uv_build/uv version. We should detangle them in a way that we generate the json schema for it, but not validate it when loading it.
 

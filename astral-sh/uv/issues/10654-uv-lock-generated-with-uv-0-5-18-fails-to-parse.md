@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T21:48:07Z
 updated_at: 2025-01-15T23:03:30Z
 url: https://github.com/astral-sh/uv/issues/10654
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # `uv.lock` generated with `uv==0.5.18` fails to parse in `uv==0.5.19`
 
 ---
 
-_Issue opened by @chebbyChefNEQ on 2025-01-15 21:48_
+_@chebbyChefNEQ_
 
 error:
 ```

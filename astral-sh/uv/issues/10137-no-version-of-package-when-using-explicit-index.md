@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T03:47:36Z
 updated_at: 2024-12-24T05:56:51Z
 url: https://github.com/astral-sh/uv/issues/10137
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # No version of package when using explicit index
 
 ---
 
-_Issue opened by @hongbo-miao on 2024-12-24 03:47_
+_@hongbo-miao_
 
 # Experiment 1
 

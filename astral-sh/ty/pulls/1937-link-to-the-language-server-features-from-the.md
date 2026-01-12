@@ -13,14 +13,14 @@ head: zb/editor-integration-refs
 created_at: 2025-12-16T14:52:57Z
 updated_at: 2025-12-16T14:56:05Z
 url: https://github.com/astral-sh/ty/pull/1937
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Link to the "Language server" features from the "Editor integration" guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 14:52_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T16:00:34Z
 updated_at: 2025-08-28T12:48:32Z
 url: https://github.com/astral-sh/ruff/issues/20116
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # D105 appears on overload definitions
 
 ---
 
-_Issue opened by @rwb27 on 2025-08-27 16:00_
+_@rwb27_
 
 ### Summary
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-10-04T18:26:25Z
 updated_at: 2022-08-22T21:48:17Z
 url: https://github.com/clap-rs/clap/issues/2150
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Consider accepting a Cow instead of Into<&'b str> in App::about
 
 ---
 
-_Issue opened by @d-e-s-o on 2020-10-04 18:26_
+_@d-e-s-o_
 
 I find the signature of methods like [`App::about`](https://docs.rs/clap-v3/3.0.0-beta.1/clap_v3/struct.App.html#method.about) not super useful. It's probably fine when doing everything statically, because you could easily make sure that the string provided outlives the `App` object (because most of the time you have a 'static string anyway as everything is defined statically in the code). But consider the case where you'd want to add subcommands dynamically at runtime. It gets unnecessarily unwieldy now, in my opinion, because of the lifetime requirement.
 

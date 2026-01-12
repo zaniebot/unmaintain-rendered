@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T07:02:42Z
 updated_at: 2025-05-23T16:31:33Z
 url: https://github.com/astral-sh/uv/issues/13613
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Standard Way of Updating Common Packages across Specific Dependency Groups
 
 ---
 
-_Issue opened by @andy971022 on 2025-05-23 07:02_
+_@andy971022_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: dtz007_allow_strptime_a_naive_date
 created_at: 2025-11-08T20:34:42Z
 updated_at: 2025-11-10T17:15:25Z
 url: https://github.com/astral-sh/ruff/pull/21344
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Allow making a naive date with datetime.strptime()
 
 ---
 
-_Pull request opened by @axxeny on 2025-11-08 20:34_
+_@axxeny_
 
 ## Summary
 

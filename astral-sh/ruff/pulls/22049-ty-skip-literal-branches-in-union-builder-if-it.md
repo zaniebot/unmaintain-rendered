@@ -13,14 +13,14 @@ head: micha/union-builder-literal
 created_at: 2025-12-18T08:33:39Z
 updated_at: 2025-12-18T09:01:03Z
 url: https://github.com/astral-sh/ruff/pull/22049
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Skip literal branches in union builder if it contains no literals
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-18 08:33_
+_@MichaReiser_
 
 _No description provided._
 

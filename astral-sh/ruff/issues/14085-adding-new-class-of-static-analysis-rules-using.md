@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T05:56:18Z
 updated_at: 2024-11-04T08:30:17Z
 url: https://github.com/astral-sh/ruff/issues/14085
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Adding new class of static analysis rules using LLMs
 
 ---
 
-_Issue opened by @bbkgh on 2024-11-04 05:56_
+_@bbkgh_
 
 Hi, I would like to suggest adding a new class of rules to Ruff that utilizes Local/Remote LLM APIs for running rules over code files. I believe this can greatly improve code quality and result in fewer bugs. Additionally, writing rules in plain text is more convenient. For example, we could add a llm_rules.yaml file to project containing something like this:
 

@@ -13,14 +13,14 @@ head: zb/suffix
 created_at: 2025-10-31T14:21:41Z
 updated_at: 2025-10-31T18:11:28Z
 url: https://github.com/astral-sh/uv/pull/16536
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Include the Python variant suffix in "Using Python ..." messages
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-31 14:21_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/16253#issuecomment-3393383573
 

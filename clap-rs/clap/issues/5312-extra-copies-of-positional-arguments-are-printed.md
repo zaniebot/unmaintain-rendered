@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T08:30:52Z
 updated_at: 2024-01-16T20:26:42Z
 url: https://github.com/clap-rs/clap/issues/5312
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Extra copies of positional arguments are printed in error message
 
 ---
 
-_Issue opened by @Fogapod on 2024-01-16 08:30_
+_@Fogapod_
 
 ### Please complete the following tasks
 

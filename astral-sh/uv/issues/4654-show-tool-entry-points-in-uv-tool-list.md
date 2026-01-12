@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-29T22:53:58Z
 updated_at: 2024-07-03T04:54:20Z
 url: https://github.com/astral-sh/uv/issues/4654
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Show tool entry points in `uv tool list`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-29 22:53_
+_@zanieb_
 
 We should display the name of the executable entry points that are provided by an installed tool e.g.
 

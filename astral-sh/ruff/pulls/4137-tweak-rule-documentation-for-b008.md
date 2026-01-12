@@ -12,14 +12,14 @@ head: charlie/doc
 created_at: 2023-04-28T01:24:16Z
 updated_at: 2023-04-28T02:02:38Z
 url: https://github.com/astral-sh/ruff/pull/4137
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Tweak rule documentation for `B008`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-28 01:24_
+_@charliermarsh_
 
 _No description provided._
 

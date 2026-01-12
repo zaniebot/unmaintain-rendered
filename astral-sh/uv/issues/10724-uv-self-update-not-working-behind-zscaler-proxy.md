@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T22:16:48Z
 updated_at: 2025-03-27T13:51:23Z
 url: https://github.com/astral-sh/uv/issues/10724
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # uv self update not working behind zscaler proxy
 
 ---
 
-_Issue opened by @MonkeyLeeT on 2025-01-17 22:16_
+_@MonkeyLeeT_
 
 Error looks like https://github.com/astral-sh/uv/issues/1474. Also any scripts requiring http requests are failing due to same certificate issue of `unable to get local issuer certificate`. 
 

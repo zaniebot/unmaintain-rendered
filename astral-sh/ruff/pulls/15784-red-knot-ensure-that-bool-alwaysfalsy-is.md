@@ -13,14 +13,14 @@ head: alex/truthy-unions-7
 created_at: 2025-01-28T12:31:04Z
 updated_at: 2025-03-14T09:19:39Z
 url: https://github.com/astral-sh/ruff/pull/15784
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Ensure that `bool | AlwaysFalsy` is considered equivalent to `Literal[True] | AlwaysFalsy`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-28 12:31_
+_@AlexWaygood_
 
 ## Summary
 

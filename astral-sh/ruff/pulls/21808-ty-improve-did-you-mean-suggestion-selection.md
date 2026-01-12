@@ -14,14 +14,14 @@ head: improve-edit-distance
 created_at: 2025-12-05T10:27:28Z
 updated_at: 2025-12-05T12:36:15Z
 url: https://github.com/astral-sh/ruff/pull/21808
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] improve "Did you mean?" suggestion selection algorithm
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-05 10:27_
+_@mtshiba_
 
 ## Summary
 

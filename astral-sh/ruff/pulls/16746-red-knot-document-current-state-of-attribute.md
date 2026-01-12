@@ -13,14 +13,14 @@ head: david/document-attribute-assignment-diagnostics
 created_at: 2025-03-14T12:50:10Z
 updated_at: 2025-03-14T19:34:45Z
 url: https://github.com/astral-sh/ruff/pull/16746
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Document current state of attribute assignment diagnostics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-14 12:50_
+_@sharkdp_
 
 ## Summary
 

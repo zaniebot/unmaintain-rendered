@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-23T15:44:39Z
 updated_at: 2025-11-07T23:55:31Z
 url: https://github.com/astral-sh/uv/issues/7642
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Using uv on HPC Clusters
 
 ---
 
-_Issue opened by @PhilipVinc on 2024-09-23 15:44_
+_@PhilipVinc_
 
 Hi,
 

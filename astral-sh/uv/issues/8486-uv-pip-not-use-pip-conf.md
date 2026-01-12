@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T05:12:48Z
 updated_at: 2024-10-25T13:20:40Z
 url: https://github.com/astral-sh/uv/issues/8486
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # uv pip not use pip.conf ,
 
 ---
 
-_Issue opened by @me-v2 on 2024-10-23 05:12_
+_@me-v2_
 
 i custom pip.conf (custom pypi proxy ) , uv pip not use it,
 

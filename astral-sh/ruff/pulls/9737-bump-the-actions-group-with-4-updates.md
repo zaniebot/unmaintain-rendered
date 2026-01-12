@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions-e3d4e3ac8d
 created_at: 2024-01-31T15:22:04Z
 updated_at: 2024-01-31T15:40:12Z
 url: https://github.com/astral-sh/ruff/pull/9737
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Bump the actions group with 4 updates
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-31 15:22_
+_@dependabot_
 
 Bumps the actions group with 4 updates: [tj-actions/changed-files](https://github.com/tj-actions/changed-files), [actions/cache](https://github.com/actions/cache), [peter-evans/find-comment](https://github.com/peter-evans/find-comment) and [peter-evans/create-or-update-comment](https://github.com/peter-evans/create-or-update-comment).
 

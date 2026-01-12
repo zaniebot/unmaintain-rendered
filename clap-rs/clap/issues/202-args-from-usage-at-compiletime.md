@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-29T13:00:01Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/202
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # args_from_usage at compiletime
 
 ---
 
-_Issue opened by @richard-uk1 on 2015-08-29 13:00_
+_@richard-uk1_
 
 It seems like it would be more efficient to parse the usage string at compiletime rather than build time since it is invariant.  I don't know if this could be done with macros or if codegen would be needed.
 

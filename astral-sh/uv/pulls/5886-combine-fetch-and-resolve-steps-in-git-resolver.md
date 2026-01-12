@@ -12,14 +12,14 @@ head: charlie/fetch
 created_at: 2024-08-07T18:43:01Z
 updated_at: 2024-08-08T12:52:32Z
 url: https://github.com/astral-sh/uv/pull/5886
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Combine fetch and resolve steps in Git resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 18:43_
+_@charliermarsh_
 
 ## Summary
 

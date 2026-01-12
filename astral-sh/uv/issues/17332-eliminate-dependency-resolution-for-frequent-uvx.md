@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T09:48:33Z
 updated_at: 2026-01-06T22:16:35Z
 url: https://github.com/astral-sh/uv/issues/17332
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Eliminate dependency resolution for frequent `uvx` calls
 
 ---
 
-_Issue opened by @zmeir on 2026-01-06 09:48_
+_@zmeir_
 
 ### Question
 

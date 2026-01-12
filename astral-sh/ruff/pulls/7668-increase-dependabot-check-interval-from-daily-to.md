@@ -13,14 +13,14 @@ head: zanie/dep-freq
 created_at: 2023-09-26T13:50:10Z
 updated_at: 2023-09-26T13:59:24Z
 url: https://github.com/astral-sh/ruff/pull/7668
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Increase dependabot check interval from daily to weekly
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-26 13:50_
+_@zanieb_
 
 To reduce the noise of updates.
 

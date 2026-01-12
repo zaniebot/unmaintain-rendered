@@ -13,14 +13,14 @@ head: charlie/elif
 created_at: 2023-07-22T02:12:08Z
 updated_at: 2023-07-22T02:57:27Z
 url: https://github.com/astral-sh/ruff/pull/5964
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid collapsing `elif` and `else` branches during import sorting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-22 02:12_
+_@charliermarsh_
 
 ## Summary
 

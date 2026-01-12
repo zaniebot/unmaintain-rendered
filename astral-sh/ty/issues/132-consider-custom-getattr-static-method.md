@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T13:51:35Z
 updated_at: 2025-11-18T16:10:20Z
 url: https://github.com/astral-sh/ty/issues/132
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Consider custom `getattr_static` method
 
 ---
 
-_Issue opened by @dcreager on 2025-04-09 13:51_
+_@dcreager_
 
 In https://github.com/astral-sh/ruff/pull/17023/files#r2033191626 @sharkdp called out that with generic classes, our implementation of `getattr_static` does not match its runtime behavior, since at runtime, generic aliases are instances of the special `_GenericAlias` class. We treat generic aliases as a specialized instance of the underlying class literal.
 

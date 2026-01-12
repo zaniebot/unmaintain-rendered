@@ -14,14 +14,14 @@ head: charlie/self
 created_at: 2024-12-27T18:17:45Z
 updated_at: 2024-12-29T15:46:47Z
 url: https://github.com/astral-sh/uv/pull/10206
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Guard against self-deletion in `uv venv` and `uv tool`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-27 18:17_
+_@charliermarsh_
 
 ## Summary
 

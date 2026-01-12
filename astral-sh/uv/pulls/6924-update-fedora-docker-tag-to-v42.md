@@ -13,14 +13,14 @@ head: renovate/fedora-42.x
 created_at: 2024-09-02T00:58:13Z
 updated_at: 2024-09-02T18:01:52Z
 url: https://github.com/astral-sh/uv/pull/6924
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Update fedora Docker tag to v42
 
 ---
 
-_Pull request opened by @renovate on 2024-09-02 00:58_
+_@renovate_
 
 This PR contains the following updates:
 

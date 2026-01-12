@@ -11,14 +11,14 @@ head: error-clone
 created_at: 2025-03-08T05:17:36Z
 updated_at: 2025-03-10T15:58:59Z
 url: https://github.com/clap-rs/clap/pull/5942
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(builder): Make `clap::Error` be `Clone`
 
 ---
 
-_Pull request opened by @ilyagr on 2025-03-08 05:17_
+_@ilyagr_
 
 #5935
 

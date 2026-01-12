@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T11:37:50Z
 updated_at: 2023-04-21T01:37:39Z
 url: https://github.com/astral-sh/ruff/issues/4044
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff --fix removes import which is needed
 
 ---
 
-_Issue opened by @Qumeric on 2023-04-20 11:37_
+_@Qumeric_
 
 I am running `ruff --fix` with the default config and it removes an import which is needed.
 

@@ -12,14 +12,14 @@ head: user-config
 created_at: 2022-09-17T00:52:34Z
 updated_at: 2022-09-18T10:04:45Z
 url: https://github.com/astral-sh/ruff/pull/216
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Find user configuration even if there’s no project directory
 
 ---
 
-_Pull request opened by @andersk on 2022-09-17 00:52_
+_@andersk_
 
 _No description provided._
 

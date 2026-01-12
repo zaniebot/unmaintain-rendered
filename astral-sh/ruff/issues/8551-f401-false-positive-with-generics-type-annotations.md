@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-07T23:44:13Z
 updated_at: 2023-11-10T05:06:51Z
 url: https://github.com/astral-sh/ruff/issues/8551
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # F401 False Positive with Generics Type Annotations
 
 ---
 
-_Issue opened by @Kaelten on 2023-11-07 23:44_
+_@Kaelten_
 
 I have a generic base class in my code base that, to prevent circular imports, must have a forward reference used in it's type annotation.
 

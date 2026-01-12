@@ -12,14 +12,14 @@ head: charlie/typos
 created_at: 2023-02-06T20:41:09Z
 updated_at: 2023-02-06T20:43:04Z
 url: https://github.com/astral-sh/ruff/pull/2609
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Ignore typos in snapshots
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-06 20:41_
+_@charliermarsh_
 
 _No description provided._
 

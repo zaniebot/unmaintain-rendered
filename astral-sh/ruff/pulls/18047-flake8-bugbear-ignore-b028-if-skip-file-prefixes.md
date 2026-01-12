@@ -14,14 +14,14 @@ head: fix-B028
 created_at: 2025-05-12T14:45:25Z
 updated_at: 2025-05-12T22:07:36Z
 url: https://github.com/astral-sh/ruff/pull/18047
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [`flake8-bugbear`] Ignore `B028` if `skip_file_prefixes` is present
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-12 14:45_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

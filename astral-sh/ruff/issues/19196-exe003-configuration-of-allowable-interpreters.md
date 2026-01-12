@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T08:09:37Z
 updated_at: 2025-07-08T13:13:23Z
 url: https://github.com/astral-sh/ruff/issues/19196
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # EXE003 Configuration of allowable interpreters
 
 ---
 
-_Issue opened by @jakeanq on 2025-07-08 08:09_
+_@jakeanq_
 
 ### Summary
 

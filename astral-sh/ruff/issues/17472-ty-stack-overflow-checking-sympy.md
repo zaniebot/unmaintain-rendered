@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-18T20:14:18Z
 updated_at: 2025-05-05T19:31:56Z
 url: https://github.com/astral-sh/ruff/issues/17472
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [ty] stack overflow checking 'sympy'
 
 ---
 
-_Issue opened by @carljm on 2025-04-18 20:14_
+_@carljm_
 
 Repro:
 

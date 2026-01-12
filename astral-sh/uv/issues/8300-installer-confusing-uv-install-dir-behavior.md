@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T17:53:44Z
 updated_at: 2024-10-17T19:10:51Z
 url: https://github.com/astral-sh/uv/issues/8300
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # installer: confusing UV_INSTALL_DIR behavior
 
 ---
 
-_Issue opened by @ilyagr on 2024-10-17 17:53_
+_@ilyagr_
 
 I ran
 

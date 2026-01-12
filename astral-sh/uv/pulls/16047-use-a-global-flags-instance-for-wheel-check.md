@@ -13,14 +13,14 @@ head: charlie/flags
 created_at: 2025-09-28T00:49:51Z
 updated_at: 2025-09-30T00:10:12Z
 url: https://github.com/astral-sh/uv/pull/16047
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Use a global flags instance for wheel check
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-28 00:49_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T18:02:54Z
 updated_at: 2024-11-03T18:44:53Z
 url: https://github.com/astral-sh/ruff/issues/14049
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLC0208 false positive when a set contains equal values of different types
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-01 18:02_
+_@dscorbett_
 
 The fix for [`iteration-over-set` (PLC0208)](https://docs.astral.sh/ruff/rules/iteration-over-set/) has false positives which change behavior. It intentionally ignores sets that contain duplicates, but when detecting duplicates it assumes that literals of different types are never equal. That is not true; for example, `False == 0`, so `{False, 0}` contains a duplicate and is actually equal to `{False}`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T23:36:01Z
 updated_at: 2024-10-16T12:45:27Z
 url: https://github.com/astral-sh/uv/issues/8116
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Duplicated --extra-index-url in requirements
 
 ---
 
-_Issue opened by @dabljues on 2024-10-10 23:36_
+_@dabljues_
 
 I'm utilizing `uv` to speed up my current dev environment. Basically, I operate on `pyproject.toml` and plain `requirements*` files.
 

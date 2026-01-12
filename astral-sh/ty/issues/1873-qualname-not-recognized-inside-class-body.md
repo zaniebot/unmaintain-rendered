@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T08:07:59Z
 updated_at: 2025-12-13T22:10:26Z
 url: https://github.com/astral-sh/ty/issues/1873
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `__qualname__` not recognized inside class body
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-12-13 08:07_
+_@randolf-scholz_
 
 ### Summary
 

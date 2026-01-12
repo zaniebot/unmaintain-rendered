@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T11:58:13Z
 updated_at: 2026-01-12T11:35:26Z
 url: https://github.com/astral-sh/uv/issues/13883
-synced_at: 2026-01-12T11:55:20Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Stronger locking for parallel operations
 
 ---
 
-_Issue opened by @konstin on 2025-06-06 11:58_
+_@konstin_
 
 We need to ensure that there a no race conditions when two uv subcommands in parallel. This includes:
  * Parallel filesystem modifications in interpreters/venvs

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-01T19:35:37Z
 updated_at: 2025-01-29T16:04:45Z
 url: https://github.com/astral-sh/ruff/issues/3295
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Avoid autoremoval of imported pytest fixtures
 
 ---
 
-_Issue opened by @peterroelants on 2023-03-01 19:35_
+_@peterroelants_
 
 Currently imported pytest fixtures are removed by the ruff autoremoval feature (unused import). After running ruff my tests fail because the fixtures are removed.
 

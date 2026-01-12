@@ -14,14 +14,14 @@ assignees: []
 created_at: 2018-04-18T06:05:51Z
 updated_at: 2022-11-08T05:14:29Z
 url: https://github.com/clap-rs/clap/issues/1249
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Error message should reference the short not long when short is used as arg
 
 ---
 
-_Issue opened by @polarathene on 2018-04-18 06:05_
+_@polarathene_
 
 ### Rust Version
 

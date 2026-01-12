@@ -13,14 +13,14 @@ head: charlie/dup
 created_at: 2024-04-17T19:03:34Z
 updated_at: 2024-04-19T23:45:09Z
 url: https://github.com/astral-sh/uv/pull/3103
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Move argument normalization into settings construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 19:03_
+_@charliermarsh_
 
 ## Summary
 

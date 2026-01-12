@@ -12,14 +12,14 @@ head: charlie/quote
 created_at: 2022-12-06T00:13:10Z
 updated_at: 2022-12-06T00:13:23Z
 url: https://github.com/astral-sh/ruff/pull/1093
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Don't autofix D210 by introducing a syntax error
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 00:13_
+_@charliermarsh_
 
 Resolves https://github.com/charliermarsh/ruff/issues/1092.
 

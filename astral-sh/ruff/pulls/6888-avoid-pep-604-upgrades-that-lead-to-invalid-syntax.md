@@ -14,14 +14,14 @@ head: charlie/up
 created_at: 2023-08-25T23:20:47Z
 updated_at: 2023-08-26T00:07:25Z
 url: https://github.com/astral-sh/ruff/pull/6888
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid PEP 604 upgrades that lead to invalid syntax
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-25 23:20_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6843.
 

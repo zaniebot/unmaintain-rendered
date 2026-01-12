@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-21T02:43:04Z
 updated_at: 2024-01-04T03:51:18Z
 url: https://github.com/astral-sh/uv/issues/716
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Remove partial directories during uninstall operations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-21 02:43_
+_@charliermarsh_
 
 If you somehow end up with a `.dist-info` that doesn't contain `METADATA` or is otherwise unfinished, we should ensure we remove it (even though it won't have a `RECORD` file).
 

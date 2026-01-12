@@ -13,14 +13,14 @@ head: dhruv/upgrade-tailwind-v4
 created_at: 2025-02-10T04:25:25Z
 updated_at: 2025-04-30T15:47:28Z
 url: https://github.com/astral-sh/ruff/pull/16069
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Upgrade tailwindcss to v4
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-10 04:25_
+_@dhruvmanila_
 
 ## Summary
 

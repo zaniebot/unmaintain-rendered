@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-25T16:58:53Z
 updated_at: 2024-12-29T00:35:14Z
 url: https://github.com/astral-sh/uv/issues/10156
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Suggestion to add support for URL-based requirement specifiers
 
 ---
 
-_Issue opened by @oliversen on 2024-12-25 16:58_
+_@oliversen_
 
 Example:
 ```

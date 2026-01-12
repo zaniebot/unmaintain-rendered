@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T19:43:39Z
 updated_at: 2024-06-27T19:48:48Z
 url: https://github.com/astral-sh/ruff/issues/12077
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add `astral.sh` redirects for standalone installers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-27 19:43_
+_@charliermarsh_
 
 _No description provided._
 

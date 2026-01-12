@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-06T05:29:31Z
 updated_at: 2023-10-08T23:34:56Z
 url: https://github.com/astral-sh/uv/issues/22
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add rigorous benchmarks
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-06 05:29_
+_@charliermarsh_
 
 Can we develop benchmarks that don't depend on hitting PyPI?
 

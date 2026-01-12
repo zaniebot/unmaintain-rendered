@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-18T13:39:16Z
 updated_at: 2024-02-18T17:10:18Z
 url: https://github.com/astral-sh/ruff/issues/10026
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Keep single-line signatures when body is an Ellipsis (`...`) in `.py` files
 
 ---
 
-_Issue opened by @etienneschalk on 2024-02-18 13:39_
+_@etienneschalk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

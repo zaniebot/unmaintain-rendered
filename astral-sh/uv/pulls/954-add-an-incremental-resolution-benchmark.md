@@ -13,14 +13,14 @@ head: charlie/bench
 created_at: 2024-01-17T19:45:42Z
 updated_at: 2024-01-18T18:18:38Z
 url: https://github.com/astral-sh/uv/pull/954
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Add an incremental resolution benchmark
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 19:45_
+_@charliermarsh_
 
 ## Summary
 

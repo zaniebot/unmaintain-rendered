@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T10:21:40Z
 updated_at: 2025-01-22T12:08:05Z
 url: https://github.com/astral-sh/uv/issues/10849
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # inconsistency between `uv sync` and `uv pip install`
 
 ---
 
-_Issue opened by @Diddy42 on 2025-01-22 10:21_
+_@Diddy42_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T10:30:30Z
 updated_at: 2025-09-02T17:38:55Z
 url: https://github.com/astral-sh/ty/issues/1114
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Inner function does not preserve narrowed type
 
 ---
 
-_Issue opened by @mflova on 2025-09-01 10:30_
+_@mflova_
 
 ### Summary
 

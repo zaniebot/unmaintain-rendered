@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-09T22:08:57Z
 updated_at: 2025-11-10T17:00:10Z
 url: https://github.com/astral-sh/ruff/issues/21349
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feature request: warn on set creation with unhashable types
 
 ---
 
-_Issue opened by @gtkacz on 2025-11-09 22:08_
+_@gtkacz_
 
 ### Summary
 

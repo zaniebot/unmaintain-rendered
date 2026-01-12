@@ -13,14 +13,14 @@ head: charlie/downgrade
 created_at: 2024-12-22T16:08:57Z
 updated_at: 2025-01-06T22:41:45Z
 url: https://github.com/astral-sh/uv/pull/10097
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Avoid downgrading packages when `--upgrade` is provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-22 16:08_
+_@charliermarsh_
 
 ## Summary
 

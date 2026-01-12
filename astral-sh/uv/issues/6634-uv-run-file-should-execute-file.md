@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T00:17:03Z
 updated_at: 2024-08-28T13:26:47Z
 url: https://github.com/astral-sh/uv/issues/6634
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uv run file` should execute file
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-26 00:17_
+_@charliermarsh_
 
 Right now, you need `uv run ./file`, but I think `uv run file` should work too? Similar to how `python file` works.
 

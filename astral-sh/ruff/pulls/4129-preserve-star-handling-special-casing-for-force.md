@@ -12,14 +12,14 @@ head: charlie/star-force
 created_at: 2023-04-27T03:56:22Z
 updated_at: 2023-04-27T04:24:18Z
 url: https://github.com/astral-sh/ruff/pull/4129
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Preserve star-handling special-casing for force-single-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-27 03:56_
+_@charliermarsh_
 
 Closes #4118 (though I want to do another pass over this logic to clean it up).
 

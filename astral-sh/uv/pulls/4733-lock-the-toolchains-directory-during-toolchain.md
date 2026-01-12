@@ -14,14 +14,14 @@ head: zb/toolchain-lock
 created_at: 2024-07-02T17:19:18Z
 updated_at: 2024-07-02T18:31:32Z
 url: https://github.com/astral-sh/uv/pull/4733
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Lock the toolchains directory during toolchain operations
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 17:19_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T12:16:43Z
 updated_at: 2026-01-12T12:19:50Z
 url: https://github.com/astral-sh/ty/issues/2462
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Clarify beta status of ty
 
 ---
 
-_Issue opened by @gpapia on 2026-01-12 12:16_
+_@gpapia_
 
 Hi,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T00:06:39Z
 updated_at: 2025-06-25T16:47:02Z
 url: https://github.com/astral-sh/uv/issues/14248
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Cannot resolve github dependency with `uv tool install <package>` from pypi
 
 ---
 
-_Issue opened by @noamteyssier on 2025-06-25 00:06_
+_@noamteyssier_
 
 ### Summary
 

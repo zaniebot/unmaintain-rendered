@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-28T11:47:27Z
 updated_at: 2025-01-28T17:21:59Z
 url: https://github.com/clap-rs/clap/issues/2037
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Reduce compilation time
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-07-28 11:47_
+_@CreepySkeleton_
 
 [All features](https://gistpreview.github.io/?8ee8a91bfe081221672908eb57fcf723)
 [No features](https://gistpreview.github.io/?2e3e54008f987749cd1cbf31f8f1f0e9)

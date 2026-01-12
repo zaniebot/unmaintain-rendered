@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T09:45:00Z
 updated_at: 2024-10-21T14:13:08Z
 url: https://github.com/astral-sh/uv/issues/8413
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Support for custom netrc location appears to be partially bugged.
 
 ---
 
-_Issue opened by @EdgyMeshx on 2024-10-21 09:45_
+_@EdgyMeshx_
 
 I have multiple logins for different work projects so a single `.netrc` doesn't cover my usecase.
 

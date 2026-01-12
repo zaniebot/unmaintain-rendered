@@ -14,14 +14,14 @@ head: alex/rename-extra-paths
 created_at: 2025-10-06T14:11:52Z
 updated_at: 2025-10-24T17:08:15Z
 url: https://github.com/astral-sh/ruff/pull/20721
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Rename `extra-paths` to `non-environment-paths`, and `--extra-search-path` to `--non-environment-search-path`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-06 14:11_
+_@AlexWaygood_
 
 ## Summary
 

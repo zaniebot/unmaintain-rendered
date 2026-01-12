@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-10T09:39:19Z
 updated_at: 2025-04-10T12:40:43Z
 url: https://github.com/astral-sh/ruff/issues/17329
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Playground crashes sometimes when clicking reset
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-10 09:39_
+_@MichaReiser_
 
 ### Summary
 

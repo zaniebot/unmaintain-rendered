@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T08:19:23Z
 updated_at: 2024-02-09T15:18:42Z
 url: https://github.com/clap-rs/clap/issues/5345
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # propagate_version is missing from documentation
 
 ---
 
-_Issue opened by @szabgab on 2024-02-09 08:19_
+_@szabgab_
 
 ### Please complete the following tasks
 

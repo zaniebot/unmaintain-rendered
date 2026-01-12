@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T16:58:57Z
 updated_at: 2026-01-06T17:28:25Z
 url: https://github.com/astral-sh/ty/issues/2349
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Object of type `PreTrainedTokenizerFast` is callable
 
 ---
 
-_Issue opened by @c-vongpaseut on 2026-01-05 16:58_
+_@c-vongpaseut_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: dcreager/subtype-given-typevars
 created_at: 2025-10-24T17:49:36Z
 updated_at: 2025-10-30T20:11:07Z
 url: https://github.com/astral-sh/ruff/pull/21068
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Update "constraint implication" relation to work on constraints between two typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-24 17:49_
+_@dcreager_
 
 It's possible for a constraint to mention two typevars. For instance, in the body of
 

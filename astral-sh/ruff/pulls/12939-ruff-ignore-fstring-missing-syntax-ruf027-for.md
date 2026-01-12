@@ -14,14 +14,14 @@ head: alex/ruf027-fastapi
 created_at: 2024-08-16T17:55:10Z
 updated_at: 2024-08-17T10:10:36Z
 url: https://github.com/astral-sh/ruff/pull/12939
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`ruff`] Ignore `fstring-missing-syntax` (`RUF027`) for `fastAPI` paths
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-16 17:55_
+_@AlexWaygood_
 
 ## Summary
 

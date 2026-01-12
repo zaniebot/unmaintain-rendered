@@ -12,14 +12,14 @@ head: charlie/linter
 created_at: 2023-02-12T03:06:07Z
 updated_at: 2023-02-12T03:09:05Z
 url: https://github.com/astral-sh/ruff/pull/2794
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Use output-stdout pattern for linter command
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 03:06_
+_@charliermarsh_
 
 Not "better" but more consistent with `rule.rs`.
 

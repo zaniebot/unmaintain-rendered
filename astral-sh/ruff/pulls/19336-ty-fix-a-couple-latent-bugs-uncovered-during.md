@@ -14,14 +14,14 @@ head: jack/read_declaration_only
 created_at: 2025-07-14T17:24:24Z
 updated_at: 2025-07-16T15:30:43Z
 url: https://github.com/astral-sh/ruff/pull/19336
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] fix a couple latent bugs uncovered during `nonlocal` work
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-14 17:24_
+_@oconnor663_
 
 https://github.com/astral-sh/ty/issues/793
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T12:52:46Z
 updated_at: 2025-05-31T11:25:54Z
 url: https://github.com/astral-sh/uv/issues/13507
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # `uv` as a system Python provider
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-17 12:52_
+_@Andrej730_
 
 ### Question
 

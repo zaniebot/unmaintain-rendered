@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-18T01:27:01Z
 updated_at: 2021-05-18T09:24:33Z
 url: https://github.com/clap-rs/clap/issues/2484
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Boolean argument accepts a value, even with takes_value = false
 
 ---
 
-_Issue opened by @sjackman on 2021-05-18 01:27_
+_@sjackman_
 
 ### Please complete the following tasks
 

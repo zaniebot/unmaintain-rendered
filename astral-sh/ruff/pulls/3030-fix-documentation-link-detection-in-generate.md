@@ -12,14 +12,14 @@ head: charlie/readme
 created_at: 2023-02-19T12:18:04Z
 updated_at: 2023-02-19T12:20:46Z
 url: https://github.com/astral-sh/ruff/pull/3030
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix documentation-link detection in generate_mkdocs.py
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-19 12:18_
+_@charliermarsh_
 
 Closes #3003.
 

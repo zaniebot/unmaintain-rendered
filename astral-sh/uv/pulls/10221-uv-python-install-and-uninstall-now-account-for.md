@@ -11,14 +11,14 @@ head: env_var_python_install
 created_at: 2024-12-29T23:40:35Z
 updated_at: 2024-12-29T23:49:59Z
 url: https://github.com/astral-sh/uv/pull/10221
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # uv python install and uninstall now account for the UV_PYTHON env var
 
 ---
 
-_Pull request opened by @Choudhry18 on 2024-12-29 23:40_
+_@Choudhry18_
 
 # Summary
 

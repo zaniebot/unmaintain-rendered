@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T14:23:29Z
 updated_at: 2025-04-01T07:53:44Z
 url: https://github.com/astral-sh/uv/issues/12429
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `--no-sync` for `uv run` via configuration parameter
 
 ---
 
-_Issue opened by @tinovyatkin on 2025-03-24 14:23_
+_@tinovyatkin_
 
 ### Question
 

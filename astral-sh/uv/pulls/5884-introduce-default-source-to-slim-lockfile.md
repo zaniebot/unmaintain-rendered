@@ -11,14 +11,14 @@ head: konsti/default-source
 created_at: 2024-08-07T18:18:21Z
 updated_at: 2024-08-09T01:40:08Z
 url: https://github.com/astral-sh/uv/pull/5884
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Introduce `default-source` to slim lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-08-07 18:18_
+_@konstin_
 
 Currently, we're repeating the same `source` line for every package, so the lockfiles have a lot of:
 

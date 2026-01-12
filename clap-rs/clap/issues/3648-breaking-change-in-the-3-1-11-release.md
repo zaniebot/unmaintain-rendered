@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-22T08:09:08Z
 updated_at: 2022-04-22T11:52:50Z
 url: https://github.com/clap-rs/clap/issues/3648
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Breaking change in the 3.1.11 release
 
 ---
 
-_Issue opened by @weiznich on 2022-04-22 08:09_
+_@weiznich_
 
 ### Please complete the following tasks
 

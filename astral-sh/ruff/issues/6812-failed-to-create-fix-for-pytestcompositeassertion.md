@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-23T10:39:23Z
 updated_at: 2023-08-23T23:09:35Z
 url: https://github.com/astral-sh/ruff/issues/6812
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for PytestCompositeAssertion: Unable to fix multiline statement
 
 ---
 
-_Issue opened by @qarmin on 2023-08-23 10:39_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

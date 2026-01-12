@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-19T17:56:35Z
 updated_at: 2024-08-19T18:28:36Z
 url: https://github.com/astral-sh/uv/issues/6220
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add a scenario test for collapsing redundant no versions
 
 ---
 
-_Issue opened by @zanieb on 2024-08-19 17:56_
+_@zanieb_
 
 Coverage for the change we added in #6160
 

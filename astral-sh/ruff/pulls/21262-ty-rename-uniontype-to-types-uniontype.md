@@ -14,14 +14,14 @@ head: david/rename-uniontype
 created_at: 2025-11-03T20:26:48Z
 updated_at: 2025-11-03T21:09:10Z
 url: https://github.com/astral-sh/ruff/pull/21262
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Rename `UnionType` to `types.UnionType`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-03 20:26_
+_@sharkdp_
 
 _No description provided._
 

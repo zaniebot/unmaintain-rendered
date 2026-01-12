@@ -13,14 +13,14 @@ head: chore/enable-renovate-regex-manager
 created_at: 2024-09-30T21:17:05Z
 updated_at: 2024-09-30T21:33:05Z
 url: https://github.com/astral-sh/uv/pull/7820
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # chore(renovate): enable `regex` manager
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-30 21:17_
+_@mkniewallner_
 
 ## Summary
 

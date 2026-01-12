@@ -13,14 +13,14 @@ head: no-return-assert-never
 created_at: 2023-02-22T13:17:34Z
 updated_at: 2023-02-22T14:15:40Z
 url: https://github.com/astral-sh/ruff/pull/3121
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Mark `typing.assert_never` as no return
 
 ---
 
-_Pull request opened by @bluetech on 2023-02-22 13:17_
+_@bluetech_
 
 [This function](https://docs.python.org/3/library/typing.html#typing.assert_never) always raises, so RET503 shouldn't trigger for it.
 

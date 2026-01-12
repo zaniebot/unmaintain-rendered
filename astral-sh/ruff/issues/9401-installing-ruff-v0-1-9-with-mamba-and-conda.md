@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-05T11:23:57Z
 updated_at: 2024-01-16T13:50:56Z
 url: https://github.com/astral-sh/ruff/issues/9401
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Installing ruff v0.1.9+ with mamba and conda produces ModuleNotFoundError on Linux 
 
 ---
 
-_Issue opened by @sogoodmo on 2024-01-05 11:23_
+_@sogoodmo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

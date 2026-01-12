@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-27T10:18:44Z
 updated_at: 2026-01-06T08:46:59Z
 url: https://github.com/astral-sh/ruff/issues/8277
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Implement `safety` or `pip-audit`
 
 ---
 
-_Issue opened by @rgeronimi on 2023-10-27 10:18_
+_@rgeronimi_
 
 See
 https://pypi.org/project/safety/

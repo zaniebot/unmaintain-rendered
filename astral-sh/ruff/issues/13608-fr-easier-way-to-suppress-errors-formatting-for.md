@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-02T19:26:37Z
 updated_at: 2024-10-07T14:30:58Z
 url: https://github.com/astral-sh/ruff/issues/13608
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FR: Easier way to suppress errors/formatting for custom code block before imports
 
 ---
 
-_Issue opened by @dbarnett on 2024-10-02 19:26_
+_@dbarnett_
 
 Could there be a way to allowlist a code block at the top of a python file above imports, to avoid linter errors module-import-not-at-top-of-file (E402) and unsorted-imports (I001) as well as formatter changes?
 

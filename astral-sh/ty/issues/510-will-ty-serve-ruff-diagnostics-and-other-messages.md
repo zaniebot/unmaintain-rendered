@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-25T15:32:41Z
 updated_at: 2025-10-05T20:26:01Z
 url: https://github.com/astral-sh/ty/issues/510
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Will `ty` serve `ruff` diagnostics and other messages via a single language server?
 
 ---
 
-_Issue opened by @jdtsmith on 2025-05-25 15:32_
+_@jdtsmith_
 
 ### Question
 

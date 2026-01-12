@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-08-27T14:00:25Z
 updated_at: 2022-01-11T18:27:12Z
 url: https://github.com/clap-rs/clap/issues/2740
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Run debug_asserts during compile time for derives
 
 ---
 
-_Issue opened by @glittershark on 2021-08-27 14:00_
+_@glittershark_
 
 ### Please complete the following tasks
 

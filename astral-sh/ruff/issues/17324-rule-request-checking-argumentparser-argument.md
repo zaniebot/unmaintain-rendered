@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T19:52:51Z
 updated_at: 2025-04-10T06:23:41Z
 url: https://github.com/astral-sh/ruff/issues/17324
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule request: checking `ArgumentParser` argument names
 
 ---
 
-_Issue opened by @jamesbraza on 2025-04-09 19:52_
+_@jamesbraza_
 
 ### Summary
 

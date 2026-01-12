@@ -13,14 +13,14 @@ head: charlie/show
 created_at: 2024-01-09T03:03:01Z
 updated_at: 2024-01-09T14:59:29Z
 url: https://github.com/astral-sh/uv/pull/844
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Show available pre-releases in error hints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-09 03:03_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-09T05:37:13Z
 updated_at: 2024-08-29T05:20:17Z
 url: https://github.com/astral-sh/ruff/issues/12251
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `RUF100` should probably delete an entire comment `noqa` is part of
 
 ---
 
-_Issue opened by @yury-fedotov on 2024-07-09 05:37_
+_@yury-fedotov_
 
 I think it applies to all error codes, but let me give an example where I encountered that.
 

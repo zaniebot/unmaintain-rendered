@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T02:10:37Z
 updated_at: 2024-02-17T03:54:52Z
 url: https://github.com/astral-sh/uv/issues/1561
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv compile ignores git or http locations as constraints
 
 ---
 
-_Issue opened by @shayanhoshyari on 2024-02-17 02:10_
+_@shayanhoshyari_
 
 See the following minimal example
 

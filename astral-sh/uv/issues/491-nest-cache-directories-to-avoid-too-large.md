@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-22T19:06:20Z
 updated_at: 2024-07-09T12:37:34Z
 url: https://github.com/astral-sh/uv/issues/491
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Nest cache directories to avoid too large directories
 
 ---
 
-_Issue opened by @konstin on 2023-11-22 19:06_
+_@konstin_
 
 Instead of e.g. placing all pypi metadata in a directory, we should consider adding subdirectory levels to avoid large directories with multiple thousand entries that slow down fs operations.  cache and git e.g. do this by using the first to letter of the files as additional directory name.
 

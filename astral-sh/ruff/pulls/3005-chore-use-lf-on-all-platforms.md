@@ -12,14 +12,14 @@ head: git-attributes
 created_at: 2023-02-18T10:08:25Z
 updated_at: 2023-02-21T07:57:13Z
 url: https://github.com/astral-sh/ruff/pull/3005
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # chore: Use `LF` on all platforms 
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-02-18 10:08_
+_@MichaReiser_
 
 I worked on #2993 and ran into issues that the formatter tests are failing on Windows because `writeln!` emits `\n` as line terminator on all platforms, but `git` on Windows converted the line endings in the snapshots to `\r\n`.
 

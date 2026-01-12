@@ -12,14 +12,14 @@ head: dhruv/jupyter-json-consistency
 created_at: 2023-06-15T07:13:54Z
 updated_at: 2023-06-19T18:24:41Z
 url: https://github.com/astral-sh/ruff/pull/5114
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Maintain consistency when deserializing to JSON
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-15 07:13_
+_@dhruvmanila_
 
 ## Summary
 

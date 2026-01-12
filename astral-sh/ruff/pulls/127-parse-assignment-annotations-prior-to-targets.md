@@ -12,14 +12,14 @@ head: charlie/annotations
 created_at: 2022-09-08T02:34:33Z
 updated_at: 2022-09-08T02:35:39Z
 url: https://github.com/astral-sh/ruff/pull/127
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Parse assignment annotations prior to targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-08 02:34_
+_@charliermarsh_
 
 Resolves #123.
 

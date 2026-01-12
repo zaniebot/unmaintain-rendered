@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-11T12:03:11Z
 updated_at: 2026-01-11T13:02:57Z
 url: https://github.com/astral-sh/ty/issues/2444
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Autocomplete: don't suggest builtins that aren't supported in current python version
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-11 12:03_
+_@AndBoyS_
 
 ### Summary
 

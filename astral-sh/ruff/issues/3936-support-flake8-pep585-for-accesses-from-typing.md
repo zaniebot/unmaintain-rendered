@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-11T16:58:11Z
 updated_at: 2025-06-11T12:21:20Z
 url: https://github.com/astral-sh/ruff/issues/3936
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support flake8-pep585 for accesses from typing after import
 
 ---
 
-_Issue opened by @wookie184 on 2023-04-11 16:58_
+_@wookie184_
 
 Ruff catches all of these as `UP035` violations:
 ```python

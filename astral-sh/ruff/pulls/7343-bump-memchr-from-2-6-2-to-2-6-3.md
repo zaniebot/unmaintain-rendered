@@ -13,14 +13,14 @@ head: dependabot/cargo/memchr-2.6.3
 created_at: 2023-09-13T15:56:36Z
 updated_at: 2023-09-13T16:42:10Z
 url: https://github.com/astral-sh/ruff/pull/7343
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump memchr from 2.6.2 to 2.6.3
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-13 15:56_
+_@dependabot_
 
 Bumps [memchr](https://github.com/BurntSushi/memchr) from 2.6.2 to 2.6.3.
 <details>

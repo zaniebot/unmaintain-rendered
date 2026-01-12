@@ -14,14 +14,14 @@ head: lazy-scope-narrowing
 created_at: 2025-07-14T05:53:25Z
 updated_at: 2025-08-07T03:10:19Z
 url: https://github.com/astral-sh/ruff/pull/19321
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] improve lazy scope place lookup
 
 ---
 
-_Pull request opened by @mtshiba on 2025-07-14 05:53_
+_@mtshiba_
 
 ## Summary
 

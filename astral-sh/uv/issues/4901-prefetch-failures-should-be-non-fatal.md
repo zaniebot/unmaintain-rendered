@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-08T16:26:34Z
 updated_at: 2024-11-23T03:40:46Z
 url: https://github.com/astral-sh/uv/issues/4901
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Prefetch failures should be non-fatal
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-08 16:26_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/4900#issuecomment-2214420150
 

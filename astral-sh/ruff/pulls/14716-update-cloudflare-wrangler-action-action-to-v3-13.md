@@ -13,14 +13,14 @@ head: renovate/cloudflare-wrangler-action-3.x
 created_at: 2024-12-02T01:05:22Z
 updated_at: 2024-12-02T01:18:44Z
 url: https://github.com/astral-sh/ruff/pull/14716
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update cloudflare/wrangler-action action to v3.13.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 01:05_
+_@renovate_
 
 This PR contains the following updates:
 

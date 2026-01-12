@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T22:29:37Z
 updated_at: 2024-11-08T22:50:06Z
 url: https://github.com/astral-sh/ruff/issues/14212
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ignores `# fmt: off` for `E501`
 
 ---
 
-_Issue opened by @beltekylevi on 2024-11-08 22:29_
+_@beltekylevi_
 
 A minimal code snippet that reproduces the bug.
 ```py

@@ -13,14 +13,14 @@ head: docs-rule-testing
 created_at: 2023-05-27T23:27:15Z
 updated_at: 2023-05-28T23:15:32Z
 url: https://github.com/astral-sh/ruff/pull/4690
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add contributing docs specific to rule-testing patterns
 
 ---
 
-_Pull request opened by @jlaneve on 2023-05-27 23:27_
+_@jlaneve_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

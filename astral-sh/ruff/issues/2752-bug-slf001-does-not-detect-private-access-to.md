@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T23:47:44Z
 updated_at: 2023-02-11T00:23:24Z
 url: https://github.com/astral-sh/ruff/issues/2752
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [bug?] SLF001 does not detect private access to function return value
 
 ---
 
-_Issue opened by @smackesey on 2023-02-10 23:47_
+_@smackesey_
 
 ```
 foo._bar  # SLF001 error

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T14:50:24Z
 updated_at: 2024-07-24T14:31:00Z
 url: https://github.com/astral-sh/uv/issues/5222
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Write integration guide for GitHub Actions
 
 ---
 
-_Issue opened by @zanieb on 2024-07-19 14:50_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

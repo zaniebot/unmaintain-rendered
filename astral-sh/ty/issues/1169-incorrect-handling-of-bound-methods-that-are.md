@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-11T08:41:09Z
 updated_at: 2026-01-09T02:49:37Z
 url: https://github.com/astral-sh/ty/issues/1169
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect handling of bound methods that are overloaded on the type of `self`
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-11 08:41_
+_@sharkdp_
 
 ### Summary
 

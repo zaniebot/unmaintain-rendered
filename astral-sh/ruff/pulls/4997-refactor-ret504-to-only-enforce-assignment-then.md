@@ -13,14 +13,14 @@ head: charlie/return
 created_at: 2023-06-10T02:42:45Z
 updated_at: 2023-06-10T04:05:03Z
 url: https://github.com/astral-sh/ruff/pull/4997
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Refactor `RET504` to only enforce assignment-then-return pattern
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-10 02:42_
+_@charliermarsh_
 
 ## Summary
 

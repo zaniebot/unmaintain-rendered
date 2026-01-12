@@ -13,14 +13,14 @@ head: renovate/syn-2.x-lockfile
 created_at: 2025-04-28T00:17:56Z
 updated_at: 2025-04-28T00:30:54Z
 url: https://github.com/astral-sh/uv/pull/13146
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Update Rust crate syn to v2.0.101
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 00:17_
+_@renovate_
 
 This PR contains the following updates:
 

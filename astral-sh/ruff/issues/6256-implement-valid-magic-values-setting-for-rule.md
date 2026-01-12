@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-01T21:22:35Z
 updated_at: 2023-12-04T22:20:47Z
 url: https://github.com/astral-sh/ruff/issues/6256
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Implement `valid-magic-values` setting for rule PLR2004
 
 ---
 
-_Issue opened by @dzh-ad on 2023-08-01 21:22_
+_@dzh-ad_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

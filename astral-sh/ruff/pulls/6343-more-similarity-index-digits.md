@@ -13,14 +13,14 @@ head: more_format_dev_digits
 created_at: 2023-08-04T14:40:35Z
 updated_at: 2023-08-04T20:20:14Z
 url: https://github.com/astral-sh/ruff/pull/6343
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # More similarity index digits
 
 ---
 
-_Pull request opened by @konstin on 2023-08-04 14:40_
+_@konstin_
 
 **Summary** We were at similarity index 0.998 for django, we need more decimal places, now we're at 0.99779.
 

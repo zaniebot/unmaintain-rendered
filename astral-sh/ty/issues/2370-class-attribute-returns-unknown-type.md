@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T19:34:03Z
 updated_at: 2026-01-06T20:27:52Z
 url: https://github.com/astral-sh/ty/issues/2370
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Class attribute returns Unknown | type
 
 ---
 
-_Issue opened by @merlinz01 on 2026-01-06 19:34_
+_@merlinz01_
 
 ### Summary
 

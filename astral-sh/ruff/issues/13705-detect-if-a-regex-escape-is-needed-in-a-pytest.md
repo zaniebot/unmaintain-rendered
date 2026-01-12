@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T14:59:25Z
 updated_at: 2024-12-18T11:53:49Z
 url: https://github.com/astral-sh/ruff/issues/13705
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # detect if a regex escape is needed in a pytest match statement
 
 ---
 
-_Issue opened by @nstarman on 2024-10-10 14:59_
+_@nstarman_
 
 Sometimes `re.escape` are needed in pytest for `match=...` arguments.
 Then the string is modified and the regex escape is no longer needed.

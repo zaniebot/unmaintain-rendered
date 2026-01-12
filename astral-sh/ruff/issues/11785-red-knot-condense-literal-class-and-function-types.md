@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T21:51:22Z
 updated_at: 2024-09-03T07:23:30Z
 url: https://github.com/astral-sh/ruff/issues/11785
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] condense literal class and function types
 
 ---
 
-_Issue opened by @carljm on 2024-06-06 21:51_
+_@carljm_
 
 Display e.g. `Literal[C1, C2]`, not `Literal[C1] | Literal[C2]`
 

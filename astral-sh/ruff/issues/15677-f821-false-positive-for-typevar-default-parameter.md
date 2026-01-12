@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T22:12:10Z
 updated_at: 2025-01-22T23:04:22Z
 url: https://github.com/astral-sh/ruff/issues/15677
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F821 false positive for `TypeVar` `default` parameter unquoted forward reference in type stub (.pyi)
 
 ---
 
-_Issue opened by @x11x on 2025-01-22 22:12_
+_@x11x_
 
 ### Description
 

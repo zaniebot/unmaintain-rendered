@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-29T00:24:21Z
 updated_at: 2025-01-07T20:10:48Z
 url: https://github.com/astral-sh/uv/issues/2062
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv pip and python -m pip resolve different versions of tensorflow in pyhf developer environment
 
 ---
 
-_Issue opened by @matthewfeickert on 2024-02-29 00:24_
+_@matthewfeickert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

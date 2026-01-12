@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T08:59:16Z
 updated_at: 2024-07-25T21:47:00Z
 url: https://github.com/astral-sh/ruff/issues/12487
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff check --fix isort rule I001 removes comments
 
 ---
 
-_Issue opened by @kfot on 2024-07-24 08:59_
+_@kfot_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

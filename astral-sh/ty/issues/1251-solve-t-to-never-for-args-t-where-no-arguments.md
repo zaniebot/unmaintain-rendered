@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T03:28:29Z
 updated_at: 2026-01-09T02:57:50Z
 url: https://github.com/astral-sh/ty/issues/1251
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Solve `T` to `Never` for `*args: T` where no arguments are passed for `*args`
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-25 03:28_
+_@KotlinIsland_
 
 ### Summary
 

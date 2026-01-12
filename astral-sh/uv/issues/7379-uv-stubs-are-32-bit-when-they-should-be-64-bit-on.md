@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T21:03:34Z
 updated_at: 2024-11-12T17:50:31Z
 url: https://github.com/astral-sh/uv/issues/7379
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv stubs are 32 bit, when they should be 64 bit, on windows
 
 ---
 
-_Issue opened by @doctorpangloss on 2024-09-13 21:03_
+_@doctorpangloss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

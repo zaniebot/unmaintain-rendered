@@ -12,14 +12,14 @@ head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
 updated_at: 2026-01-09T16:35:09Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # WIP: Ruffen docs prototype
 
 ---
 
-_Pull request opened by @amyreese on 2026-01-09 01:26_
+_@amyreese_
 
 Issue #3792
 

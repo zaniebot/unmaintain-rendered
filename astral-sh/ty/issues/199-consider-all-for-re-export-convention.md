@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-14T09:55:10Z
 updated_at: 2025-05-07T16:12:44Z
 url: https://github.com/astral-sh/ty/issues/199
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Consider `__all__` for re-export convention
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-14 09:55_
+_@dhruvmanila_
 
 ### Description
 

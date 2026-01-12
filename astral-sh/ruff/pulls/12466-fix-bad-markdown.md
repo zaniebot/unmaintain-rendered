@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-07-22T21:21:15Z
 updated_at: 2024-07-22T23:11:55Z
 url: https://github.com/astral-sh/ruff/pull/12466
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # (Fix bad markdown)
 
 ---
 
-_Pull request opened by @thejcannon on 2024-07-22 21:21_
+_@thejcannon_
 
 (Just saw this so edited)
 See https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#import-categorization

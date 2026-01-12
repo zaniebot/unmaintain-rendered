@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-28T16:02:22Z
 updated_at: 2023-11-28T20:38:27Z
 url: https://github.com/astral-sh/ruff/issues/8870
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff formatting not working if `match` statements exists anywhere (vscode; vscode extension; ipynb)
 
 ---
 
-_Issue opened by @Julian-J-S on 2023-11-28 16:02_
+_@Julian-J-S_
 
 # Problem
 

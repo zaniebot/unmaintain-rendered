@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2024-08-05T02:23:05Z
 updated_at: 2024-08-05T02:36:25Z
 url: https://github.com/astral-sh/ruff/pull/12673
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add preview note to `unnecessary-comprehension-in-call`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 02:23_
+_@charliermarsh_
 
 _No description provided._
 

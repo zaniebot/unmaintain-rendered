@@ -13,14 +13,14 @@ head: zsol/jj-knlrolpvxukt
 created_at: 2025-11-24T17:08:38Z
 updated_at: 2025-12-01T15:29:56Z
 url: https://github.com/astral-sh/uv/pull/16837
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Attach subcommand to User-Agent string
 
 ---
 
-_Pull request opened by @zsol on 2025-11-24 17:08_
+_@zsol_
 
 ## Summary
 

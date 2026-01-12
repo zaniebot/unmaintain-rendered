@@ -12,14 +12,14 @@ head: beta_rebump
 created_at: 2025-12-16T19:40:59Z
 updated_at: 2025-12-16T19:57:44Z
 url: https://github.com/astral-sh/ty/pull/1954
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump version to 0.0.2 (beta release)
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-16 19:40_
+_@oconnor663_
 
 The 0.0.1 release ran into a previously-existing-but-deleted artifact on PyPI. Re-bump and re-release.
 

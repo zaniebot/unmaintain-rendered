@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-03-26T15:29:50Z
 updated_at: 2018-07-22T02:41:02Z
 url: https://github.com/clap-rs/clap/issues/459
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for using enums in place of strings
 
 ---
 
-_Issue opened by @hgrecco on 2016-03-26 15:29_
+_@hgrecco_
 
 I have been using `clap-rs` for a while now and I find it very useful. The only annoying thing is that most things are `stringly typed`. For example, notice how we need to check for strings in the following example:
 

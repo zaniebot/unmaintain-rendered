@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-08T16:52:23Z
 updated_at: 2024-12-10T07:14:19Z
 url: https://github.com/astral-sh/ruff/issues/14837
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Stack overflow, when checking 1000 files at once
 
 ---
 
-_Issue opened by @qarmin on 2024-12-08 16:52_
+_@qarmin_
 
 ruff 269e47be961d3eb95c0351e8f7006b71e083a6a4
 

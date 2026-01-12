@@ -13,14 +13,14 @@ head: fix/16133-version-bump-preserve-comments
 created_at: 2025-10-06T18:45:11Z
 updated_at: 2025-10-09T16:07:01Z
 url: https://github.com/astral-sh/uv/pull/16141
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # Preserve comments on version bump
 
 ---
 
-_Pull request opened by @assadyousuf on 2025-10-06 18:45_
+_@assadyousuf_
 
 ## Summary
 Fixes [1633](https://github.com/astral-sh/uv/issues/16133). Preserves comments preceding "version = ..." line when uv version --bump is ran

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-12T15:34:12Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1066
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # AppSettings::AllowLeadingHyphen makes app silence unknown unexpected arguments
 
 ---
 
-_Issue opened by @axelchalon on 2017-10-12 15:34_
+_@axelchalon_
 
 _rustc 1.18.0 / clap 2.26.0_
 

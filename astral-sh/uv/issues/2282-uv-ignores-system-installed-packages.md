@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T15:52:19Z
 updated_at: 2025-01-28T07:33:16Z
 url: https://github.com/astral-sh/uv/issues/2282
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv ignores system installed packages
 
 ---
 
-_Issue opened by @RonNabuurs on 2024-03-07 15:52_
+_@RonNabuurs_
 
 While trying to implement uv in my current pipeline I came across an issue regarding dependencies. 
 

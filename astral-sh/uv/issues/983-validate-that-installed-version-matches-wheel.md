@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T00:04:59Z
 updated_at: 2024-01-19T05:48:56Z
 url: https://github.com/astral-sh/uv/issues/983
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Validate that installed version matches wheel filename
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-19 00:04_
+_@charliermarsh_
 
 If you create a wheel with a valid filename, but a version that doesn't match the actual version it contains, we don't error.
 

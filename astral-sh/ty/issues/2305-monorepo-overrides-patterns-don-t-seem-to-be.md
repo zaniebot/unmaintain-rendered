@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T17:44:33Z
 updated_at: 2026-01-06T16:41:16Z
 url: https://github.com/astral-sh/ty/issues/2305
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # monorepo overrides patterns don't seem to be reported for extension opened to sub-repo
 
 ---
 
-_Issue opened by @VerdantFox on 2026-01-02 17:44_
+_@VerdantFox_
 
 ### Summary
 

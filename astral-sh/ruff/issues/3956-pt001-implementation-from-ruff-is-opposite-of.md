@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-13T08:40:44Z
 updated_at: 2023-04-13T08:44:11Z
 url: https://github.com/astral-sh/ruff/issues/3956
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PT001 implementation from ruff is opposite of PT001 from flake8-pytest-style
 
 ---
 
-_Issue opened by @ssbarnea on 2023-04-13 08:40_
+_@ssbarnea_
 
 Apparently ruff implementation of PT001 is the exact opposite of flake8 one. Ruff auto-fix is breaking flake8 rule. See https://github.com/m-burst/flake8-pytest-style/blob/master/docs/rules/PT001.md
 

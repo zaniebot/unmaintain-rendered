@@ -13,14 +13,14 @@ head: charlie/script
 created_at: 2023-10-21T18:28:35Z
 updated_at: 2023-10-21T18:39:32Z
 url: https://github.com/astral-sh/ruff/pull/8110
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update versions in format benchmark script
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-21 18:28_
+_@charliermarsh_
 
 _No description provided._
 

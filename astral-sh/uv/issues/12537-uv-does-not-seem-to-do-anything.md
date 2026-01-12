@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T21:14:30Z
 updated_at: 2025-04-01T23:14:43Z
 url: https://github.com/astral-sh/uv/issues/12537
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv does not seem to do anything
 
 ---
 
-_Issue opened by @abstracted1 on 2025-03-28 21:14_
+_@abstracted1_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T04:27:15Z
 updated_at: 2025-07-31T14:20:50Z
 url: https://github.com/astral-sh/uv/issues/14883
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Hash mismatch for packages in local index
 
 ---
 
-_Issue opened by @iwinux on 2025-07-25 04:27_
+_@iwinux_
 
 ## Problem
 

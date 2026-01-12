@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-04T10:42:40Z
 updated_at: 2025-01-04T14:54:26Z
 url: https://github.com/astral-sh/ruff/issues/15249
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Long list formatted into each element occupies one row
 
 ---
 
-_Issue opened by @paoxiaode on 2025-01-04 10:42_
+_@paoxiaode_
 
 Dear Developers, I am facing the same problem as this one in Ruff https://github.com/psf/black/issues/3935
 

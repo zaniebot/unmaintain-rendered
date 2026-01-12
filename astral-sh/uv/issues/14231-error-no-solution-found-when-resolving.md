@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T08:31:17Z
 updated_at: 2025-07-01T15:48:49Z
 url: https://github.com/astral-sh/uv/issues/14231
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # error: No solution found when resolving dependencies for split
 
 ---
 
-_Issue opened by @MarkusSintonen on 2025-06-24 08:31_
+_@MarkusSintonen_
 
 ### Summary
 

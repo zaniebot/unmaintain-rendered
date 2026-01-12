@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T10:31:42Z
 updated_at: 2025-02-03T09:27:55Z
 url: https://github.com/astral-sh/ruff/issues/15870
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # feature request: quick fix all occurences in file
 
 ---
 
-_Issue opened by @beauxq on 2025-02-01 10:31_
+_@beauxq_
 
 ### Description
 

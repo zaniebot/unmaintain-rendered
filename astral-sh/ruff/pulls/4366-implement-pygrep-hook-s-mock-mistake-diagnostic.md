@@ -13,14 +13,14 @@ head: charlie/pygrep
 created_at: 2023-05-11T03:18:29Z
 updated_at: 2023-05-11T03:54:05Z
 url: https://github.com/astral-sh/ruff/pull/4366
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement pygrep-hook's Mock-mistake diagnostic
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 03:18_
+_@charliermarsh_
 
 Adds a new rule, `PGH005`, to close out `pygrep-hooks`.
 

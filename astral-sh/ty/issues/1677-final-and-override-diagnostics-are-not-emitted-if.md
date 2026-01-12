@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T15:51:25Z
 updated_at: 2025-12-03T12:51:37Z
 url: https://github.com/astral-sh/ty/issues/1677
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `@final` and `@override` diagnostics are not emitted if there are multiple reachable definitions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:51_
+_@AlexWaygood_
 
 ### Summary
 

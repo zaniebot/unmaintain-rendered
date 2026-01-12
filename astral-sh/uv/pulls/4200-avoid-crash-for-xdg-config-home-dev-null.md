@@ -13,14 +13,14 @@ head: charlie/toml
 created_at: 2024-06-10T16:05:25Z
 updated_at: 2024-06-10T17:36:30Z
 url: https://github.com/astral-sh/uv/pull/4200
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Avoid crash for `XDG_CONFIG_HOME=/dev/null`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 16:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-02-01T00:25:35Z
 updated_at: 2018-08-02T03:30:17Z
 url: https://github.com/clap-rs/clap/issues/1158
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # requires_all does not display all missing requirements
 
 ---
 
-_Issue opened by @smcmurray on 2018-02-01 00:25_
+_@smcmurray_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

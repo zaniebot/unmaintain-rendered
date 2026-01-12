@@ -13,14 +13,14 @@ head: zb/availability-range
 created_at: 2024-08-15T14:35:20Z
 updated_at: 2024-08-15T15:26:26Z
 url: https://github.com/astral-sh/uv/pull/6114
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Use availability range display type in formatting
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 14:35_
+_@zanieb_
 
 We're using the wrong type here, which never mattered since it was a single bound but will matter in the future :)
 

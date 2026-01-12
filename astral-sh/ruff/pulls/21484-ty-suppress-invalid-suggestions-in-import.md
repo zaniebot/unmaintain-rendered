@@ -14,14 +14,14 @@ head: fix-import-alias-suggestions
 created_at: 2025-11-16T20:11:25Z
 updated_at: 2025-11-17T14:58:49Z
 url: https://github.com/astral-sh/ruff/pull/21484
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] suppress invalid suggestions in import statements
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-11-16 20:11_
+_@RasmusNygren_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

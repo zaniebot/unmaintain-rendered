@@ -13,14 +13,14 @@ head: dhruv/token-kind-keywords
 created_at: 2024-05-16T11:38:32Z
 updated_at: 2024-05-17T04:56:49Z
 url: https://github.com/astral-sh/ruff/pull/11445
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Include soft keywords for `is_keyword` check
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-16 11:38_
+_@dhruvmanila_
 
 ## Summary
 

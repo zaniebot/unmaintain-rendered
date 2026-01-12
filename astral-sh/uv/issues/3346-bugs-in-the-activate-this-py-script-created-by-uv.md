@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T13:51:20Z
 updated_at: 2024-05-04T23:30:01Z
 url: https://github.com/astral-sh/uv/issues/3346
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Bugs in the activate_this.py script created by uv venv
 
 ---
 
-_Issue opened by @pfmoore on 2024-05-03 13:51_
+_@pfmoore_
 
 If I do `uv venv`, the file `.venv/Scripts/activate_this.py` contains errors:
 

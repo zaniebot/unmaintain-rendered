@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T06:03:14Z
 updated_at: 2024-04-12T01:47:14Z
 url: https://github.com/astral-sh/ruff/issues/10159
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Unable to build ruff on aarch64 alpine docker
 
 ---
 
-_Issue opened by @matejsp on 2024-02-29 06:03_
+_@matejsp_
 
 I am getting undefined reference to `getauxval' using ruff 0.2.2 and rust 1.75.0
 

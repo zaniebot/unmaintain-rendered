@@ -11,14 +11,14 @@ head: map-api-PathCompleter
 created_at: 2025-03-07T12:26:30Z
 updated_at: 2025-04-16T12:18:58Z
 url: https://github.com/clap-rs/clap/pull/5940
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: added an map api for pathCompleter
 
 ---
 
-_Pull request opened by @Gmin2 on 2025-03-07 12:26_
+_@Gmin2_
 
 A `map` API to `PathCompleter` and added its test, the `map` method  allows customization of completion candidates after filtering, enabling use cases like highlighting directories, labeling etc
 

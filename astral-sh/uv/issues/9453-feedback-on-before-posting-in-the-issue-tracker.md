@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T21:19:03Z
 updated_at: 2025-05-23T00:51:27Z
 url: https://github.com/astral-sh/uv/issues/9453
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Feedback on "Before posting in the issue tracker"
 
 ---
 
-_Issue opened by @zanieb on 2024-11-26 21:19_
+_@zanieb_
 
 Hey! We're giving https://github.com/astral-sh/uv/issues/9452 a try to help guide people towards common issues and set expectations for interactions in the issue tracker.
 

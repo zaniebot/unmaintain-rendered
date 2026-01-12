@@ -13,14 +13,14 @@ head: charlie/imp
 created_at: 2024-02-02T04:24:10Z
 updated_at: 2024-02-02T19:37:21Z
 url: https://github.com/astral-sh/ruff/pull/9775
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Track top-level module imports in the semantic model
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 04:24_
+_@charliermarsh_
 
 ## Summary
 

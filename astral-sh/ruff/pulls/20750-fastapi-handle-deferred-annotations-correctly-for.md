@@ -14,14 +14,14 @@ head: defer-fast
 created_at: 2025-10-07T16:40:47Z
 updated_at: 2025-12-10T18:03:54Z
 url: https://github.com/astral-sh/ruff/pull/20750
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`fastapi`] Handle deferred annotations correctly for `FAST001` and `FAST003`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-07 16:40_
+_@dylwil3_
 
 Progress towards #20747
 

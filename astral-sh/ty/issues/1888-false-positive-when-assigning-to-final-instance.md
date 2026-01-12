@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T13:10:23Z
 updated_at: 2025-12-16T01:25:59Z
 url: https://github.com/astral-sh/ty/issues/1888
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positive when assigning to Final instance attribute in __init__ and adding generics
 
 ---
 
-_Issue opened by @AndreuCodina on 2025-12-15 13:10_
+_@AndreuCodina_
 
 ### Summary
 

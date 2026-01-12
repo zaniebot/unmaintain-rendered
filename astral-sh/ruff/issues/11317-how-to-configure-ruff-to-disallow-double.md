@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T08:21:17Z
 updated_at: 2024-11-10T04:53:45Z
 url: https://github.com/astral-sh/ruff/issues/11317
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # How to configure Ruff to disallow double assignments in single lines in Python?
 
 ---
 
-_Issue opened by @javinba on 2024-05-07 08:21_
+_@javinba_
 
 I'm looking for a way to configure Ruff to disallow double assignments in single lines, like this:
 

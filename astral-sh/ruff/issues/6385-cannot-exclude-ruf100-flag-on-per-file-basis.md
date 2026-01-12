@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-07T10:59:07Z
 updated_at: 2023-08-08T07:38:26Z
 url: https://github.com/astral-sh/ruff/issues/6385
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Cannot exclude RUF100 flag on per file basis 
 
 ---
 
-_Issue opened by @mmarras on 2023-08-07 10:59_
+_@mmarras_
 
 I just happen to comment out a file completly, I get many `RUF100 [*] Unused "noqa" directive (unused: "YXXX")` flags. In this project, due to ruff pre-commit I am only supposed to do a git commit if there are no ruff errors: so I added `ruff: noqa: RUF100` at the top, but it is not honored. 
 

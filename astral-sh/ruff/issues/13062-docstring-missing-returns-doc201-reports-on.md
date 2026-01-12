@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T18:35:46Z
 updated_at: 2024-08-27T16:00:20Z
 url: https://github.com/astral-sh/ruff/issues/13062
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # docstring-missing-returns (DOC201) reports on explicit `None` returns in bodies that return `None` only
 
 ---
 
-_Issue opened by @tjkuson on 2024-08-22 18:35_
+_@tjkuson_
 
 Running `ruff check --select DOC201 --preview --isolated` on
 

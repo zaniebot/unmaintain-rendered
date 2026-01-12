@@ -13,14 +13,14 @@ head: Fix_build
 created_at: 2023-09-16T14:44:03Z
 updated_at: 2023-09-16T14:55:11Z
 url: https://github.com/astral-sh/ruff/pull/7437
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix build
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-16 14:44_
+_@MichaReiser_
 
 
 ## Summary

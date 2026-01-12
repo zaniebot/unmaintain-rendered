@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T23:44:43Z
 updated_at: 2025-12-02T18:15:11Z
 url: https://github.com/astral-sh/ty/issues/1713
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect bound method signature involving `Self`
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-12-01 23:44_
+_@ibraheemdev_
 
 ### Summary
 

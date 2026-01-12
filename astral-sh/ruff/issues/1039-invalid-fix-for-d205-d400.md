@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-04T16:50:48Z
 updated_at: 2022-12-04T18:56:52Z
 url: https://github.com/astral-sh/ruff/issues/1039
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Invalid fix for D205+D400
 
 ---
 
-_Issue opened by @serjflint on 2022-12-04 16:50_
+_@serjflint_
 
 pyproject.toml
 

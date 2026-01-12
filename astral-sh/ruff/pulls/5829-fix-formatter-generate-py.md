@@ -12,14 +12,14 @@ head: fix-formatter-generate-script
 created_at: 2023-07-17T10:06:34Z
 updated_at: 2023-07-17T11:00:44Z
 url: https://github.com/astral-sh/ruff/pull/5829
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix formatter `generate.py`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-17 10:06_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

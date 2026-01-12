@@ -12,14 +12,14 @@ head: stable-rust-in-ci
 created_at: 2023-01-20T10:18:15Z
 updated_at: 2023-01-20T12:41:57Z
 url: https://github.com/astral-sh/ruff/pull/2019
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Change CI to use MSRV for cargo test and build
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-20 10:18_
+_@not-my-profile_
 
 This was apparently accidentally changed in
 79ca66ace5ebba10e94cda9925d19fdfc50ac327.

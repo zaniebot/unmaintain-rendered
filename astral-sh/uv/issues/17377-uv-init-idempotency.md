@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T13:26:28Z
 updated_at: 2026-01-09T13:26:28Z
 url: https://github.com/astral-sh/uv/issues/17377
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv init idempotency
 
 ---
 
-_Issue opened by @ginolegigot on 2026-01-09 13:26_
+_@ginolegigot_
 
 ### Summary
 

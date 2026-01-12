@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-17T16:01:17Z
 updated_at: 2023-12-20T05:11:27Z
 url: https://github.com/astral-sh/ruff/issues/9170
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Undocumented formatter deviation - empty lines are removed from block beginning
 
 ---
 
-_Issue opened by @jond01 on 2023-12-17 16:01_
+_@jond01_
 
 * A minimal code snippet that reproduces the bug:
 Original `.py` file:

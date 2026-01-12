@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-06T13:13:39Z
 updated_at: 2020-09-15T09:26:43Z
 url: https://github.com/clap-rs/clap/issues/572
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Can we have a `Arg::validate_with(self, Box<Validator>) -> Self` function?
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-07-06 13:13_
+_@matthiasbeyer_
 
 I have a use-case where it would be nice to be able to pass custom data to the validator (mainly for passing the error message).
 

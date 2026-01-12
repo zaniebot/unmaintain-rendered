@@ -14,14 +14,14 @@ head: micha/logging
 created_at: 2025-08-18T10:29:22Z
 updated_at: 2025-08-18T10:56:07Z
 url: https://github.com/astral-sh/ruff/pull/19965
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Speedup tracing checks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-18 10:29_
+_@MichaReiser_
 
 ## Summary
 

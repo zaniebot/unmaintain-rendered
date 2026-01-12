@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T14:00:05Z
 updated_at: 2025-10-17T14:00:05Z
 url: https://github.com/astral-sh/ruff/issues/20939
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Explore the 'Marker' idea from the skip formatter
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-17 14:00_
+_@MichaReiser_
 
 Ruff's formatter is based on the same algorithm as Prettier. 
 

@@ -13,14 +13,14 @@ head: pip_build_envs
 created_at: 2024-10-22T19:49:16Z
 updated_at: 2024-10-30T03:23:25Z
 url: https://github.com/astral-sh/ruff/pull/13881
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # fix issues in discovering ruff in pip build environments
 
 ---
 
-_Pull request opened by @jsurany on 2024-10-22 19:49_
+_@jsurany_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

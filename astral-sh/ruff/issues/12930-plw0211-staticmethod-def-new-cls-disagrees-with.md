@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T13:45:54Z
 updated_at: 2024-08-18T15:30:24Z
 url: https://github.com/astral-sh/ruff/issues/12930
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PLW0211: `@staticmethod ; def __new__(cls, ...)` disagrees with the Python docs
 
 ---
 
-_Issue opened by @cclauss on 2024-08-16 13:45_
+_@cclauss_
 
 ```
 ruff check --select=PLW0211 - <<EOF

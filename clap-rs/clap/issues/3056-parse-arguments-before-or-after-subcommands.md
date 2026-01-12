@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-02T21:14:56Z
 updated_at: 2022-01-11T18:27:28Z
 url: https://github.com/clap-rs/clap/issues/3056
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Parse arguments before or after subcommands ambivalently
 
 ---
 
-_Issue opened by @9999years on 2021-12-02 21:14_
+_@9999years_
 
 ### Please complete the following tasks
 

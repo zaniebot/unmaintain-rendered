@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-18T19:03:50Z
 updated_at: 2025-04-11T18:31:21Z
 url: https://github.com/astral-sh/uv/issues/10738
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # Dependency sorting issue in pyproject.toml
 
 ---
 
-_Issue opened by @Kavan72 on 2025-01-18 19:03_
+_@Kavan72_
 
 Related issues
 

@@ -13,14 +13,14 @@ head: renovate/indicatif-0.x-lockfile
 created_at: 2025-11-03T01:06:17Z
 updated_at: 2025-11-03T01:52:03Z
 url: https://github.com/astral-sh/uv/pull/16561
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Update Rust crate indicatif to v0.18.2
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 01:06_
+_@renovate_
 
 This PR contains the following updates:
 

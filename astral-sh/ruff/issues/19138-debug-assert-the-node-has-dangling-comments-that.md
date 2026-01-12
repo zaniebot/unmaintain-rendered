@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-04T05:34:15Z
 updated_at: 2025-10-07T16:32:01Z
 url: https://github.com/astral-sh/ruff/issues/19138
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Debug assert `The node has dangling comments that need to be formatted manually. Add the special dangling comments handling to fmt_fields.`
 
 ---
 
-_Issue opened by @qarmin on 2025-07-04 05:34_
+_@qarmin_
 
 File content(at the bottom should be attached raw, not formatted file - github removes some non-printable characters, so copying from here may not work):
 ```

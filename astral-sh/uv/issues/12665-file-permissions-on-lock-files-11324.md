@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T09:29:19Z
 updated_at: 2025-04-04T09:29:19Z
 url: https://github.com/astral-sh/uv/issues/12665
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # File permissions on lock files (#11324)
 
 ---
 
-_Issue opened by @Lalufu on 2025-04-04 09:29_
+_@Lalufu_
 
 ### Question
 

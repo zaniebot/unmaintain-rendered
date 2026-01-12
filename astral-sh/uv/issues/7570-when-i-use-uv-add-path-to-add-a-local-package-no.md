@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T02:36:45Z
 updated_at: 2024-09-20T08:53:27Z
 url: https://github.com/astral-sh/uv/issues/7570
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # When I use `uv add <path>` to add a local package, no errors appear, but the installation is not successful.
 
 ---
 
-_Issue opened by @vvandk on 2024-09-20 02:36_
+_@vvandk_
 
 When I use `uv add <path>` to add a local package, no errors appear, but the installation is not successful.
 ```

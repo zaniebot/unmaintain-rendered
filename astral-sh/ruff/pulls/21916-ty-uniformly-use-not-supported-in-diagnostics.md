@@ -14,14 +14,14 @@ head: diagnostics-uniform-not-supported
 created_at: 2025-12-11T14:02:33Z
 updated_at: 2025-12-11T15:03:56Z
 url: https://github.com/astral-sh/ruff/pull/21916
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Uniformly use "not supported" in diagnostics
 
 ---
 
-_Pull request opened by @lucach on 2025-12-11 14:02_
+_@lucach_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-12T16:16:51Z
 updated_at: 2025-05-27T08:03:06Z
 url: https://github.com/astral-sh/uv/issues/9845
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Read `UV_INDEX_<NAME>_` credentials during `uv publish`
 
 ---
 
-_Issue opened by @sfriedowitz on 2024-12-12 16:16_
+_@sfriedowitz_
 
 I was very excited to see the functionality with `uv publish --index <index>` come out in version `0.5.8` with this PR https://github.com/astral-sh/uv/pull/9694, but I don't think it behaves quite as I expected. It does not appear that publishing reads the `UV_INDEX_MYINDEX_USERNAME` and `UV_INDEX_MYINDEX_PASSWORD` for credentials when publishing.
 

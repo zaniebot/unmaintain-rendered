@@ -13,14 +13,14 @@ head: typvarsolve
 created_at: 2025-08-17T01:22:12Z
 updated_at: 2026-01-09T05:28:53Z
 url: https://github.com/astral-sh/ruff/pull/19946
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Solve unbound typevar to Unknown & UpperBound
 
 ---
 
-_Pull request opened by @hauntsaninja on 2025-08-17 01:22_
+_@hauntsaninja_
 
 Was just playing around with intersections. I think this is a thing that makes sense and has also come up in real life.
 

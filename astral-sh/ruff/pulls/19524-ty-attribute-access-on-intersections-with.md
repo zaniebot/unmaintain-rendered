@@ -14,14 +14,14 @@ head: david/map-with-boundness
 created_at: 2025-07-24T08:30:46Z
 updated_at: 2025-07-25T12:56:16Z
 url: https://github.com/astral-sh/ruff/pull/19524
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Attribute access on intersections with negative parts
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-24 08:30_
+_@sharkdp_
 
 ## Summary
 

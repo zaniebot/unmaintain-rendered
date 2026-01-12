@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T13:06:58Z
 updated_at: 2025-08-27T15:56:18Z
 url: https://github.com/astral-sh/uv/issues/7496
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv exports incomplete requirements if using external packages
 
 ---
 
-_Issue opened by @Mateuscvieira on 2024-09-18 13:06_
+_@Mateuscvieira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

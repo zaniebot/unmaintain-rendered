@@ -14,14 +14,14 @@ head: capabilities-check-for-clear_diagnostics
 created_at: 2025-10-20T11:08:01Z
 updated_at: 2025-10-20T17:46:53Z
 url: https://github.com/astral-sh/ruff/pull/20989
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`ty`] Add capabilities check for `clear_diagnostics`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-20 11:08_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

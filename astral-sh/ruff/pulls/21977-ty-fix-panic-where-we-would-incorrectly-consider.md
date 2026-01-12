@@ -14,14 +14,14 @@ head: alex/panicky-overloads
 created_at: 2025-12-14T16:36:51Z
 updated_at: 2025-12-15T18:23:57Z
 url: https://github.com/astral-sh/ruff/pull/21977
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Fix panic where we would incorrectly consider overloads in another file as belonging to a function in the file being checked
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-14 16:36_
+_@AlexWaygood_
 
 ## Summary
 

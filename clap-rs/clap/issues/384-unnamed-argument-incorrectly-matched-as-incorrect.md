@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-25T06:53:30Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/384
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Unnamed argument incorrectly matched as incorrect subcommand if prefix
 
 ---
 
-_Issue opened by @b333z on 2016-01-25 06:53_
+_@b333z_
 
 Running first example from readme.md, supplying an <INPUT> argument, that is prefixed with the text of a subcommand is being matched as an incorrect sub command:
 

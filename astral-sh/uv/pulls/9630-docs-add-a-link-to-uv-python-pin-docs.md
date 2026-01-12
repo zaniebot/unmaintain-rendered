@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2024-12-04T06:54:15Z
 updated_at: 2024-12-04T17:11:04Z
 url: https://github.com/astral-sh/uv/pull/9630
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # docs: add a link to `uv python pin` docs
 
 ---
 
-_Pull request opened by @nonZero on 2024-12-04 06:54_
+_@nonZero_
 
 The current docs are not clear for those who are not fimiliar with the 'pin' commnad.  Adding a link instead of adding more instructions.
 

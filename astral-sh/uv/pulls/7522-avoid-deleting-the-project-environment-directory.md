@@ -13,14 +13,14 @@ head: zb/fix-project-env-existing
 created_at: 2024-09-18T23:32:28Z
 updated_at: 2024-09-19T11:21:06Z
 url: https://github.com/astral-sh/uv/pull/7522
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Avoid deleting the project environment directory if it is not a virtual environment
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 23:32_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7519
 

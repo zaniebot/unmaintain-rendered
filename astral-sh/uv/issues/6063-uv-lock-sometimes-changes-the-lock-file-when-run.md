@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T17:24:04Z
 updated_at: 2024-08-15T00:00:16Z
 url: https://github.com/astral-sh/uv/issues/6063
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv lock` sometimes changes the lock file when run for a second time
 
 ---
 
-_Issue opened by @BurntSushi on 2024-08-13 17:24_
+_@BurntSushi_
 
 I believe it is true that this should never happen. To reproduce, create a `pyproject.toml` with:
 

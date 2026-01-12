@@ -12,14 +12,14 @@ head: main
 created_at: 2023-04-11T20:20:57Z
 updated_at: 2023-05-12T18:21:36Z
 url: https://github.com/astral-sh/ruff/pull/3938
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add linting badge that can be used to display usage
 
 ---
 
-_Pull request opened by @OMEGARAZER on 2023-04-11 20:20_
+_@OMEGARAZER_
 
 Was looking for a badge to go along with the one from Black and made a small edit to the one at the top of the readme that I thought looked good. Provided markdown, rst and HTML versions.
 

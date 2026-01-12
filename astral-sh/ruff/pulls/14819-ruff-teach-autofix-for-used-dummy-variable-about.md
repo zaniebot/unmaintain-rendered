@@ -15,14 +15,14 @@ head: alex/typevar-rename
 created_at: 2024-12-06T14:21:34Z
 updated_at: 2024-12-06T17:05:52Z
 url: https://github.com/astral-sh/ruff/pull/14819
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Teach autofix for `used-dummy-variable` about TypeVars etc. (`RUF052`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-06 14:21_
+_@AlexWaygood_
 
 ## Summary
 

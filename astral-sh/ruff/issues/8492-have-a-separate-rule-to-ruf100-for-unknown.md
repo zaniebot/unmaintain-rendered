@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-05T09:07:50Z
 updated_at: 2024-11-11T10:54:40Z
 url: https://github.com/astral-sh/ruff/issues/8492
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Have a separate rule to RUF100 for unknown/disabled rules
 
 ---
 
-_Issue opened by @xi on 2023-11-05 09:07_
+_@xi_
 
 See prior discussion in #2194 and #2424.
 

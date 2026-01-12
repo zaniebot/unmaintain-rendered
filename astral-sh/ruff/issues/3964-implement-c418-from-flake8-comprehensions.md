@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-13T20:03:40Z
 updated_at: 2023-04-14T01:39:37Z
 url: https://github.com/astral-sh/ruff/issues/3964
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement `C418` from `flake8-comprehensions`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-04-13 20:03_
+_@charliermarsh_
 
 Included in the latest release: https://github.com/adamchainz/flake8-comprehensions/pull/500/files.
 

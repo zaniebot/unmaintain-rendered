@@ -14,14 +14,14 @@ head: alex/place-default
 created_at: 2026-01-09T17:58:51Z
 updated_at: 2026-01-09T18:37:38Z
 url: https://github.com/astral-sh/ruff/pull/22481
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Derive `Default` in a few more places in `place.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-09 17:58_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T15:54:18Z
 updated_at: 2024-09-04T15:04:01Z
 url: https://github.com/astral-sh/uv/issues/6818
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `uv add` should roll back changes to `pyproject.toml` if the automatic sync is cancelled
 
 ---
 
-_Issue opened by @akx on 2024-08-29 15:54_
+_@akx_
 
 uv 0.4.0, macOS.
 

@@ -13,14 +13,14 @@ head: zb/link-entrypoints
 created_at: 2025-07-24T20:17:55Z
 updated_at: 2025-08-06T17:35:23Z
 url: https://github.com/astral-sh/uv/pull/14877
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Symlink (or copy) binary entry points into ephemeral environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 20:17_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14874
 

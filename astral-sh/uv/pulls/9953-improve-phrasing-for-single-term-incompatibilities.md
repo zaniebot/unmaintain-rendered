@@ -13,14 +13,14 @@ head: zb/cannot-incompat
 created_at: 2024-12-17T03:41:56Z
 updated_at: 2024-12-17T14:14:35Z
 url: https://github.com/astral-sh/uv/pull/9953
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Improve phrasing for single term incompatibilities
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 03:41_
+_@zanieb_
 
 It makes more sense to say "cannot be used" rather than "is incompatible" when the term is a single package
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T16:42:42Z
 updated_at: 2023-10-20T05:15:00Z
 url: https://github.com/astral-sh/uv/issues/60
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Record source of all resolved requirements
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 16:42_
+_@charliermarsh_
 
 Like pip-compile, the resultant lockfile should contain comments telling you why each dependency was included.
 

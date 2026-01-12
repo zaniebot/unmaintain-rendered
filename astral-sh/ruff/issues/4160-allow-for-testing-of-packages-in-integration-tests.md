@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-30T11:39:14Z
 updated_at: 2023-11-03T03:07:14Z
 url: https://github.com/astral-sh/ruff/issues/4160
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Allow for testing of packages in integration tests
 
 ---
 
-_Issue opened by @chanman3388 on 2023-04-30 11:39_
+_@chanman3388_
 
 It is my understanding that we cannot use folders/packages in integration tests.
 For the moment I believe that we just use `ruff::test::test_path` to test a specific module, but I think it should be easy enough to make a similar function, or perhaps even a parent function that calls `test_path` not unlike how `ruff_cli::commands::run` lints all the files in parallel (I have not yet fully thought through the implementation).

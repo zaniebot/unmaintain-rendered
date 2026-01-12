@@ -13,14 +13,14 @@ head: konsti/fix-operating-system-on-bsd
 created_at: 2024-03-18T10:44:03Z
 updated_at: 2024-03-18T10:51:56Z
 url: https://github.com/astral-sh/uv/pull/2505
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Fix operating system detection on *BSD
 
 ---
 
-_Pull request opened by @konstin on 2024-03-18 10:44_
+_@konstin_
 
 For #2487, not closing since we still need confirmation that his fixes *BSD.
 

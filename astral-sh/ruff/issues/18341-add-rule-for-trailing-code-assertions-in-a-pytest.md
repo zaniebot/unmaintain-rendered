@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T18:21:17Z
 updated_at: 2025-05-28T16:50:53Z
 url: https://github.com/astral-sh/ruff/issues/18341
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add rule for trailing code/assertions in a pytest.raises block
 
 ---
 
-_Issue opened by @goodspark on 2025-05-27 18:21_
+_@goodspark_
 
 ### Summary
 

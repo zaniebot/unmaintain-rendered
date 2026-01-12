@@ -13,14 +13,14 @@ head: alex/more-__all__
 created_at: 2025-05-08T11:33:28Z
 updated_at: 2025-10-24T16:24:15Z
 url: https://github.com/astral-sh/ruff/pull/17945
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Call into type inference more when resolving `__all__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 11:33_
+_@AlexWaygood_
 
 ## Summary
 
@@ -30,6 +30,10 @@ _Pull request opened by @AlexWaygood on 2025-05-08 11:33_
 
 <!-- How was it tested? -->
 
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-08 11:33_
 
 ---
 
@@ -66,5 +70,13 @@ _Comment by @codspeed-hq[bot] on 2025-05-08 11:39_
 _Comment by @AlexWaygood on 2025-05-09 09:07_
 
 Closing, but deliberately not deleting the branch as it's useful for a Salsa assertion failure repro: https://github.com/salsa-rs/salsa/issues/831#issuecomment-2862778732
+
+---
+
+_Closed by @AlexWaygood on 2025-05-09 09:07_
+
+---
+
+_Branch deleted on 2025-10-24 16:24_
 
 ---

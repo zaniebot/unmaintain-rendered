@@ -13,14 +13,14 @@ head: typing-no-return-never
 created_at: 2024-11-23T17:07:38Z
 updated_at: 2024-11-26T09:49:54Z
 url: https://github.com/astral-sh/ruff/pull/14559
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Support `typing.NoReturn` and `typing.Never`
 
 ---
 
-_Pull request opened by @Glyphack on 2024-11-23 17:07_
+_@Glyphack_
 
 Fix #14558 
 ## Summary

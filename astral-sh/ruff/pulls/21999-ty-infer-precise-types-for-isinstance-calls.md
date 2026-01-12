@@ -13,14 +13,14 @@ head: david/fix-1895
 created_at: 2025-12-16T09:23:12Z
 updated_at: 2025-12-16T09:36:58Z
 url: https://github.com/astral-sh/ruff/pull/21999
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Infer precise types for `isinstance(…)` calls involving typevars
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 09:23_
+_@sharkdp_
 
 ## Summary
 

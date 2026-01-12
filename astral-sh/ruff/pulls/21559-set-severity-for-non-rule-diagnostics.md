@@ -14,14 +14,14 @@ head: senekor/lmkxkqrssyst
 created_at: 2025-11-21T13:57:54Z
 updated_at: 2025-11-21T17:56:13Z
 url: https://github.com/astral-sh/ruff/pull/21559
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # Set severity for non-rule diagnostics
 
 ---
 
-_Pull request opened by @senekor on 2025-11-21 13:57_
+_@senekor_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

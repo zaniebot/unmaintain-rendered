@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T08:16:07Z
 updated_at: 2025-02-27T00:46:40Z
 url: https://github.com/astral-sh/uv/issues/11739
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Confusing Discord situation - it is described as being "for the Ruff", linked from uv docs
 
 ---
 
-_Issue opened by @matkoniecz on 2025-02-24 08:16_
+_@matkoniecz_
 
 ### Summary
 

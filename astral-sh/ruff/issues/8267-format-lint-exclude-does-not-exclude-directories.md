@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T00:03:13Z
 updated_at: 2025-10-07T14:49:11Z
 url: https://github.com/astral-sh/ruff/issues/8267
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `format|lint.exclude` does not exclude directories
 
 ---
 
-_Issue opened by @MichaReiser on 2023-10-27 00:03_
+_@MichaReiser_
 
 Given:
 

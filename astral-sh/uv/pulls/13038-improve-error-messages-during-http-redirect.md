@@ -12,14 +12,14 @@ head: zb/debug-redirect
 created_at: 2025-04-22T03:03:28Z
 updated_at: 2025-04-24T13:02:07Z
 url: https://github.com/astral-sh/uv/pull/13038
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Improve error messages during HTTP redirect parsing
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-22 03:03_
+_@zanieb_
 
 Looking into https://github.com/astral-sh/uv/issues/13037
 

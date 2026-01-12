@@ -12,14 +12,14 @@ head: fix-docs
 created_at: 2024-08-31T21:20:38Z
 updated_at: 2024-08-31T21:52:17Z
 url: https://github.com/astral-sh/uv/pull/6901
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Fix missing word in config files docs
 
 ---
 
-_Pull request opened by @edmorley on 2024-08-31 21:20_
+_@edmorley_
 
 `s/operate the/operate at the/` on https://docs.astral.sh/uv/configuration/files/
 

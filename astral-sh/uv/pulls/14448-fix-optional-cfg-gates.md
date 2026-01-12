@@ -13,14 +13,14 @@ head: konsti/fix-optional-import-gates
 created_at: 2025-07-03T19:46:42Z
 updated_at: 2025-07-03T20:29:05Z
 url: https://github.com/astral-sh/uv/pull/14448
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Fix optional cfg gates
 
 ---
 
-_Pull request opened by @konstin on 2025-07-03 19:46_
+_@konstin_
 
 Running `cargo clippy` in individual crates could raise warnings due to unused imports as `Cow` is only used with `#[cfg(feature = "schemars")]`
 

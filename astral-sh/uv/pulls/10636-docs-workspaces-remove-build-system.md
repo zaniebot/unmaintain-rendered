@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-01-15T17:39:31Z
 updated_at: 2025-01-15T17:46:51Z
 url: https://github.com/astral-sh/uv/pull/10636
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # docs(workspaces): remove build-system
 
 ---
 
-_Pull request opened by @melMass on 2025-01-15 17:39_
+_@melMass_
 
 ## Summary
 

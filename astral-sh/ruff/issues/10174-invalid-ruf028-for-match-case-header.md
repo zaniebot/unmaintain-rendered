@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-29T16:44:37Z
 updated_at: 2024-03-01T08:36:24Z
 url: https://github.com/astral-sh/ruff/issues/10174
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Invalid RUF028 for match case header
 
 ---
 
-_Issue opened by @qartik on 2024-02-29 16:44_
+_@qartik_
 
 [The doc](https://docs.astral.sh/ruff/formatter/#format-suppression) suggests:
 

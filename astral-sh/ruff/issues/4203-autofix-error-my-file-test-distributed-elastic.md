@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-03T13:06:29Z
 updated_at: 2023-05-04T14:17:43Z
 url: https://github.com/astral-sh/ruff/issues/4203
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] My File: test/distributed/elastic/rendezvous/etcd_rendezvous_backend_test.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-03 13:06_
+_@FishAlchemist_
 
 **ruff version 0.0.264 (ruff --version)**
 ## command(Powershell)

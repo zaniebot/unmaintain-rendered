@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T19:43:52Z
 updated_at: 2025-12-11T10:43:40Z
 url: https://github.com/astral-sh/ty/issues/1746
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support `typing.Unpack`
 
 ---
 
-_Issue opened by @carljm on 2025-12-03 19:43_
+_@carljm_
 
 _No description provided._
 

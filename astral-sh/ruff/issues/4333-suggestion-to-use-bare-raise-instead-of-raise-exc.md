@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T22:44:59Z
 updated_at: 2023-07-22T00:41:39Z
 url: https://github.com/astral-sh/ruff/issues/4333
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Suggestion to use bare `raise` instead of `raise exc`
 
 ---
 
-_Issue opened by @zanieb on 2023-05-09 22:44_
+_@zanieb_
 
 I've been championing the use of `raise` instead of `raise exc` when re-raising a captured exception as it removes a frame from the traceback. When many exceptions are chained, this can make a significant difference in the length of a traceback.
 

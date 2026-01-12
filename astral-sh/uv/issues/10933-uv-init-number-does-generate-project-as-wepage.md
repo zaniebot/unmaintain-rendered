@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T10:26:20Z
 updated_at: 2025-01-24T14:54:27Z
 url: https://github.com/astral-sh/uv/issues/10933
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # uv init number does generate project as wepage for ruff tutorial
 
 ---
 
-_Issue opened by @mickelindahl on 2025-01-24 10:26_
+_@mickelindahl_
 
 ### Summary
 

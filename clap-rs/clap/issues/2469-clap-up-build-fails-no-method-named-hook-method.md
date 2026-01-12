@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-06T20:48:39Z
 updated_at: 2021-05-06T21:59:25Z
 url: https://github.com/clap-rs/clap/issues/2469
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_up build fails: no method named `hook_method_call_expr_on`
 
 ---
 
-_Issue opened by @mkayaalp on 2021-05-06 20:48_
+_@mkayaalp_
 
 ### Please complete the following tasks
 

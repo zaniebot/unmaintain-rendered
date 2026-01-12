@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-30T14:36:19Z
 updated_at: 2023-03-18T00:14:34Z
 url: https://github.com/clap-rs/clap/issues/4431
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Visual bugs in `cmd` with stray underlines
 
 ---
 
-_Issue opened by @thatbakamono on 2022-10-30 14:36_
+_@thatbakamono_
 
 ### Please complete the following tasks
 

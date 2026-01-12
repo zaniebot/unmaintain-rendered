@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-05T04:27:22Z
 updated_at: 2025-04-07T19:10:06Z
 url: https://github.com/astral-sh/uv/issues/12684
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Python version accelerator
 
 ---
 
-_Issue opened by @fishsixs on 2025-04-05 04:27_
+_@fishsixs_
 
 ### Question
 

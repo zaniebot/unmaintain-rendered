@@ -14,14 +14,14 @@ head: charlie/sys
 created_at: 2024-02-20T18:02:41Z
 updated_at: 2024-02-20T18:24:28Z
 url: https://github.com/astral-sh/ruff/pull/10066
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Allow `os.environ` modifications between imports (`E402`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 18:02_
+_@charliermarsh_
 
 ## Summary
 

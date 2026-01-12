@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T23:24:20Z
 updated_at: 2024-09-16T20:06:22Z
 url: https://github.com/astral-sh/uv/issues/6472
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add `uv sync --dev-only` or equivalent
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-22 23:24_
+_@charliermarsh_
 
 This was a feature request, it seems reasonable to me.
 

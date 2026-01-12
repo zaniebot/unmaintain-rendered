@@ -13,14 +13,14 @@ head: charlie/os
 created_at: 2023-09-21T21:06:24Z
 updated_at: 2023-09-21T21:24:40Z
 url: https://github.com/astral-sh/ruff/pull/7582
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Treat `os.error` as an `OSError` alias
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 21:06_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7580.
 

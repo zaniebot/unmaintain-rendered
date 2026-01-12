@@ -14,14 +14,14 @@ head: charlie/B006
 created_at: 2023-09-03T16:26:17Z
 updated_at: 2023-09-03T16:39:24Z
 url: https://github.com/astral-sh/ruff/pull/7090
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add newline if B006 fix is at end-of-file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 16:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7084.
 

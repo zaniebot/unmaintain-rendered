@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T13:22:25Z
 updated_at: 2025-05-16T13:30:12Z
 url: https://github.com/astral-sh/ty/issues/408
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # "unresolved-attribute" errors within pyyaml
 
 ---
 
-_Issue opened by @rofafor on 2025-05-15 13:22_
+_@rofafor_
 
 ### Summary
 

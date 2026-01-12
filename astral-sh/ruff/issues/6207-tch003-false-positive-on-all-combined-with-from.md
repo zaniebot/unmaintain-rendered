@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T19:25:16Z
 updated_at: 2023-08-01T15:04:47Z
 url: https://github.com/astral-sh/ruff/issues/6207
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `TCH003` false positive on `__all__` combined with `from __future__ import annotations`
 
 ---
 
-_Issue opened by @mkniewallner on 2023-07-31 19:25_
+_@mkniewallner_
 
 [`TCH003`](https://beta.ruff.rs/docs/rules/typing-only-standard-library-import/) seems to incorrectly trigger when re-exporting a module in `__all__` if using `from __future__ import annotations`.
 

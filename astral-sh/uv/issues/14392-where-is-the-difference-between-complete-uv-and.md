@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T14:01:52Z
 updated_at: 2025-07-07T09:14:35Z
 url: https://github.com/astral-sh/uv/issues/14392
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Where is the difference between ``complete uv`` and separated ``uv_build``?
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-07-01 14:01_
+_@FishAlchemist_
 
 ### Question
 

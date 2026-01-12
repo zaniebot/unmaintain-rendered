@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T12:32:57Z
 updated_at: 2024-11-18T19:28:24Z
 url: https://github.com/astral-sh/uv/issues/9146
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # sync does not pull latest commit from github dependency
 
 ---
 
-_Issue opened by @fccoelho on 2024-11-15 12:32_
+_@fccoelho_
 
 I have a dependency on one of my projects, which is based on GitHub.
 

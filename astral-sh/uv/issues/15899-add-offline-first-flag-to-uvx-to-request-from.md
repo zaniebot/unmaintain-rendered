@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-16T20:32:43Z
 updated_at: 2025-09-16T20:48:21Z
 url: https://github.com/astral-sh/uv/issues/15899
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Add --offline-first flag to uvx to request from index if necessary but otherwise use local cache
 
 ---
 
-_Issue opened by @raoulj on 2025-09-16 20:32_
+_@raoulj_
 
 ### Summary
 

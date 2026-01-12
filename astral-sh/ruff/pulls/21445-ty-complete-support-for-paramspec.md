@@ -14,14 +14,14 @@ head: dhruv/paramspec-args-kwargs
 created_at: 2025-11-14T08:25:40Z
 updated_at: 2025-12-05T16:42:29Z
 url: https://github.com/astral-sh/ruff/pull/21445
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Complete support for `ParamSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-14 08:25_
+_@dhruvmanila_
 
 ## Summary
 

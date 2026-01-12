@@ -14,14 +14,14 @@ head: issue-827
 created_at: 2025-08-03T14:39:24Z
 updated_at: 2025-08-06T22:23:43Z
 url: https://github.com/astral-sh/ruff/pull/19712
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] clear the terminal screen in watch mode
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-08-03 14:39_
+_@leandrobbraga_
 
 The intended behavior is achieved by entering the terminal alternate screen and clearing the screen before printing the diagnostics.
 

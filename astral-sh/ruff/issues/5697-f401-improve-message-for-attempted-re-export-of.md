@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-11T23:02:35Z
 updated_at: 2024-03-13T17:58:27Z
 url: https://github.com/astral-sh/ruff/issues/5697
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F401: Improve message for attempted re-export of symbols in `__init__` files 
 
 ---
 
-_Issue opened by @duckinator on 2023-07-11 23:02_
+_@duckinator_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T13:05:00Z
 updated_at: 2025-02-04T21:36:10Z
 url: https://github.com/astral-sh/uv/issues/11215
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Adding a dependency without its own dependencies  like `--no-deps` in pip
 
 ---
 
-_Issue opened by @harisarang on 2025-02-04 13:05_
+_@harisarang_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T13:03:09Z
 updated_at: 2025-12-17T16:02:01Z
 url: https://github.com/astral-sh/uv/issues/17143
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # uv.lock keeps the longest hash from the index but only uses sha256 during installation, which causes hash mismatch error
 
 ---
 
-_Issue opened by @putradimas on 2025-12-16 13:03_
+_@putradimas_
 
 ### Summary
 

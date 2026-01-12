@@ -13,14 +13,14 @@ head: dylan/stabilize-assert-raises
 created_at: 2025-09-05T19:33:06Z
 updated_at: 2025-09-08T13:58:47Z
 url: https://github.com/astral-sh/ruff/pull/20274
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-bugbear`] Stabilize support for non-context-manager calls in `assert-raises-exception` (`B017`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:33_
+_@dylwil3_
 
 Introduced in #19063. Removed gating, updated tests. Not documented so docs are the same.
 

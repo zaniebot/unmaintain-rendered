@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-11T18:33:59Z
 updated_at: 2025-10-31T06:17:11Z
 url: https://github.com/astral-sh/ruff/issues/6510
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # SQLAlchemy issues with TCH003
 
 ---
 
-_Issue opened by @davidroeca on 2023-08-11 18:33_
+_@davidroeca_
 
 For a full reproduction of this bug, please head [here](https://github.com/davidroeca/ruff-sqlalchemy-repro)
 ---

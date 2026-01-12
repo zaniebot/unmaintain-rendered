@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-10T21:35:37Z
 updated_at: 2025-12-11T08:40:21Z
 url: https://github.com/astral-sh/ty/issues/1847
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: `no entry found for key` with invalid type expression
 
 ---
 
-_Issue opened by @correctmost on 2025-12-10 21:35_
+_@correctmost_
 
 ### Summary
 

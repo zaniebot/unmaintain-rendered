@@ -13,14 +13,14 @@ head: document-link-between-import-outside-top-level-PLC0415-and-lint_flake8-tid
 created_at: 2025-06-17T19:15:23Z
 updated_at: 2025-07-03T14:41:38Z
 url: https://github.com/astral-sh/ruff/pull/18733
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Document link between `import-outside-top-level (PLC0415)` and `lint.flake8-tidy-imports.banned-module-level-imports`
 
 ---
 
-_Pull request opened by @Avasam on 2025-06-17 19:15_
+_@Avasam_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

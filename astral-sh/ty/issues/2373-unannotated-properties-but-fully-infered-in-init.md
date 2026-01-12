@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T22:28:26Z
 updated_at: 2026-01-07T15:19:17Z
 url: https://github.com/astral-sh/ty/issues/2373
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unannotated properties *but* fully infered in __init__ are Unknown
 
 ---
 
-_Issue opened by @Salamandar on 2026-01-06 22:28_
+_@Salamandar_
 
 ### Summary
 

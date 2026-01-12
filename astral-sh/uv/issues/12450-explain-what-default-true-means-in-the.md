@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T20:06:41Z
 updated_at: 2025-03-24T21:29:27Z
 url: https://github.com/astral-sh/uv/issues/12450
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Explain what `default = true` means in the configuration docs
 
 ---
 
-_Issue opened by @mcrumiller on 2025-03-24 20:06_
+_@mcrumiller_
 
 ### Summary
 

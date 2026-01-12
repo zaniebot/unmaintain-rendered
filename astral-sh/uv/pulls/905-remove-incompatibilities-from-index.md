@@ -13,14 +13,14 @@ head: charlie/incompat
 created_at: 2024-01-13T02:54:06Z
 updated_at: 2024-01-13T02:57:16Z
 url: https://github.com/astral-sh/uv/pull/905
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Remove `incompatibilities` from index
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-13 02:54_
+_@charliermarsh_
 
 This isn't really part of the "index", it's part of the resolution.
 

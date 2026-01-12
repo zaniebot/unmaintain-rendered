@@ -13,14 +13,14 @@ head: feat/#11785-condense-literals
 created_at: 2024-08-31T17:29:02Z
 updated_at: 2024-09-03T14:46:37Z
 url: https://github.com/astral-sh/ruff/pull/13185
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Condense literals display by types
 
 ---
 
-_Pull request opened by @Slyces on 2024-08-31 17:29_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: renovate/imara-diff-0.x-lockfile
 created_at: 2024-07-08T01:18:15Z
 updated_at: 2024-07-08T01:40:05Z
 url: https://github.com/astral-sh/ruff/pull/12226
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update Rust crate imara-diff to v0.1.6
 
 ---
 
-_Pull request opened by @renovate on 2024-07-08 01:18_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

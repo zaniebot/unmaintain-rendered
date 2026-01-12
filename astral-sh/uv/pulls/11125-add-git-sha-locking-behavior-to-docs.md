@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2025-01-31T03:35:15Z
 updated_at: 2025-01-31T18:11:05Z
 url: https://github.com/astral-sh/uv/pull/11125
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Add Git SHA locking behavior to docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-31 03:35_
+_@charliermarsh_
 
 ## Summary
 

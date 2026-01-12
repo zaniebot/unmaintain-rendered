@@ -13,14 +13,14 @@ head: zb/cycle-tree
 created_at: 2025-09-17T12:14:47Z
 updated_at: 2025-10-27T02:01:02Z
 url: https://github.com/astral-sh/uv/pull/15908
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Fix root of `uv tree` when `--package` is used with circular dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-17 12:14_
+_@zanieb_
 
 Closes #15907
 

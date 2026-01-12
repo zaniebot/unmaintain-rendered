@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T18:12:16Z
 updated_at: 2025-12-10T04:24:35Z
 url: https://github.com/astral-sh/ruff/issues/21870
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Request: Rule + Autofix to upgrade `while 1` Python 2 code to `while True`
 
 ---
 
-_Issue opened by @Avasam on 2025-12-09 18:12_
+_@Avasam_
 
 ### Summary
 

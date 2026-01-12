@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T18:31:35Z
 updated_at: 2025-08-02T16:48:37Z
 url: https://github.com/astral-sh/uv/issues/15015
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Proxy for index
 
 ---
 
-_Issue opened by @chrisoro on 2025-08-01 18:31_
+_@chrisoro_
 
 ### Summary
 

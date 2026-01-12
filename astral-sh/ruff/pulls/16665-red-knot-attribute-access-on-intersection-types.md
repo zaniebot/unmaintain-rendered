@@ -13,14 +13,14 @@ head: david/attribute-access-on-intersections
 created_at: 2025-03-12T09:29:38Z
 updated_at: 2025-03-12T12:25:34Z
 url: https://github.com/astral-sh/ruff/pull/16665
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Attribute access on intersection types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-12 09:29_
+_@sharkdp_
 
 ## Summary
 

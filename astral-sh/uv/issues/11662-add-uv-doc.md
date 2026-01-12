@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-20T11:14:00Z
 updated_at: 2025-02-20T14:01:02Z
 url: https://github.com/astral-sh/uv/issues/11662
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Add `uv doc`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-20 11:14_
+_@chrisrodrigue_
 
 # Inspiration
 

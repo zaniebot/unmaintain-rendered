@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-29T20:29:54Z
 updated_at: 2024-12-04T04:22:48Z
 url: https://github.com/astral-sh/uv/issues/9532
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # uvx on old mac
 
 ---
 
-_Issue opened by @Stegallo on 2024-11-29 20:29_
+_@Stegallo_
 
 I apologies if off topic or already answered.
 

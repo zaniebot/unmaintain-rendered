@@ -13,14 +13,14 @@ head: fa-102-target-version
 created_at: 2023-08-12T05:10:14Z
 updated_at: 2023-08-12T19:18:53Z
 url: https://github.com/astral-sh/ruff/pull/6520
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Clarifying `target-version` in `flake8-future-annotations` docs
 
 ---
 
-_Pull request opened by @jamesbraza on 2023-08-12 05:10_
+_@jamesbraza_
 
 Closes https://github.com/astral-sh/ruff/issues/6461.
 

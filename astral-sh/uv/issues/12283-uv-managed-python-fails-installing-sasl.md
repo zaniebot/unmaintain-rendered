@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T14:46:00Z
 updated_at: 2025-04-22T07:40:28Z
 url: https://github.com/astral-sh/uv/issues/12283
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # uv managed python fails installing `sasl` dependency with python 3.9.18
 
 ---
 
-_Issue opened by @ignacio-amaya-rovio on 2025-03-18 14:46_
+_@ignacio-amaya-rovio_
 
 ### Summary
 

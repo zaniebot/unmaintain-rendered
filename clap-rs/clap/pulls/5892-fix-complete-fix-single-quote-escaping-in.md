@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-01-25T10:20:42Z
 updated_at: 2025-01-27T15:22:06Z
 url: https://github.com/clap-rs/clap/pull/5892
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(complete): Fix single quote escaping in PowerShell
 
 ---
 
-_Pull request opened by @8LWXpg on 2025-01-25 10:20_
+_@8LWXpg_
 
 fix #5820
 

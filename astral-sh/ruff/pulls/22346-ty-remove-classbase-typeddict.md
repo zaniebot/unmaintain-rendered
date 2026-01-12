@@ -13,14 +13,14 @@ head: charlie/typed-mro
 created_at: 2026-01-02T20:19:58Z
 updated_at: 2026-01-10T18:53:58Z
 url: https://github.com/astral-sh/ruff/pull/22346
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Remove `ClassBase::TypedDict`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-02 20:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix-fbt003-setattr
 created_at: 2023-05-31T11:13:21Z
 updated_at: 2023-05-31T15:35:48Z
 url: https://github.com/astral-sh/ruff/pull/4752
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Ignore __setattr__ in FBT003
 
 ---
 
-_Pull request opened by @alexfikl on 2023-05-31 11:13_
+_@alexfikl_
 
 ## Summary
 

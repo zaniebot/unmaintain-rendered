@@ -13,14 +13,14 @@ head: zb/run-command
 created_at: 2024-06-18T20:55:20Z
 updated_at: 2024-06-19T15:28:11Z
 url: https://github.com/astral-sh/uv/pull/4404
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Improve handling of command arguments in `uv run` and `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 20:55_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4390
 

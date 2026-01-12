@@ -13,14 +13,14 @@ head: zb/keyring-thiserror
 created_at: 2025-08-27T18:49:00Z
 updated_at: 2025-08-28T13:09:13Z
 url: https://github.com/astral-sh/uv/pull/15561
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Use `thiserror` for keyring error type
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 18:49_
+_@zanieb_
 
 _No description provided._
 

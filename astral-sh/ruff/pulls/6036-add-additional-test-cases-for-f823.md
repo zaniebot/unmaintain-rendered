@@ -13,14 +13,14 @@ head: charlie/F823
 created_at: 2023-07-24T15:40:15Z
 updated_at: 2023-07-24T16:12:26Z
 url: https://github.com/astral-sh/ruff/pull/6036
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add additional test cases for `F823`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 15:40_
+_@charliermarsh_
 
 Making some behavior explicit / codified. See: https://github.com/astral-sh/ruff/issues/6029.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-10-07T10:27:10Z
 updated_at: 2025-01-13T08:51:04Z
 url: https://github.com/astral-sh/ruff/issues/13657
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FAST003 doesn't detect params used in injected dependencies
 
 ---
 
-_Issue opened by @cbornet on 2024-10-07 10:27_
+_@cbornet_
 
 It seems that it would be possible for FAST003 to detect params used in injected dependencies.
 

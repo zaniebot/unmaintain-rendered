@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-08-29T14:45:58Z
 updated_at: 2024-08-29T16:57:10Z
 url: https://github.com/astral-sh/uv/pull/6815
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Hint at `--no-workspace` in `uv init` failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 14:45_
+_@charliermarsh_
 
 ## Summary
 

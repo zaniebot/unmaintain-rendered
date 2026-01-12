@@ -14,14 +14,14 @@ head: zb/lockfile-again
 created_at: 2024-07-30T18:58:23Z
 updated_at: 2024-07-30T19:09:44Z
 url: https://github.com/astral-sh/uv/pull/5629
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Rename more use of "lock file" to "lockfile"
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 18:58_
+_@zanieb_
 
 _No description provided._
 

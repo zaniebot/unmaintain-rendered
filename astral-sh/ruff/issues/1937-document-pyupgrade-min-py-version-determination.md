@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-17T17:02:18Z
 updated_at: 2023-01-17T18:26:22Z
 url: https://github.com/astral-sh/ruff/issues/1937
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # document pyupgrade min py version determination
 
 ---
 
-_Issue opened by @nstarman on 2023-01-17 17:02_
+_@nstarman_
 
 In pyupgrade one can pass the minimum python version for which pyupgrade should find and apply improvements: e.g. ``—py29-plus``. I can't find documentation for how this is done in Ruff's implementation of pyupgrade.
 

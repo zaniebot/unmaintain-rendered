@@ -13,14 +13,14 @@ head: david/follow-up-type-narrowing
 created_at: 2024-10-16T08:54:43Z
 updated_at: 2024-10-16T09:30:05Z
 url: https://github.com/astral-sh/ruff/pull/13769
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red knot] Minor follow-up tasks regarding singleton types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-16 08:54_
+_@sharkdp_
 
 ## Summary
 

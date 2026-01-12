@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T19:11:15Z
 updated_at: 2024-02-21T01:31:17Z
 url: https://github.com/astral-sh/uv/issues/1775
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Any way to install a package from private repository with deploy key?
 
 ---
 
-_Issue opened by @kolkre on 2024-02-20 19:11_
+_@kolkre_
 
 I'm attempting to install a package from our Git instance using the command uv pip install `git+https://<DEPLOY_KEY>@<HOST>/<REPO>`, but it appears that it's not implemented in uv. It works when I use the regular pip. 
 

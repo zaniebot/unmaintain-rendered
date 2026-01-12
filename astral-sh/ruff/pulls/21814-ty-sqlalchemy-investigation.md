@@ -14,14 +14,14 @@ head: david/sqlalchemy-investigation
 created_at: 2025-12-05T15:11:29Z
 updated_at: 2025-12-10T19:30:27Z
 url: https://github.com/astral-sh/ruff/pull/21814
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] SQLAlchemy investigation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-05 15:11_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

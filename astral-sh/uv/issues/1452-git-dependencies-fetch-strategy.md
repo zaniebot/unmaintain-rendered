@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:27:10Z
 updated_at: 2024-02-21T18:44:33Z
 url: https://github.com/astral-sh/uv/issues/1452
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Git dependencies fetch strategy
 
 ---
 
-_Issue opened by @TheoBabilon on 2024-02-16 08:27_
+_@TheoBabilon_
 
 Hi team,
 

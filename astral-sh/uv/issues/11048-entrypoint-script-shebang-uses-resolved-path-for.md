@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T01:22:53Z
 updated_at: 2025-01-31T20:03:37Z
 url: https://github.com/astral-sh/uv/issues/11048
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Entrypoint script shebang uses resolved path for symlinked Python rather than `sys.executable`
 
 ---
 
-_Issue opened by @edmorley on 2025-01-29 01:22_
+_@edmorley_
 
 ### Summary
 

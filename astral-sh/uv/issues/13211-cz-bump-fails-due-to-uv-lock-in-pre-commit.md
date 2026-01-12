@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T03:17:44Z
 updated_at: 2025-05-04T12:50:23Z
 url: https://github.com/astral-sh/uv/issues/13211
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # cz bump fails due to uv lock in pre-commit updating uv.lock
 
 ---
 
-_Issue opened by @waterworthd-cim on 2025-04-30 03:17_
+_@waterworthd-cim_
 
 ### Question
 

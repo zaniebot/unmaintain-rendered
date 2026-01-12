@@ -13,14 +13,14 @@ head: brent/contributing
 created_at: 2025-11-06T16:07:05Z
 updated_at: 2025-11-10T14:12:34Z
 url: https://github.com/astral-sh/ruff/pull/21298
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Add a new "Opening a PR" section to the contribution guide
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-06 16:07_
+_@ntBre_
 
 Summary
 --

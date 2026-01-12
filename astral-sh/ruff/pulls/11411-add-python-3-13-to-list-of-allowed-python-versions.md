@@ -12,14 +12,14 @@ head: charlie/py313
 created_at: 2024-05-13T16:15:09Z
 updated_at: 2024-05-13T17:09:26Z
 url: https://github.com/astral-sh/ruff/pull/11411
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add Python 3.13 to list of allowed Python versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 16:15_
+_@charliermarsh_
 
 ## Summary
 

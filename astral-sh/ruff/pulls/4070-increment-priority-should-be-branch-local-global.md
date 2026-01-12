@@ -12,14 +12,14 @@ head: fix/b031/increment-priority
 created_at: 2023-04-23T05:51:18Z
 updated_at: 2023-04-23T10:00:09Z
 url: https://github.com/astral-sh/ruff/pull/4070
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Increment priority should be (branch-local, global)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-23 05:51_
+_@dhruvmanila_
 
 ## Problem:
 Updating the global usage count even if the visitor is inside a mutually exclusive branch. This leads to reporting an error in the subsequent branches due to the global count being incremented.

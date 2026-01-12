@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T11:13:19Z
 updated_at: 2025-02-24T08:29:48Z
 url: https://github.com/astral-sh/uv/issues/11661
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Migrating from pip-tools workflow to uv project
 
 ---
 
-_Issue opened by @mario-at-intercom on 2025-02-20 11:13_
+_@mario-at-intercom_
 
 ### Question
 

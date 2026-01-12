@@ -13,14 +13,14 @@ head: charlie/p-9
 created_at: 2025-02-25T06:27:10Z
 updated_at: 2025-02-25T07:05:20Z
 url: https://github.com/astral-sh/uv/pull/11772
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Avoid cloning to string when creating cache path
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-25 06:27_
+_@charliermarsh_
 
 ## Summary
 

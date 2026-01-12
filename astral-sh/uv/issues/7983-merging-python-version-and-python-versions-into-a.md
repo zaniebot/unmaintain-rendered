@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T18:14:10Z
 updated_at: 2025-10-16T19:24:47Z
 url: https://github.com/astral-sh/uv/issues/7983
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Merging `.python-version` and `.python-versions` into a single file?
 
 ---
 
-_Issue opened by @mkniewallner on 2024-10-07 18:14_
+_@mkniewallner_
 
 https://github.com/astral-sh/uv/pull/7972 made me aware that uv supports both `.python-version` to define a single Python version to use in a project, and `.python-versions` to define multiple ones ([documentation](https://docs.astral.sh/uv/concepts/python-versions/#project-python-versions)).
 

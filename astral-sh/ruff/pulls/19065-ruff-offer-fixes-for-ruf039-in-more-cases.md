@@ -14,14 +14,14 @@ head: feat/ruf039-better-fixes
 created_at: 2025-07-01T07:58:44Z
 updated_at: 2025-07-24T18:33:41Z
 url: https://github.com/astral-sh/ruff/pull/19065
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`ruff`] Offer fixes for `RUF039` in more cases
 
 ---
 
-_Pull request opened by @robsdedude on 2025-07-01 07:58_
+_@robsdedude_
 
 ## Summary
 Expand cases in which ruff can offer a fix for `RUF039` (some of which are unsafe).

@@ -13,14 +13,14 @@ head: charlie/parse
 created_at: 2024-01-12T02:20:07Z
 updated_at: 2024-01-12T02:25:48Z
 url: https://github.com/astral-sh/uv/pull/891
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Use consistent parse terminology in pyproject error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 02:20_
+_@charliermarsh_
 
 We use `parse` for the other file types.
 

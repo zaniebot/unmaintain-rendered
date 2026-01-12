@@ -14,14 +14,14 @@ head: fix_airflow_help_msg
 created_at: 2025-04-28T04:59:20Z
 updated_at: 2025-04-28T06:31:41Z
 url: https://github.com/astral-sh/ruff/pull/17673
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [airflow] fix typos `AIR312`
 
 ---
 
-_Pull request opened by @Jie211 on 2025-04-28 04:59_
+_@Jie211_
 
 ## Summary
 

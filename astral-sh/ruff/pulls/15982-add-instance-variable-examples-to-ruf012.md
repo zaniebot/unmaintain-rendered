@@ -13,14 +13,14 @@ head: RUF012/improve-docs
 created_at: 2025-02-05T21:51:14Z
 updated_at: 2025-02-06T14:03:43Z
 url: https://github.com/astral-sh/ruff/pull/15982
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # add instance variable examples to RUF012
 
 ---
 
-_Pull request opened by @RayBB on 2025-02-05 21:51_
+_@RayBB_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

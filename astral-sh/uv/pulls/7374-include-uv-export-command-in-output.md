@@ -13,14 +13,14 @@ head: 7159-export-command
 created_at: 2024-09-13T19:16:44Z
 updated_at: 2024-09-13T20:15:11Z
 url: https://github.com/astral-sh/uv/pull/7374
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Include `uv export` command in output
 
 ---
 
-_Pull request opened by @dcwatson on 2024-09-13 19:16_
+_@dcwatson_
 
 ## Summary
 

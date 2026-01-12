@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-24T00:23:44Z
 updated_at: 2025-10-31T12:55:20Z
 url: https://github.com/astral-sh/ty/issues/1427
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # alpha.24 regression: Non-dataclass inheriting from a dataclass breaks generic inference
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-24 00:23_
+_@MeGaGiGaGon_
 
 ### Summary
 

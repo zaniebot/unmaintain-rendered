@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T22:34:41Z
 updated_at: 2023-05-31T16:53:49Z
 url: https://github.com/astral-sh/ruff/issues/1975
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # COM819 introduces E202
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 22:34_
+_@spaceone_
 
 ```
 $ ruff --fix --select COM819 --isolated --diff foo.py 

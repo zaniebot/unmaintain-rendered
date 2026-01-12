@@ -13,14 +13,14 @@ head: dhruv/re-lexing
 created_at: 2024-06-12T06:34:23Z
 updated_at: 2024-06-17T07:02:46Z
 url: https://github.com/astral-sh/ruff/pull/11845
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Implement re-lexing logic for better error recovery
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-12 06:34_
+_@dhruvmanila_
 
 ## Summary
 

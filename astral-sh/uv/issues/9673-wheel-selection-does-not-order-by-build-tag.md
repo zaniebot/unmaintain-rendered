@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T10:54:45Z
 updated_at: 2024-12-06T13:24:27Z
 url: https://github.com/astral-sh/uv/issues/9673
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Wheel selection does not order by build tag correctly
 
 ---
 
-_Issue opened by @jonded94 on 2024-12-06 10:54_
+_@jonded94_
 
 Given this [issue](https://github.com/astral-sh/uv/issues/3779) I would have assumed that `uv` is capable to choose the most recent built tag version of a package whenever there are multiple versions of it.
 

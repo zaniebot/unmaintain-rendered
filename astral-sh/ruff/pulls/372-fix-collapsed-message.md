@@ -12,14 +12,14 @@ head: fix-rule-table
 created_at: 2022-10-09T16:50:15Z
 updated_at: 2022-10-09T17:01:36Z
 url: https://github.com/astral-sh/ruff/pull/372
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix collapsed message
 
 ---
 
-_Pull request opened by @harupy on 2022-10-09 16:50_
+_@harupy_
 
 Fix the collapsed message by escaping `|`.
 

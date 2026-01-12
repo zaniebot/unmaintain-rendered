@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T13:10:31Z
 updated_at: 2024-12-27T14:42:16Z
 url: https://github.com/astral-sh/uv/issues/7288
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Can't uv add netifaces (but after uv pip install netifaces it works)
 
 ---
 
-_Issue opened by @romaia on 2024-09-11 13:10_
+_@romaia_
 
 
 Using uv version 0.4.9 on linux, I cant `uv add netifaces`, but if I install it with `uv pip install netifaces` before hand, it works.

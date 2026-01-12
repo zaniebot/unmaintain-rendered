@@ -12,14 +12,14 @@ head: charlie/refs
 created_at: 2023-02-17T13:04:27Z
 updated_at: 2023-02-17T13:07:38Z
 url: https://github.com/astral-sh/ruff/pull/2982
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix references to specific settings in README.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 13:04_
+_@charliermarsh_
 
 _No description provided._
 

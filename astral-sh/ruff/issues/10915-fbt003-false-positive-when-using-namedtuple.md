@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-13T01:17:47Z
 updated_at: 2024-04-19T22:06:10Z
 url: https://github.com/astral-sh/ruff/issues/10915
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FBT003 false positive when using namedtuple
 
 ---
 
-_Issue opened by @AaronDMarasco on 2024-04-13 01:17_
+_@AaronDMarasco_
 
 It seems to be confused and think that the naked booleans are parameters to a call.
 

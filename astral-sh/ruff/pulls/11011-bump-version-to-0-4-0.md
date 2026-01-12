@@ -13,14 +13,14 @@ head: release/040
 created_at: 2024-04-18T14:47:42Z
 updated_at: 2024-04-18T19:21:22Z
 url: https://github.com/astral-sh/ruff/pull/11011
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Bump version to 0.4.0
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-18 14:47_
+_@zanieb_
 
 _No description provided._
 

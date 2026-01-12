@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-16T04:17:46Z
 updated_at: 2025-09-16T08:28:20Z
 url: https://github.com/astral-sh/ty/issues/1189
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] infer_definition_types(Id(22f5c)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @mawildoer on 2025-09-16 04:17_
+_@mawildoer_
 
 info: This indicates a bug in ty.
 info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!

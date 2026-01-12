@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-10T19:19:49Z
 updated_at: 2024-12-10T21:03:37Z
 url: https://github.com/clap-rs/clap/issues/5839
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support default field values
 
 ---
 
-_Issue opened by @epage on 2024-12-10 19:19_
+_@epage_
 
 Default field values would provide an alternative to `default_value_t`
 

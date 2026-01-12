@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T16:58:41Z
 updated_at: 2024-02-17T21:22:44Z
 url: https://github.com/astral-sh/uv/issues/1513
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Don't fail on incompatible file system setups
 
 ---
 
-_Issue opened by @bra-fsn on 2024-02-16 16:58_
+_@bra-fsn_
 
 Consider the following scenario, where `/root/.cache` is a persistent volume in a container:
 

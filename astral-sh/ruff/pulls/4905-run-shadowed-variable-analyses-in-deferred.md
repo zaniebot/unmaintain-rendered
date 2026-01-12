@@ -12,14 +12,14 @@ head: charlie/move-bindings
 created_at: 2023-06-06T18:34:54Z
 updated_at: 2023-06-12T20:11:09Z
 url: https://github.com/astral-sh/ruff/pull/4905
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Run shadowed-variable analyses in deferred handlers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 18:34_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: indexer-bug
 created_at: 2024-03-12T02:59:16Z
 updated_at: 2024-03-12T04:54:51Z
 url: https://github.com/astral-sh/ruff/pull/10354
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix Indexer fails to identify continuation preceded by newline #10351
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-12 02:59_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

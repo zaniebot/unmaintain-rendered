@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-24T08:21:30Z
 updated_at: 2024-10-24T10:24:35Z
 url: https://github.com/astral-sh/uv/issues/8519
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # uv run support for `tool.uv.scripts`
 
 ---
 
-_Issue opened by @domenicocinque on 2024-10-24 08:21_
+_@domenicocinque_
 
 Hi! First of all thank you for your incredible work on `uv`. 
 

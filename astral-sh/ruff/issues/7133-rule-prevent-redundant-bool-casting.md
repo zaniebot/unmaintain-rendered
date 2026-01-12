@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-04T14:22:26Z
 updated_at: 2023-09-05T08:25:33Z
 url: https://github.com/astral-sh/ruff/issues/7133
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # rule: prevent redundant bool casting
 
 ---
 
-_Issue opened by @dorschw on 2023-09-04 14:22_
+_@dorschw_
 
 ```diff
 - if bool(condition):

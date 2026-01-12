@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T23:53:24Z
 updated_at: 2025-12-12T13:52:18Z
 url: https://github.com/clap-rs/clap/issues/6195
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Incorrect error message when using the help subcommand with an argument
 
 ---
 
-_Issue opened by @Korne127 on 2025-12-11 23:53_
+_@Korne127_
 
 ### Please complete the following tasks
 

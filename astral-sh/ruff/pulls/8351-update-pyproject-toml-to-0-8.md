@@ -13,14 +13,14 @@ head: pyproject-toml-0.8
 created_at: 2023-10-30T09:57:40Z
 updated_at: 2023-10-30T10:13:54Z
 url: https://github.com/astral-sh/ruff/pull/8351
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update pyproject-toml to 0.8
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 09:57_
+_@konstin_
 
 `build-system` is now also optional upstream.
 

@@ -15,14 +15,14 @@ head: micha/fix-outdated-publish-diagnostics-version
 created_at: 2025-12-12T11:19:02Z
 updated_at: 2025-12-12T11:30:58Z
 url: https://github.com/astral-sh/ruff/pull/21943
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Fix outdated version in publish diagnostics after `didChange`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-12 11:19_
+_@MichaReiser_
 
 ## Summary
 

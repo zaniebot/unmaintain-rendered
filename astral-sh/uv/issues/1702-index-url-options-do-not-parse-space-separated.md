@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T16:01:08Z
 updated_at: 2024-03-03T19:01:08Z
 url: https://github.com/astral-sh/uv/issues/1702
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Index URL options do not parse "space separated" URLs as multiple options
 
 ---
 
-_Issue opened by @zanieb on 2024-02-19 16:01_
+_@zanieb_
 
 e.g. via `UV_EXTRA_INDEX_URL` or `--extra-index-url` if you pass `https://foo/ https://bar` we will treat this as a single URL but it should be split into two.
 

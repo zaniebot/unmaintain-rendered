@@ -14,14 +14,14 @@ head: david/async-for
 created_at: 2025-07-30T11:31:46Z
 updated_at: 2025-07-30T15:40:26Z
 url: https://github.com/astral-sh/ruff/pull/19634
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Async for loops and async iterables
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-30 11:31_
+_@sharkdp_
 
 ## Summary
 

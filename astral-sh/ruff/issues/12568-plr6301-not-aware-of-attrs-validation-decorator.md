@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T15:42:35Z
 updated_at: 2024-08-30T16:39:07Z
 url: https://github.com/astral-sh/ruff/issues/12568
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `PLR6301` not aware of `attrs` validation decorator 
 
 ---
 
-_Issue opened by @my1e5 on 2024-07-29 15:42_
+_@my1e5_
 
 Related to https://github.com/astral-sh/ruff/issues/12172.
 

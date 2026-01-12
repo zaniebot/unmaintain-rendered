@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-08T13:25:36Z
 updated_at: 2025-01-16T14:18:14Z
 url: https://github.com/astral-sh/ruff/issues/14835
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `FURB140` (reimplemented-starmap) suggests `itertools.starmap` when one should actually use `map`
 
 ---
 
-_Issue opened by @tdulcet on 2024-12-08 13:25_
+_@tdulcet_
 
 The official [Python documentation](https://docs.python.org/3/library/itertools.html#itertools.starmap) for `itertools.starmap` says:
 > Used instead of [map()](https://docs.python.org/3/library/functions.html#map) when argument parameters have already been “pre-zipped” into tuples.

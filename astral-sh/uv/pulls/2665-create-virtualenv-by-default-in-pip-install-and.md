@@ -12,14 +12,14 @@ head: charlie/default
 created_at: 2024-03-26T02:58:51Z
 updated_at: 2024-04-05T01:59:48Z
 url: https://github.com/astral-sh/uv/pull/2665
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Create virtualenv by default in `pip install` and `pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-26 02:58_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2661.
 

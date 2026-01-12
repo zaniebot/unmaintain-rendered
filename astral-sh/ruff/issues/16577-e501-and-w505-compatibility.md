@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-09T16:46:53Z
 updated_at: 2025-08-19T06:37:18Z
 url: https://github.com/astral-sh/ruff/issues/16577
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `E501` and `W505` compatibility?
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-09 16:46_
+_@gtkacz_
 
 ### Question
 

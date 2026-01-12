@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T18:04:18Z
 updated_at: 2025-07-02T11:59:00Z
 url: https://github.com/astral-sh/ty/issues/77
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Go to with vendored typeshed stubs
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-28 18:04_
+_@MichaReiser_
 
 Navigating to a symbol that's defined in typeshed currently doesn't work when using the vendored typeshed because Red Knot can't create an URL that the client can display (because they're not actual files on disk). 
 

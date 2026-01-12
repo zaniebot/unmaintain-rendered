@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T21:15:14Z
 updated_at: 2023-05-12T21:35:50Z
 url: https://github.com/astral-sh/ruff/issues/4403
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `Failed to extract CST from source` when fixing file with assertions
 
 ---
 
-_Issue opened by @qarmin on 2023-05-12 21:15_
+_@qarmin_
 
 Ruff f5be3d8e5b2e3f3a0c5890075b552371f4061023
 

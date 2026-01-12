@@ -12,14 +12,14 @@ head: zb/write-publish
 created_at: 2025-05-07T17:31:36Z
 updated_at: 2025-05-07T17:49:17Z
 url: https://github.com/astral-sh/ty/pull/250
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add write permissions to docker publish workflow
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 17:31_
+_@zanieb_
 
 Required to fix https://github.com/astral-sh/ty/actions/runs/14888707814
 

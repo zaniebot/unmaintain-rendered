@@ -13,14 +13,14 @@ head: micha/remove-scope-from-type-inference
 created_at: 2025-07-19T15:10:03Z
 updated_at: 2025-07-20T08:40:29Z
 url: https://github.com/astral-sh/ruff/pull/19430
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Remove the `scope` from `TypeInference` in release builds
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-19 15:10_
+_@MichaReiser_
 
 ## Summary
 

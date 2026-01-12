@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-07T09:44:55Z
 updated_at: 2024-09-07T16:08:26Z
 url: https://github.com/astral-sh/uv/issues/7162
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # UV not installing current package
 
 ---
 
-_Issue opened by @danieleades on 2024-09-07 09:44_
+_@danieleades_
 
 I'm seeing a change in UV behaviour where the current package is not being installed (either with `uv sync` or `uv run`)
 

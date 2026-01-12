@@ -13,14 +13,14 @@ head: fix-PLR6301-false-positive
 created_at: 2023-10-13T02:16:57Z
 updated_at: 2023-10-14T19:46:45Z
 url: https://github.com/astral-sh/ruff/pull/7933
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix false positive in `PLR6301`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-10-13 02:16_
+_@LaBatata101_
 
 ## Summary
 

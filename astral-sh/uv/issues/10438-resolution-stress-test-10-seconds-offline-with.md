@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T16:53:39Z
 updated_at: 2025-01-10T23:12:46Z
 url: https://github.com/astral-sh/uv/issues/10438
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Resolution stress test (>10 seconds offline with warm cache)
 
 ---
 
-_Issue opened by @notatallshaw on 2025-01-09 16:53_
+_@notatallshaw_
 
 First, I don't use these requirements anymore, they are based on requirements I used to use ~6 months ago, so this is not a priority for me, but I do use these as a smoke test for uv. These are reduced from the real requirements, which were built to match the [Airflow dockerfile](https://github.com/apache/airflow/blob/2.3.4/Dockerfile#L38), the Python 3.10 [Airflow constraints file](https://raw.githubusercontent.com/apache/airflow/constraints-2.3.4/constraints-3.10.txt), and other production and development requirements.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-26T06:48:47Z
 updated_at: 2025-01-26T16:27:42Z
 url: https://github.com/astral-sh/uv/issues/10965
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # can you implement a full update command
 
 ---
 
-_Issue opened by @oovaa on 2025-01-26 06:48_
+_@oovaa_
 
 ### Summary
 

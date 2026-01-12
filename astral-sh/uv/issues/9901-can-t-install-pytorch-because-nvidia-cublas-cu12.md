@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T01:57:25Z
 updated_at: 2024-12-15T16:47:01Z
 url: https://github.com/astral-sh/uv/issues/9901
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Can't install PyTorch because `nvidia-cublas-cu12` can't be installed
 
 ---
 
-_Issue opened by @AshkanArabim on 2024-12-15 01:57_
+_@AshkanArabim_
 
 I'm trying to create a docker container with PyTorch (aka `torch`). I closely followed [the documentation](https://docs.astral.sh/uv/guides/integration/pytorch/) but I just can't get it to work. I tried three methods, which I'll cover below
 

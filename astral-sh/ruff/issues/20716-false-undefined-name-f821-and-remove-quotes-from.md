@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-06T10:09:57Z
 updated_at: 2025-12-10T15:52:11Z
 url: https://github.com/astral-sh/ruff/issues/20716
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False undefined name (F821) and remove quotes from type annotation (UP037) when string is expected
 
 ---
 
-_Issue opened by @ShaiAvr on 2025-10-06 10:09_
+_@ShaiAvr_
 
 ### Summary
 

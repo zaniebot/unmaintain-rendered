@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T21:44:33Z
 updated_at: 2025-09-16T19:42:00Z
 url: https://github.com/astral-sh/ruff/issues/20120
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # F401 false positive on submodule imports
 
 ---
 
-_Issue opened by @gcbrownthrive on 2025-08-27 21:44_
+_@gcbrownthrive_
 
 ### Summary
 

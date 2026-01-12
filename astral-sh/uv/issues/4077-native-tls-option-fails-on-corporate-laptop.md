@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T21:05:12Z
 updated_at: 2024-12-12T23:40:17Z
 url: https://github.com/astral-sh/uv/issues/4077
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Native TLS option fails on corporate laptop.
 
 ---
 
-_Issue opened by @Syrus-at-Philips on 2024-06-05 21:05_
+_@Syrus-at-Philips_
 
 Previous versions, prior to 0.2.5 I think, worked on my corporate laptop that includes the Cisco Umbrella proxy. The current version 0.2.7 (and 0.2.6 and 0.2.5) appears to have broken support for native TLS, the `--native-tls` option does nothing. The issue is in the Windows environment. `uv` does still work on linux in WSL2 as long as I'm not connected to the corporate firewall.
 

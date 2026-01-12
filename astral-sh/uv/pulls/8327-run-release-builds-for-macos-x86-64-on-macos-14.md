@@ -13,14 +13,14 @@ head: zb/macos-x86_64
 created_at: 2024-10-18T13:36:48Z
 updated_at: 2024-10-18T15:01:54Z
 url: https://github.com/astral-sh/uv/pull/8327
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Run release builds for `macos-x86_64` on `macos-14` runners
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 13:36_
+_@zanieb_
 
 _No description provided._
 

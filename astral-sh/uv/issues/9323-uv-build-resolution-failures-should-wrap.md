@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T15:02:25Z
 updated_at: 2024-11-26T20:06:01Z
 url: https://github.com/astral-sh/uv/issues/9323
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # `uv build` resolution failures should wrap
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-21 15:02_
+_@charliermarsh_
 
 See: 
 ![Screenshot 2024-11-21 at 8 55 30 AM](https://github.com/user-attachments/assets/18b72623-7bd2-4632-895c-5223ef9df715)

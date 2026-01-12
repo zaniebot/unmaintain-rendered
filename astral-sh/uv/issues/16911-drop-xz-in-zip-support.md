@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T17:05:52Z
 updated_at: 2025-12-03T08:45:51Z
 url: https://github.com/astral-sh/uv/issues/16911
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Drop xz-in-ZIP support
 
 ---
 
-_Issue opened by @woodruffw on 2025-12-01 17:05_
+_@woodruffw_
 
 It'd be nice to reduce the footprint of our decompression stack to only the decompression schemes Python packaging (widely) uses. One that we could potentially eliminate is xz/lzma, since only a tiny minority of Python wheel distributions (should) be using it.
 

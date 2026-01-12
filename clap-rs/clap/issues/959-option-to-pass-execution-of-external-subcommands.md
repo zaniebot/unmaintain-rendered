@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-05-12T18:47:37Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/959
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Option to pass execution of external subcommands to implementing binaries.
 
 ---
 
-_Issue opened by @nicholastmosher on 2017-05-12 18:47_
+_@nicholastmosher_
 
 I'm trying to create an application with a top-level interface that's extensible by third-party applications, similarly to how `git` and `cargo` work. I've posted a more detailed explanation of my use case on the [users forum](https://users.rust-lang.org/t/using-external-subcommands-with-clap/10753).
 

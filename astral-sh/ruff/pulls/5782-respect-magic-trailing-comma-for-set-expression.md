@@ -13,14 +13,14 @@ head: use-comma-separated-for-set-expr
 created_at: 2023-07-15T16:32:53Z
 updated_at: 2023-07-15T17:05:17Z
 url: https://github.com/astral-sh/ruff/pull/5782
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Respect magic trailing comma for set expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-15 16:32_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

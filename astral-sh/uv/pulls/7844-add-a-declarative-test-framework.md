@@ -13,14 +13,14 @@ head: konsti/declarative-tests
 created_at: 2024-10-01T14:23:07Z
 updated_at: 2025-03-10T23:04:11Z
 url: https://github.com/astral-sh/uv/pull/7844
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Add a declarative test framework
 
 ---
 
-_Pull request opened by @konstin on 2024-10-01 14:23_
+_@konstin_
 
 While reviewing the index PRs, the tests all followed the same structure; they weren't so much test logic as a sequence of writing files, a test context command and snapshotting output and files.
 

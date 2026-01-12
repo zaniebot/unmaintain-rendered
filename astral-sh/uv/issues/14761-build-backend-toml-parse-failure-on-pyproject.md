@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-20T20:56:39Z
 updated_at: 2025-07-20T21:39:47Z
 url: https://github.com/astral-sh/uv/issues/14761
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # build backend toml parse failure on pyproject readme
 
 ---
 
-_Issue opened by @CoderJoshDK on 2025-07-20 20:56_
+_@CoderJoshDK_
 
 ### Summary
 

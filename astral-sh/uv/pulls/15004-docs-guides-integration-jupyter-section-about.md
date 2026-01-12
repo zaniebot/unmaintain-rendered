@@ -11,14 +11,14 @@ head: doc/uv-jupyter-kernel
 created_at: 2025-07-31T18:01:36Z
 updated_at: 2025-12-02T14:18:43Z
 url: https://github.com/astral-sh/uv/pull/15004
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # docs/guides/integration/jupyter: section about ephemeral environments
 
 ---
 
-_Pull request opened by @lucasew on 2025-07-31 18:01_
+_@lucasew_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T22:05:44Z
 updated_at: 2025-02-28T01:27:19Z
 url: https://github.com/astral-sh/uv/issues/11841
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Local variant preference should take availability of distributions into account
 
 ---
 
-_Issue opened by @paveldikov on 2025-02-27 22:05_
+_@paveldikov_
 
 ### Summary
 

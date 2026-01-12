@@ -14,14 +14,14 @@ head: dhruv/empty-unpacking
 created_at: 2025-06-04T02:37:43Z
 updated_at: 2025-06-04T02:40:35Z
 url: https://github.com/astral-sh/ruff/pull/18451
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Add tests for empty list/tuple unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-04 02:37_
+_@dhruvmanila_
 
 ## Summary
 

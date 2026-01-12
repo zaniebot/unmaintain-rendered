@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T21:27:13Z
 updated_at: 2023-10-25T22:10:24Z
 url: https://github.com/astral-sh/ruff/issues/8229
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Format as lint rule
 
 ---
 
-_Issue opened by @hmvp on 2023-10-25 21:27_
+_@hmvp_
 
 Congrats on the release with the new formatter. Besides a few changed lines that I still need to investigate It looks really good!
 

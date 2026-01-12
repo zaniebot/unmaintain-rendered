@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T10:40:33Z
 updated_at: 2025-03-11T08:33:04Z
 url: https://github.com/astral-sh/ruff/issues/16225
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Remove log notification for server debug info
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-18 10:40_
+_@dhruvmanila_
 
 ### Description
 

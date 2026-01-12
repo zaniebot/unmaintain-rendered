@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-09T18:59:13Z
 updated_at: 2022-11-09T20:05:31Z
 url: https://github.com/clap-rs/clap/issues/4470
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # possible bug? clap 4 no longer outputting colored help when compiled with the `color` feature
 
 ---
 
-_Issue opened by @EverlastingBugstopper on 2022-11-09 18:59_
+_@EverlastingBugstopper_
 
 Hi! I'm attempting to update a repository from clap 3 to clap 4 (https://github.com/apollographql/rover/pull/1404) and I'm noticing that the output of `cargo run -- --help` is no longer colored! I tried to manually enable the color feature, in addition to setting `ColorChoice::Always`, but the output of the help command is still grayscale.
 

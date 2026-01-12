@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T21:56:57Z
 updated_at: 2025-01-14T22:55:28Z
 url: https://github.com/astral-sh/uv/issues/10614
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # `uv run` output mentions `.python-version` file, but none is present
 
 ---
 
-_Issue opened by @thedch on 2025-01-14 21:56_
+_@thedch_
 
 ```
 ❯ ls .python-version .venv pyproject.toml

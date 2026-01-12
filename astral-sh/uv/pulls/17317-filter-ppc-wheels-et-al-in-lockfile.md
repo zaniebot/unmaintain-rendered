@@ -13,14 +13,14 @@ head: charlie/fil
 created_at: 2026-01-04T19:01:43Z
 updated_at: 2026-01-05T17:07:00Z
 url: https://github.com/astral-sh/uv/pull/17317
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Filter PPC wheels et al in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 19:01_
+_@charliermarsh_
 
 ## Summary
 

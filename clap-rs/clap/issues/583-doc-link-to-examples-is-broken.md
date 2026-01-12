@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-15T12:52:02Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/583
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Doc: Link to examples is broken
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-07-15 12:52_
+_@matthiasbeyer_
 
 The crate doc links to 
 

@@ -13,14 +13,14 @@ head: charlie/extra
 created_at: 2023-12-12T22:27:10Z
 updated_at: 2023-12-13T17:36:29Z
 url: https://github.com/astral-sh/uv/pull/627
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Avoid hard-error for non-existent extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 22:27_
+_@charliermarsh_
 
 ## Summary
 

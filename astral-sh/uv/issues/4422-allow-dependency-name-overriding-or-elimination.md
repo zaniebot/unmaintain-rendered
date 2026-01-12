@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-20T11:27:07Z
 updated_at: 2025-10-31T14:18:11Z
 url: https://github.com/astral-sh/uv/issues/4422
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Allow dependency name overriding or elimination
 
 ---
 
-_Issue opened by @leorochael on 2024-06-20 11:27_
+_@leorochael_
 
 While `uv` now has overrides, and issue #2686 is suggesting being able to declare certain overrides as pertaining to a specific dependency, I have an additional suggestion/request.
 

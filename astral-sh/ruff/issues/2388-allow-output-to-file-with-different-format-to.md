@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-31T11:42:16Z
 updated_at: 2025-11-12T22:07:07Z
 url: https://github.com/astral-sh/ruff/issues/2388
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Allow output to file with different format to output to console
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 11:42_
+_@ngnpope_
 
 Currently, when running in CI I have to do the following, e.g. in a (simplified) `.gitlab-ci.yml`:
 

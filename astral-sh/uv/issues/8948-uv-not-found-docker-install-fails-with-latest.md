@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T16:00:43Z
 updated_at: 2025-04-01T08:34:24Z
 url: https://github.com/astral-sh/uv/issues/8948
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # UV not found; Docker install fails with latest install and `v0.5.0`
 
 ---
 
-_Issue opened by @dwillhelm on 2024-11-08 16:00_
+_@dwillhelm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

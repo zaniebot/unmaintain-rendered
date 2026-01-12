@@ -14,14 +14,14 @@ head: stop_iteration_return
 created_at: 2025-10-07T04:42:47Z
 updated_at: 2025-10-23T22:02:42Z
 url: https://github.com/astral-sh/ruff/pull/20733
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [`pylint`] Implement `stop-iteration-return` (`PLR1708`)
 
 ---
 
-_Pull request opened by @fatelei on 2025-10-07 04:42_
+_@fatelei_
 
 ## Summary
 

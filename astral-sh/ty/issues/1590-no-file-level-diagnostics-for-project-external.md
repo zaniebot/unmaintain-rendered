@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T11:10:06Z
 updated_at: 2025-11-19T12:20:35Z
 url: https://github.com/astral-sh/ty/issues/1590
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # No file-level diagnostics for project-external files
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-19 11:10_
+_@sharkdp_
 
 ### Summary
 

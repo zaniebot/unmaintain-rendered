@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T21:44:25Z
 updated_at: 2025-08-20T13:47:45Z
 url: https://github.com/astral-sh/uv/issues/15384
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Intention of uv tool vs uv run
 
 ---
 
-_Issue opened by @wallacms on 2025-08-19 21:44_
+_@wallacms_
 
 ### Question
 

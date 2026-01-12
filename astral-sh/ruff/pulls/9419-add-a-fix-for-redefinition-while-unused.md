@@ -14,14 +14,14 @@ head: charlie/F811
 created_at: 2024-01-07T01:59:38Z
 updated_at: 2024-01-09T00:37:06Z
 url: https://github.com/astral-sh/ruff/pull/9419
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add a fix for `redefinition-while-unused`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-07 01:59_
+_@charliermarsh_
 
 ## Summary
 

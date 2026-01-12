@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T19:50:16Z
 updated_at: 2025-10-21T12:24:16Z
 url: https://github.com/astral-sh/uv/issues/9425
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # `uv add onnxruntime` fails to fetch latest version of package compatible with my environment's Python
 
 ---
 
-_Issue opened by @sebastian-correa on 2024-11-25 19:50_
+_@sebastian-correa_
 
 When adding `onnxruntime` in Python 3.9, `uv` fails to resolve `1.19.2` and instead fails. `onnxruntime` `1.20.0` dropped support for Python 3.9. Could this be related to `onnxruntime` as `poetry add` also "fails" (it installs a wrong version and explodes in the process)?
 

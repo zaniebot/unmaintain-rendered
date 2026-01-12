@@ -13,14 +13,14 @@ head: fix-AIR302-typo
 created_at: 2024-12-31T07:32:40Z
 updated_at: 2025-01-23T08:50:10Z
 url: https://github.com/astral-sh/ruff/pull/15211
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`airflow`] Remove additional spaces (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-31 07:32_
+_@Lee-W_
 
 
 <!--

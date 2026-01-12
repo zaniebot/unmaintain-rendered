@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-14T00:14:31Z
 updated_at: 2024-06-14T12:04:52Z
 url: https://github.com/astral-sh/uv/issues/4321
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # With rye {root:uri}/../../packages/ seems to traverse more than 2 folders up
 
 ---
 
-_Issue opened by @ShravanSunder on 2024-06-14 00:14_
+_@ShravanSunder_
 
 i'm trying to use rye sync with a python monorepo and root:uri
 

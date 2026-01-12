@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T13:15:56Z
 updated_at: 2025-01-21T14:07:13Z
 url: https://github.com/astral-sh/uv/issues/10812
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Add `--local` flag
 
 ---
 
-_Issue opened by @morags on 2025-01-21 13:15_
+_@morags_
 
 # Feature request
 

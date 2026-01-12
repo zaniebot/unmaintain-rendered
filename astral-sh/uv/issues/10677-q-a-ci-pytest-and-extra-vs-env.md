@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T13:38:19Z
 updated_at: 2025-01-16T13:39:08Z
 url: https://github.com/astral-sh/uv/issues/10677
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # [Q&A] CI, pytest and extra vs env.
 
 ---
 
-_Issue opened by @ego-thales on 2025-01-16 13:38_
+_@ego-thales_
 
 Hello,
 

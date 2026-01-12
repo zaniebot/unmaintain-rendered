@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T04:29:58Z
 updated_at: 2024-11-12T14:56:00Z
 url: https://github.com/astral-sh/uv/issues/9045
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Better error for git dependencies
 
 ---
 
-_Issue opened by @dimaqq on 2024-11-12 04:29_
+_@dimaqq_
 
 Out of the box:
 

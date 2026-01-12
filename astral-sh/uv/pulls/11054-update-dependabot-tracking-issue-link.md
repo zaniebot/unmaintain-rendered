@@ -13,14 +13,14 @@ head: update-dependabot-links
 created_at: 2025-01-29T09:44:03Z
 updated_at: 2025-01-29T14:58:40Z
 url: https://github.com/astral-sh/uv/pull/11054
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Update Dependabot tracking issue link
 
 ---
 
-_Pull request opened by @bobwhitelock on 2025-01-29 09:44_
+_@bobwhitelock_
 
 ## Summary
 

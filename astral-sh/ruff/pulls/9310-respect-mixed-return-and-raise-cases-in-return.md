@@ -13,14 +13,14 @@ head: charlie/tweak
 created_at: 2023-12-29T16:18:52Z
 updated_at: 2023-12-29T16:56:02Z
 url: https://github.com/astral-sh/ruff/pull/9310
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Respect mixed `return` and `raise` cases in return-type analysis
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-29 16:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/size
 created_at: 2024-01-25T17:56:48Z
 updated_at: 2024-01-26T14:25:35Z
 url: https://github.com/astral-sh/uv/pull/1101
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Set buffer size when unzipping
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 17:56_
+_@charliermarsh_
 
 The zip archive includes an uncompressed size header, which we can use to preallocate.
 

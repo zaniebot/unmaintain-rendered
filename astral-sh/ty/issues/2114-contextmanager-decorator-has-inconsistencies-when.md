@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-19T16:26:43Z
 updated_at: 2025-12-24T03:35:11Z
 url: https://github.com/astral-sh/ty/issues/2114
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `contextmanager` decorator has inconsistencies when combined with `staticmethod`
 
 ---
 
-_Issue opened by @mflova on 2025-12-19 16:26_
+_@mflova_
 
 ### Summary
 

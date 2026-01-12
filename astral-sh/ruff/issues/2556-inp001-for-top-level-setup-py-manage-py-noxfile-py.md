@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-03T21:40:42Z
 updated_at: 2023-04-10T09:17:00Z
 url: https://github.com/astral-sh/ruff/issues/2556
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `INP001` for top level `setup.py`, `manage.py`, `noxfile.py`
 
 ---
 
-_Issue opened by @scop on 2023-02-03 21:40_
+_@scop_
 
 ruff 0.0.240 issues `INP001` for some commonly found top level files, such as
 

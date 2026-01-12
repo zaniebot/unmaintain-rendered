@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T15:37:42Z
 updated_at: 2025-04-14T19:14:32Z
 url: https://github.com/astral-sh/uv/issues/12626
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # ValueError: Dev mode installations are unsupported with path rewrite
 
 ---
 
-_Issue opened by @liquidcarbon on 2025-04-02 15:37_
+_@liquidcarbon_
 
 ### Question
 

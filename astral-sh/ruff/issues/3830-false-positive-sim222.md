@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T16:26:42Z
 updated_at: 2023-03-31T18:50:36Z
 url: https://github.com/astral-sh/ruff/issues/3830
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive: SIM222
 
 ---
 
-_Issue opened by @AA-Turner on 2023-03-31 16:26_
+_@AA-Turner_
 
 Ruff 0.0.260
 

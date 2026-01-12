@@ -13,14 +13,14 @@ head: charlie/backslash
 created_at: 2023-06-26T01:35:52Z
 updated_at: 2023-06-26T02:15:52Z
 url: https://github.com/astral-sh/ruff/pull/5360
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Improve backslash-detection rule for docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-26 01:35_
+_@charliermarsh_
 
 _No description provided._
 

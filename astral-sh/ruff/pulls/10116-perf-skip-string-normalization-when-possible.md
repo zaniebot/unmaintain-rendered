@@ -14,14 +14,14 @@ head: perf-string-normalization
 created_at: 2024-02-25T10:08:36Z
 updated_at: 2024-02-26T17:39:20Z
 url: https://github.com/astral-sh/ruff/pull/10116
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Perf: Skip string normalization when possible
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-25 10:08_
+_@MichaReiser_
 
 ## Summary
 

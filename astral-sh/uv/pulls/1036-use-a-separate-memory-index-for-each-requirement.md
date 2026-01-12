@@ -13,14 +13,14 @@ head: charlie/cancel
 created_at: 2024-01-22T16:19:12Z
 updated_at: 2024-01-22T16:22:04Z
 url: https://github.com/astral-sh/uv/pull/1036
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Use a separate memory index for each requirement
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 16:19_
+_@charliermarsh_
 
 Closes #1005.
 

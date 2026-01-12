@@ -13,14 +13,14 @@ head: konsti/choose-version-refactoring
 created_at: 2024-06-26T12:23:59Z
 updated_at: 2024-06-26T13:15:29Z
 url: https://github.com/astral-sh/uv/pull/4543
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Break `choose_version` into three methods
 
 ---
 
-_Pull request opened by @konstin on 2024-06-26 12:23_
+_@konstin_
 
 `ResolverState::choose_version` had become huge, with an odd match due to the url handling from #4435. This refactoring breaks it into `choose_version`, `choose_version_registry` and `choose_version_url`. No functional changes.
 

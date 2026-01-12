@@ -14,14 +14,14 @@ head: fixinvalidhandlers
 created_at: 2026-01-09T12:09:24Z
 updated_at: 2026-01-10T19:48:49Z
 url: https://github.com/astral-sh/uv/pull/17374
-synced_at: 2026-01-12T02:26:33Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # fix: add Win32_Storage_FileSystem feature and improve handle closing logic
 
 ---
 
-_Pull request opened by @zelosleone on 2026-01-09 12:09_
+_@zelosleone_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

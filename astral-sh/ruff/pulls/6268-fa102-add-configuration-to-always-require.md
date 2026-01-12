@@ -11,14 +11,14 @@ head: ann-future-required
 created_at: 2023-08-02T08:37:08Z
 updated_at: 2023-09-15T01:15:19Z
 url: https://github.com/astral-sh/ruff/pull/6268
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # FA102: add configuration to always require `annotations` future when annotations used
 
 ---
 
-_Pull request opened by @akx on 2023-08-02 08:37_
+_@akx_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/types
 created_at: 2023-08-04T02:48:50Z
 updated_at: 2023-08-04T03:14:11Z
 url: https://github.com/astral-sh/ruff/pull/6326
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Match left-hand side `types()` call in `types-comparison`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 02:48_
+_@charliermarsh_
 
 Follow-up to https://github.com/astral-sh/ruff/pull/6325, to avoid false positives in cases like:
 

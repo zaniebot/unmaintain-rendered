@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-09T14:57:10Z
 updated_at: 2025-09-09T15:06:51Z
 url: https://github.com/astral-sh/uv/issues/15754
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # With Docker, why bind mount pyproject.toml+uv.lock instead of COPYing them?
 
 ---
 
-_Issue opened by @quinn-soartech on 2025-09-09 14:57_
+_@quinn-soartech_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: charlie/complex
 created_at: 2023-07-25T15:27:41Z
 updated_at: 2023-07-25T16:02:13Z
 url: https://github.com/astral-sh/ruff/pull/6073
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Set default `max-complexity` to 10 for empty McCabe settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-25 15:27_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6058.
 

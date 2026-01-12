@@ -13,14 +13,14 @@ head: rule/useless-try
 created_at: 2023-05-16T22:36:14Z
 updated_at: 2023-05-18T21:25:20Z
 url: https://github.com/astral-sh/ruff/pull/4461
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement TRY302 - `raise` after `except`
 
 ---
 
-_Pull request opened by @john-h-k on 2023-05-16 22:36_
+_@john-h-k_
 
 Fixes #4308 
 

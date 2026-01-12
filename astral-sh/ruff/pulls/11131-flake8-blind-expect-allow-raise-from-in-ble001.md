@@ -13,14 +13,14 @@ head: ble001-raise-from
 created_at: 2024-04-24T15:39:54Z
 updated_at: 2024-04-24T15:59:25Z
 url: https://github.com/astral-sh/ruff/pull/11131
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`flake8-blind-expect`] Allow raise from in `BLE001`
 
 ---
 
-_Pull request opened by @autinerd on 2024-04-24 15:39_
+_@autinerd_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

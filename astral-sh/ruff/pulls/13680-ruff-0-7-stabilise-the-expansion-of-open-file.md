@@ -13,14 +13,14 @@ head: stabilise-SIM115-behaviour
 created_at: 2024-10-08T13:08:50Z
 updated_at: 2024-10-08T13:41:50Z
 url: https://github.com/astral-sh/ruff/pull/13680
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [ruff-0.7] Stabilise the expansion of `open-file-with-context-handler` to work with other standard-library IO modules (`SIM115`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-08 13:08_
+_@AlexWaygood_
 
 ## Summary
 

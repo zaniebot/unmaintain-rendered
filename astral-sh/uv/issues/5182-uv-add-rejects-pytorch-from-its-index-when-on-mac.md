@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T12:25:05Z
 updated_at: 2025-04-10T16:32:30Z
 url: https://github.com/astral-sh/uv/issues/5182
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv add` rejects pytorch from its index when on mac
 
 ---
 
-_Issue opened by @baggiponte on 2024-07-18 12:25_
+_@baggiponte_
 
 I am trying to use `uv` to add torch to my project's dependencies, but it fails. I am on macOS14.4.1 (ARM).
 

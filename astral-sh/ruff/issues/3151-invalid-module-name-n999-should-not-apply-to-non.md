@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-23T00:16:13Z
 updated_at: 2023-02-23T00:38:48Z
 url: https://github.com/astral-sh/ruff/issues/3151
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # invalid-module-name (N999) should not apply to non-`*.py` files
 
 ---
 
-_Issue opened by @andersk on 2023-02-23 00:16_
+_@andersk_
 
 A script that isn’t named `*.py` ([example](https://github.com/zulip/zulip/blob/6.1/scripts/restart-server)) must be intended to be invoked from the command line, not imported as a module. So it doesn’t matter if its name is an invalid module name, and we should not emit
 

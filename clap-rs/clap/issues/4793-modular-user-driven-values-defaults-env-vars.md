@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-27T18:20:19Z
 updated_at: 2023-03-27T18:30:20Z
 url: https://github.com/clap-rs/clap/issues/4793
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [modular] User-driven values (defaults, env vars, implied values, etc)
 
 ---
 
-_Issue opened by @epage on 2023-03-27 18:20_
+_@epage_
 
 With clap today, each value source needs to be hard coded, including
 - `default_value`

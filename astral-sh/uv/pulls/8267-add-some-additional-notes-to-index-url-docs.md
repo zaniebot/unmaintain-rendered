@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-10-16T18:45:46Z
 updated_at: 2024-10-16T18:57:56Z
 url: https://github.com/astral-sh/uv/pull/8267
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Add some additional notes to `--index-url` docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-16 18:45_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-20T11:31:03Z
 updated_at: 2025-12-31T16:56:59Z
 url: https://github.com/astral-sh/ty/issues/2129
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Make it easier for users to select rules based on strictness (profiles, rule categories)
 
 ---
 
-_Issue opened by @OEvortex on 2025-12-20 11:31_
+_@OEvortex_
 
 I’d like a per-project (or workspace) toggle to enable or disable Python type checking similar to Pylance’s "Type Checking Mode" (off/basic/strict). This should let users quickly switch type checking behavior without changing global settings or editing config files.
 

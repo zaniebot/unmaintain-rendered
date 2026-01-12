@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-23T06:33:21Z
 updated_at: 2023-03-23T07:16:35Z
 url: https://github.com/astral-sh/ruff/issues/3677
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Feature Request] Inherit settings from parent directory for `ruff.toml` config files
 
 ---
 
-_Issue opened by @XuehaiPan on 2023-03-23 06:33_
+_@XuehaiPan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

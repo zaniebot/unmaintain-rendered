@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-10T08:04:09Z
 updated_at: 2024-06-10T14:22:01Z
 url: https://github.com/astral-sh/uv/issues/4189
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `Toolchain::find_all` unwrap can panic
 
 ---
 
-_Issue opened by @konstin on 2024-06-10 08:04_
+_@konstin_
 
 The following unwrap in toolchain discovery can panic:
 

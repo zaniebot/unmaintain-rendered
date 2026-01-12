@@ -13,14 +13,14 @@ head: uv-bin-py38
 created_at: 2025-08-19T12:54:46Z
 updated_at: 2025-08-19T13:06:04Z
 url: https://github.com/astral-sh/uv/pull/15379
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Mark `find_uv_bin_py38` test as requiring `python-eol`
 
 ---
 
-_Pull request opened by @mgorny on 2025-08-19 12:54_
+_@mgorny_
 
 ## Summary
 

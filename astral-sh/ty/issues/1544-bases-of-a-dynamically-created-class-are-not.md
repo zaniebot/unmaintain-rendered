@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-14T08:31:20Z
 updated_at: 2025-11-14T08:58:45Z
 url: https://github.com/astral-sh/ty/issues/1544
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Bases of a dynamically created class are not recognized
 
 ---
 
-_Issue opened by @m-pilia on 2025-11-14 08:31_
+_@m-pilia_
 
 ### Summary
 

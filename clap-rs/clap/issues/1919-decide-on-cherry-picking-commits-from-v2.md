@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-11T19:09:02Z
 updated_at: 2020-05-13T06:04:57Z
 url: https://github.com/clap-rs/clap/issues/1919
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Decide on cherry picking commits from v2
 
 ---
 
-_Issue opened by @pksunkara on 2020-05-11 19:09_
+_@pksunkara_
 
 So, I am working on the CHANGELOG which means looking at the commit history. I found the following commits which looks like that wasn't cherry picked to v3.
 

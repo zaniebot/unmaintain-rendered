@@ -12,14 +12,14 @@ head: charlie/background
 created_at: 2022-12-30T12:55:50Z
 updated_at: 2022-12-30T12:55:55Z
 url: https://github.com/astral-sh/ruff/pull/1478
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Set editor background on top-level component
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 12:55_
+_@charliermarsh_
 
 This avoids a flash of unstyled content when loading the WASM bundle.
 

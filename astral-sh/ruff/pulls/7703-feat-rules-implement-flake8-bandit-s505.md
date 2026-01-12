@@ -13,14 +13,14 @@ head: feat/add-flake8-bandit-S505
 created_at: 2023-09-28T21:13:12Z
 updated_at: 2023-09-29T06:08:19Z
 url: https://github.com/astral-sh/ruff/pull/7703
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # feat(rules): implement `flake8-bandit` `S505`
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-09-28 21:13_
+_@mkniewallner_
 
 Part of #1646.
 

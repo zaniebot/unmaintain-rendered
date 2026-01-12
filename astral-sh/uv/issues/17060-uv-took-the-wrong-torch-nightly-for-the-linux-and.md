@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T00:55:18Z
 updated_at: 2025-12-12T23:26:50Z
 url: https://github.com/astral-sh/uv/issues/17060
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # UV took the wrong torch nightly for the Linux and Windows Platform
 
 ---
 
-_Issue opened by @lanluo-nvidia on 2025-12-10 00:55_
+_@lanluo-nvidia_
 
 ### Summary
 

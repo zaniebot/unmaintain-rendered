@@ -14,14 +14,14 @@ head: zb/python-env-mdtest
 created_at: 2025-05-10T13:44:26Z
 updated_at: 2025-05-10T20:53:05Z
 url: https://github.com/astral-sh/ruff/pull/18006
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Remove vestigial `pyvenv.cfg` creation in mdtest
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-10 13:44_
+_@zanieb_
 
 Following #17991, removes some of https://github.com/astral-sh/ruff/pull/17222 which is no longer strictly necessary. I don't actually think it's that ugly to have around? no strong feelings on retaining it or not.
 

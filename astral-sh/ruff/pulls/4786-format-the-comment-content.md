@@ -14,14 +14,14 @@ head: format-comment-content
 created_at: 2023-06-01T14:21:52Z
 updated_at: 2023-06-03T13:16:06Z
 url: https://github.com/astral-sh/ruff/pull/4786
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format the comment content
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-01 14:21_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

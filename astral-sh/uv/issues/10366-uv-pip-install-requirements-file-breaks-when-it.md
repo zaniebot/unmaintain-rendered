@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T14:46:14Z
 updated_at: 2025-01-09T18:19:53Z
 url: https://github.com/astral-sh/uv/issues/10366
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # UV pip install requirements file breaks when it contains `--trusted-host`
 
 ---
 
-_Issue opened by @MattTheCuber on 2025-01-07 14:46_
+_@MattTheCuber_
 
 I apologize if this is a duplicate issue. I searched #1339 pretty thoroughly as well as #6591.
 

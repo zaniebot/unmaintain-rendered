@@ -13,14 +13,14 @@ head: dhruv/fix-string-error-pos
 created_at: 2024-03-14T04:13:32Z
 updated_at: 2024-03-19T14:12:09Z
 url: https://github.com/astral-sh/ruff/pull/10406
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix string parsing error ranges
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-14 04:13_
+_@dhruvmanila_
 
 ## Summary
 

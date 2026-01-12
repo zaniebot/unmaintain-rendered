@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-12T20:01:54Z
 updated_at: 2024-02-17T02:12:05Z
 url: https://github.com/astral-sh/uv/issues/1288
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Consider changing wording around "novel" features
 
 ---
 
-_Issue opened by @zanieb on 2024-02-12 20:01_
+_@zanieb_
 
 The README includes a note about novel features; we should verify these features are not available for other Python package managers and reconsider the wording.
 

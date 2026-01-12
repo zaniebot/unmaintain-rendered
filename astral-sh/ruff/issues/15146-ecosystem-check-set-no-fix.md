@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T09:28:24Z
 updated_at: 2025-01-06T09:21:36Z
 url: https://github.com/astral-sh/ruff/issues/15146
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ecosystem check: Set `--no-fix`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-12-26 09:28_
+_@MichaReiser_
 
               > It looks like in the ecosystem check a bunch of violations were removed with no fix, so I'm wondering if a syntax error was introduced by the fix. Maybe when there is a default argument something goes wrong?
 

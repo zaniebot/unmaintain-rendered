@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T06:04:42Z
 updated_at: 2024-07-23T12:20:15Z
 url: https://github.com/astral-sh/uv/issues/5329
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` fails with dot as path argument
 
 ---
 
-_Issue opened by @eth3lbert on 2024-07-23 06:04_
+_@eth3lbert_
 
 ```
 /tmp                                                                                                                                                                                           13:41:13

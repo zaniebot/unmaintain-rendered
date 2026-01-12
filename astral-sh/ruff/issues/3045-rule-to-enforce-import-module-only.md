@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-20T00:18:56Z
 updated_at: 2025-10-30T16:51:38Z
 url: https://github.com/astral-sh/ruff/issues/3045
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Rule to enforce import module only
 
 ---
 
-_Issue opened by @justinchuby on 2023-02-20 00:18_
+_@justinchuby_
 
 The google style guide recommends importing modules only. https://google.github.io/styleguide/pyguide.html#22-imports. It would be great if there’s a rule to enforce that. 
 

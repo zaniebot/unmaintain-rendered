@@ -13,14 +13,14 @@ head: alex/is-protocol
 created_at: 2025-04-19T21:44:37Z
 updated_at: 2025-04-21T15:17:10Z
 url: https://github.com/astral-sh/ruff/pull/17487
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Correctly identify protocol classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-19 21:44_
+_@AlexWaygood_
 
 ## Summary
 

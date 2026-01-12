@@ -12,14 +12,14 @@ head: add_last_updated
 created_at: 2025-02-02T11:09:02Z
 updated_at: 2025-06-17T06:22:55Z
 url: https://github.com/astral-sh/uv/pull/11164
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Add ``last updated`` for document
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-02-02 11:09_
+_@FishAlchemist_
 
 ## Summary
 ![image](https://github.com/user-attachments/assets/75431f9f-debe-435d-a02e-d216be7a3a01)

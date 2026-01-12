@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-25T08:00:51Z
 updated_at: 2023-10-03T01:38:07Z
 url: https://github.com/astral-sh/ruff/issues/7636
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improvement on reimplemented-starmap rule (FURB140)
 
 ---
 
-_Issue opened by @alexprengere on 2023-09-25 08:00_
+_@alexprengere_
 
 I tested Ruff 0.0.291 which implements FURB140. It works great! I have a suggestion to cover more use cases in the same spirit:
 

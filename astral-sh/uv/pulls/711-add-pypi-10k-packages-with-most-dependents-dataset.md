@@ -13,14 +13,14 @@ head: konsti/pypi_10k_most_dependents
 created_at: 2023-12-20T11:01:13Z
 updated_at: 2023-12-24T18:31:53Z
 url: https://github.com/astral-sh/uv/pull/711
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Add pypi 10k packages with most dependents dataset
 
 ---
 
-_Pull request opened by @konstin on 2023-12-20 11:01_
+_@konstin_
 
 From manual inspection, this dataset generated through the [libraries.io API](https://libraries.io/api#project-search) seems more mainstream than the current 8k one, which is also preserved. I've added the dataset to the repo because the API requires an API key.
 

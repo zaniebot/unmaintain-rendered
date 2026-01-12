@@ -11,14 +11,14 @@ head: help-config-path
 created_at: 2022-09-28T22:06:27Z
 updated_at: 2022-09-29T02:49:48Z
 url: https://github.com/astral-sh/ruff/pull/276
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Show user configuration file path in --help
 
 ---
 
-_Pull request opened by @andersk on 2022-09-28 22:06_
+_@andersk_
 
 Refs https://github.com/charliermarsh/ruff/pull/215#discussion_r973620904, #248.
 

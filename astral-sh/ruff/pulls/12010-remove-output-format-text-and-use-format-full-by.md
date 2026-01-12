@@ -15,14 +15,14 @@ head: output-format-full-by-default
 created_at: 2024-06-24T09:04:41Z
 updated_at: 2024-08-12T14:01:00Z
 url: https://github.com/astral-sh/ruff/pull/12010
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove output format `text` and use format `full` by default
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 09:04_
+_@MichaReiser_
 
 ## Summary
 

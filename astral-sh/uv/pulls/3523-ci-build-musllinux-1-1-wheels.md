@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-05-11T04:59:56Z
 updated_at: 2024-05-11T16:36:20Z
 url: https://github.com/astral-sh/uv/pull/3523
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # ci: build musllinux_1_1 wheels
 
 ---
 
-_Pull request opened by @henryiii on 2024-05-11 04:59_
+_@henryiii_
 
 This is needed to include uv in manylinux, which has both the musllinux_1_1 and musllinux_1_2 images.
 

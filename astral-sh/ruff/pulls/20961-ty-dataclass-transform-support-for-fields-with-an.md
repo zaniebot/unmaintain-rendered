@@ -14,14 +14,14 @@ head: david/dataclass_transform-alias
 created_at: 2025-10-18T17:29:14Z
 updated_at: 2025-10-18T18:34:44Z
 url: https://github.com/astral-sh/ruff/pull/20961
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] `dataclass_transform`: Support for fields with an `alias`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-18 17:29_
+_@sharkdp_
 
 ## Summary
 

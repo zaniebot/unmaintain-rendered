@@ -13,14 +13,14 @@ head: plw3201-ignore-override
 created_at: 2023-09-07T16:13:49Z
 updated_at: 2023-09-12T12:00:49Z
 url: https://github.com/astral-sh/ruff/pull/7224
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Ignore `@override` method when enforcing `bad-dunder-name` rule
 
 ---
 
-_Pull request opened by @brendonh8 on 2023-09-07 16:13_
+_@brendonh8_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

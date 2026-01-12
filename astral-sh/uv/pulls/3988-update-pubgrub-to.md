@@ -13,14 +13,14 @@ head: konsti/update-pubgrub3
 created_at: 2024-06-03T15:24:11Z
 updated_at: 2024-06-03T15:33:35Z
 url: https://github.com/astral-sh/uv/pull/3988
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Update pubgrub to d4795a31be17669aba11eb741b4a9086acc3eb11
 
 ---
 
-_Pull request opened by @konstin on 2024-06-03 15:24_
+_@konstin_
 
 I trimmed down the diff of our pubgrub fork with upstream and [d4795a31be17669aba11eb741b4a9086acc3eb11](https://github.com/astral-sh/pubgrub/commit/d4795a31be17669aba11eb741b4a9086acc3eb11) (diff: https://github.com/pubgrub-rs/pubgrub/compare/dev...astral-sh:pubgrub:perma-35) is the result.
 

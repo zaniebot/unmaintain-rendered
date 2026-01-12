@@ -14,14 +14,14 @@ head: feature/config-file
 created_at: 2025-05-14T01:55:30Z
 updated_at: 2025-05-27T06:00:38Z
 url: https://github.com/astral-sh/ruff/pull/18083
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Add --config-file CLI arg
 
 ---
 
-_Pull request opened by @thejchap on 2025-05-14 01:55_
+_@thejchap_
 
 ## Summary
 https://github.com/astral-sh/ty/issues/217

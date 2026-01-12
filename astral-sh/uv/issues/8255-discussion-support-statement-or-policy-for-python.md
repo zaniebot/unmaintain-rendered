@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T13:49:04Z
 updated_at: 2025-05-21T19:56:12Z
 url: https://github.com/astral-sh/uv/issues/8255
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Discussion: Support statement or policy for python
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-10-16 13:49_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

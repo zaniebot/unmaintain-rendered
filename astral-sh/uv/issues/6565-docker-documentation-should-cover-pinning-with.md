@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-24T03:16:48Z
 updated_at: 2025-04-01T16:27:46Z
 url: https://github.com/astral-sh/uv/issues/6565
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Docker documentation should cover pinning with sha256
 
 ---
 
-_Issue opened by @Ravencentric on 2024-08-24 03:16_
+_@Ravencentric_
 
 https://docs.astral.sh/uv/guides/integration/docker/ already recommends pinning by tag but it should also mention pinning by sha256 which is a more secure way of pinning. The package page (https://github.com/astral-sh/uv/pkgs/container/uv) should also be exposed somewhere because currently it's very hard to find
 

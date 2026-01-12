@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T22:45:48Z
 updated_at: 2025-12-30T07:30:51Z
 url: https://github.com/astral-sh/ty/issues/2266
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Built-in operators on `JustFloat`s should return `JustFloat`.
 
 ---
 
-_Issue opened by @Jammf on 2025-12-29 22:45_
+_@Jammf_
 
 ### Summary
 

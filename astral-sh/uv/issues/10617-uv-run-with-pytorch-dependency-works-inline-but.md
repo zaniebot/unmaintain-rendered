@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-14T23:16:20Z
 updated_at: 2025-01-15T00:20:42Z
 url: https://github.com/astral-sh/uv/issues/10617
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # `uv run` with PyTorch dependency works inline, but not for a script
 
 ---
 
-_Issue opened by @thedch on 2025-01-14 23:16_
+_@thedch_
 
 I read https://docs.astral.sh/uv/guides/integration/pytorch -- and I'm trying to get a script to run with a PyTorch dependency. It seems to work inline, but not with the actual script file.
 

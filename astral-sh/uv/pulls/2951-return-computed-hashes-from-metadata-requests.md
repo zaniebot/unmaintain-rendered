@@ -13,14 +13,14 @@ head: charlie/generate-hashes
 created_at: 2024-04-10T01:41:22Z
 updated_at: 2024-04-10T19:39:34Z
 url: https://github.com/astral-sh/uv/pull/2951
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Return computed hashes from metadata requests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-10 01:41_
+_@charliermarsh_
 
 ## Summary
 

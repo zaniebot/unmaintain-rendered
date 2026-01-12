@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T06:28:11Z
 updated_at: 2024-09-06T03:52:41Z
 url: https://github.com/astral-sh/uv/issues/7069
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Support git URLs in project.dependencies
 
 ---
 
-_Issue opened by @daviewales on 2024-09-05 06:28_
+_@daviewales_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

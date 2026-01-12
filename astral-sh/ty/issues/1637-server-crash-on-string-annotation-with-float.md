@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T21:20:14Z
 updated_at: 2025-11-25T22:09:47Z
 url: https://github.com/astral-sh/ty/issues/1637
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Server crash on string annotation with `float`/`complex`
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-25 21:20_
+_@MeGaGiGaGon_
 
 ### Summary
 

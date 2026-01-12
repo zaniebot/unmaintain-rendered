@@ -15,14 +15,14 @@ head: notebook-module-docstring
 created_at: 2024-02-12T17:55:52Z
 updated_at: 2024-02-12T18:18:19Z
 url: https://github.com/astral-sh/ruff/pull/9957
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Disable top-level docstring formatting for notebooks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-12 17:55_
+_@MichaReiser_
 
 ## Summary
 

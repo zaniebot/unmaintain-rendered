@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T16:53:04Z
 updated_at: 2025-03-19T17:15:15Z
 url: https://github.com/astral-sh/uv/issues/12318
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # `error: Failed to generate package metadata` for locally installed package (`Failed to deserialize cache entry`)
 
 ---
 
-_Issue opened by @pnovotnak on 2025-03-19 16:53_
+_@pnovotnak_
 
 ### Summary
 

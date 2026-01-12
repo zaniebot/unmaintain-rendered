@@ -13,14 +13,14 @@ head: charlie/local-req
 created_at: 2024-06-25T17:54:05Z
 updated_at: 2024-06-25T18:06:38Z
 url: https://github.com/astral-sh/uv/pull/4525
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Allow local index references in `requirements.txt` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 17:54_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: 3792_markdown
 created_at: 2023-06-15T17:19:10Z
 updated_at: 2023-06-20T17:52:05Z
 url: https://github.com/astral-sh/ruff/pull/5123
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [Markdown Parser] Add `CodeExtractor` trait for extracting source code from a file
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 17:19_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

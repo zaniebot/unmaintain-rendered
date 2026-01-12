@@ -13,14 +13,14 @@ head: ibraheem/variance-in-argument
 created_at: 2026-01-01T01:37:14Z
 updated_at: 2026-01-09T22:12:53Z
 url: https://github.com/astral-sh/ruff/pull/22322
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Inform literal promotion with variance of inferred argument types
 
 ---
 
-_Pull request opened by @ibraheemdev on 2026-01-01 01:37_
+_@ibraheemdev_
 
 ## Summary
 

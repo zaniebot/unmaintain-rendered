@@ -13,14 +13,14 @@ head: fix-generator-parenthesization
 created_at: 2023-09-07T17:12:01Z
 updated_at: 2023-09-08T08:53:35Z
 url: https://github.com/astral-sh/ruff/pull/7226
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Preserve generator parentheses in single argument call expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 17:12_
+_@MichaReiser_
 
 ## Summary
 

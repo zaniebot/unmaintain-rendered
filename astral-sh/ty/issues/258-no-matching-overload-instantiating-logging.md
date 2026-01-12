@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T00:56:25Z
 updated_at: 2025-05-19T15:45:42Z
 url: https://github.com/astral-sh/ty/issues/258
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # “no-matching-overload” instantiating logging.StreamHandler
 
 ---
 
-_Issue opened by @turian on 2025-05-08 00:56_
+_@turian_
 
 ### Summary
 

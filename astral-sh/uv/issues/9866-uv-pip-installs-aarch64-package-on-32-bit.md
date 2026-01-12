@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T12:17:35Z
 updated_at: 2024-12-17T13:48:35Z
 url: https://github.com/astral-sh/uv/issues/9866
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # uv pip installs aarch64 package on 32-bit raspberry pi os, uv python3 -m pip installs correct version (gnueabihf / armv7)
 
 ---
 
-_Issue opened by @elcojacobs on 2024-12-13 12:17_
+_@elcojacobs_
 
 I have an issue installing the pydantic-core package on a raspberry pi 4 (64-bit) running a 32-bit os.
 The kernel is 64-bit:

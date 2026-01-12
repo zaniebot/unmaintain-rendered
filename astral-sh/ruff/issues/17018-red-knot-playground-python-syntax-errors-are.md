@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-27T18:25:50Z
 updated_at: 2025-03-27T19:45:05Z
 url: https://github.com/astral-sh/ruff/issues/17018
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot playground] "Python syntax errors" are reported on TOML files
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-27 18:25_
+_@AlexWaygood_
 
 ### Summary
 

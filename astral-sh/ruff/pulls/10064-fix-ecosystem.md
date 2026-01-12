@@ -13,14 +13,14 @@ head: ecosystem-check
 created_at: 2024-02-20T14:50:55Z
 updated_at: 2024-02-20T15:54:51Z
 url: https://github.com/astral-sh/ruff/pull/10064
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix ecosystem
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-20 14:50_
+_@MichaReiser_
 
 
 ## Summary

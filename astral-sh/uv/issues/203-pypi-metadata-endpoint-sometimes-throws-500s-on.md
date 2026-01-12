@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T13:57:31Z
 updated_at: 2023-10-26T18:14:27Z
 url: https://github.com/astral-sh/uv/issues/203
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # pypi-metadata endpoint sometimes throws 500s on initial request
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 13:57_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: main
 created_at: 2024-12-12T13:11:52Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/9839
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Implement pip list --verbose
 
 ---
 
-_Pull request opened by @julienp on 2024-12-12 13:11_
+_@julienp_
 
 ## Summary
 

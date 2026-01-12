@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-16T07:16:41Z
 updated_at: 2025-05-16T07:40:49Z
 url: https://github.com/astral-sh/ty/issues/420
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [possibly-unbound-attribute] for NamedTuple
 
 ---
 
-_Issue opened by @varchasgopalaswamy on 2025-05-16 07:16_
+_@varchasgopalaswamy_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: dhruv/include-notebooks-by-default
 created_at: 2024-08-14T05:45:39Z
 updated_at: 2024-08-14T16:02:29Z
 url: https://github.com/astral-sh/ruff/pull/12878
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Stabilize support for Jupyter Notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-14 05:45_
+_@dhruvmanila_
 
 ## Summary
 

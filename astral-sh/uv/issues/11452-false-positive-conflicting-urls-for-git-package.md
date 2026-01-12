@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T16:15:40Z
 updated_at: 2025-05-28T13:04:55Z
 url: https://github.com/astral-sh/uv/issues/11452
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # False Positive conflicting URLs for Git Package Dependencies with private packages
 
 ---
 
-_Issue opened by @keidikapllani on 2025-02-12 16:15_
+_@keidikapllani_
 
 ### Summary
 

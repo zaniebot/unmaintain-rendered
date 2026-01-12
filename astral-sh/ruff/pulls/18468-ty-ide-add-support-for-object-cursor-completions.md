@@ -14,14 +14,14 @@ head: ag/completion-object
 created_at: 2025-06-04T18:57:57Z
 updated_at: 2025-06-06T05:52:20Z
 url: https://github.com/astral-sh/ruff/pull/18468
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] IDE: add support for `object.<CURSOR>` completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-04 18:57_
+_@BurntSushi_
 
 This PR adds logic for detecting `Name Dot [Name]` token patterns,
 finding the corresponding `ExprAttribute`, getting the type of the

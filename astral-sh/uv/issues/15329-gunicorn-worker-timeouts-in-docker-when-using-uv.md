@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-17T08:37:06Z
 updated_at: 2025-10-23T14:38:54Z
 url: https://github.com/astral-sh/uv/issues/15329
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Gunicorn worker timeouts in Docker when using uv run
 
 ---
 
-_Issue opened by @SoAp9035 on 2025-08-17 08:37_
+_@SoAp9035_
 
 ### Summary
 

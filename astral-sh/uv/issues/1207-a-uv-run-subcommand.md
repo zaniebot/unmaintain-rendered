@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-31T15:57:19Z
 updated_at: 2024-05-13T18:13:36Z
 url: https://github.com/astral-sh/uv/issues/1207
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # A `uv run` subcommand
 
 ---
 
-_Issue opened by @konstin on 2024-01-31 15:57_
+_@konstin_
 
 In the initial implementation, the `puffin run` subcommand looks for a venv in `.venv` in the current or any parent directory, activates it by setting `VIRTUAL_ENV` and `PATH` and then replaces itself with the python interpreter with the trailing args (on unix, it might be faster to not spawn a new process but load libpython and run `Py_Main`).
 

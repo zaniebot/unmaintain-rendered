@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-29T11:44:27Z
 updated_at: 2022-09-30T11:51:30Z
 url: https://github.com/astral-sh/ruff/issues/285
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Create `CONTRIBUTING.md`
 
 ---
 
-_Issue opened by @sobolevn on 2022-09-29 11:44_
+_@sobolevn_
 
 There are some things to be covered:
 

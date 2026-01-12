@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T19:48:09Z
 updated_at: 2025-06-23T14:27:10Z
 url: https://github.com/astral-sh/uv/issues/13901
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Generate an llms-text file to improve the experience of working with AI agents and UV.
 
 ---
 
-_Issue opened by @zerubeus on 2025-06-08 19:48_
+_@zerubeus_
 
 ### Summary
 

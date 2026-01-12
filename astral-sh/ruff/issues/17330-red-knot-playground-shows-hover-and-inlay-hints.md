@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-10T09:43:10Z
 updated_at: 2025-04-10T13:15:12Z
 url: https://github.com/astral-sh/ruff/issues/17330
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Playground shows hover and inlay hints twice after reset
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-10 09:43_
+_@MichaReiser_
 
 Click reset, then hover any expression or show the inlay hint. They should now appear twice.
 

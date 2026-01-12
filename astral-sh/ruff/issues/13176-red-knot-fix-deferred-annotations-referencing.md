@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-30T23:42:33Z
 updated_at: 2024-09-04T17:10:55Z
 url: https://github.com/astral-sh/ruff/issues/13176
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] fix deferred annotations referencing other scopes
 
 ---
 
-_Issue opened by @carljm on 2024-08-30 23:42_
+_@carljm_
 
 Our current handling for resolving deferred annotations uses the inferred types of symbols as they exist at the end of the current scope (rather than the current point in control flow of the current scope), which is correct (or at least the most reasonable option) since their resolution is deferred.
 

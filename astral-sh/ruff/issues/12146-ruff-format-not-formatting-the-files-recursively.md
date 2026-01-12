@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T08:38:51Z
 updated_at: 2024-07-04T05:27:54Z
 url: https://github.com/astral-sh/ruff/issues/12146
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff format` not formatting the files recursively but `ruff format folder/folder1/folder2/folder3` works
 
 ---
 
-_Issue opened by @vigneshmanick on 2024-07-02 08:38_
+_@vigneshmanick_
 
 This is a weird issue that i have encountered. I cannot also reproduce it in a similar folder structure outside the current project. I'll try to describe what happens.
 

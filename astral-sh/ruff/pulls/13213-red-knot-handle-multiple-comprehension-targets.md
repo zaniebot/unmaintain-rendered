@@ -13,14 +13,14 @@ head: dhruv/comprehension-multiple-target
 created_at: 2024-09-02T12:41:13Z
 updated_at: 2024-09-04T14:20:50Z
 url: https://github.com/astral-sh/ruff/pull/13213
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Handle multiple comprehension targets
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-02 12:41_
+_@dhruvmanila_
 
 ## Summary
 

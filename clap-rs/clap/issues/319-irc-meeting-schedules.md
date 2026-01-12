@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-10-19T08:05:57Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/319
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # IRC meeting schedules
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-10-19 08:05_
+_@WildCryptoFox_
 
 Considering the attempt for an IRC channel wasn't all that successful. How about a more scheduled meeting? The channel remains open for any discussion at any time regardless on scheduled discussions. I have been the only member for the past 11 days.
 

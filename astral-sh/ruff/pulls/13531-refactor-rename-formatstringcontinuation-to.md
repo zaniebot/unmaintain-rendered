@@ -13,14 +13,14 @@ head: micha/rename-format-string-continuation
 created_at: 2024-09-27T07:59:02Z
 updated_at: 2024-09-27T08:30:33Z
 url: https://github.com/astral-sh/ruff/pull/13531
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # refactor: Rename `FormatStringContinuation` to `FormatImplicitConcatenatedString`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-27 07:59_
+_@MichaReiser_
 
 ## Summary
 

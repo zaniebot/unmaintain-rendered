@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T14:27:13Z
 updated_at: 2025-08-04T11:49:39Z
 url: https://github.com/astral-sh/ty/issues/924
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Server clears and recomputes all workspace diagnostic every 2s
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-01 14:27_
+_@MichaReiser_
 
 I think this is due to me using a rather special path:
 

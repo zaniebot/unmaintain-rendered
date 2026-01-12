@@ -14,14 +14,14 @@ head: charlie/frozen
 created_at: 2024-07-19T13:00:24Z
 updated_at: 2024-07-19T13:18:33Z
 url: https://github.com/astral-sh/uv/pull/5214
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Add `--frozen` to `uv add`, `uv remove`, and `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 13:00_
+_@charliermarsh_
 
 ## Summary
 

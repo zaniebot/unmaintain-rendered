@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:13:16Z
 updated_at: 2021-12-09T16:41:04Z
 url: https://github.com/clap-rs/clap/issues/3118
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Using AppSettings::SubcommandsNegateReqs
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:13_
+_@epage_
 
 <a href="https://github.com/erickpires"><img src="https://avatars.githubusercontent.com/u/6362864?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [erickpires](https://github.com/erickpires)**
 _Friday Jul 13, 2018 at 19:26 GMT_

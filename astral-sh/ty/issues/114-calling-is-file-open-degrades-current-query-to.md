@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T06:35:19Z
 updated_at: 2025-08-15T07:00:08Z
 url: https://github.com/astral-sh/ty/issues/114
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Calling `is_file_open` degrades current query to durability LOW
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-23 06:35_
+_@MichaReiser_
 
 We noticed in https://github.com/astral-sh/ruff/pull/17463#discussion_r2054587050 that calling `is_file_open` degrades the durability of otherwise MEDIUM or HIGH durability queries to LOW because the `Project::open_files_set` and `Project::files` fields have durability LOW. 
 

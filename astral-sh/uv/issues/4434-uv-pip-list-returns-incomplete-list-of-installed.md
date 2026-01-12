@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-21T15:05:03Z
 updated_at: 2024-06-23T17:23:59Z
 url: https://github.com/astral-sh/uv/issues/4434
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # uv pip list returns incomplete list of installed packages
 
 ---
 
-_Issue opened by @lcheylus on 2024-06-21 15:05_
+_@lcheylus_
 
 uv 0.2.14 built from sources with Rust v1.79.0 on Debian testing (amd64)
 

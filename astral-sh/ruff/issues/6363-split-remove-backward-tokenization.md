@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-05T07:39:51Z
 updated_at: 2023-09-21T00:54:47Z
 url: https://github.com/astral-sh/ruff/issues/6363
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Split/Remove Backward tokenization
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-05 07:39_
+_@MichaReiser_
 
 The `SimpleTokenizer` supports backward lexing. The implementation will break when supporting Python 3.12's new F-String parsing because comments can now appear in parts that appear to be strings.
 

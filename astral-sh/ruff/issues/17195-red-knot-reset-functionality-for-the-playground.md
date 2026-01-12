@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T08:11:36Z
 updated_at: 2025-04-06T17:09:58Z
 url: https://github.com/astral-sh/ruff/issues/17195
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] 'Reset' functionality for the playground
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-04 08:11_
+_@sharkdp_
 
 It would be fantastic if the playground had a "reset" button. I often close the `knot.json` tab and then I need to manually recreate it or go to the Dev tools and clear local cache + reload the page.
 

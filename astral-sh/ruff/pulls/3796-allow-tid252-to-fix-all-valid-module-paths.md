@@ -13,14 +13,14 @@ head: fix-tid252-auto-fix
 created_at: 2023-03-29T15:26:56Z
 updated_at: 2023-03-29T19:50:43Z
 url: https://github.com/astral-sh/ruff/pull/3796
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow `TID252` to fix all valid module paths
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-29 15:26_
+_@JonathanPlasse_
 
 Allow module with uppercase letters to be auto-fixed.
 

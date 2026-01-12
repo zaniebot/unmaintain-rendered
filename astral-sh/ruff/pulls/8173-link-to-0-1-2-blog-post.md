@@ -13,14 +13,14 @@ head: zanie/012-blog
 created_at: 2023-10-24T16:57:43Z
 updated_at: 2023-10-24T17:24:13Z
 url: https://github.com/astral-sh/ruff/pull/8173
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Link to 0.1.2 blog post
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 16:57_
+_@zanieb_
 
 _No description provided._
 

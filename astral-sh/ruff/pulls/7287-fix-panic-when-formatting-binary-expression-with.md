@@ -13,14 +13,14 @@ head: fix-panic-implicit-concat-binary
 created_at: 2023-09-12T06:49:50Z
 updated_at: 2023-09-12T12:05:34Z
 url: https://github.com/astral-sh/ruff/pull/7287
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix panic when formatting binary expression with two implicit concatenated string operands
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-12 06:49_
+_@MichaReiser_
 
 
 ## Summary

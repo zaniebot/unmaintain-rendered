@@ -13,14 +13,14 @@ head: micha/test-salsa-perf
 created_at: 2025-04-10T07:53:56Z
 updated_at: 2025-05-03T17:46:39Z
 url: https://github.com/astral-sh/ruff/pull/17328
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Test performance implications of salsa #792
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-10 07:53_
+_@MichaReiser_
 
 https://github.com/salsa-rs/salsa/pull/792/commits
 

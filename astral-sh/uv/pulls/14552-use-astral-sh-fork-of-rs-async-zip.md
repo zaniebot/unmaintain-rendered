@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-07-10T22:13:57Z
 updated_at: 2025-07-10T23:00:24Z
 url: https://github.com/astral-sh/uv/pull/14552
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Use `astral-sh` fork of `rs-async-zip`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-10 22:13_
+_@charliermarsh_
 
 ## Summary
 

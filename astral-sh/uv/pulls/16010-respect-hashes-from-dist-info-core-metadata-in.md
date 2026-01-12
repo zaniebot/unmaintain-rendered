@@ -11,14 +11,14 @@ head: simple-metadata-hashes
 created_at: 2025-09-24T06:01:33Z
 updated_at: 2025-09-24T08:30:19Z
 url: https://github.com/astral-sh/uv/pull/16010
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Respect hashes from dist-info/core-metadata in simple package index
 
 ---
 
-_Pull request opened by @adisbladis on 2025-09-24 06:01_
+_@adisbladis_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: david/fix-1091
 created_at: 2025-08-26T15:32:29Z
 updated_at: 2025-08-28T00:45:28Z
 url: https://github.com/astral-sh/ruff/pull/20098
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Optimize TDD atom ordering
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-26 15:32_
+_@sharkdp_
 
 ## Summary
 

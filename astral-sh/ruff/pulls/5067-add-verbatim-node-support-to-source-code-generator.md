@@ -11,14 +11,14 @@ head: charlie/verbatim
 created_at: 2023-06-13T22:50:03Z
 updated_at: 2023-07-14T03:07:34Z
 url: https://github.com/astral-sh/ruff/pull/5067
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add "verbatim" node support to source code generator
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 22:50_
+_@charliermarsh_
 
 ## Summary
 

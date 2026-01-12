@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T05:49:30Z
 updated_at: 2024-10-26T18:19:58Z
 url: https://github.com/astral-sh/ruff/issues/13872
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)
 
 ---
 
-_Issue opened by @cake-monotone on 2024-10-22 05:49_
+_@cake-monotone_
 
  - Related to #13618
  - Continuing work from https://github.com/astral-sh/ruff/pull/13635#issuecomment-2427388114

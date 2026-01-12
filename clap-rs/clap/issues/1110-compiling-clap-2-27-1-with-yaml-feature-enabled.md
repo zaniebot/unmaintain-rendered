@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-11-14T08:30:39Z
 updated_at: 2021-05-26T10:52:48Z
 url: https://github.com/clap-rs/clap/issues/1110
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Compiling clap 2.27.1 with yaml feature enabled fails
 
 ---
 
-_Issue opened by @andrewdavidmackenzie on 2017-11-14 08:30_
+_@andrewdavidmackenzie_
 
 ### Rust Version
 rustc 1.21.0 (3b72af97e 2017-10-09)

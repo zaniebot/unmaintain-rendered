@@ -12,14 +12,14 @@ head: box-pin
 created_at: 2023-12-29T15:45:11Z
 updated_at: 2023-12-29T15:49:13Z
 url: https://github.com/astral-sh/uv/pull/738
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Remove Box::pin usages
 
 ---
 
-_Pull request opened by @konstin on 2023-12-29 15:45_
+_@konstin_
 
 Rust 1.75 update follow-up, simplifies the code.
 

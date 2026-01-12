@@ -12,14 +12,14 @@ head: zb/fix-cache
 created_at: 2023-11-17T20:23:06Z
 updated_at: 2023-11-17T20:35:02Z
 url: https://github.com/astral-sh/uv/pull/447
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Fix import of `CacheArgs` in `puffin-cli`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-17 20:23_
+_@zanieb_
 
 ```
 error[E0432]: unresolved imports `puffin_cache::CacheArgs`, `puffin_cache::CacheDir`

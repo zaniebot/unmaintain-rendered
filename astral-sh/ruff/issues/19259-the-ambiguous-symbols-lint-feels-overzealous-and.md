@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-10T12:59:20Z
 updated_at: 2025-07-10T13:41:05Z
 url: https://github.com/astral-sh/ruff/issues/19259
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # The ambiguous symbols lint feels overzealous and maybe should be split in two
 
 ---
 
-_Issue opened by @itamarst on 2025-07-10 12:59_
+_@itamarst_
 
 ### Summary
 

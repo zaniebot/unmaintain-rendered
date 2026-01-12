@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-21T15:51:55Z
 updated_at: 2024-08-21T16:22:15Z
 url: https://github.com/astral-sh/uv/pull/6344
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # fix(docs): replace underscore with dash for dev-dependencies
 
 ---
 
-_Pull request opened by @ldacey on 2024-08-21 15:51_
+_@ldacey_
 
 Docs show an underscore which should be a dash in dev-dependencies: `dev_dependencies = ["ruff==0.5.0"]`
 

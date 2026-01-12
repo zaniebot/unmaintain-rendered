@@ -14,14 +14,14 @@ head: zb/ref-version
 created_at: 2025-05-12T20:49:34Z
 updated_at: 2025-05-12T22:31:05Z
 url: https://github.com/astral-sh/ruff/pull/18056
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # Update reference documentation for `--python-version`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 20:49_
+_@zanieb_
 
 Adding more detail here
 

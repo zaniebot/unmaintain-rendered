@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-05T14:20:57Z
 updated_at: 2021-12-13T21:22:41Z
 url: https://github.com/clap-rs/clap/issues/2813
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Support `default_missing_value_t`, `default_value_if_t`, etc
 
 ---
 
-_Issue opened by @epage on 2021-10-05 14:20_
+_@epage_
 
 ### Please complete the following tasks
 

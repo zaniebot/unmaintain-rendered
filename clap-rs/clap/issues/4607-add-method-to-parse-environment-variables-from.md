@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-05T09:07:59Z
 updated_at: 2025-07-14T19:24:14Z
 url: https://github.com/clap-rs/clap/issues/4607
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add method to parse environment variables from custom source
 
 ---
 
-_Issue opened by @robertkiel on 2023-01-05 09:07_
+_@robertkiel_
 
 ### Please complete the following tasks
 

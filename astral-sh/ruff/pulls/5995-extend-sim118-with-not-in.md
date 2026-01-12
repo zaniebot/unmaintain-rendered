@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-07-23T00:48:26Z
 updated_at: 2023-07-23T02:10:52Z
 url: https://github.com/astral-sh/ruff/pull/5995
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Extend SIM118 with `not in`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-23 00:48_
+_@sbrugman_
 
 Closes https://github.com/astral-sh/ruff/issues/5989
 

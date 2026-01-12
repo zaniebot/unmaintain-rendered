@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-21T15:24:10Z
 updated_at: 2026-01-05T15:11:44Z
 url: https://github.com/clap-rs/clap/issues/5591
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Setting flag argument's env var to `flase` still flagged as conflicting
 
 ---
 
-_Issue opened by @elichai on 2024-07-21 15:24_
+_@elichai_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: micha/larger-release-runner
 created_at: 2025-10-15T10:05:28Z
 updated_at: 2025-10-15T12:23:09Z
 url: https://github.com/astral-sh/ruff/pull/20887
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Remove `release` CI job
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-15 10:05_
+_@MichaReiser_
 
 ## Summary
 

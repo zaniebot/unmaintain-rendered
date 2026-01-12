@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T16:24:48Z
 updated_at: 2025-11-14T14:42:09Z
 url: https://github.com/astral-sh/ty/issues/462
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Create separate representations for specialized and unspecialized function literals
 
 ---
 
-_Issue opened by @dcreager on 2025-05-20 16:24_
+_@dcreager_
 
 We currently represent "class literals" and "class types" differently, which differ in how they handle generic classes. For a generic class, the class literal is unspecialized, and the class type is specialized.
 

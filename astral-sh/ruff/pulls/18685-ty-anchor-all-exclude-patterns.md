@@ -14,14 +14,14 @@ head: micha/exclude-anchoring
 created_at: 2025-06-15T13:44:14Z
 updated_at: 2025-06-18T08:57:37Z
 url: https://github.com/astral-sh/ruff/pull/18685
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Anchor all exclude patterns
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-15 13:44_
+_@MichaReiser_
 
 ## Summary
 

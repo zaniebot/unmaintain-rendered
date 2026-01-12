@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T14:38:42Z
 updated_at: 2025-03-06T15:16:05Z
 url: https://github.com/astral-sh/uv/issues/12008
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # UV migration environment
 
 ---
 
-_Issue opened by @q1165600785 on 2025-03-06 14:38_
+_@q1165600785_
 
 ### Summary
 

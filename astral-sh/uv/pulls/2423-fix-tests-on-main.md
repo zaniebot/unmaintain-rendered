@@ -13,14 +13,14 @@ head: konsti/fix-tests-protobuf
 created_at: 2024-03-13T19:22:37Z
 updated_at: 2024-03-13T19:32:49Z
 url: https://github.com/astral-sh/uv/pull/2423
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Fix tests on main
 
 ---
 
-_Pull request opened by @konstin on 2024-03-13 19:22_
+_@konstin_
 
 A new protobuf release on pypi broke our tests.
 

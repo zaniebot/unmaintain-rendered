@@ -12,14 +12,14 @@ head: use-shared-insta-filters
 created_at: 2023-11-01T13:25:42Z
 updated_at: 2023-11-02T15:43:00Z
 url: https://github.com/astral-sh/uv/pull/270
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Use shared insta filters
 
 ---
 
-_Pull request opened by @konstin on 2023-11-01 13:25_
+_@konstin_
 
 Internal refactoring for consistency between tests
 

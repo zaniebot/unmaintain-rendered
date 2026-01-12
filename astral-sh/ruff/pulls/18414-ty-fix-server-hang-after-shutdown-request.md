@@ -14,14 +14,14 @@ head: micha/server-shutdown
 created_at: 2025-06-01T17:16:47Z
 updated_at: 2025-06-02T06:58:08Z
 url: https://github.com/astral-sh/ruff/pull/18414
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Fix server hang after shutdown request
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-01 17:16_
+_@MichaReiser_
 
 ## Summary
 

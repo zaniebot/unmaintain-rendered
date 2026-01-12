@@ -14,14 +14,14 @@ head: sig_help
 created_at: 2025-07-26T18:02:00Z
 updated_at: 2025-07-28T19:43:47Z
 url: https://github.com/astral-sh/ruff/pull/19570
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Add stub mapping support to signature help
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-26 18:02_
+_@UnboundVariable_
 
 This PR improves the "signature help" language server feature in two ways:
 1. It adds support for the recently-introduced "stub mapper" which maps symbol declarations within stubs to their implementation counterparts. This allows the signature help to display docstrings from the original implementation.

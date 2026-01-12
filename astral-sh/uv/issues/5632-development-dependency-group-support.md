@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T20:19:58Z
 updated_at: 2024-10-25T20:16:00Z
 url: https://github.com/astral-sh/uv/issues/5632
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Development dependency group support
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 20:19_
+_@zanieb_
 
 This is a tracking issue for the general idea of putting development dependencies into named groups for partial installs.
 

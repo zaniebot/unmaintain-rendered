@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T21:35:37Z
 updated_at: 2024-05-26T23:23:13Z
 url: https://github.com/astral-sh/ruff/issues/11549
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff fails when attempting to produce an output file within a non-existent directory
 
 ---
 
-_Issue opened by @celestialorb on 2024-05-26 21:35_
+_@celestialorb_
 
 I wasn't able to find a previously submitted issue surrounding this, apologies if I missed it.
 

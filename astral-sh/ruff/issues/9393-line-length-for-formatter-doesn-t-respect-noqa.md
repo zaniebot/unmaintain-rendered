@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-04T19:17:09Z
 updated_at: 2024-01-09T03:14:45Z
 url: https://github.com/astral-sh/ruff/issues/9393
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # line-length for formatter doesn't respect noqa: E501 comment
 
 ---
 
-_Issue opened by @mmohaveri on 2024-01-04 19:17_
+_@mmohaveri_
 
 I'm running ruff's formatter with default config (ruff v0.1.11), and it's trying to 
 fix my E501 violations even when the line has a `# noqa: E501`.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T07:39:16Z
 updated_at: 2025-04-03T13:48:10Z
 url: https://github.com/astral-sh/ruff/issues/12254
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Native server does not respect `.gitignore`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-09 07:39_
+_@dhruvmanila_
 
 Following up on https://github.com/astral-sh/ruff/issues/12242, the native server does not respect `.gitignore`, specifically it does not consider the `respect_gitignore` file resolver setting.
 

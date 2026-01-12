@@ -14,14 +14,14 @@ head: alex/builtin-method-callability
 created_at: 2025-09-10T12:48:01Z
 updated_at: 2025-09-10T17:08:35Z
 url: https://github.com/astral-sh/ruff/pull/20329
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Add more tests for special-cased builtin functions and methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-10 12:48_
+_@AlexWaygood_
 
 ## Summary
 

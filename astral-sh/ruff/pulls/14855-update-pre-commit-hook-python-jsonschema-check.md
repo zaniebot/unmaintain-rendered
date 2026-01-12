@@ -13,14 +13,14 @@ head: renovate/pre-commit-dependencies
 created_at: 2024-12-09T01:59:44Z
 updated_at: 2024-12-09T05:35:01Z
 url: https://github.com/astral-sh/ruff/pull/14855
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Update pre-commit hook python-jsonschema/check-jsonschema to v0.30.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-09 01:59_
+_@renovate_
 
 This PR contains the following updates:
 

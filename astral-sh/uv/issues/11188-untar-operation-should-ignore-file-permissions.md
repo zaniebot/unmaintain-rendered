@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T17:56:26Z
 updated_at: 2025-02-03T19:29:12Z
 url: https://github.com/astral-sh/uv/issues/11188
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Untar operation should ignore file permissions
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-03 17:56_
+_@charliermarsh_
 
 Like pip (and like our unzip operation), we should ignore all permissions apart from setting the executable bit.
 

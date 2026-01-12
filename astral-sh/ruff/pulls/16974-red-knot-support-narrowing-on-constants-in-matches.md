@@ -13,14 +13,14 @@ head: match-value-narrowing
 created_at: 2025-03-26T04:35:23Z
 updated_at: 2025-03-28T04:53:38Z
 url: https://github.com/astral-sh/ruff/pull/16974
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] support narrowing on constants in matches
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-26 04:35_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

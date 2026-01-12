@@ -12,14 +12,14 @@ head: fix-e713-a714-false-positive
 created_at: 2023-04-24T19:47:58Z
 updated_at: 2023-04-25T17:44:47Z
 url: https://github.com/astral-sh/ruff/pull/4083
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix `E713` and `E714` false positives for multiple comparisons
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-24 19:47_
+_@JonathanPlasse_
 
 - Close #4082
 

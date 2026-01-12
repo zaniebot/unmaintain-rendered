@@ -14,14 +14,14 @@ head: dhruv/server-docs
 created_at: 2024-07-16T09:46:46Z
 updated_at: 2024-07-18T17:53:10Z
 url: https://github.com/astral-sh/ruff/pull/12344
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add docs for Ruff language server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-16 09:46_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix/utf32-line-length
 created_at: 2022-09-18T10:06:10Z
 updated_at: 2022-10-28T03:56:00Z
 url: https://github.com/astral-sh/ruff/pull/224
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # fix: Use UTF-32 char count for line length (#223)
 
 ---
 
-_Pull request opened by @sgryjp on 2022-09-18 10:06_
+_@sgryjp_
 
 This should make ruff compatible with flake8 (pycodestyle) on checking length of a line which contains non-single-byte characters.
 

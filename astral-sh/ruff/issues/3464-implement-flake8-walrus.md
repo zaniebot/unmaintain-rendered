@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-12T17:21:38Z
 updated_at: 2025-06-03T17:35:35Z
 url: https://github.com/astral-sh/ruff/issues/3464
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement flake8-walrus
 
 ---
 
-_Issue opened by @Cielquan on 2023-03-12 17:21_
+_@Cielquan_
 
 # [flake8-walrus](https://pypi.org/project/flake8-walrus/)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T02:16:39Z
 updated_at: 2025-06-08T02:34:02Z
 url: https://github.com/astral-sh/ty/issues/610
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Feature Request: Exclude Directories from Type Checking
 
 ---
 
-_Issue opened by @sigridjineth on 2025-06-08 02:16_
+_@sigridjineth_
 
 ### Question
 

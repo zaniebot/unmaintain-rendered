@@ -13,14 +13,14 @@ head: charlie/rec
 created_at: 2024-02-29T17:17:10Z
 updated_at: 2024-02-29T17:21:50Z
 url: https://github.com/astral-sh/uv/pull/2091
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Avoid assuming `RECORD` file is in `platlib`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-29 17:17_
+_@charliermarsh_
 
 ## Summary
 

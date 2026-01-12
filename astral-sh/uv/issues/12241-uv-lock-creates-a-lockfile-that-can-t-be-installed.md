@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T14:51:57Z
 updated_at: 2025-06-16T18:12:21Z
 url: https://github.com/astral-sh/uv/issues/12241
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `uv lock` creates a lockfile that can't be installed
 
 ---
 
-_Issue opened by @s-banach on 2025-03-17 14:51_
+_@s-banach_
 
 ### Question
 

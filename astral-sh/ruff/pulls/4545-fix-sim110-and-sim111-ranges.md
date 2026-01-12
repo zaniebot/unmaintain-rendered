@@ -12,14 +12,14 @@ head: fix-sim110-sim111-ranges
 created_at: 2023-05-20T16:33:53Z
 updated_at: 2023-05-20T17:08:59Z
 url: https://github.com/astral-sh/ruff/pull/4545
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix SIM110 and SIM111 ranges
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-20 16:33_
+_@JonathanPlasse_
 
 _No description provided._
 

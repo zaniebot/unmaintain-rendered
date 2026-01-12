@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T21:25:46Z
 updated_at: 2025-07-21T22:15:04Z
 url: https://github.com/astral-sh/uv/issues/14800
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # `uv pip compile` ignores dependencies specified in `uv.toml`
 
 ---
 
-_Issue opened by @jelle-openai on 2025-07-21 21:25_
+_@jelle-openai_
 
 ### Summary
 

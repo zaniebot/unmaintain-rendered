@@ -13,14 +13,14 @@ head: charlie/max-version-split
 created_at: 2024-12-11T23:15:23Z
 updated_at: 2024-12-13T21:06:44Z
 url: https://github.com/astral-sh/uv/pull/9827
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Fork version selection based on `requires-python` requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-11 23:15_
+_@charliermarsh_
 
 ## Summary
 

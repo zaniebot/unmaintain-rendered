@@ -12,14 +12,14 @@ head: hard-link-fallback
 created_at: 2023-11-01T13:06:29Z
 updated_at: 2023-11-01T17:35:53Z
 url: https://github.com/astral-sh/uv/pull/268
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Only fall back to copy when the first hard linking failed
 
 ---
 
-_Pull request opened by @konstin on 2023-11-01 13:06_
+_@konstin_
 
 Hard linking might not be supported but we (afaik) can't detect this ahead of time, so we'll try hard linking the first file, if this succeeds we'll know later hard linking errors are not due to lack of os/fs support, if it fails we'll switch to copying for the rest of the install. Follow up to https://github.com/astral-sh/puffin/pull/237#discussion_r1376705137
 

@@ -12,14 +12,14 @@ head: wasm
 created_at: 2022-12-18T16:13:03Z
 updated_at: 2022-12-27T05:42:27Z
 url: https://github.com/astral-sh/ruff/pull/1279
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Web playground with WASM
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-18 16:13_
+_@squiddy_
 
 This MR provides a web playground for ruff. https://611ef32d.ruff-axw.pages.dev/
 

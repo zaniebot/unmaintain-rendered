@@ -12,14 +12,14 @@ head: discover
 created_at: 2024-07-23T17:38:16Z
 updated_at: 2024-07-23T23:47:33Z
 url: https://github.com/astral-sh/uv/pull/5354
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # Avoid project discovery in `uv python pin` if `--isolated` is provided
 
 ---
 
-_Pull request opened by @j178 on 2024-07-23 17:38_
+_@j178_
 
 ## Summary
 

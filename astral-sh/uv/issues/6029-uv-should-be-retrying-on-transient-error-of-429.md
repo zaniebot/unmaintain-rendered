@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T09:02:29Z
 updated_at: 2024-08-15T04:33:26Z
 url: https://github.com/astral-sh/uv/issues/6029
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # uv should be retrying on transient error of 429
 
 ---
 
-_Issue opened by @chrisirhc on 2024-08-12 09:02_
+_@chrisirhc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

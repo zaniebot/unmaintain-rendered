@@ -13,14 +13,14 @@ head: alex/protocol-nominal
 created_at: 2025-09-09T12:16:28Z
 updated_at: 2025-09-10T11:06:55Z
 url: https://github.com/astral-sh/ruff/pull/20314
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Allow protocols to participate in nominal subtyping as well as structural subtyping
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-09 12:16_
+_@AlexWaygood_
 
 ## Summary
 

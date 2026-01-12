@@ -13,14 +13,14 @@ head: cjm/ecosystem
 created_at: 2025-08-29T17:36:20Z
 updated_at: 2025-08-29T18:37:31Z
 url: https://github.com/astral-sh/ruff/pull/20157
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] add six ecosystem projects to good.txt
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 17:36_
+_@carljm_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zb/no-build-deps
 created_at: 2025-11-10T15:35:05Z
 updated_at: 2025-11-10T15:41:12Z
 url: https://github.com/astral-sh/uv/pull/16668
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Skip release builds on Renovate pull requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-10 15:35_
+_@zanieb_
 
 cc @charliermarsh 
 

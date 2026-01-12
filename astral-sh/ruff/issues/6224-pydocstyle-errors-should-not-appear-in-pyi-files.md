@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T06:44:05Z
 updated_at: 2023-08-01T14:02:59Z
 url: https://github.com/astral-sh/ruff/issues/6224
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # pydocstyle errors should not appear in `.pyi` files
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-01 06:44_
+_@DetachHead_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

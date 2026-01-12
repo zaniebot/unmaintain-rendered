@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T07:11:13Z
 updated_at: 2025-01-14T08:49:40Z
 url: https://github.com/astral-sh/uv/issues/10554
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Sensitive token exposure in uv 0.5.14 logs
 
 ---
 
-_Issue opened by @rivershah on 2025-01-13 07:11_
+_@rivershah_
 
 Private indices use private token based access with the pattern:
 

@@ -13,14 +13,14 @@ head: david/callable-attribute-faq-entry
 created_at: 2025-12-18T09:19:14Z
 updated_at: 2025-12-18T13:04:53Z
 url: https://github.com/astral-sh/ty/pull/2055
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Typing FAQ: Attributes on Callable
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-18 09:19_
+_@sharkdp_
 
 Add a new FAQ entry based on issues like https://github.com/astral-sh/ty/issues/2038
 

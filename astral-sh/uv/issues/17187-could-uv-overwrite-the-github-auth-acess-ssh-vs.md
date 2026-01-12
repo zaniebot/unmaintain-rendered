@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T08:16:03Z
 updated_at: 2025-12-19T09:03:02Z
 url: https://github.com/astral-sh/uv/issues/17187
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Could uv overwrite the github auth acess (ssh vs https) when installing (transitive) private repos
 
 ---
 
-_Issue opened by @ecobost on 2025-12-19 08:16_
+_@ecobost_
 
 ### Summary
 

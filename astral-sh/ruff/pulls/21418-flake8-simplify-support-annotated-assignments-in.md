@@ -13,14 +13,14 @@ head: fix-21406
 created_at: 2025-11-13T04:22:59Z
 updated_at: 2025-12-30T17:29:16Z
 url: https://github.com/astral-sh/ruff/pull/21418
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [`flake8-simplify`] Support annotated assignments in if block (`SIM108`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-13 04:22_
+_@danparizher_
 
 ## Summary
 

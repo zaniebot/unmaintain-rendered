@@ -13,14 +13,14 @@ head: brent/alt-patterns-2
 created_at: 2025-11-10T13:28:04Z
 updated_at: 2025-11-10T15:51:53Z
 url: https://github.com/astral-sh/ruff/pull/21362
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Fix syntax error false positive on alternative `match` patterns
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-10 13:28_
+_@ntBre_
 
 Summary
 --

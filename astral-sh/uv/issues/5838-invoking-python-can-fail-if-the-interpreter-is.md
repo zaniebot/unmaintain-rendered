@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T22:22:26Z
 updated_at: 2024-08-07T03:03:23Z
 url: https://github.com/astral-sh/uv/issues/5838
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Invoking `python` can fail if the interpreter is named `python3`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-06 22:22_
+_@zanieb_
 
 e.g.
 

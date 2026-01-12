@@ -12,14 +12,14 @@ head: ag/pep440-add-trailing-zero-test
 created_at: 2025-01-07T14:06:20Z
 updated_at: 2025-01-07T14:16:24Z
 url: https://github.com/astral-sh/uv/pull/10362
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # uv-pep440: adds an explicit test for trailing zeros
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-07 14:06_
+_@BurntSushi_
 
 Basically, this explicitly checks that parsing a `1.2.0` into a
 `Version` will roundtrip back to a `1.2.0`, and that parsing a `1.2`

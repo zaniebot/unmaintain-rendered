@@ -13,14 +13,14 @@ head: alex/known-instance-type
 created_at: 2024-11-07T14:42:16Z
 updated_at: 2024-11-08T23:24:06Z
 url: https://github.com/astral-sh/ruff/pull/14155
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Add a new `Type::KnownInstanceType` variant
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-07 14:42_
+_@AlexWaygood_
 
 ## Summary
 

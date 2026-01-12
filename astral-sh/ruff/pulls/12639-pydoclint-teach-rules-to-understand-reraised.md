@@ -15,14 +15,14 @@ head: alex/reraise-docstring
 created_at: 2024-08-02T18:13:51Z
 updated_at: 2024-08-02T21:47:24Z
 url: https://github.com/astral-sh/ruff/pull/12639
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Teach rules to understand reraised exceptions as being explicitly raised
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-02 18:13_
+_@AlexWaygood_
 
 ## Summary
 

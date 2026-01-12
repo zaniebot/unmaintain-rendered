@@ -13,14 +13,14 @@ head: charlie/un
 created_at: 2025-01-20T20:34:31Z
 updated_at: 2025-01-20T20:43:17Z
 url: https://github.com/astral-sh/uv/pull/10788
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Remove unused verbatim method
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 20:34_
+_@charliermarsh_
 
 _No description provided._
 

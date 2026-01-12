@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-02T05:17:46Z
 updated_at: 2023-05-11T17:43:53Z
 url: https://github.com/astral-sh/ruff/issues/993
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # D101 does not consider __all__
 
 ---
 
-_Issue opened by @onerandomusername on 2022-12-02 05:17_
+_@onerandomusername_
 
 A class without a `_` preceeding its name is not public unless included in `__all__` when `__all__` is defined.
 

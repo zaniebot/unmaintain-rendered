@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-25T08:42:58Z
 updated_at: 2023-07-25T15:54:36Z
 url: https://github.com/astral-sh/ruff/issues/6057
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive `A003` when overriding `logging.Filter.filter`
 
 ---
 
-_Issue opened by @scur-iolus on 2023-07-25 08:42_
+_@scur-iolus_
 
 It's probably a quite common case to use a custom `logging.Filter`, either to add context to log records or to decide if a given `Record` is to be logged (cf. [Python documentation](https://docs.python.org/3/library/logging.html#logging.Filter.filter)).
 

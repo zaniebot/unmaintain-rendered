@@ -13,14 +13,14 @@ head: charlie/tar-up
 created_at: 2025-02-05T20:00:23Z
 updated_at: 2025-02-05T20:43:35Z
 url: https://github.com/astral-sh/uv/pull/11260
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Migrate to published `astral-tokio-tar` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-05 20:00_
+_@charliermarsh_
 
 We now publish this to `crates.io`: https://crates.io/crates/astral-tokio-tar
 

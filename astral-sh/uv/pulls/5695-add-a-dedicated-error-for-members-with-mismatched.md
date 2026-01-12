@@ -14,14 +14,14 @@ head: charlie/warn-requires
 created_at: 2024-08-01T17:06:26Z
 updated_at: 2025-12-09T14:19:49Z
 url: https://github.com/astral-sh/uv/pull/5695
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Add a dedicated error for members with mismatched Python requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 17:06_
+_@charliermarsh_
 
 ## Summary
 

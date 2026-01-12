@@ -13,14 +13,14 @@ head: charlie/aws-lambda
 created_at: 2025-01-02T18:07:06Z
 updated_at: 2025-01-13T00:36:04Z
 url: https://github.com/astral-sh/uv/pull/10278
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Add AWS Lambda integration guide
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 18:07_
+_@charliermarsh_
 
 ## Summary
 

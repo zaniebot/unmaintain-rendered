@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-14T19:17:13Z
 updated_at: 2025-11-21T15:51:53Z
 url: https://github.com/astral-sh/ty/issues/1562
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `from <module>` and `import <module>` detection for completions is not precise enough
 
 ---
 
-_Issue opened by @BurntSushi on 2025-11-14 19:17_
+_@BurntSushi_
 
 ### Summary
 

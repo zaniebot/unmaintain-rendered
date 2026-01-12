@@ -14,14 +14,14 @@ head: add-E0309-invalid-hash-returned
 created_at: 2024-04-15T20:34:36Z
 updated_at: 2024-04-19T03:39:09Z
 url: https://github.com/astral-sh/ruff/pull/10961
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Implement `invalid-hash-returned` (`PLE0309`)
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-04-15 20:34_
+_@tibor-reiss_
 
 Add pylint rule invalid-hash-returned (PLE0309)
 

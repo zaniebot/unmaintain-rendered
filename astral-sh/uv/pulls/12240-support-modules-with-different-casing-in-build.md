@@ -13,14 +13,14 @@ head: konsti/build-backend-normalize-module-name
 created_at: 2025-03-17T14:37:54Z
 updated_at: 2025-03-23T13:29:22Z
 url: https://github.com/astral-sh/uv/pull/12240
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Support modules with different casing in build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-03-17 14:37_
+_@konstin_
 
 Match the module name to its module directory with potentially different casing.
 

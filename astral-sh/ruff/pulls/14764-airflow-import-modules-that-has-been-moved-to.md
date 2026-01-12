@@ -14,14 +14,14 @@ head: AIR303
 created_at: 2024-12-04T05:00:01Z
 updated_at: 2024-12-18T00:07:18Z
 url: https://github.com/astral-sh/ruff/pull/14764
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [airflow]: Import modules that has been moved to airflow providers (AIR303)
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-04 05:00_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

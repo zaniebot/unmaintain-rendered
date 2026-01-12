@@ -14,14 +14,14 @@ head: dcreager/nondeterminism
 created_at: 2025-12-18T22:10:58Z
 updated_at: 2025-12-19T00:00:22Z
 url: https://github.com/astral-sh/ruff/pull/22064
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Remove some nondeterminism in constraint set tests
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-18 22:10_
+_@dcreager_
 
 We're seeing a lot of nondeterminism in the ecosystem tests at the moment, which started (or at least got worse) once `Callable` inference landed.
 

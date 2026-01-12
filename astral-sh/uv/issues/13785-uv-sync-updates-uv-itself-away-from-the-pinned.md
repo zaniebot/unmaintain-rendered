@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T16:27:08Z
 updated_at: 2025-06-28T13:25:10Z
 url: https://github.com/astral-sh/uv/issues/13785
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv sync` updates `uv` itself away from the pinned version
 
 ---
 
-_Issue opened by @gboeing on 2025-06-02 16:27_
+_@gboeing_
 
 ### Summary
 

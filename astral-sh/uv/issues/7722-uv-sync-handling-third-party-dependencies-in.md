@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T18:51:26Z
 updated_at: 2025-10-30T19:00:16Z
 url: https://github.com/astral-sh/uv/issues/7722
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # `uv sync` handling third party dependencies in `setup.py`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-26 18:51_
+_@jamesbraza_
 
 I am using `uv==0.4.16`, and there are two packages that make my life annoying because their `setup.py` depends on [`torch`](https://pypi.org/project/torch/):
 

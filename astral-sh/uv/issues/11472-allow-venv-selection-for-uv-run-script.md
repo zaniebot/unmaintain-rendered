@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T09:37:21Z
 updated_at: 2025-02-14T06:51:41Z
 url: https://github.com/astral-sh/uv/issues/11472
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Allow `.venv` selection for `uv run --script`
 
 ---
 
-_Issue opened by @Quasar6X on 2025-02-13 09:37_
+_@Quasar6X_
 
 ### Summary
 

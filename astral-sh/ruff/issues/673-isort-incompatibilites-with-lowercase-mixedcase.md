@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-11T00:42:05Z
 updated_at: 2022-11-12T03:41:40Z
 url: https://github.com/astral-sh/ruff/issues/673
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # isort incompatibilites with lowercase, MixedCase, UPPERCASE
 
 ---
 
-_Issue opened by @andersk on 2022-11-11 00:42_
+_@andersk_
 
 `isort --profile=black --ca`:
 

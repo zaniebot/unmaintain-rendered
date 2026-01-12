@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T09:33:56Z
 updated_at: 2025-08-18T17:12:12Z
 url: https://github.com/astral-sh/uv/issues/15345
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Version Mismatch Between uv --version and Installed Version Using curl Installer
 
 ---
 
-_Issue opened by @ashuguptahere on 2025-08-18 09:33_
+_@ashuguptahere_
 
 ### Summary
 

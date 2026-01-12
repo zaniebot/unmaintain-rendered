@@ -13,14 +13,14 @@ head: charlie/imports
 created_at: 2023-08-15T03:39:52Z
 updated_at: 2023-08-15T11:15:35Z
 url: https://github.com/astral-sh/ruff/pull/6583
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add trailing comma for single-element import-from groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-15 03:39_
+_@charliermarsh_
 
 ## Summary
 

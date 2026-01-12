@@ -13,14 +13,14 @@ head: konsti/gh-9336
 created_at: 2024-11-26T09:14:56Z
 updated_at: 2024-11-26T09:59:07Z
 url: https://github.com/astral-sh/uv/pull/9436
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Make pytest output column width independent
 
 ---
 
-_Pull request opened by @konstin on 2024-11-26 09:14_
+_@konstin_
 
 Fixes #9336
 

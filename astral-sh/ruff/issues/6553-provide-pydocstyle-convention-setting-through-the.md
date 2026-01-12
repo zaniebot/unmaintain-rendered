@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-14T08:32:43Z
 updated_at: 2023-08-14T17:41:53Z
 url: https://github.com/astral-sh/ruff/issues/6553
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Provide pydocstyle convention setting through the CLI
 
 ---
 
-_Issue opened by @Jonas1312 on 2023-08-14 08:32_
+_@Jonas1312_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

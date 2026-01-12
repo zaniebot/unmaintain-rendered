@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-05T07:02:08Z
 updated_at: 2024-01-05T10:49:44Z
 url: https://github.com/astral-sh/ruff/issues/9397
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff does not report the `assignment-from-no-return` error
 
 ---
 
-_Issue opened by @behnazh-w on 2024-01-05 07:02_
+_@behnazh-w_
 
 I was expecting ruff to report an error similar to Pylint's [assignment-from-no-return (E1111)](https://pylint.pycqa.org/en/v3.0.3/user_guide/checkers/features.html#typecheck-checker-messages) for the following code, however, I get no errors.
 ```python

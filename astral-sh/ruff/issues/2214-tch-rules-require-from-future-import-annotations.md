@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T18:33:56Z
 updated_at: 2024-06-04T14:17:20Z
 url: https://github.com/astral-sh/ruff/issues/2214
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # TCH rules require from __future__ import annotations
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-26 18:33_
+_@twoertwein_
 
 The following does not work with 3.11.1 at runtime:
 

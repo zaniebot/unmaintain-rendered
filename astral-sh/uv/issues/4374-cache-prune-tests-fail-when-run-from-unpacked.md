@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-18T04:25:57Z
 updated_at: 2024-06-18T07:15:41Z
 url: https://github.com/astral-sh/uv/issues/4374
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # cache_prune tests fail when run from unpacked sources
 
 ---
 
-_Issue opened by @mgorny on 2024-06-18 04:25_
+_@mgorny_
 
 When building uv and running the test suite from unpacked sources (e.g. https://github.com/astral-sh/uv/archive/refs/tags/0.2.12.tar.gz), the following tests fail:
 

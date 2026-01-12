@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-06T05:59:11Z
 updated_at: 2025-11-10T16:09:35Z
 url: https://github.com/astral-sh/uv/issues/7945
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Modifying `tool.uv.sources` between production and development
 
 ---
 
-_Issue opened by @iBuitron on 2024-10-06 05:59_
+_@iBuitron_
 
 
 Hi!

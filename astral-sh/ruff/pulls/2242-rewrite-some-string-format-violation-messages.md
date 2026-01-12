@@ -12,14 +12,14 @@ head: charlie/messages
 created_at: 2023-01-27T00:42:12Z
 updated_at: 2023-01-27T00:42:17Z
 url: https://github.com/astral-sh/ruff/pull/2242
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Rewrite some string-format violation messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-27 00:42_
+_@charliermarsh_
 
 _No description provided._
 

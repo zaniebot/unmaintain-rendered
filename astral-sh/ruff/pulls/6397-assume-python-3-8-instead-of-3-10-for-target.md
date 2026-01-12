@@ -14,14 +14,14 @@ head: config/assume-38
 created_at: 2023-08-07T16:49:38Z
 updated_at: 2023-08-07T18:48:07Z
 url: https://github.com/astral-sh/ruff/pull/6397
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Assume Python 3.8 instead of 3.10 for target version
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-07 16:49_
+_@zanieb_
 
 The target version should be the oldest supported version instead of an arbitary version. Since 3.7 is EOL, we should use 3.8. I would like to follow this up with more comprehensive default detection based on the environment.
 

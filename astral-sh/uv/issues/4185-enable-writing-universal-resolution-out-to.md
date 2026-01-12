@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T01:47:11Z
 updated_at: 2024-06-26T21:33:30Z
 url: https://github.com/astral-sh/uv/issues/4185
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Enable writing universal resolution out to `requirements.txt`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-10 01:47_
+_@charliermarsh_
 
 I think this is possible (and perhaps not even that hard) given the format we settled on. It would be a pretty neat feature.
 

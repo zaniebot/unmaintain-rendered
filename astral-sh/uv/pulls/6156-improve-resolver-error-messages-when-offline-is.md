@@ -13,14 +13,14 @@ head: zb/network-offline-err
 created_at: 2024-08-16T17:04:29Z
 updated_at: 2024-08-19T13:13:33Z
 url: https://github.com/astral-sh/uv/pull/6156
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Improve resolver error messages when `--offline` is used
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 17:04_
+_@zanieb_
 
 _No description provided._
 

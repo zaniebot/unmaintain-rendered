@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-07T09:36:40Z
 updated_at: 2024-10-24T14:34:08Z
 url: https://github.com/astral-sh/ruff/issues/7214
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # TCH004: false positive for import that is used only in type hints
 
 ---
 
-_Issue opened by @WhyNotHugo on 2023-09-07 09:36_
+_@WhyNotHugo_
 
 My `test.py`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-25T13:02:49Z
 updated_at: 2023-03-03T08:01:27Z
 url: https://github.com/astral-sh/ruff/issues/3224
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `autoflake`/`black`/`isort` do not resolve to the same file
 
 ---
 
-_Issue opened by @dycw on 2023-02-25 13:02_
+_@dycw_
 
 Suppose a file is stable under `autoflake`, `black` and `isort`. If an import is added and then later unused and removed via `autoflake`, one might presume `black` and `isort` would resolve back to the same file. This certainly introduces potentially many diffs.
 

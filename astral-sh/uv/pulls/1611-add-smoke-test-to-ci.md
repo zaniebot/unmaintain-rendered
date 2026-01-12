@@ -13,14 +13,14 @@ head: zb/smoke-test
 created_at: 2024-02-17T19:47:00Z
 updated_at: 2024-02-18T21:45:08Z
 url: https://github.com/astral-sh/uv/pull/1611
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Add smoke test to CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-17 19:47_
+_@zanieb_
 
 Similar idea to #1356 
 

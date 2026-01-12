@@ -13,14 +13,14 @@ head: default-extras
 created_at: 2025-04-18T12:41:20Z
 updated_at: 2025-06-18T16:40:43Z
 url: https://github.com/astral-sh/uv/pull/12965
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Support `default-extras` config in the project interface.
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-18 12:41_
+_@blueraft_
 
 ## Summary
 

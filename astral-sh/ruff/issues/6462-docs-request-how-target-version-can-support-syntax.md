@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-09T21:18:46Z
 updated_at: 2023-08-10T17:11:39Z
 url: https://github.com/astral-sh/ruff/issues/6462
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Docs request: how `target-version` can support `>=` syntax
 
 ---
 
-_Issue opened by @jamesbraza on 2023-08-09 21:18_
+_@jamesbraza_
 
 I support Python>=3.10 and use `ruff==0.0.284`.  I am wondering how to specify `>=3.10` using `target-version`.
 

@@ -13,14 +13,14 @@ head: david/types-expect-methods-track_caller
 created_at: 2024-10-23T08:32:02Z
 updated_at: 2024-10-23T10:48:21Z
 url: https://github.com/astral-sh/ruff/pull/13884
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Use track_caller for expect_ methods
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-23 08:32_
+_@sharkdp_
 
 ## Summary
 

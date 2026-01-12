@@ -13,14 +13,14 @@ head: fix-22467
 created_at: 2026-01-09T04:57:09Z
 updated_at: 2026-01-10T13:59:48Z
 url: https://github.com/astral-sh/ruff/pull/22472
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [pyflakes] Fix F823 false positive with submodule import shadowing
 
 ---
 
-_Pull request opened by @bxff on 2026-01-09 04:57_
+_@bxff_
 
 ## Summary
 

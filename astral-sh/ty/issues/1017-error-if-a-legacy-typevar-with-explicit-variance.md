@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T22:19:30Z
 updated_at: 2025-10-06T16:39:04Z
 url: https://github.com/astral-sh/ty/issues/1017
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # error if a legacy typevar with explicit variance is used in a way that contradicts its explicit variance
 
 ---
 
-_Issue opened by @carljm on 2025-08-15 22:19_
+_@carljm_
 
 Example:
 

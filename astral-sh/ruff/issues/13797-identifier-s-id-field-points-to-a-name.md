@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T17:02:56Z
 updated_at: 2024-12-09T12:31:56Z
 url: https://github.com/astral-sh/ruff/issues/13797
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Identifier's id field points to a Name
 
 ---
 
-_Issue opened by @samwgoldman on 2024-10-17 17:02_
+_@samwgoldman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

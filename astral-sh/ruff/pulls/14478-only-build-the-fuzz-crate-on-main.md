@@ -13,14 +13,14 @@ head: zb/fuzz-build
 created_at: 2024-11-20T05:02:27Z
 updated_at: 2024-11-20T06:57:26Z
 url: https://github.com/astral-sh/ruff/pull/14478
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Only build the `fuzz` crate on `main`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-20 05:02_
+_@zanieb_
 
 It's not actually doing anything per pull request and it's pretty slow? xref #14469 
 

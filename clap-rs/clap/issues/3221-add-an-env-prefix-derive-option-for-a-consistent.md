@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-27T01:12:19Z
 updated_at: 2025-04-01T15:11:43Z
 url: https://github.com/clap-rs/clap/issues/3221
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Add an env_prefix derive option for a consistent prefix for environment variables
 
 ---
 
-_Issue opened by @gibfahn on 2021-12-27 01:12_
+_@gibfahn_
 
 Maintainer's notes
 - Proposed fix is to add a `Command::next_env_prefix` and `Arg::env_prefix` and is modeled after `help_heading`

@@ -13,14 +13,14 @@ head: attach-dangling-comments-to-comprehension
 created_at: 2023-09-28T09:20:43Z
 updated_at: 2023-09-29T09:45:02Z
 url: https://github.com/astral-sh/ruff/pull/7693
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Attach dangling comments to the comprehension instead of the `if` or `iter` nodes
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-28 09:20_
+_@MichaReiser_
 
 ## Summary
 

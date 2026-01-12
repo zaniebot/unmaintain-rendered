@@ -13,14 +13,14 @@ head: dhruv/lambda-return-type
 created_at: 2025-03-13T03:14:23Z
 updated_at: 2025-03-18T17:18:12Z
 url: https://github.com/astral-sh/ruff/pull/16695
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Infer `lambda` return type as `Unknown`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-13 03:14_
+_@dhruvmanila_
 
 ## Summary
 

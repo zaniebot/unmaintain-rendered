@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-28T12:36:35Z
 updated_at: 2021-08-29T00:37:27Z
 url: https://github.com/clap-rs/clap/issues/2741
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # error[E0658]: arbitrary expressions in key-value attributes are unstable
 
 ---
 
-_Issue opened by @happysalada on 2021-08-28 12:36_
+_@happysalada_
 
 ### Please complete the following tasks
 

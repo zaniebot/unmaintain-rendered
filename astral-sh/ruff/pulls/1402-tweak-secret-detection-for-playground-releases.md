@@ -12,14 +12,14 @@ head: charlie/preview
 created_at: 2022-12-27T13:32:55Z
 updated_at: 2022-12-27T13:41:54Z
 url: https://github.com/astral-sh/ruff/pull/1402
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Tweak secret detection for playground releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-27 13:32_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: handle_inaccessible_files
 created_at: 2023-07-08T13:31:24Z
 updated_at: 2023-07-20T09:57:24Z
 url: https://github.com/astral-sh/ruff/pull/5611
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Handle io errors gracefully
 
 ---
 
-_Pull request opened by @konstin on 2023-07-08 13:31_
+_@konstin_
 
 ## Summary
 

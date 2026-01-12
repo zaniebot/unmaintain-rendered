@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T19:59:34Z
 updated_at: 2025-04-27T03:48:07Z
 url: https://github.com/astral-sh/uv/issues/12728
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Install yields `failed to download`
 
 ---
 
-_Issue opened by @LarsKue on 2025-04-07 19:59_
+_@LarsKue_
 
 ### Summary
 

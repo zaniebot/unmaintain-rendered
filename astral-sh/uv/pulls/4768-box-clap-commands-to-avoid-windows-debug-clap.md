@@ -14,14 +14,14 @@ head: konsti/box-clap-arguments
 created_at: 2024-07-03T12:58:04Z
 updated_at: 2024-07-03T17:06:17Z
 url: https://github.com/astral-sh/uv/pull/4768
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Box clap commands to avoid windows debug clap stack overflow
 
 ---
 
-_Pull request opened by @konstin on 2024-07-03 12:58_
+_@konstin_
 
 The changes in https://github.com/astral-sh/uv/pull/4708 caused an overflow in debug mode only of the 1MB default stack size in windows during clap. This means that even trivial wrong argument tests would fail without increasing the stack size. As remedy, we box the clap types.
 

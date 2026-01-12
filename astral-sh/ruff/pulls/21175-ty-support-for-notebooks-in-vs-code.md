@@ -15,14 +15,14 @@ head: micha/lsp-notebooks-phase2
 created_at: 2025-10-31T20:21:20Z
 updated_at: 2025-11-13T12:26:06Z
 url: https://github.com/astral-sh/ruff/pull/21175
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Support for notebooks in VS Code
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-31 20:21_
+_@MichaReiser_
 
 ## Summary
 

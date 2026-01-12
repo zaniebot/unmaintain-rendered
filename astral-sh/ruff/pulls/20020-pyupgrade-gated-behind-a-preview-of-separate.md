@@ -12,14 +12,14 @@ head: feat/ruff-19561-preview
 created_at: 2025-08-21T10:52:05Z
 updated_at: 2025-10-06T06:54:33Z
 url: https://github.com/astral-sh/ruff/pull/20020
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [`pyupgrade`] Gated behind a preview of separate diagnostics (`UP010`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-08-21 10:52_
+_@IDrokin117_
 
 ## Summary
 

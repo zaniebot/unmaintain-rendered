@@ -13,14 +13,14 @@ head: renovate/pre-commit-dependencies
 created_at: 2025-06-02T00:37:52Z
 updated_at: 2025-06-02T05:38:13Z
 url: https://github.com/astral-sh/ruff/pull/18418
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # Update pre-commit dependencies
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 00:37_
+_@renovate_
 
 This PR contains the following updates:
 

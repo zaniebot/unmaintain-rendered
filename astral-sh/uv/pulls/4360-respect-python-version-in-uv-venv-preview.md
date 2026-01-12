@@ -13,14 +13,14 @@ head: zb/toolchain-file-venv
 created_at: 2024-06-17T16:40:47Z
 updated_at: 2024-06-18T14:21:36Z
 url: https://github.com/astral-sh/uv/pull/4360
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # Respect `.python-version` in `uv venv --preview`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-17 16:40_
+_@zanieb_
 
 Adds support for reading Python version files (introduced in #4335) to `uv venv`. If present, we'll use the file version as the default.
 

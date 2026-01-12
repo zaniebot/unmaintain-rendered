@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T12:29:31Z
 updated_at: 2024-10-16T18:04:47Z
 url: https://github.com/astral-sh/ruff/issues/13777
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature Request: Prevent useless import aliases
 
 ---
 
-_Issue opened by @Diaoul on 2024-10-16 12:29_
+_@Diaoul_
 
 Following a refactor renaming an alias, I ended up with this kind of import statement
 

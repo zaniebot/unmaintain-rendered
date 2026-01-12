@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T07:01:17Z
 updated_at: 2025-03-19T15:08:49Z
 url: https://github.com/astral-sh/ruff/issues/16839
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F821 (E0601) False negative
 
 ---
 
-_Issue opened by @pa5555 on 2025-03-19 07:01_
+_@pa5555_
 
 ### Summary
 

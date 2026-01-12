@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-09-24T12:25:03Z
 updated_at: 2024-09-24T14:23:20Z
 url: https://github.com/astral-sh/ruff/pull/13498
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # C401 message missing closing parenthesis
 
 ---
 
-_Pull request opened by @sbrugman on 2024-09-24 12:25_
+_@sbrugman_
 
 Closes https://github.com/astral-sh/ruff/issues/13497
 

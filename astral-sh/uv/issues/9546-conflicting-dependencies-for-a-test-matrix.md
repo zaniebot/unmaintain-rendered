@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T01:41:43Z
 updated_at: 2024-12-10T20:28:58Z
 url: https://github.com/astral-sh/uv/issues/9546
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Conflicting dependencies for a test matrix
 
 ---
 
-_Issue opened by @delfick on 2024-12-01 01:41_
+_@delfick_
 
 Hi,
 

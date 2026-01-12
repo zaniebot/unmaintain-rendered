@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-25T15:46:28Z
 updated_at: 2025-07-16T13:52:18Z
 url: https://github.com/astral-sh/uv/issues/14262
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Ability to select libc in a multi-libc environment
 
 ---
 
-_Issue opened by @nathanscain on 2025-06-25 15:46_
+_@nathanscain_
 
 ## Problem Statement
 

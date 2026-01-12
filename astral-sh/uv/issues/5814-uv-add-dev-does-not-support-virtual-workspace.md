@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-06T14:24:17Z
 updated_at: 2024-08-06T18:06:05Z
 url: https://github.com/astral-sh/uv/issues/5814
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # uv add --dev does not support virtual workspace roots
 
 ---
 
-_Issue opened by @bluss on 2024-08-06 14:24_
+_@bluss_
 
 I'm not sure this should be a feature, but maybe.
 

@@ -12,14 +12,14 @@ head: flake8-mock-spec
 created_at: 2025-10-06T20:20:38Z
 updated_at: 2025-10-07T07:58:27Z
 url: https://github.com/astral-sh/ruff/pull/20728
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ruff] Add flake8-mock-spec rules
 
 ---
 
-_Pull request opened by @Tenzer on 2025-10-06 20:20_
+_@Tenzer_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

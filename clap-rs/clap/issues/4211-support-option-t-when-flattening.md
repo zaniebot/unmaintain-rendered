@@ -15,14 +15,14 @@ assignees: []
 created_at: 2022-09-13T14:49:10Z
 updated_at: 2022-10-05T21:52:33Z
 url: https://github.com/clap-rs/clap/issues/4211
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support `Option<T>` when flattening
 
 ---
 
-_Issue opened by @epage on 2022-09-13 14:49_
+_@epage_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-13T03:05:17Z
 updated_at: 2025-07-15T11:47:21Z
 url: https://github.com/astral-sh/ty/issues/820
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # allow TypedDict instance literals
 
 ---
 
-_Issue opened by @sslivkoff on 2025-07-13 03:05_
+_@sslivkoff_
 
 would like ty to allow literal instantiation of TypedDict's, as in:
 

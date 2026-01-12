@@ -13,14 +13,14 @@ head: micha/unused-ignore-comment
 created_at: 2024-12-20T16:28:00Z
 updated_at: 2024-12-23T10:15:29Z
 url: https://github.com/astral-sh/ruff/pull/15084
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Add `unused-ignore-comment` rule
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 16:28_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: flake8-self
 created_at: 2023-02-02T11:39:48Z
 updated_at: 2023-02-02T13:00:27Z
 url: https://github.com/astral-sh/ruff/pull/2470
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`flake8-self`] Add Plugin and Rule `SLF001`
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-02-02 11:39_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/2411
 

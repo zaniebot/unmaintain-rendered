@@ -13,14 +13,14 @@ head: cjm/with-non-name
 created_at: 2024-09-19T16:55:21Z
 updated_at: 2024-09-19T17:37:51Z
 url: https://github.com/astral-sh/ruff/pull/13409
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] visit with-item vars even if not a Name
 
 ---
 
-_Pull request opened by @carljm on 2024-09-19 16:55_
+_@carljm_
 
 This fixes the last panic on checking pandas.
 

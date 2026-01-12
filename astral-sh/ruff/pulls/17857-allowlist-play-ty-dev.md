@@ -13,14 +13,14 @@ head: micha/allowlist-play-ty
 created_at: 2025-05-05T13:27:40Z
 updated_at: 2025-05-06T08:16:19Z
 url: https://github.com/astral-sh/ruff/pull/17857
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Allowlist play.ty.dev
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 13:27_
+_@MichaReiser_
 
 ## Summary
 

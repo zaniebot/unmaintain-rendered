@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-05-23T10:03:01Z
 updated_at: 2021-05-26T23:44:50Z
 url: https://github.com/clap-rs/clap/issues/2499
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # [v3 Bug] `flag_subcommands` doesn't work well with list of arguments
 
 ---
 
-_Issue opened by @rami3l on 2021-05-23 10:03_
+_@rami3l_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-10T10:30:56Z
 updated_at: 2023-07-10T14:51:40Z
 url: https://github.com/astral-sh/ruff/issues/5640
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `pyupgrade.keep-runtime-typing` should be ignored for `.pyi` stub files
 
 ---
 
-_Issue opened by @monosans on 2023-07-10 10:30_
+_@monosans_
 
 Should the `pyupgrade.keep-runtime-typing` setting really apply to `.pyi` stub files? I think not, because they don't have runtime, so they should always use the new type annotation syntax.
 

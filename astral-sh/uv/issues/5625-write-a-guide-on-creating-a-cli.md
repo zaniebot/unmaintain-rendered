@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T18:42:15Z
 updated_at: 2024-09-01T09:43:12Z
 url: https://github.com/astral-sh/uv/issues/5625
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Write a guide on "creating a CLI"
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 18:42_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

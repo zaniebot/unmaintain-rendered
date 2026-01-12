@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-05T13:32:39Z
 updated_at: 2025-03-13T13:09:52Z
 url: https://github.com/astral-sh/ruff/issues/4864
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # New Rule to rewrite `pathlib.Path().joinpath` with `/`
 
 ---
 
-_Issue opened by @mosauter on 2023-06-05 13:32_
+_@mosauter_
 
 In many projects I came around something like this:
 

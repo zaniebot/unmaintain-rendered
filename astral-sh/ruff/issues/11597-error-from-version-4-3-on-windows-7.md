@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-29T09:47:48Z
 updated_at: 2024-05-30T07:49:39Z
 url: https://github.com/astral-sh/ruff/issues/11597
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # error from version 4.3 on Windows 7
 
 ---
 
-_Issue opened by @melassa on 2024-05-29 09:47_
+_@melassa_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

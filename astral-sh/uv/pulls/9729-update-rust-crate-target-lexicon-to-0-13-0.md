@@ -13,14 +13,14 @@ head: renovate/target-lexicon-0.x
 created_at: 2024-12-09T01:03:01Z
 updated_at: 2024-12-11T01:34:09Z
 url: https://github.com/astral-sh/uv/pull/9729
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Update Rust crate target-lexicon to 0.13.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-09 01:03_
+_@renovate_
 
 This PR contains the following updates:
 

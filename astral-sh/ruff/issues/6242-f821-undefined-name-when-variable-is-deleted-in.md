@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-01T13:51:04Z
 updated_at: 2024-09-09T13:55:42Z
 url: https://github.com/astral-sh/ruff/issues/6242
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F821 "Undefined name" when variable is deleted in another branch
 
 ---
 
-_Issue opened by @Louis-dM on 2023-08-01 13:51_
+_@Louis-dM_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

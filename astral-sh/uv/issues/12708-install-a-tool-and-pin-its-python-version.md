@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T06:30:12Z
 updated_at: 2025-04-07T06:30:12Z
 url: https://github.com/astral-sh/uv/issues/12708
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # install a tool and pin its Python version
 
 ---
 
-_Issue opened by @jabbalaci on 2025-04-07 06:30_
+_@jabbalaci_
 
 ### Question
 

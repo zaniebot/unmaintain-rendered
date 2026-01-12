@@ -13,14 +13,14 @@ head: feature/fix-playground-sharebutton-copied
 created_at: 2025-12-12T11:07:02Z
 updated_at: 2025-12-17T11:16:02Z
 url: https://github.com/astral-sh/ruff/pull/21942
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # Fix playground Share button showing "Copied!" before clipboard copy completes
 
 ---
 
-_Pull request opened by @mahiro72 on 2025-12-12 11:07_
+_@mahiro72_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

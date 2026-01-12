@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-18T09:51:54Z
 updated_at: 2025-09-18T09:54:20Z
 url: https://github.com/astral-sh/ty/issues/1201
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `datetime.datetime.now()` type is revealed as `Unknown`
 
 ---
 
-_Issue opened by @gjcarneiro on 2025-09-18 09:51_
+_@gjcarneiro_
 
 ### Summary
 

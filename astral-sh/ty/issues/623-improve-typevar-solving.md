@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T11:56:31Z
 updated_at: 2025-12-10T18:05:46Z
 url: https://github.com/astral-sh/ty/issues/623
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # improve typevar solving
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-10 11:56_
+_@DetachHead_
 
 ### Summary
 

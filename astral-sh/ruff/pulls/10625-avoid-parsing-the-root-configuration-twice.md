@@ -13,14 +13,14 @@ head: avoid-parsing-root-configuration-twice
 created_at: 2024-03-27T09:20:53Z
 updated_at: 2024-05-01T09:32:51Z
 url: https://github.com/astral-sh/ruff/pull/10625
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Avoid parsing the root configuration twice
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-27 09:20_
+_@MichaReiser_
 
 ## Summary
 I debugged #10622 and noticed that the root configuration is always resolved twice. This PR changes `python_files_in_path` to stop searching for configurations if it reached the root-configuration directory (because we can't find any more specific configuration).

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-24T11:06:13Z
 updated_at: 2025-03-24T15:45:30Z
 url: https://github.com/astral-sh/uv/issues/12426
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Potentially invalid argument for tree --prune in the CLI's help menu
 
 ---
 
-_Issue opened by @nickjj on 2025-03-24 11:06_
+_@nickjj_
 
 ### Summary
 

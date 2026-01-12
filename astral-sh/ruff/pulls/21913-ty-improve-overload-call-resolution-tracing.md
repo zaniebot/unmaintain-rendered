@@ -14,14 +14,14 @@ head: dhruv/overload-tracing
 created_at: 2025-12-11T06:51:35Z
 updated_at: 2025-12-11T06:58:47Z
 url: https://github.com/astral-sh/ruff/pull/21913
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Improve overload call resolution tracing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-11 06:51_
+_@dhruvmanila_
 
 This PR improves the overload call resolution tracing messages as:
 - Use `trace` level instead of `debug` level

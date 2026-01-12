@@ -14,14 +14,14 @@ head: david/fix-callabletypeof-for-classmethods
 created_at: 2025-09-11T07:50:11Z
 updated_at: 2025-09-11T08:14:41Z
 url: https://github.com/astral-sh/ruff/pull/20345
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Fix CallableTypeOf[…] for classmethods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-11 07:50_
+_@sharkdp_
 
 ## Summary
 

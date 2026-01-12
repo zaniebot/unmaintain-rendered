@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T17:26:59Z
 updated_at: 2025-12-19T02:29:38Z
 url: https://github.com/astral-sh/uv/issues/11104
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Ignore group completely when resolving depencencies.
 
 ---
 
-_Issue opened by @fizcris on 2025-01-30 17:26_
+_@fizcris_
 
 ### Summary
 

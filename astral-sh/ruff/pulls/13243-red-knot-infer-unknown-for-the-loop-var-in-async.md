@@ -13,14 +13,14 @@ head: alex/redknot-async-for
 created_at: 2024-09-04T13:32:50Z
 updated_at: 2024-09-04T15:51:10Z
 url: https://github.com/astral-sh/ruff/pull/13243
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Infer `Unknown` for the loop var in `async for` loops
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-04 13:32_
+_@AlexWaygood_
 
 ## Summary
 

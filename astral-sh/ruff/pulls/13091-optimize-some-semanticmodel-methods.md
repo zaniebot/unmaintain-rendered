@@ -13,14 +13,14 @@ head: optimize-current-exprs
 created_at: 2024-08-25T16:46:05Z
 updated_at: 2024-09-02T09:03:54Z
 url: https://github.com/astral-sh/ruff/pull/13091
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Optimize some `SemanticModel` methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-25 16:46_
+_@AlexWaygood_
 
 _No description provided._
 

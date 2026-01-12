@@ -14,14 +14,14 @@ head: jack/global_must_refer_to_definition
 created_at: 2025-07-15T00:09:00Z
 updated_at: 2025-07-15T23:57:56Z
 url: https://github.com/astral-sh/ruff/pull/19344
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] lint on the `global` keyword if there's no explicit definition in the…
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-15 00:09_
+_@oconnor663_
 
 We currently lint on examples like this (even though it's allowed at runtime, as long as you call `f` before `g`):
 

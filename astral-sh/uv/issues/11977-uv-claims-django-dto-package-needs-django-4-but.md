@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T14:54:13Z
 updated_at: 2025-03-05T16:10:28Z
 url: https://github.com/astral-sh/uv/issues/11977
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # uv claims django-dto package needs django <4, but thats not what the dependency declaration says
 
 ---
 
-_Issue opened by @sean-abbott on 2025-03-05 14:54_
+_@sean-abbott_
 
 ### Question
 

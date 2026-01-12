@@ -13,14 +13,14 @@ head: hoel/fix_10228
 created_at: 2024-03-08T03:41:54Z
 updated_at: 2024-03-25T13:09:42Z
 url: https://github.com/astral-sh/ruff/pull/10291
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Avoid blank line rules for the first logical line in cell
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-08 03:41_
+_@hoel-bagard_
 
 ## Summary
 

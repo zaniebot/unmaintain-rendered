@@ -13,14 +13,14 @@ head: charlie/exc
 created_at: 2025-03-18T19:27:02Z
 updated_at: 2025-03-22T16:27:12Z
 url: https://github.com/astral-sh/uv/pull/12299
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Omit wheels from lockfile based on `--exclude-newer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 19:27_
+_@charliermarsh_
 
 ## Summary
 

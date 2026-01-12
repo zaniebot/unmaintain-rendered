@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T08:35:59Z
 updated_at: 2025-01-24T11:41:20Z
 url: https://github.com/astral-sh/uv/issues/10930
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Check all tools for possible upgrades
 
 ---
 
-_Issue opened by @jamesdeluk on 2025-01-24 08:35_
+_@jamesdeluk_
 
 ### Question
 

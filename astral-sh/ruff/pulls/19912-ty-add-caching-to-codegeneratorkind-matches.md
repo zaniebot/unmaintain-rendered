@@ -14,14 +14,14 @@ head: alex/optimize-codegenerator-standalone
 created_at: 2025-08-14T10:32:48Z
 updated_at: 2025-08-14T10:54:12Z
 url: https://github.com/astral-sh/ruff/pull/19912
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Add caching to `CodeGeneratorKind::matches()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-14 10:32_
+_@AlexWaygood_
 
 https://github.com/astral-sh/ruff/pull/19901 has been approved, but... not the PR that it's stacked on top of :-). This PR experiments to see whether #19901 makes sense as a standalone change.
 

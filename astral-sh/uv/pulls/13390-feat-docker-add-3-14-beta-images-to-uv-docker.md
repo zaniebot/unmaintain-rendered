@@ -13,14 +13,14 @@ head: docker-py-314-rc
 created_at: 2025-05-12T00:14:26Z
 updated_at: 2025-05-18T14:10:42Z
 url: https://github.com/astral-sh/uv/pull/13390
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # feat(docker): add 3.14 beta images to uv docker
 
 ---
 
-_Pull request opened by @samypr100 on 2025-05-12 00:14_
+_@samypr100_
 
 ## Summary
 

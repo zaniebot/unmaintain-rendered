@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-05T07:55:45Z
 updated_at: 2024-07-17T23:11:14Z
 url: https://github.com/astral-sh/uv/issues/4823
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv tool list -v` should show paths
 
 ---
 
-_Issue opened by @konstin on 2024-07-05 07:55_
+_@konstin_
 
 It would be great if `uv tool list` would have a verbose mode that shows paths, maybe reusing `-v`, maybe something like `--paths`.
 

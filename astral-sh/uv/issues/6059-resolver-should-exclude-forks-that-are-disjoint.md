@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-13T16:50:10Z
 updated_at: 2024-08-15T15:50:01Z
 url: https://github.com/astral-sh/uv/issues/6059
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Resolver should exclude forks that are disjoint with `requires-python`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-13 16:50_
+_@charliermarsh_
 
 For example, given:
 

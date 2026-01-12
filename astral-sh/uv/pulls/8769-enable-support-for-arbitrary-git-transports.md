@@ -13,14 +13,14 @@ head: main
 created_at: 2024-11-03T03:37:08Z
 updated_at: 2024-11-05T07:55:16Z
 url: https://github.com/astral-sh/uv/pull/8769
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Enable support for arbitrary git transports
 
 ---
 
-_Pull request opened by @rdeaton on 2024-11-03 03:37_
+_@rdeaton_
 
 ## Summary
 

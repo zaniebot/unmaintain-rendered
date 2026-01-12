@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T16:22:54Z
 updated_at: 2025-11-14T17:45:10Z
 url: https://github.com/astral-sh/ty/issues/1104
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider vendoring third-party typeshed stubs, too
 
 ---
 
-_Issue opened by @aidandj on 2025-08-28 16:22_
+_@aidandj_
 
 ### Summary
 

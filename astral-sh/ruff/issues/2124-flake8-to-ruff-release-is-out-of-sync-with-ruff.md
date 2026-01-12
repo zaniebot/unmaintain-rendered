@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-24T12:34:26Z
 updated_at: 2023-01-24T13:39:59Z
 url: https://github.com/astral-sh/ruff/issues/2124
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `flake8-to-ruff` release is out of sync with `ruff`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-24 12:34_
+_@ngnpope_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

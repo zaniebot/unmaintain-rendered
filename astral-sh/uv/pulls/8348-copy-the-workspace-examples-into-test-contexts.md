@@ -13,14 +13,14 @@ head: zb/workspace-cp
 created_at: 2024-10-18T22:32:10Z
 updated_at: 2024-10-20T16:11:54Z
 url: https://github.com/astral-sh/uv/pull/8348
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Copy the workspace examples into test contexts
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 22:32_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/uv/pull/8347
 

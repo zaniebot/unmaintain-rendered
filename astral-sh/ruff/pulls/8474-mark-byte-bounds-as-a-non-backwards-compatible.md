@@ -12,14 +12,14 @@ head: charlie/npy
 created_at: 2023-11-03T16:07:02Z
 updated_at: 2023-11-03T16:22:35Z
 url: https://github.com/astral-sh/ruff/pull/8474
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Mark `byte_bounds` as a non-backwards-compatible NumPy 2.0 change
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 16:07_
+_@charliermarsh_
 
 This is the one refactor in the NumPy 2.0 upgrade rule that isn't compatible with earlier versions of NumPy, so I'm marking it as unsafe and adding a dedicated message.
 

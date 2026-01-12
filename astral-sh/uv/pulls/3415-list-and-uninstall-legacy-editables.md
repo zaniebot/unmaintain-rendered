@@ -14,14 +14,14 @@ head: sj/egg2
 created_at: 2024-05-06T21:46:12Z
 updated_at: 2024-05-07T05:11:10Z
 url: https://github.com/astral-sh/uv/pull/3415
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # List and uninstall legacy editables
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-05-06 21:46_
+_@hauntsaninja_
 
 Reopening #3396
 

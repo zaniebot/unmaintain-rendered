@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-06T06:07:33Z
 updated_at: 2025-03-03T10:45:23Z
 url: https://github.com/astral-sh/ruff/issues/12709
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Server setting to run subset of rules for "Fix All" code action
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-06 06:07_
+_@dhruvmanila_
 
 Discussion: https://github.com/astral-sh/ruff/pull/12674
 

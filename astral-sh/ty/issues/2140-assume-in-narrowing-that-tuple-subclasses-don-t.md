@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T04:34:55Z
 updated_at: 2025-12-22T22:07:58Z
 url: https://github.com/astral-sh/ty/issues/2140
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # assume in narrowing that tuple subclasses don't override `__eq__`
 
 ---
 
-_Issue opened by @dsfaccini on 2025-12-21 04:34_
+_@dsfaccini_
 
 ### Summary
 Ty does not narrow a `Literal`/tuple union when assigning to a wider `Literal` union.

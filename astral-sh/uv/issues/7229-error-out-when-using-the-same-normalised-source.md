@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T19:33:05Z
 updated_at: 2024-09-14T03:37:25Z
 url: https://github.com/astral-sh/uv/issues/7229
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Error out when using the same normalised source twice
 
 ---
 
-_Issue opened by @mkniewallner on 2024-09-09 19:33_
+_@mkniewallner_
 
 When mapping dependencies to define sources, because of the TOML specification, uv will raise an error if defining the same source twice. For instance with this `pyproject.toml`:
 ```toml

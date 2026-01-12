@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-05T15:00:33Z
 updated_at: 2023-09-08T06:25:28Z
 url: https://github.com/astral-sh/ruff/issues/7159
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Fingerprint in gitlab report should not use location in code as part of the hashing algorithm
 
 ---
 
-_Issue opened by @gregersn on 2023-09-05 15:00_
+_@gregersn_
 
 ruff 0.0.287
 

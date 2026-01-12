@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T20:13:19Z
 updated_at: 2024-10-12T10:39:21Z
 url: https://github.com/astral-sh/uv/issues/8132
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Fail to automatically activate the venv
 
 ---
 
-_Issue opened by @ArcticOc on 2024-10-11 20:13_
+_@ArcticOc_
 
 Hi,
 

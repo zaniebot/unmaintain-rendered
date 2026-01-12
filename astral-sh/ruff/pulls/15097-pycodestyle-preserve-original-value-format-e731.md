@@ -13,14 +13,14 @@ head: E731
 created_at: 2024-12-22T02:05:32Z
 updated_at: 2024-12-26T03:16:28Z
 url: https://github.com/astral-sh/ruff/pull/15097
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pycodestyle`] Preserve original value format (`E731`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-22 02:05_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T12:28:26Z
 updated_at: 2024-12-12T18:21:37Z
 url: https://github.com/astral-sh/uv/issues/9836
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # UV uses wrong wheel platform for package when rosetta is involved on MacOS
 
 ---
 
-_Issue opened by @ghost on 2024-12-12 12:28_
+_@ghost_
 
 OS: Macos 15.1.1
 UV: 0.5.5

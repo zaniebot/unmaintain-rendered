@@ -13,14 +13,14 @@ head: fix/npy201_NAN
 created_at: 2024-07-11T18:40:56Z
 updated_at: 2024-07-12T12:53:06Z
 url: https://github.com/astral-sh/ruff/pull/12292
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [numpy] Update NPY201: add `np.NAN` to exception
 
 ---
 
-_Pull request opened by @xmatthias on 2024-07-11 18:40_
+_@xmatthias_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

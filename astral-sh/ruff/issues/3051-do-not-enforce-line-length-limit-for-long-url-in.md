@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T06:47:18Z
 updated_at: 2023-03-26T18:17:37Z
 url: https://github.com/astral-sh/ruff/issues/3051
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Do not enforce line length limit for long URL in docstrings
 
 ---
 
-_Issue opened by @jfcherng on 2023-02-20 06:47_
+_@jfcherng_
 
 Similar to https://github.com/charliermarsh/ruff/pull/920 but in docstring
 

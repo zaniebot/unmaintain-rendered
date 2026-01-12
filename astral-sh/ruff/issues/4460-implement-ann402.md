@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-16T22:01:19Z
 updated_at: 2025-03-20T08:54:44Z
 url: https://github.com/astral-sh/ruff/issues/4460
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement ANN402
 
 ---
 
-_Issue opened by @janosh on 2023-05-16 22:01_
+_@janosh_
 
 Flag and auto-fix [`flake8-annotations`](https://github.com/sco1/flake8-annotations#opinionated-warnings) `ANN402` type comments.
 

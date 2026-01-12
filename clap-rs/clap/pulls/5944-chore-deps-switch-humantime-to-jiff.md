@@ -12,14 +12,14 @@ head: jiff
 created_at: 2025-03-08T15:55:29Z
 updated_at: 2025-03-10T16:54:35Z
 url: https://github.com/clap-rs/clap/pull/5944
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(deps): Switch humantime to jiff
 
 ---
 
-_Pull request opened by @oherrala on 2025-03-08 15:55_
+_@oherrala_
 
 [`humantime`](https://crates.io/crates/humantime) crate seems to be unmaintained and [`jiff`](https://crates.io/crates/jiff) is provides same functionality. According to crates.io's stats clap is the most downloaded user of `humantime`. 
 

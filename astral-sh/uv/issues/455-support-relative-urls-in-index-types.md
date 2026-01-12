@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-19T14:02:16Z
 updated_at: 2023-12-27T13:53:22Z
 url: https://github.com/astral-sh/uv/issues/455
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support relative urls in index types
 
 ---
 
-_Issue opened by @konstin on 2023-11-19 14:02_
+_@konstin_
 
 From [PEP 691](https://peps.python.org/pep-0691/#json-serialization):
 

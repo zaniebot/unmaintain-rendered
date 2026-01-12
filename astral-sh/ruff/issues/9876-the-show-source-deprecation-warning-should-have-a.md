@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-07T16:14:31Z
 updated_at: 2024-07-12T03:32:27Z
 url: https://github.com/astral-sh/ruff/issues/9876
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # The `show-source` deprecation warning should have a clearer call to action
 
 ---
 
-_Issue opened by @zanieb on 2024-02-07 16:14_
+_@zanieb_
 
 "Please update your configuration" should be more specific. 
 

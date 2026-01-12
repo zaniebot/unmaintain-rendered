@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-18T15:07:53Z
 updated_at: 2024-08-10T00:47:06Z
 url: https://github.com/clap-rs/clap/issues/4916
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Completions shouldn't suggest options unless the current token starts with a `-`
 
 ---
 
-_Issue opened by @jthulhu on 2023-05-18 15:07_
+_@jthulhu_
 
 ### Please complete the following tasks
 

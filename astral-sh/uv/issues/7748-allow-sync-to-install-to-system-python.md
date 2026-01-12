@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T23:29:44Z
 updated_at: 2025-04-26T03:33:16Z
 url: https://github.com/astral-sh/uv/issues/7748
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Allow sync to install to system python
 
 ---
 
-_Issue opened by @nhumrich on 2024-09-27 23:29_
+_@nhumrich_
 
 In docker environments, it's quite common to install all python packages to the system. Virtual environments are not needed because the current project is the only thing installed. 
 

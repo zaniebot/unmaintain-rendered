@@ -13,14 +13,14 @@ head: cjm/const
 created_at: 2024-11-08T21:25:42Z
 updated_at: 2024-11-15T10:29:37Z
 url: https://github.com/astral-sh/ruff/pull/14211
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] make KnownClass::is_singleton a const fn
 
 ---
 
-_Pull request opened by @carljm on 2024-11-08 21:25_
+_@carljm_
 
 Follow-up from missed review comment on https://github.com/astral-sh/ruff/pull/14182
 

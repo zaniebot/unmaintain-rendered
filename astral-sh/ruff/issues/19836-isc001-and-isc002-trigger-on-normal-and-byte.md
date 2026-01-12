@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-08T20:33:46Z
 updated_at: 2025-08-11T07:43:24Z
 url: https://github.com/astral-sh/ruff/issues/19836
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ISC001 and ISC002 trigger on normal and byte string concatenation
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-08-08 20:33_
+_@MeGaGiGaGon_
 
 ### Summary
 

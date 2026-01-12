@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T18:30:12Z
 updated_at: 2025-01-09T17:49:07Z
 url: https://github.com/astral-sh/ruff/issues/14740
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] add narrowing support in match class patterns
 
 ---
 
-_Issue opened by @carljm on 2024-12-02 18:30_
+_@carljm_
 
 The goal of this issue is to make this mdtest pass:
 

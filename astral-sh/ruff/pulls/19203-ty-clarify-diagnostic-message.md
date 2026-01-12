@@ -14,14 +14,14 @@ head: david/fix-diagnostic-message
 created_at: 2025-07-08T12:01:09Z
 updated_at: 2025-07-08T12:21:22Z
 url: https://github.com/astral-sh/ruff/pull/19203
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Clarify diagnostic message
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-08 12:01_
+_@sharkdp_
 
 This diagnostic message was missing the word "type"
 

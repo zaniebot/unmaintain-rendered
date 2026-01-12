@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T14:09:39Z
 updated_at: 2024-06-27T11:44:13Z
 url: https://github.com/astral-sh/ruff/issues/10739
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Global Config Discovery: use `$XDG_CONFIG_HOME` on macOS
 
 ---
 
-_Issue opened by @SPiCaRiA on 2024-04-02 14:09_
+_@SPiCaRiA_
 
 Hi, I'm newly migrating to ruff and it works so far so good for me, thank you for making this great tool!
 

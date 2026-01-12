@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T03:28:44Z
 updated_at: 2025-09-29T11:03:18Z
 url: https://github.com/astral-sh/uv/issues/10883
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # RISC-V platform support?
 
 ---
 
-_Issue opened by @ifsheldon on 2025-01-23 03:28_
+_@ifsheldon_
 
 ### Summary
 

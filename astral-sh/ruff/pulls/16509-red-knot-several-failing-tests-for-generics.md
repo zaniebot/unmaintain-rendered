@@ -13,14 +13,14 @@ head: dcreager/generic-tests
 created_at: 2025-03-04T20:31:36Z
 updated_at: 2025-03-06T07:55:31Z
 url: https://github.com/astral-sh/ruff/pull/16509
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Several failing tests for generics
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-04 20:31_
+_@dcreager_
 
 To kick off the work of supporting generics, this adds many new (currently failing) tests, showing the behavior we plan to support.
 

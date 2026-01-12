@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-23T22:19:51Z
 updated_at: 2024-08-12T14:59:08Z
 url: https://github.com/astral-sh/uv/issues/4454
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Order of settings in CLI `help` is not intuitive
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-23 22:19_
+_@charliermarsh_
 
 For some reason, `quiet` and `verbose` are randomly in the middle (and non-consecutive).
 

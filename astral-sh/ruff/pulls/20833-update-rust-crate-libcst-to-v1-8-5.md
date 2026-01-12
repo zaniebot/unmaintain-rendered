@@ -13,14 +13,14 @@ head: renovate/libcst-1.x-lockfile
 created_at: 2025-10-13T01:07:49Z
 updated_at: 2025-10-13T01:49:22Z
 url: https://github.com/astral-sh/ruff/pull/20833
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # Update Rust crate libcst to v1.8.5
 
 ---
 
-_Pull request opened by @renovate on 2025-10-13 01:07_
+_@renovate_
 
 This PR contains the following updates:
 

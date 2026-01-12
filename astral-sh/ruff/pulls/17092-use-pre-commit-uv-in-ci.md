@@ -12,14 +12,14 @@ head: pre-commit-uv
 created_at: 2025-03-31T12:30:02Z
 updated_at: 2025-04-01T12:16:41Z
 url: https://github.com/astral-sh/ruff/pull/17092
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Use pre-commit-uv in CI
 
 ---
 
-_Pull request opened by @akx on 2025-03-31 12:30_
+_@akx_
 
 ## Summary
 

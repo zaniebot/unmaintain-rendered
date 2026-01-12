@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-09T16:34:35Z
 updated_at: 2025-05-09T16:37:35Z
 url: https://github.com/astral-sh/ty/issues/297
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Panic on Type-Checking Recursive JSON
 
 ---
 
-_Issue opened by @max-muoto on 2025-05-09 16:34_
+_@max-muoto_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/chrono-0.x-lockfile
 created_at: 2024-04-15T12:42:05Z
 updated_at: 2024-04-15T13:09:35Z
 url: https://github.com/astral-sh/ruff/pull/10953
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Update Rust crate chrono to v0.4.38
 
 ---
 
-_Pull request opened by @renovate on 2024-04-15 12:42_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

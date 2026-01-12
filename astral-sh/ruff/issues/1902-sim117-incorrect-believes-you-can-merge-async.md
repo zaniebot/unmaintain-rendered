@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T02:16:37Z
 updated_at: 2023-01-16T03:34:22Z
 url: https://github.com/astral-sh/ruff/issues/1902
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `SIM117` incorrect believes you can merge `async with` and `with`
 
 ---
 
-_Issue opened by @thomasdesr on 2023-01-16 02:16_
+_@thomasdesr_
 
 SIM117 should:
 * Not trigger when nesting a context manager within an async context manager since you can't generally merge an async context manager with a sync context manager.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T07:23:33Z
 updated_at: 2025-09-24T09:09:06Z
 url: https://github.com/astral-sh/uv/issues/16011
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # uv build backend dynamic fields / project.scripts
 
 ---
 
-_Issue opened by @fvbrandt on 2025-09-24 07:23_
+_@fvbrandt_
 
 ### Summary
 

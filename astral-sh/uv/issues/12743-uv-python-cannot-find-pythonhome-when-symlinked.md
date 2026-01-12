@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-08T13:38:17Z
 updated_at: 2025-04-08T19:10:58Z
 url: https://github.com/astral-sh/uv/issues/12743
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # uv python cannot find PYTHONHOME when symlinked from inside of directory with pyvenv.cfg with wrong home value
 
 ---
 
-_Issue opened by @hoodmane on 2025-04-08 13:38_
+_@hoodmane_
 
 ### Summary
 

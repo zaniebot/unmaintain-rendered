@@ -14,14 +14,14 @@ head: bugfix/quote-annotation-transformer
 created_at: 2024-11-27T13:48:45Z
 updated_at: 2024-11-27T21:18:39Z
 url: https://github.com/astral-sh/ruff/pull/14634
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-type-checking`] Fixes `quote_type_expression`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-27 13:48_
+_@Daverball_
 
 Supersedes: #14614
 Fixes: #14538

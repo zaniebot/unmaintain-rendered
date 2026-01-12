@@ -15,14 +15,14 @@ head: brent/diagnostic-body
 created_at: 2025-12-23T17:11:08Z
 updated_at: 2025-12-24T15:28:25Z
 url: https://github.com/astral-sh/ruff/pull/22164
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # Render the entire diagnostic message in all output formats
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-23 17:11_
+_@ntBre_
 
 Summary
 --

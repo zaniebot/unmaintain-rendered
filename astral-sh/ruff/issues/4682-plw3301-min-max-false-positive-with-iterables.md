@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-27T15:46:23Z
 updated_at: 2023-05-27T19:34:57Z
 url: https://github.com/astral-sh/ruff/issues/4682
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLW3301: min/max false positive with iterables
 
 ---
 
-_Issue opened by @lovetox on 2023-05-27 15:46_
+_@lovetox_
 
 ruff: 0.0.267
 

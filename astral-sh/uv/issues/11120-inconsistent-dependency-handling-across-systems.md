@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-30T21:18:23Z
 updated_at: 2025-08-29T00:51:41Z
 url: https://github.com/astral-sh/uv/issues/11120
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Inconsistent Dependency Handling Across Systems with Different `glibc` Versions
 
 ---
 
-_Issue opened by @ido123net on 2025-01-30 21:18_
+_@ido123net_
 
 ### Summary
 

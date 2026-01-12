@@ -13,14 +13,14 @@ head: fuzz-build-failure
 created_at: 2024-04-28T17:58:50Z
 updated_at: 2024-04-28T18:17:44Z
 url: https://github.com/astral-sh/ruff/pull/11186
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Various small improvements to the `fuzz-parser` script
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-28 17:58_
+_@AlexWaygood_
 
 ## Summary
 

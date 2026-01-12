@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-30T02:13:17Z
 updated_at: 2022-09-07T12:43:18Z
 url: https://github.com/clap-rs/clap/issues/3887
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Document external subcommands
 
 ---
 
-_Issue opened by @epage on 2022-06-30 02:13_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3863
 

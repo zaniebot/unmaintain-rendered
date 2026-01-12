@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T14:58:50Z
 updated_at: 2025-07-08T07:26:01Z
 url: https://github.com/astral-sh/ruff/issues/19184
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ANN401 does not trigger on concatenated string literals
 
 ---
 
-_Issue opened by @robsdedude on 2025-07-07 14:58_
+_@robsdedude_
 
 ### Summary
 

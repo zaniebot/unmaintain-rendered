@@ -15,14 +15,14 @@ head: jane/server/misc-fixes
 created_at: 2024-05-22T20:08:31Z
 updated_at: 2024-05-27T11:41:18Z
 url: https://github.com/astral-sh/ruff/pull/11497
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server`: Fix multiple issues with Neovim and Helix
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-22 20:08_
+_@snowsignal_
 
 ## Summary
 

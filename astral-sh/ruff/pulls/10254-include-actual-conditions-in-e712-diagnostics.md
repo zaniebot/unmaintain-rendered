@@ -13,14 +13,14 @@ head: improve-e712-message
 created_at: 2024-03-06T19:23:12Z
 updated_at: 2024-03-09T01:19:47Z
 url: https://github.com/astral-sh/ruff/pull/10254
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Include actual conditions in E712 diagnostics
 
 ---
 
-_Pull request opened by @tjkuson on 2024-03-06 19:23_
+_@tjkuson_
 
 ## Summary
 

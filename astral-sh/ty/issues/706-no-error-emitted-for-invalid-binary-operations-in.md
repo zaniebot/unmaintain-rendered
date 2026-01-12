@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-25T19:23:33Z
 updated_at: 2025-06-30T08:06:02Z
 url: https://github.com/astral-sh/ty/issues/706
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # No error emitted for invalid binary operations in type expressions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-06-25 19:23_
+_@AlexWaygood_
 
 ### Summary
 

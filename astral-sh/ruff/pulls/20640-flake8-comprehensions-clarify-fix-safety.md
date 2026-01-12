@@ -13,14 +13,14 @@ head: fix-20632
 created_at: 2025-09-29T23:43:45Z
 updated_at: 2025-10-03T14:25:26Z
 url: https://github.com/astral-sh/ruff/pull/20640
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`flake8-comprehensions`] Clarify fix safety documentation (`C413`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-29 23:43_
+_@danparizher_
 
 ## Summary
 

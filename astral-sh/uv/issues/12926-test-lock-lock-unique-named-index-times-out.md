@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T19:58:57Z
 updated_at: 2025-04-16T19:59:25Z
 url: https://github.com/astral-sh/uv/issues/12926
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Test `lock::lock_unique_named_index` times out
 
 ---
 
-_Issue opened by @zanieb on 2025-04-16 19:58_
+_@zanieb_
 
 e.g., on macOS
 

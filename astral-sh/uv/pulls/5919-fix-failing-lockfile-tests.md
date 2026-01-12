@@ -13,14 +13,14 @@ head: charlie/test
 created_at: 2024-08-08T16:31:46Z
 updated_at: 2024-08-08T16:37:06Z
 url: https://github.com/astral-sh/uv/pull/5919
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Fix failing lockfile tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 16:31_
+_@charliermarsh_
 
 _No description provided._
 

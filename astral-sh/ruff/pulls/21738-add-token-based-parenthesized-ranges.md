@@ -13,14 +13,14 @@ head: feat-optimized-parenthesized-range
 created_at: 2025-12-01T20:18:04Z
 updated_at: 2025-12-03T09:52:25Z
 url: https://github.com/astral-sh/ruff/pull/21738
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Add token based `parenthesized_ranges` implementation
 
 ---
 
-_Pull request opened by @denyszhak on 2025-12-01 20:18_
+_@denyszhak_
 
 ## Summary
 

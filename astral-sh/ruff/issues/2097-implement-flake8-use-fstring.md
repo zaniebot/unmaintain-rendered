@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-22T22:57:36Z
 updated_at: 2023-04-24T14:40:24Z
 url: https://github.com/astral-sh/ruff/issues/2097
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-use-fstring`
 
 ---
 
-_Issue opened by @Secrus on 2023-01-22 22:57_
+_@Secrus_
 
 https://github.com/MichaelKim0407/flake8-use-fstring
 

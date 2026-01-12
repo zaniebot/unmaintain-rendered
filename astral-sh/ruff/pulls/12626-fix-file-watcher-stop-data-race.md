@@ -13,14 +13,14 @@ head: fix-watcher-stop-race
 created_at: 2024-08-02T12:06:21Z
 updated_at: 2024-08-02T17:02:51Z
 url: https://github.com/astral-sh/ruff/pull/12626
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix file watcher stop data race
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 12:06_
+_@MichaReiser_
 
 ## Summary
 

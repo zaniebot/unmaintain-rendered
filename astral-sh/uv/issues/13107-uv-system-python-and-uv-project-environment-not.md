@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T12:49:30Z
 updated_at: 2025-04-29T08:05:51Z
 url: https://github.com/astral-sh/uv/issues/13107
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # UV_SYSTEM_PYTHON and UV_PROJECT_ENVIRONMENT not work for not privileged users in docker (pip install --user mode)
 
 ---
 
-_Issue opened by @moaddib666 on 2025-04-25 12:49_
+_@moaddib666_
 
 ### Summary
 

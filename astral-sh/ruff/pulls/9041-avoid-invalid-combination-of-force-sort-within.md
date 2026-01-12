@@ -14,14 +14,14 @@ head: charlie/force-sort
 created_at: 2023-12-07T03:57:05Z
 updated_at: 2023-12-07T04:56:15Z
 url: https://github.com/astral-sh/ruff/pull/9041
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid invalid combination of `force-sort-within-types` and `lines-between-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-07 03:57_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8792.
 

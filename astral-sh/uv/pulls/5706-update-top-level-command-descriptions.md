@@ -13,14 +13,14 @@ head: zb/cli-description
 created_at: 2024-08-01T19:19:59Z
 updated_at: 2024-08-02T11:30:14Z
 url: https://github.com/astral-sh/uv/pull/5706
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Update top-level command descriptions
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 19:19_
+_@zanieb_
 
 Addresses feedback in https://github.com/astral-sh/uv/pull/5700
 

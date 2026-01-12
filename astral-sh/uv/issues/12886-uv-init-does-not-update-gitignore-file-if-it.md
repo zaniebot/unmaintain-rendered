@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T18:55:09Z
 updated_at: 2025-04-14T21:06:30Z
 url: https://github.com/astral-sh/uv/issues/12886
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv init does not update .gitignore file if it already exists
 
 ---
 
-_Issue opened by @JerusalemProgramming on 2025-04-14 18:55_
+_@JerusalemProgramming_
 
 ### Summary
 

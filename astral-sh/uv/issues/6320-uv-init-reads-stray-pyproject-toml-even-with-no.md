@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T11:53:54Z
 updated_at: 2024-08-21T14:30:03Z
 url: https://github.com/astral-sh/uv/issues/6320
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv init reads stray `pyproject.toml` even with --no-config
 
 ---
 
-_Issue opened by @bluss on 2024-08-21 11:53_
+_@bluss_
 
 See the following reproducer with uv 0.3.0.
 

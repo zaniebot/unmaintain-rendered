@@ -12,14 +12,14 @@ head: charlie/yoda
 created_at: 2023-01-04T20:57:57Z
 updated_at: 2023-01-04T20:58:03Z
 url: https://github.com/astral-sh/ruff/pull/1638
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Tweak Yoda condition message
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-04 20:57_
+_@charliermarsh_
 
 _No description provided._
 

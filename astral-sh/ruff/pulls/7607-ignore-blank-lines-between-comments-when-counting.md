@@ -14,14 +14,14 @@ head: charlie/import
 created_at: 2023-09-22T17:29:48Z
 updated_at: 2023-09-22T17:50:08Z
 url: https://github.com/astral-sh/ruff/pull/7607
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ignore blank lines between comments when counting newlines-after-imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-22 17:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-05T08:34:56Z
 updated_at: 2025-09-05T13:31:48Z
 url: https://github.com/astral-sh/uv/issues/15696
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Cannot install uv when HTTPS_PROXY is set on Windows
 
 ---
 
-_Issue opened by @fakerms on 2025-09-05 08:34_
+_@fakerms_
 
 ### Summary
 

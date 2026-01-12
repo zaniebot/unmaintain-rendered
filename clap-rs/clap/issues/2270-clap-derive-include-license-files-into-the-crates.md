@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-12-25T16:07:20Z
 updated_at: 2021-10-25T18:22:34Z
 url: https://github.com/clap-rs/clap/issues/2270
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_derive: Include license files into the crates.io tarball
 
 ---
 
-_Issue opened by @igor-raits on 2020-12-25 16:07_
+_@igor-raits_
 
 ### Make sure you completed the following tasks
 

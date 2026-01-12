@@ -13,14 +13,14 @@ head: gh-issue-15964
 created_at: 2025-02-18T20:20:51Z
 updated_at: 2025-05-18T17:08:27Z
 url: https://github.com/astral-sh/ruff/pull/16240
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Find conflicting declarations for attribute in class methods
 
 ---
 
-_Pull request opened by @smokyabdulrahman on 2025-02-18 20:20_
+_@smokyabdulrahman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

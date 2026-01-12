@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T02:08:16Z
 updated_at: 2025-02-19T21:19:32Z
 url: https://github.com/astral-sh/uv/issues/5090
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv`'s tool installation feature breaks on Wine
 
 ---
 
-_Issue opened by @alexdelorenzo on 2024-07-16 02:08_
+_@alexdelorenzo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

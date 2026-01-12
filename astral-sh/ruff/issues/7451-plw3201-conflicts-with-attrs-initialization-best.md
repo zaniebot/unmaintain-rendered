@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-17T09:26:04Z
 updated_at: 2023-09-17T20:13:35Z
 url: https://github.com/astral-sh/ruff/issues/7451
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PLW3201 conflicts with attrs initialization best practices
 
 ---
 
-_Issue opened by @cclauss on 2023-09-17 09:26_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

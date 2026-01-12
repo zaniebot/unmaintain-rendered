@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T17:55:43Z
 updated_at: 2025-12-09T20:45:15Z
 url: https://github.com/astral-sh/uv/issues/17050
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Add torch-tensorrt support to uv-torch crate
 
 ---
 
-_Issue opened by @vient on 2025-12-09 17:55_
+_@vient_
 
 ### Summary
 

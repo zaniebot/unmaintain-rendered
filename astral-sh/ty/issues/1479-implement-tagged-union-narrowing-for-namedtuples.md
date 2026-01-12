@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T14:49:06Z
 updated_at: 2026-01-09T15:53:04Z
 url: https://github.com/astral-sh/ty/issues/1479
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Implement "tagged union" narrowing for namedtuples and arbitrary nominal types
 
 ---
 
-_Issue opened by @carljm on 2025-11-04 14:49_
+_@carljm_
 
 ```py
 class A:

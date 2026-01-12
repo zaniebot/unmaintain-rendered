@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-30T21:47:23Z
 updated_at: 2023-12-31T17:25:20Z
 url: https://github.com/astral-sh/ruff/issues/9324
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add option to move module level dunders to top of file
 
 ---
 
-_Issue opened by @nstarman on 2023-12-30 21:47_
+_@nstarman_
 
 In https://pep8.org/#module-level-dunder-names it says that `__all__` "should be placed after the module docstring but before any import statements except from `__future__` imports".
 It would be great to have an isort-style rule that implements the PEP8 suggestion.

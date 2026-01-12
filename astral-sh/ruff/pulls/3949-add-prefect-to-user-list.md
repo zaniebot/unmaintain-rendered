@@ -12,14 +12,14 @@ head: charliermarsh-patch-1
 created_at: 2023-04-12T15:52:10Z
 updated_at: 2023-04-12T16:14:55Z
 url: https://github.com/astral-sh/ruff/pull/3949
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add Prefect to user list
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-12 15:52_
+_@charliermarsh_
 
 _No description provided._
 

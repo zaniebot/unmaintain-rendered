@@ -14,14 +14,14 @@ head: fix/up025
 created_at: 2025-06-23T17:08:34Z
 updated_at: 2025-07-01T13:34:08Z
 url: https://github.com/astral-sh/ruff/pull/18899
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`ruff`] Fix syntax error introduced for an empty string followed by a u-prefixed string (`UP025`)
 
 ---
 
-_Pull request opened by @lubaskinc0de on 2025-06-23 17:08_
+_@lubaskinc0de_
 
 ## Summary
 /closes #18895

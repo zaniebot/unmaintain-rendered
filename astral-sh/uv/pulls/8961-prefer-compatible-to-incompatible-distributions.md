@@ -14,14 +14,14 @@ head: charlie/incompat
 created_at: 2024-11-09T00:27:33Z
 updated_at: 2024-11-09T00:48:50Z
 url: https://github.com/astral-sh/uv/pull/8961
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Prefer compatible to incompatible distributions when packages exist on multiple indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 00:27_
+_@charliermarsh_
 
 ## Summary
 

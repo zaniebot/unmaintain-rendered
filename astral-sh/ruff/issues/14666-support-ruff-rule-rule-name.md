@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T05:17:07Z
 updated_at: 2025-01-22T22:16:03Z
 url: https://github.com/astral-sh/ruff/issues/14666
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Support `ruff rule rule-name`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-29 05:17_
+_@InSyncWithFoo_
 
 This is how a rule's documentation is rendered in PyCharm (with the help of [RyeCharm](https://github.com/InSyncWithFoo/ryecharm)):
 

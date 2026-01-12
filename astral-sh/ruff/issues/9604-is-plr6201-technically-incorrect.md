@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-22T00:44:49Z
 updated_at: 2024-01-22T01:11:46Z
 url: https://github.com/astral-sh/ruff/issues/9604
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Is PLR6201 technically incorrect?
 
 ---
 
-_Issue opened by @trag1c on 2024-01-22 00:44_
+_@trag1c_
 
 From [the docs](https://docs.astral.sh/ruff/rules/literal-membership/):
 > When testing for membership in a static sequence, prefer a `set` literal over a `list` or `tuple`, as Python optimizes `set` membership tests.

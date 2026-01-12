@@ -13,14 +13,14 @@ head: dependabot/cargo/semver-1.0.21
 created_at: 2024-01-15T08:31:03Z
 updated_at: 2024-01-15T09:28:05Z
 url: https://github.com/astral-sh/ruff/pull/9525
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump semver from 1.0.20 to 1.0.21
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-15 08:31_
+_@dependabot_
 
 Bumps [semver](https://github.com/dtolnay/semver) from 1.0.20 to 1.0.21.
 <details>

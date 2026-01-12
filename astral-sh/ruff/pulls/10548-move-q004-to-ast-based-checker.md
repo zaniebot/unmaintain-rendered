@@ -13,14 +13,14 @@ head: dhruv/move-q004
 created_at: 2024-03-24T17:27:30Z
 updated_at: 2024-03-25T03:35:42Z
 url: https://github.com/astral-sh/ruff/pull/10548
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Move `Q004` to AST based checker
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-24 17:27_
+_@dhruvmanila_
 
 ## Summary
 

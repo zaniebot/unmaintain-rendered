@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2025-04-22T07:03:02Z
 updated_at: 2025-04-22T07:05:32Z
 url: https://github.com/astral-sh/uv/pull/13043
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Fix typo in 0.6.15 changelog entry
 
 ---
 
-_Pull request opened by @edmorley on 2025-04-22 07:03_
+_@edmorley_
 
 `s/not/note/`
 

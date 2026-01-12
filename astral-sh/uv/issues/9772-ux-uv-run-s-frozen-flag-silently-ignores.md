@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-10T12:17:35Z
 updated_at: 2024-12-10T13:37:10Z
 url: https://github.com/astral-sh/uv/issues/9772
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # UX: `uv run`'s `--frozen` flag silently ignores `--resolution` (and presumably `--prerelease`) arguments
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-12-10 12:17_
+_@neutrinoceros_
 
 setup 
 ```shell

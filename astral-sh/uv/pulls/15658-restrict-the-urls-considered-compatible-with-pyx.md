@@ -12,14 +12,14 @@ head: zb/strict-known
 created_at: 2025-09-03T12:44:08Z
 updated_at: 2025-09-03T12:55:47Z
 url: https://github.com/astral-sh/uv/pull/15658
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Restrict the URLs considered compatible with pyx requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-03 12:44_
+_@zanieb_
 
 The implementation is more awkward than before here because I'm trying to keep using the `Realm` type for comparisons. We may want to consider not doing that, but I figured I'd share the draft.
 

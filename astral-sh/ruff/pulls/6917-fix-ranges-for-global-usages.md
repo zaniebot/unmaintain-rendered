@@ -14,14 +14,14 @@ head: charlie/icn
 created_at: 2023-08-27T15:06:20Z
 updated_at: 2023-08-27T15:27:22Z
 url: https://github.com/astral-sh/ruff/pull/6917
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix ranges for global usages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 15:06_
+_@charliermarsh_
 
 ## Summary
 

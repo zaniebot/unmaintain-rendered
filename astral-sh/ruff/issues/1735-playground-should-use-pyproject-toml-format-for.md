@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-08T04:40:22Z
 updated_at: 2024-10-13T14:17:05Z
 url: https://github.com/astral-sh/ruff/issues/1735
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Playground should use `pyproject.toml` format for the settings
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-08 04:40_
+_@not-my-profile_
 
 The [playground](https://ruff.pages.dev/) currently uses JSON for the Settings ... which I don't think makes much sense given that ruff normally is configured via `pyproject.toml`.
 

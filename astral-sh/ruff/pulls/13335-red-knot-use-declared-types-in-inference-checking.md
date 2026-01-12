@@ -13,14 +13,14 @@ head: cjm/declared-types-infer
 created_at: 2024-09-12T03:19:20Z
 updated_at: 2024-09-17T15:11:08Z
 url: https://github.com/astral-sh/ruff/pull/13335
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] use declared types in inference/checking
 
 ---
 
-_Pull request opened by @carljm on 2024-09-12 03:19_
+_@carljm_
 
 Use declared types in inference and checking. This means several things:
 

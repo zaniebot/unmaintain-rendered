@@ -13,14 +13,14 @@ head: multiline-fstring
 created_at: 2024-02-05T16:28:53Z
 updated_at: 2024-02-06T02:25:42Z
 url: https://github.com/astral-sh/ruff/pull/9837
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Index multiline f-strings
 
 ---
 
-_Pull request opened by @sanxiyn on 2024-02-05 16:28_
+_@sanxiyn_
 
 Fix #9777.
 

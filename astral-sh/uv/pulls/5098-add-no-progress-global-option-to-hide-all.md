@@ -13,14 +13,14 @@ head: no-progress-bar-option
 created_at: 2024-07-16T09:31:05Z
 updated_at: 2024-07-17T11:56:53Z
 url: https://github.com/astral-sh/uv/pull/5098
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Add `--no-progress` global option to hide all progress animations
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-16 09:31_
+_@silvanocerza_
 
 ## Summary
 

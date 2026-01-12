@@ -12,14 +12,14 @@ head: clippy-unreadable-literal
 created_at: 2022-11-21T19:39:58Z
 updated_at: 2022-11-21T23:37:11Z
 url: https://github.com/astral-sh/ruff/pull/864
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Ignore clippy::unreadable-literal (pedantic) for CONFUSABLES
 
 ---
 
-_Pull request opened by @andersk on 2022-11-21 19:39_
+_@andersk_
 
 “long literal lacking separators”
 

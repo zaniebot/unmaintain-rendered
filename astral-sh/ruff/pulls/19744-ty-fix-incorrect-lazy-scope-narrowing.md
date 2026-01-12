@@ -13,14 +13,14 @@ head: fix-invalid-reference-narrowing
 created_at: 2025-08-04T13:03:28Z
 updated_at: 2025-08-07T03:09:49Z
 url: https://github.com/astral-sh/ruff/pull/19744
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] fix incorrect lazy scope narrowing
 
 ---
 
-_Pull request opened by @mtshiba on 2025-08-04 13:03_
+_@mtshiba_
 
 ## Summary
 

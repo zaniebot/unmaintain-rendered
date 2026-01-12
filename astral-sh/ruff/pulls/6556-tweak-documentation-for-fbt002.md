@@ -13,14 +13,14 @@ head: fix-docs
 created_at: 2023-08-14T12:37:52Z
 updated_at: 2023-08-14T14:35:39Z
 url: https://github.com/astral-sh/ruff/pull/6556
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Tweak documentation for `FBT002`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-14 12:37_
+_@tjkuson_
 
 ## Summary
 

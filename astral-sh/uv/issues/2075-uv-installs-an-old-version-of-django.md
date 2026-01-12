@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T07:35:47Z
 updated_at: 2024-03-01T00:05:48Z
 url: https://github.com/astral-sh/uv/issues/2075
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv installs an old version of Django
 
 ---
 
-_Issue opened by @wathika-eng on 2024-02-29 07:35_
+_@wathika-eng_
 
 uv pip install Django gets django 4.2 instead of 5.0
 

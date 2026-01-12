@@ -13,14 +13,14 @@ head: narrowing-for-assertions
 created_at: 2025-04-02T12:25:57Z
 updated_at: 2025-04-19T13:58:37Z
 url: https://github.com/astral-sh/ruff/pull/17149
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Type narrowing for assertions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-02 12:25_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

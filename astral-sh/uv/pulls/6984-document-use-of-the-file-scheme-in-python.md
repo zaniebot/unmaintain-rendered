@@ -13,14 +13,14 @@ head: zb/doc-install-mirror
 created_at: 2024-09-03T22:32:53Z
 updated_at: 2024-09-03T23:38:18Z
 url: https://github.com/astral-sh/uv/pull/6984
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Document use of the `file://` scheme in Python installation mirrors
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 22:32_
+_@zanieb_
 
 Documenting https://github.com/astral-sh/uv/pull/6950
 

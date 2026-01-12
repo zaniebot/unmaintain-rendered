@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-01T21:26:37Z
 updated_at: 2024-04-16T12:55:37Z
 url: https://github.com/clap-rs/clap/issues/1777
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Is there currently a way to call a function to provide a default value (instead of a static string)?
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-01 21:26_
+_@CreepySkeleton_
 
 Is there currently a way to call a function to provide a default value (instead of a static string)? This is in the context of Clap's proc_macro.
 

@@ -13,14 +13,14 @@ head: zb/enumerate
 created_at: 2024-12-13T21:00:10Z
 updated_at: 2024-12-16T21:31:37Z
 url: https://github.com/astral-sh/uv/pull/9885
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Fix redundant enumeration of all package versions in some resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-13 21:00_
+_@zanieb_
 
 Closes #4075
 

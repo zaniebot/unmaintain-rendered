@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-11T09:21:14Z
 updated_at: 2026-01-11T14:13:06Z
 url: https://github.com/astral-sh/ty/issues/2441
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Safe places to totally stop unioning with `Unknown` and maybe infer more precise types
 
 ---
 
-_Issue opened by @hamdanal on 2026-01-11 09:21_
+_@hamdanal_
 
 #1240 suggests to stop adding `| Unknown` in places where ty currently adds it for better gradual typing.
 https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 is a recent great news in this regard as it proposes a very well thought solution - to stop adding the union with `Unknown` except for certain cases where the assigned value is a singleton like `None`. There are some places where even this special case isn't needed as the value used if final somewhat, either by being assigned to a `Final` target or by being a never-assigned throwaway expression. Here is a non-exhaustive list of these places:

@@ -14,14 +14,14 @@ head: ag/auto-import-partial-confusion
 created_at: 2025-12-01T14:45:44Z
 updated_at: 2025-12-01T16:24:19Z
 url: https://github.com/astral-sh/ruff/pull/21731
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Exclude `typing_extensions` from completions unless it's really available
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-01 14:45_
+_@BurntSushi_
 
 This works by adding a third module resolution mode that lets the caller
 opt into _some_ shadowing of modules that is otherwise not allowed (for

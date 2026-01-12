@@ -13,14 +13,14 @@ head: charlie/del-typed-diagnostic
 created_at: 2025-12-21T01:33:47Z
 updated_at: 2025-12-24T03:49:43Z
 url: https://github.com/astral-sh/ruff/pull/22123
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Add a dedicated diagnostic for TypedDict deletions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-21 01:33_
+_@charliermarsh_
 
 ## Summary
 

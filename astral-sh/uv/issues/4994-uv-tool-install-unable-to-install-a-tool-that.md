@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T15:38:04Z
 updated_at: 2025-05-30T04:21:21Z
 url: https://github.com/astral-sh/uv/issues/4994
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv tool install` unable to install a tool that depends on intermediate dependencies with entrypoints
 
 ---
 
-_Issue opened by @j178 on 2024-07-11 15:38_
+_@j178_
 
 For instance, `fastapi` doesn't have any entrypoints but it depends on `fastapi-cli`, which provides an entrypoint named `fastapi`. 
 `uv tool install fastapi` would result in a failure, displaying the error message `No executables found for fastapi`.

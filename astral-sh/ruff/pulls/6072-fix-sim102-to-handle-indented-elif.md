@@ -12,14 +12,14 @@ head: fix-SIM102-indented-elif
 created_at: 2023-07-25T15:14:57Z
 updated_at: 2023-07-26T12:37:33Z
 url: https://github.com/astral-sh/ruff/pull/6072
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix `SIM102` to handle indented `elif`
 
 ---
 
-_Pull request opened by @harupy on 2023-07-25 15:14_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

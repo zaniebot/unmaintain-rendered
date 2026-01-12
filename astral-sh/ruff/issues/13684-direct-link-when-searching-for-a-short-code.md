@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T18:45:34Z
 updated_at: 2024-11-05T05:57:01Z
 url: https://github.com/astral-sh/ruff/issues/13684
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Direct link when searching for a short code
 
 ---
 
-_Issue opened by @opk12 on 2024-10-08 18:45_
+_@opk12_
 
 When I type a short code in the search bar on the website (https://docs.astral.sh/ruff), for example `ruf005`, the search suggestion is a link to the list of warnings. When I type a long code, for example `collection-literal-concatenation`, the search suggestion is a direct link to the warning's article. Could the short code case be changed?
 

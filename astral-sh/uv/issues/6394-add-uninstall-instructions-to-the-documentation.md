@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T00:29:54Z
 updated_at: 2024-08-23T18:15:32Z
 url: https://github.com/astral-sh/uv/issues/6394
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Add uninstall instructions to the documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 00:29_
+_@zanieb_
 
 I know, very sad.
 

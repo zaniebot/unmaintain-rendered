@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-05-09T18:30:03Z
 updated_at: 2021-05-09T19:08:27Z
 url: https://github.com/clap-rs/clap/issues/2476
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow adding usage examples to help text
 
 ---
 
-_Issue opened by @dbrgn on 2021-05-09 18:30_
+_@dbrgn_
 
 ### Please complete the following tasks
 

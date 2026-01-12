@@ -13,14 +13,14 @@ head: dhruv/fix-unpack-panic
 created_at: 2024-10-30T18:55:07Z
 updated_at: 2024-10-30T19:23:03Z
 url: https://github.com/astral-sh/ruff/pull/14006
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix panic when filling up types vector during unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-30 18:55_
+_@dhruvmanila_
 
 ## Summary
 

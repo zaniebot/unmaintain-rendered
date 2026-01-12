@@ -12,14 +12,14 @@ head: jack/ssort
 created_at: 2025-12-28T15:40:18Z
 updated_at: 2026-01-01T20:41:50Z
 url: https://github.com/astral-sh/ruff/pull/22235
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`ssort`] Implement statement reording
 
 ---
 
-_Pull request opened by @JackAshwell11 on 2025-12-28 15:40_
+_@JackAshwell11_
 
 ## Summary
 

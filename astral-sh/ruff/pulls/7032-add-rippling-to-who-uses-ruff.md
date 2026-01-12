@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-08-31T18:18:25Z
 updated_at: 2023-08-31T18:36:49Z
 url: https://github.com/astral-sh/ruff/pull/7032
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add Rippling to who uses ruff
 
 ---
 
-_Pull request opened by @njgrisafi on 2023-08-31 18:18_
+_@njgrisafi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

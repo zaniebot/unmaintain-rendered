@@ -13,14 +13,14 @@ head: konsti/remove-build-backend-parking-breaks
 created_at: 2025-02-17T11:47:04Z
 updated_at: 2025-03-10T22:49:27Z
 url: https://github.com/astral-sh/uv/pull/11576
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:53Z
 ```
 
 # Remove build backend parking breaks
 
 ---
 
-_Pull request opened by @konstin on 2025-02-17 11:47_
+_@konstin_
 
 We want to make it easier for users to try the build backend, so we allow using the build backend without requiring `UV_PREVIEW=1`. Instead, we only print a note about the preview status of the build backend. This improves using packages with the uv build backend with other PEP 517 frontends that don't have uv's `--preview` flag.
 

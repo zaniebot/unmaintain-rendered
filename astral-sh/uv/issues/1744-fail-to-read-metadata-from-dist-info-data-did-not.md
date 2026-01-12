@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T09:59:47Z
 updated_at: 2024-02-21T14:06:32Z
 url: https://github.com/astral-sh/uv/issues/1744
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Fail to read metadata from `.dist-info`: data did not match any variant of untagged enum DirectUrl
 
 ---
 
-_Issue opened by @messense on 2024-02-20 09:59_
+_@messense_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

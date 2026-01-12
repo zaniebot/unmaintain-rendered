@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T13:20:42Z
 updated_at: 2025-09-15T13:36:34Z
 url: https://github.com/astral-sh/ty/issues/1188
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type `HttpRequest` has no attribute `user`
 
 ---
 
-_Issue opened by @lypwig on 2025-09-15 13:20_
+_@lypwig_
 
 ### Summary
 

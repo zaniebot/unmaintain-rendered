@@ -14,14 +14,14 @@ head: dhruv/type-params
 created_at: 2024-04-05T04:20:30Z
 updated_at: 2024-04-09T09:11:50Z
 url: https://github.com/astral-sh/ruff/pull/10785
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for type alias statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-05 04:20_
+_@dhruvmanila_
 
 ## Summary
 

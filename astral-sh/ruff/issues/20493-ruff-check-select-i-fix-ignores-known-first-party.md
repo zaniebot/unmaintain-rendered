@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-21T14:35:21Z
 updated_at: 2025-09-22T10:37:16Z
 url: https://github.com/astral-sh/ruff/issues/20493
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # "ruff check --select I --fix" ignores "known-first-party" configuration
 
 ---
 
-_Issue opened by @MorganStair on 2025-09-21 14:35_
+_@MorganStair_
 
 ### Summary
 

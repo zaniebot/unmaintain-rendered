@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T18:08:45Z
 updated_at: 2024-03-07T12:22:17Z
 url: https://github.com/astral-sh/uv/issues/2247
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Markers (incorrectly?) require the variable to be to the left of the operator
 
 ---
 
-_Issue opened by @kbattocchi on 2024-03-06 18:08_
+_@kbattocchi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

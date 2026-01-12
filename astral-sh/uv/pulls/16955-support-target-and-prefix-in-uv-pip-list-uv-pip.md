@@ -13,14 +13,14 @@ head: charlie/targ
 created_at: 2025-12-03T05:41:25Z
 updated_at: 2025-12-03T12:49:13Z
 url: https://github.com/astral-sh/uv/pull/16955
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Support `--target` and `--prefix` in `uv pip list`, `uv pip freeze`, and `uv pip show`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-03 05:41_
+_@charliermarsh_
 
 ## Summary
 

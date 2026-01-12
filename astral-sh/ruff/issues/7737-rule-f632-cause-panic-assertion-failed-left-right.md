@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T07:50:57Z
 updated_at: 2023-10-01T14:57:42Z
 url: https://github.com/astral-sh/ruff/issues/7737
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule F632 cause panic `assertion failed: (left == right)`
 
 ---
 
-_Issue opened by @qarmin on 2023-10-01 07:50_
+_@qarmin_
 
 
 Ruff 0.0.291 (latest changes from main branch)

@@ -12,14 +12,14 @@ head: better-uv-version-error
 created_at: 2025-01-16T13:32:59Z
 updated_at: 2025-01-16T17:22:17Z
 url: https://github.com/astral-sh/uv/pull/10676
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Make running uv version error clearer
 
 ---
 
-_Pull request opened by @danielhollas on 2025-01-16 13:32_
+_@danielhollas_
 
 The existing error for when the installed uv version does not match the required version might be confusing, hopefully this makes it clearer.
 

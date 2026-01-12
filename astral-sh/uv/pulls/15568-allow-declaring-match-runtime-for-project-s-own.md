@@ -13,14 +13,14 @@ head: zsol/jj-ormktspssmzq
 created_at: 2025-08-28T10:19:24Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/15568
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Allow declaring match-runtime for project's own build dependencies
 
 ---
 
-_Pull request opened by @zsol on 2025-08-28 10:19_
+_@zsol_
 
 ## Summary
 

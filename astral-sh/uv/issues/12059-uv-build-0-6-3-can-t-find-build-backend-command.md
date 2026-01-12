@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T22:23:08Z
 updated_at: 2025-03-12T10:17:57Z
 url: https://github.com/astral-sh/uv/issues/12059
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # uv-build 0.6.3 can't find `build-backend` command
 
 ---
 
-_Issue opened by @cthoyt on 2025-03-07 22:23_
+_@cthoyt_
 
 ### Summary
 

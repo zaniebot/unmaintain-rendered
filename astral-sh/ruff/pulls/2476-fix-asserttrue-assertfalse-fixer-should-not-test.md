@@ -13,14 +13,14 @@ head: 2456-assert-false
 created_at: 2023-02-02T13:33:48Z
 updated_at: 2023-02-02T16:24:36Z
 url: https://github.com/astral-sh/ruff/pull/2476
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix: assertTrue()/assertFalse() fixer should not test for identity
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-02 13:33_
+_@spaceone_
 
 Issue #2456
 

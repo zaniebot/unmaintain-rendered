@@ -12,14 +12,14 @@ head: feature/value-parser-factory-for-saturating
 created_at: 2025-02-24T02:48:29Z
 updated_at: 2025-02-24T22:25:50Z
 url: https://github.com/clap-rs/clap/pull/5926
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(builder): Add `ValueParserFactory` for `Saturating<T>`
 
 ---
 
-_Pull request opened by @sorairolake on 2025-02-24 02:48_
+_@sorairolake_
 
 <!--
 Thanks for helping out!

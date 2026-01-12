@@ -13,14 +13,14 @@ head: charlie/before-after-satisfies
 created_at: 2024-12-22T20:30:32Z
 updated_at: 2024-12-22T20:41:29Z
 url: https://github.com/astral-sh/uv/pull/10100
-synced_at: 2026-01-10T11:44:34Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Include both installed and request in satisfied logging
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-22 20:30_
+_@charliermarsh_
 
 _No description provided._
 

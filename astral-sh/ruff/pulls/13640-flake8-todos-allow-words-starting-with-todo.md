@@ -13,14 +13,14 @@ head: todo-words
 created_at: 2024-10-05T09:51:08Z
 updated_at: 2024-10-14T10:31:05Z
 url: https://github.com/astral-sh/ruff/pull/13640
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`flake8-todos`] Allow words starting with todo
 
 ---
 
-_Pull request opened by @autinerd on 2024-10-05 09:51_
+_@autinerd_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

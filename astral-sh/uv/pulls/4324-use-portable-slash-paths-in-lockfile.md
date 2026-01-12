@@ -13,14 +13,14 @@ head: charlie/slas
 created_at: 2024-06-14T04:14:21Z
 updated_at: 2024-06-14T13:05:15Z
 url: https://github.com/astral-sh/uv/pull/4324
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Use portable slash paths in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-14 04:14_
+_@charliermarsh_
 
 ## Summary
 

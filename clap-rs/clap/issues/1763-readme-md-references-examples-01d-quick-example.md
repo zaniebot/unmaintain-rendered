@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-26T15:53:10Z
 updated_at: 2020-03-26T17:13:21Z
 url: https://github.com/clap-rs/clap/issues/1763
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # README.md references examples/01d_quick_example.rs but there is no such example
 
 ---
 
-_Issue opened by @Ran4 on 2020-03-26 15:53_
+_@Ran4_
 
 ### Clap version
 

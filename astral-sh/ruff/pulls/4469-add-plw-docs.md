@@ -13,14 +13,14 @@ head: plw-docs
 created_at: 2023-05-17T12:15:35Z
 updated_at: 2023-07-10T09:55:36Z
 url: https://github.com/astral-sh/ruff/pull/4469
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add PLW docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-17 12:15_
+_@tjkuson_
 
 Add documentation to the Pylint Warning (PLW) rules. Complete the PLW ruleset.
 

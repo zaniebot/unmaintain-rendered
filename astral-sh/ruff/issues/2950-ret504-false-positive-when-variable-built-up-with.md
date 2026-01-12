@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T06:07:01Z
 updated_at: 2023-03-09T19:50:09Z
 url: https://github.com/astral-sh/ruff/issues/2950
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET504 false-positive when variable built up with assignments and returned
 
 ---
 
-_Issue opened by @gdub on 2023-02-16 06:07_
+_@gdub_
 
 Example:
 ```python

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-09T16:11:58Z
 updated_at: 2025-11-26T23:52:31Z
 url: https://github.com/clap-rs/clap/issues/3117
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Idea: flatten attribute could allow setting a prefix and suffix
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:11_
+_@epage_
 
 <a href="https://github.com/kamalmarhubi"><img src="https://avatars.githubusercontent.com/u/50936?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [kamalmarhubi](https://github.com/kamalmarhubi)**
 _Sunday Jun 03, 2018 at 22:03 GMT_

@@ -13,14 +13,14 @@ head: konsti/document-tracing-durations-export
 created_at: 2024-02-02T17:49:48Z
 updated_at: 2024-02-04T21:57:17Z
 url: https://github.com/astral-sh/uv/pull/1234
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Document profiling and tracing-durations-export
 
 ---
 
-_Pull request opened by @konstin on 2024-02-02 17:49_
+_@konstin_
 
 Profiling is already extensively documented in ruff, so we can just link to that guide. I added `tracing-durations-export` to the guide because i found it a useful tool for optimizing.
 

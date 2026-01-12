@@ -12,14 +12,14 @@ head: allow-disable-exclude-newer
 created_at: 2025-11-26T00:19:56Z
 updated_at: 2025-12-11T15:56:30Z
 url: https://github.com/astral-sh/uv/pull/16854
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Allow disabling `exclude-newer` per package
 
 ---
 
-_Pull request opened by @terror on 2025-11-26 00:19_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16846, https://github.com/astral-sh/uv/issues/16813
 

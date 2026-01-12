@@ -13,14 +13,14 @@ head: ag/red-knot-prototype-diagnostics
 created_at: 2025-01-31T16:49:57Z
 updated_at: 2025-02-01T14:15:50Z
 url: https://github.com/astral-sh/ruff/pull/15856
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] ruff_db: make diagnostic rendering prettier
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-31 16:49_
+_@BurntSushi_
 
 This change does a simple swap of the existing renderer for one that
 uses our vendored copy of `annotate-snippets`. We don't change anything

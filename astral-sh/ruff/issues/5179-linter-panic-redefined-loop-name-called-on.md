@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-19T12:55:44Z
 updated_at: 2023-06-20T02:58:24Z
 url: https://github.com/astral-sh/ruff/issues/5179
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Linter panic] redefined_loop_name called on Statement that is not a With, For, or AsyncFor
 
 ---
 
-_Issue opened by @Thomasdezeeuw on 2023-06-19 12:55_
+_@Thomasdezeeuw_
 
 I was working on the caching stuff and hit the panic below. I don't hit this every time, so it could be because of some of my work on caching, but since the work is not related to the actual linter I doubt it.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T21:26:18Z
 updated_at: 2024-03-16T15:11:20Z
 url: https://github.com/astral-sh/ruff/issues/8185
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider adding an option to supress ruff format CLI warnings
 
 ---
 
-_Issue opened by @yakMM on 2023-10-24 21:26_
+_@yakMM_
 
 Just tried `ruff format`, it's seriously great!
 

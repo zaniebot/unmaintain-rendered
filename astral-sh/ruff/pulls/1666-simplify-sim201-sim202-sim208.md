@@ -12,14 +12,14 @@ head: simplify
 created_at: 2023-01-05T17:35:24Z
 updated_at: 2023-01-06T17:05:55Z
 url: https://github.com/astral-sh/ruff/pull/1666
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Simplify SIM201, SIM202, SIM208
 
 ---
 
-_Pull request opened by @chammika-become on 2023-01-05 17:35_
+_@chammika-become_
 
 Flake8 simplify #998 
 

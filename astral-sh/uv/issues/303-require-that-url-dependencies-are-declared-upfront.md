@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T23:54:39Z
 updated_at: 2023-11-05T17:09:59Z
 url: https://github.com/astral-sh/uv/issues/303
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Require that URL dependencies are declared upfront
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-02 23:54_
+_@charliermarsh_
 
 This will avoid a class of correctness bugs and makes behavior much easier to reason about. We can always lift this limitation later, but for an initial release, it seems reasonable (with good error messages).
 

@@ -13,14 +13,14 @@ head: env-var-python-downloads
 created_at: 2024-08-22T09:37:47Z
 updated_at: 2024-08-23T14:18:54Z
 url: https://github.com/astral-sh/uv/pull/6416
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Env variables for python downloads
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-22 09:37_
+_@blueraft_
 
 ## Summary
 

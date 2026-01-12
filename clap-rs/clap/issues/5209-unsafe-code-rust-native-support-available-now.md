@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-12T06:56:14Z
 updated_at: 2023-11-13T15:36:49Z
 url: https://github.com/clap-rs/clap/issues/5209
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Unsafe code - Rust native support available now (?)
 
 ---
 
-_Issue opened by @cylewitruk on 2023-11-12 06:56_
+_@cylewitruk_
 
 The comment in the following code block pointing to a [PR in `rust-lang`](https://github.com/rust-lang/rust/pull/95290), which seems to have been superseded by [merged PR 109698](https://github.com/rust-lang/rust/pull/109698), maybe warrants a fresh look at the usage of unsafe here?
 

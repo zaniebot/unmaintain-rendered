@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T23:11:13Z
 updated_at: 2025-03-13T02:15:09Z
 url: https://github.com/astral-sh/uv/issues/12123
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # unsafe-best-match: unexpected best-version selection with multiple indexes
 
 ---
 
-_Issue opened by @UmerAhmad on 2025-03-11 23:11_
+_@UmerAhmad_
 
 ### Summary
 

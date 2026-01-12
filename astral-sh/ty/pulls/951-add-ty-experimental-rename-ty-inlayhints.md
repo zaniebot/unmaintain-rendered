@@ -13,14 +13,14 @@ head: dhruv/update-editor-settings
 created_at: 2025-08-07T13:54:52Z
 updated_at: 2025-08-07T14:07:47Z
 url: https://github.com/astral-sh/ty/pull/951
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add `ty.experimental.rename`, `ty.inlayHints.variableTypes`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-07 13:54_
+_@dhruvmanila_
 
 ## Summary
 

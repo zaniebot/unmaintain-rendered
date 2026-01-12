@@ -11,14 +11,14 @@ head: auto-py-extension
 created_at: 2025-03-20T06:52:13Z
 updated_at: 2025-03-21T18:23:04Z
 url: https://github.com/astral-sh/uv/pull/12328
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Add automatic .py extension for script initialization
 
 ---
 
-_Pull request opened by @chhoumann on 2025-03-20 06:52_
+_@chhoumann_
 
 ## Summary
 

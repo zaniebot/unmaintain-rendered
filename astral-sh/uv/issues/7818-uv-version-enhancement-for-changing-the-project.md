@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T19:34:08Z
 updated_at: 2024-09-30T19:40:21Z
 url: https://github.com/astral-sh/uv/issues/7818
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # `uv version` enhancement for changing the project version
 
 ---
 
-_Issue opened by @butterlyn on 2024-09-30 19:34_
+_@butterlyn_
 
 Request for an enhancement to the feature `uv version` to enable the command to dynamically set/update the project version (in the `pyproject.toml` file), similar to the Poetry command `poetry version` ([link](https://python-poetry.org/docs/cli/#version)).
 

@@ -15,14 +15,14 @@ head: ag/fmt/line-length
 created_at: 2023-12-08T18:50:59Z
 updated_at: 2023-12-11T13:21:00Z
 url: https://github.com/astral-sh/ruff/pull/9055
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: add docstring-code-line-width internal setting
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-08 18:50_
+_@BurntSushi_
 
 ## Summary
 

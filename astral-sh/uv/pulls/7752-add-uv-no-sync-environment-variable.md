@@ -13,14 +13,14 @@ head: uv_no_sync_env
 created_at: 2024-09-28T04:36:14Z
 updated_at: 2024-09-28T16:03:48Z
 url: https://github.com/astral-sh/uv/pull/7752
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Add `UV_NO_SYNC` environment variable
 
 ---
 
-_Pull request opened by @adisbladis on 2024-09-28 04:36_
+_@adisbladis_
 
 ## Summary
 

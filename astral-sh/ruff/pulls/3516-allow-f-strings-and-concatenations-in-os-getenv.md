@@ -13,14 +13,14 @@ head: charlie/env-def
 created_at: 2023-03-14T17:41:46Z
 updated_at: 2023-03-14T17:54:29Z
 url: https://github.com/astral-sh/ruff/pull/3516
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow f-strings and concatenations in os.getenv
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-14 17:41_
+_@charliermarsh_
 
 Closes #3512.
 

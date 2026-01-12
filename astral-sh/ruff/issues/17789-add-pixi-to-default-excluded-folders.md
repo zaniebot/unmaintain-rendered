@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-02T09:43:48Z
 updated_at: 2025-05-03T13:48:44Z
 url: https://github.com/astral-sh/ruff/issues/17789
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add .pixi to default excluded folders
 
 ---
 
-_Issue opened by @dennis-wey on 2025-05-02 09:43_
+_@dennis-wey_
 
 According to https://docs.astral.sh/ruff/settings/#exclude ruff excludes the following folders by default:
 

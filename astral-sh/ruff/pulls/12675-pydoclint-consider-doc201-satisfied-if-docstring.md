@@ -14,14 +14,14 @@ head: doc201
 created_at: 2024-08-05T02:54:34Z
 updated_at: 2024-08-06T17:30:47Z
 url: https://github.com/astral-sh/ruff/pull/12675
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Consider `DOC201` satisfied if docstring begins with "Returns"
 
 ---
 
-_Pull request opened by @augustelalande on 2024-08-05 02:54_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

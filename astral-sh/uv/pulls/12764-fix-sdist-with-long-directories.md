@@ -13,14 +13,14 @@ head: deep-build
 created_at: 2025-04-08T21:31:19Z
 updated_at: 2025-04-09T13:01:22Z
 url: https://github.com/astral-sh/uv/pull/12764
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Fix sdist with long directories
 
 ---
 
-_Pull request opened by @leiserfg on 2025-04-08 21:31_
+_@leiserfg_
 
 I removed the `set_cksum` as the value of it is replaced inside of `append_data`.
 

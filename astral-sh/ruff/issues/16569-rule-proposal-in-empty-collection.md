@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T19:53:17Z
 updated_at: 2025-05-06T17:48:22Z
 url: https://github.com/astral-sh/ruff/issues/16569
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule proposal: `in-empty-collection`
 
 ---
 
-_Issue opened by @naslundx on 2025-03-08 19:53_
+_@naslundx_
 
 ### Summary
 

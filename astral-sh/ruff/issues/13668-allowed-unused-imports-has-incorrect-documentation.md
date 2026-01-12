@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T18:39:04Z
 updated_at: 2025-01-03T15:27:11Z
 url: https://github.com/astral-sh/ruff/issues/13668
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `allowed-unused-imports` has incorrect documentation
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-10-07 18:39_
+_@tylerlaprade_
 
 * In the [docs](https://docs.astral.sh/ruff/settings/#lint_allowed-unused-imports), it's part of the `lint` section rather than `lint.pyflakes`
 * In those same docs, "thought" is used in place of "though"

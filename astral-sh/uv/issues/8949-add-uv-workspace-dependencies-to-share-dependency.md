@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T16:07:31Z
 updated_at: 2025-09-12T13:57:40Z
 url: https://github.com/astral-sh/uv/issues/8949
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Add uv.workspace.dependencies to share dependency versions across workspace members
 
 ---
 
-_Issue opened by @BaxHugh on 2024-11-08 16:07_
+_@BaxHugh_
 
 Support cargo like workspace.dependencies.
 

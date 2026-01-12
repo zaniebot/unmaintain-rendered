@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T16:11:46Z
 updated_at: 2023-01-19T15:32:07Z
 url: https://github.com/astral-sh/ruff/issues/1964
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D407 doesn't respect indentation level?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 16:11_
+_@spaceone_
 
 ```python
 class Plugin(object):

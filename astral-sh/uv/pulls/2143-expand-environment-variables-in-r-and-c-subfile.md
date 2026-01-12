@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-03-03T23:42:20Z
 updated_at: 2024-03-03T23:47:05Z
 url: https://github.com/astral-sh/uv/pull/2143
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Expand environment variables in `-r` and `-c` subfile paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 23:42_
+_@charliermarsh_
 
 ## Summary
 

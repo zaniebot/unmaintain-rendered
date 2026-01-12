@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T20:30:53Z
 updated_at: 2025-02-14T21:52:01Z
 url: https://github.com/astral-sh/uv/issues/11521
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uvx in 0.5.31 no longer runs command and instead complains about hyphens of its own imagining
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-02-14 20:30_
+_@hauntsaninja_
 
 ```
 λ uv pip install uv==0.5.30

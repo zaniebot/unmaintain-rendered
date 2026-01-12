@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T11:42:52Z
 updated_at: 2023-01-30T17:15:29Z
 url: https://github.com/astral-sh/ruff/issues/2349
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # let some rules not cause an error exit code
 
 ---
 
-_Issue opened by @spaceone on 2023-01-30 11:42_
+_@spaceone_
 
 `ruff` has many rules and i would like to let most of the rules be checked.
 we have a repository wide configuration and a pre-commit hook.

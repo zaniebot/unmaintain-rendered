@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T21:42:07Z
 updated_at: 2025-02-20T19:32:12Z
 url: https://github.com/astral-sh/uv/issues/11006
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # A uv Environment Is Not Compatible With pyo3 Out Of The Box
 
 ---
 
-_Issue opened by @mcmah309 on 2025-01-27 21:42_
+_@mcmah309_
 
 ### Summary
 

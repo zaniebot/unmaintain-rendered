@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T08:44:43Z
 updated_at: 2025-01-20T07:24:26Z
 url: https://github.com/astral-sh/uv/issues/10669
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # uv sync x dependency groups doesn't work with PyPy
 
 ---
 
-_Issue opened by @hynek on 2025-01-16 08:44_
+_@hynek_
 
 ```console
 $ uv --version

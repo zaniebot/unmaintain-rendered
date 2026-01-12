@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-13T13:32:37Z
 updated_at: 2024-06-13T13:35:57Z
 url: https://github.com/astral-sh/ruff/issues/11858
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # false-positive for `PD011` and Django's TextChoices
 
 ---
 
-_Issue opened by @Zerotask on 2024-06-13 13:32_
+_@Zerotask_
 
 A call with `ruff check .` and the `PD` rule activated, prints the error 
 ```

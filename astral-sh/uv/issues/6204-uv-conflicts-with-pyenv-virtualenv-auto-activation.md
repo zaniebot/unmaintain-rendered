@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T13:21:08Z
 updated_at: 2025-05-12T19:23:46Z
 url: https://github.com/astral-sh/uv/issues/6204
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv conflicts with pyenv-virtualenv auto-activation
 
 ---
 
-_Issue opened by @kozlek on 2024-08-19 13:21_
+_@kozlek_
 
 Hello,
 

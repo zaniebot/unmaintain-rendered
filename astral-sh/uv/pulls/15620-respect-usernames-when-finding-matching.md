@@ -12,14 +12,14 @@ head: zb/auth-username
 created_at: 2025-09-01T14:28:30Z
 updated_at: 2025-09-02T13:15:56Z
 url: https://github.com/astral-sh/uv/pull/15620
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Respect usernames when finding matching credentials in the plaintext store
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-01 14:28_
+_@zanieb_
 
 We're not respecting the username when searching for a match, which is no good!
 

@@ -13,14 +13,14 @@ head: alex/refactor-numpy
 created_at: 2024-07-23T17:17:50Z
 updated_at: 2024-07-23T17:31:46Z
 url: https://github.com/astral-sh/ruff/pull/12479
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Refactor NPY201
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-23 17:17_
+_@AlexWaygood_
 
 ## Summary
 

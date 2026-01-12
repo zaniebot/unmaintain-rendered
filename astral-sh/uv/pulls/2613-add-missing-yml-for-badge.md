@@ -13,14 +13,14 @@ head: konstin/missing-yml
 created_at: 2024-03-22T13:44:03Z
 updated_at: 2024-03-22T13:55:52Z
 url: https://github.com/astral-sh/uv/pull/2613
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Add missing .yml for badge
 
 ---
 
-_Pull request opened by @konstin on 2024-03-22 13:44_
+_@konstin_
 
 _No description provided._
 

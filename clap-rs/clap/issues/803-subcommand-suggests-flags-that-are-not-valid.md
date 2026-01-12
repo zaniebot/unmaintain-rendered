@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-03T02:26:34Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/803
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # SubCommand suggests FLAGS that are not valid
 
 ---
 
-_Issue opened by @phrohdoh on 2017-01-03 02:26_
+_@phrohdoh_
 
 ### Rust Version
 

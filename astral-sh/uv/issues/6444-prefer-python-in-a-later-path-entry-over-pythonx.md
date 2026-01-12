@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-22T15:27:42Z
 updated_at: 2025-08-03T03:11:07Z
 url: https://github.com/astral-sh/uv/issues/6444
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Prefer `python` in a later PATH entry over `pythonX.Y` in an earlier entry 
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 15:27_
+_@zanieb_
 
 Originally discussed at https://github.com/astral-sh/uv/issues/6348#issuecomment-2304993544
 

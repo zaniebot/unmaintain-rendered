@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T16:54:33Z
 updated_at: 2024-10-23T20:23:56Z
 url: https://github.com/astral-sh/uv/issues/8470
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Confusing behavior of uvx and uv tool paths.
 
 ---
 
-_Issue opened by @warsaw on 2024-10-22 16:54_
+_@warsaw_
 
 I'm trying to convert from pipx to uvx, but running into some confusion about how the commands should work.
 

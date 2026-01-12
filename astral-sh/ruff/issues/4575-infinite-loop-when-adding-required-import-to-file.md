@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-22T11:31:08Z
 updated_at: 2023-05-22T15:49:05Z
 url: https://github.com/astral-sh/ruff/issues/4575
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Infinite loop] When adding required import to file with `# isort: off` as first line
 
 ---
 
-_Issue opened by @bendoerry on 2023-05-22 11:31_
+_@bendoerry_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

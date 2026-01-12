@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-24T16:11:14Z
 updated_at: 2024-11-25T01:18:28Z
 url: https://github.com/astral-sh/uv/issues/9397
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Allow UV_NO_SYNC=1 UV_FROZEN=1 on uv run
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-11-24 16:11_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

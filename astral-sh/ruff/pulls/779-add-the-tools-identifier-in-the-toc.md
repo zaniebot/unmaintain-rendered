@@ -12,14 +12,14 @@ head: readme-tools-identifier
 created_at: 2022-11-16T22:17:31Z
 updated_at: 2022-12-01T17:15:36Z
 url: https://github.com/astral-sh/ruff/pull/779
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add the tools identifier in the TOC
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-16 22:17_
+_@JonathanPlasse_
 
 - [x] Fix Table of Content numbering
 - [x] Add the tools identifier to view all `ruff` identifiers with their corresponding tool.

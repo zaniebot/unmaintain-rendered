@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T15:19:15Z
 updated_at: 2022-12-23T03:55:23Z
 url: https://github.com/astral-sh/ruff/issues/1335
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support for docformatter rules
 
 ---
 
-_Issue opened by @cpcloud on 2022-12-22 15:19_
+_@cpcloud_
 
 We [just moved our linting setup over to ruff](https://github.com/ibis-project/ibis/pull/5057) and it's great!
 

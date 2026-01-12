@@ -13,14 +13,14 @@ head: charlie/space
 created_at: 2024-03-04T01:40:12Z
 updated_at: 2024-03-04T02:00:49Z
 url: https://github.com/astral-sh/ruff/pull/10220
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove trailing space from `CapWords` message
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 01:40_
+_@charliermarsh_
 
 _No description provided._
 

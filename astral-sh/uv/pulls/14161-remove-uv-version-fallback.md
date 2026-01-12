@@ -13,14 +13,14 @@ head: gankra/remove-vfall
 created_at: 2025-06-20T15:44:34Z
 updated_at: 2025-07-16T13:24:07Z
 url: https://github.com/astral-sh/uv/pull/14161
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Remove `uv version` fallback
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-20 15:44_
+_@Gankra_
 
 Fixes #14157 
 

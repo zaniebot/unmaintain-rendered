@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T15:25:42Z
 updated_at: 2025-09-16T22:12:26Z
 url: https://github.com/astral-sh/uv/issues/11858
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # uv add and uv add -r fail with misleading 'No pyproject.toml...' error, while uv pip install works
 
 ---
 
-_Issue opened by @MohammedElHamraoui on 2025-02-28 15:25_
+_@MohammedElHamraoui_
 
 ### Summary
 

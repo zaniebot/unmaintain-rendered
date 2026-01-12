@@ -13,14 +13,14 @@ head: renovate/thiserror-2.x
 created_at: 2024-11-11T03:14:29Z
 updated_at: 2024-11-15T15:54:18Z
 url: https://github.com/astral-sh/uv/pull/9006
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Update Rust crate thiserror to v2
 
 ---
 
-_Pull request opened by @renovate on 2024-11-11 03:14_
+_@renovate_
 
 This PR contains the following updates:
 

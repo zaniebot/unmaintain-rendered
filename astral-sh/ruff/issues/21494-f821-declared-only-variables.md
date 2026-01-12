@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-17T02:20:59Z
 updated_at: 2025-11-20T18:00:56Z
 url: https://github.com/astral-sh/ruff/issues/21494
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `F821`: Declared only variables
 
 ---
 
-_Issue opened by @eltoder on 2025-11-17 02:20_
+_@eltoder_
 
 ### Summary
 

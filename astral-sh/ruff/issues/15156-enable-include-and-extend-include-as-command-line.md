@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T23:39:45Z
 updated_at: 2024-12-27T15:26:46Z
 url: https://github.com/astral-sh/ruff/issues/15156
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Enable --include and --extend-include as command line args
 
 ---
 
-_Issue opened by @nikonikolov on 2024-12-26 23:39_
+_@nikonikolov_
 
 While it's possible to use `--exclude` or `--extend-exclude` on the command line, the alternatives `--include` and `--extend-include` seem to be unsupported. How can I dynamically change these on the command line. In my case, the list of exclude files can vary significantly and is a big hassle to figure out every time.
 

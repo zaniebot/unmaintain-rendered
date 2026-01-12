@@ -13,14 +13,14 @@ head: zanie/ecosystem-preview
 created_at: 2023-10-30T15:14:08Z
 updated_at: 2023-11-01T17:12:04Z
 url: https://github.com/astral-sh/ruff/pull/8358
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Run ecosystem checks with preview mode enabled
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-30 15:14_
+_@zanieb_
 
 Until https://github.com/astral-sh/ruff/issues/8076 is ready, it seems beneficial to get feedback on preview mode changes.
 

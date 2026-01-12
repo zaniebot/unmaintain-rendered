@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T13:01:27Z
 updated_at: 2025-12-16T10:20:22Z
 url: https://github.com/astral-sh/uv/issues/17124
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # ModuleNotFoundError when running with `uv run`, but works fine with activated virtual environment
 
 ---
 
-_Issue opened by @Priate-cat on 2025-12-13 13:01_
+_@Priate-cat_
 
 ### Summary
 

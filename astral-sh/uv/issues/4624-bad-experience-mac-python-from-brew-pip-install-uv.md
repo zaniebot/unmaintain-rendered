@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T15:45:22Z
 updated_at: 2024-06-28T15:56:24Z
 url: https://github.com/astral-sh/uv/issues/4624
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Bad experience: Mac, python from brew, pip install uv
 
 ---
 
-_Issue opened by @anki-code on 2024-06-28 15:45_
+_@anki-code_
 
 Hey! Thank you for this awesome thing!
 

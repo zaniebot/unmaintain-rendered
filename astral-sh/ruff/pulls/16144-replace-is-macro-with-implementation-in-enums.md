@@ -13,14 +13,14 @@ head: replace-is-macro-with-codegen
 created_at: 2025-02-13T20:10:51Z
 updated_at: 2025-02-14T05:07:21Z
 url: https://github.com/astral-sh/ruff/pull/16144
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Replace is-macro with implementation in enums
 
 ---
 
-_Pull request opened by @Glyphack on 2025-02-13 20:10_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

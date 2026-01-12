@@ -12,14 +12,14 @@ head: charlie/class-decorator-validate-args
 created_at: 2026-01-04T22:28:17Z
 updated_at: 2026-01-06T22:29:39Z
 url: https://github.com/astral-sh/ruff/pull/22377
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Validate class decorator constructor arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 22:28_
+_@charliermarsh_
 
 ## Summary
 

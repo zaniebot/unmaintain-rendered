@@ -13,14 +13,14 @@ head: main
 created_at: 2023-07-24T23:00:07Z
 updated_at: 2023-07-24T23:45:06Z
 url: https://github.com/astral-sh/ruff/pull/6048
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Update contributing.md with where to run ruff from
 
 ---
 
-_Pull request opened by @RMPR on 2023-07-24 23:00_
+_@RMPR_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T13:56:35Z
 updated_at: 2025-06-17T17:58:12Z
 url: https://github.com/astral-sh/ruff/issues/18723
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider supporting ignores for banned-api configuration
 
 ---
 
-_Issue opened by @soceanainn on 2025-06-17 13:56_
+_@soceanainn_
 
 ### Summary
 

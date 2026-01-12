@@ -13,14 +13,14 @@ head: charlie/star-import
 created_at: 2023-08-21T23:19:58Z
 updated_at: 2023-08-21T23:42:32Z
 url: https://github.com/astral-sh/ruff/pull/6743
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Ignore star imports when importing symbols in fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 23:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: amy/unwind-expect-range
 created_at: 2025-09-08T19:43:33Z
 updated_at: 2025-09-09T18:39:32Z
 url: https://github.com/astral-sh/ruff/pull/20309
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # Refactor diagnostic start|end location helpers
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-08 19:43_
+_@amyreese_
 
 - Renames functions to drop `expect_` from names.
 - Make functions return `Option<LineColumn>` to appropriately signal

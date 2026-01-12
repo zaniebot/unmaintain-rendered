@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T15:58:07Z
 updated_at: 2025-06-26T21:51:05Z
 url: https://github.com/astral-sh/uv/issues/13951
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # `uv lock` empties lockfile when upgrading python
 
 ---
 
-_Issue opened by @nrlulz on 2025-06-10 15:58_
+_@nrlulz_
 
 ### Summary
 

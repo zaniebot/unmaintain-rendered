@@ -13,14 +13,14 @@ head: main
 created_at: 2025-07-07T18:14:18Z
 updated_at: 2025-08-17T23:35:37Z
 url: https://github.com/astral-sh/ruff/pull/19188
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Fix description of global config file discovery strategy (#19143)
 
 ---
 
-_Pull request opened by @gkowzan on 2025-07-07 18:14_
+_@gkowzan_
 
 Contrary to docs, ruff uses etcetera's base strategy rather than the native strategy.
 

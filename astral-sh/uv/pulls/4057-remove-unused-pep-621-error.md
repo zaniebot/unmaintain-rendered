@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2024-06-05T17:39:56Z
 updated_at: 2024-06-05T17:45:43Z
 url: https://github.com/astral-sh/uv/pull/4057
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Remove unused PEP 621 error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-05 17:39_
+_@charliermarsh_
 
 _No description provided._
 

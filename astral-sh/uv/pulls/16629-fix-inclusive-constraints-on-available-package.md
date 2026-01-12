@@ -14,14 +14,14 @@ head: zb/fix-bounds
 created_at: 2025-11-07T05:22:15Z
 updated_at: 2025-11-07T15:23:39Z
 url: https://github.com/astral-sh/uv/pull/16629
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Fix inclusive constraints on available package versions in resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-07 05:22_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16626
 

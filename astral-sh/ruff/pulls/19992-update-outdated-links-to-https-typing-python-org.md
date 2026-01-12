@@ -13,14 +13,14 @@ head: outdated-stubs-link
 created_at: 2025-08-19T17:07:54Z
 updated_at: 2025-08-19T17:53:22Z
 url: https://github.com/astral-sh/ruff/pull/19992
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # Update outdated links to https://typing.python.org/en/latest/source/stubs.html
 
 ---
 
-_Pull request opened by @Avasam on 2025-08-19 17:07_
+_@Avasam_
 
 
 <!--

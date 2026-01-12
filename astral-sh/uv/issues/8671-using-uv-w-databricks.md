@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T17:13:05Z
 updated_at: 2025-07-31T11:56:51Z
 url: https://github.com/astral-sh/uv/issues/8671
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Using `uv` w/ Databricks
 
 ---
 
-_Issue opened by @soneill-pure on 2024-10-29 17:13_
+_@soneill-pure_
 
 Has anyone had success using `uv` with Databricks? I'm loving `uv` for local project development and I'd like the ability to quickly offload heavy ML compute jobs to Databricks which would involve replicating my local virtual env on Databricks. I'd prefer to use `uv` to replicate the env for speed and parity. My initial thoughts are to create a [custom docker container](https://docs.databricks.com/en/compute/custom-containers.html) that uses `uv` instead of vanilla `virtualenv` & `pip` that they currently use in their [base images](https://github.com/databricks/containers/blob/master/ubuntu/python/Dockerfile).
 

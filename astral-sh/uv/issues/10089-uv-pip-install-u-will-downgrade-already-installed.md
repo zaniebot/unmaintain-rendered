@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-22T00:35:13Z
 updated_at: 2025-01-06T22:41:44Z
 url: https://github.com/astral-sh/uv/issues/10089
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # `uv pip install -U` will downgrade already-installed packages
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-22 00:35_
+_@charliermarsh_
 
 If you `uv init packaging`, then change the version to 1000 and install it, then run `uv pip install -U black`, we'll actually _downgrade_ `packaging` unnecessarily:
 

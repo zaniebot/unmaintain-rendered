@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T13:08:38Z
 updated_at: 2024-12-26T16:58:22Z
 url: https://github.com/astral-sh/uv/issues/9015
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # uv build: build with a tmp dir means files outside python project can't be used for build script
 
 ---
 
-_Issue opened by @BaxHugh on 2024-11-11 13:08_
+_@BaxHugh_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

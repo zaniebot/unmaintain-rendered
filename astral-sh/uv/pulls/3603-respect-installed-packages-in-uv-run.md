@@ -14,14 +14,14 @@ head: charlie/inst
 created_at: 2024-05-15T14:34:07Z
 updated_at: 2024-05-15T15:48:33Z
 url: https://github.com/astral-sh/uv/pull/3603
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Respect installed packages in `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 14:34_
+_@charliermarsh_
 
 Closes #3601.
 

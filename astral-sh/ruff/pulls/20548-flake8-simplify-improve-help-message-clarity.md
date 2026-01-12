@@ -13,14 +13,14 @@ head: fix/20462-improve-sim105-message
 created_at: 2025-09-24T11:37:32Z
 updated_at: 2025-09-25T19:22:11Z
 url: https://github.com/astral-sh/ruff/pull/20548
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`flake8-simplify`] Improve help message clarity (`SIM105`)
 
 ---
 
-_Pull request opened by @mgiovani on 2025-09-24 11:37_
+_@mgiovani_
 
 ## Summary
 

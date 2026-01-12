@@ -13,14 +13,14 @@ head: sarif-fixes
 created_at: 2025-09-08T03:29:21Z
 updated_at: 2025-09-18T07:37:04Z
 url: https://github.com/astral-sh/ruff/pull/20300
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # Add fixes to `output-format=sarif`
 
 ---
 
-_Pull request opened by @njhearp on 2025-09-08 03:29_
+_@njhearp_
 
 ## Summary
 

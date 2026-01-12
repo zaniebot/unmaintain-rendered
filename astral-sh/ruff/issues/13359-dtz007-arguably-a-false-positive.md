@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-15T22:26:08Z
 updated_at: 2025-03-25T08:19:15Z
 url: https://github.com/astral-sh/ruff/issues/13359
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DTZ007 - arguably a false positive
 
 ---
 
-_Issue opened by @rbubley on 2024-09-15 22:26_
+_@rbubley_
 
 A not uncommon pattern to parse a date string to a Python date uses similar code to the below. Times/time-zones shouldn't matter.
 

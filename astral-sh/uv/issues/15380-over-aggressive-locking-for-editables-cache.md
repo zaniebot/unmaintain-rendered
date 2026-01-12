@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T13:15:22Z
 updated_at: 2025-08-21T09:43:07Z
 url: https://github.com/astral-sh/uv/issues/15380
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Over-aggressive locking for editables cache
 
 ---
 
-_Issue opened by @SquidDev on 2025-08-19 13:15_
+_@SquidDev_
 
 ### Summary
 

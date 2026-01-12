@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T18:37:31Z
 updated_at: 2023-02-27T23:11:15Z
 url: https://github.com/astral-sh/ruff/issues/3256
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE1205: false positive for names arguments
 
 ---
 
-_Issue opened by @spaceone on 2023-02-27 18:37_
+_@spaceone_
 
 ```python
 >>> import logging

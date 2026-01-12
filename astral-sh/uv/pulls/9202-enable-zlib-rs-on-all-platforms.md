@@ -14,14 +14,14 @@ head: charlie/ef
 created_at: 2024-11-18T15:45:43Z
 updated_at: 2024-11-20T03:23:56Z
 url: https://github.com/astral-sh/uv/pull/9202
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Enable `zlib-rs` on all platforms
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 15:45_
+_@charliermarsh_
 
 ## Summary
 

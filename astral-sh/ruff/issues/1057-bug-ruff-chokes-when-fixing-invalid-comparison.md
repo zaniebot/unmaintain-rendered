@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T13:13:33Z
 updated_at: 2022-12-05T16:22:38Z
 url: https://github.com/astral-sh/ruff/issues/1057
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] ruff chokes when fixing invalid comparison (`F632`)
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 13:13_
+_@smackesey_
 
 This `F632`-triggering line (and several similar ones in our codebase) caused `ruff --fix` to choke:
 

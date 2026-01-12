@@ -12,14 +12,14 @@ head: docs/keyring-service
 created_at: 2025-06-23T09:06:43Z
 updated_at: 2026-01-06T08:25:18Z
 url: https://github.com/astral-sh/uv/pull/14211
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Clarify how to configure auth token with keyring
 
 ---
 
-_Pull request opened by @rafalkrupinski on 2025-06-23 09:06_
+_@rafalkrupinski_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

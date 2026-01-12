@@ -12,14 +12,14 @@ head: charlie/max-doc-length
 created_at: 2023-01-12T03:28:22Z
 updated_at: 2023-01-12T19:54:21Z
 url: https://github.com/astral-sh/ruff/pull/1804
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement doc line length enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-12 03:28_
+_@charliermarsh_
 
 This PR implements `W505` (`DocLineTooLong`), which is similar to `E501` (`LineTooLong`) but confined to doc lines.
 

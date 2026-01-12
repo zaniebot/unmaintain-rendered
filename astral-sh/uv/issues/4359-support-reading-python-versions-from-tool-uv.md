@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T16:34:26Z
 updated_at: 2024-08-24T08:26:23Z
 url: https://github.com/astral-sh/uv/issues/4359
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support reading Python versions from `tool.uv` 
 
 ---
 
-_Issue opened by @zanieb on 2024-06-17 16:34_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/4335 adds support for Python version files, but we should also support a section in the `pyproject.toml` with more structured data.
 

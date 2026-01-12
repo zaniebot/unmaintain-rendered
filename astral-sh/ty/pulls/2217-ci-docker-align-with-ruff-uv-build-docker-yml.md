@@ -12,14 +12,14 @@ head: build-docker-cleanup
 created_at: 2025-12-25T02:30:09Z
 updated_at: 2025-12-25T22:41:35Z
 url: https://github.com/astral-sh/ty/pull/2217
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # ci(docker): align with ruff/uv build-docker.yml
 
 ---
 
-_Pull request opened by @samypr100 on 2025-12-25 02:30_
+_@samypr100_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fix-missing-marker-error-msg
 created_at: 2024-11-19T19:53:42Z
 updated_at: 2024-11-19T20:03:53Z
 url: https://github.com/astral-sh/uv/pull/9240
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Fix grammar in missing platform marker error message
 
 ---
 
-_Pull request opened by @edmorley on 2024-11-19 19:53_
+_@edmorley_
 
 `s/a platform markers/a platform marker/`
 

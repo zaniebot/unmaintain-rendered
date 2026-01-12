@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-05T16:55:29Z
 updated_at: 2023-09-07T07:08:44Z
 url: https://github.com/astral-sh/ruff/issues/7169
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Update identifier Unicode character validation to match Python spec
 
 ---
 
-_Issue opened by @zanieb on 2023-09-05 16:55_
+_@zanieb_
 
 Python supports some, but not all Unicode characters in identifiers. See https://docs.python.org/3/reference/lexical_analysis.html#identifiers and https://peps.python.org/pep-3131/
 

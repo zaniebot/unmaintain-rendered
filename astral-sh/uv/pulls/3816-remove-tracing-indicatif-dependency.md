@@ -12,14 +12,14 @@ head: charlie/trace
 created_at: 2024-05-24T02:52:32Z
 updated_at: 2024-05-24T02:59:27Z
 url: https://github.com/astral-sh/uv/pull/3816
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Remove `tracing-indicatif` dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 02:52_
+_@charliermarsh_
 
 ## Summary
 

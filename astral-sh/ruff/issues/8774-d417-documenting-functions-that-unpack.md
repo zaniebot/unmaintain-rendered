@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-20T05:24:24Z
 updated_at: 2025-12-08T19:00:07Z
 url: https://github.com/astral-sh/ruff/issues/8774
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [D417] Documenting Functions that `Unpack`
 
 ---
 
-_Issue opened by @JP-Ellis on 2023-11-20 05:24_
+_@JP-Ellis_
 
 ## Summary
 

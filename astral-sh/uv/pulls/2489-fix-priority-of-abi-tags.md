@@ -13,14 +13,14 @@ head: zb/abi-tags-fix
 created_at: 2024-03-16T16:39:19Z
 updated_at: 2024-03-18T14:21:55Z
 url: https://github.com/astral-sh/uv/pull/2489
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Fix priority of ABI tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-16 16:39_
+_@zanieb_
 
 Brings us in-line with Python's behavior:
 

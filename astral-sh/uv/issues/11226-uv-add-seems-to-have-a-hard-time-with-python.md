@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T20:58:09Z
 updated_at: 2025-02-04T23:03:53Z
 url: https://github.com/astral-sh/uv/issues/11226
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # uv add seems to have a hard time with python version constraint
 
 ---
 
-_Issue opened by @Elmekior on 2025-02-04 20:58_
+_@Elmekior_
 
 ### Summary
 

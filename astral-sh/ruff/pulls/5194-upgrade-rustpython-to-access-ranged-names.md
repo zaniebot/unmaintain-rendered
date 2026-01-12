@@ -13,14 +13,14 @@ head: charlie/id
 created_at: 2023-06-19T22:06:20Z
 updated_at: 2023-06-20T16:05:39Z
 url: https://github.com/astral-sh/ruff/pull/5194
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Upgrade `RustPython` to access ranged names
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 22:06_
+_@charliermarsh_
 
 ## Summary
 

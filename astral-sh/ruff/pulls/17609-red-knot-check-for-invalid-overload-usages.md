@@ -14,14 +14,14 @@ head: dhruv/check-invalid-overloads
 created_at: 2025-04-24T13:50:43Z
 updated_at: 2025-04-30T14:10:42Z
 url: https://github.com/astral-sh/ruff/pull/17609
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Check for invalid overload usages
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-24 13:50_
+_@dhruvmanila_
 
 ## Summary
 

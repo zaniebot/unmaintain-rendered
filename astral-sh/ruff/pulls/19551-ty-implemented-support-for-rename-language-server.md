@@ -14,14 +14,14 @@ head: rename
 created_at: 2025-07-25T04:59:14Z
 updated_at: 2025-08-07T10:28:19Z
 url: https://github.com/astral-sh/ruff/pull/19551
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Implemented support for "rename" language server feature
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-25 04:59_
+_@UnboundVariable_
 
 This PR adds support for the "rename" language server feature. It builds upon existing functionality used for "go to references". 
 

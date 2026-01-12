@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T19:20:38Z
 updated_at: 2025-06-06T15:35:56Z
 url: https://github.com/astral-sh/uv/issues/13871
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `uv pip sync - <<<"-e ."` does not honour `sources`
 
 ---
 
-_Issue opened by @paveldikov on 2025-06-05 19:20_
+_@paveldikov_
 
 ### Summary
 

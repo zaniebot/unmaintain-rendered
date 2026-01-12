@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T04:22:13Z
 updated_at: 2025-08-14T04:22:18Z
 url: https://github.com/astral-sh/uv/issues/15268
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Incompatible architecture logs are too verbose
 
 ---
 
-_Issue opened by @zanieb on 2025-08-14 04:22_
+_@zanieb_
 
 e.g.,
 

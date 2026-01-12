@@ -12,14 +12,14 @@ head: sort-all-rules
 created_at: 2023-05-22T22:25:53Z
 updated_at: 2023-10-17T11:07:09Z
 url: https://github.com/astral-sh/ruff/pull/4590
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Sort all rules and enable CI check
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-22 22:25_
+_@JonathanPlasse_
 
 Depends on
 - #3747

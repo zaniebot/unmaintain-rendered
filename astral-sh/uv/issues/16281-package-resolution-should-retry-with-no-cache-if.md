@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T12:30:27Z
 updated_at: 2025-12-18T17:04:40Z
 url: https://github.com/astral-sh/uv/issues/16281
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Package resolution should retry with no cache if a requested version is not found
 
 ---
 
-_Issue opened by @MaddyGuthridge on 2025-10-13 12:30_
+_@MaddyGuthridge_
 
 ### Summary
 

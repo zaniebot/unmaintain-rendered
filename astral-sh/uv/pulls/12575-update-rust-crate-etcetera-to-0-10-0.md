@@ -13,14 +13,14 @@ head: renovate/etcetera-0.x
 created_at: 2025-03-31T02:41:23Z
 updated_at: 2025-03-31T13:07:34Z
 url: https://github.com/astral-sh/uv/pull/12575
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Update Rust crate etcetera to 0.10.0
 
 ---
 
-_Pull request opened by @renovate on 2025-03-31 02:41_
+_@renovate_
 
 This PR contains the following updates:
 

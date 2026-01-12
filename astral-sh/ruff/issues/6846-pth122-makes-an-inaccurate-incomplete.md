@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T08:47:21Z
 updated_at: 2023-08-25T22:11:57Z
 url: https://github.com/astral-sh/ruff/issues/6846
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PTH122 makes an inaccurate (incomplete) recommendation
 
 ---
 
-_Issue opened by @dbohdan on 2023-08-24 08:47_
+_@dbohdan_
 
 The message for [PTH122](https://beta.ruff.rs/docs/rules/os-path-splitext/) reads,
 

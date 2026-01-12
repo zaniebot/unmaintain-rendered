@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T06:38:33Z
 updated_at: 2025-04-01T22:16:47Z
 url: https://github.com/astral-sh/uv/issues/12525
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # concurrent `uv run` is very slow even with cache
 
 ---
 
-_Issue opened by @terrykong on 2025-03-28 06:38_
+_@terrykong_
 
 ### Summary
 

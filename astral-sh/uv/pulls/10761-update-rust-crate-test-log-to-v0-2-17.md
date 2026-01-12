@@ -13,14 +13,14 @@ head: renovate/test-log-0.x-lockfile
 created_at: 2025-01-20T01:11:11Z
 updated_at: 2025-01-20T01:42:57Z
 url: https://github.com/astral-sh/uv/pull/10761
-synced_at: 2026-01-10T11:45:08Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Update Rust crate test-log to v0.2.17
 
 ---
 
-_Pull request opened by @renovate on 2025-01-20 01:11_
+_@renovate_
 
 This PR contains the following updates:
 

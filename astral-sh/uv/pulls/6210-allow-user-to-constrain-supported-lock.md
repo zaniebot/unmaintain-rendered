@@ -15,14 +15,14 @@ head: charlie/supported-environments
 created_at: 2024-08-19T16:31:44Z
 updated_at: 2024-08-20T13:28:05Z
 url: https://github.com/astral-sh/uv/pull/6210
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Allow user to constrain supported lock environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-19 16:31_
+_@charliermarsh_
 
 ## Summary
 

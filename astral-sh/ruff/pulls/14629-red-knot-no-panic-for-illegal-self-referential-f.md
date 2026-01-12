@@ -12,14 +12,14 @@ head: david/self-referential-fstring-annotations
 created_at: 2024-11-27T09:19:57Z
 updated_at: 2025-04-28T23:12:56Z
 url: https://github.com/astral-sh/ruff/pull/14629
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] No panic for illegal self-referential f-string annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-27 09:19_
+_@sharkdp_
 
 ## Summary
 

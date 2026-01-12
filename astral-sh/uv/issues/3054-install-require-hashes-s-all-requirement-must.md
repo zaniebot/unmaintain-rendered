@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T07:26:01Z
 updated_at: 2024-04-16T16:25:03Z
 url: https://github.com/astral-sh/uv/issues/3054
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # `install --require-hashes`'s "all requirement must have a hash" error can be better
 
 ---
 
-_Issue opened by @bluetech on 2024-04-16 07:26_
+_@bluetech_
 
 This is in continuation of #3052.
 

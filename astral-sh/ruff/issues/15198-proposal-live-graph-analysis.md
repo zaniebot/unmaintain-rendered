@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T07:22:12Z
 updated_at: 2024-12-30T08:24:42Z
 url: https://github.com/astral-sh/ruff/issues/15198
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [PROPOSAL] live (graph) analysis
 
 ---
 
-_Issue opened by @purajit on 2024-12-30 07:22_
+_@purajit_
 
 The basic idea is to start `ruff` in a mode where it monitors file changes and runs something whenever 
 it detects changes. Primarily, a user should be able to provide a command to be run, for instance, `pytest`.

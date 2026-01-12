@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T09:38:48Z
 updated_at: 2024-05-15T00:15:55Z
 url: https://github.com/astral-sh/uv/issues/3400
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Question: Pass in `ClientWithMiddleware` to `RegistryClient` and `Builder`
 
 ---
 
-_Issue opened by @tdejager on 2024-05-06 09:38_
+_@tdejager_
 
 For use in pixi, it would be great if we could use our own middleware for the Reqwest Client, instead of having to rely on the middleware that uv provides :)
 

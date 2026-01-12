@@ -13,14 +13,14 @@ head: dhruv/unparenthesized-genexp
 created_at: 2024-07-22T03:37:36Z
 updated_at: 2024-07-22T09:14:22Z
 url: https://github.com/astral-sh/ruff/pull/12445
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Raise syntax error for unparenthesized generator expr in multi-argument call
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-22 03:37_
+_@dhruvmanila_
 
 ## Summary
 

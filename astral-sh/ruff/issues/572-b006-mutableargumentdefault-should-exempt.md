@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-04T01:35:54Z
 updated_at: 2022-11-20T00:46:09Z
 url: https://github.com/astral-sh/ruff/issues/572
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # B006 (MutableArgumentDefault) should exempt parameters with immutable type annotations
 
 ---
 
-_Issue opened by @andersk on 2022-11-04 01:35_
+_@andersk_
 
 B006 aims to prevent bugs that arise from mutating the default value of a function’s parameter, with unintended effects on all future calls to that function. But for a parameter that’s annotated with an immutable abstract type such as `Sequence[int]`, mypy already prevents the value from being mutated. So such parameters should be exempt from B006. For example:
 

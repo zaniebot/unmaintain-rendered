@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T10:35:31Z
 updated_at: 2025-04-30T11:05:06Z
 url: https://github.com/astral-sh/uv/issues/13222
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Installing package from local pypiserver not working with `0.7.0`
 
 ---
 
-_Issue opened by @my1e5 on 2025-04-30 10:35_
+_@my1e5_
 
 ### Summary
 

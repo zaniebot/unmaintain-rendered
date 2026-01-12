@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-06T20:46:58Z
 updated_at: 2023-11-06T20:50:30Z
 url: https://github.com/astral-sh/ruff/issues/8527
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff format double and single quotes
 
 ---
 
-_Issue opened by @Xiwang-Li-Walmart on 2023-11-06 20:46_
+_@Xiwang-Li-Walmart_
 
 Can we have an option to select either double or single quote for ruff formatting? 
 and even just ignore  this double or single quote formatting by add `-S` like in Black?

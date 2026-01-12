@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T05:32:10Z
 updated_at: 2025-01-16T15:57:23Z
 url: https://github.com/astral-sh/uv/issues/10667
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # `alias` Attribute Not Displayed in CLI
 
 ---
 
-_Issue opened by @xosnrdev on 2025-01-16 05:32_
+_@xosnrdev_
 
 **Description:**  
 Using the `alias` attribute for a command does not make the alias visible in the CLI help output. Replacing it with `visible_alias` displays the alias correctly.

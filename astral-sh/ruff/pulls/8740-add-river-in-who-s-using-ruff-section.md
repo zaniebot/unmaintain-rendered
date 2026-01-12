@@ -13,14 +13,14 @@ head: main
 created_at: 2023-11-17T13:08:04Z
 updated_at: 2023-11-17T14:13:51Z
 url: https://github.com/astral-sh/ruff/pull/8740
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add River in "Who's Using Ruff?" section
 
 ---
 
-_Pull request opened by @AdilZouitine on 2023-11-17 13:08_
+_@AdilZouitine_
 
 
 ## Summary

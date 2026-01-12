@@ -14,14 +14,14 @@ head: alex/py-version-verbosity
 created_at: 2025-12-08T15:46:10Z
 updated_at: 2025-12-08T16:05:14Z
 url: https://github.com/astral-sh/ruff/pull/21849
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Make Python-version subdiagnostics less verbose
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-08 15:46_
+_@AlexWaygood_
 
 ## Summary
 

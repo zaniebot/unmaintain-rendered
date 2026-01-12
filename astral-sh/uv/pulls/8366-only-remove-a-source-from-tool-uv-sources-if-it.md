@@ -12,14 +12,14 @@ head: remove-source
 created_at: 2024-10-19T14:15:47Z
 updated_at: 2024-10-21T23:20:44Z
 url: https://github.com/astral-sh/uv/pull/8366
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Only remove a source from `[tool.uv.sources]` if it is no long being referenced
 
 ---
 
-_Pull request opened by @j178 on 2024-10-19 14:15_
+_@j178_
 
 ## Summary
 

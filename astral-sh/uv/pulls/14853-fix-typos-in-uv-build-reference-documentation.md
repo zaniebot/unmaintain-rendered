@@ -13,14 +13,14 @@ head: doc-typos
 created_at: 2025-07-23T19:34:25Z
 updated_at: 2025-07-24T09:55:15Z
 url: https://github.com/astral-sh/uv/pull/14853
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Fix typos in uv_build reference documentation
 
 ---
 
-_Pull request opened by @Zij-IT on 2025-07-23 19:34_
+_@Zij-IT_
 
 ## Summary
 

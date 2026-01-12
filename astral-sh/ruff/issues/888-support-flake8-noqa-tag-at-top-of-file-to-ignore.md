@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-23T06:51:40Z
 updated_at: 2022-12-03T04:56:57Z
 url: https://github.com/astral-sh/ruff/issues/888
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support # flake8: noqa tag at top of file to ignore entire file
 
 ---
 
-_Issue opened by @jhallard on 2022-11-23 06:51_
+_@jhallard_
 
 We occasionally have files in our code base that we want to ignore certain flake8 errors for. Instead of marking each line, `flake8` allows one to simply tag the file with 
 ```

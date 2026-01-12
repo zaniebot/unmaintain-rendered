@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-02T19:55:15Z
 updated_at: 2025-05-02T21:15:27Z
 url: https://github.com/astral-sh/uv/issues/13273
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Usage of tool `uv` in Dockerfile fails to activate environment
 
 ---
 
-_Issue opened by @brunolnetto on 2025-05-02 19:55_
+_@brunolnetto_
 
 Hi all. I want to use uv on my Dockerfile. After more than 3 hours reading and implementing the [documentation](https://docs.astral.sh/uv/guides/integration/docker/#installing-a-project_1), without success to "activate the environment", I came here for help. THe repository is [here](https://github.com/brunolnetto/langgraph-pydantic-mvp). The command to run the application is `docker compose up -d --build`. 
 

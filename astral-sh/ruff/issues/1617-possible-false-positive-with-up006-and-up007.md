@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T02:40:08Z
 updated_at: 2023-01-04T02:49:42Z
 url: https://github.com/astral-sh/ruff/issues/1617
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Possible false positive with UP006 and UP007
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-04 02:40_
+_@sbdchd_
 
 I'm not sure if this is a false positive or if I shouldn't enable these rules
 

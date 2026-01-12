@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T13:28:24Z
 updated_at: 2025-03-05T07:44:26Z
 url: https://github.com/astral-sh/uv/issues/11923
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # local building makes uninstallable version version makes lib not install
 
 ---
 
-_Issue opened by @kocsszi on 2025-03-03 13:28_
+_@kocsszi_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: david/fix-14524
 created_at: 2024-12-03T14:16:09Z
 updated_at: 2024-12-04T16:11:28Z
 url: https://github.com/astral-sh/ruff/pull/14758
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Gradual forms do not participate in equivalence/subtyping
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-03 14:16_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/tuple-special-case
 created_at: 2025-09-15T12:06:55Z
 updated_at: 2025-09-15T12:12:21Z
 url: https://github.com/astral-sh/ruff/pull/20414
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Remove unneeded disjoint-base special casing for `builtins.tuple`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-15 12:06_
+_@AlexWaygood_
 
 This is no longer needed following https://github.com/astral-sh/ruff/commit/276ee1bb1e8a9ac3149e0a02486e859d931edd80
 

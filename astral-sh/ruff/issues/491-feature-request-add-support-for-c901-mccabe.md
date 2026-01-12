@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-27T17:58:03Z
 updated_at: 2022-11-17T22:40:52Z
 url: https://github.com/astral-sh/ruff/issues/491
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Feature request: add support for C901, McCabe cyclomatic complexity
 
 ---
 
-_Issue opened by @tgross35 on 2022-10-27 17:58_
+_@tgross35_
 
 Sorry for the recent flurry of issues, this is just one for a "blue sky" milestone
 

@@ -11,14 +11,14 @@ head: unused-tuple-element
 created_at: 2024-02-11T21:41:20Z
 updated_at: 2024-03-28T17:25:24Z
 url: https://github.com/astral-sh/ruff/pull/9936
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # RUF028 - Flag unused variables in tuple unpacking.
 
 ---
 
-_Pull request opened by @Tsdevendra1 on 2024-02-11 21:41_
+_@Tsdevendra1_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

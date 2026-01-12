@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T11:25:23Z
 updated_at: 2025-04-01T18:58:30Z
 url: https://github.com/astral-sh/uv/issues/12484
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Add a libyear feature
 
 ---
 
-_Issue opened by @SebCorbin on 2025-03-26 11:25_
+_@SebCorbin_
 
 ### Summary
 

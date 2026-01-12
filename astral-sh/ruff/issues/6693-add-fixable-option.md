@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-19T17:47:17Z
 updated_at: 2023-08-19T18:54:05Z
 url: https://github.com/astral-sh/ruff/issues/6693
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add `fixable` option
 
 ---
 
-_Issue opened by @shager on 2023-08-19 17:47_
+_@shager_
 
 Hello,
 

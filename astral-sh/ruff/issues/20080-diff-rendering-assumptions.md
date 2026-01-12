@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T13:16:28Z
 updated_at: 2025-09-15T09:15:54Z
 url: https://github.com/astral-sh/ruff/issues/20080
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Diff rendering assumptions
 
 ---
 
-_Issue opened by @ntBre on 2025-08-25 13:16_
+_@ntBre_
 
 > I only just realized that our fix infrastructure always assumes that all changes belong to the file from the primary span. 
 >

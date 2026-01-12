@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T18:18:49Z
 updated_at: 2025-05-17T23:15:36Z
 url: https://github.com/astral-sh/ruff/issues/13541
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: Local variable never read
 
 ---
 
-_Issue opened by @alippai on 2024-09-27 18:18_
+_@alippai_
 
 It'd be useful to track if a local variable was read before assigned again:
 ```python

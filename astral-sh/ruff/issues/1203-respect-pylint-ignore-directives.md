@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-11T23:49:53Z
 updated_at: 2025-10-07T21:19:33Z
 url: https://github.com/astral-sh/ruff/issues/1203
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Respect pylint ignore directives
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-11 23:49_
+_@LefterisJP_
 
 It would be really cool for a codebase moving from pylint slowly to ruff to be able to understand and respect pylint directives.
 

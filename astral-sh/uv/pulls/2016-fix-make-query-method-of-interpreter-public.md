@@ -12,14 +12,14 @@ head: fix/interpreter-query-public
 created_at: 2024-02-27T14:31:34Z
 updated_at: 2024-02-27T15:03:37Z
 url: https://github.com/astral-sh/uv/pull/2016
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # fix: make query method of interpreter public
 
 ---
 
-_Pull request opened by @tdejager on 2024-02-27 14:31_
+_@tdejager_
 
 ## Summary
 

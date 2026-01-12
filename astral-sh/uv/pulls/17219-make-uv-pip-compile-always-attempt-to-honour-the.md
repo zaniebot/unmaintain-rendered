@@ -13,14 +13,14 @@ head: tk/pip-compile-missing-py-3
 created_at: 2025-12-22T19:44:06Z
 updated_at: 2025-12-29T13:16:34Z
 url: https://github.com/astral-sh/uv/pull/17219
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Make `uv pip compile` always attempt to honour the `--python` argument
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-22 19:44_
+_@EliteTK_
 
 ## Summary
 

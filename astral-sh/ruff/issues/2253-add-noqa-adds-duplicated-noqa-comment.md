@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T14:23:59Z
 updated_at: 2023-02-02T02:58:03Z
 url: https://github.com/astral-sh/ruff/issues/2253
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # --add-noqa adds duplicated noqa comment
 
 ---
 
-_Issue opened by @spaceone on 2023-01-27 14:23_
+_@spaceone_
 
 ```sh
 $ cat foo.py

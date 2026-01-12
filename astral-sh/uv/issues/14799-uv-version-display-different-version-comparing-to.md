@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T20:03:26Z
 updated_at: 2025-07-21T20:12:46Z
 url: https://github.com/astral-sh/uv/issues/14799
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # `uv --version` display different version comparing to `brew list --versions uv`
 
 ---
 
-_Issue opened by @ziminz19 on 2025-07-21 20:03_
+_@ziminz19_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T05:59:41Z
 updated_at: 2024-02-19T11:58:57Z
 url: https://github.com/astral-sh/ruff/issues/10038
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # (🐞) blank-line-with-whitespace (W293) fix is highly unsafe
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-02-19 05:59_
+_@KotlinIsland_
 
 ```py
 def test_something():

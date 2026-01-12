@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-04-10T00:35:00Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/476
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Required ArgGroup displayed incorrenctly
 
 ---
 
-_Issue opened by @panicbit on 2016-04-10 00:35_
+_@panicbit_
 
 The last character in the usage message of `ArgGroup`s seems to always be missing.
 

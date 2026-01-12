@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T19:32:49Z
 updated_at: 2025-12-27T19:28:53Z
 url: https://github.com/astral-sh/ty/issues/1564
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-argument-type` on union with pre PEP 695 type parameter
 
 ---
 
-_Issue opened by @edgarrmondragon on 2025-11-14 19:32_
+_@edgarrmondragon_
 
 ### Summary
 

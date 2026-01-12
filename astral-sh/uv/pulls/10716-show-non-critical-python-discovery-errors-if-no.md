@@ -13,14 +13,14 @@ head: zb/discovery-err
 created_at: 2025-01-17T17:25:18Z
 updated_at: 2025-01-21T21:11:56Z
 url: https://github.com/astral-sh/uv/pull/10716
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Show non-critical Python discovery errors if no other interpreter is found
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-17 17:25_
+_@zanieb_
 
 Previously, these errors would only be visible in the debug logs as "Skipping bad interpreter ..." which can lead us to making some ridiculous claims like "There is no virtual environment" or "Python is not installed" when really we just failed to query the interpreter for some reason.
 

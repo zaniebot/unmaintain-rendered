@@ -13,14 +13,14 @@ head: renovate/clap-4.x-lockfile
 created_at: 2025-09-22T01:16:28Z
 updated_at: 2025-09-22T07:03:55Z
 url: https://github.com/astral-sh/ruff/pull/20500
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # Update Rust crate clap to v4.5.48
 
 ---
 
-_Pull request opened by @renovate on 2025-09-22 01:16_
+_@renovate_
 
 Coming soon: The Renovate bot (GitHub App) will be renamed to Mend. PRs from Renovate will soon appear from 'Mend'. Learn more [here](https://redirect.github.com/renovatebot/renovate/discussions/37842).
 

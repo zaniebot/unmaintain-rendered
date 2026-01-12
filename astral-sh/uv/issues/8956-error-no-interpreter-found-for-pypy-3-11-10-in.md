@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T20:27:59Z
 updated_at: 2024-12-14T15:29:24Z
 url: https://github.com/astral-sh/uv/issues/8956
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # error: No interpreter found for PyPy 3.11.10 in virtual environments, managed installations, or search path
 
 ---
 
-_Issue opened by @loke-x on 2024-11-08 20:27_
+_@loke-x_
 
 I installed the python 3.11 using uv and pined it the directory and run uv init and got this issue
 

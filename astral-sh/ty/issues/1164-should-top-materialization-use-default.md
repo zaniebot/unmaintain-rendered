@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T14:58:55Z
 updated_at: 2026-01-07T00:13:49Z
 url: https://github.com/astral-sh/ty/issues/1164
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Should `top_materialization` use `default_specialization` for type vars?
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-10 14:58_
+_@sharkdp_
 
 @AlexWaygood:
 

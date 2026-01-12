@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T19:25:57Z
 updated_at: 2025-02-06T21:08:17Z
 url: https://github.com/astral-sh/uv/issues/11289
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # [Question] uv add installs a python version instead of using /usr/bin/python
 
 ---
 
-_Issue opened by @WorldTeacher on 2025-02-06 19:25_
+_@WorldTeacher_
 
 ### Question
 

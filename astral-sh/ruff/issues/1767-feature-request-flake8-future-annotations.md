@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-10T12:07:00Z
 updated_at: 2023-01-10T23:25:08Z
 url: https://github.com/astral-sh/ruff/issues/1767
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # feature request: `flake8-future-annotations`
 
 ---
 
-_Issue opened by @danieleades on 2023-01-10 12:07_
+_@danieleades_
 
 see https://pypi.org/project/flake8-future-annotations/
 

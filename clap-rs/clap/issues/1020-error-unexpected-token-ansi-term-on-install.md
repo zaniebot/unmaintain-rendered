@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-08T09:38:57Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1020
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # error: unexpected token: `ansi_term` on install.
 
 ---
 
-_Issue opened by @peterbraden on 2017-08-08 09:38_
+_@peterbraden_
 
 Cannot install clap: error: unexpected token: `ansi_term`
 

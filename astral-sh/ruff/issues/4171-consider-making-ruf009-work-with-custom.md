@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-01T20:04:17Z
 updated_at: 2023-07-10T01:29:48Z
 url: https://github.com/astral-sh/ruff/issues/4171
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider making RUF009 work with custom dataclasses
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-05-01 20:04_
+_@NeilGirdhar_
 
 Ruff produces useful errors for dataclasses.  Recently, [PEP 681](https://peps.python.org/pep-0681/) added the ability to define custom dataclasses.  However, Ruff doesn't treat these as dataclasses and produces no errors:
 ```python

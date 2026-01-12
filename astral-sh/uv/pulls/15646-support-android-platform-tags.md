@@ -13,14 +13,14 @@ head: android-support
 created_at: 2025-09-02T23:20:23Z
 updated_at: 2025-09-03T14:24:34Z
 url: https://github.com/astral-sh/uv/pull/15646
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Support Android platform tags
 
 ---
 
-_Pull request opened by @timrid on 2025-09-02 23:20_
+_@timrid_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

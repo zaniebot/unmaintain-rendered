@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T04:27:18Z
 updated_at: 2024-02-19T17:33:36Z
 url: https://github.com/astral-sh/uv/issues/1571
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # BUG: `Reading from cache archive failed` while upgrading `pytest`
 
 ---
 
-_Issue opened by @harshil21 on 2024-02-17 04:27_
+_@harshil21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

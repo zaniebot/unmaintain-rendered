@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T01:02:15Z
 updated_at: 2025-04-22T07:47:53Z
 url: https://github.com/astral-sh/ruff/issues/17438
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Naming the new Python Type Checker
 
 ---
 
-_Issue opened by @T-256 on 2025-04-17 01:02_
+_@T-256_
 
 As red-knot project going to alpha state, opened this discussion to make decision about naming of it.
 

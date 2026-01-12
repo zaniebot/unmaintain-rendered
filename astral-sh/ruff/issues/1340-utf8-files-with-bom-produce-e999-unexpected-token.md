@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T20:52:46Z
 updated_at: 2022-12-26T12:03:14Z
 url: https://github.com/astral-sh/ruff/issues/1340
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # UTF8 files with BOM produce E999 "unexpected token"
 
 ---
 
-_Issue opened by @danielmenzel on 2022-12-22 20:52_
+_@danielmenzel_
 
 I tried using ruff 0.0.191 (Python 3.9 on Windows 10) to check a file that is encoded in UTF8 with BOM (byte order mark). I used the default options for ruff.
 

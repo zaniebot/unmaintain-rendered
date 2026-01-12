@@ -11,14 +11,14 @@ head: pytlint-method-cache-max-size-none-W1518
 created_at: 2024-03-09T22:24:56Z
 updated_at: 2024-03-14T16:54:21Z
 url: https://github.com/astral-sh/ruff/pull/10318
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Implement pylint W1518 method cache max size astral-sh#970
 
 ---
 
-_Pull request opened by @Glyphack on 2024-03-09 22:24_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

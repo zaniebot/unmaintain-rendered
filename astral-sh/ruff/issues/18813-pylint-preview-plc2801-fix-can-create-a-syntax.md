@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-20T05:49:22Z
 updated_at: 2025-06-23T14:15:54Z
 url: https://github.com/astral-sh/ruff/issues/18813
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pylint`] [preview] `PLC2801` fix can create a syntax error
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 05:49_
+_@MeGaGiGaGon_
 
 ### Summary
 

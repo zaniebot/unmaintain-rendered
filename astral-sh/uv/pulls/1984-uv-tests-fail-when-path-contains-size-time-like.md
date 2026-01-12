@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-26T13:52:06Z
 updated_at: 2024-02-26T14:04:26Z
 url: https://github.com/astral-sh/uv/pull/1984
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Uv tests fail when path contains size/time-like strings
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-26 13:52_
+_@sbrugman_
 
 The test suite for `uv` fails when the user path contains substrings that are incorrectly identified as `[TIME]` or `[SIZE]`, e.g.
 

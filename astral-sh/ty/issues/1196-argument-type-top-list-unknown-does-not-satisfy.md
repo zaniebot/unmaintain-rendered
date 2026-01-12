@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T08:26:47Z
 updated_at: 2025-09-23T12:02:27Z
 url: https://github.com/astral-sh/ty/issues/1196
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Argument type `Top[list[Unknown]]` does not satisfy upper bound `Bottom[MutableSequence[Unknown]]` of type variable `Self`
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-17 08:26_
+_@sharkdp_
 
 ### Summary
 

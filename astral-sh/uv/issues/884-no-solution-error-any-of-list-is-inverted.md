@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T12:24:19Z
 updated_at: 2024-02-02T18:00:27Z
 url: https://github.com/astral-sh/uv/issues/884
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # No solution error any-of list is inverted
 
 ---
 
-_Issue opened by @konstin on 2024-01-11 12:24_
+_@konstin_
 
 When resolving `recommenders>0.7` on the incompatible python 3.12, we get a list of holes instead of list of possible versions. The list is misleading since we only need to know that there are not other versions in `recommenders>0.7,<1.1.0` except `recommenders==1.0.0` (we don't care about higher versions such as 1.1.1) to conclude that `recommenders>0.7,<1.1.0` cannot be used.
 

@@ -13,14 +13,14 @@ head: zb/check-trampoline-matrix
 created_at: 2024-10-28T18:47:38Z
 updated_at: 2024-10-28T19:12:38Z
 url: https://github.com/astral-sh/uv/pull/8642
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Actually perform checks on alternate trampoline platforms
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 18:47_
+_@zanieb_
 
 It seems unintentional that we basically did nothing on these alternative platforms? It seems like an artifact from some previous change.
 

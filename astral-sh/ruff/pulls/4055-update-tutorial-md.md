@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-04-21T05:37:09Z
 updated_at: 2023-04-21T16:56:40Z
 url: https://github.com/astral-sh/ruff/pull/4055
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Update tutorial.md
 
 ---
 
-_Pull request opened by @pronoym99 on 2023-04-21 05:37_
+_@pronoym99_
 
 Add a proper file tree structure for the sample directory in the tutorial
 

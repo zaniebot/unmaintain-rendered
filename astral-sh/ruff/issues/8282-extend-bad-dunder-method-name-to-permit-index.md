@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T12:33:30Z
 updated_at: 2023-10-28T11:15:32Z
 url: https://github.com/astral-sh/ruff/issues/8282
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Extend bad-dunder-method name to permit __index__
 
 ---
 
-_Issue opened by @burgholzer on 2023-10-27 12:33_
+_@burgholzer_
 
 https://docs.astral.sh/ruff/rules/bad-dunder-method-name/ currently flags the standard python dunder method `__index__` (see https://docs.python.org/3.12/library/operator.html#operator.__index__ ) as invalid.
 

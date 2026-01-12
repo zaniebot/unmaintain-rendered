@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T15:53:57Z
 updated_at: 2023-02-27T16:18:36Z
 url: https://github.com/astral-sh/ruff/issues/3250
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] `TypedDict("EmptyDict", {})`
 
 ---
 
-_Issue opened by @arjenzorgdoc on 2023-02-27 15:53_
+_@arjenzorgdoc_
 
 ```python
 from typing import TypedDict

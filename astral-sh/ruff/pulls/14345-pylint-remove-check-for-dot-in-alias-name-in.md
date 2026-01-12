@@ -13,14 +13,14 @@ head: isort-followup
 created_at: 2024-11-14T21:48:21Z
 updated_at: 2024-11-17T14:28:07Z
 url: https://github.com/astral-sh/ruff/pull/14345
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pylint`] Remove check for dot in alias name in `useless-import-alias (PLC0414)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-14 21:48_
+_@dylwil3_
 
 Follow-up to #14287 : when checking that `name` is the same as `as_name` in `import name as as_name`, we do not need to first do an early return if `'.'` is found in `name`.
 

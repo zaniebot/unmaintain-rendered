@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-21T20:08:32Z
 updated_at: 2025-07-30T02:16:26Z
 url: https://github.com/clap-rs/clap/issues/6073
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add some test cases for Command aliases
 
 ---
 
-_Issue opened by @GilShoshan94 on 2025-07-21 20:08_
+_@GilShoshan94_
 
 Hi,
 The tests for aliases (of arguments and subcommands) are distributed between several files:

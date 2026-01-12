@@ -12,14 +12,14 @@ head: rule-command-improvements
 created_at: 2023-02-10T22:13:52Z
 updated_at: 2023-02-12T10:10:48Z
 url: https://github.com/astral-sh/ruff/pull/2747
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add rendering of rule markdown for terminal output
 
 ---
 
-_Pull request opened by @ngnpope on 2023-02-10 22:13_
+_@ngnpope_
 
 Add rendering of rule markdown for terminal output
     

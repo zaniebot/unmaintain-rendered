@@ -13,14 +13,14 @@ head: zb/partial-clone-2
 created_at: 2024-10-14T21:55:48Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/8190
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Load Git trees lazily on checkout
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-14 21:55_
+_@zanieb_
 
 Exploring https://github.com/astral-sh/uv/pull/3950
 

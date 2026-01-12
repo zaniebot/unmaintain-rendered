@@ -14,14 +14,14 @@ head: charlie/b007
 created_at: 2023-02-05T13:01:00Z
 updated_at: 2023-02-05T13:01:09Z
 url: https://github.com/astral-sh/ruff/pull/2581
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid infinite renames for unused-loop-control-variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-05 13:01_
+_@charliermarsh_
 
 Closes #2576.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T20:36:48Z
 updated_at: 2025-10-10T17:44:41Z
 url: https://github.com/astral-sh/uv/issues/15288
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Add an option to list the python versions inside of `uv tool list`
 
 ---
 
-_Issue opened by @pythonweb2 on 2025-08-14 20:36_
+_@pythonweb2_
 
 ### Summary
 

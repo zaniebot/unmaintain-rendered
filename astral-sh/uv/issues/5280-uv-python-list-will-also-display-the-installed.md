@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-22T06:08:40Z
 updated_at: 2024-07-22T14:18:59Z
 url: https://github.com/astral-sh/uv/issues/5280
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # ``uv python list`` will also display the installed Python version as ``download available``.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-22 06:08_
+_@FishAlchemist_
 
 **UV version:** uv 0.2.27 (833097b93 2024-07-19)
 **Operating System:** Windows 11 23H2

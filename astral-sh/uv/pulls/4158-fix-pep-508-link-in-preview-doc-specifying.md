@@ -14,14 +14,14 @@ head: fix-pep508-link-in-preview-doc
 created_at: 2024-06-08T03:06:40Z
 updated_at: 2024-06-08T14:02:23Z
 url: https://github.com/astral-sh/uv/pull/4158
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Fix PEP 508 link in preview doc `specifying_dependencies`
 
 ---
 
-_Pull request opened by @SigureMo on 2024-06-08 03:06_
+_@SigureMo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

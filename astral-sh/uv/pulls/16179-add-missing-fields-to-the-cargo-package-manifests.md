@@ -13,14 +13,14 @@ head: align-crate-cargo-toml-files
 created_at: 2025-10-08T08:48:56Z
 updated_at: 2025-10-08T10:02:02Z
 url: https://github.com/astral-sh/uv/pull/16179
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Add missing fields to the Cargo package manifests
 
 ---
 
-_Pull request opened by @ruben-arts on 2025-10-08 08:48_
+_@ruben-arts_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

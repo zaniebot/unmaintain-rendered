@@ -12,14 +12,14 @@ head: charlie/ecosystem
 created_at: 2023-07-05T02:00:49Z
 updated_at: 2023-07-05T02:33:34Z
 url: https://github.com/astral-sh/ruff/pull/5521
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add pip to the ecosystem-ci check
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 02:00_
+_@charliermarsh_
 
 _No description provided._
 

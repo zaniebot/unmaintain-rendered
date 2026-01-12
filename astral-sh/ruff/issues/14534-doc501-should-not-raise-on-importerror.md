@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T16:46:49Z
 updated_at: 2024-11-25T09:23:05Z
 url: https://github.com/astral-sh/ruff/issues/14534
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DOC501 should not raise on ImportError
 
 ---
 
-_Issue opened by @Matt-Ord on 2024-11-22 16:46_
+_@Matt-Ord_
 
 I'm getting a 'false positive' on DOC501 when my package has an optional dependency on matplotlib
 ```

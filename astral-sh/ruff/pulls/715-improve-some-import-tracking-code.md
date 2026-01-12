@@ -12,14 +12,14 @@ head: charlie/import-tracking
 created_at: 2022-11-13T04:58:52Z
 updated_at: 2022-11-13T05:10:14Z
 url: https://github.com/astral-sh/ruff/pull/715
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve some import tracking code
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-13 04:58_
+_@charliermarsh_
 
 Resolves #713.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T08:54:37Z
 updated_at: 2024-12-10T18:56:53Z
 url: https://github.com/astral-sh/uv/issues/8075
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Inconsistent `uv python find` error message
 
 ---
 
-_Issue opened by @potoo0 on 2024-10-10 08:54_
+_@potoo0_
 
 If virtualenv is activated, `uv python find <not exists version>` msg should be consistent regardless of the working path.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-24T16:26:03Z
 updated_at: 2025-01-28T19:16:23Z
 url: https://github.com/astral-sh/ruff/issues/15725
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB122 false positive when the target variable is used beyond the `write` call
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-24 16:26_
+_@dscorbett_
 
 ### Description
 

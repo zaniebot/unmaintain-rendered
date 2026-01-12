@@ -12,14 +12,14 @@ head: better-explain
 created_at: 2023-01-20T02:25:01Z
 updated_at: 2023-01-20T03:08:01Z
 url: https://github.com/astral-sh/ruff/pull/2010
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Improve --explain output
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-20 02:25_
+_@not-my-profile_
 
 Previous output for `ruff --explain E711`:
 

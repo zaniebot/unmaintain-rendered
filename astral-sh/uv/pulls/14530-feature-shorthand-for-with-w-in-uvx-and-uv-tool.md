@@ -13,14 +13,14 @@ head: main
 created_at: 2025-07-09T23:57:49Z
 updated_at: 2025-07-10T18:50:50Z
 url: https://github.com/astral-sh/uv/pull/14530
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # feature: shorthand for --with (-w) in uvx and uv tool run
 
 ---
 
-_Pull request opened by @noamteyssier on 2025-07-09 23:57_
+_@noamteyssier_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

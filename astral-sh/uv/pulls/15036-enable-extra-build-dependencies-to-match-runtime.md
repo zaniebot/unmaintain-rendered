@@ -14,14 +14,14 @@ head: charlie/match-runtime
 created_at: 2025-08-03T00:37:44Z
 updated_at: 2025-08-05T18:00:46Z
 url: https://github.com/astral-sh/uv/pull/15036
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Enable extra build dependencies to 'match runtime' versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-03 00:37_
+_@charliermarsh_
 
 ## Summary
 

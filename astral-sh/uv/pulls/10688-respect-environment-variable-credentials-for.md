@@ -13,14 +13,14 @@ head: charlie/creds
 created_at: 2025-01-16T17:37:59Z
 updated_at: 2025-01-17T18:55:11Z
 url: https://github.com/astral-sh/uv/pull/10688
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Respect environment variable credentials for indexes outside root
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-16 17:37_
+_@charliermarsh_
 
 ## Summary
 

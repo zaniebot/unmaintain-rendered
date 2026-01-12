@@ -12,14 +12,14 @@ head: zb/venv-tool-run
 created_at: 2025-08-14T16:05:29Z
 updated_at: 2025-08-14T18:34:08Z
 url: https://github.com/astral-sh/uv/pull/15284
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Set `VIRTUAL_ENV` in `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-14 16:05_
+_@zanieb_
 
 _No description provided._
 

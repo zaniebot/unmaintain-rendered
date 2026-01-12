@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-08T04:12:24Z
 updated_at: 2025-06-15T11:15:13Z
 url: https://github.com/astral-sh/uv/issues/7994
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Updating pyproject.toml version during build results in incorrect version in uv.lock
 
 ---
 
-_Issue opened by @david-waterworth on 2024-10-08 04:12_
+_@david-waterworth_
 
 This is more an observation rather than an issue.
 

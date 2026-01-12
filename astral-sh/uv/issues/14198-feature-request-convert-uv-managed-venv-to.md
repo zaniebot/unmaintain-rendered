@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-22T09:44:44Z
 updated_at: 2025-06-22T14:41:48Z
 url: https://github.com/astral-sh/uv/issues/14198
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Feature Request: Convert UV-managed .venv to Standalone Python Virtual Environment
 
 ---
 
-_Issue opened by @machenme on 2025-06-22 09:44_
+_@machenme_
 
 ### Summary
 

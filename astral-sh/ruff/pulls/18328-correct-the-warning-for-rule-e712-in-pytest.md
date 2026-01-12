@@ -13,14 +13,14 @@ head: codeman/18272
 created_at: 2025-05-26T20:18:17Z
 updated_at: 2025-05-28T07:06:39Z
 url: https://github.com/astral-sh/ruff/pull/18328
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # Correct the warning for Rule E712 in pytest assertion
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-05-26 20:18_
+_@CodeMan62_
 
 ## Summary
 closes #18272 

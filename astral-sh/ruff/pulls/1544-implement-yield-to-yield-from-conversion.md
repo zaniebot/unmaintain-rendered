@@ -12,14 +12,14 @@ head: yieldfrom
 created_at: 2023-01-02T03:26:17Z
 updated_at: 2023-01-05T15:37:44Z
 url: https://github.com/astral-sh/ruff/pull/1544
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement `yield`-to-`yield from` conversion
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-02 03:26_
+_@colin99d_
 
 A part of #827.
 

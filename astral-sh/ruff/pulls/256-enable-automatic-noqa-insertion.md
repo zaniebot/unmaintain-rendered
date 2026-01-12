@@ -12,14 +12,14 @@ head: charlie/add-noqa
 created_at: 2022-09-22T12:27:38Z
 updated_at: 2022-09-22T17:59:07Z
 url: https://github.com/astral-sh/ruff/pull/256
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable automatic `noqa` insertion
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-22 12:27_
+_@charliermarsh_
 
 Resolves #250.
 

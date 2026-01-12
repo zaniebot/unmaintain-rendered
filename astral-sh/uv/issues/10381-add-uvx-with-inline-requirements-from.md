@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-08T01:30:43Z
 updated_at: 2025-01-08T11:26:56Z
 url: https://github.com/astral-sh/uv/issues/10381
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Add uvx --with-inline-requirements-from
 
 ---
 
-_Issue opened by @Julian on 2025-01-08 01:30_
+_@Julian_
 
 This is an admittedly niche idea -- in that I'm not sure how popular PEP723 itself is, it's a niche use case itself, and this is an even smaller one. But if you'll indulge me (and if I haven't missed an existing issue asking for this, which I don't immediately see)...
 

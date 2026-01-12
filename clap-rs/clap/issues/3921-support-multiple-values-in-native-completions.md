@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-07-13T14:19:09Z
 updated_at: 2024-08-08T16:48:49Z
 url: https://github.com/clap-rs/clap/issues/3921
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support multiple values in native completions
 
 ---
 
-_Issue opened by @epage on 2022-07-13 14:19_
+_@epage_
 
 Blocked on #3920
 

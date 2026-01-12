@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-03-28T00:37:44Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/12520
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Update installation.md
 
 ---
 
-_Pull request opened by @copeland3300 on 2025-03-28 00:37_
+_@copeland3300_
 
 Fixed command blocks to copy to clipboard correctly
 

@@ -12,14 +12,14 @@ head: zb/readme-install
 created_at: 2024-06-06T12:54:43Z
 updated_at: 2024-06-06T17:58:08Z
 url: https://github.com/astral-sh/uv/pull/4092
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Add note for install of specific versions of uv
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-06 12:54_
+_@zanieb_
 
 I opted not to have this in the getting started section to avoid complexity there. I figure this will move during docs restructuring soon.
 

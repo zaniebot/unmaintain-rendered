@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T17:28:26Z
 updated_at: 2025-01-28T19:28:55Z
 url: https://github.com/astral-sh/uv/issues/11025
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # A group of tests is not robust to some external state
 
 ---
 
-_Issue opened by @zanieb on 2025-01-28 17:28_
+_@zanieb_
 
 ```
  FAIL [   1.413s] uv::it edit::add_index

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T14:50:28Z
 updated_at: 2025-04-22T10:34:25Z
 url: https://github.com/astral-sh/uv/issues/12898
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # ❓ Question: Installation Failure on Feature Branch — Is it Me or the Package?
 
 ---
 
-_Issue opened by @brupelo on 2025-04-15 14:50_
+_@brupelo_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: revert-B027-autofix
 created_at: 2023-05-09T16:10:55Z
 updated_at: 2023-05-09T17:08:24Z
 url: https://github.com/astral-sh/ruff/pull/4310
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Revert the B027 autofix logic
 
 ---
 
-_Pull request opened by @aacunningham on 2023-05-09 16:10_
+_@aacunningham_
 
 _Un_-resolves #4163. After discussion, the autofix is too risky to keep. Adding the `@abstractmethod` decorator can cause concrete implementations that didn't implement that method to raise errors that it wasn't previously.
 

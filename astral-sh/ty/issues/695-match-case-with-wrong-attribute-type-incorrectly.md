@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-24T13:09:21Z
 updated_at: 2025-07-25T07:13:23Z
 url: https://github.com/astral-sh/ty/issues/695
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # match case with wrong attribute type incorrectly matches
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-06-24 13:09_
+_@JelleZijlstra_
 
 ### Summary
 

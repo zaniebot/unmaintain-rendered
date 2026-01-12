@@ -13,14 +13,14 @@ head: dhruv/auto-return
 created_at: 2023-12-07T02:35:13Z
 updated_at: 2023-12-07T02:47:38Z
 url: https://github.com/astral-sh/ruff/pull/9034
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid `ANN2xx` autofix for abstract methods with empty body
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-07 02:35_
+_@dhruvmanila_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/3.13
 created_at: 2024-04-20T14:01:16Z
 updated_at: 2024-04-20T14:16:48Z
 url: https://github.com/astral-sh/uv/pull/3160
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Fix `venvlauncher.exe` reference in venv creation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-20 14:01_
+_@charliermarsh_
 
 I can't get this to reproduce on GitHub Actions -- maybe the builds there differ, or maybe the builds changed since we added this fix? I'll check locally, but regardless, this is a typo.
 

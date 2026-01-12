@@ -13,14 +13,14 @@ head: fix-ssh-urls
 created_at: 2024-03-23T16:59:33Z
 updated_at: 2024-03-24T16:51:05Z
 url: https://github.com/zanieb/rooster/pull/24
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix ssh urls
 
 ---
 
-_Pull request opened by @karpetrosyan on 2024-03-23 16:59_
+_@karpetrosyan_
 
 When the remote url starts with git@..., rooster fails to find the repo with the following message:
 

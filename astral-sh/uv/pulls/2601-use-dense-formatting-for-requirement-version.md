@@ -13,14 +13,14 @@ head: zb/format-requirement
 created_at: 2024-03-21T23:06:27Z
 updated_at: 2024-03-22T21:35:50Z
 url: https://github.com/astral-sh/uv/pull/2601
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Use dense formatting for requirement version specifiers in diagnostics
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-21 23:06_
+_@zanieb_
 
 For consistency with the output in "no solution" errors
 

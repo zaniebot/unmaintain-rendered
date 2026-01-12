@@ -12,14 +12,14 @@ head: charlie/built-in
 created_at: 2022-11-26T21:24:33Z
 updated_at: 2022-11-26T21:24:42Z
 url: https://github.com/astral-sh/ruff/pull/918
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid flagging redundant open modes when open is rebound
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-26 21:24_
+_@charliermarsh_
 
 _No description provided._
 

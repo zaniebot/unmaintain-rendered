@@ -12,14 +12,14 @@ head: abstract_class_instantiated
 created_at: 2023-07-11T12:42:51Z
 updated_at: 2023-10-19T16:13:52Z
 url: https://github.com/astral-sh/ruff/pull/5685
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`pylint`] Implement Pylint `abstract-class-instantiated` (`E0110`)
 
 ---
 
-_Pull request opened by @silvanocerza on 2023-07-11 12:42_
+_@silvanocerza_
 
 ## Summary
 

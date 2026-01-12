@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-26T12:31:42Z
 updated_at: 2025-08-26T15:08:22Z
 url: https://github.com/astral-sh/uv/issues/15528
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # python broken in venv when uv project is on fusefs mount point
 
 ---
 
-_Issue opened by @mbeijen on 2025-08-26 12:31_
+_@mbeijen_
 
 ### Summary
 

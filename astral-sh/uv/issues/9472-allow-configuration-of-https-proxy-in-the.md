@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T15:20:04Z
 updated_at: 2026-01-06T17:14:00Z
 url: https://github.com/astral-sh/uv/issues/9472
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Allow configuration of HTTPS proxy in the `pyproject.toml`
 
 ---
 
-_Issue opened by @zanieb on 2024-11-27 15:20_
+_@zanieb_
 
 _No description provided._
 

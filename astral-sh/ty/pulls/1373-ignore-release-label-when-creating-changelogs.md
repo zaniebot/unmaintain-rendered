@@ -13,14 +13,14 @@ head: david/rooster-ignore-release-label
 created_at: 2025-10-16T18:08:16Z
 updated_at: 2025-10-16T18:13:42Z
 url: https://github.com/astral-sh/ty/pull/1373
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Ignore 'release' label when creating CHANGELOGs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-16 18:08_
+_@sharkdp_
 
 _No description provided._
 

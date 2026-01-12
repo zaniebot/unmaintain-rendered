@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T07:50:31Z
 updated_at: 2023-08-25T23:47:16Z
 url: https://github.com/astral-sh/ruff/issues/6843
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules ANN204, I001, UP007 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-24 07:50_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

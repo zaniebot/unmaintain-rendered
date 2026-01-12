@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-17T19:57:52Z
 updated_at: 2023-11-21T21:35:43Z
 url: https://github.com/astral-sh/ruff/issues/8746
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PERF101 False positive
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-11-17 19:57_
+_@NeilGirdhar_
 
 From the CPython source:
 ```

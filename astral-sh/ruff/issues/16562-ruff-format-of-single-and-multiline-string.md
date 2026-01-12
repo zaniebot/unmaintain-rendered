@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-08T05:42:42Z
 updated_at: 2025-03-08T17:48:15Z
 url: https://github.com/astral-sh/ruff/issues/16562
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff format of single and multiline string different than in black
 
 ---
 
-_Issue opened by @matejsp on 2025-03-08 05:42_
+_@matejsp_
 
 ### Summary
 

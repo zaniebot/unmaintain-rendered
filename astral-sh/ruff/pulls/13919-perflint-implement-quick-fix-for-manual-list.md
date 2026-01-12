@@ -14,14 +14,14 @@ head: perf401
 created_at: 2024-10-24T23:29:38Z
 updated_at: 2024-11-11T11:17:02Z
 url: https://github.com/astral-sh/ruff/pull/13919
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`perflint`] implement quick-fix for `manual-list-comprehension` (`PERF401`)
 
 ---
 
-_Pull request opened by @w0nder1ng on 2024-10-24 23:29_
+_@w0nder1ng_
 
 ## Summary
 

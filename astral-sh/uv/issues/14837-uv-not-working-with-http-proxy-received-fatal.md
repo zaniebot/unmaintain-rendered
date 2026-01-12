@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T07:31:41Z
 updated_at: 2025-10-06T09:22:20Z
 url: https://github.com/astral-sh/uv/issues/14837
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # uv not working with http_proxy: "received fatal alert: HandshakeFailure"
 
 ---
 
-_Issue opened by @QiangZiBro on 2025-07-23 07:31_
+_@QiangZiBro_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: move-wrongly-categorized-AIR312-rules
 created_at: 2025-05-08T10:11:46Z
 updated_at: 2025-05-19T17:20:22Z
 url: https://github.com/astral-sh/ruff/pull/17940
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [`airflow`] Move rules from `AIR312` to `AIR302`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-08 10:11_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

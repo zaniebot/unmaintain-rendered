@@ -13,14 +13,14 @@ head: alex/dumb-method-members
 created_at: 2025-08-28T19:55:50Z
 updated_at: 2025-08-29T07:31:28Z
 url: https://github.com/astral-sh/ruff/pull/20142
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Enforce that an attribute on a class `X` must be callable in order to satisfy a member on a protocol `P`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-28 19:55_
+_@AlexWaygood_
 
 ## Summary
 

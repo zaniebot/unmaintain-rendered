@@ -13,14 +13,14 @@ head: upgrade-poetry-in-ecosystem-check
 created_at: 2023-12-12T06:19:45Z
 updated_at: 2023-12-12T06:35:49Z
 url: https://github.com/astral-sh/ruff/pull/9104
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Use the latest poetry ref in the ecosystem formatter check script
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-12 06:19_
+_@MichaReiser_
 
 ## Summary
 

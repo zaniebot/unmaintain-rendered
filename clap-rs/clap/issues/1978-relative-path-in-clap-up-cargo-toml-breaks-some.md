@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-06-19T12:10:21Z
 updated_at: 2020-09-26T07:06:43Z
 url: https://github.com/clap-rs/clap/issues/1978
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Relative path in `clap_up/Cargo.toml` breaks some tools
 
 ---
 
-_Issue opened by @fatemender on 2020-06-19 12:10_
+_@fatemender_
 
 In `clap_up/Cargo.toml` there is a dependency on `cargo-up` expected to be locally available.
 

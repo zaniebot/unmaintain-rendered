@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T13:16:57Z
 updated_at: 2024-10-17T21:51:57Z
 url: https://github.com/astral-sh/ruff/issues/13703
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - ban nested comprehensions
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-10 13:16_
+_@DetachHead_
 
 IMO nested comprehensions are very difficult to read:
 

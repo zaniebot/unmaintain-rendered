@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T12:32:46Z
 updated_at: 2025-12-10T14:30:25Z
 url: https://github.com/astral-sh/uv/issues/17046
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Using uv run in launch.json for Debugging Python Apps
 
 ---
 
-_Issue opened by @user1500177 on 2025-12-09 12:32_
+_@user1500177_
 
 ### Question
 

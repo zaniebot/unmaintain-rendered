@@ -13,14 +13,14 @@ head: micha/workspace-project
 created_at: 2025-01-14T11:06:45Z
 updated_at: 2025-01-15T08:03:40Z
 url: https://github.com/astral-sh/ruff/pull/15472
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove workspace support
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-14 11:06_
+_@MichaReiser_
 
 ## Summary
 

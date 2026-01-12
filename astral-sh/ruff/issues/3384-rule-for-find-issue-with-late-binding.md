@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-07T12:06:15Z
 updated_at: 2023-03-07T18:59:37Z
 url: https://github.com/astral-sh/ruff/issues/3384
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Rule for find issue with late binding
 
 ---
 
-_Issue opened by @worldmind on 2023-03-07 12:06_
+_@worldmind_
 
 Thank you for amazing project!
 

@@ -13,14 +13,14 @@ head: gopoto/16492
 created_at: 2025-03-21T05:30:20Z
 updated_at: 2025-06-20T13:36:40Z
 url: https://github.com/astral-sh/ruff/pull/16884
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # docs: Correct collections-named-tuple example to use PascalCase assignment
 
 ---
 
-_Pull request opened by @codex-maintainers on 2025-03-21 05:30_
+_@codex-maintainers_
 
 ## Summary
 

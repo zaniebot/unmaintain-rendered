@@ -13,14 +13,14 @@ head: charlie/unnamed
 created_at: 2024-05-24T17:24:20Z
 updated_at: 2024-05-24T17:32:21Z
 url: https://github.com/astral-sh/uv/pull/3826
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Ignore unnamed requirements in preferences
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 17:24_
+_@charliermarsh_
 
 ## Summary
 

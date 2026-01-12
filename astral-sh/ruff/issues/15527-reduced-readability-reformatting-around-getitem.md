@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T09:43:36Z
 updated_at: 2025-01-16T11:51:26Z
 url: https://github.com/astral-sh/ruff/issues/15527
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Reduced readability reformatting around getitem
 
 ---
 
-_Issue opened by @behrmann on 2025-01-16 09:43_
+_@behrmann_
 
 ruff is a lovely tool, but with ruff 0.9.1 we just experienced a reformatting that reduces readability in the result in [this PR](https://github.com/systemd/mkosi/pull/3366#discussion_r1918087220)
 

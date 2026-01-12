@@ -13,14 +13,14 @@ head: ruff-docs
 created_at: 2023-06-21T18:20:21Z
 updated_at: 2023-07-10T09:55:13Z
 url: https://github.com/astral-sh/ruff/pull/5262
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Complete documentation for Ruff-specific rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-21 18:20_
+_@tjkuson_
 
 ## Summary
 

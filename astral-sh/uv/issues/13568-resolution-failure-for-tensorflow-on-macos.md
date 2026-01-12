@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T09:12:43Z
 updated_at: 2025-05-21T09:48:57Z
 url: https://github.com/astral-sh/uv/issues/13568
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Resolution failure for tensorflow on macos
 
 ---
 
-_Issue opened by @GuillaumeDehaene on 2025-05-21 09:12_
+_@GuillaumeDehaene_
 
 ### Solution
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-07T11:49:26Z
 updated_at: 2023-07-10T01:11:48Z
 url: https://github.com/astral-sh/ruff/issues/4923
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `try-except-pass` does not flag `contextlib.suppress(Exception)`
 
 ---
 
-_Issue opened by @tjkuson on 2023-06-07 11:49_
+_@tjkuson_
 
 According to the [Python documentation](https://docs.python.org/3/library/contextlib.html#contextlib.suppress), this
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-21T16:59:17Z
 updated_at: 2025-10-22T17:49:19Z
 url: https://github.com/astral-sh/uv/issues/16391
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Install locally built python version.
 
 ---
 
-_Issue opened by @TheDreadedAndy on 2025-10-21 16:59_
+_@TheDreadedAndy_
 
 ### Summary
 

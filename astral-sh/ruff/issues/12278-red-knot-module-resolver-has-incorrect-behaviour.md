@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T15:44:31Z
 updated_at: 2024-09-06T11:14:27Z
 url: https://github.com/astral-sh/ruff/issues/12278
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] Module resolver has incorrect behaviour if a single-file module and potential namespace package coexist
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-07-10 15:44_
+_@AlexWaygood_
 
 The following test should pass, but fails:
 

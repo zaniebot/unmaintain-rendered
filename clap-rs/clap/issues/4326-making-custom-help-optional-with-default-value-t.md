@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-01T07:41:53Z
 updated_at: 2022-10-01T18:58:31Z
 url: https://github.com/clap-rs/clap/issues/4326
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # making custom help optional with default_value_t panicks
 
 ---
 
-_Issue opened by @erazor-de on 2022-10-01 07:41_
+_@erazor-de_
 
 ### Please complete the following tasks
 

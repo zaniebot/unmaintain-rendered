@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T12:06:11Z
 updated_at: 2024-08-22T23:25:10Z
 url: https://github.com/astral-sh/uv/issues/6425
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Feature Request: Constraints for generating first `uv.lock` when migrating
 
 ---
 
-_Issue opened by @mrcljx on 2024-08-22 12:06_
+_@mrcljx_
 
 When migrating from Poetry (or other solutions) I want to ensure that the generated `uv.lock` does not accidentally upgrade any packages.
 

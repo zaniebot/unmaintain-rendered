@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T05:00:49Z
 updated_at: 2025-11-18T16:10:39Z
 url: https://github.com/astral-sh/ty/issues/1273
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # a way to explicitly specify variance using the new generic syntax
 
 ---
 
-_Issue opened by @DetachHead on 2025-09-29 05:00_
+_@DetachHead_
 
 the new generic syntax is got a significant downgrade compared to the old syntax where you can no longer explicitly specify the variance.
 

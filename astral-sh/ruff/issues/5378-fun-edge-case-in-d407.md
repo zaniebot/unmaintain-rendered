@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-26T20:42:30Z
 updated_at: 2023-06-27T16:50:23Z
 url: https://github.com/astral-sh/ruff/issues/5378
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Fun edge case in D407
 
 ---
 
-_Issue opened by @john-science on 2023-06-26 20:42_
+_@john-science_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

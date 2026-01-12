@@ -13,14 +13,14 @@ head: charlie/nl
 created_at: 2024-08-01T02:31:17Z
 updated_at: 2024-08-01T12:39:49Z
 url: https://github.com/astral-sh/ruff/pull/12606
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add newlines before comments in E305
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 02:31_
+_@charliermarsh_
 
 ## Summary
 

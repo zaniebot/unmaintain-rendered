@@ -13,14 +13,14 @@ head: konsti/fix-parsing-req-variable-after-op-no-space
 created_at: 2024-03-07T12:12:13Z
 updated_at: 2024-03-07T12:22:17Z
 url: https://github.com/astral-sh/uv/pull/2273
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Fix parsing requirement where a variable follows an operator without a space
 
 ---
 
-_Pull request opened by @konstin on 2024-03-07 12:12_
+_@konstin_
 
 Fix parsing `pytest;'4.0'>=python_version`, where previously the operator and the variable were incorrectly tokenized as one invalid operator.
 

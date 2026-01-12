@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-11T12:58:00Z
 updated_at: 2024-04-11T14:56:32Z
 url: https://github.com/astral-sh/ruff/issues/10878
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `exclude` under `[tool.ruff.lint]` does not exclude directory
 
 ---
 
-_Issue opened by @ajhynes7 on 2024-04-11 12:58_
+_@ajhynes7_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

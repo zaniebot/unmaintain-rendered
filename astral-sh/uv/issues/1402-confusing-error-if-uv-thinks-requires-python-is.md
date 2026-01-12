@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T00:28:08Z
 updated_at: 2024-02-16T02:12:11Z
 url: https://github.com/astral-sh/uv/issues/1402
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Confusing error if uv thinks `requires-python` is invalid
 
 ---
 
-_Issue opened by @avx-rvandegrift on 2024-02-16 00:28_
+_@avx-rvandegrift_
 
 Here's another oddity:
 ```

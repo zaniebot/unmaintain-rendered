@@ -14,14 +14,14 @@ head: charlie/format-config
 created_at: 2023-10-02T14:49:20Z
 updated_at: 2023-10-02T15:08:38Z
 url: https://github.com/astral-sh/ruff/pull/7762
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add formatter TOML configuration to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-02 14:49_
+_@charliermarsh_
 
 ## Summary
 

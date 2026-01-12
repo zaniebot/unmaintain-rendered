@@ -12,14 +12,14 @@ head: aggregate-tree-requirements
 created_at: 2025-09-30T18:59:52Z
 updated_at: 2025-10-01T16:05:08Z
 url: https://github.com/astral-sh/uv/pull/16078
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Deduplicate marker-specific dependencies in `uv pip tree` output
 
 ---
 
-_Pull request opened by @terror on 2025-09-30 18:59_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16067
 

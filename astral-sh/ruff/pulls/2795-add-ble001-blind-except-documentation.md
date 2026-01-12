@@ -11,14 +11,14 @@ head: add-BLE001-docs
 created_at: 2023-02-12T03:22:55Z
 updated_at: 2023-02-12T04:53:13Z
 url: https://github.com/astral-sh/ruff/pull/2795
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add BLE001 blind-except documentation
 
 ---
 
-_Pull request opened by @Zeddicus414 on 2023-02-12 03:22_
+_@Zeddicus414_
 
 I think that I did everything correctly. I'm hoping to help some more with the documentation.
 

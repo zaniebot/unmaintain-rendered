@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-20T06:31:49Z
 updated_at: 2024-04-20T14:16:49Z
 url: https://github.com/astral-sh/uv/issues/3158
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Windows scripts always uses `venvwlauncher.exe`
 
 ---
 
-_Issue opened by @jbott on 2024-04-20 06:31_
+_@jbott_
 
 I was doing some windows spelunking and noticed that uv is unconditionally using `venvwlauncher.exe` for both the `python.exe` and `pythonw.exe` case. This seems to be a typo compared to the upstream cpython venv module, which uses the binary that matches the presence or absence of `w`.
 

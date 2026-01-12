@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T17:33:45Z
 updated_at: 2025-11-06T13:30:36Z
 url: https://github.com/astral-sh/ruff/issues/19767
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Contents of docstrings receive Python formatting rules
 
 ---
 
-_Issue opened by @bepri on 2025-08-05 17:33_
+_@bepri_
 
 ### Summary
 

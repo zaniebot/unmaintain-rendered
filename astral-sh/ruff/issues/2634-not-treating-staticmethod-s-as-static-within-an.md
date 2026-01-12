@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T19:38:58Z
 updated_at: 2023-02-07T19:57:05Z
 url: https://github.com/astral-sh/ruff/issues/2634
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Not treating `@staticmethod`s as static within an `abc.ABCMeta` (sub)class
 
 ---
 
-_Issue opened by @trevenrawr on 2023-02-07 19:38_
+_@trevenrawr_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

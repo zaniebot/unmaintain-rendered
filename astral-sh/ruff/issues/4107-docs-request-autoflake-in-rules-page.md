@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T00:09:05Z
 updated_at: 2023-04-26T17:28:47Z
 url: https://github.com/astral-sh/ruff/issues/4107
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Docs request: `autoflake` in Rules page
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-26 00:09_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

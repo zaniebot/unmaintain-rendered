@@ -13,14 +13,14 @@ head: renovate/which-6.x-lockfile
 created_at: 2024-08-05T00:37:39Z
 updated_at: 2024-08-05T01:08:56Z
 url: https://github.com/astral-sh/uv/pull/5779
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Update Rust crate which to v6.0.2
 
 ---
 
-_Pull request opened by @renovate on 2024-08-05 00:37_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

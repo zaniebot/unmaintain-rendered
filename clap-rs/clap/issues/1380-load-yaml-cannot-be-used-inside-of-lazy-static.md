@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-11-10T06:15:18Z
 updated_at: 2020-02-03T03:01:44Z
 url: https://github.com/clap-rs/clap/issues/1380
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # load_yaml! cannot be used inside of lazy_static
 
 ---
 
-_Issue opened by @andrewmiller1 on 2018-11-10 06:15_
+_@andrewmiller1_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

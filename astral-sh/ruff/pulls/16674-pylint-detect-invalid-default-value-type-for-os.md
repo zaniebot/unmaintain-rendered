@@ -13,14 +13,14 @@ head: micha/pylint-envvar-default-os-environ-get
 created_at: 2025-03-12T12:58:56Z
 updated_at: 2025-03-13T07:43:11Z
 url: https://github.com/astral-sh/ruff/pull/16674
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pylint`] Detect invalid default value type for `os.environ.get` (`PLW1508`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 12:58_
+_@MichaReiser_
 
 ## Summary
 This PR stabilizes the new behavior introduced in https://github.com/astral-sh/ruff/pull/14512 to also detect defalut value arguemnts to `os.environ.get` that have an invalid type (not `str`).

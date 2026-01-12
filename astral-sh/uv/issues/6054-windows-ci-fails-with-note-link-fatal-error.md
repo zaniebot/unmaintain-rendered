@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T15:00:57Z
 updated_at: 2024-08-13T15:08:45Z
 url: https://github.com/astral-sh/uv/issues/6054
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Windows CI fails with `note: LINK : fatal error LNK1318: Unexpected PDB error; LIMIT (12)`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-13 15:00_
+_@zanieb_
 
 Hey! You found this issue because your Windows CI job failed with an obscure error. The dev drive we use for improved performance just ran out of space — you can probably just increase the size, though note this comes with a trade-off in creation time.
 

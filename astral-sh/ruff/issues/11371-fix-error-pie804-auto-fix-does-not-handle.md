@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-11T17:49:37Z
 updated_at: 2024-05-11T22:04:55Z
 url: https://github.com/astral-sh/ruff/issues/11371
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Fix error] PIE804 auto fix does not handle := 
 
 ---
 
-_Issue opened by @njharman on 2024-05-11 17:49_
+_@njharman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

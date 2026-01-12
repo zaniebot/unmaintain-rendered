@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-29T21:36:31Z
 updated_at: 2025-06-30T21:52:52Z
 url: https://github.com/astral-sh/ty/issues/726
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Allow assignment to new fields in class, mark the field as bound
 
 ---
 
-_Issue opened by @flexagoon on 2025-06-29 21:36_
+_@flexagoon_
 
 ### Summary
 

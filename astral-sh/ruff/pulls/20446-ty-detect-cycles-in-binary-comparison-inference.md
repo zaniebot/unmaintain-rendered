@@ -13,14 +13,14 @@ head: cjm/binopcycle
 created_at: 2025-09-17T01:59:14Z
 updated_at: 2025-09-17T07:45:27Z
 url: https://github.com/astral-sh/ruff/pull/20446
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] detect cycles in binary comparison inference
 
 ---
 
-_Pull request opened by @carljm on 2025-09-17 01:59_
+_@carljm_
 
 ## Summary
 

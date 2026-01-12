@@ -13,14 +13,14 @@ head: 04-30-Fix_F811_false_positive_with_match
 created_at: 2023-04-30T13:08:44Z
 updated_at: 2023-04-30T18:45:55Z
 url: https://github.com/astral-sh/ruff/pull/4161
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix F811 false positive with match
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-30 13:08_
+_@JonathanPlasse_
 
 - Close #4076
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-06-04T11:10:17Z
 updated_at: 2020-06-10T19:59:33Z
 url: https://github.com/clap-rs/clap/issues/1960
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Default `--version` doesn't include newline
 
 ---
 
-_Issue opened by @tailhook on 2020-06-04 11:10_
+_@tailhook_
 
 In version 2.33.0: `cargo run --example 01a_quick_example -- --version` prints version with the final newline. In the current master (f4ace424) it doesn't include the newline which makes it inconvenient in some shells:
 ```

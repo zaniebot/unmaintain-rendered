@@ -12,14 +12,14 @@ head: do-not-suggest-opts-after-escape
 created_at: 2025-09-13T23:04:47Z
 updated_at: 2025-09-16T01:39:25Z
 url: https://github.com/clap-rs/clap/pull/6131
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix(complete): do not suggest options after escape (`--`)
 
 ---
 
-_Pull request opened by @mernen on 2025-09-13 23:04_
+_@mernen_
 
 Fixes #6130 for dynamic completions.
 

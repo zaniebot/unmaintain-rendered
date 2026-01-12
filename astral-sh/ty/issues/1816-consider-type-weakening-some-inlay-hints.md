@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T00:38:26Z
 updated_at: 2026-01-11T09:47:33Z
 url: https://github.com/astral-sh/ty/issues/1816
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # consider type weakening some inlay-hints
 
 ---
 
-_Issue opened by @Gankra on 2025-12-09 00:38_
+_@Gankra_
 
 `Literal` inlay hints are often extremely verbose and not what you would ever want to bake. We could consider applying a "weakening" transform to some of them:
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-23T15:43:53Z
 updated_at: 2023-01-23T21:56:01Z
 url: https://github.com/clap-rs/clap/issues/4660
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Wrong `Did you mean` suggestion: for `alignmentScorr` clap suggests `alignmentStart` rather than `alignmentScore`
 
 ---
 
-_Issue opened by @corneliusroemer on 2023-01-23 15:43_
+_@corneliusroemer_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T10:58:45Z
 updated_at: 2024-09-13T13:15:59Z
 url: https://github.com/astral-sh/uv/issues/7355
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # missing build dependencies 
 
 ---
 
-_Issue opened by @gaurav-basesolve on 2024-09-13 10:58_
+_@gaurav-basesolve_
 
 **Versions:**
 _uname_ : ```linux 6.8.0-40-generic #40~22.04.3-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 30 17:30:19 UTC 2 x86_64 x86_64 x86_64 GNU/Linux```

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-05T18:33:19Z
 updated_at: 2025-01-05T20:00:49Z
 url: https://github.com/astral-sh/uv/issues/10304
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Use main.py instead of hello.py when uv init
 
 ---
 
-_Issue opened by @thewh1teagle on 2025-01-05 18:33_
+_@thewh1teagle_
 
 It will be more useful to name the main file as `main.py` rather than `hello.py`. Similar to `cargo init --bin` that creates `main.rs`
 

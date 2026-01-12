@@ -13,14 +13,14 @@ head: zb/managed-false
 created_at: 2024-08-22T21:55:06Z
 updated_at: 2024-08-22T23:06:58Z
 url: https://github.com/astral-sh/uv/pull/6465
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Add tip for using `managed = false` to disable project management
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 21:55_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6463
 

@@ -11,14 +11,14 @@ head: feature/generic-ast-impl
 created_at: 2022-11-14T19:08:13Z
 updated_at: 2023-01-06T15:50:01Z
 url: https://github.com/astral-sh/ruff/pull/742
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Generic AST impl
 
 ---
 
-_Pull request opened by @Seamooo on 2022-11-14 19:08_
+_@Seamooo_
 
 This PR is intended for discussion with a supporting example
 

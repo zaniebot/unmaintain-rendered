@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-07T21:46:20Z
 updated_at: 2025-01-07T21:50:46Z
 url: https://github.com/astral-sh/uv/issues/10379
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # How do I compile dev requirements from dependency-groups.dev in pyproject.toml?
 
 ---
 
-_Issue opened by @MattTheCuber on 2025-01-07 21:46_
+_@MattTheCuber_
 
 I can't seem to figure out how to generate a `requirements-dev.txt` from the dev requirements in my `pyproject.toml`
 

@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-06-26T22:39:13Z
 updated_at: 2024-06-26T22:52:48Z
 url: https://github.com/astral-sh/uv/pull/4570
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Avoid enforcing extra-only constraints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 22:39_
+_@charliermarsh_
 
 ## Summary
 

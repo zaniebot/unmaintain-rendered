@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T09:18:56Z
 updated_at: 2025-04-14T12:19:19Z
 url: https://github.com/astral-sh/uv/issues/12876
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Run script using full path with project venv
 
 ---
 
-_Issue opened by @martinandrovich on 2025-04-14 09:18_
+_@martinandrovich_
 
 ### Question
 

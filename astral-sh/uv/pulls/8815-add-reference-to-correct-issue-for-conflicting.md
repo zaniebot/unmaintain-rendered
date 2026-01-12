@@ -11,14 +11,14 @@ head: fix-deps-groups-issue-mention-in-dependencies-md
 created_at: 2024-11-04T18:47:24Z
 updated_at: 2024-11-04T19:57:03Z
 url: https://github.com/astral-sh/uv/pull/8815
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Add reference to correct issue for conflicting dependency groups 
 
 ---
 
-_Pull request opened by @ReinforcedKnowledge on 2024-11-04 18:47_
+_@ReinforcedKnowledge_
 
 In the [Dependency Groups section of the Dependencies documentation](https://docs.astral.sh/uv/concepts/dependencies/#dependency-groups), the issue mentioned concerns optional dependencies and not dependency groups.
 

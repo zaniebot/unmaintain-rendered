@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T16:24:18Z
 updated_at: 2023-02-22T19:12:46Z
 url: https://github.com/astral-sh/ruff/issues/3131
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLW0120 (`else` clause on loop without a `break` statement) false positive inside a `match`
 
 ---
 
-_Issue opened by @bluetech on 2023-02-22 16:24_
+_@bluetech_
 
 Excited by the new `match` support, I ran it on a big project which contains a lot of match statements. The following is the only issue.
 

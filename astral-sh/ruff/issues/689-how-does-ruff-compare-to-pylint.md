@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-12T00:35:51Z
 updated_at: 2024-06-03T23:59:31Z
 url: https://github.com/astral-sh/ruff/issues/689
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # How does ruff compare to pylint?
 
 ---
 
-_Issue opened by @olivier-lacroix on 2022-11-12 00:35_
+_@olivier-lacroix_
 
 Hello there,
 

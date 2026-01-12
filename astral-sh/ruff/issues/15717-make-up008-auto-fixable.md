@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T14:37:38Z
 updated_at: 2025-01-24T15:01:25Z
 url: https://github.com/astral-sh/ruff/issues/15717
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Make UP008 auto-fixable
 
 ---
 
-_Issue opened by @DaniBodor on 2025-01-24 14:37_
+_@DaniBodor_
 
 ### Description
 

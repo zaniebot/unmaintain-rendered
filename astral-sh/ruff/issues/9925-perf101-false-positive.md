@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-10T20:39:48Z
 updated_at: 2024-02-12T17:17:57Z
 url: https://github.com/astral-sh/ruff/issues/9925
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PERF101 false positive
 
 ---
 
-_Issue opened by @Skylion007 on 2024-02-10 20:39_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

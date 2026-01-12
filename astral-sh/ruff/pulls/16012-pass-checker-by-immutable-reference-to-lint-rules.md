@@ -13,14 +13,14 @@ head: checker-mut
 created_at: 2025-02-07T05:43:56Z
 updated_at: 2025-02-07T15:05:50Z
 url: https://github.com/astral-sh/ruff/pull/16012
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Pass `Checker` by immutable reference to lint rules
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-07 05:43_
+_@dylwil3_
 
 This very large PR changes the field `.diagnostics` in the `Checker` from a `Vec<Diagnostic>` to a `RefCell<Vec<Diagnostic>>`, adds methods to push new diagnostics to this cell, and then removes unnecessary mutability throughout all of our lint rule implementations.
 

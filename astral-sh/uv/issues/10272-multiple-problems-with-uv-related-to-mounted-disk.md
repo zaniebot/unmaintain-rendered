@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T14:35:06Z
 updated_at: 2025-01-15T10:06:13Z
 url: https://github.com/astral-sh/uv/issues/10272
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Multiple problems with ` uv`. Related to mounted disk?
 
 ---
 
-_Issue opened by @ego-thales on 2025-01-02 14:35_
+_@ego-thales_
 
 Platform: Ubuntu 22.04
 uv version: 0.5.13

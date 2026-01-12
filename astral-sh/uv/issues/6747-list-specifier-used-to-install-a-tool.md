@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-28T12:20:19Z
 updated_at: 2024-09-05T02:15:19Z
 url: https://github.com/astral-sh/uv/issues/6747
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # List specifier used to install a tool
 
 ---
 
-_Issue opened by @paidhi on 2024-08-28 12:20_
+_@paidhi_
 
 Currently (uv v0.3.5) if a constraint is used with `uv tool install` the version/restriction is pinned and subsequent `uv tool upgrade` commands might not update to a newer release. E.g. `uv tool install "pyinfra<3.0".
 

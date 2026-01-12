@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-05-18T13:00:25Z
 updated_at: 2025-12-17T02:05:08Z
 url: https://github.com/astral-sh/ty/pull/440
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add link to playground to README.md
 
 ---
 
-_Pull request opened by @danielhollas on 2025-05-18 13:00_
+_@danielhollas_
 
 The playground is not mentioned anywhere in this repo except in the ISSUE_TEMPLATE.
 

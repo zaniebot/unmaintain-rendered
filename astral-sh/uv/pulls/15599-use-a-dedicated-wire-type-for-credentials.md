@@ -13,14 +13,14 @@ head: charlie/auth-wire
 created_at: 2025-08-30T18:42:38Z
 updated_at: 2025-08-31T01:18:46Z
 url: https://github.com/astral-sh/uv/pull/15599
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Use a dedicated wire type for credentials serialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-30 18:42_
+_@charliermarsh_
 
 ## Summary
 

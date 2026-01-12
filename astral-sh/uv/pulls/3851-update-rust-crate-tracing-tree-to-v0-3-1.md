@@ -13,14 +13,14 @@ head: renovate/tracing-tree-0.x-lockfile
 created_at: 2024-05-27T00:43:16Z
 updated_at: 2024-05-27T00:58:07Z
 url: https://github.com/astral-sh/uv/pull/3851
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Update Rust crate tracing-tree to v0.3.1
 
 ---
 
-_Pull request opened by @renovate on 2024-05-27 00:43_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

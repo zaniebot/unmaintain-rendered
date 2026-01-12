@@ -13,14 +13,14 @@ head: charlie/context
 created_at: 2023-07-23T02:25:20Z
 updated_at: 2023-07-23T02:59:31Z
 url: https://github.com/astral-sh/ruff/pull/6004
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix context-to-model references in `SemanticModel` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 02:25_
+_@charliermarsh_
 
 _No description provided._
 

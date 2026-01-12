@@ -12,14 +12,14 @@ head: pie796-stub-ellipsis
 created_at: 2023-11-23T14:25:32Z
 updated_at: 2023-11-24T15:29:00Z
 url: https://github.com/astral-sh/ruff/pull/8825
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [PIE796] don't report when using ellipses for enum values in stub files
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-11-23 14:25_
+_@sciyoshi_
 
 ## Summary
 

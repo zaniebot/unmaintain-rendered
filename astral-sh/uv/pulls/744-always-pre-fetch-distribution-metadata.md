@@ -13,14 +13,14 @@ head: charlie/prefetch
 created_at: 2024-01-02T20:59:07Z
 updated_at: 2024-01-03T10:37:46Z
 url: https://github.com/astral-sh/uv/pull/744
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Always pre-fetch distribution metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-02 20:59_
+_@charliermarsh_
 
 This PR fixes our prefetching logic to ensure that we always attempt to prefetch the "best-guess" distribution for all dependencies. This logic already existed, but because we only attempted to prefetch when package metadata was available, it almost never triggered. Now, we wait for the package metadata to become available, _then_ kick off the "best-guess" prefetch (for every package).
 

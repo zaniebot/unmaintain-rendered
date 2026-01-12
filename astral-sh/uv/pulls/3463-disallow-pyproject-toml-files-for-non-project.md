@@ -13,14 +13,14 @@ head: charlie/pyproj
 created_at: 2024-05-08T17:11:31Z
 updated_at: 2024-05-08T18:49:53Z
 url: https://github.com/astral-sh/uv/pull/3463
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Disallow `pyproject.toml` files for non-project configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 17:11_
+_@charliermarsh_
 
 ## Summary
 

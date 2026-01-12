@@ -13,14 +13,14 @@ head: konsti/puffin-python-path-windows
 created_at: 2024-02-05T22:06:47Z
 updated_at: 2024-02-06T19:28:31Z
 url: https://github.com/astral-sh/uv/pull/1254
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Multiple entries in PUFFIN_PYTHON_PATH for windows tests
 
 ---
 
-_Pull request opened by @konstin on 2024-02-05 22:06_
+_@konstin_
 
 There are no binary installers for the latests patch versions of cpython for windows, and building them is hard. As an alternative, we download python-build-standanlone cpythons and put them into `<project root>/bin`. On unix, we can symlink `pythonx.y.z` into this directory and point `PUFFIN_PYTHON_PATH` to it. On windows, all pythons are called `python.exe` and they don't like being linked. Instead, we add the path to each directory containing a `python.exe` to `PUFFIN_PYTHON_PATH`, similar to the regular `PATH`. The python discovery on windows was extended to respect `PUFFIN_PYTHON_PATH` where needed.
 

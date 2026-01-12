@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-11T16:27:08Z
 updated_at: 2024-06-11T19:22:24Z
 url: https://github.com/astral-sh/uv/issues/4238
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv pip compile --resolution lowest-direct` treats transitive dependencies of file dependencies as direct.
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-06-11 16:27_
+_@patrick-kidger_
 
 **MWE**:
 

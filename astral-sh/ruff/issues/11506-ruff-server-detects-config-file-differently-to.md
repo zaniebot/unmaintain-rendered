@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T07:49:43Z
 updated_at: 2024-05-26T18:47:14Z
 url: https://github.com/astral-sh/ruff/issues/11506
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` detects config file differently to `ruff check`
 
 ---
 
-_Issue opened by @JaRoSchm on 2024-05-23 07:49_
+_@JaRoSchm_
 
 Hi,
 

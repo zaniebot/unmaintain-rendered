@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T20:18:36Z
 updated_at: 2025-05-15T20:33:16Z
 url: https://github.com/astral-sh/uv/issues/13480
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Regarding Space taken my uv
 
 ---
 
-_Issue opened by @harsha20032020 on 2025-05-15 20:18_
+_@harsha20032020_
 
 ### Question
 

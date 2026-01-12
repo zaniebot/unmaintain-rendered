@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T08:33:49Z
 updated_at: 2024-07-28T20:23:01Z
 url: https://github.com/astral-sh/ruff/issues/12505
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Improve documentation for EXE001 and EXE002
 
 ---
 
-_Issue opened by @DaniBodor on 2024-07-25 08:33_
+_@DaniBodor_
 
 For most rules there is some indication of how the rule is evaluated and an example what changes to make in the code to fix the error. This is not the case for rules [EXE001](https://docs.astral.sh/ruff/rules/EXE001) and [EXE002](https://docs.astral.sh/ruff/rules/EXE002).
 

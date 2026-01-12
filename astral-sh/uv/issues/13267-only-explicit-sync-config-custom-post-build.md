@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T14:35:09Z
 updated_at: 2025-05-05T10:15:06Z
 url: https://github.com/astral-sh/uv/issues/13267
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # only-explicit-sync config / custom post build/install hooks?
 
 ---
 
-_Issue opened by @mo22 on 2025-05-02 14:35_
+_@mo22_
 
 ### Question
 

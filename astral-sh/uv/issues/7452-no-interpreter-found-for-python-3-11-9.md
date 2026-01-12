@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T08:53:57Z
 updated_at: 2024-09-17T16:41:06Z
 url: https://github.com/astral-sh/uv/issues/7452
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 #  × No interpreter found for Python 3.11.9 
 
 ---
 
-_Issue opened by @Praveensenpai on 2024-09-17 08:53_
+_@Praveensenpai_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

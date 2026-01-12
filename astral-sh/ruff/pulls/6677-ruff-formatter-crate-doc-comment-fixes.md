@@ -12,14 +12,14 @@ head: ruff-formatter-comments
 created_at: 2023-08-18T15:36:49Z
 updated_at: 2023-08-19T16:44:54Z
 url: https://github.com/astral-sh/ruff/pull/6677
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # `ruff_formatter` crate doc comment fixes
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-18 15:36_
+_@cnpryer_
 
 This PR updates some of the generated docs for the `ruff_formatter` crate. I figure I could throw some of these up as I'm reading through it. 
 

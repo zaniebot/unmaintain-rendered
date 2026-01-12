@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T11:50:48Z
 updated_at: 2024-12-04T16:54:02Z
 url: https://github.com/astral-sh/uv/issues/9573
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # "uv tool list" to highlight tools installed in editable mode
 
 ---
 
-_Issue opened by @afaucon on 2024-12-02 11:50_
+_@afaucon_
 
 Dear uv community and core team,
 

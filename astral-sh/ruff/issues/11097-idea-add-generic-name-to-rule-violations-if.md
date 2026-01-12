@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-23T02:23:02Z
 updated_at: 2024-06-26T09:02:08Z
 url: https://github.com/astral-sh/ruff/issues/11097
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # idea: add generic name to rule violations if `message` contains formatted strings when output in `--statistics`
 
 ---
 
-_Issue opened by @diceroll123 on 2024-04-23 02:23_
+_@diceroll123_
 
 This is probably a bit of a stretch to ask, but running `ruff check --select=ANN201 --statistics` for example will show something like
 

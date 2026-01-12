@@ -12,14 +12,14 @@ head: skip_magic_trailing_comma-in-dev-command
 created_at: 2023-11-15T09:19:01Z
 updated_at: 2023-11-16T15:00:11Z
 url: https://github.com/astral-sh/ruff/pull/8689
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add `--skip-magic-trailing-comma` to formatter dev comment
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 09:19_
+_@konstin_
 
 Testing the compatibility with the future stable black style, i realized the `ruff_python_formatter` dev main was lacking the `--skip-magic-trailing-comma` option. This does not affect `ruff format`.
 

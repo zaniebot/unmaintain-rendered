@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T21:40:32Z
 updated_at: 2025-07-23T22:53:14Z
 url: https://github.com/astral-sh/ty/issues/628
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Assignment narrowing doesn't work with descriptor
 
 ---
 
-_Issue opened by @max-muoto on 2025-06-10 21:40_
+_@max-muoto_
 
 ### Summary
 

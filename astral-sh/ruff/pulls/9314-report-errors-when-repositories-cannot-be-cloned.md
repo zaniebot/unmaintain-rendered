@@ -13,14 +13,14 @@ head: zb/clone-err
 created_at: 2023-12-29T20:26:54Z
 updated_at: 2023-12-30T03:40:23Z
 url: https://github.com/astral-sh/ruff/pull/9314
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Report errors when repositories cannot be cloned during ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-29 20:26_
+_@zanieb_
 
 Otherwise, the directory is just missing later and you need to dig through logs to understand why.
 

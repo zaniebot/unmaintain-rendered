@@ -14,14 +14,14 @@ head: bugfix/tc008-union-syntax-pre-py310
 created_at: 2024-12-30T10:54:43Z
 updated_at: 2025-01-15T13:31:16Z
 url: https://github.com/astral-sh/ruff/pull/15201
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Avoid false positives for `|` in `TC008`
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-30 10:54_
+_@Daverball_
 
 This is a follow-up to #15180
 

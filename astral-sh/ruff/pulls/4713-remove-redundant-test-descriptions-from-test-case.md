@@ -12,14 +12,14 @@ head: charlie/test-description
 created_at: 2023-05-29T21:50:23Z
 updated_at: 2023-05-29T22:31:12Z
 url: https://github.com/astral-sh/ruff/pull/4713
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove redundant test descriptions from `#test_case` macros
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-29 21:50_
+_@charliermarsh_
 
 ## Summary
 

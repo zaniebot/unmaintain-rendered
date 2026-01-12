@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-07-27T00:09:23Z
 updated_at: 2022-02-07T21:37:28Z
 url: https://github.com/clap-rs/clap/issues/2628
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Supplement clap::Error.info with helper methods
 
 ---
 
-_Issue opened by @TheDaemoness on 2021-07-27 00:09_
+_@TheDaemoness_
 
 Maintainer's notes
 - Ideally we'd make dynamic member access the API for this but that is still going through the RFC process

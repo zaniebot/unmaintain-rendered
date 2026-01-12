@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-02-13T04:48:13Z
 updated_at: 2024-02-13T05:08:46Z
 url: https://github.com/astral-sh/ruff/pull/9969
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Respect tuple assignments in typing analyzer
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-13 04:48_
+_@charliermarsh_
 
 ## Summary
 

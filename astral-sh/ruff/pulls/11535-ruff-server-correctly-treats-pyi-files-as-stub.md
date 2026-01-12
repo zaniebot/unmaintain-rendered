@@ -14,14 +14,14 @@ head: jane/server/pyi
 created_at: 2024-05-24T21:17:32Z
 updated_at: 2024-05-26T17:42:48Z
 url: https://github.com/astral-sh/ruff/pull/11535
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server` correctly treats `.pyi` files as stub files
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-24 21:17_
+_@snowsignal_
 
 ## Summary
 

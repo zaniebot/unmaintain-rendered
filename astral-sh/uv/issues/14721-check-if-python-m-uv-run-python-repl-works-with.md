@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T13:09:03Z
 updated_at: 2025-07-20T03:04:54Z
 url: https://github.com/astral-sh/uv/issues/14721
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Check if `python -m uv run python` REPL works with Ctrl-C on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 13:09_
+_@zanieb_
 
 If you run `python -m uv run python` to get a REPL on Windows. What happens when you use Ctrl-C?
 

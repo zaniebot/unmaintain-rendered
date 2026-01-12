@@ -12,14 +12,14 @@ head: zb/axi
 created_at: 2024-02-15T00:40:46Z
 updated_at: 2024-02-15T17:07:16Z
 url: https://github.com/astral-sh/uv/pull/1303
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Rename to `axi`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 00:40_
+_@zanieb_
 
 Alternative to #1302 
 

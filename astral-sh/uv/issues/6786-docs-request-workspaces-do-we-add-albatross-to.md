@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T01:37:19Z
 updated_at: 2024-10-18T14:22:38Z
 url: https://github.com/astral-sh/uv/issues/6786
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Docs request: Workspaces -- do we add `albatross` to `tool.uv.sources`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-08-29 01:37_
+_@jamesbraza_
 
 With `uv==0.4.0` looking at https://docs.astral.sh/uv/concepts/workspaces/#workspace-layouts, it details:
 - `albatross` in `src`

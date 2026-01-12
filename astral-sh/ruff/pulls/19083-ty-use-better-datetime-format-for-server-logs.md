@@ -15,14 +15,14 @@ head: dhruv/server-logging
 created_at: 2025-07-02T04:25:29Z
 updated_at: 2025-07-02T04:39:44Z
 url: https://github.com/astral-sh/ruff/pull/19083
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Use better datetime format for server logs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-02 04:25_
+_@dhruvmanila_
 
 This PR improves the timer format for ty server logs to be same as Ruff.
 

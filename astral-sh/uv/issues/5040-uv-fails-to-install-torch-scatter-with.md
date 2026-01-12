@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-13T19:24:02Z
 updated_at: 2024-07-13T21:12:27Z
 url: https://github.com/astral-sh/uv/issues/5040
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv` fails to install `torch-scatter` with `ModuleNotFoundError`, `pip` works
 
 ---
 
-_Issue opened by @janosh on 2024-07-13 19:24_
+_@janosh_
 
 i'm running python 3.12 on macOS 14.5 in a `uv` venv
 

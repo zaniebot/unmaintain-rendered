@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T12:26:43Z
 updated_at: 2025-12-29T22:07:21Z
 url: https://github.com/astral-sh/ty/issues/2184
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Showing annotated `float` as `int | float` might not be right
 
 ---
 
-_Issue opened by @cmp0xff on 2025-12-23 12:26_
+_@cmp0xff_
 
 ### Summary
 

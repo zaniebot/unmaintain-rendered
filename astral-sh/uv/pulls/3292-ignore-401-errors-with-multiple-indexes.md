@@ -13,14 +13,14 @@ head: charlie/forbidden
 created_at: 2024-04-28T12:54:13Z
 updated_at: 2024-04-28T14:06:44Z
 url: https://github.com/astral-sh/uv/pull/3292
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Ignore 401 errors with multiple indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-28 12:54_
+_@charliermarsh_
 
 ## Summary
 

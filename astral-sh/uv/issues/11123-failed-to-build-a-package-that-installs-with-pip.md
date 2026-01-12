@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T23:49:06Z
 updated_at: 2025-01-31T15:15:16Z
 url: https://github.com/astral-sh/uv/issues/11123
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Failed to build: a package that installs with pip --use-pep517
 
 ---
 
-_Issue opened by @severance26 on 2025-01-30 23:49_
+_@severance26_
 
 ### Summary
 

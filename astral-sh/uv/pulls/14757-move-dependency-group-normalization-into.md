@@ -13,14 +13,14 @@ head: charlie/group-validation
 created_at: 2025-07-20T17:55:31Z
 updated_at: 2025-07-20T18:13:28Z
 url: https://github.com/astral-sh/uv/pull/14757
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Move dependency group normalization into specification
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 17:55_
+_@charliermarsh_
 
 ## Summary
 

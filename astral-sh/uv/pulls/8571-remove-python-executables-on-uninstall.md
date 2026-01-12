@@ -12,14 +12,14 @@ head: zb/python-exec-rm
 created_at: 2024-10-25T17:10:30Z
 updated_at: 2024-10-29T16:18:04Z
 url: https://github.com/astral-sh/uv/pull/8571
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Remove Python executables on uninstall
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-25 17:10_
+_@zanieb_
 
 Following #8458, we need to remove the installed Python executables on `uv python uninstall`.
 

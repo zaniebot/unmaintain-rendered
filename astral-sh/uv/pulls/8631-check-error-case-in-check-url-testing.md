@@ -14,14 +14,14 @@ head: konsti/test-error-case-skip-existing
 created_at: 2024-10-28T10:29:40Z
 updated_at: 2024-10-31T15:43:56Z
 url: https://github.com/astral-sh/uv/pull/8631
-synced_at: 2026-01-10T12:08:43Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Check error case in check URL testing
 
 ---
 
-_Pull request opened by @konstin on 2024-10-28 10:29_
+_@konstin_
 
 Test that if you try to re-upload a different package with skip existing, you get an error before even trying to upload, as part of #7917 (first commit). Improve the test script configuration a bit (second commit).
 

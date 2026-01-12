@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T05:46:44Z
 updated_at: 2024-12-07T14:13:27Z
 url: https://github.com/astral-sh/ruff/issues/14292
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Feature Request] Guard against unnecessary `int` call on functions that already return integer
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-11-12 05:46_
+_@DanielYang59_
 
 While cleaning up our code base, I noticed the following anti-patterns (?) which seem pretty well-spread:
 

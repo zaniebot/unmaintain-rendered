@@ -13,14 +13,14 @@ head: uv-tool-upgrade-all
 created_at: 2024-09-12T15:01:43Z
 updated_at: 2024-09-12T19:41:12Z
 url: https://github.com/astral-sh/uv/pull/7333
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Allow `uv tool upgrade --all` to continue on individual upgrade failure
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-12 15:01_
+_@blueraft_
 
 ## Summary
 

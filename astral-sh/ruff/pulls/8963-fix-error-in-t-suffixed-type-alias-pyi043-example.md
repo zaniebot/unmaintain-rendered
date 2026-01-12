@@ -13,14 +13,14 @@ head: pyi043-fix-docs
 created_at: 2023-12-02T13:00:45Z
 updated_at: 2023-12-02T14:33:08Z
 url: https://github.com/astral-sh/ruff/pull/8963
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix error in `t-suffixed-type-alias` (`PYI043`) example
 
 ---
 
-_Pull request opened by @tjkuson on 2023-12-02 13:00_
+_@tjkuson_
 
 ## Summary
 

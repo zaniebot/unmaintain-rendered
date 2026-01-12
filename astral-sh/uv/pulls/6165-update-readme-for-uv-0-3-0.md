@@ -13,14 +13,14 @@ head: zb/3-readme
 created_at: 2024-08-17T00:26:26Z
 updated_at: 2024-08-20T14:38:58Z
 url: https://github.com/astral-sh/uv/pull/6165
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Update README for uv 0.3.0
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-17 00:26_
+_@zanieb_
 
 🚀 [Rendered](https://github.com/astral-sh/uv/tree/zb/3-readme?tab=readme-ov-file#uv)
 

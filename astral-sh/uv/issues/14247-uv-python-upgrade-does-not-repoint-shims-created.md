@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T23:13:28Z
 updated_at: 2025-06-27T17:26:29Z
 url: https://github.com/astral-sh/uv/issues/14247
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # `uv python upgrade` does not repoint shims created by `uv python install --default`
 
 ---
 
-_Issue opened by @euan-reid on 2025-06-24 23:13_
+_@euan-reid_
 
 ### Summary
 

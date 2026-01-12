@@ -12,14 +12,14 @@ head: add-poetry
 created_at: 2023-04-24T22:35:15Z
 updated_at: 2023-04-24T23:48:36Z
 url: https://github.com/astral-sh/ruff/pull/4085
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add Poetry to the list of projects using Ruff
 
 ---
 
-_Pull request opened by @Secrus on 2023-04-24 22:35_
+_@Secrus_
 
 As in the title. Poetry migrates its projects to using Ruff, so let's add it to the list.
 

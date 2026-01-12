@@ -13,14 +13,14 @@ head: syspath
 created_at: 2024-05-10T03:15:06Z
 updated_at: 2024-05-10T07:05:46Z
 url: https://github.com/astral-sh/uv/pull/3500
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # add `sys_path` to `Interpreter` struct
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-05-10 03:15_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

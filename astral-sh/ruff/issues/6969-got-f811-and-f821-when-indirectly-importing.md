@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T07:52:59Z
 updated_at: 2025-07-30T08:26:20Z
 url: https://github.com/astral-sh/ruff/issues/6969
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Got F811 and F821 when indirectly importing Literal and overload
 
 ---
 
-_Issue opened by @leavers on 2023-08-29 07:52_
+_@leavers_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

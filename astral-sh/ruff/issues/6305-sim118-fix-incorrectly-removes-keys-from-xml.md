@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-03T14:54:17Z
 updated_at: 2023-12-07T14:48:56Z
 url: https://github.com/astral-sh/ruff/issues/6305
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `SIM118` fix incorrectly removes `.keys()` from `xml.etree.ElementTree` object
 
 ---
 
-_Issue opened by @bouwew on 2023-08-03 14:54_
+_@bouwew_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

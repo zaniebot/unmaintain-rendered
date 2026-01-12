@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T19:28:20Z
 updated_at: 2025-05-06T23:04:34Z
 url: https://github.com/astral-sh/uv/issues/12902
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # UV --native-tls not respecting system certs on RHEL8
 
 ---
 
-_Issue opened by @TheFriendlyCoder on 2025-04-15 19:28_
+_@TheFriendlyCoder_
 
 ### Summary
 

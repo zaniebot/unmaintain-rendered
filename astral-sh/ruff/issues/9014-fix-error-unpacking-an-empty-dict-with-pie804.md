@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T20:13:30Z
 updated_at: 2023-12-05T21:30:30Z
 url: https://github.com/astral-sh/ruff/issues/9014
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [Fix error]Unpacking an empty dict with PIE804
 
 ---
 
-_Issue opened by @Blumenkind111 on 2023-12-05 20:13_
+_@Blumenkind111_
 
 Hi all,
 

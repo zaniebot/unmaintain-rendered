@@ -12,14 +12,14 @@ head: charlie/add-binding
 created_at: 2023-06-04T02:20:49Z
 updated_at: 2023-06-04T02:57:55Z
 url: https://github.com/astral-sh/ruff/pull/4846
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Modify semantic model API to push bindings upon creation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-04 02:20_
+_@charliermarsh_
 
 ## Summary
 

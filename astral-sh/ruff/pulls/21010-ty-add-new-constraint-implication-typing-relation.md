@@ -14,14 +14,14 @@ head: dcreager/new-relation
 created_at: 2025-10-21T01:54:25Z
 updated_at: 2025-10-28T02:01:11Z
 url: https://github.com/astral-sh/ruff/pull/21010
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Add new "constraint implication" typing relation
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-21 01:54_
+_@dcreager_
 
 This PR adds the new **_constraint implication_** relationship between types, aka `is_subtype_of_given`, which tests whether one type is a subtype of another _assuming that the constraints in a particular constraint set hold_.
 

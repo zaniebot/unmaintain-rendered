@@ -13,14 +13,14 @@ head: fix-max-pos-args-example
 created_at: 2024-02-02T20:20:16Z
 updated_at: 2024-02-02T20:36:00Z
 url: https://github.com/astral-sh/ruff/pull/9797
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Update max-pos-args example to max-positional-args.
 
 ---
 
-_Pull request opened by @emilte on 2024-02-02 20:20_
+_@emilte_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

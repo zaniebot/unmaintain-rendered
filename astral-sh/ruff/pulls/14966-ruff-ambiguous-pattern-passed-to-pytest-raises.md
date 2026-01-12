@@ -14,14 +14,14 @@ head: PT201
 created_at: 2024-12-14T00:27:08Z
 updated_at: 2024-12-18T15:33:55Z
 url: https://github.com/astral-sh/ruff/pull/14966
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Ambiguous pattern passed to `pytest.raises()` (`RUF043`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-14 00:27_
+_@InSyncWithFoo_
 
 ## Summary
 

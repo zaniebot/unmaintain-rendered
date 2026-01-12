@@ -13,14 +13,14 @@ head: zb/msrv
 created_at: 2025-07-17T12:17:01Z
 updated_at: 2025-07-17T12:38:13Z
 url: https://github.com/astral-sh/uv/pull/14679
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Rename msrv build job for consistency with other binary builds
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-17 12:17_
+_@zanieb_
 
 _No description provided._
 

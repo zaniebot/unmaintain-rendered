@@ -14,14 +14,14 @@ head: zb/3.12.2
 created_at: 2024-02-17T18:02:18Z
 updated_at: 2024-02-21T16:58:54Z
 url: https://github.com/astral-sh/uv/pull/1606
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Bump to Python 3.12.2
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-17 18:02_
+_@zanieb_
 
 Contributors will need to update their bootstrapped versions
 

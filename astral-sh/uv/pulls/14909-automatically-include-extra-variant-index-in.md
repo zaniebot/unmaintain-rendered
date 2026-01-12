@@ -12,14 +12,14 @@ head: charlie/wheel-variant-auto
 created_at: 2025-07-25T21:07:59Z
 updated_at: 2025-12-02T17:21:45Z
 url: https://github.com/astral-sh/uv/pull/14909
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Automatically include extra variant index in variant prototype
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-25 21:07_
+_@charliermarsh_
 
 ## Summary
 

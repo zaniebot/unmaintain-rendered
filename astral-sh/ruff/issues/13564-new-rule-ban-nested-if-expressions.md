@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-30T06:25:30Z
 updated_at: 2024-10-02T05:56:21Z
 url: https://github.com/astral-sh/ruff/issues/13564
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - ban nested if expressions
 
 ---
 
-_Issue opened by @DetachHead on 2024-09-30 06:25_
+_@DetachHead_
 
 i keep stumbling across code where, for whatever reason, the person writing it thought it was a good idea to have several nested conditions in an `if` expression, which looks absolutely awful:
 

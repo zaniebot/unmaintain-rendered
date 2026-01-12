@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T19:54:51Z
 updated_at: 2025-11-19T21:02:33Z
 url: https://github.com/astral-sh/ty/issues/1595
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Slice is not subscriptable at runtime
 
 ---
 
-_Issue opened by @joecox on 2025-11-19 19:54_
+_@joecox_
 
 ### Summary
 

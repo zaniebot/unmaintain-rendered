@@ -13,14 +13,14 @@ head: ibraheem/lock-metadata
 created_at: 2024-07-01T20:31:03Z
 updated_at: 2024-07-02T18:03:22Z
 url: https://github.com/astral-sh/uv/pull/4706
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Add conversion from lockfile `Distribution` to `Metadata`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 20:31_
+_@ibraheemdev_
 
 ## Summary
 

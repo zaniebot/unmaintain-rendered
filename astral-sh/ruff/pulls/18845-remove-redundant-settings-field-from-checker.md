@@ -13,14 +13,14 @@ head: beep-bop
 created_at: 2025-06-21T02:21:32Z
 updated_at: 2025-06-23T13:15:10Z
 url: https://github.com/astral-sh/ruff/pull/18845
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # Remove redundant `settings` field from  `Checker`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-21 02:21_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T22:42:18Z
 updated_at: 2023-11-28T06:09:45Z
 url: https://github.com/astral-sh/ruff/issues/8264
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider preferring preferred quote style if both styles require backslashes
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 22:42_
+_@charliermarsh_
 
 Given:
 

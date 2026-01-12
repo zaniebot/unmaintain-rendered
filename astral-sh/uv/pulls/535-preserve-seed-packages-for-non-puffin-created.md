@@ -13,14 +13,14 @@ head: charlie/seed-packages
 created_at: 2023-12-04T04:33:31Z
 updated_at: 2023-12-04T14:31:02Z
 url: https://github.com/astral-sh/uv/pull/535
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Preserve seed packages for non-Puffin-created virtualenvs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 04:33_
+_@charliermarsh_
 
 ## Summary
 

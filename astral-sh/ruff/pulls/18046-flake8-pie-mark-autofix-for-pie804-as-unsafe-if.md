@@ -14,14 +14,14 @@ head: fix-PIE804
 created_at: 2025-05-12T14:34:46Z
 updated_at: 2025-05-12T19:29:47Z
 url: https://github.com/astral-sh/ruff/pull/18046
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [`flake8-pie`] Mark autofix for `PIE804` as unsafe if the dictionary contains comments
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-12 14:34_
+_@LaBatata101_
 
 
 

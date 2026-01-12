@@ -12,14 +12,14 @@ head: wrapper-exit
 created_at: 2022-11-16T19:03:40Z
 updated_at: 2022-11-20T01:59:36Z
 url: https://github.com/astral-sh/ruff/pull/776
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Propagate exit code through Python __main__ wrapper
 
 ---
 
-_Pull request opened by @andersk on 2022-11-16 19:03_
+_@andersk_
 
 Fixes #775.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T11:20:20Z
 updated_at: 2025-01-23T08:51:58Z
 url: https://github.com/astral-sh/ruff/issues/15670
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ruff_wasm loses 'fix' values on 'SyntaxError: Simple statements must be separated by newlines or semicolons' error
 
 ---
 
-_Issue opened by @lkociko on 2025-01-22 11:20_
+_@lkociko_
 
 ### Description
 

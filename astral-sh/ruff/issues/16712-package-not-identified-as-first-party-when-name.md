@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-13T16:48:36Z
 updated_at: 2025-09-23T07:25:18Z
 url: https://github.com/astral-sh/ruff/issues/16712
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Package not identified as first party when name has a dash
 
 ---
 
-_Issue opened by @bepuca on 2025-03-13 16:48_
+_@bepuca_
 
 ### Summary
 

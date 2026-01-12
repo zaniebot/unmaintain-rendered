@@ -13,14 +13,14 @@ head: docs/missing-word-run-md
 created_at: 2024-11-29T18:55:27Z
 updated_at: 2024-11-30T02:58:24Z
 url: https://github.com/astral-sh/uv/pull/9527
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Add missing word to docs for run.md
 
 ---
 
-_Pull request opened by @nathanjmcdougall on 2024-11-29 18:55_
+_@nathanjmcdougall_
 
 ## Summary
 

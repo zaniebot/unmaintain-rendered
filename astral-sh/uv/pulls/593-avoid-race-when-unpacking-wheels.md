@@ -12,14 +12,14 @@ head: charlie/collide
 created_at: 2023-12-08T17:40:27Z
 updated_at: 2023-12-08T17:46:20Z
 url: https://github.com/astral-sh/uv/pull/593
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Avoid race when unpacking wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-08 17:40_
+_@charliermarsh_
 
 ## Summary
 

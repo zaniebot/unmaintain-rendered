@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T11:39:21Z
 updated_at: 2023-11-02T11:03:57Z
 url: https://github.com/astral-sh/uv/issues/194
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Create docker container for testing with common build requirements
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 11:39_
+_@konstin_
 
 Add a container to run resolution, source distribution building and other kinds of testing in, which all need to build source distributions. This container serves three purposes:
 * Isolation from potentially malicious packages (see https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html and related tweets - many of these are less malicious and more writing stuff where they shouldn't)

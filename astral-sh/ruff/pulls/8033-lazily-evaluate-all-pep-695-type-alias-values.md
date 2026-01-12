@@ -13,14 +13,14 @@ head: charlie/PEP
 created_at: 2023-10-18T01:23:52Z
 updated_at: 2023-10-18T01:50:27Z
 url: https://github.com/astral-sh/ruff/pull/8033
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Lazily evaluate all PEP 695 type alias values
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 01:23_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

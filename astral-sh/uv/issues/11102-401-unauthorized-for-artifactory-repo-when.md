@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T17:06:37Z
 updated_at: 2025-01-31T09:54:22Z
 url: https://github.com/astral-sh/uv/issues/11102
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # 401 Unauthorized for artifactory repo when running uv pip install
 
 ---
 
-_Issue opened by @edeustace on 2025-01-30 17:06_
+_@edeustace_
 
 ### Summary
 

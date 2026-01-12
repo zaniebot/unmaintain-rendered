@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-02T14:25:04Z
 updated_at: 2022-12-09T02:31:10Z
 url: https://github.com/astral-sh/ruff/issues/996
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement F811 ("redefinition of unused name from line N")
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-02 14:25_
+_@charliermarsh_
 
 _No description provided._
 

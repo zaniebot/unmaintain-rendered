@@ -14,14 +14,14 @@ head: charlie/err-from-env
 created_at: 2026-01-05T00:22:05Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/pull/17321
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Manually parse and reconcile Boolean environment variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 00:22_
+_@charliermarsh_
 
 ## Summary
 

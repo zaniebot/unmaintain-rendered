@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-26T01:41:22Z
 updated_at: 2022-10-26T15:03:46Z
 url: https://github.com/clap-rs/clap/issues/4424
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support for Vec<T> Subcommands
 
 ---
 
-_Issue opened by @0xForerunner on 2022-10-26 01:41_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

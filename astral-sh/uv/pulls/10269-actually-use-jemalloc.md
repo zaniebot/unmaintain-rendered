@@ -13,14 +13,14 @@ head: konsti/use-jemalloc
 created_at: 2025-01-02T10:00:53Z
 updated_at: 2025-01-02T15:03:17Z
 url: https://github.com/astral-sh/uv/pull/10269
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Actually use jemalloc
 
 ---
 
-_Pull request opened by @konstin on 2025-01-02 10:00_
+_@konstin_
 
 The uv-performance-memory-allocator is currently optimized out at least on musl due to the crate being otherwise unused (https://github.com/rust-lang/rust/issues/64402), causing musl to not use jemalloc and being slow.
 

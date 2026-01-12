@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T16:51:51Z
 updated_at: 2022-10-03T20:11:07Z
 url: https://github.com/astral-sh/ruff/issues/78
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Consider using `libcst`
 
 ---
 
-_Issue opened by @sobolevn on 2022-09-01 16:51_
+_@sobolevn_
 
 https://github.com/Instagram/LibCST
 

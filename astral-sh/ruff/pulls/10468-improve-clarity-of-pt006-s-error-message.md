@@ -12,14 +12,14 @@ head: pt006-message
 created_at: 2024-03-19T04:02:35Z
 updated_at: 2024-03-20T18:33:15Z
 url: https://github.com/astral-sh/ruff/pull/10468
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Improve clarity of `PT006`'s error message
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-19 04:02_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

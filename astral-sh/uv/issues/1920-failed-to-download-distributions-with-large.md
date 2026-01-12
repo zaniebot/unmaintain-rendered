@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T16:55:02Z
 updated_at: 2024-02-24T11:56:22Z
 url: https://github.com/astral-sh/uv/issues/1920
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Failed to download distributions with large requirements file
 
 ---
 
-_Issue opened by @strickvl on 2024-02-23 16:55_
+_@strickvl_
 
 Have a Dockerfile in which I'm testing the use of uv, but uv fails to build the dependencies:
 

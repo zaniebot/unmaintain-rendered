@@ -12,14 +12,14 @@ head: dependabot/github_actions/actions-bbfd119f7f
 created_at: 2024-01-29T08:23:30Z
 updated_at: 2024-01-31T15:18:27Z
 url: https://github.com/astral-sh/ruff/pull/9667
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump the actions group with 6 updates
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-29 08:23_
+_@dependabot_
 
 Bumps the actions group with 6 updates:
 

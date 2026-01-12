@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T16:00:37Z
 updated_at: 2025-12-11T15:05:01Z
 url: https://github.com/astral-sh/ty/issues/1841
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `ty` ignores type hints for C extension
 
 ---
 
-_Issue opened by @albireox on 2025-12-10 16:00_
+_@albireox_
 
 ### Summary
 

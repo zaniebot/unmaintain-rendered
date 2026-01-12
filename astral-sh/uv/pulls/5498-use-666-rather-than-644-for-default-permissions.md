@@ -13,14 +13,14 @@ head: charlie/tem
 created_at: 2024-07-26T23:59:31Z
 updated_at: 2025-01-28T03:46:48Z
 url: https://github.com/astral-sh/uv/pull/5498
-synced_at: 2026-01-10T11:44:26Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Use 666 rather than 644 for default permissions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 23:59_
+_@charliermarsh_
 
 ## Summary
 

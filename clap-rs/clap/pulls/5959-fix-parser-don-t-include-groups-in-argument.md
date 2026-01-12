@@ -12,14 +12,14 @@ head: error
 created_at: 2025-03-26T18:40:14Z
 updated_at: 2025-03-26T19:09:24Z
 url: https://github.com/clap-rs/clap/pull/5959
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(parser): Don't include groups in argument suggestions 
 
 ---
 
-_Pull request opened by @epage on 2025-03-26 18:40_
+_@epage_
 
 If we are assuming the arguments are present, then there is no reason to
 show alternatives from the group.

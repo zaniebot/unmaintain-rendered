@@ -13,14 +13,14 @@ head: konsti/non-latin-ecosystem-check
 created_at: 2023-12-19T13:09:55Z
 updated_at: 2023-12-19T21:14:06Z
 url: https://github.com/astral-sh/ruff/pull/9199
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add a non-latin project to the ecosystem checks
 
 ---
 
-_Pull request opened by @konstin on 2023-12-19 13:09_
+_@konstin_
 
 We've had bugs related to non-latin scripts, most recently #9145, where just starting a docstring with multi-byte characters would panic. I've added https://github.com/binary-husky/gpt_academic to catch those in the ecosystem checks, it's a popular repo with mixed english and chinese comments and symbols.
 

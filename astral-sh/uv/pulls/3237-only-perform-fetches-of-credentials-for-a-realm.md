@@ -13,14 +13,14 @@ head: zb/auth-fetch-once
 created_at: 2024-04-24T14:06:20Z
 updated_at: 2024-04-24T14:53:45Z
 url: https://github.com/astral-sh/uv/pull/3237
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Only perform fetches of credentials for a realm once
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-24 14:06_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/3205
 

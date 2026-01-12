@@ -13,14 +13,14 @@ head: document_blind_except_supports_Exception
 created_at: 2024-08-09T14:42:41Z
 updated_at: 2024-08-09T15:28:50Z
 url: https://github.com/astral-sh/ruff/pull/12788
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Document that BLE001 supports both BaseException and Exception
 
 ---
 
-_Pull request opened by @rhoban13 on 2024-08-09 14:42_
+_@rhoban13_
 
 ## Summary
 

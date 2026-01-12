@@ -14,14 +14,14 @@ head: optional-typo
 created_at: 2024-11-18T02:51:49Z
 updated_at: 2024-11-18T07:37:19Z
 url: https://github.com/astral-sh/ruff/pull/14420
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Drive by typo fix
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-11-18 02:51_
+_@hauntsaninja_
 
 Introduced in https://github.com/astral-sh/ruff/pull/14397/files#diff-42314c006689490bbdfbeeb973de64046b3e069e3d88f67520aeba375f20e655
 

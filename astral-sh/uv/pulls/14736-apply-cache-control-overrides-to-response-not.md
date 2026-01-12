@@ -13,14 +13,14 @@ head: charlie/cache-control
 created_at: 2025-07-18T17:43:08Z
 updated_at: 2025-07-18T20:32:31Z
 url: https://github.com/astral-sh/uv/pull/14736
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Apply Cache-Control overrides to response, not request headers
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-18 17:43_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: numpy-legacy-random-npy002
 created_at: 2023-02-16T17:06:20Z
 updated_at: 2023-02-17T06:44:08Z
 url: https://github.com/astral-sh/ruff/pull/2960
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`numpy`] numpy-legacy-random
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-16 17:06_
+_@sbrugman_
 
 The new `Generator` in NumPy uses bits provided by [PCG64](https://numpy.org/doc/stable/reference/random/bit_generators/pcg64.html#numpy.random.PCG64) which has better statistical properties than the legacy [MT19937](https://numpy.org/doc/stable/reference/random/bit_generators/mt19937.html#numpy.random.MT19937) used in [RandomState](https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState). Global random functions can also be problematic with parallel processing.
 

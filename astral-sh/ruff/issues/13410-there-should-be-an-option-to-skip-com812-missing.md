@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T18:59:16Z
 updated_at: 2024-09-24T19:49:11Z
 url: https://github.com/astral-sh/ruff/issues/13410
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # There should be an option to skip COM812 (missing-trailing-comma) on single-item calls/lists. [Feature request]
 
 ---
 
-_Issue opened by @echo-lalia on 2024-09-19 18:59_
+_@echo-lalia_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

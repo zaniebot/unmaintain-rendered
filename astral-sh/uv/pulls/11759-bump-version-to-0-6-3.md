@@ -12,14 +12,14 @@ head: gankra/rel063
 created_at: 2025-02-24T21:57:30Z
 updated_at: 2025-02-24T22:25:04Z
 url: https://github.com/astral-sh/uv/pull/11759
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Bump version to 0.6.3
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-24 21:57_
+_@Gankra_
 
 _No description provided._
 

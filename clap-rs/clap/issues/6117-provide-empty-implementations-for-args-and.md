@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-31T08:08:33Z
 updated_at: 2025-09-02T17:00:41Z
 url: https://github.com/clap-rs/clap/issues/6117
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Provide empty implementations for Args and Subcommand
 
 ---
 
-_Issue opened by @alexkazik on 2025-08-31 08:08_
+_@alexkazik_
 
 ### Please complete the following tasks
 

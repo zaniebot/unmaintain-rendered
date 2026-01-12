@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-17T04:55:21Z
 updated_at: 2025-11-18T16:10:32Z
 url: https://github.com/astral-sh/ty/issues/665
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Return intersection instead of Any for ambiguous overload match
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-17 04:55_
+_@dhruvmanila_
 
 Consider the following example:
 

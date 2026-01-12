@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T09:12:26Z
 updated_at: 2024-10-24T11:52:18Z
 url: https://github.com/astral-sh/ruff/issues/13494
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [feature request] Extra tryceratops checks
 
 ---
 
-_Issue opened by @wwuck on 2024-09-24 09:12_
+_@wwuck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

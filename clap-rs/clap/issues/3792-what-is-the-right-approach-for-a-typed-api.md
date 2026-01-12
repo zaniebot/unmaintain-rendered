@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-06-06T14:23:55Z
 updated_at: 2022-07-22T17:38:44Z
 url: https://github.com/clap-rs/clap/issues/3792
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # What is the right approach for a typed API
 
 ---
 
-_Issue opened by @epage on 2022-06-06 14:23_
+_@epage_
 
 This is a follow up to #2683
 

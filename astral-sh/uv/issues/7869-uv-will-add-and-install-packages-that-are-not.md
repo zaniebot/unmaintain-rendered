@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-02T15:01:43Z
 updated_at: 2025-02-01T23:30:32Z
 url: https://github.com/astral-sh/uv/issues/7869
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # UV will add and install packages that are not compatible with current python version
 
 ---
 
-_Issue opened by @chris48s on 2024-10-02 15:01_
+_@chris48s_
 
 First off, apologies if this has already been reported. I did have a look over the tracker and could not find a similar issue. I am using `uv==0.4.18`. The problem I have hit is that uv will silently add and install packages that are not compatible with the project's python version without throwing an error.
 

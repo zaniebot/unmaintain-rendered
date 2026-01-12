@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-22T16:39:08Z
 updated_at: 2025-01-11T14:30:08Z
 url: https://github.com/astral-sh/uv/issues/7622
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # ModuleNotFoundError immediately after initializing a project
 
 ---
 
-_Issue opened by @5183nischal on 2024-09-22 16:39_
+_@5183nischal_
 
 The following error occurs when I initialize a project under `~/Documents` but not say under `~/Downloads` (in macos).
 1. **Initialize a new project using `uv`**:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-12T19:51:00Z
 updated_at: 2022-05-20T17:42:54Z
 url: https://github.com/clap-rs/clap/issues/2861
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Stabilise `AppSettings::Multicall` Tracking Issue
 
 ---
 
-_Issue opened by @fishface60 on 2021-10-12 19:51_
+_@fishface60_
 
 Original request: https://github.com/clap-rs/clap/issues/1120
 

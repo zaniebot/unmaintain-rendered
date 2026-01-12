@@ -13,14 +13,14 @@ head: zb/toolchain-install-many
 created_at: 2024-06-14T22:33:41Z
 updated_at: 2024-06-17T18:24:12Z
 url: https://github.com/astral-sh/uv/pull/4334
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Allow multiple toolchains to be requested in `uv toolchain install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 22:33_
+_@zanieb_
 
 Allows installation of multiple toolchains in a single invocation because I don't want to be limited to one! Most of the implementation for concurrent downloads ported from `cargo dev fetch-python`.
 

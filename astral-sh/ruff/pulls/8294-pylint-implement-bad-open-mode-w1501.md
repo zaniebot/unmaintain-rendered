@@ -13,14 +13,14 @@ head: bad-open-mode
 created_at: 2023-10-28T03:45:21Z
 updated_at: 2023-10-28T22:44:07Z
 url: https://github.com/astral-sh/ruff/pull/8294
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [pylint] Implement bad-open-mode (W1501)
 
 ---
 
-_Pull request opened by @harupy on 2023-10-28 03:45_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

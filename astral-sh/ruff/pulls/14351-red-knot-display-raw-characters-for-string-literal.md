@@ -13,14 +13,14 @@ head: dhruv/string-literal-display
 created_at: 2024-11-15T04:16:03Z
 updated_at: 2024-11-15T08:14:06Z
 url: https://github.com/astral-sh/ruff/pull/14351
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Display raw characters for string literal
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-15 04:16_
+_@dhruvmanila_
 
 ## Summary
 

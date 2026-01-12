@@ -13,14 +13,14 @@ head: charlie/quotes
 created_at: 2023-07-04T17:58:44Z
 updated_at: 2023-07-04T18:28:58Z
 url: https://github.com/astral-sh/ruff/pull/5507
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update documentation to list double-quote preference first
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 17:58_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5496.
 

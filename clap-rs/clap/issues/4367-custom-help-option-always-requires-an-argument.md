@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-10-11T10:16:41Z
 updated_at: 2022-10-12T12:03:19Z
 url: https://github.com/clap-rs/clap/issues/4367
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Custom help option always requires an argument
 
 ---
 
-_Issue opened by @wfxr on 2022-10-11 10:16_
+_@wfxr_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: david/call-api-mutability
 created_at: 2025-05-02T09:25:12Z
 updated_at: 2025-05-02T13:40:16Z
 url: https://github.com/astral-sh/ruff/pull/17788
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Refactor: no mutability in call APIs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-02 09:25_
+_@sharkdp_
 
 ## Summary
 

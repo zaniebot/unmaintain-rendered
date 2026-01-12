@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T15:19:54Z
 updated_at: 2025-02-03T08:12:44Z
 url: https://github.com/astral-sh/uv/issues/6645
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Add `UV_DEFAULT_PYTHON` environment variable
 
 ---
 
-_Issue opened by @unique1o1 on 2024-08-26 15:19_
+_@unique1o1_
 
 When adding a `.python-version` file to a project and afterward using `uv sync`, the UV_PYTHON env variable takes more precedence over `.python-version` and doesn't change to the python version specified inside `.python-version`.
 

@@ -12,14 +12,14 @@ head: zb/system-install-rhel
 created_at: 2024-03-12T00:13:59Z
 updated_at: 2024-03-12T06:09:14Z
 url: https://github.com/astral-sh/uv/pull/2372
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Add system install test for RHEL
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 00:13_
+_@zanieb_
 
 _No description provided._
 

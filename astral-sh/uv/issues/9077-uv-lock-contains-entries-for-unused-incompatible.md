@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T05:58:30Z
 updated_at: 2024-11-13T16:16:40Z
 url: https://github.com/astral-sh/uv/issues/9077
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # uv.lock contains entries for unused/incompatible python versions
 
 ---
 
-_Issue opened by @idlsoft on 2024-11-13 05:58_
+_@idlsoft_
 
 I created a simple project using `uv init`, and added one dependency:
 ```toml

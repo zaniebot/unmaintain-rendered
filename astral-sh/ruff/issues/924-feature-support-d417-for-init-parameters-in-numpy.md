@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-27T17:58:04Z
 updated_at: 2024-06-06T11:16:21Z
 url: https://github.com/astral-sh/ruff/issues/924
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # feature: Support D417 for __init__ Parameters in numpy class docstrings
 
 ---
 
-_Issue opened by @tlambert03 on 2022-11-27 17:58_
+_@tlambert03_
 
 (I think this could technically be called a bug rather than a feature request, but ruff's current behavior is consistent with pydocstyle's, so let's call it a feature request :smile:)
 

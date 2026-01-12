@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-12T00:12:14Z
 updated_at: 2020-04-13T08:07:04Z
 url: https://github.com/clap-rs/clap/issues/1809
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Replace value_t* macros with functions
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-12 00:12_
+_@CreepySkeleton_
 
 ### Make sure you completed the following tasks
 

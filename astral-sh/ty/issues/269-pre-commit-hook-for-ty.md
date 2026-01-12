@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T12:10:17Z
 updated_at: 2025-12-21T14:39:03Z
 url: https://github.com/astral-sh/ty/issues/269
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `pre-commit` hook for `ty`
 
 ---
 
-_Issue opened by @janosh on 2025-05-08 12:10_
+_@janosh_
 
 looking forward to the https://github.com/astral-sh/ruff-pre-commit equivalent for `ty`
 

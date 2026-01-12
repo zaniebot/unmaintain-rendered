@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-11T16:23:30Z
 updated_at: 2023-10-27T02:14:41Z
 url: https://github.com/astral-sh/ruff/issues/6506
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Scorecards for formatter PRs
 
 ---
 
-_Issue opened by @cnpryer on 2023-08-11 16:23_
+_@cnpryer_
 
 I can't claim this just yet, but if I can I'll come and snag it.
 

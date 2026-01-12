@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-14T04:11:05Z
 updated_at: 2024-01-29T03:58:37Z
 url: https://github.com/astral-sh/ruff/issues/9509
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add a rule for `defaultdict(default_factory=list)`
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-01-14 04:11_
+_@hauntsaninja_
 
 Kwargs in the defaultdict constructor are forwarded to the dict constructor, so this creates a defaultdict with `{"default_factory": list}`. Since this is a valid call, type checkers may or may not catch this (and even when they catch it, the error might be a little confusing). ruff could lint this specific situation and mention use of `collections.defaultdict(list)` instead.
 

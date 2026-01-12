@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-09-18T12:55:31Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1049
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Hidden subcommand
 
 ---
 
-_Issue opened by @artemshein on 2017-09-18 12:55_
+_@artemshein_
 
 Is there a way to define a hidden subcommand?
 

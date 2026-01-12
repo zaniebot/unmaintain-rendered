@@ -13,14 +13,14 @@ head: sync-python-releases
 created_at: 2025-03-11T20:21:12Z
 updated_at: 2025-03-11T20:58:48Z
 url: https://github.com/astral-sh/uv/pull/12120
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Sync latest Python releases
 
 ---
 
-_Pull request opened by @github-actions on 2025-03-11 20:21_
+_@github-actions_
 
 Notably upgrades to LLVM 20
 

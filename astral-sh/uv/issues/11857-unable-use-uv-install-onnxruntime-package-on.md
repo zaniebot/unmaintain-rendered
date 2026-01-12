@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T14:44:11Z
 updated_at: 2025-03-02T01:36:40Z
 url: https://github.com/astral-sh/uv/issues/11857
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # unable use uv install  onnxruntime package on intel64 macos
 
 ---
 
-_Issue opened by @jeevic on 2025-02-28 14:44_
+_@jeevic_
 
 ### Summary
 

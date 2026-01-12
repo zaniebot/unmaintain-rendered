@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-22T19:41:15Z
 updated_at: 2025-07-22T01:08:04Z
 url: https://github.com/astral-sh/uv/issues/4450
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Venvs from uv and from native python works a little different on nix
 
 ---
 
-_Issue opened by @Rubikoid on 2024-06-22 19:41_
+_@Rubikoid_
 
 # About issue
 

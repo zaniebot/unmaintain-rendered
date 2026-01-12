@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-03T19:28:51Z
 updated_at: 2023-10-03T19:43:57Z
 url: https://github.com/astral-sh/ruff/issues/7793
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add pdb / set_trace() check
 
 ---
 
-_Issue opened by @giampaolo on 2023-10-03 19:28_
+_@giampaolo_
 
 Basically this: https://pypi.org/project/flake8-debug/. Right now ruff is able to identify the `breakpoint` builtin function, which results in:
 

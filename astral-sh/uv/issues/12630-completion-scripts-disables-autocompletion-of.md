@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T16:44:22Z
 updated_at: 2025-04-02T16:52:10Z
 url: https://github.com/astral-sh/uv/issues/12630
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # completion scripts disables autocompletion of files and folders
 
 ---
 
-_Issue opened by @lucharo on 2025-04-02 16:44_
+_@lucharo_
 
 I enabled uv shell completion and I believe it broke my file/folder completion
 

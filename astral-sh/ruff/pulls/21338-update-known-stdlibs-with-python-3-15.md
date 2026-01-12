@@ -12,14 +12,14 @@ head: update-stdlibs-3-15
 created_at: 2025-11-08T11:52:12Z
 updated_at: 2025-11-10T09:17:24Z
 url: https://github.com/astral-sh/ruff/pull/21338
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Update known stdlibs with python `3.15`
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-11-08 11:52_
+_@ShaharNaveh_
 
 Follow up on https://github.com/astral-sh/ruff/issues/21119#issuecomment-3462875240
 

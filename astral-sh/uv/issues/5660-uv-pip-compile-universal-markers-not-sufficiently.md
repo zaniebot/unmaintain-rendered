@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T15:46:12Z
 updated_at: 2024-08-09T17:40:03Z
 url: https://github.com/astral-sh/uv/issues/5660
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv pip  compile `--universal` markers not sufficiently simplifying
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-07-31 15:46_
+_@notatallshaw-gts_
 
 Since a recent uv update I find that there are pathological cases cases using `--universal`  that can cause the markers to explode. It seems like these could be simplified but it's hard to tell because they get so big.
 

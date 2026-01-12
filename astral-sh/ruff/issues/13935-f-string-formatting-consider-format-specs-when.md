@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-26T08:05:03Z
 updated_at: 2024-11-22T12:43:54Z
 url: https://github.com/astral-sh/ruff/issues/13935
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # f-string formatting: Consider format specs when choosing the preferred quotes
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-26 08:05_
+_@MichaReiser_
 
 The new preview style formats
 

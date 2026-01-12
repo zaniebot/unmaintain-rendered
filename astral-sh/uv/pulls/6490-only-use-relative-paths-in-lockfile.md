@@ -14,14 +14,14 @@ head: charlie/relative-path
 created_at: 2024-08-23T04:12:30Z
 updated_at: 2024-08-24T02:19:12Z
 url: https://github.com/astral-sh/uv/pull/6490
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Only use relative paths in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-23 04:12_
+_@charliermarsh_
 
 For users who were using absolute paths in the `pyproject.toml` previously, this is a behavior change: We now convert all absolute paths in `path` entries to relative paths. Since i assume that no-one relies on absolute path in their lockfiles - they are intended to be portable - I'm tagging this as a bugfix.
 

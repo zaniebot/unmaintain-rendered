@@ -14,14 +14,14 @@ head: cjm/pep613import
 created_at: 2025-11-12T01:22:25Z
 updated_at: 2025-11-21T08:22:09Z
 url: https://github.com/astral-sh/ruff/pull/21394
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] support PEP 613 type aliases
 
 ---
 
-_Pull request opened by @carljm on 2025-11-12 01:22_
+_@carljm_
 
 Refs https://github.com/astral-sh/ty/issues/544
 

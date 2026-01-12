@@ -14,14 +14,14 @@ head: gankra/conda-venv
 created_at: 2025-08-19T16:11:16Z
 updated_at: 2025-08-20T13:07:44Z
 url: https://github.com/astral-sh/ruff/pull/19990
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] distinguish base conda from child conda
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-19 16:11_
+_@Gankra_
 
 This is a port of the logic in https://github.com/astral-sh/uv/pull/7691
 

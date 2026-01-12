@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-02T22:13:58Z
 updated_at: 2023-08-03T23:55:02Z
 url: https://github.com/astral-sh/ruff/issues/6288
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Collapse short multi-line import groups to one line with I001
 
 ---
 
-_Issue opened by @andersk on 2023-08-02 22:13_
+_@andersk_
 
 Ruff, like upstream isort, expands single-line import groups that are too long to multiple lines.
 

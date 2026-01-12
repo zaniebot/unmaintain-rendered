@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T11:39:21Z
 updated_at: 2024-12-27T14:39:50Z
 url: https://github.com/astral-sh/uv/issues/7580
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv add jax  ,    all  jax code indent are     in  disorder  
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-09-20 11:39_
+_@Super1Windcloud_
 
 
 ![图片](https://github.com/user-attachments/assets/43878069-fc07-45e7-88c2-c2e18fde3d5b)

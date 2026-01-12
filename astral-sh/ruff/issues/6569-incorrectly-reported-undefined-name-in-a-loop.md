@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-14T19:07:23Z
 updated_at: 2023-08-16T03:57:49Z
 url: https://github.com/astral-sh/ruff/issues/6569
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Incorrectly reported undefined name in a loop
 
 ---
 
-_Issue opened by @hotpxl on 2023-08-14 19:07_
+_@hotpxl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

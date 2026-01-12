@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T09:41:27Z
 updated_at: 2025-12-01T11:15:44Z
 url: https://github.com/astral-sh/ty/issues/1698
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Make semantic highlighting optional
 
 ---
 
-_Issue opened by @juhannc on 2025-12-01 09:41_
+_@juhannc_
 
 I've grown accustomed to the same semantic colors for years now. And while I really like ty for its speed, I don't like to have my colors changed. I propose making semantic coloring optional and not forcing the overwrite of the existing semantic coloring rules
 

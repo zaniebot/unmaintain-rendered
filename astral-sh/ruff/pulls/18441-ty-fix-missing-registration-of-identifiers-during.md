@@ -13,14 +13,14 @@ head: ag/fix-completion-panic
 created_at: 2025-06-03T13:48:07Z
 updated_at: 2026-01-05T14:24:04Z
 url: https://github.com/astral-sh/ruff/pull/18441
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Fix missing registration of identifiers during semantic index construction
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-03 13:48_
+_@BurntSushi_
 
 Fixes astral-sh/ty#572
 

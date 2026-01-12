@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-06T22:11:34Z
 updated_at: 2025-05-07T12:50:28Z
 url: https://github.com/astral-sh/uv/issues/13320
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Just wanted to say thank you
 
 ---
 
-_Issue opened by @dioptre on 2025-05-06 22:11_
+_@dioptre_
 
 <img width="252" alt="Image" src="https://github.com/user-attachments/assets/4e69503f-ac17-44ca-bbc4-5513570fb9f4" />
 

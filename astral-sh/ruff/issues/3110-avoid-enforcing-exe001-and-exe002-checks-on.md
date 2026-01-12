@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T03:54:37Z
 updated_at: 2023-02-22T04:40:35Z
 url: https://github.com/astral-sh/ruff/issues/3110
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Avoid enforcing EXE001 and EXE002 checks on Windows
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-22 03:54_
+_@charliermarsh_
 
     I noticed this because pre-commit running on `windows-latest` [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#software) agents, failed, where the Linux jobs pass.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-09T04:24:39Z
 updated_at: 2022-10-11T02:12:44Z
 url: https://github.com/clap-rs/clap/issues/4362
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `TypedValueParser` cannot parse/validate an `OsStr` with full error context
 
 ---
 
-_Issue opened by @kpreid on 2022-10-09 04:24_
+_@kpreid_
 
 ### Please complete the following tasks
 

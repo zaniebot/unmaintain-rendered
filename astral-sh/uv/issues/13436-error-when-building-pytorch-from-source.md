@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T19:28:36Z
 updated_at: 2025-05-13T21:43:57Z
 url: https://github.com/astral-sh/uv/issues/13436
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Error when building PyTorch from source
 
 ---
 
-_Issue opened by @cora-codes on 2025-05-13 19:28_
+_@cora-codes_
 
 ### Question
 

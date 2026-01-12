@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-25T00:56:55Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/704
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Escape quotes in completions
 
 ---
 
-_Issue opened by @tilpner on 2016-10-25 00:56_
+_@tilpner_
 
 [rustup just exposed completion generation](https://internals.rust-lang.org/t/beta-testing-rustup-rs/3316/196), but fish complains about the generated completions
 

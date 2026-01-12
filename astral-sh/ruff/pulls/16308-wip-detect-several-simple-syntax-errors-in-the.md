@@ -12,14 +12,14 @@ head: brent/simple-syntax-errors
 created_at: 2025-02-21T18:37:57Z
 updated_at: 2025-05-01T15:31:47Z
 url: https://github.com/astral-sh/ruff/pull/16308
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [WIP] Detect several simple syntax errors in the parser
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-21 18:37_
+_@ntBre_
 
 ## Summary
 

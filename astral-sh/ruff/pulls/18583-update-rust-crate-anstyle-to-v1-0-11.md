@@ -13,14 +13,14 @@ head: renovate/anstyle-1.x-lockfile
 created_at: 2025-06-09T00:12:56Z
 updated_at: 2025-06-12T06:54:40Z
 url: https://github.com/astral-sh/ruff/pull/18583
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Update Rust crate anstyle to v1.0.11
 
 ---
 
-_Pull request opened by @renovate on 2025-06-09 00:12_
+_@renovate_
 
 This PR contains the following updates:
 

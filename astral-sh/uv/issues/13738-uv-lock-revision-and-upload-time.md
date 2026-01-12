@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T17:54:14Z
 updated_at: 2025-05-30T18:16:05Z
 url: https://github.com/astral-sh/uv/issues/13738
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv.lock` revision and upload time
 
 ---
 
-_Issue opened by @mattyoungberg on 2025-05-30 17:54_
+_@mattyoungberg_
 
 ### Question
 

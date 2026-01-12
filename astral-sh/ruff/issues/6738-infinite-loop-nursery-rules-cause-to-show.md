@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T19:50:19Z
 updated_at: 2023-08-22T00:47:22Z
 url: https://github.com/astral-sh/ruff/issues/6738
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Infinite loop] Nursery rules cause to show infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 19:50_
+_@qarmin_
 
 Ruff 0.0.285
 

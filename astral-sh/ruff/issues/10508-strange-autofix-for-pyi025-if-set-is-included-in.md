@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-21T11:23:49Z
 updated_at: 2024-03-22T20:06:36Z
 url: https://github.com/astral-sh/ruff/issues/10508
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Strange autofix for PYI025 if `"Set"` is included in `__all__`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-21 11:23_
+_@AlexWaygood_
 
 The following snippet correctly causes Ruff to emit PYI025:
 

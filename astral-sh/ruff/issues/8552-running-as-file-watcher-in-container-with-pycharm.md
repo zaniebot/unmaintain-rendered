@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T04:50:51Z
 updated_at: 2024-08-06T02:10:49Z
 url: https://github.com/astral-sh/ruff/issues/8552
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Running as file watcher in container with PyCharm truncates file
 
 ---
 
-_Issue opened by @daveisfera on 2023-11-08 04:50_
+_@daveisfera_
 
 I've setup a file watcher that run `ruff --fix` and `ruff format` in a docker image. I've run just one of those commands to isolate the issue and have seen it happen when just `ruff --fix` or `ruff format` is running so it's happening with either command run separately
 

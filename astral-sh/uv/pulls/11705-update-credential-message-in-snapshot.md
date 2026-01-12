@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2025-02-22T04:17:15Z
 updated_at: 2025-02-22T04:27:33Z
 url: https://github.com/astral-sh/uv/pull/11705
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:57Z
 ```
 
 # Update credential message in snapshot
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 04:17_
+_@charliermarsh_
 
 _No description provided._
 

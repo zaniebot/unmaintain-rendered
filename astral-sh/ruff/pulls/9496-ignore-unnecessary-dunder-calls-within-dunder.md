@@ -13,14 +13,14 @@ head: charlie/dunder
 created_at: 2024-01-12T19:32:40Z
 updated_at: 2024-01-12T19:48:43Z
 url: https://github.com/astral-sh/ruff/pull/9496
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Ignore unnecessary dunder calls within dunder definitions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 19:32_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9486.
 

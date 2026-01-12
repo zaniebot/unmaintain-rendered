@@ -14,14 +14,14 @@ head: konsti/check-nested-io-errors
 created_at: 2025-05-02T09:08:59Z
 updated_at: 2025-05-02T12:41:11Z
 url: https://github.com/astral-sh/uv/pull/13260
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Check nested IO errors for retries
 
 ---
 
-_Pull request opened by @konstin on 2025-05-02 09:08_
+_@konstin_
 
 ## Summary
 

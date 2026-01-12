@@ -13,14 +13,14 @@ head: zb/exclude-newer-ref
 created_at: 2025-11-08T02:04:34Z
 updated_at: 2025-11-08T15:44:18Z
 url: https://github.com/astral-sh/uv/pull/16641
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Add an `ExcludeNewerWire` for lockfile handling
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-08 02:04_
+_@zanieb_
 
 I think using a wire here is less convoluted.
 

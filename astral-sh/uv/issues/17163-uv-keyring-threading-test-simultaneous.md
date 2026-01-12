@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T15:57:21Z
 updated_at: 2025-12-18T10:46:33Z
 url: https://github.com/astral-sh/uv/issues/17163
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `uv-keyring::threading::test_simultaneous_independent_create_set` flakes on Linux with "can't get ascii password"
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-17 15:57_
+_@EliteTK_
 
 Randomly failed here: https://github.com/astral-sh/uv/actions/runs/20305612646/job/58322152302?pr=17088
 

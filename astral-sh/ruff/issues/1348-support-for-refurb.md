@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-23T12:19:46Z
 updated_at: 2025-12-31T23:15:33Z
 url: https://github.com/astral-sh/ruff/issues/1348
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support for refurb
 
 ---
 
-_Issue opened by @guyrosin on 2022-12-23 12:19_
+_@guyrosin_
 
 It would be nice to have support for refurb (https://github.com/dosisod/refurb) - a great tool for simplifying and modernizing Python code. It currently includes 48 checks.
 

@@ -14,14 +14,14 @@ head: micha/place-refactor
 created_at: 2025-07-22T20:28:57Z
 updated_at: 2025-07-25T20:56:27Z
 url: https://github.com/astral-sh/ruff/pull/19497
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Split `ScopedPlaceId` into `ScopedSymbolId` and `ScopedMemberId`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-22 20:28_
+_@MichaReiser_
 
 ## Summary
 

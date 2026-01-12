@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T20:24:00Z
 updated_at: 2025-03-03T07:26:16Z
 url: https://github.com/astral-sh/uv/issues/11781
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # `uv venv` sources `.venv/bin/activate` on fish, when it should be sourcing `.venv/bin/activate.fish`
 
 ---
 
-_Issue opened by @beaumccartney on 2025-02-25 20:24_
+_@beaumccartney_
 
 ### Summary
 

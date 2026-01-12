@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-02T11:43:31Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/217
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Macros to simplify builders
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-02 11:43_
+_@WildCryptoFox_
 
 <!--I've quickly hacked together a macro for this purpose. Posting now to open the discussion and I'll happily create a respective PR if approved and only when all features are implemented as desired.-->
 

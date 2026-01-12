@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T04:08:32Z
 updated_at: 2024-03-12T23:19:16Z
 url: https://github.com/astral-sh/uv/issues/2375
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # URL Environment Variable Substitution ordering
 
 ---
 
-_Issue opened by @matty-rose on 2024-03-12 04:08_
+_@matty-rose_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

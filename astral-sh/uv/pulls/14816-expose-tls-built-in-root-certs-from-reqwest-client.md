@@ -13,14 +13,14 @@ head: nk/built-in-root-certs
 created_at: 2025-07-22T16:18:44Z
 updated_at: 2025-07-22T19:25:41Z
 url: https://github.com/astral-sh/uv/pull/14816
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # expose `tls_built_in_root_certs` from reqwest client
 
 ---
 
-_Pull request opened by @nilskch on 2025-07-22 16:18_
+_@nilskch_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

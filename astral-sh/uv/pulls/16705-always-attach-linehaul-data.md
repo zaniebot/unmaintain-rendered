@@ -13,14 +13,14 @@ head: zsol/jj-txxwyytvlkwm
 created_at: 2025-11-12T12:24:02Z
 updated_at: 2025-11-12T17:10:17Z
 url: https://github.com/astral-sh/uv/pull/16705
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Always attach linehaul data
 
 ---
 
-_Pull request opened by @zsol on 2025-11-12 12:24_
+_@zsol_
 
 ## Summary
 

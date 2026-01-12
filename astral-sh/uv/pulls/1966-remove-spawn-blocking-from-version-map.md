@@ -13,14 +13,14 @@ head: konsti/remove-spawn-blocking-from-version-map
 created_at: 2024-02-25T14:30:15Z
 updated_at: 2024-02-26T09:44:25Z
 url: https://github.com/astral-sh/uv/pull/1966
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Remove `spawn_blocking` from version map
 
 ---
 
-_Pull request opened by @konstin on 2024-02-25 14:30_
+_@konstin_
 
 I previously add `spawn_blocking` to the version map construction as it had become a bottleneck (https://github.com/astral-sh/uv/pull/1163/files#diff-704ceeaedada99f90369eac535713ec82e19550bff166cd44745d7277ecae527R116). With the zero copy deserialization, this has become so fast we don't need to move it to the thread pool anymore. I've also checked `DataWithCachePolicy` but it seems to still take a significant amount of time. Span visualization:
 

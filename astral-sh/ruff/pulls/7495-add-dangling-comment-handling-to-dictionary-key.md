@@ -13,14 +13,14 @@ head: charlie/dict
 created_at: 2023-09-18T16:24:51Z
 updated_at: 2023-09-19T19:17:22Z
 url: https://github.com/astral-sh/ruff/pull/7495
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add dangling comment handling to dictionary key-value pairs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-18 16:24_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: tomer/narrow-not-expression
 created_at: 2024-10-27T20:32:08Z
 updated_at: 2024-10-28T20:49:18Z
 url: https://github.com/astral-sh/ruff/pull/13942
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Narrowing - Not operator 
 
 ---
 
-_Pull request opened by @TomerBin on 2024-10-27 20:32_
+_@TomerBin_
 
 ## Summary
 

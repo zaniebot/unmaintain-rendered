@@ -13,14 +13,14 @@ head: dhruv/remove-deprecated-setting
 created_at: 2025-12-16T11:00:51Z
 updated_at: 2025-12-16T11:43:11Z
 url: https://github.com/astral-sh/ty/pull/1920
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Remove deprecated setting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-16 11:00_
+_@dhruvmanila_
 
 Now that we're close to the beta release, let's remove this (`python.ty.disableLanguageServices`) deprecated setting.
 

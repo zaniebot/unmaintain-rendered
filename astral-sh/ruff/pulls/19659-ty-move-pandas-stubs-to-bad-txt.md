@@ -14,14 +14,14 @@ head: alex/pandas-stubs-primer
 created_at: 2025-07-31T11:27:52Z
 updated_at: 2025-07-31T11:33:26Z
 url: https://github.com/astral-sh/ruff/pull/19659
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Move `pandas-stubs` to bad.txt
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-31 11:27_
+_@AlexWaygood_
 
 ## Summary
 

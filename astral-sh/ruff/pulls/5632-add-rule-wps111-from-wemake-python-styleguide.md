@@ -13,14 +13,14 @@ head: wps111-too_short_name-new
 created_at: 2023-07-09T18:17:50Z
 updated_at: 2025-10-29T15:03:14Z
 url: https://github.com/astral-sh/ruff/pull/5632
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add rule WPS111 from wemake-python-styleguide
 
 ---
 
-_Pull request opened by @bo5o on 2023-07-09 18:17_
+_@bo5o_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

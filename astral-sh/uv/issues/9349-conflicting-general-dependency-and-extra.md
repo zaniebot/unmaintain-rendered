@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T07:06:57Z
 updated_at: 2025-09-12T14:20:06Z
 url: https://github.com/astral-sh/uv/issues/9349
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Conflicting general dependency and extra transitive dependency
 
 ---
 
-_Issue opened by @avicooper1 on 2024-11-22 07:06_
+_@avicooper1_
 
 Linux, Python version 3.10, uv version 0.5.4
 

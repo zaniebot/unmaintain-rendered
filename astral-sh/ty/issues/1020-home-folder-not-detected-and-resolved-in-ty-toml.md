@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-16T13:59:40Z
 updated_at: 2025-08-16T14:11:25Z
 url: https://github.com/astral-sh/ty/issues/1020
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # home folder not detected and resolved in ty.toml (on a Mac)
 
 ---
 
-_Issue opened by @andythomas on 2025-08-16 13:59_
+_@andythomas_
 
 ### Summary
 

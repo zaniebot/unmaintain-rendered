@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-03T16:15:56Z
 updated_at: 2023-08-03T18:38:57Z
 url: https://github.com/astral-sh/ruff/issues/6313
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff flags (and tries to fix) UP007 for python<3.10 in some cases
 
 ---
 
-_Issue opened by @FranzForstmayr on 2023-08-03 16:15_
+_@FranzForstmayr_
 
 Following code works without error when checked with
 `ruff .\test.py --isolated --select UP --target-version py39`

@@ -13,14 +13,14 @@ head: konsti/typo_double-space
 created_at: 2025-03-14T18:22:11Z
 updated_at: 2025-03-14T18:29:45Z
 url: https://github.com/astral-sh/uv/pull/12171
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Fix double space typo
 
 ---
 
-_Pull request opened by @konstin on 2025-03-14 18:22_
+_@konstin_
 
 _No description provided._
 

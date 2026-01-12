@@ -15,14 +15,14 @@ head: fix-18959
 created_at: 2025-09-23T14:33:32Z
 updated_at: 2025-11-12T21:37:55Z
 url: https://github.com/astral-sh/ruff/pull/20535
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`pydoclint`] Fix false positive when Sphinx directives follow Raises section (`DOC502`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-23 14:33_
+_@danparizher_
 
 ## Summary
 

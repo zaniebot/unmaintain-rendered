@@ -13,14 +13,14 @@ head: tk/split-install-plan
 created_at: 2025-12-04T19:11:25Z
 updated_at: 2025-12-12T21:08:06Z
 url: https://github.com/astral-sh/uv/pull/16985
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Refactor `pip::operations::install`
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-04 19:11_
+_@EliteTK_
 
 ## Summary
 

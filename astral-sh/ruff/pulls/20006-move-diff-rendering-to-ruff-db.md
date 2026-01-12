@@ -13,14 +13,14 @@ head: brent/ruff-db-diff
 created_at: 2025-08-20T16:33:42Z
 updated_at: 2025-08-21T13:47:02Z
 url: https://github.com/astral-sh/ruff/pull/20006
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # Move diff rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-20 16:33_
+_@ntBre_
 
 Summary
 --

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T11:07:13Z
 updated_at: 2024-09-14T15:02:14Z
 url: https://github.com/astral-sh/uv/issues/7390
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # `uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`.
 
 ---
 
-_Issue opened by @YouJiacheng on 2024-09-14 11:07_
+_@YouJiacheng_
 
 Currently, `uv lock` runs in the Python interpreter specified by "Python options" (shown by `uv lock --help`).
 ![image](https://github.com/user-attachments/assets/0013c39f-f366-44f9-8dc6-bb41cd95c85e)

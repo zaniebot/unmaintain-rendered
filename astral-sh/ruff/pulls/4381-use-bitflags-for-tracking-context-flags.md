@@ -12,14 +12,14 @@ head: charlie/bitflags
 created_at: 2023-05-11T20:39:10Z
 updated_at: 2023-05-12T20:23:08Z
 url: https://github.com/astral-sh/ruff/pull/4381
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Use `bitflags` for tracking `Context` flags
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 20:39_
+_@charliermarsh_
 
 ## Summary
 

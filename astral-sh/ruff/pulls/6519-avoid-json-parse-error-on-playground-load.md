@@ -13,14 +13,14 @@ head: charlie/error
 created_at: 2023-08-12T04:02:20Z
 updated_at: 2023-08-12T04:11:45Z
 url: https://github.com/astral-sh/ruff/pull/6519
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid JSON parse error on playground load
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-12 04:02_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T20:26:04Z
 updated_at: 2024-06-14T05:03:03Z
 url: https://github.com/astral-sh/ruff/issues/11865
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # When `TOML parse error` occurred, line numbers with error was incorrectly.
 
 ---
 
-_Issue opened by @yuji38kwmt on 2024-06-13 20:26_
+_@yuji38kwmt_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

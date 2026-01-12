@@ -14,14 +14,14 @@ head: pylint-property
 created_at: 2024-04-29T11:31:02Z
 updated_at: 2024-04-30T10:59:38Z
 url: https://github.com/astral-sh/ruff/pull/11200
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`pylint`] Also emit `PLR0206` for properties with variadic parameters
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-29 11:31_
+_@AlexWaygood_
 
 ## Summary
 

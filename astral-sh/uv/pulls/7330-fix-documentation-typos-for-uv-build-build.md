@@ -13,14 +13,14 @@ head: fix/7315-build-constraint-typo
 created_at: 2024-09-12T14:02:11Z
 updated_at: 2024-09-12T19:07:34Z
 url: https://github.com/astral-sh/uv/pull/7330
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Fix documentation typos for `uv build --build-constraint` flag
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-12 14:02_
+_@Aditya-PS-05_
 
 Summary
 

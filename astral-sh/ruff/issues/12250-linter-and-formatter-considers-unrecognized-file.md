@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-09T03:34:07Z
 updated_at: 2024-07-11T04:34:26Z
 url: https://github.com/astral-sh/ruff/issues/12250
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Linter and formatter considers unrecognized file extension as Python files
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-09 03:34_
+_@dhruvmanila_
 
 Linter:
 ```console

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T10:33:50Z
 updated_at: 2025-03-08T02:36:37Z
 url: https://github.com/astral-sh/ruff/issues/16365
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Add support for unpacking targets in `with` statement
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-25 10:33_
+_@dhruvmanila_
 
 ### Description
 

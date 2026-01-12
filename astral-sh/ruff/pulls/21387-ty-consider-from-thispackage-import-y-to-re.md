@@ -14,14 +14,14 @@ head: gankra/abs-re
 created_at: 2025-11-11T18:11:20Z
 updated_at: 2025-11-11T19:45:31Z
 url: https://github.com/astral-sh/ruff/pull/21387
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Consider `from thispackage import y` to re-export `y` in `__init__.pyi`
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-11 18:11_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/1487
 

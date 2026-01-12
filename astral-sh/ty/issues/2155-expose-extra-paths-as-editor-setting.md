@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-22T12:45:54Z
 updated_at: 2025-12-24T05:11:03Z
 url: https://github.com/astral-sh/ty/issues/2155
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Expose extra-paths as editor setting?
 
 ---
 
-_Issue opened by @thangckt on 2025-12-22 12:45_
+_@thangckt_
 
 Dear Developers,
 

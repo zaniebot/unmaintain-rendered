@@ -13,14 +13,14 @@ head: charlie/foo
 created_at: 2025-12-03T06:15:10Z
 updated_at: 2025-12-03T12:51:37Z
 url: https://github.com/astral-sh/uv/pull/16956
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Filter wheels from PEP 751 files based on `--no-binary` et al in `uv pip compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-03 06:15_
+_@charliermarsh_
 
 ## Summary
 

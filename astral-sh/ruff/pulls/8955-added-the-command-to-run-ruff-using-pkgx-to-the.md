@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-01T20:03:57Z
 updated_at: 2023-12-01T20:43:02Z
 url: https://github.com/astral-sh/ruff/pull/8955
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Added the command to run ruff using pkgx to the installation.md
 
 ---
 
-_Pull request opened by @michaelessiet on 2023-12-01 20:03_
+_@michaelessiet_
 
 ## Summary
 

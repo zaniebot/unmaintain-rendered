@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T01:28:56Z
 updated_at: 2024-10-15T15:37:35Z
 url: https://github.com/astral-sh/uv/issues/8030
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Bug: `uv publish` missing `METADATA` file
 
 ---
 
-_Issue opened by @jamesbraza on 2024-10-09 01:28_
+_@jamesbraza_
 
 I am using `uv==0.4.20` and just migrated a publish GitHub Action in a repo using [this workspace layout](https://docs.astral.sh/uv/concepts/workspaces/#workspace-layouts) for several packages to `uv publish`.
 

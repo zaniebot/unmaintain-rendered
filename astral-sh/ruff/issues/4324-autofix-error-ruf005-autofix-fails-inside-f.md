@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-09T19:01:26Z
 updated_at: 2023-05-18T14:33:35Z
 url: https://github.com/astral-sh/ruff/issues/4324
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] RUF005 autofix fails inside f-string: `f"{a() + ['b']}"`
 
 ---
 
-_Issue opened by @konstin on 2023-05-09 19:01_
+_@konstin_
 
 In ruff https://github.com/charliermarsh/ruff/commit/99a755f936ebd73cdd1bfccbc121c31d4b27751e, the following snippet causes the autofix RUF005 to introduce a syntax error:
 

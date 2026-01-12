@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T09:54:38Z
 updated_at: 2025-05-02T19:53:23Z
 url: https://github.com/astral-sh/ruff/issues/17112
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # S603 false positive on safe cmd
 
 ---
 
-_Issue opened by @osauldmy on 2025-04-01 09:54_
+_@osauldmy_
 
 ### Summary
 

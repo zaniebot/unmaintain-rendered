@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-01-19T01:57:25Z
 updated_at: 2024-01-19T01:59:08Z
 url: https://github.com/astral-sh/uv/pull/989
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Remove `[puffin]` prefix
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 01:57_
+_@charliermarsh_
 
 And disable the plan job on CI now.
 

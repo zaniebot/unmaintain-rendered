@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-14T21:04:49Z
 updated_at: 2025-02-14T22:12:10Z
 url: https://github.com/astral-sh/uv/issues/11525
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # git bisect like feature for updating lock files
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-14 21:04_
+_@gaborbernat_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-12T20:58:20Z
 updated_at: 2024-10-03T19:44:45Z
 url: https://github.com/astral-sh/ruff/issues/9962
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Feature request: Make F401 unused-imports configurable for modules with side effects
 
 ---
 
-_Issue opened by @Hnasar on 2024-02-12 20:58_
+_@Hnasar_
 
 We have a handful of modules that have import side effects. I know, I know… we should not rely on that (#4056) – but in lieu of fixing everything, would it be possible to configure a list of modules that should never be auto-removed?
 

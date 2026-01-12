@@ -13,14 +13,14 @@ head: zb/exclude-newer-delay
 created_at: 2025-11-21T21:59:18Z
 updated_at: 2026-01-06T16:55:43Z
 url: https://github.com/astral-sh/uv/pull/16814
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Add support for relative durations in `exclude-newer`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-21 21:59_
+_@zanieb_
 
 Adds support for "friendly" durations like, 1 week, 7 days, 24 hours using Jiff's parser. During resolution, we calculate this relative to the current time and resolve it into a concrete timestamp for the lockfile. If the span has not changed, e.g., to another relative value, then locking again will not change the lockfile. The locked timestamp will only be updated when the lockfile is invalidated, e.g., with `--upgrade`. This prevents the lockfile from repeatedly churning when a relative value is used.
 

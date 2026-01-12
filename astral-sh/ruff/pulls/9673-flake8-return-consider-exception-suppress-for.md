@@ -12,14 +12,14 @@ head: fix(RET504)/consider-exception-suppress-when-analyzing-unnecessary-assign
 created_at: 2024-01-29T12:47:52Z
 updated_at: 2024-01-29T17:29:05Z
 url: https://github.com/astral-sh/ruff/pull/9673
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [flake8-return] Consider exception suppress for unnecessary assignment
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-29 12:47_
+_@mikeleppane_
 
 ## Summary
 

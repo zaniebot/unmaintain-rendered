@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-27T17:21:19Z
 updated_at: 2025-02-06T15:14:12Z
 url: https://github.com/astral-sh/ruff/issues/3759
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Feature] Add isort option for lines-before-import
 
 ---
 
-_Issue opened by @Spectre5 on 2023-03-27 17:21_
+_@Spectre5_
 
 Can we get this option added to ruff?
 

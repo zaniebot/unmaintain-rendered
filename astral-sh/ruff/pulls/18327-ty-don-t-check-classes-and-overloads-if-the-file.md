@@ -14,14 +14,14 @@ head: alex/unnecessary-class-checks
 created_at: 2025-05-26T19:45:22Z
 updated_at: 2025-06-28T14:13:46Z
 url: https://github.com/astral-sh/ruff/pull/18327
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Don't check classes and overloads if the file isn't first-party code
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-26 19:45_
+_@AlexWaygood_
 
 _No description provided._
 

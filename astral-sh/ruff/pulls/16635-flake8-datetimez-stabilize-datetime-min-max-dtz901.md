@@ -13,14 +13,14 @@ head: brent/dtz901-0.10
 created_at: 2025-03-11T16:33:01Z
 updated_at: 2025-03-12T18:43:36Z
 url: https://github.com/astral-sh/ruff/pull/16635
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-datetimez`] Stabilize `datetime-min-max` (`DTZ901`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 16:33_
+_@ntBre_
 
 Summary
 --

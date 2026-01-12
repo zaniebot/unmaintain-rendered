@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-12T11:58:50Z
 updated_at: 2026-01-09T09:23:17Z
 url: https://github.com/astral-sh/ty/issues/819
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # CLI: Mono-repository support
 
 ---
 
-_Issue opened by @futurewasfree on 2025-07-12 11:58_
+_@futurewasfree_
 
 ### Question
 

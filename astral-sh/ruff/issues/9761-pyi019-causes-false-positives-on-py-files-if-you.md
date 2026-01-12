@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T19:07:49Z
 updated_at: 2025-04-28T18:57:38Z
 url: https://github.com/astral-sh/ruff/issues/9761
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PYI019 causes false positives on `.py` files if you support Python <=3.10
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-02-01 19:07_
+_@AlexWaygood_
 
 I just tried enabling ruff's PYI rules on [typeshed-stats](https://github.com/AlexWaygood/typeshed-stats), a hobby project of mine, and ran into a false positive with PYI019. I have the following class in the project:
 

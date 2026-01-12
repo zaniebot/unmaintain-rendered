@@ -13,14 +13,14 @@ head: renovate/rust-futures-monorepo
 created_at: 2024-10-07T00:22:55Z
 updated_at: 2024-10-07T17:59:23Z
 url: https://github.com/astral-sh/uv/pull/7953
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Update Rust crate futures to v0.3.31
 
 ---
 
-_Pull request opened by @renovate on 2024-10-07 00:22_
+_@renovate_
 
 This PR contains the following updates:
 

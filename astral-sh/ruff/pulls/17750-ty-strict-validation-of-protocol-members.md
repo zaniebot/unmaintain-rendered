@@ -13,14 +13,14 @@ head: alex/protocol-member-validation
 created_at: 2025-04-30T21:57:48Z
 updated_at: 2025-08-19T22:46:04Z
 url: https://github.com/astral-sh/ruff/pull/17750
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [ty] Strict validation of protocol members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-30 21:57_
+_@AlexWaygood_
 
 ## Summary
 

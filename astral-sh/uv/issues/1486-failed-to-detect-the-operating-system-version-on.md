@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T12:43:42Z
 updated_at: 2024-02-16T14:44:48Z
 url: https://github.com/astral-sh/uv/issues/1486
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Failed to detect the operating system version on Rocky Linux 9.3
 
 ---
 
-_Issue opened by @AtomBaf on 2024-02-16 12:43_
+_@AtomBaf_
 
 Hi there,
 

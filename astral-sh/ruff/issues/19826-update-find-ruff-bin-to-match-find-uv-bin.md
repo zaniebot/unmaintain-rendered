@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-08T12:26:30Z
 updated_at: 2025-08-08T12:26:30Z
 url: https://github.com/astral-sh/ruff/issues/19826
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Update `find_ruff_bin` to match `find_uv_bin`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-08 12:26_
+_@zanieb_
 
 I made a bunch of changes over in https://github.com/astral-sh/uv/blob/main/python/uv/_find_uv.py that we'll want to port here.
 

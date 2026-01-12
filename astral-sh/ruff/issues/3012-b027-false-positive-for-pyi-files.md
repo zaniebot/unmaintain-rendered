@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-18T16:17:32Z
 updated_at: 2023-02-19T14:21:35Z
 url: https://github.com/astral-sh/ruff/issues/3012
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # B027 false positive for .pyi files
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 16:17_
+_@JonathanPlasse_
 
 ```python
 from _typeshed import Incomplete

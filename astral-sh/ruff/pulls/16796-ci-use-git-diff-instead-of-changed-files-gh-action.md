@@ -13,14 +13,14 @@ head: micha/replace-changed-files
 created_at: 2025-03-17T10:25:06Z
 updated_at: 2025-03-21T22:27:29Z
 url: https://github.com/astral-sh/ruff/pull/16796
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [ci] Use `git diff` instead of `changed-files` GH action
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 10:25_
+_@MichaReiser_
 
 ## Summary
 

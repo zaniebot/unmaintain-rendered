@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T21:32:25Z
 updated_at: 2025-10-07T11:03:36Z
 url: https://github.com/astral-sh/uv/issues/16108
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # How to prefer cached package version?
 
 ---
 
-_Issue opened by @pycaw on 2025-10-02 21:32_
+_@pycaw_
 
 ### Question
 

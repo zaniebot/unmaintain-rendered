@@ -15,14 +15,14 @@ head: gankra/warn-dep
 created_at: 2025-07-15T20:22:48Z
 updated_at: 2025-07-18T23:59:17Z
 url: https://github.com/astral-sh/ruff/pull/19376
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Add support for `@warnings.deprecated`
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-15 20:22_
+_@Gankra_
 
 * [x] basic handling
   * [x] parse and discover `@warnings.deprecated` attributes

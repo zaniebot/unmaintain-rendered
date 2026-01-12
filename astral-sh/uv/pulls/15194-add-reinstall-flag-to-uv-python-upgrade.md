@@ -13,14 +13,14 @@ head: jtfm/upgrade-reinstall
 created_at: 2025-08-09T17:15:59Z
 updated_at: 2025-08-11T20:20:06Z
 url: https://github.com/astral-sh/uv/pull/15194
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add `--reinstall` flag to `uv python upgrade`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-08-09 17:15_
+_@jtfmumm_
 
 As described in #15179, there are cases where it can be useful to reinstall the latest patch on upgrade if it is already installed. Using this flag, you don't need to know ahead of time if you have the latest patch already.
 

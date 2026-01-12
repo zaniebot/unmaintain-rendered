@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T07:08:49Z
 updated_at: 2025-10-02T15:14:39Z
 url: https://github.com/astral-sh/ruff/issues/18657
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # TD003 detection improvement
 
 ---
 
-_Issue opened by @FlorinBuffet on 2025-06-13 07:08_
+_@FlorinBuffet_
 
 ### Summary
 

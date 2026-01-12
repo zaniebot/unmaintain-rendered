@@ -12,14 +12,14 @@ head: formatter-instability
 created_at: 2023-08-09T21:14:56Z
 updated_at: 2023-12-01T23:46:44Z
 url: https://github.com/astral-sh/ruff/pull/6460
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix formatter instability with half-indented comment
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-09 21:14_
+_@LaBatata101_
 
 ## Summary
 The bug was happening in this [loop](https://github.com/LaBatata101/ruff/blob/75f402eb8262f88dc0445beb6cab4d3cd224716c/crates/ruff_python_formatter/src/comments/placement.rs#L545). 

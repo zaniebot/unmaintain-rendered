@@ -13,14 +13,14 @@ head: dcreager/tdd
 created_at: 2025-01-31T21:51:14Z
 updated_at: 2025-02-04T19:32:13Z
 url: https://github.com/astral-sh/ruff/pull/15861
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Use ternary decision diagrams (TDDs) for visibility constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-31 21:51_
+_@dcreager_
 
 We now use ternary decision diagrams (TDDs) to represent visibility constraints.  A TDD is just like a BDD ([_binary_ decision diagram](https://en.wikipedia.org/wiki/Binary_decision_diagram)), but with "ambiguous" as an additional allowed value.  Unlike the previous representation, TDDs are strongly normalizing, so equivalent ternary formulas are represented by exactly the same graph node, and can be compared for equality in constant time.
 

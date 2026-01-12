@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T13:16:15Z
 updated_at: 2023-08-17T12:05:54Z
 url: https://github.com/astral-sh/ruff/issues/1058
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # request: add trailing commas
 
 ---
 
-_Issue opened by @MartinBernstorff on 2022-12-05 13:16_
+_@MartinBernstorff_
 
 Only thing in my pre-commit toolchain that Ruff hasn't replaced yet. Would love to see it, and thanks for all your work!
 

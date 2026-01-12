@@ -13,14 +13,14 @@ head: refurb/furb113
 created_at: 2023-08-20T12:35:40Z
 updated_at: 2023-08-29T10:41:20Z
 url: https://github.com/astral-sh/ruff/pull/6702
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [refurb] Implement `repeated-append` rule (`FURB113`)
 
 ---
 
-_Pull request opened by @SavchenkoValeriy on 2023-08-20 12:35_
+_@SavchenkoValeriy_
 
 ## Summary
 

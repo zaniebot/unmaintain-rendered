@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-17T02:10:35Z
 updated_at: 2021-09-17T18:39:38Z
 url: https://github.com/clap-rs/clap/issues/2772
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Very large display_order values cause a crash while displaying help
 
 ---
 
-_Issue opened by @tangmi on 2021-09-17 02:10_
+_@tangmi_
 
 ### Please complete the following tasks
 

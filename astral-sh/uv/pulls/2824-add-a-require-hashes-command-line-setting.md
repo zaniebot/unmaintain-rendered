@@ -14,14 +14,14 @@ head: charlie/check-hashes
 created_at: 2024-04-04T18:56:03Z
 updated_at: 2024-04-10T18:07:05Z
 url: https://github.com/astral-sh/uv/pull/2824
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Add a `--require-hashes` command-line setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-04 18:56_
+_@charliermarsh_
 
 ## Summary
 

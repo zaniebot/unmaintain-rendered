@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T09:26:53Z
 updated_at: 2025-06-10T10:18:38Z
 url: https://github.com/astral-sh/ruff/issues/18608
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Adding flake8-future-annotations for deprecated typing features
 
 ---
 
-_Issue opened by @joshlk on 2025-06-10 09:26_
+_@joshlk_
 
 ### Summary
 

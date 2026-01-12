@@ -13,14 +13,14 @@ head: static-crt
 created_at: 2024-05-28T22:33:38Z
 updated_at: 2024-05-29T12:00:12Z
 url: https://github.com/astral-sh/ruff/pull/11589
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Windows: Statically linked C runtime
 
 ---
 
-_Pull request opened by @T-256 on 2024-05-28 22:33_
+_@T-256_
 
 ## Summary
 Here is a comparison between [0.4.6 released binaries](https://github.com/astral-sh/ruff/actions/runs/9274921378) (dynamic-crt) and [current PR binaries](https://github.com/T-256/ruff/actions/runs/9283204908) (static-crt):

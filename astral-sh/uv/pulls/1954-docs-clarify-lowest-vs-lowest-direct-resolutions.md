@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-24T19:28:46Z
 updated_at: 2024-02-25T00:41:04Z
 url: https://github.com/astral-sh/uv/pull/1954
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # docs: clarify lowest vs lowest-direct resolutions
 
 ---
 
-_Pull request opened by @samypr100 on 2024-02-24 19:28_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

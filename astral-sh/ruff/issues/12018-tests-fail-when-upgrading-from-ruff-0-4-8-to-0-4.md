@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-25T03:20:09Z
 updated_at: 2024-06-28T05:13:23Z
 url: https://github.com/astral-sh/ruff/issues/12018
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Tests fail when upgrading from ruff 0.4.8 to 0.4.10
 
 ---
 
-_Issue opened by @eli-schwartz on 2024-06-25 03:20_
+_@eli-schwartz_
 
 Attempting to package ruff 0.4.9 and later for Gentoo, I hit the following test failures.
 

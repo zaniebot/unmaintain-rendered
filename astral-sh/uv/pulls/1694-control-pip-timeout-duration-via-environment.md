@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-19T14:23:59Z
 updated_at: 2024-02-20T04:37:57Z
 url: https://github.com/astral-sh/uv/pull/1694
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Control pip timeout duration via environment variable
 
 ---
 
-_Pull request opened by @Di-Is on 2024-02-19 14:23_
+_@Di-Is_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

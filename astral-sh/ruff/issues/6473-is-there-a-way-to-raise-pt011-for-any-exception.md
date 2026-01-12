@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-10T06:58:03Z
 updated_at: 2023-08-17T02:15:52Z
 url: https://github.com/astral-sh/ruff/issues/6473
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Is there a way to raise `PT011` for any exception types?
 
 ---
 
-_Issue opened by @harupy on 2023-08-10 06:58_
+_@harupy_
 
 ### Discussed in https://github.com/astral-sh/ruff/discussions/6382
 

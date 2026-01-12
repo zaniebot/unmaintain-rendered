@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-21T12:26:15Z
 updated_at: 2024-07-22T14:28:21Z
 url: https://github.com/astral-sh/uv/issues/5256
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv pip install` should support reasonable variations on `pythonw.exe` e.g. `.pythonw.exe`
 
 ---
 
-_Issue opened by @paveldikov on 2024-07-21 12:26_
+_@paveldikov_
 
 When generating GUI script executables on Windows, `uv` will take `python_executable` and [try to replace the filename with a constant `"pythonw.exe"`](https://github.com/astral-sh/uv/blob/12518a01a4a436ba4c8b8cfc51646a253bcc8c6c/crates/install-wheel-rs/src/wheel.rs#L236-L247).
 

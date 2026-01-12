@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-14T09:24:02Z
 updated_at: 2024-02-14T14:59:27Z
 url: https://github.com/astral-sh/ruff/issues/9980
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Missing whitespace/newline detection at end of a long string split over multiple lines
 
 ---
 
-_Issue opened by @swaldhoer on 2024-02-14 09:24_
+_@swaldhoer_
 
 Consider this long string:
 

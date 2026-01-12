@@ -13,14 +13,14 @@ head: charlie/rel
 created_at: 2024-02-16T03:57:10Z
 updated_at: 2024-02-16T04:19:44Z
 url: https://github.com/astral-sh/uv/pull/1421
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Parse `-r` and `-c` entries as relative to containing file
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 03:57_
+_@charliermarsh_
 
 ## Summary
 

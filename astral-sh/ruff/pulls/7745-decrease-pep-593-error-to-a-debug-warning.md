@@ -13,14 +13,14 @@ head: charlie/warning
 created_at: 2023-10-01T18:27:20Z
 updated_at: 2023-10-01T18:43:09Z
 url: https://github.com/astral-sh/ruff/pull/7745
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Decrease PEP 593 error to a debug warning
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 18:27_
+_@charliermarsh_
 
 ## Summary
 

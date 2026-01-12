@@ -13,14 +13,14 @@ head: zb/run-python-missing
 created_at: 2024-08-21T17:57:29Z
 updated_at: 2024-08-21T18:22:21Z
 url: https://github.com/astral-sh/uv/pull/6362
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Fix `uv run python` when the executable has a different name
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 17:57_
+_@zanieb_
 
 _No description provided._
 

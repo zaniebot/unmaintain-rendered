@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T22:42:46Z
 updated_at: 2025-04-09T23:01:51Z
 url: https://github.com/astral-sh/uv/issues/12794
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # FreeBSD - No download found for request: cpython-any-freebsd-x86_64-none
 
 ---
 
-_Issue opened by @schrodyn on 2025-04-09 22:42_
+_@schrodyn_
 
 ### Summary
 

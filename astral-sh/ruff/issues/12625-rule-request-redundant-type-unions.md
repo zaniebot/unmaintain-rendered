@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T10:15:59Z
 updated_at: 2024-08-02T11:48:50Z
 url: https://github.com/astral-sh/ruff/issues/12625
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule request: redundant type unions
 
 ---
 
-_Issue opened by @cake-monotone on 2024-08-02 10:15_
+_@cake-monotone_
 
 Hi! I noticed that Ruff doesn't warn about redundant type unions.
 

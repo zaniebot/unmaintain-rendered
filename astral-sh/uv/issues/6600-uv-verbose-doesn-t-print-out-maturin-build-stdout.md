@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T11:20:35Z
 updated_at: 2024-08-25T11:42:23Z
 url: https://github.com/astral-sh/uv/issues/6600
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # UV --verbose doesn't print out maturin build stdout
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-08-25 11:20_
+_@ion-elgreco_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

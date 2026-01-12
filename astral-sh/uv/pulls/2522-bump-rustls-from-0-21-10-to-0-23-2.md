@@ -12,14 +12,14 @@ head: dependabot/cargo/rustls-0.23.2
 created_at: 2024-03-18T21:42:21Z
 updated_at: 2024-03-18T21:52:05Z
 url: https://github.com/astral-sh/uv/pull/2522
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Bump rustls from 0.21.10 to 0.23.2
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-18 21:42_
+_@dependabot_
 
 Bumps [rustls](https://github.com/rustls/rustls) from 0.21.10 to 0.23.2.
 <details>

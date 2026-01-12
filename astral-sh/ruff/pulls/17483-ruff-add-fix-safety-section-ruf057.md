@@ -13,14 +13,14 @@ head: document-fix-safety-unnecessary-round
 created_at: 2025-04-19T16:37:31Z
 updated_at: 2025-05-01T06:03:53Z
 url: https://github.com/astral-sh/ruff/pull/17483
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`ruff`] add fix safety section (`RUF057`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-19 16:37_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `RUF057` (#15584 )
 

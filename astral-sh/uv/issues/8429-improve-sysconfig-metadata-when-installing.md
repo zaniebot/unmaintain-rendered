@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T22:11:31Z
 updated_at: 2025-04-30T15:27:33Z
 url: https://github.com/astral-sh/uv/issues/8429
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Improve `sysconfig` metadata when installing managed Python distributions
 
 ---
 
-_Issue opened by @zanieb on 2024-10-21 22:11_
+_@zanieb_
 
 This is a tracking issue for various problems that come from some of the `sysconfig` variables in the `python-build-standalone` distribution being incorrect.
 

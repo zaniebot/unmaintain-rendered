@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T11:55:21Z
 updated_at: 2023-02-15T17:50:45Z
 url: https://github.com/astral-sh/ruff/issues/2808
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ruff autocompletion for --select rules
 
 ---
 
-_Issue opened by @spaceone on 2023-02-12 11:55_
+_@spaceone_
 
 `ruff check --select E`<tab> currently suggests filenames starting with `E` instead of the rules starting with `E`.
 

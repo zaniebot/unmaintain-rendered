@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T23:40:50Z
 updated_at: 2025-06-05T23:22:46Z
 url: https://github.com/astral-sh/uv/issues/7055
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Ignore path dependency's workspace with `uv lock`
 
 ---
 
-_Issue opened by @helderco on 2024-09-04 23:40_
+_@helderco_
 
 I have a library `dagger-io` that is vendored locally in a `./sdk` directory in a new project `main` (structured as a library):
 

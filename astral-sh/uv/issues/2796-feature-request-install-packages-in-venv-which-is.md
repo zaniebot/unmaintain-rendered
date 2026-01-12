@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T03:35:14Z
 updated_at: 2024-04-03T04:20:14Z
 url: https://github.com/astral-sh/uv/issues/2796
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # [feature request] install packages in venv which is in the other dir
 
 ---
 
-_Issue opened by @gmankab on 2024-04-03 03:35_
+_@gmankab_
 
 [feature request] install packages in venv which is in the other dir
 

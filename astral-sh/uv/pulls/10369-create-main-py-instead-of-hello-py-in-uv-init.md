@@ -14,14 +14,14 @@ head: gankra/apppy_juice
 created_at: 2025-01-07T15:29:55Z
 updated_at: 2025-05-16T06:31:30Z
 url: https://github.com/astral-sh/uv/pull/10369
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Create `main.py` instead of `hello.py` in `uv init`
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-07 15:29_
+_@Gankra_
 
 Initially it seemed like `app.py` might be slightly more desirable but people seem to overwhelmingly favour `main.py` as a good "generic" name.
 

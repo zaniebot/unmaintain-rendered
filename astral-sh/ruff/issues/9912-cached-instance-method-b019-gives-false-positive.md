@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T15:16:13Z
 updated_at: 2024-05-06T18:19:23Z
 url: https://github.com/astral-sh/ruff/issues/9912
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `cached-instance-method (B019)` gives false positive when decorated method belongs to `enum.Enum`
 
 ---
 
-_Issue opened by @jakob-keller on 2024-02-09 15:16_
+_@jakob-keller_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

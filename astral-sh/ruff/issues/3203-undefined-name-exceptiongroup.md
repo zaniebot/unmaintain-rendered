@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-24T08:16:14Z
 updated_at: 2023-02-24T12:10:57Z
 url: https://github.com/astral-sh/ruff/issues/3203
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Undefined name: `ExceptionGroup`
 
 ---
 
-_Issue opened by @torarvid on 2023-02-24 08:16_
+_@torarvid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

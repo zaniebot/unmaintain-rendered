@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T12:23:04Z
 updated_at: 2023-09-02T08:23:14Z
 url: https://github.com/astral-sh/ruff/issues/6974
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: `%` formatting in dictionary keys
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-29 12:23_
+_@MichaReiser_
 
 Black breaks dictionary entries after the `%` even if the key otherwise would fit:
 

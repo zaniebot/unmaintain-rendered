@@ -13,14 +13,14 @@ head: zb/debug-net
 created_at: 2024-04-04T18:38:25Z
 updated_at: 2024-04-17T17:25:58Z
 url: https://github.com/astral-sh/uv/pull/2823
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Add URL to metadata retrieval trace
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-04 18:38_
+_@zanieb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: format_expr_if_exp
 created_at: 2023-07-07T16:39:58Z
 updated_at: 2023-07-08T09:45:45Z
 url: https://github.com/astral-sh/ruff/pull/5597
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 #  Format ExprIfExp (ternary operator)
 
 ---
 
-_Pull request opened by @konstin on 2023-07-07 16:39_
+_@konstin_
 
 ## Summary
 

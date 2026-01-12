@@ -13,14 +13,14 @@ head: PLW3201
 created_at: 2023-08-10T21:20:52Z
 updated_at: 2023-12-01T23:46:41Z
 url: https://github.com/astral-sh/ruff/pull/6486
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # [`pylint`] Implement `bad-dunder-name` (`W3201`)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-10 21:20_
+_@LaBatata101_
 
 ## Summary
 

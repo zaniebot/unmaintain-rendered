@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T17:47:09Z
 updated_at: 2025-06-26T21:26:43Z
 url: https://github.com/astral-sh/uv/issues/7299
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # UV tries to build from source during package resolution
 
 ---
 
-_Issue opened by @jdumas on 2024-09-11 17:47_
+_@jdumas_
 
 Hi. I'm trying to install the setup the following project:
 

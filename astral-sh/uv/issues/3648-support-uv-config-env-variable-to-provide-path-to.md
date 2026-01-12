@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-18T13:28:18Z
 updated_at: 2024-05-19T02:25:34Z
 url: https://github.com/astral-sh/uv/issues/3648
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Support UV_CONFIG env variable to provide path to global configuration file
 
 ---
 
-_Issue opened by @kpfleming on 2024-05-18 13:28_
+_@kpfleming_
 
 When building a container image with some pre-configuration for uv, I'd like to be able to run commands later without having to specify the path to the configuration file... and the container image doesn't have 'user home directories' so the usual discovery process isn't applicable.
 

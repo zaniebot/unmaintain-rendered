@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T23:36:24Z
 updated_at: 2024-03-27T14:34:19Z
 url: https://github.com/astral-sh/uv/issues/2629
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Consider reading `pyproject.toml` metadata directly
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-22 23:36_
+_@charliermarsh_
 
 According to the spec:
 

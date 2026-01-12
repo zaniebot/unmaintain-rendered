@@ -13,14 +13,14 @@ head: single-quote-docs
 created_at: 2024-06-24T15:44:42Z
 updated_at: 2024-07-10T16:29:30Z
 url: https://github.com/astral-sh/ruff/pull/12015
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [Docs] Clear instruction for single quotes (linter and formatter)
 
 ---
 
-_Pull request opened by @jackdesert on 2024-06-24 15:44_
+_@jackdesert_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

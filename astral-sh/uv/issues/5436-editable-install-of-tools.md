@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-25T07:25:13Z
 updated_at: 2024-07-26T20:30:16Z
 url: https://github.com/astral-sh/uv/issues/5436
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Editable install of tools 
 
 ---
 
-_Issue opened by @ollebompa on 2024-07-25 07:25_
+_@ollebompa_
 
 Hi!
 

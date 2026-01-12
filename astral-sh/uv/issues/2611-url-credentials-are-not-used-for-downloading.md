@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-22T11:58:39Z
 updated_at: 2024-03-22T14:24:53Z
 url: https://github.com/astral-sh/uv/issues/2611
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # URL credentials are not used for downloading packages
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2024-03-22 11:58_
+_@NiklasRosenstein_
 
 * __Platform__: amd64-darwin
 * __UV version__: 0.1.23

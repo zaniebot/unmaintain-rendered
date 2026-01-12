@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T16:56:15Z
 updated_at: 2025-05-14T21:47:35Z
 url: https://github.com/astral-sh/uv/issues/13457
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Support shared environment like conda
 
 ---
 
-_Issue opened by @taoari on 2025-05-14 16:56_
+_@taoari_
 
 ### Summary
 

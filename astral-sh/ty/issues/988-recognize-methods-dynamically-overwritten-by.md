@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T15:42:01Z
 updated_at: 2025-11-18T16:10:35Z
 url: https://github.com/astral-sh/ty/issues/988
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Recognize methods dynamically overwritten by metaclass
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-14 15:42_
+_@CharlesPerrotMinot_
 
 ### Summary
 

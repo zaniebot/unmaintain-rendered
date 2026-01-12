@@ -11,14 +11,14 @@ head: force_flag
 created_at: 2025-09-09T15:44:16Z
 updated_at: 2025-10-12T10:19:10Z
 url: https://github.com/astral-sh/uv/pull/15757
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # feat: implement --force flag for lock
 
 ---
 
-_Pull request opened by @11happy on 2025-09-09 15:44_
+_@11happy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

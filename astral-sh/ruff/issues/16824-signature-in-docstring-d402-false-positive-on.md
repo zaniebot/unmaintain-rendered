@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T07:52:09Z
 updated_at: 2025-03-18T14:15:12Z
 url: https://github.com/astral-sh/ruff/issues/16824
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `signature-in-docstring` (`D402`) - false positive on usage example
 
 ---
 
-_Issue opened by @DetachHead on 2025-03-18 07:52_
+_@DetachHead_
 
 ### Summary
 

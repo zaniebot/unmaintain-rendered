@@ -12,14 +12,14 @@ head: charlie/comment
 created_at: 2023-05-14T01:59:16Z
 updated_at: 2023-05-14T02:26:53Z
 url: https://github.com/astral-sh/ruff/pull/4426
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Use `TextSize` for flake8-todos `Directive` methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-14 01:59_
+_@charliermarsh_
 
 Some follow-ups from #4413.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T08:29:06Z
 updated_at: 2025-10-24T06:10:40Z
 url: https://github.com/astral-sh/ruff/issues/21040
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `E402`: Import order with `monkey.patch_all`
 
 ---
 
-_Issue opened by @alanwilter on 2025-10-23 08:29_
+_@alanwilter_
 
 ### Question
 

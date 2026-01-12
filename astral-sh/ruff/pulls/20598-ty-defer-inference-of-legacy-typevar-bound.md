@@ -14,14 +14,14 @@ head: cjm/legacytv
 created_at: 2025-09-27T01:53:57Z
 updated_at: 2025-10-09T23:19:43Z
 url: https://github.com/astral-sh/ruff/pull/20598
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] defer inference of legacy TypeVar bound/constraints/defaults
 
 ---
 
-_Pull request opened by @carljm on 2025-09-27 01:53_
+_@carljm_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-08T17:05:24Z
 updated_at: 2020-03-08T18:24:49Z
 url: https://github.com/clap-rs/clap/issues/1733
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `+nightly` detection in clap
 
 ---
 
-_Issue opened by @xd009642 on 2020-03-08 17:05_
+_@xd009642_
 
 So I'm working on a cargo subcommand and I now call cargo itself a couple of times during application via `std::process::Command`, however I need to detect if the user has added `cargo +nightly` before calling my command and was wondering how to do that with clap?
 

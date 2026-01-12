@@ -14,14 +14,14 @@ head: charlie/py
 created_at: 2024-07-14T01:41:49Z
 updated_at: 2024-07-14T01:51:48Z
 url: https://github.com/astral-sh/uv/pull/5042
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Update standalone Pythons to include 3.12.4
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-14 01:41_
+_@charliermarsh_
 
 _No description provided._
 

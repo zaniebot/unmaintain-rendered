@@ -13,14 +13,14 @@ head: visit-boolean-test-guard
 created_at: 2023-10-11T06:18:09Z
 updated_at: 2023-10-11T13:28:35Z
 url: https://github.com/astral-sh/ruff/pull/7911
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Visit pattern match guard as a boolean test
 
 ---
 
-_Pull request opened by @harupy on 2023-10-11 06:18_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T02:07:58Z
 updated_at: 2025-01-22T13:19:29Z
 url: https://github.com/astral-sh/uv/issues/10839
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # spurious "--frozen is a no-op" warning for PEP723 script with lockfile
 
 ---
 
-_Issue opened by @ctcjab on 2025-01-22 02:07_
+_@ctcjab_
 
 ### Summary
 

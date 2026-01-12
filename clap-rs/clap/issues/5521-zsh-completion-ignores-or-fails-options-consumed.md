@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T18:54:47Z
 updated_at: 2024-06-07T21:11:45Z
 url: https://github.com/clap-rs/clap/issues/5521
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # zsh completion ignores or fails options consumed by the zsh _arguments helper function
 
 ---
 
-_Issue opened by @ben-- on 2024-06-07 18:54_
+_@ben--_
 
 ### Please complete the following tasks
 

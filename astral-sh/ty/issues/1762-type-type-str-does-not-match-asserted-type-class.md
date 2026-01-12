@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T21:33:58Z
 updated_at: 2025-12-23T00:21:49Z
 url: https://github.com/astral-sh/ty/issues/1762
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type `type[str]` does not match asserted type `<class 'str'>`
 
 ---
 
-_Issue opened by @jorenham on 2025-12-04 21:33_
+_@jorenham_
 
 ### Summary
 

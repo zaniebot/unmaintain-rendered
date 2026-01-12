@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T21:42:30Z
 updated_at: 2025-05-18T22:05:03Z
 url: https://github.com/astral-sh/uv/issues/13515
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency
 
 ---
 
-_Issue opened by @WibblyGhost on 2025-05-18 21:42_
+_@WibblyGhost_
 
 ### Summary
 

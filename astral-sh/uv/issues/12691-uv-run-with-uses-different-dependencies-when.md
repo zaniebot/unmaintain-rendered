@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T11:11:46Z
 updated_at: 2025-05-27T07:56:27Z
 url: https://github.com/astral-sh/uv/issues/12691
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # `uv run --with` uses different dependencies when prefixed with `python`
 
 ---
 
-_Issue opened by @provinzkraut on 2025-04-06 11:11_
+_@provinzkraut_
 
 ### Summary
 

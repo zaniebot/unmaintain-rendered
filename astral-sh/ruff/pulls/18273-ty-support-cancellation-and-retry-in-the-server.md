@@ -14,14 +14,14 @@ head: micha/server-cancellation-handling
 created_at: 2025-05-23T09:15:52Z
 updated_at: 2025-05-28T08:59:30Z
 url: https://github.com/astral-sh/ruff/pull/18273
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Support cancellation and retry in the server
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-23 09:15_
+_@MichaReiser_
 
 ## Summary
 

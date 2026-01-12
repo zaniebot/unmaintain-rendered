@@ -13,14 +13,14 @@ head: charlie/pep-751-version
 created_at: 2025-04-21T22:49:53Z
 updated_at: 2025-04-21T22:58:41Z
 url: https://github.com/astral-sh/uv/pull/13030
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Omit PEP 751 version for source trees
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-21 22:49_
+_@charliermarsh_
 
 ## Summary
 

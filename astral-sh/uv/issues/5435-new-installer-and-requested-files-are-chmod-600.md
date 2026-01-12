@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T07:10:17Z
 updated_at: 2024-07-25T20:50:32Z
 url: https://github.com/astral-sh/uv/issues/5435
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # new INSTALLER and REQUESTED files are chmod 600
 
 ---
 
-_Issue opened by @AtomBaf on 2024-07-25 07:10_
+_@AtomBaf_
 
 Since recently, I noticed that the `uv pip install` command will add 2 files in the metadata directory of an installed package: `INSTALLER` and `REQUESTED`.
 

@@ -15,14 +15,14 @@ head: charlie/ex
 created_at: 2024-08-13T18:01:38Z
 updated_at: 2024-08-14T13:55:42Z
 url: https://github.com/astral-sh/uv/pull/6065
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Propagate fork markers to extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-13 18:01_
+_@charliermarsh_
 
 ## Summary
 

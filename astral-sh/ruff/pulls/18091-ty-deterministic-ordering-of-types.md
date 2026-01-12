@@ -13,14 +13,14 @@ head: david/stable-ordering
 created_at: 2025-05-14T10:06:01Z
 updated_at: 2025-05-15T19:01:42Z
 url: https://github.com/astral-sh/ruff/pull/18091
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Deterministic ordering of types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-14 10:06_
+_@sharkdp_
 
 ## Summary
 

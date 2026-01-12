@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T15:22:02Z
 updated_at: 2025-12-04T15:42:58Z
 url: https://github.com/astral-sh/uv/issues/16980
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Split `Printer::stdout()` to be harder to get wrong
 
 ---
 
-_Issue opened by @konstin on 2025-12-04 15:22_
+_@konstin_
 
 Currently, multiple locations that have machine readable output use `printer.stdout()`. This means that they don't output when `-q` is set, breaking the interface contract. We should break `stdout` and `stdout_important` into different functions named after their purpose, such as machine-readable output, that react appropriately to `-q`.
 

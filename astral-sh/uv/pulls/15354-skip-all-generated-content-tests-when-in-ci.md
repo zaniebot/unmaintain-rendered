@@ -13,14 +13,14 @@ head: zb/ci-skip-var-test
 created_at: 2025-08-18T15:43:48Z
 updated_at: 2025-08-18T16:09:15Z
 url: https://github.com/astral-sh/uv/pull/15354
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Skip all generated content tests when in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 15:43_
+_@zanieb_
 
 Skips other cases from https://github.com/astral-sh/uv/pull/14972
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T13:30:06Z
 updated_at: 2024-06-04T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/3982
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Universal lock should respect `Requires-Python`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-03 13:30_
+_@charliermarsh_
 
 Right now, we grab the Python version from the markers -- but that's a single version, and for universal locking, we don't even have markers.
 

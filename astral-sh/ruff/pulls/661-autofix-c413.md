@@ -12,14 +12,14 @@ head: autofix-c413
 created_at: 2022-11-08T20:37:34Z
 updated_at: 2022-12-27T05:42:52Z
 url: https://github.com/astral-sh/ruff/pull/661
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Autofix C413
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-08 20:37_
+_@squiddy_
 
 This also adds a new dev command to print the ast as seen by LibCST.
 

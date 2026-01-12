@@ -14,14 +14,14 @@ head: hints-for-invalid-type-form
 created_at: 2025-06-08T06:05:27Z
 updated_at: 2025-06-11T10:44:27Z
 url: https://github.com/astral-sh/ruff/pull/18543
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Add hints to `invalid-type-form` for common mistakes
 
 ---
 
-_Pull request opened by @benbaror on 2025-06-08 06:05_
+_@benbaror_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

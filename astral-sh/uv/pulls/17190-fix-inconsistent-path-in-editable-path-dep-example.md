@@ -13,14 +13,14 @@ head: claude/apply-this-2GwDc
 created_at: 2025-12-19T15:11:07Z
 updated_at: 2025-12-19T15:12:50Z
 url: https://github.com/astral-sh/uv/pull/17190
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Fix inconsistent path in editable-path-dep example
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-19 15:11_
+_@zanieb_
 
 _No description provided._
 

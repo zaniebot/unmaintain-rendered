@@ -13,14 +13,14 @@ head: dhruv/type-annotation-parsed
 created_at: 2024-06-04T16:37:45Z
 updated_at: 2024-06-05T07:29:45Z
 url: https://github.com/astral-sh/ruff/pull/11739
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update type annotation parsing API to return `Parsed`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-04 16:37_
+_@dhruvmanila_
 
 ## Summary
 

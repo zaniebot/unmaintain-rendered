@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T05:37:51Z
 updated_at: 2025-07-23T12:11:18Z
 url: https://github.com/astral-sh/uv/issues/14835
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # uv installation via cargo fails
 
 ---
 
-_Issue opened by @MohanaManikandan on 2025-07-23 05:37_
+_@MohanaManikandan_
 
 ### Summary
 

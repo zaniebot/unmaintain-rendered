@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2025-03-05T22:04:30Z
 updated_at: 2025-03-06T02:15:20Z
 url: https://github.com/astral-sh/uv/pull/11992
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Warn user on `uvx run` command
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-05 22:04_
+_@charliermarsh_
 
 ## Summary
 

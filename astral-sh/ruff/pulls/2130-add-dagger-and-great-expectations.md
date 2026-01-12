@@ -12,14 +12,14 @@ head: charlie/users
 created_at: 2023-01-24T14:46:38Z
 updated_at: 2023-01-24T14:48:02Z
 url: https://github.com/astral-sh/ruff/pull/2130
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add Dagger and Great Expectations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-24 14:46_
+_@charliermarsh_
 
 Also reordering to try and group similar use-cases.
 

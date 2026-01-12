@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T08:15:46Z
 updated_at: 2023-10-27T22:28:03Z
 url: https://github.com/astral-sh/ruff/issues/7239
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Tooling: Ruff-shades
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 08:15_
+_@MichaReiser_
 
 Our existing tooling focuses on comparing Ruff's and Black's formatting. This has been extremely valuable when developing Ruff but we need additional tooling to avoid shipping unintentional changes or evaluate whether a change improves readability for the whole ecosystem and not a selected set of test cases. 
 

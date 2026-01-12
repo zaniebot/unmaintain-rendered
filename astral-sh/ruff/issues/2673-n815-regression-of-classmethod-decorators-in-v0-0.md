@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-08T23:56:50Z
 updated_at: 2023-02-09T02:11:38Z
 url: https://github.com/astral-sh/ruff/issues/2673
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `N815`: Regression of `classmethod-decorators` in v0.0.244
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-08 23:56_
+_@ngnpope_
 
 For this code:
 

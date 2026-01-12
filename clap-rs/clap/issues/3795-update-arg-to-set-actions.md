@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-06T19:55:36Z
 updated_at: 2022-07-22T18:41:18Z
 url: https://github.com/clap-rs/clap/issues/3795
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Update `arg!` to set Actions
 
 ---
 
-_Issue opened by @epage on 2022-06-06 19:55_
+_@epage_
 
 Depending on circumstances, it'd be `SetTrue`, `Set`, or `Append`
 

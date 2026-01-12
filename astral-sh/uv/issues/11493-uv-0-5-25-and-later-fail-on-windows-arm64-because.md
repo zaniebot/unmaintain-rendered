@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T21:59:23Z
 updated_at: 2025-02-19T18:01:47Z
 url: https://github.com/astral-sh/uv/issues/11493
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # uv 0.5.25 and later fail on Windows arm64 because they do not install Python
 
 ---
 
-_Issue opened by @JayBazuzi on 2025-02-13 21:59_
+_@JayBazuzi_
 
 ### Summary
 

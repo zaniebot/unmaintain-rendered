@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-17T04:06:51Z
 updated_at: 2025-08-20T08:28:31Z
 url: https://github.com/astral-sh/ty/issues/1024
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # server hangs after changing file
 
 ---
 
-_Issue opened by @DetachHead on 2025-08-17 04:06_
+_@DetachHead_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/crate
 created_at: 2023-03-05T21:45:34Z
 updated_at: 2023-03-18T02:23:21Z
 url: https://github.com/astral-sh/ruff/pull/3353
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Introduce a standalone `ruff_linter_eradicate` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-05 21:45_
+_@charliermarsh_
 
 Trying to push to the point at which this is actually possible, to figure out what breaks.
 

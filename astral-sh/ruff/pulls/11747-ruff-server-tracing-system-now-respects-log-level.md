@@ -13,14 +13,14 @@ head: jane/server/logging-v2
 created_at: 2024-06-05T01:01:05Z
 updated_at: 2024-06-11T18:29:48Z
 url: https://github.com/astral-sh/ruff/pull/11747
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server`: Tracing system now respects log level and trace level, with options to log to a file
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-05 01:01_
+_@snowsignal_
 
 ## Summary
 

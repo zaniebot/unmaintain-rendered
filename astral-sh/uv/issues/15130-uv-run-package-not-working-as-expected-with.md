@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T11:54:44Z
 updated_at: 2025-08-09T13:58:45Z
 url: https://github.com/astral-sh/uv/issues/15130
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # uv run --package not working as expected with workspaces
 
 ---
 
-_Issue opened by @sebadevo on 2025-08-07 11:54_
+_@sebadevo_
 
 ### Summary
 

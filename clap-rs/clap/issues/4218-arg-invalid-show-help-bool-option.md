@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-15T14:47:07Z
 updated_at: 2022-09-16T12:24:44Z
 url: https://github.com/clap-rs/clap/issues/4218
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `arg_invalid_show_help(bool)` option
 
 ---
 
-_Issue opened by @ozgunozerk on 2022-09-15 14:47_
+_@ozgunozerk_
 
 ### Please complete the following tasks
 

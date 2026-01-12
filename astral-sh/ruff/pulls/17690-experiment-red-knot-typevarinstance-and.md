@@ -14,14 +14,14 @@ head: dhruv/typevarinstance-intersection-of-callables
 created_at: 2025-04-28T21:28:15Z
 updated_at: 2025-04-28T23:07:11Z
 url: https://github.com/astral-sh/ruff/pull/17690
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [EXPERIMENT] [red-knot] TypeVarInstance and intersection of callables
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-28 21:28_
+_@dhruvmanila_
 
 ## Ecosystem analysis
 It _does_ seem to be reducing the number of overall diagnostics but not by much compared to what already exists.

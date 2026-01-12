@@ -14,14 +14,14 @@ head: brent/junit
 created_at: 2025-07-15T18:25:51Z
 updated_at: 2025-07-17T22:24:16Z
 url: https://github.com/astral-sh/ruff/pull/19370
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Move JUnit rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-15 18:25_
+_@ntBre_
 
 Summary
 --

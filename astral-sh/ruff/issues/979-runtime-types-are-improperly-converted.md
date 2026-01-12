@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-01T15:49:25Z
 updated_at: 2022-12-02T03:31:21Z
 url: https://github.com/astral-sh/ruff/issues/979
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Runtime types are improperly converted
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-01 15:49_
+_@charliermarsh_
 
 See: #949.
 

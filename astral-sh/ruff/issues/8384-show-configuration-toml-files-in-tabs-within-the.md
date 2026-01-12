@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-31T17:57:07Z
 updated_at: 2023-11-05T17:10:31Z
 url: https://github.com/astral-sh/ruff/issues/8384
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Show configuration toml files in tabs within the docs
 
 ---
 
-_Issue opened by @doolio on 2023-10-31 17:57_
+_@doolio_
 
 To better understand what I mean see [here](https://hatch.pypa.io/latest/config/environment/overview/#environment-configuration) and below in the hatch docs which also uses Material for Mkdocs.
 

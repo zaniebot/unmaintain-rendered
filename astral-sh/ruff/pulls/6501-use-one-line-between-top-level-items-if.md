@@ -13,14 +13,14 @@ head: single-line-stubs
 created_at: 2023-08-11T13:01:29Z
 updated_at: 2023-08-15T09:09:04Z
 url: https://github.com/astral-sh/ruff/pull/6501
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use one line between top-level items if formatting a stub file
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-11 13:01_
+_@tjkuson_
 
 ## Summary
 

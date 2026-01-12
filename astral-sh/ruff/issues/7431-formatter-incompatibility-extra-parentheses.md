@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-16T03:17:06Z
 updated_at: 2023-09-20T06:39:26Z
 url: https://github.com/astral-sh/ruff/issues/7431
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter incompatibility: extra parentheses around binary expression
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-16 03:17_
+_@charliermarsh_
 
 Given:
 

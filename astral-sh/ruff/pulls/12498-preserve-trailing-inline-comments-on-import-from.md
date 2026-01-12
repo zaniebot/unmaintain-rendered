@@ -14,14 +14,14 @@ head: charlie/trailing-comment
 created_at: 2024-07-24T22:05:24Z
 updated_at: 2024-08-02T15:57:27Z
 url: https://github.com/astral-sh/ruff/pull/12498
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Preserve trailing inline comments on import-from statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 22:05_
+_@charliermarsh_
 
 ## Summary
 

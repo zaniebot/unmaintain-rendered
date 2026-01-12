@@ -14,14 +14,14 @@ head: dhruv/formatter-ipy-todo
 created_at: 2023-10-25T09:47:05Z
 updated_at: 2023-10-25T14:08:06Z
 url: https://github.com/astral-sh/ruff/pull/8207
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Formatter parentheses support for `IpyEscapeCommand`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-25 09:47_
+_@dhruvmanila_
 
 ## Summary
 

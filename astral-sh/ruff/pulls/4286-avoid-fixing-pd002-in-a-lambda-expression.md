@@ -12,14 +12,14 @@ head: fix/PD002/no-assign-in-lambda
 created_at: 2023-05-08T14:58:49Z
 updated_at: 2023-05-08T23:15:09Z
 url: https://github.com/astral-sh/ruff/pull/4286
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid fixing `PD002` in a lambda expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-08 14:58_
+_@dhruvmanila_
 
 fixes: #4277
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T22:20:24Z
 updated_at: 2026-01-06T23:14:29Z
 url: https://github.com/astral-sh/ty/issues/2372
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # isinstance(obj, dict) on object | None narrows to type where dict.get() fails with Expected Never
 
 ---
 
-_Issue opened by @yilei on 2026-01-06 22:20_
+_@yilei_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/python-install
 created_at: 2024-10-25T22:14:17Z
 updated_at: 2024-10-27T01:56:53Z
 url: https://github.com/astral-sh/uv/pull/8578
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Fix Python install path in tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-25 22:14_
+_@zanieb_
 
 The shared arguments were resetting the `UV_PYTHON_INSTALL_DIR`, breaking the intent of the test.
 

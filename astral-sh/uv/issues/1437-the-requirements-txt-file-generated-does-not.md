@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T05:43:51Z
 updated_at: 2024-02-19T18:55:59Z
 url: https://github.com/astral-sh/uv/issues/1437
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # The requirements.txt file generated does not match pyproject.toml
 
 ---
 
-_Issue opened by @iphils on 2024-02-16 05:43_
+_@iphils_
 
 I tried to generate a set of locked dependencies from an input of pyproject.toml file so that I could use that to install the dependencies ( as I cannot perform a command like "uv poetry install" )
 

@@ -13,14 +13,14 @@ head: fbt_boolean_operators
 created_at: 2024-11-08T14:10:42Z
 updated_at: 2024-11-10T22:49:45Z
 url: https://github.com/astral-sh/ruff/pull/14203
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # FBT001: exclude boolean operators
 
 ---
 
-_Pull request opened by @randolf-scholz on 2024-11-08 14:10_
+_@randolf-scholz_
 
 Fixes #14202
 

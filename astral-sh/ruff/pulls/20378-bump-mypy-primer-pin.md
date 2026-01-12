@@ -12,14 +12,14 @@ head: AlexWaygood-patch-1
 created_at: 2025-09-14T17:48:45Z
 updated_at: 2025-09-15T08:14:56Z
 url: https://github.com/astral-sh/ruff/pull/20378
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # bump mypy_primer pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-14 17:48_
+_@AlexWaygood_
 
 Pulls in https://github.com/hauntsaninja/mypy_primer/commit/06849fda409cbdc3233c8125a2cf9881bb9447a6
 

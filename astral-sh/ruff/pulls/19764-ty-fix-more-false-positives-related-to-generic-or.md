@@ -13,14 +13,14 @@ head: alex/tvar-tuple-paramspec-etc
 created_at: 2025-08-05T13:43:14Z
 updated_at: 2025-08-05T14:45:59Z
 url: https://github.com/astral-sh/ruff/pull/19764
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Fix more false positives related to `Generic` or `Protocol` being subscripted with a `ParamSpec` or `TypeVarTuple`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-05 13:43_
+_@AlexWaygood_
 
 ## Summary
 

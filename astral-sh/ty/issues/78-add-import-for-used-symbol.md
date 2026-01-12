@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T21:31:50Z
 updated_at: 2025-08-15T12:05:04Z
 url: https://github.com/astral-sh/ty/issues/78
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add import for used symbol
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-27 21:31_
+_@MichaReiser_
 
 Add support for importing a used symbol.
 

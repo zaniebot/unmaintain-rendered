@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T23:50:36Z
 updated_at: 2025-09-30T06:04:11Z
 url: https://github.com/astral-sh/ruff/issues/20641
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter breaks Google Colab `@param` forms in ipynb
 
 ---
 
-_Issue opened by @holtskinner on 2025-09-29 23:50_
+_@holtskinner_
 
 ### Summary
 

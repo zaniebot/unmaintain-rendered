@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T22:50:53Z
 updated_at: 2025-02-07T10:12:31Z
 url: https://github.com/astral-sh/ruff/issues/15623
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # running ruff fails on mounted cloud storage
 
 ---
 
-_Issue opened by @likesum on 2025-01-20 22:50_
+_@likesum_
 
 When running `ruff` on a mounted cloud storage such as GCS,
 

@@ -13,14 +13,14 @@ head: charlie/script-target
 created_at: 2024-12-24T02:32:35Z
 updated_at: 2025-01-08T18:36:55Z
 url: https://github.com/astral-sh/uv/pull/10135
-synced_at: 2026-01-10T11:44:36Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Add support for locking PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 02:32_
+_@charliermarsh_
 
 ## Summary
 

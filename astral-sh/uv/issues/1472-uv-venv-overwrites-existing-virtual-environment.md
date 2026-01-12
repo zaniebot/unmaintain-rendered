@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T10:14:04Z
 updated_at: 2025-07-17T22:20:26Z
 url: https://github.com/astral-sh/uv/issues/1472
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv venv` overwrites existing virtual environment on subsequent run
 
 ---
 
-_Issue opened by @Slyfest on 2024-02-16 10:14_
+_@Slyfest_
 
 **Current behaviour**: subsequent runs of `uv venv` overwrite the existing virtual environment.
 

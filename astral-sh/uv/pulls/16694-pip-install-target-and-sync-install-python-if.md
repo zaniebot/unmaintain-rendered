@@ -13,14 +13,14 @@ head: mikayla/pip-install-target-installs-python
 created_at: 2025-11-11T23:26:26Z
 updated_at: 2025-11-12T22:42:54Z
 url: https://github.com/astral-sh/uv/pull/16694
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # `pip install --target` (and `sync`) install python if necessary
 
 ---
 
-_Pull request opened by @mikaylathompson on 2025-11-11 23:26_
+_@mikaylathompson_
 
 ## Summary
 

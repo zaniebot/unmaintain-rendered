@@ -12,14 +12,14 @@ head: install-only
 created_at: 2024-07-06T08:29:15Z
 updated_at: 2024-07-11T15:08:12Z
 url: https://github.com/astral-sh/uv/pull/4843
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Use `install_only` python archive
 
 ---
 
-_Pull request opened by @j178 on 2024-07-06 08:29_
+_@j178_
 
 ## Summary
 

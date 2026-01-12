@@ -13,14 +13,14 @@ head: ellipsis-default-type
 created_at: 2024-12-15T12:01:06Z
 updated_at: 2025-01-05T19:44:34Z
 url: https://github.com/astral-sh/ruff/pull/14982
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Allow assigning ellipsis literal as parameter default value
 
 ---
 
-_Pull request opened by @Glyphack on 2024-12-15 12:01_
+_@Glyphack_
 
 Resolves #14840
 

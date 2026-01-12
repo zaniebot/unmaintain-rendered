@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T13:44:31Z
 updated_at: 2025-08-15T15:03:12Z
 url: https://github.com/astral-sh/ty/issues/71
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # ty is slow for large tuples
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 13:44_
+_@MichaReiser_
 
 The file mentioned in https://github.com/astral-sh/ruff/issues/17572 takes very long to type check. It passes immediately if I shrink the large tuple.
 

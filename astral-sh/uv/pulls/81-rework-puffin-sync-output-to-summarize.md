@@ -12,14 +12,14 @@ head: charlie/indicatif
 created_at: 2023-10-10T02:20:54Z
 updated_at: 2023-10-10T03:29:10Z
 url: https://github.com/astral-sh/uv/pull/81
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Rework `puffin sync` output to summarize
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 02:20_
+_@charliermarsh_
 
 This also moves away from using `tracing` for user-facing logging, instead introducing a new `Printer` abstraction.
 

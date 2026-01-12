@@ -14,14 +14,14 @@ head: fix/5256
 created_at: 2024-07-21T15:53:36Z
 updated_at: 2024-07-22T15:06:31Z
 url: https://github.com/astral-sh/uv/pull/5259
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # fix(pip.install.wheel): support variations on `pythonw.exe`
 
 ---
 
-_Pull request opened by @paveldikov on 2024-07-21 15:53_
+_@paveldikov_
 
 Fixes: #5256
 

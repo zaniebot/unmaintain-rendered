@@ -12,14 +12,14 @@ head: main
 created_at: 2024-06-28T12:06:47Z
 updated_at: 2024-06-28T14:05:21Z
 url: https://github.com/astral-sh/uv/pull/4613
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Update README.md for PyPI Documentation Compatibility
 
 ---
 
-_Pull request opened by @KPCOFGS on 2024-06-28 12:06_
+_@KPCOFGS_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

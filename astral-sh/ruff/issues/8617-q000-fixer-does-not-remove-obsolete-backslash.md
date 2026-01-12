@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-11T13:52:15Z
 updated_at: 2023-11-13T21:59:39Z
 url: https://github.com/astral-sh/ruff/issues/8617
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Q000 fixer does not remove obsolete backslash-escape inside string after changing quotes
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-11 13:52_
+_@ThiefMaster_
 
 ruff.toml:
 ```toml

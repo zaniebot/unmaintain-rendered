@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-23T09:03:41Z
 updated_at: 2024-12-13T20:33:47Z
 url: https://github.com/astral-sh/uv/issues/8492
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Fork when wheels only support a specific range
 
 ---
 
-_Issue opened by @cbrnr on 2024-10-23 09:03_
+_@cbrnr_
 
 EDIT: See https://github.com/astral-sh/uv/issues/8492#issuecomment-2431979599 for an explanation of this behavior
 

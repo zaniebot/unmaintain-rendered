@@ -13,14 +13,14 @@ head: charlie/e
 created_at: 2024-09-08T14:44:45Z
 updated_at: 2024-09-08T22:33:35Z
 url: https://github.com/astral-sh/uv/pull/7188
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Direct users towards `uv venv` to create a virtual environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-08 14:44_
+_@charliermarsh_
 
 ## Summary
 

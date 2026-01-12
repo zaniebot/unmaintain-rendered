@@ -13,14 +13,14 @@ head: konsti/indent-error-messages
 created_at: 2024-04-15T09:07:07Z
 updated_at: 2024-05-21T16:03:42Z
 url: https://github.com/astral-sh/uv/pull/3033
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 #  Indent error messages 
 
 ---
 
-_Pull request opened by @konstin on 2024-04-15 09:07_
+_@konstin_
 
 Before:
 

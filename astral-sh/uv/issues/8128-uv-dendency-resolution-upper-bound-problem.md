@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T14:10:35Z
 updated_at: 2024-12-27T14:29:07Z
 url: https://github.com/astral-sh/uv/issues/8128
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv dendency resolution upper-bound problem leading to a suboptimal resolution
 
 ---
 
-_Issue opened by @muellerzr on 2024-10-11 14:10_
+_@muellerzr_
 
 Hi! I'm trying to upgrade [accelerate](https://github.com/huggingface/accelerate) to use `uv pip install` and we're hitting a weird issue where the dependency resolution wants to only install a very old version of `datasets` and as a result our suite fails. I'm specifying the exact same environment and everything as the working old installation via just `pip install` & python 3.8. As a result it *should* be installing datasets 3.0.0 like the original workflow does, however we're finding it's installing an old 2.x.x version instead. 
 

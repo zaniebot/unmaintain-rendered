@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T11:29:42Z
 updated_at: 2025-02-12T14:17:01Z
 url: https://github.com/astral-sh/uv/issues/11442
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Two versions of numpy installed at the same time
 
 ---
 
-_Issue opened by @Ramlaoui on 2025-02-12 11:29_
+_@Ramlaoui_
 
 ### Summary
 

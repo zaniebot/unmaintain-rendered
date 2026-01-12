@@ -13,14 +13,14 @@ head: jane/server/code-actions/organize-imports
 created_at: 2024-03-29T05:46:54Z
 updated_at: 2024-04-04T22:26:00Z
 url: https://github.com/astral-sh/ruff/pull/10652
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` now supports the `source.organizeImports` source action
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-29 05:46_
+_@snowsignal_
 
 ## Summary
 

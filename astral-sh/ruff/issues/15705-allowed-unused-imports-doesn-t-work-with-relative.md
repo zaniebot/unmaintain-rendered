@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-24T00:57:42Z
 updated_at: 2025-08-29T12:25:47Z
 url: https://github.com/astral-sh/ruff/issues/15705
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # allowed-unused-imports doesn't work with relative imports
 
 ---
 
-_Issue opened by @dhduvall on 2025-01-24 00:57_
+_@dhduvall_
 
 ### Description
 

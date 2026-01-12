@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T13:51:37Z
 updated_at: 2024-05-08T16:40:45Z
 url: https://github.com/astral-sh/uv/issues/3405
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Add JSON schema to SchemaStore
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-06 13:51_
+_@charliermarsh_
 
 _No description provided._
 

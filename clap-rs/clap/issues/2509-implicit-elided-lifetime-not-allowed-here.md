@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-29T12:11:47Z
 updated_at: 2021-05-29T20:28:15Z
 url: https://github.com/clap-rs/clap/issues/2509
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # implicit elided lifetime not allowed here
 
 ---
 
-_Issue opened by @vbmade2000 on 2021-05-29 12:11_
+_@vbmade2000_
 
 ### Please complete the following tasks
 

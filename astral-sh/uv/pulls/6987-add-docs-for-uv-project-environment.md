@@ -13,14 +13,14 @@ head: zb/docs-project-environment
 created_at: 2024-09-03T23:13:39Z
 updated_at: 2024-09-03T23:47:07Z
 url: https://github.com/astral-sh/uv/pull/6987
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Add docs for `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 23:13_
+_@zanieb_
 
 _No description provided._
 

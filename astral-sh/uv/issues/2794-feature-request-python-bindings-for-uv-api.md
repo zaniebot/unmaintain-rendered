@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T03:00:51Z
 updated_at: 2024-04-03T04:01:41Z
 url: https://github.com/astral-sh/uv/issues/2794
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # [feature request] python bindings for uv api
 
 ---
 
-_Issue opened by @gmankab on 2024-04-03 03:00_
+_@gmankab_
 
 in python you can do this:
 

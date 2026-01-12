@@ -14,14 +14,14 @@ head: feat/B039
 created_at: 2024-06-30T21:39:54Z
 updated_at: 2024-07-05T13:40:41Z
 url: https://github.com/astral-sh/ruff/pull/12113
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bugbear`] Implement mutable-contextvar-default (B039)
 
 ---
 
-_Pull request opened by @tjkuson on 2024-06-30 21:39_
+_@tjkuson_
 
 ## Summary
 

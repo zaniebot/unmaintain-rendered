@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-13T16:19:34Z
 updated_at: 2026-01-12T07:41:12Z
 url: https://github.com/astral-sh/ty/issues/1540
-synced_at: 2026-01-12T07:59:26Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Flaky tests in CI
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-11-13 16:19_
+_@dhruvmanila_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: zb/auth-async
 created_at: 2024-04-17T19:12:27Z
 updated_at: 2024-04-19T21:04:53Z
 url: https://github.com/astral-sh/uv/pull/3105
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Update the credentials cache to use an async mutex
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 19:12_
+_@zanieb_
 
 It seems wrong to use a sync mutex in an async context without strong justification. We're probably unnecessarily blocking the event loop.
 

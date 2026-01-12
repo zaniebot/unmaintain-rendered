@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T11:41:45Z
 updated_at: 2025-01-29T14:27:15Z
 url: https://github.com/astral-sh/uv/issues/11058
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # pip compile ---no-emit-package cannot produce consistent results
 
 ---
 
-_Issue opened by @ssbarnea on 2025-01-29 11:41_
+_@ssbarnea_
 
 ### Summary
 

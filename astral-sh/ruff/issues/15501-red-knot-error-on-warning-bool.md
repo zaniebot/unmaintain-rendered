@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T14:27:48Z
 updated_at: 2025-02-03T07:35:33Z
 url: https://github.com/astral-sh/ruff/issues/15501
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot]: `--error-on-warning=<bool>`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:27_
+_@MichaReiser_
 
 Exit with an error code if there are any warning diagnostics. Not compatible with `--exit-zero`, defaults to `false`
 

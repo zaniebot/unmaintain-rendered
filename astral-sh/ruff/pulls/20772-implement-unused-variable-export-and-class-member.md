@@ -13,14 +13,14 @@ head: unused-extras
 created_at: 2025-10-08T17:47:11Z
 updated_at: 2025-10-09T07:03:01Z
 url: https://github.com/astral-sh/ruff/pull/20772
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # implement unused variable export and class member (fixes #20766)
 
 ---
 
-_Pull request opened by @phiresky on 2025-10-08 17:47_
+_@phiresky_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

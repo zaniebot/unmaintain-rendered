@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-28T13:40:45Z
 updated_at: 2025-11-28T14:18:01Z
 url: https://github.com/astral-sh/ruff/issues/21676
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff playground is down
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-28 13:40_
+_@DetachHead_
 
 https://play.ruff.rs/
 

@@ -13,14 +13,14 @@ head: fix/18619-up007-named-tuple
 created_at: 2025-06-15T11:08:37Z
 updated_at: 2025-06-30T22:18:13Z
 url: https://github.com/astral-sh/ruff/pull/18682
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pyupgrade`] Avoid PEP-604 unions with `typing.NamedTuple` (`UP007`, `UP045`)
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-15 11:08_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

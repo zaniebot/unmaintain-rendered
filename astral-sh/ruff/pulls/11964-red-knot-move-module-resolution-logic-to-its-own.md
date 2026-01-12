@@ -13,14 +13,14 @@ head: module-resolver-crate
 created_at: 2024-06-21T12:25:28Z
 updated_at: 2024-06-21T13:27:15Z
 url: https://github.com/astral-sh/ruff/pull/11964
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Move module-resolution logic to its own crate
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-21 12:25_
+_@AlexWaygood_
 
 ## Summary
 

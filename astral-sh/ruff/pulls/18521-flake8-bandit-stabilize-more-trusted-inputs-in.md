@@ -13,14 +13,14 @@ head: dylan/stabilize-trusted-inputs
 created_at: 2025-06-06T23:18:16Z
 updated_at: 2025-06-08T18:07:47Z
 url: https://github.com/astral-sh/ruff/pull/18521
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`flake8-bandit`] Stabilize more trusted inputs in `subprocess-without-shell-equals-true` (`S603`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 23:18_
+_@dylwil3_
 
 _No description provided._
 

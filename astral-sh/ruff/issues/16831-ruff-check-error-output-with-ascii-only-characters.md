@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T14:52:34Z
 updated_at: 2025-03-19T09:07:38Z
 url: https://github.com/astral-sh/ruff/issues/16831
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff check error output with ascii only characters
 
 ---
 
-_Issue opened by @kaddkaka on 2025-03-18 14:52_
+_@kaddkaka_
 
 ### Question
 

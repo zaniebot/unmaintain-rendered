@@ -13,14 +13,14 @@ head: jtfm/workspace-graph
 created_at: 2025-07-17T15:33:30Z
 updated_at: 2025-07-17T20:33:53Z
 url: https://github.com/astral-sh/uv/pull/14683
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Build workspace member graph to determine if members are dependencies
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-17 15:33_
+_@jtfmumm_
 
 This draft PR contains a first pass at building a graph of workspace member dependencies to differentiate members that are graph sources from members that are dependencies. This is for checking whether we should build a member by default (see #14663).
 

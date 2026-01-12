@@ -13,14 +13,14 @@ head: docs/requirements
 created_at: 2026-01-02T13:20:05Z
 updated_at: 2026-01-06T09:51:39Z
 url: https://github.com/astral-sh/uv/pull/17284
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Clarify requirements file format in docs
 
 ---
 
-_Pull request opened by @svlandeg on 2026-01-02 13:20_
+_@svlandeg_
 
 ## Summary
 

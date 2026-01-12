@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T17:12:00Z
 updated_at: 2024-10-31T19:45:50Z
 url: https://github.com/clap-rs/clap/issues/5796
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add `value_from_arg_matches` for compatibility with `config-rs`
 
 ---
 
-_Issue opened by @0xForerunner on 2024-10-31 17:12_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

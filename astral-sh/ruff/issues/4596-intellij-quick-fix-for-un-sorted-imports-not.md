@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-23T10:47:28Z
 updated_at: 2023-05-23T12:57:42Z
 url: https://github.com/astral-sh/ruff/issues/4596
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Intellij quick-fix for un-sorted imports not working
 
 ---
 
-_Issue opened by @HansAarneLiblik on 2023-05-23 10:47_
+_@HansAarneLiblik_
 
 I'm seeing an issue with ruff and quick-fixes it offers to Intellij
 

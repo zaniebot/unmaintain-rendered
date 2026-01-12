@@ -14,14 +14,14 @@ head: charlie/C416
 created_at: 2023-09-06T16:10:49Z
 updated_at: 2023-09-06T16:32:14Z
 url: https://github.com/astral-sh/ruff/pull/7204
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add required space to C416 fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-06 16:10_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7196.
 

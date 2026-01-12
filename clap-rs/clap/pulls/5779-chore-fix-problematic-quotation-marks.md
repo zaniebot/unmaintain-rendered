@@ -11,14 +11,14 @@ head: master
 created_at: 2024-10-17T16:11:08Z
 updated_at: 2025-04-09T03:43:48Z
 url: https://github.com/clap-rs/clap/pull/5779
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: fix problematic quotation marks
 
 ---
 
-_Pull request opened by @timesince on 2024-10-17 16:11_
+_@timesince_
 
 <!--
 Thanks for helping out!

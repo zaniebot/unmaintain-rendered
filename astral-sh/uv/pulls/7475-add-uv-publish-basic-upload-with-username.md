@@ -13,14 +13,14 @@ head: konsti/publish2
 created_at: 2024-09-17T18:36:20Z
 updated_at: 2024-09-24T15:33:09Z
 url: https://github.com/astral-sh/uv/pull/7475
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Add `uv publish`: Basic upload with username/password or keyring
 
 ---
 
-_Pull request opened by @konstin on 2024-09-17 18:36_
+_@konstin_
 
 The `uv publish` command allows uploading wheels and source distributions to PyPI or another registry. We support username/password auth, token auth and (follow-up) trusted publishing from GitHub Actions. Be default we upload files from `dist/*`, the output directory from `uv build`.
 

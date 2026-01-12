@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-24T12:03:16Z
 updated_at: 2024-11-25T01:16:29Z
 url: https://github.com/astral-sh/uv/issues/9394
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Unable to download Python 3.11.2 on Windows
 
 ---
 
-_Issue opened by @sk-ys on 2024-11-24 12:03_
+_@sk-ys_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T08:04:34Z
 updated_at: 2025-03-30T15:04:03Z
 url: https://github.com/astral-sh/uv/issues/12554
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # UV Sync Globally with Flag like Pip
 
 ---
 
-_Issue opened by @Lyranile on 2025-03-30 08:04_
+_@Lyranile_
 
 ### Summary
 

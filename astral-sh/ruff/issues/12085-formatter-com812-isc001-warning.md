@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T05:59:45Z
 updated_at: 2024-06-28T07:13:12Z
 url: https://github.com/astral-sh/ruff/issues/12085
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # formatter: `COM812`, `ISC001` warning
 
 ---
 
-_Issue opened by @Mogost on 2024-06-28 05:59_
+_@Mogost_
 
 The following configuration triggers a warning message but shouldn't.
 All linter rules are enabled but warning contains rules that are in ignore section.

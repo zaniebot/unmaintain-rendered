@@ -13,14 +13,14 @@ head: brent/defuse-bom
 created_at: 2025-08-08T21:29:54Z
 updated_at: 2025-08-11T12:52:29Z
 url: https://github.com/astral-sh/ruff/pull/19839
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # Avoid underflow in default ranges before a BOM
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-08 21:29_
+_@ntBre_
 
 Summary
 --

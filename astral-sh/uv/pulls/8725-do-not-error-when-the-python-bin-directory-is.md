@@ -13,14 +13,14 @@ head: zb/uninstall-missing
 created_at: 2024-10-31T14:06:47Z
 updated_at: 2024-10-31T14:15:48Z
 url: https://github.com/astral-sh/uv/pull/8725
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Do not error when the Python bin directory is missing on `uv python uninstall`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-31 14:06_
+_@zanieb_
 
 _No description provided._
 

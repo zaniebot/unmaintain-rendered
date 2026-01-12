@@ -12,14 +12,14 @@ head: compare-pydantic
 created_at: 2023-11-06T14:59:54Z
 updated_at: 2023-11-07T15:32:13Z
 url: https://github.com/astral-sh/uv/pull/335
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Add script to compare with pip(-tools)
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 14:59_
+_@konstin_
 
 Add a script to compare with pip-tools and pydantic input we can compare with it. Below is the output for `pydantic.in`, created from pydantic's pyproject.toml, which i added for that purpose:
 

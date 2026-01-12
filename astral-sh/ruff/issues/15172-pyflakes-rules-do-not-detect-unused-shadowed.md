@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-28T21:48:30Z
 updated_at: 2024-12-30T04:57:15Z
 url: https://github.com/astral-sh/ruff/issues/15172
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Pyflakes rules do not detect unused shadowed import when using `from __future__ import annotations`
 
 ---
 
-_Issue opened by @injust on 2024-12-28 21:48_
+_@injust_
 
 ```python
 from __future__ import annotations

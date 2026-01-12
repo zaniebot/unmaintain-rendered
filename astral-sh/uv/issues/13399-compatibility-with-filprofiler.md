@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T07:36:26Z
 updated_at: 2025-05-28T17:23:43Z
 url: https://github.com/astral-sh/uv/issues/13399
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # compatibility with filprofiler
 
 ---
 
-_Issue opened by @mayli on 2025-05-12 07:36_
+_@mayli_
 
 ### Summary
 

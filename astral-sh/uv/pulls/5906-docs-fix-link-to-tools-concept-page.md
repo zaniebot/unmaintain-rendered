@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-08T12:10:48Z
 updated_at: 2024-08-08T12:42:06Z
 url: https://github.com/astral-sh/uv/pull/5906
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Docs: Fix link to tools concept page
 
 ---
 
-_Pull request opened by @sampsyo on 2024-08-08 12:10_
+_@sampsyo_
 
 This link previously went to the wrong "concept" page; it now goes to the one the page intended.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-29T15:08:05Z
 updated_at: 2025-04-29T16:09:12Z
 url: https://github.com/astral-sh/ruff/issues/17713
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ERA001 false positives on seemingly-normal sentences
 
 ---
 
-_Issue opened by @nicoonoclaste on 2025-04-29 15:08_
+_@nicoonoclaste_
 
 ### Summary
 

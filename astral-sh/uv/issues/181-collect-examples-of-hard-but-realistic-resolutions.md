@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T04:27:20Z
 updated_at: 2023-12-04T04:39:44Z
 url: https://github.com/astral-sh/uv/issues/181
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Collect examples of hard (but realistic) resolutions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-25 04:27_
+_@charliermarsh_
 
 _No description provided._
 

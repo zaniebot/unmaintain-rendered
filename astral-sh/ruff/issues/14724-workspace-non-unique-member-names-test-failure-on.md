@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T06:43:26Z
 updated_at: 2024-12-02T08:42:21Z
 url: https://github.com/astral-sh/ruff/issues/14724
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `workspace_non_unique_member_names` test failure on 32-bit platforms
 
 ---
 
-_Issue opened by @fossdd on 2024-12-02 06:43_
+_@fossdd_
 
 The following test failure was experienced only on 32-bit platforms (`armhf`, `armv7`, `aarch64`):
 

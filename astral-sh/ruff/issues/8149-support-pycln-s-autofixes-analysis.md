@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-23T18:40:53Z
 updated_at: 2024-10-24T14:33:43Z
 url: https://github.com/astral-sh/ruff/issues/8149
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Support pycln's autofixes analysis
 
 ---
 
-_Issue opened by @Avasam on 2023-10-23 18:40_
+_@Avasam_
 
 The core functionality of pycln (that is, cleaning up imports) is already supported by Ruff.
 However, there's two specific features that I would like to see. And I know they won't be possible until Ruff has multi-file analysis (see #7447):

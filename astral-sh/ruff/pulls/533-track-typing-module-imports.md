@@ -12,14 +12,14 @@ head: charlie/from-imports
 created_at: 2022-11-01T18:00:26Z
 updated_at: 2022-11-01T18:02:00Z
 url: https://github.com/astral-sh/ruff/pull/533
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Track typing module imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-01 18:00_
+_@charliermarsh_
 
 This PR implements import tracking for `typing` module references, which lets us avoid the kinds of false-positive errors demonstrated in #490.
 

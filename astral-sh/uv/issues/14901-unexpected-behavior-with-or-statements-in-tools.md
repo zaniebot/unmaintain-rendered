@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T17:57:05Z
 updated_at: 2025-07-30T15:12:23Z
 url: https://github.com/astral-sh/uv/issues/14901
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Unexpected behavior with OR statements in [tools.uv] environments
 
 ---
 
-_Issue opened by @bathsundeep-graticule on 2025-07-25 17:57_
+_@bathsundeep-graticule_
 
 ### Question
 

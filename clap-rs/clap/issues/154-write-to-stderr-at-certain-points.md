@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-09T19:30:09Z
 updated_at: 2018-08-02T03:29:40Z
 url: https://github.com/clap-rs/clap/issues/154
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Write to stderr at certain points
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-09 19:30_
+_@kbknapp_
 
 Some light reading about [stderr](http://www.jstorimer.com/blogs/workingwithcode/7766119-when-to-use-stderr-instead-of-stdout)
 

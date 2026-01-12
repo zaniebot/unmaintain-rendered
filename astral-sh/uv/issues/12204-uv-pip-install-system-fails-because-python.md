@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T17:13:23Z
 updated_at: 2025-07-29T19:44:48Z
 url: https://github.com/astral-sh/uv/issues/12204
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `uv pip install --system` fails because python installation is managed by uv?
 
 ---
 
-_Issue opened by @MillieFD on 2025-03-16 17:13_
+_@MillieFD_
 
 ### Summary
 

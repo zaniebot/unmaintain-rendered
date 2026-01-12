@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T18:38:02Z
 updated_at: 2025-11-20T18:57:13Z
 url: https://github.com/astral-sh/uv/issues/16791
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # uv does not respect pypi supported python versions (at least not like pip)
 
 ---
 
-_Issue opened by @freand76 on 2025-11-20 18:38_
+_@freand76_
 
 ### Summary
 

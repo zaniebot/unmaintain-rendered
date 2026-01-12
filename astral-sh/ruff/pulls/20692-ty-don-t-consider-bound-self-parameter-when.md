@@ -13,14 +13,14 @@ head: dcreager/bound-method-assignability
 created_at: 2025-10-03T14:19:58Z
 updated_at: 2025-10-03T15:15:36Z
 url: https://github.com/astral-sh/ruff/pull/20692
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Don't consider bound `self` parameter when comparing bound methods
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-03 14:19_
+_@dcreager_
 
 In a bound method, the bound `self` parameter is no longer available for callers to provide an argument for. (That's the whole point of binding it!) That means we should not consider it when checking subtyping/assignability of bound methods.
 

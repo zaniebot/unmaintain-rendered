@@ -13,14 +13,14 @@ head: zb/python-exec-windows
 created_at: 2024-10-29T15:35:50Z
 updated_at: 2024-10-31T15:58:36Z
 url: https://github.com/astral-sh/uv/pull/8663
-synced_at: 2026-01-10T12:08:43Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add support for installing versioned Python executables on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-29 15:35_
+_@zanieb_
 
 Incorporating #8637 into #8458 
 

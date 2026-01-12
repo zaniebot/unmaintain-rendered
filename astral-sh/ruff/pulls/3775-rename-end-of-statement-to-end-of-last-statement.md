@@ -13,14 +13,14 @@ head: charlie/move
 created_at: 2023-03-28T16:04:13Z
 updated_at: 2023-03-28T16:46:26Z
 url: https://github.com/astral-sh/ruff/pull/3775
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Rename `end_of_statement` to `end_of_last_statement`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 16:04_
+_@charliermarsh_
 
 This function isn't as general as advertised, so I'm moving to a more targeted location, renaming, and documenting appropriately.
 

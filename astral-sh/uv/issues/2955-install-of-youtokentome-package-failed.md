@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T05:54:56Z
 updated_at: 2024-04-10T13:51:48Z
 url: https://github.com/astral-sh/uv/issues/2955
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Install of "youtokentome" package failed.
 
 ---
 
-_Issue opened by @AstralScribe on 2024-04-10 05:54_
+_@AstralScribe_
 
 Venv install done using:
 ```

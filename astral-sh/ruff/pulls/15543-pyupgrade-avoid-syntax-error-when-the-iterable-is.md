@@ -13,14 +13,14 @@ head: UP028
 created_at: 2025-01-17T00:27:12Z
 updated_at: 2025-01-17T03:52:58Z
 url: https://github.com/astral-sh/ruff/pull/15543
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyupgrade`] Avoid syntax error when the iterable is an non-parenthesized tuple (`UP028`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-17 00:27_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T15:53:27Z
 updated_at: 2025-11-12T18:11:34Z
 url: https://github.com/astral-sh/ruff/issues/21384
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Request: Adjust Rule "superfluous-else-return (RET505)"
 
 ---
 
-_Issue opened by @asilvester-nw on 2025-11-11 15:53_
+_@asilvester-nw_
 
 ### Summary
 

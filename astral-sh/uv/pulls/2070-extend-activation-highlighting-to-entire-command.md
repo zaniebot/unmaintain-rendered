@@ -13,14 +13,14 @@ head: charlie/cyan
 created_at: 2024-02-29T01:17:39Z
 updated_at: 2024-02-29T01:27:35Z
 url: https://github.com/astral-sh/uv/pull/2070
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Extend activation highlighting to entire command
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-29 01:17_
+_@charliermarsh_
 
 ## Summary
 

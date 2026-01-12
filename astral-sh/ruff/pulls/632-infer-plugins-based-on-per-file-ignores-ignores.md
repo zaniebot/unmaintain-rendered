@@ -12,14 +12,14 @@ head: charlie/infer
 created_at: 2022-11-07T03:39:01Z
 updated_at: 2022-11-07T03:39:06Z
 url: https://github.com/astral-sh/ruff/pull/632
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Infer plugins based on per-file-ignores, ignores, etc.
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 03:39_
+_@charliermarsh_
 
 Resolves #626.
 

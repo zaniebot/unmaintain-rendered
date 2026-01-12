@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T13:28:48Z
 updated_at: 2024-12-18T21:54:57Z
 url: https://github.com/astral-sh/uv/issues/9998
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # fork-strategy requires-python produces unexpected results with repeated dependencies
 
 ---
 
-_Issue opened by @alex on 2024-12-18 13:28_
+_@alex_
 
 Hello!
 

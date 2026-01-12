@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-17T07:25:05Z
 updated_at: 2024-06-04T03:43:00Z
 url: https://github.com/astral-sh/ruff/issues/11454
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PGH004 (blanket-noqa) doesn't checks file-level pragmas
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-05-17 07:25_
+_@ashrub-holvi_
 
 Hi,
 

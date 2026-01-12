@@ -13,14 +13,14 @@ head: alex/isinstance-truthiness-3
 created_at: 2025-07-31T18:47:54Z
 updated_at: 2025-08-01T13:44:24Z
 url: https://github.com/astral-sh/ruff/pull/19668
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Improve `isinstance()` truthiness analysis for generic types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-31 18:47_
+_@AlexWaygood_
 
 ## Summary
 

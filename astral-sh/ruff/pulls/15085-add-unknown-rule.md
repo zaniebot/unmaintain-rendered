@@ -13,14 +13,14 @@ head: micha/unknown-rule
 created_at: 2024-12-20T17:11:31Z
 updated_at: 2024-12-23T10:30:56Z
 url: https://github.com/astral-sh/ruff/pull/15085
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Add `unknown-rule`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 17:11_
+_@MichaReiser_
 
 ## Summary
 

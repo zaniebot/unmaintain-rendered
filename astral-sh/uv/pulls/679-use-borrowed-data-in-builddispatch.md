@@ -12,14 +12,14 @@ head: charlie/clone
 created_at: 2023-12-18T02:42:40Z
 updated_at: 2023-12-18T16:43:05Z
 url: https://github.com/astral-sh/uv/pull/679
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Use borrowed data in `BuildDispatch`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 02:42_
+_@charliermarsh_
 
 This PR uses borrowed data in `BuildDispatch` which makes creating a `BuildDispatch` extremely cheap (only one allocation, for the Python executable). I can be talked out of this, it will have no measurable impact.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T12:34:10Z
 updated_at: 2024-07-31T15:05:14Z
 url: https://github.com/astral-sh/uv/issues/4926
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Prioritize forks 
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 12:34_
+_@konstin_
 
 Say we have requirements `a >= 1 ; sys_platform == 'linux'` and `a < 2 ; sys_platform == 'darwin'`. There's two possible solutions: `a==1` and `a==2`, and only `a==1` for both forks.
 

@@ -13,14 +13,14 @@ head: ag/fix-coloring
 created_at: 2025-02-12T14:26:57Z
 updated_at: 2025-02-12T14:43:09Z
 url: https://github.com/astral-sh/ruff/pull/16118
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # ruff_db: add a vector for configuring diagnostic output
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-12 14:26_
+_@BurntSushi_
 
 For now, the only thing one can configure is whether color is enabled or
 not. This avoids needing to ask the `colored` crate whether colors have

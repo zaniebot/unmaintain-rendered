@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T13:39:26Z
 updated_at: 2025-12-02T13:39:26Z
 url: https://github.com/astral-sh/uv/issues/16929
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # CI flake: `test_simultaneous_create_then_move` on Windows
 
 ---
 
-_Issue opened by @konstin on 2025-12-02 13:39_
+_@konstin_
 
 This seems to be another keyring CI flake on Windows: https://github.com/astral-sh/uv/actions/runs/19858473959/job/56902296510
 

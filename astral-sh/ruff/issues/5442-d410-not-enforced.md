@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-29T15:03:21Z
 updated_at: 2023-07-03T00:44:45Z
 url: https://github.com/astral-sh/ruff/issues/5442
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # D410 not enforced
 
 ---
 
-_Issue opened by @erwann-met on 2023-06-29 15:03_
+_@erwann-met_
 
 Code to reproduce:
 ![image](https://github.com/astral-sh/ruff/assets/113345860/8e3a939b-3d78-4eab-904e-a5b7f2ee5d5a)

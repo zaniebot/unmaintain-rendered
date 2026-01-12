@@ -13,14 +13,14 @@ head: rk-flatten-a-match
 created_at: 2024-08-26T19:18:58Z
 updated_at: 2024-08-27T23:44:40Z
 url: https://github.com/astral-sh/ruff/pull/13115
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # red-knot: flatten match expression in `infer_binary_expression`
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-26 19:18_
+_@chriskrycho_
 
 ## Summary
 

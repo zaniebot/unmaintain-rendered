@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T05:19:22Z
 updated_at: 2024-11-15T08:14:05Z
 url: https://github.com/astral-sh/ruff/issues/14330
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] `reveal_type` should display raw characters
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-11-14 05:19_
+_@dhruvmanila_
 
 Looking at something like:
 ```py

@@ -12,14 +12,14 @@ head: dcreager/single-constructor-overload
 created_at: 2025-05-19T17:59:40Z
 updated_at: 2025-05-19T19:22:23Z
 url: https://github.com/astral-sh/ruff/pull/18204
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Use first matching constructor overload when inferring specializations
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-19 17:59_
+_@dcreager_
 
 This is a follow-on to #18155.  For the example raised in https://github.com/astral-sh/ty/issues/370:
 

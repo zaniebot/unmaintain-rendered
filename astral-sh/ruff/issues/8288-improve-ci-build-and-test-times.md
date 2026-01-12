@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T20:50:19Z
 updated_at: 2023-11-27T23:13:11Z
 url: https://github.com/astral-sh/ruff/issues/8288
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Improve CI build and test times
 
 ---
 
-_Issue opened by @zanieb on 2023-10-27 20:50_
+_@zanieb_
 
 **Without cache hit** [source](https://github.com/astral-sh/ruff/actions/runs/6670980068)
 

@@ -13,14 +13,14 @@ head: bug/unpacking-tuple-exceptions
 created_at: 2024-07-24T04:29:20Z
 updated_at: 2024-07-24T14:15:05Z
 url: https://github.com/astral-sh/ruff/pull/12484
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [flake8-bugbear] Allow singleton tuples with starred expressions in B013
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-07-24 04:29_
+_@dylwil3_
 
 ## Summary
 

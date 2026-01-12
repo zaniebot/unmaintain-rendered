@@ -13,14 +13,14 @@ head: charlie/deco
 created_at: 2023-08-03T16:13:41Z
 updated_at: 2023-08-04T13:57:53Z
 url: https://github.com/astral-sh/ruff/pull/6312
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Refactor and rename `skip_trailing_trivia`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 16:13_
+_@charliermarsh_
 
 Based on feedback here: https://github.com/astral-sh/ruff/pull/6274#discussion_r1282747964.
 

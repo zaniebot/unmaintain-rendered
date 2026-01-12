@@ -13,14 +13,14 @@ head: clause-return-type
 created_at: 2023-08-21T15:01:37Z
 updated_at: 2023-08-21T15:45:24Z
 url: https://github.com/astral-sh/ruff/pull/6733
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix `fmt:skip` for function with return type
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-21 15:01_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

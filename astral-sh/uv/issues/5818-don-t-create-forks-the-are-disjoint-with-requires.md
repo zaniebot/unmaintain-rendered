@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-06T16:25:31Z
 updated_at: 2024-08-16T16:32:41Z
 url: https://github.com/astral-sh/uv/issues/5818
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Don't create forks the are disjoint with requires-python
 
 ---
 
-_Issue opened by @konstin on 2024-08-06 16:25_
+_@konstin_
 
 Usually, we only consider the lower bound of requires-python in the resolver. For when forking, it doesn't make sense to consider forks above the upper bound, e.g. with `==3.11.*`, a fork `python_version >= '3.13'` doesn't make sense.
 

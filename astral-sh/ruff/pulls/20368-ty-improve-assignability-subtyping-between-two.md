@@ -15,14 +15,14 @@ head: alex/subtyping-between-protocols
 created_at: 2025-09-12T19:30:33Z
 updated_at: 2025-10-08T18:47:54Z
 url: https://github.com/astral-sh/ruff/pull/20368
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] Improve assignability/subtyping between two protocol types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-12 19:30_
+_@AlexWaygood_
 
 ## Summary
 

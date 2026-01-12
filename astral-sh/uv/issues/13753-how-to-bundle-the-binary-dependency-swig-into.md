@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-31T09:13:46Z
 updated_at: 2025-06-02T07:49:23Z
 url: https://github.com/astral-sh/uv/issues/13753
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # How to bundle the binary dependency "swig" into pyproject.toml when compiling gymnasium[box2d]?
 
 ---
 
-_Issue opened by @Tangent-90C on 2025-05-31 09:13_
+_@Tangent-90C_
 
 ### Question
 

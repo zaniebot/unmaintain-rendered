@@ -13,14 +13,14 @@ head: eikowagenknecht-patch-1
 created_at: 2023-10-17T13:52:34Z
 updated_at: 2023-10-17T14:23:55Z
 url: https://github.com/astral-sh/ruff/pull/8013
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [docs] fix typo
 
 ---
 
-_Pull request opened by @eikowagenknecht on 2023-10-17 13:52_
+_@eikowagenknecht_
 
 ## Summary
 

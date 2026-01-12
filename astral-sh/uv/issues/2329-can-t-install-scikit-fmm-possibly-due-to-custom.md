@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T08:52:14Z
 updated_at: 2024-03-10T23:17:15Z
 url: https://github.com/astral-sh/uv/issues/2329
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Can't install `scikit-fmm`, possibly due to custom build process (C deps)
 
 ---
 
-_Issue opened by @ma-sadeghi on 2024-03-10 08:52_
+_@ma-sadeghi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

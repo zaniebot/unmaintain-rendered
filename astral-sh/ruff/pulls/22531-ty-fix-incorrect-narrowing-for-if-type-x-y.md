@@ -14,14 +14,14 @@ head: alex/fix-type-narrow
 created_at: 2026-01-12T12:22:17Z
 updated_at: 2026-01-12T12:26:48Z
 url: https://github.com/astral-sh/ruff/pull/22531
-synced_at: 2026-01-12T12:59:59Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Fix incorrect narrowing for `if type(x) == y`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-12 12:22_
+_@AlexWaygood_
 
 ## Summary
 

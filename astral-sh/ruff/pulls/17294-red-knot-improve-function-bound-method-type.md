@@ -13,14 +13,14 @@ head: 17238-red-knot-improve-function-and-class-literal-type-display
 created_at: 2025-04-08T12:56:29Z
 updated_at: 2025-04-27T23:20:58Z
 url: https://github.com/astral-sh/ruff/pull/17294
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] improve function/bound method type display
 
 ---
 
-_Pull request opened by @mishamsk on 2025-04-08 12:56_
+_@mishamsk_
 
 ## Summary
 

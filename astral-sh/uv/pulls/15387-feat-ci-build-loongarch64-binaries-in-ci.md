@@ -12,14 +12,14 @@ head: feat/loongarch64-binary
 created_at: 2025-08-20T07:46:53Z
 updated_at: 2025-09-06T11:52:08Z
 url: https://github.com/astral-sh/uv/pull/15387
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # feat(ci): build loongarch64 binaries in CI
 
 ---
 
-_Pull request opened by @SkyBird233 on 2025-08-20 07:46_
+_@SkyBird233_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

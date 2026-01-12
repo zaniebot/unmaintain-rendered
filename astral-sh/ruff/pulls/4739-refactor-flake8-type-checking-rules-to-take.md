@@ -13,14 +13,14 @@ head: charlie/type-check-diagnostics
 created_at: 2023-05-30T22:42:40Z
 updated_at: 2023-05-30T23:08:30Z
 url: https://github.com/astral-sh/ruff/pull/4739
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Refactor `flake8-type-checking` rules to take `Checker`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 22:42_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

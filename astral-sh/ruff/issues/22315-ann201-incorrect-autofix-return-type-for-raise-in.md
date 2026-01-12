@@ -8,16 +8,16 @@ labels:
   - bug
 assignees: []
 created_at: 2025-12-31T10:47:23Z
-updated_at: 2026-01-11T13:01:37Z
+updated_at: 2026-01-12T15:47:27Z
 url: https://github.com/astral-sh/ruff/issues/22315
-synced_at: 2026-01-11T14:06:08Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # ANN201 Incorrect autofix return type for raise in loop
 
 ---
 
-_Issue opened by @spaceby on 2025-12-31 10:47_
+_@spaceby_
 
 ### Summary
 
@@ -113,5 +113,13 @@ fn always_breaks(stmts: &[Stmt]) -> bool
 _Comment by @close2code-palm on 2026-01-11 11:18_
 
 Hello. As I researched, we need to decide, if `test` in while \ for loop expression node are always falsy \ empty. One approach is to assume they are not excepted to be always truthy or non-empty, and this should solve the problem, but currently this is hard as this needs some kind of heavy analysis, and it still wont be correct sometimes, we'll just revert the situation. If you believe it’s better for fixes to miss some cases rather than produce incorrect results, we could consider modifying `Terminal::from_function` changes, the most simple to say is to take into account all parent nodes before to make a decision - we can return(upd - pass to and_then. By the way, "Terminal::Return" seems impossible by Rust code flow) just `Terminal::RaiseOrReturn` instead `Terminal::Raise` when there is at least one loop(later it will be loop on which we are not sure if it is iterated at least once) in ancestors.
+
+---
+
+_Comment by @ntBre on 2026-01-12 15:47_
+
+Thank you both for looking into this! I would probably lean toward not implementing anything for this rule specifically and instead waiting for more general control-flow analysis in Ruff.
+
+Checking the length/truthiness of the loop iterable does sound somewhat promising, but I think there will be tricky edge cases there too. The snippet in this issue is a good example of that because the `items_list` field could be modified outside the class (or even outside the file). So I think it's probably not worth any added complexity in the rule, especially since this is already an unsafe fix.
 
 ---

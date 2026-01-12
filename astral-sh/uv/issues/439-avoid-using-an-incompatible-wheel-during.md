@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T19:00:14Z
 updated_at: 2023-11-17T02:10:55Z
 url: https://github.com/astral-sh/uv/issues/439
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Avoid using an incompatible wheel during resolution if no source distribution is available
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-16 19:00_
+_@charliermarsh_
 
 _No description provided._
 

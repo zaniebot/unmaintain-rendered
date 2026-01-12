@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T07:23:02Z
 updated_at: 2025-02-28T18:30:25Z
 url: https://github.com/astral-sh/uv/issues/4759
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Allow `uv init` to use `cookiecutter` and `copier` templates
 
 ---
 
-_Issue opened by @baggiponte on 2024-07-03 07:23_
+_@baggiponte_
 
 I have been using the package management `uv` features, albeit in preview. Amazing product, responsiveness and pace of development 🚀
 

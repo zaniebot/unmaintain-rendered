@@ -14,14 +14,14 @@ head: rule/b912
 created_at: 2025-09-16T04:14:39Z
 updated_at: 2025-09-19T18:01:44Z
 url: https://github.com/astral-sh/ruff/pull/20429
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [`flake8-bugbear`] Add `B912`: `map()` without an explicit `strict=` parameter
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-16 04:14_
+_@danparizher_
 
 ## Summary
 

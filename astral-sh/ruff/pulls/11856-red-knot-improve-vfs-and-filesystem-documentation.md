@@ -13,14 +13,14 @@ head: Virtual-branch
 created_at: 2024-06-13T11:45:37Z
 updated_at: 2024-06-13T11:59:23Z
 url: https://github.com/astral-sh/ruff/pull/11856
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Improve `Vfs` and `FileSystem` documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-13 11:45_
+_@MichaReiser_
 
 Follow-up PR to address Alex's feedback in #11802
 

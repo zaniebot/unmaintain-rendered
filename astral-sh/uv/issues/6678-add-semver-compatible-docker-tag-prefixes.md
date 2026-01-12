@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T08:33:00Z
 updated_at: 2024-08-28T13:31:54Z
 url: https://github.com/astral-sh/uv/issues/6678
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Add semver-compatible docker tag prefixes
 
 ---
 
-_Issue opened by @konstin on 2024-08-27 08:33_
+_@konstin_
 
 Currently, we only tag latest and specific versions in [ghcr.io/astral-sh/uv](https://github.com/astral-sh/uv/pkgs/container/uv). We should also tag and update e.g. `0.3`, so you can do `COPY --from=ghcr.io/astral-sh/uv:0.3 /uv /bin/uv` and also get the latest compatible 0.3 release.
 

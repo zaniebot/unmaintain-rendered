@@ -13,14 +13,14 @@ head: charlie/clear
 created_at: 2025-08-26T16:35:37Z
 updated_at: 2025-08-26T17:26:23Z
 url: https://github.com/astral-sh/uv/pull/15538
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Refuse to remove non-virtual environments in `uv venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-26 16:35_
+_@charliermarsh_
 
 ## Summary
 

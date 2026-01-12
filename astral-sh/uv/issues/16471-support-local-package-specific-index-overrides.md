@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T11:57:48Z
 updated_at: 2025-10-27T18:12:22Z
 url: https://github.com/astral-sh/uv/issues/16471
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Support local package-specific index overrides without modifying pyproject.toml
 
 ---
 
-_Issue opened by @patrontheo on 2025-10-27 11:57_
+_@patrontheo_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: unzipped-wheel-cache-invalidation
 created_at: 2023-12-01T12:05:59Z
 updated_at: 2023-12-04T08:52:01Z
 url: https://github.com/astral-sh/uv/pull/524
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Consolidate wheel caches
 
 ---
 
-_Pull request opened by @konstin on 2023-12-01 12:05_
+_@konstin_
 
 After this change, two wheel caches remain: `built-wheels-v0` and `wheels-v0`, docs screenshots below. Each contains both the wheel metadata, cache policy and zip or unzipped wheels under the same name.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-09T11:39:31Z
 updated_at: 2023-11-10T04:32:32Z
 url: https://github.com/astral-sh/ruff/issues/8580
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter undocumented deviation in `with` with multiple context managers
 
 ---
 
-_Issue opened by @DeD1rk on 2023-11-09 11:39_
+_@DeD1rk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

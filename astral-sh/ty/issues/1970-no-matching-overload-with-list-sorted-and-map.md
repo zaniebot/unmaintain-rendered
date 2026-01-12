@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T01:59:33Z
 updated_at: 2026-01-09T15:29:27Z
 url: https://github.com/astral-sh/ty/issues/1970
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `no-matching-overload` with list/sorted and `map`/`filter`
 
 ---
 
-_Issue opened by @AA-Turner on 2025-12-17 01:59_
+_@AA-Turner_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/refactor-adding-versions
 created_at: 2024-06-19T11:13:54Z
 updated_at: 2024-06-19T18:19:13Z
 url: https://github.com/astral-sh/uv/pull/4410
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Move adding dependencies for versions into dedicated method
 
 ---
 
-_Pull request opened by @konstin on 2024-06-19 11:13_
+_@konstin_
 
 To support diverging urls, we have to check urls when adding dependencies (after forking). To prepare for this, i've moved adding dependencies for the current version to `SolveState::add_package_version_dependencies` and removed the duplication when checking for self-dependencies.
 

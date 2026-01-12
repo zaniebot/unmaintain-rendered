@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-02T09:07:08Z
 updated_at: 2023-05-08T09:57:05Z
 url: https://github.com/astral-sh/ruff/issues/4182
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Refactor `Fix` and `Edit` API
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:07_
+_@MichaReiser_
 
 This issue is part of #4181. The goal is to prepare the `Fix` and `Edit` API to ease adding the `Applicability` to `Fix` in a follow-up PR. 
 

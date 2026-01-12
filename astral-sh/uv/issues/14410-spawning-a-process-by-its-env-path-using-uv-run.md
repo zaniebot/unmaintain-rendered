@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T08:48:59Z
 updated_at: 2025-08-21T12:04:39Z
 url: https://github.com/astral-sh/uv/issues/14410
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Spawning a process by its env path using uv run fails to expose host's env variable to the script
 
 ---
 
-_Issue opened by @RVFET on 2025-07-02 08:48_
+_@RVFET_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: konsti/fix-simple-launcher-test
 created_at: 2024-02-23T12:35:15Z
 updated_at: 2024-02-27T12:15:08Z
 url: https://github.com/astral-sh/uv/pull/1911
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Fix simple launcher test error condition
 
 ---
 
-_Pull request opened by @konstin on 2024-02-23 12:35_
+_@konstin_
 
 This makes the test path on windows where developer mode is not enabled.
 

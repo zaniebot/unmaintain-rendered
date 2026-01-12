@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T23:51:00Z
 updated_at: 2025-10-25T00:41:50Z
 url: https://github.com/astral-sh/uv/issues/16444
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # `uv venv --python python3` does not use the `python3` executable
 
 ---
 
-_Issue opened by @AndydeCleyre on 2025-10-24 23:51_
+_@AndydeCleyre_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T20:21:43Z
 updated_at: 2025-12-14T10:07:01Z
 url: https://github.com/astral-sh/ty/issues/1846
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # don't discard "unused" typevars from generic context of simplified generic type alias
 
 ---
 
-_Issue opened by @cmp0xff on 2025-12-10 20:21_
+_@cmp0xff_
 
 ### Summary
 

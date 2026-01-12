@@ -13,14 +13,14 @@ head: alex-brent/tuple-length
 created_at: 2025-07-11T18:04:40Z
 updated_at: 2025-07-21T12:51:03Z
 url: https://github.com/astral-sh/ruff/pull/19289
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Extend tuple `__len__` and `__bool__` special casing to also cover tuple subclasses
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-11 18:04_
+_@AlexWaygood_
 
 ## Summary
 

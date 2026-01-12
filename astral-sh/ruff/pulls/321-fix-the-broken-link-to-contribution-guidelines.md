@@ -12,14 +12,14 @@ head: link-fix
 created_at: 2022-10-04T15:09:12Z
 updated_at: 2022-10-04T15:10:39Z
 url: https://github.com/astral-sh/ruff/pull/321
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix the broken link to contribution guidelines
 
 ---
 
-_Pull request opened by @ParthS007 on 2022-10-04 15:09_
+_@ParthS007_
 
 _No description provided._
 

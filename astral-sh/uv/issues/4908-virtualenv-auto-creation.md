@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T20:31:17Z
 updated_at: 2024-07-08T21:33:39Z
 url: https://github.com/astral-sh/uv/issues/4908
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Virtualenv auto-creation
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-07-08 20:31_
+_@chrisrodrigue_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

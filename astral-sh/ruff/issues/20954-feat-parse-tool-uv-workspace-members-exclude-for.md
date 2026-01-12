@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-18T11:47:03Z
 updated_at: 2025-11-19T09:31:49Z
 url: https://github.com/astral-sh/ruff/issues/20954
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feat: Parse `[tool.uv.workspace].members`/`.exclude` for first-party code
 
 ---
 
-_Issue opened by @thejcannon on 2025-10-18 11:47_
+_@thejcannon_
 
 ### Question
 

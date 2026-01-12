@@ -13,14 +13,14 @@ head: implement-flake8-i18n
 created_at: 2023-03-26T15:03:29Z
 updated_at: 2023-03-28T21:44:21Z
 url: https://github.com/astral-sh/ruff/pull/3741
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Implement flake8-i18n
 
 ---
 
-_Pull request opened by @leiserfg on 2023-03-26 15:03_
+_@leiserfg_
 
 - Add skelleton code
 - Add fixtures for flake8_i18n

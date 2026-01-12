@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T18:48:05Z
 updated_at: 2024-02-23T07:32:23Z
 url: https://github.com/astral-sh/ruff/issues/10073
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PowerPC pip package is not suitable for systems with 64 KiB pages
 
 ---
 
-_Issue opened by @nwf on 2024-02-21 18:48_
+_@nwf_
 
 I'm not sure if this is the right place; if not, please point me in the right direction and sorry for the noise.
 

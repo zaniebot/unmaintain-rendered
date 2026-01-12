@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-10T21:11:14Z
 updated_at: 2025-09-24T17:30:18Z
 url: https://github.com/astral-sh/ruff/issues/1774
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Rule categorization
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-10 21:11_
+_@not-my-profile_
 
 I think there are two perspectives ruff users may have:
 

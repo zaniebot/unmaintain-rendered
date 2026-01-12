@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-11T14:49:45Z
 updated_at: 2024-05-13T00:22:27Z
 url: https://github.com/astral-sh/ruff/issues/11368
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # TCH005 autofix deletes else block, removes functional code.
 
 ---
 
-_Issue opened by @Skylion007 on 2024-05-11 14:49_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

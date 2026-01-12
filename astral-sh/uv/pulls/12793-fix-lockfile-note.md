@@ -13,14 +13,14 @@ head: zb/lock-note
 created_at: 2025-04-09T22:22:25Z
 updated_at: 2025-04-10T13:53:04Z
 url: https://github.com/astral-sh/uv/pull/12793
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Fix lockfile note
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-09 22:22_
+_@zanieb_
 
 _No description provided._
 

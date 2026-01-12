@@ -13,14 +13,14 @@ head: dj014-dj015-slashes-in-path
 created_at: 2025-10-05T16:03:20Z
 updated_at: 2025-10-31T16:38:40Z
 url: https://github.com/astral-sh/ruff/pull/20702
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`flake8-django`] Add rules for checking slashes in `path()`
 
 ---
 
-_Pull request opened by @jvacek on 2025-10-05 16:03_
+_@jvacek_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

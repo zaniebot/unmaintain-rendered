@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-03-24T11:57:59Z
 updated_at: 2024-11-04T15:39:07Z
 url: https://github.com/clap-rs/clap/issues/3572
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `arg_required_else_help` does not show help when env variables are present
 
 ---
 
-_Issue opened by @willbuckner on 2022-03-24 11:57_
+_@willbuckner_
 
 ### Please complete the following tasks
 

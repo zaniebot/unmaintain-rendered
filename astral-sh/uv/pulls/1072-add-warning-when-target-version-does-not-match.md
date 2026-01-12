@@ -13,14 +13,14 @@ head: zb/target-version-warn
 created_at: 2024-01-23T23:16:12Z
 updated_at: 2024-01-24T19:42:20Z
 url: https://github.com/astral-sh/uv/pull/1072
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Add warning when target version does not match build version
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-23 23:16_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/puffin/pull/1040 adding a user-facing warning when we cannot build with their requested version.
 

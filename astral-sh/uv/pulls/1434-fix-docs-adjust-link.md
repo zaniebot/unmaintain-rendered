@@ -13,14 +13,14 @@ head: 1431-anchor-tag-missing
 created_at: 2024-02-16T05:24:59Z
 updated_at: 2024-02-16T14:24:29Z
 url: https://github.com/astral-sh/uv/pull/1434
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # fix(docs): adjust link
 
 ---
 
-_Pull request opened by @JacobCoffee on 2024-02-16 05:24_
+_@JacobCoffee_
 
 ## What
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T07:52:47Z
 updated_at: 2024-11-16T10:02:44Z
 url: https://github.com/astral-sh/uv/issues/9080
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # uv pip issue with code execution upon wheel compilation with cython on python 3.10.11
 
 ---
 
-_Issue opened by @fervand1 on 2024-11-13 07:52_
+_@fervand1_
 
 uv version - latest 0.5.1
 platform - windows 10/11 with python 3.10.11

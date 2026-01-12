@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T15:45:05Z
 updated_at: 2025-10-07T15:45:05Z
 url: https://github.com/astral-sh/uv/issues/16153
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # Should we use Copy-on-Write for Windows Dev Drives and other ReFS drive?
 
 ---
 
-_Issue opened by @konstin on 2025-10-07 15:45_
+_@konstin_
 
 On MacOS, we default to using Copy-On-Write (reflink) for installing packages from the cache. This isolates the cache from the venv.
 

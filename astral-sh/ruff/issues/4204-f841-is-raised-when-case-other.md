@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-03T13:23:21Z
 updated_at: 2023-05-04T02:44:29Z
 url: https://github.com/astral-sh/ruff/issues/4204
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F841 is raised when `case other:`
 
 ---
 
-_Issue opened by @mmahmoudian on 2023-05-03 13:23_
+_@mmahmoudian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

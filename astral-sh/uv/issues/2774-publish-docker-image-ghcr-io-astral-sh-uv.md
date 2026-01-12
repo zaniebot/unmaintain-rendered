@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T13:16:04Z
 updated_at: 2024-04-23T14:52:29Z
 url: https://github.com/astral-sh/uv/issues/2774
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Publish Docker image: ghcr.io/astral-sh/uv
 
 ---
 
-_Issue opened by @bschoenmaeckers on 2024-04-02 13:16_
+_@bschoenmaeckers_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-04T07:01:21Z
 updated_at: 2024-12-28T00:06:53Z
 url: https://github.com/astral-sh/uv/issues/7913
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Add `--description` to `uv init`
 
 ---
 
-_Issue opened by @Kumzy on 2024-10-04 07:01_
+_@Kumzy_
 
 Add the parameter `--description` to the `uv init` command to fill the description field in the `pyproject.toml` file 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-26T10:33:24Z
 updated_at: 2024-02-22T18:10:52Z
 url: https://github.com/astral-sh/ruff/issues/6893
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Rule] Extra level of indentation
 
 ---
 
-_Issue opened by @serjflint on 2023-08-26 10:33_
+_@serjflint_
 
 Hello!
 

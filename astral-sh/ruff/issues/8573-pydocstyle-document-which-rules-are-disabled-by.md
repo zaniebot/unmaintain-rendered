@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T03:30:25Z
 updated_at: 2023-11-12T22:56:40Z
 url: https://github.com/astral-sh/ruff/issues/8573
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [pydocstyle] Document which rules are disabled by which conventions?
 
 ---
 
-_Issue opened by @alanhdu on 2023-11-09 03:30_
+_@alanhdu_
 
 On https://docs.astral.sh/ruff/settings/#pydocstyle-convention, it says
 

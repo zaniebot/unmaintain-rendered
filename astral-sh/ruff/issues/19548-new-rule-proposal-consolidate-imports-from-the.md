@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T02:52:44Z
 updated_at: 2025-12-15T18:04:48Z
 url: https://github.com/astral-sh/ruff/issues/19548
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New Rule Proposal: Consolidate imports from the same module unnecessarily split by `TYPE_CHECKING`
 
 ---
 
-_Issue opened by @vivodi on 2025-07-25 02:52_
+_@vivodi_
 
 ### Summary
 

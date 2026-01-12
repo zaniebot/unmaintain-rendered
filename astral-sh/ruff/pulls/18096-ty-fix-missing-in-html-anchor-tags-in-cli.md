@@ -14,14 +14,14 @@ head: fix-html-anchor-tag-syntax
 created_at: 2025-05-14T15:33:05Z
 updated_at: 2025-05-14T15:51:00Z
 url: https://github.com/astral-sh/ruff/pull/18096
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] fix missing '>' in HTML anchor tags in CLI reference
 
 ---
 
-_Pull request opened by @Usul-Dev on 2025-05-14 15:33_
+_@Usul-Dev_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-12T12:24:01Z
 updated_at: 2025-01-13T00:55:48Z
 url: https://github.com/astral-sh/ruff/issues/15439
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # --select=PTH120 does not work
 
 ---
 
-_Issue opened by @skraeven on 2025-01-12 12:24_
+_@skraeven_
 
 Selecting [PTH120](https://docs.astral.sh/ruff/rules/os-path-dirname/) rule seems to always return 0 errors. 
 The workaround is to drop the 0 (--select=PTH12) to actually get the errors.

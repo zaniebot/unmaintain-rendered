@@ -14,14 +14,14 @@ head: micha/fix-playground-crash-large-files
 created_at: 2025-10-17T07:07:52Z
 updated_at: 2025-10-17T07:15:35Z
 url: https://github.com/astral-sh/ruff/pull/20934
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Fix playground crash for very large files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-17 07:07_
+_@MichaReiser_
 
 ## Summary
 

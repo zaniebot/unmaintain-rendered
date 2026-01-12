@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T07:33:42Z
 updated_at: 2024-11-07T15:11:11Z
 url: https://github.com/astral-sh/ruff/issues/13787
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Enhancing Diagnostics for Compare Expression Inference
 
 ---
 
-_Issue opened by @cake-monotone on 2024-10-17 07:33_
+_@cake-monotone_
 
 This issue was suggested by @carljm and is related to the following threads: https://github.com/astral-sh/ruff/pull/13712#discussion_r1797193581, https://github.com/astral-sh/ruff/pull/13781#discussion_r1803637742, https://github.com/astral-sh/ruff/pull/13712#discussion_r1801739049
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T11:31:26Z
 updated_at: 2023-10-30T17:14:44Z
 url: https://github.com/astral-sh/ruff/issues/3272
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Parser error and Rule violation on syntax error breaks Emacs integration
 
 ---
 
-_Issue opened by @biscanli on 2023-02-28 11:31_
+_@biscanli_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: zb/version-file-discover-project
 created_at: 2024-08-21T19:55:33Z
 updated_at: 2024-10-04T18:07:31Z
 url: https://github.com/astral-sh/uv/pull/6372
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # Improve interactions between `.python-version` files and project `requires-python`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 19:55_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5228
 Required for https://github.com/astral-sh/uv/pull/6370

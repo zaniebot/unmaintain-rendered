@@ -13,14 +13,14 @@ head: zb/install-patches
 created_at: 2024-12-03T15:11:00Z
 updated_at: 2024-12-03T15:33:20Z
 url: https://github.com/astral-sh/uv/pull/9607
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Fix Python executable installation when multiple patch versions are requested
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-03 15:11_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/9601
 

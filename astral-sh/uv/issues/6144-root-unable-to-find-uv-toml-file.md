@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T13:18:20Z
 updated_at: 2024-08-16T13:48:45Z
 url: https://github.com/astral-sh/uv/issues/6144
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Root unable to find uv.toml file
 
 ---
 
-_Issue opened by @ryan-cpi on 2024-08-16 13:18_
+_@ryan-cpi_
 
 **Issue**
 

@@ -13,14 +13,14 @@ head: charlie/ref
 created_at: 2023-09-28T00:30:06Z
 updated_at: 2023-09-28T17:42:13Z
 url: https://github.com/astral-sh/ruff/pull/7686
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid unnecessary comments check in `maybe_parenthesize_expression`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 00:30_
+_@charliermarsh_
 
 ## Summary
 

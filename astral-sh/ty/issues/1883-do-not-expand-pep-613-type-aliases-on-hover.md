@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-14T13:46:02Z
 updated_at: 2026-01-11T09:31:07Z
 url: https://github.com/astral-sh/ty/issues/1883
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Do not expand PEP-613 type aliases on hover
 
 ---
 
-_Issue opened by @hamdanal on 2025-12-14 13:46_
+_@hamdanal_
 
 They could become unwieldy especially for large unions. See these two examples
 

@@ -14,14 +14,14 @@ head: PLR2044-empty-comment
 created_at: 2023-12-18T03:49:44Z
 updated_at: 2023-12-29T03:05:04Z
 url: https://github.com/astral-sh/ruff/pull/9174
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `empty-comment` (`PLR2044`)
 
 ---
 
-_Pull request opened by @mdbernard on 2023-12-18 03:49_
+_@mdbernard_
 
 ## Summary
 

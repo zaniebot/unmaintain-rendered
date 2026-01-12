@@ -14,14 +14,14 @@ head: alex/type-visitor
 created_at: 2025-07-02T15:05:37Z
 updated_at: 2025-07-03T18:19:53Z
 url: https://github.com/astral-sh/ruff/pull/19094
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Rewrite `Type::any_over_type` using a new generalised `TypeVisitor` trait
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-02 15:05_
+_@AlexWaygood_
 
 ## Summary
 

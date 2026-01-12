@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T10:03:51Z
 updated_at: 2025-03-19T08:06:58Z
 url: https://github.com/astral-sh/uv/issues/12269
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # uv sync fails when python-requires of a dependency is higher than that of the dependent package, how to address?
 
 ---
 
-_Issue opened by @astafan8 on 2025-03-18 10:03_
+_@astafan8_
 
 ### Question
 

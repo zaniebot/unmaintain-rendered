@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T19:41:42Z
 updated_at: 2023-02-16T04:35:25Z
 url: https://github.com/astral-sh/ruff/issues/2734
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement `flake8-module-name`
 
 ---
 
-_Issue opened by @sbrugman on 2023-02-10 19:41_
+_@sbrugman_
 
 [Pypi](https://pypi.org/project/flake8-module-name/), [Github](https://github.com/Ohjeah/flake8_module_name)
 

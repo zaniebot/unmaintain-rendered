@@ -13,14 +13,14 @@ head: micha/knot-toml
 created_at: 2025-01-15T15:42:19Z
 updated_at: 2025-01-17T09:04:04Z
 url: https://github.com/astral-sh/ruff/pull/15505
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Support `knot.toml` files in project discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-15 15:42_
+_@MichaReiser_
 
 ## Summary
 

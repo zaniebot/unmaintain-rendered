@@ -13,14 +13,14 @@ head: ruf006-allow-private-vars
 created_at: 2024-08-16T03:51:36Z
 updated_at: 2024-08-27T18:19:53Z
 url: https://github.com/astral-sh/ruff/pull/12914
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`ruff`] - allow private variables for `RUF006`
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-16 03:51_
+_@diceroll123_
 
 ## Summary
 

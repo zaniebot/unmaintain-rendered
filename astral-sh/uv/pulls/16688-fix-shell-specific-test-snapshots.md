@@ -13,14 +13,14 @@ head: zsol/jj-otzultwkyovu
 created_at: 2025-11-11T18:37:42Z
 updated_at: 2025-11-12T13:55:36Z
 url: https://github.com/astral-sh/uv/pull/16688
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Fix shell-specific test snapshots
 
 ---
 
-_Pull request opened by @zsol on 2025-11-11 18:37_
+_@zsol_
 
 ## Summary
 

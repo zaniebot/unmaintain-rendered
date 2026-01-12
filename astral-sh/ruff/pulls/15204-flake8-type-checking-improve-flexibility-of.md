@@ -13,14 +13,14 @@ head: feat/runtime-evaluated-decorators-glob
 created_at: 2024-12-30T16:28:12Z
 updated_at: 2024-12-31T16:31:57Z
 url: https://github.com/astral-sh/ruff/pull/15204
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Improve flexibility of `runtime-evaluated-decorators`
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-30 16:28_
+_@Daverball_
 
 This is an alternative proposal towards accomplishing the use-case #15060 is trying to provide, which doesn't require adding a new setting.
 

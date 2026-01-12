@@ -14,14 +14,14 @@ head: charlie/union-fix
 created_at: 2023-12-20T20:03:14Z
 updated_at: 2023-12-21T21:08:38Z
 url: https://github.com/astral-sh/ruff/pull/9218
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add a fix for `never-union`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 20:03_
+_@charliermarsh_
 
 ## Summary
 

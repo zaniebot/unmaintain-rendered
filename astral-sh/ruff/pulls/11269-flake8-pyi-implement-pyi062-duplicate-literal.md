@@ -12,14 +12,14 @@ head: pyi-062
 created_at: 2024-05-03T19:27:49Z
 updated_at: 2024-05-07T18:30:04Z
 url: https://github.com/astral-sh/ruff/pull/11269
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`flake8-pyi`] Implement `PYI062` (`duplicate-literal-member`)
 
 ---
 
-_Pull request opened by @tusharsadhwani on 2024-05-03 19:27_
+_@tusharsadhwani_
 
 ## Summary
 

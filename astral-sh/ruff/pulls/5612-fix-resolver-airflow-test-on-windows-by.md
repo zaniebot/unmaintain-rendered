@@ -12,14 +12,14 @@ head: fix-resolver-airflow-tests-on-windows
 created_at: 2023-07-08T14:13:42Z
 updated_at: 2023-07-08T15:11:36Z
 url: https://github.com/astral-sh/ruff/pull/5612
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix resolver airflow test on windows by normalizing the paths
 
 ---
 
-_Pull request opened by @konstin on 2023-07-08 14:13_
+_@konstin_
 
 ## Summary
 

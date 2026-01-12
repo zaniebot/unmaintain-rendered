@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-07-15T03:45:27Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/157
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow version to be propagated globally through subcommands
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-15 03:45_
+_@kbknapp_
 
 Another issue pointed out by [SShrike](https://github.com/SShrike), so more thanks to him! This also goes along nicely with #156  :)
 

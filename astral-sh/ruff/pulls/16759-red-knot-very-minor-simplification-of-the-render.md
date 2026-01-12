@@ -13,14 +13,14 @@ head: micha/simplify-renderer-test
 created_at: 2025-03-14T19:09:33Z
 updated_at: 2025-03-14T19:42:53Z
 url: https://github.com/astral-sh/ruff/pull/16759
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Very minor simplification of the render tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-14 19:09_
+_@MichaReiser_
 
 _No description provided._
 

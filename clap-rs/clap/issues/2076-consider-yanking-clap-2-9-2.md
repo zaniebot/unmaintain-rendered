@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-15T12:05:43Z
 updated_at: 2020-08-18T07:35:18Z
 url: https://github.com/clap-rs/clap/issues/2076
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Consider yanking Clap 2.9.2
 
 ---
 
-_Issue opened by @matklad on 2020-08-15 12:05_
+_@matklad_
 
 Hi!
 

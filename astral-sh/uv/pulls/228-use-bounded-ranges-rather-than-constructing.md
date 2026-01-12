@@ -12,14 +12,14 @@ head: charlie/bounded-range
 created_at: 2023-10-30T03:44:25Z
 updated_at: 2023-10-30T03:58:44Z
 url: https://github.com/astral-sh/uv/pull/228
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Use bounded ranges rather than constructing manual ranges
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 03:44_
+_@charliermarsh_
 
 I didn't realize this, but they made a bunch of improvements to how PubGrub represents versions which lets us greatly simplify our own PubGrub version wrapper (https://github.com/pubgrub-rs/guide/pull/6/files).
 

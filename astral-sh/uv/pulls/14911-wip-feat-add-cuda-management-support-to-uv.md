@@ -12,14 +12,14 @@ head: uv-cuda
 created_at: 2025-07-26T03:44:29Z
 updated_at: 2025-09-08T13:35:15Z
 url: https://github.com/astral-sh/uv/pull/14911
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # [WIP] feat: add CUDA management support to uv
 
 ---
 
-_Pull request opened by @AlpinDale on 2025-07-26 03:44_
+_@AlpinDale_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

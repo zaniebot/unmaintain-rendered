@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-29T20:00:33Z
 updated_at: 2025-01-18T22:31:59Z
 url: https://github.com/astral-sh/ruff/issues/15182
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Infinite loop] Failed to Converge After 100 Iterations When Fixing Imports (e.g., I001, F401, F811)
 
 ---
 
-_Issue opened by @brupelo on 2024-12-29 20:00_
+_@brupelo_
 
 Consider this snippet:
 

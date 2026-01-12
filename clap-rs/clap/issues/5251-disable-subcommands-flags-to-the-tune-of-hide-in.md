@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-07T11:10:40Z
 updated_at: 2023-12-07T16:04:57Z
 url: https://github.com/clap-rs/clap/issues/5251
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `disable` subcommands / flags, to the tune of `hide` in `derive` mode
 
 ---
 
-_Issue opened by @abesto on 2023-12-07 11:10_
+_@abesto_
 
 ### Please complete the following tasks
 

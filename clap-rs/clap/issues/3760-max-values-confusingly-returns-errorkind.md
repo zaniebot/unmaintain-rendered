@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-26T22:30:55Z
 updated_at: 2022-05-26T23:53:42Z
 url: https://github.com/clap-rs/clap/issues/3760
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `max_values` confusingly returns `ErrorKind::UnknownArgument` when too many arguments are provided
 
 ---
 
-_Issue opened by @SilvanCodes on 2022-05-26 22:30_
+_@SilvanCodes_
 
 ### Please complete the following tasks
 

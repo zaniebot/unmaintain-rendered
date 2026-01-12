@@ -13,14 +13,14 @@ head: charlie/cwd
 created_at: 2025-08-26T16:19:29Z
 updated_at: 2025-08-26T16:43:32Z
 url: https://github.com/astral-sh/uv/pull/15537
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Avoid erroring when creating `venv` in current working directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-26 16:19_
+_@charliermarsh_
 
 ## Summary
 

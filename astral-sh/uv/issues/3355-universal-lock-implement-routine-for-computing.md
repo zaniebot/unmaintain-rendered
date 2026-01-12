@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T15:55:44Z
 updated_at: 2024-05-20T12:16:18Z
 url: https://github.com/astral-sh/uv/issues/3355
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: implement routine for computing intersection of two `MarkerTree`s
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 15:55_
+_@BurntSushi_
 
 As part of #3350, the resolver ought to only fork when there are duplicative packages (as direct dependencies of another package) whose marker expressions have an empty intersection. If the marker expressions have a non-empty intersection, then forking must not happen or else we could wind up with two different versions of the same distribution in the lock file that could be installed simultaneously when the marker environment is in the intersection.
 

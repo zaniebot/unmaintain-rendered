@@ -13,14 +13,14 @@ head: cjm/mrocycle-primer
 created_at: 2025-05-07T02:08:00Z
 updated_at: 2025-05-09T03:43:32Z
 url: https://github.com/astral-sh/ruff/pull/17903
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] primer updates
 
 ---
 
-_Pull request opened by @carljm on 2025-05-07 02:08_
+_@carljm_
 
 ## Summary
 

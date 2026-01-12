@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T22:27:35Z
 updated_at: 2024-05-20T00:49:14Z
 url: https://github.com/astral-sh/uv/issues/2982
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv not recognizing existing installed package
 
 ---
 
-_Issue opened by @shiyangcao on 2024-04-10 22:27_
+_@shiyangcao_
 
 Hi,
 

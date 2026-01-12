@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T18:01:35Z
 updated_at: 2024-08-06T18:14:13Z
 url: https://github.com/astral-sh/uv/issues/5699
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # --no-binary in conjunction with a custom uv index url results in a failure to build.
 
 ---
 
-_Issue opened by @harmstyler on 2024-08-01 18:01_
+_@harmstyler_
 
 When I attempt to use `--no-binary` in conjunction  with a custom uv index url via the `UV_INDEX_URL` environment variable, then uv still tries to grab the whl files but then errors because it can't use them. The .tar.gz build files are available, as that was my first suspission. The normal `pip install --no-binary` works with this setup, also.
 

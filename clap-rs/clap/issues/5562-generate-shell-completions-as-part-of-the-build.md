@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T09:31:44Z
 updated_at: 2024-07-06T11:39:14Z
 url: https://github.com/clap-rs/clap/issues/5562
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Generate shell completions as part of the build process to assist cross compilation
 
 ---
 
-_Issue opened by @Flowdalic on 2024-07-02 09:31_
+_@Flowdalic_
 
 ### Please complete the following tasks
 

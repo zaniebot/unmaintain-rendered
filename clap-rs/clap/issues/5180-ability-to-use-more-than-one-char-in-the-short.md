@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-21T16:50:42Z
 updated_at: 2023-10-23T14:17:57Z
 url: https://github.com/clap-rs/clap/issues/5180
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Ability to use more than one char in the short aliases for arguments
 
 ---
 
-_Issue opened by @andreykaere on 2023-10-21 16:50_
+_@andreykaere_
 
 ### Please complete the following tasks
 

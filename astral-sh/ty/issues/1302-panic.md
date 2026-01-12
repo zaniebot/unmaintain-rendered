@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T16:21:52Z
 updated_at: 2025-10-03T16:23:36Z
 url: https://github.com/astral-sh/ty/issues/1302
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic]
 
 ---
 
-_Issue opened by @sector119 on 2025-10-03 16:21_
+_@sector119_
 
 ```
 error[panic]: Panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/Users/sector119/PycharmProjects/epsilon_xmlrpc/tests/integration/eps/test_dictionary.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(4000c)): execute: too many cycle iterations`

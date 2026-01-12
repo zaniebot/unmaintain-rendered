@@ -13,14 +13,14 @@ head: renovate/libc-0.x-lockfile
 created_at: 2026-01-12T07:39:37Z
 updated_at: 2026-01-12T07:48:45Z
 url: https://github.com/astral-sh/ruff/pull/22520
-synced_at: 2026-01-12T07:59:41Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Update Rust crate libc to v0.2.179
 
 ---
 
-_Pull request opened by @renovate on 2026-01-12 07:39_
+_@renovate_
 
 This PR contains the following updates:
 

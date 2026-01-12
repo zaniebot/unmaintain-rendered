@@ -13,14 +13,14 @@ head: charlie/docs
 created_at: 2023-02-12T02:40:52Z
 updated_at: 2023-02-12T04:03:30Z
 url: https://github.com/astral-sh/ruff/pull/2790
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add docs for f-string-missing-placeholders and unused-variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 02:40_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: cjm/module_getattr
 created_at: 2025-11-03T16:40:20Z
 updated_at: 2025-11-03T20:24:03Z
 url: https://github.com/astral-sh/ruff/pull/21260
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] prefer submodule over module __getattr__ in from-imports
 
 ---
 
-_Pull request opened by @carljm on 2025-11-03 16:40_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1053
 

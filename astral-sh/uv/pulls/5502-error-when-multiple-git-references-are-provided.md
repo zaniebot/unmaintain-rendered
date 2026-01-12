@@ -14,14 +14,14 @@ head: add-group-gitref
 created_at: 2024-07-27T01:23:45Z
 updated_at: 2024-07-30T14:48:51Z
 url: https://github.com/astral-sh/uv/pull/5502
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Error when multiple git references are provided in `uv add`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-27 01:23_
+_@eth3lbert_
 
 ## Summary
 

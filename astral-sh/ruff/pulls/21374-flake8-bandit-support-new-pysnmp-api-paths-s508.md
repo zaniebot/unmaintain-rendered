@@ -14,14 +14,14 @@ head: fix-21364
 created_at: 2025-11-11T04:34:00Z
 updated_at: 2025-11-19T20:03:23Z
 url: https://github.com/astral-sh/ruff/pull/21374
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [`flake8-bandit`] Support new PySNMP API paths (`S508`, `S509`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-11 04:34_
+_@danparizher_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-07T09:35:46Z
 updated_at: 2024-03-07T14:04:20Z
 url: https://github.com/astral-sh/uv/issues/2268
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Passing a directory path with uv fails, while pip succeeds 
 
 ---
 
-_Issue opened by @RafailFridman on 2024-03-07 09:35_
+_@RafailFridman_
 
 I'm following a setup script from [here](https://github.com/oppo-us-research/SpacetimeGaussians/blob/main/script/setup.sh). One step being
 `pip install thirdparty/gaussian_splatting/submodules/gaussian_rasterization_ch9`

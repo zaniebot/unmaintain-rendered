@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T19:10:05Z
 updated_at: 2025-07-30T20:01:21Z
 url: https://github.com/astral-sh/uv/issues/14981
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # uv seems to incorrectly match local versions on triple-equals
 
 ---
 
-_Issue opened by @geofft on 2025-07-30 19:10_
+_@geofft_
 
 ### Summary
 

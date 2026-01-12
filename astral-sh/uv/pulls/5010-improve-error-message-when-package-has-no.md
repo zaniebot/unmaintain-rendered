@@ -13,14 +13,14 @@ head: konsti/neither-wheels-nor-source-dist
 created_at: 2024-07-12T14:46:17Z
 updated_at: 2024-07-15T00:00:41Z
 url: https://github.com/astral-sh/uv/pull/5010
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Improve error message when package has no installation candidates
 
 ---
 
-_Pull request opened by @konstin on 2024-07-12 14:46_
+_@konstin_
 
 Currently, with
 ```toml

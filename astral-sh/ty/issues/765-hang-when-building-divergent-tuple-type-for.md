@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T13:12:03Z
 updated_at: 2025-07-30T16:25:43Z
 url: https://github.com/astral-sh/ty/issues/765
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Hang when building divergent tuple type for implicit instance attributes
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-04 13:12_
+_@AlexWaygood_
 
 ### Summary
 

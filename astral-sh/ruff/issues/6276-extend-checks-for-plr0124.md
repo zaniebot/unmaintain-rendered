@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-02T15:31:49Z
 updated_at: 2023-08-04T13:51:43Z
 url: https://github.com/astral-sh/ruff/issues/6276
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Extend checks for PLR0124 
 
 ---
 
-_Issue opened by @chbndrhnns on 2023-08-02 15:31_
+_@chbndrhnns_
 
 I had this piece of code where ruff complained about the first assert statement and not about the second. I figure it could also complain about the second for the same reason.
 

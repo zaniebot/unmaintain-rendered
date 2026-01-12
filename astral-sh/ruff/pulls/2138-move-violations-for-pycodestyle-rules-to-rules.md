@@ -12,14 +12,14 @@ head: pycode-style-move-violations-to-rules
 created_at: 2023-01-24T17:43:38Z
 updated_at: 2023-01-26T01:18:58Z
 url: https://github.com/astral-sh/ruff/pull/2138
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move violations for pycodestyle rules to rules files
 
 ---
 
-_Pull request opened by @ericroberts on 2023-01-24 17:43_
+_@ericroberts_
 
 Following up on another discussion point from https://github.com/charliermarsh/ruff/pull/2038, that violations should go together with the rules.
 

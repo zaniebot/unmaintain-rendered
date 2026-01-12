@@ -13,14 +13,14 @@ head: renovate/astral-sh-uv-0.x
 created_at: 2025-10-27T01:46:54Z
 updated_at: 2025-10-27T02:26:17Z
 url: https://github.com/astral-sh/uv/pull/16456
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Update dependency astral-sh/uv to v0.9.5
 
 ---
 
-_Pull request opened by @renovate on 2025-10-27 01:46_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: remove-indico-ecosystem-override
 created_at: 2024-03-01T09:19:00Z
 updated_at: 2024-03-01T09:38:14Z
 url: https://github.com/astral-sh/ruff/pull/10180
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove indico ecosystem override
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-01 09:19_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: bug/8173-force-color
 created_at: 2024-10-14T18:28:22Z
 updated_at: 2024-10-15T13:28:05Z
 url: https://github.com/astral-sh/uv/pull/8183
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # disable Force color over no color
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-14 18:28_
+_@Aditya-PS-05_
 
 closes #8173 
 

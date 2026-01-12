@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-08T17:20:16Z
 updated_at: 2024-07-09T06:30:59Z
 url: https://github.com/astral-sh/ruff/issues/12249
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # option to set `output-format` grouped by rule
 
 ---
 
-_Issue opened by @DaniBodor on 2024-07-08 17:20_
+_@DaniBodor_
 
 I think it would be useful if `ruff check` could group the output by rule violated, perhaps even with the number of instances explicitly given.
 This can be useful for cases where the violation is not easily fixable to decide whether to supress it case-by-case or turn it off altogether.

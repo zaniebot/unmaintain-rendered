@@ -13,14 +13,14 @@ head: charlie/op
 created_at: 2024-10-29T01:26:47Z
 updated_at: 2024-10-29T01:41:33Z
 url: https://github.com/astral-sh/ruff/pull/13973
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Rename `operator-unsupported` to `unsupported-operator`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 01:26_
+_@charliermarsh_
 
 ## Summary
 

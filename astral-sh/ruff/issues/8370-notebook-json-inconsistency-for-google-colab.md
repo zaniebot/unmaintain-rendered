@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-31T02:22:31Z
 updated_at: 2024-02-06T12:12:15Z
 url: https://github.com/astral-sh/ruff/issues/8370
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Notebook JSON inconsistency for Google Colab
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-10-31 02:22_
+_@dhruvmanila_
 
 I'm not sure if this deserves its own issue, but: Would it be possible to use `extend-include = ["*.ipynb"]` and `ruff format` to **only** re-format the Python code in cells, and **not** the ipynb file itself?
 

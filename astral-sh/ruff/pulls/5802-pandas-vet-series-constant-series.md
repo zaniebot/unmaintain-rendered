@@ -13,14 +13,14 @@ head: pandas-vet-constant-series
 created_at: 2023-07-16T09:43:17Z
 updated_at: 2023-07-17T06:28:15Z
 url: https://github.com/astral-sh/ruff/pull/5802
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`pandas-vet`] series constant series
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-16 09:43_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

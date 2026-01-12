@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T02:27:38Z
 updated_at: 2023-01-15T07:21:30Z
 url: https://github.com/astral-sh/ruff/issues/1459
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature Request: Ruff doesn't support expanding star imports
 
 ---
 
-_Issue opened by @code-yeongyu on 2022-12-30 02:27_
+_@code-yeongyu_
 
 I would like to say first that I feel amazing about your product and think it's super awesome and useful. I was surprised by the speed of Ruff and cannot go back to the past without using it.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-03-18T18:49:28Z
 updated_at: 2022-05-05T17:02:01Z
 url: https://github.com/clap-rs/clap/issues/1431
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Subcommand name without hyphen in help
 
 ---
 
-_Issue opened by @chriskrycho on 2019-03-18 18:49_
+_@chriskrycho_
 
 Maintainer's notes
 - We hope #1334 will provide a way to resolve this.  This is being left open to ensure this use case isn't lost in case a minimum or full solution doesn't include this

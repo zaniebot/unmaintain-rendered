@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-28T10:50:33Z
 updated_at: 2024-03-29T16:00:48Z
 url: https://github.com/astral-sh/uv/issues/2708
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # uv makes python fun again!
 
 ---
 
-_Issue opened by @mescanne on 2024-03-28 10:50_
+_@mescanne_
 
 Please just close this when you read it... I'm not sure where else to put it.
 

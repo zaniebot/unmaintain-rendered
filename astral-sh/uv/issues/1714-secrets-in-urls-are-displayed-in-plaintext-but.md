@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T19:49:36Z
 updated_at: 2025-05-12T16:58:26Z
 url: https://github.com/astral-sh/uv/issues/1714
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Secrets in URLs are displayed in plaintext but should be redacted
 
 ---
 
-_Issue opened by @zanieb on 2024-02-19 19:49_
+_@zanieb_
 
 e.g.
 

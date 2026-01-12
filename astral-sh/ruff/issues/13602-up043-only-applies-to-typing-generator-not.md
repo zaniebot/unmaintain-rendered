@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T11:06:59Z
 updated_at: 2024-10-03T12:06:16Z
 url: https://github.com/astral-sh/ruff/issues/13602
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `UP043` only applies to `typing.Generator`, not `collections.abc.Generator`
 
 ---
 
-_Issue opened by @cake-monotone on 2024-10-02 11:06_
+_@cake-monotone_
 
 ### UP043
 > `UP043`

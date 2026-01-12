@@ -13,14 +13,14 @@ head: alex-carl/pep484-positionals
 created_at: 2025-09-04T18:50:58Z
 updated_at: 2025-09-05T16:56:07Z
 url: https://github.com/astral-sh/ruff/pull/20248
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Implement the legacy PEP-484 convention for indicating positional-only parameters
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-04 18:50_
+_@AlexWaygood_
 
 ## Summary
 

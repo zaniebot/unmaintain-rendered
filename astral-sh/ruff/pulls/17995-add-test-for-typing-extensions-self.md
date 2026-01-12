@@ -13,14 +13,14 @@ head: cjm/typextself
 created_at: 2025-05-09T20:25:57Z
 updated_at: 2025-05-09T20:30:16Z
 url: https://github.com/astral-sh/ruff/pull/17995
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # add test for typing_extensions.Self
 
 ---
 
-_Pull request opened by @carljm on 2025-05-09 20:25_
+_@carljm_
 
 Using `typing_extensions.Self` already worked, but we were lacking a test for it.
 

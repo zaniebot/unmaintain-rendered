@@ -13,14 +13,14 @@ head: buffer-special-method
 created_at: 2023-10-25T00:05:21Z
 updated_at: 2023-10-25T05:03:59Z
 url: https://github.com/astral-sh/ruff/pull/8190
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [`pylint`] Add buffer methods to `bad-dunder-method-name` (`PLW3201`) exclusions
 
 ---
 
-_Pull request opened by @TeamSpen210 on 2023-10-25 00:05_
+_@TeamSpen210_
 
 ## Summary
 

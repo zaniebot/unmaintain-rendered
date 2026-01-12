@@ -13,14 +13,14 @@ head: micha/declare-lint
 created_at: 2024-12-09T14:09:04Z
 updated_at: 2024-12-10T16:19:11Z
 url: https://github.com/astral-sh/ruff/pull/14873
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Add infrastructure to declare lints
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-09 14:09_
+_@MichaReiser_
 
 ## Summary
 

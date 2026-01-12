@@ -13,14 +13,14 @@ head: charlie/an
 created_at: 2023-11-28T21:03:51Z
 updated_at: 2023-11-28T21:17:45Z
 url: https://github.com/astral-sh/ruff/pull/8881
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid filtering out un-representable types in return annotation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-28 21:03_
+_@charliermarsh_
 
 ## Summary
 

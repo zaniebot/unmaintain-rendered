@@ -13,14 +13,14 @@ head: renovate/regex-1.x-lockfile
 created_at: 2024-04-01T03:43:06Z
 updated_at: 2024-04-01T07:24:14Z
 url: https://github.com/astral-sh/ruff/pull/10689
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # chore(deps): update rust crate regex to v1.10.4
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 03:43_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

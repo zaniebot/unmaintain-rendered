@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-16T10:25:59Z
 updated_at: 2023-02-16T14:05:13Z
 url: https://github.com/astral-sh/ruff/issues/2953
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # GitHub Topics: ruff
 
 ---
 
-_Issue opened by @simon04 on 2023-02-16 10:25_
+_@simon04_
 
 Maybe add `ruff` as topic to this project in order to have it listed on https://github.com/topics/ruff
 

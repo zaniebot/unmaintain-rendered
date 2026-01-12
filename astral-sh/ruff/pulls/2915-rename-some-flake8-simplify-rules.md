@@ -12,14 +12,14 @@ head: rename-flake8-simplify-rules
 created_at: 2023-02-15T10:29:41Z
 updated_at: 2023-02-26T23:19:21Z
 url: https://github.com/astral-sh/ruff/pull/2915
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Rename some `flake8-simplify` rules
 
 ---
 
-_Pull request opened by @ngnpope on 2023-02-15 10:29_
+_@ngnpope_
 
 Renames the following rules that stood out to me at a glance as needing better names:
 

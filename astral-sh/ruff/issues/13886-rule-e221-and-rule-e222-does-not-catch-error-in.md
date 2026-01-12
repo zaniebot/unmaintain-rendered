@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-23T10:25:46Z
 updated_at: 2024-10-23T13:02:30Z
 url: https://github.com/astral-sh/ruff/issues/13886
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule E221 and Rule E222 does not catch error in if condition 
 
 ---
 
-_Issue opened by @samratashok87 on 2024-10-23 10:25_
+_@samratashok87_
 
 Rule E221 ([multiple-spaces-before-operator] and Rule E222 ([multiple-spaces-after-operator) work for normal assignment operators.
 But If multiples spaces are present in if condition either before or after '==' operator Ruff does not catch.

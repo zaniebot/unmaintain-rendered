@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-12-18T11:41:26Z
 updated_at: 2025-12-24T15:36:19Z
 url: https://github.com/astral-sh/ty/issues/2062
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unresolved imports in projects on network drives
 
 ---
 
-_Issue opened by @arvidmor on 2025-12-18 11:41_
+_@arvidmor_
 
 ### Summary
 

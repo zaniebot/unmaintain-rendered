@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T06:12:01Z
 updated_at: 2024-07-14T19:55:12Z
 url: https://github.com/astral-sh/ruff/issues/10160
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Request: Enforce space after colon (`:`) for special comments
 
 ---
 
-_Issue opened by @Avasam on 2024-02-29 06:12_
+_@Avasam_
 
 I've open the same request over at https://github.com/PyCQA/flake8-pyi/issues/465 , but I think that Ruff could generalize this, or at least expand on supported keywords. 
 

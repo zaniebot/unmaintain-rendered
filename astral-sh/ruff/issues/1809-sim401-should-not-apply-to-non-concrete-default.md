@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T07:16:25Z
 updated_at: 2023-01-18T16:43:42Z
 url: https://github.com/astral-sh/ruff/issues/1809
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM401 should not apply to non-concrete default values
 
 ---
 
-_Issue opened by @thomasdesr on 2023-01-12 07:16_
+_@thomasdesr_
 
 Thanks again for Ruff ❤️ 
 

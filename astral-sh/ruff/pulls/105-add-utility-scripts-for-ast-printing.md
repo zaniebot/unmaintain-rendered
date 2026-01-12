@@ -12,14 +12,14 @@ head: charlie/printers
 created_at: 2022-09-05T13:20:21Z
 updated_at: 2022-09-05T13:31:56Z
 url: https://github.com/astral-sh/ruff/pull/105
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add utility scripts for AST printing
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-05 13:20_
+_@charliermarsh_
 
 _No description provided._
 

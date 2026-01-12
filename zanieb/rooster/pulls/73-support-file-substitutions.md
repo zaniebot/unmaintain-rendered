@@ -12,14 +12,14 @@ head: support-substitutions
 created_at: 2025-08-12T01:29:18Z
 updated_at: 2025-08-26T16:22:20Z
 url: https://github.com/zanieb/rooster/pull/73
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Support file substitutions
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-12 01:29_
+_@samypr100_
 
 In order to support https://github.com/astral-sh/uv/pull/15196
 

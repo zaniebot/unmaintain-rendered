@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T16:00:13Z
 updated_at: 2024-08-24T02:19:06Z
 url: https://github.com/astral-sh/ruff/issues/11678
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] Explore doing more work up front in semantic indexing
 
 ---
 
-_Issue opened by @carljm on 2024-06-01 16:00_
+_@carljm_
 
 Instead of building a CFG and lazily traversing it backwards whenever we resolve types, we could instead build use-def links directly up-front, reducing the work to be done in type resolution.
 

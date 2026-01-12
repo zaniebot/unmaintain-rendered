@@ -14,14 +14,14 @@ head: david/zip-typeshed-dir
 created_at: 2025-01-09T12:19:07Z
 updated_at: 2025-01-09T12:25:20Z
 url: https://github.com/astral-sh/ruff/pull/15372
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Minor refactor of red_knot_vendored/build.rs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-09 12:19_
+_@sharkdp_
 
 ## Summary
 

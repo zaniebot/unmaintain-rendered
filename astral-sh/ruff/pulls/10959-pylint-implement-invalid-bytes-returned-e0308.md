@@ -14,14 +14,14 @@ head: add-E0308-invalid-bytes-returned
 created_at: 2024-04-15T19:09:36Z
 updated_at: 2024-04-18T01:43:15Z
 url: https://github.com/astral-sh/ruff/pull/10959
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Implement `invalid-bytes-returned` (`E0308`)
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-04-15 19:09_
+_@tibor-reiss_
 
 Add pylint rule invalid-bytes-returned (PLE0308)
 

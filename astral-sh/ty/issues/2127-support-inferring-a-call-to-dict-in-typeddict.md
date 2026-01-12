@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T01:11:14Z
 updated_at: 2025-12-22T15:24:15Z
 url: https://github.com/astral-sh/ty/issues/2127
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support inferring a call to `dict(...)` in TypedDict context
 
 ---
 
-_Issue opened by @carljm on 2025-12-20 01:11_
+_@carljm_
 
 Originally reported at https://www.reddit.com/r/Python/comments/1podix2/comment/nuhhob3/
 

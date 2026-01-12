@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-16T09:13:26Z
 updated_at: 2023-11-16T17:36:27Z
 url: https://github.com/astral-sh/ruff/issues/8715
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ruff Jupiter notebook removes imports in separate block from use
 
 ---
 
-_Issue opened by @Matt-Ord on 2023-11-16 09:13_
+_@Matt-Ord_
 
 Notebook
 ```json

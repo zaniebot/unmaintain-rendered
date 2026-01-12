@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T07:57:32Z
 updated_at: 2025-02-03T09:43:57Z
 url: https://github.com/astral-sh/ruff/issues/15906
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add `ruff check --fix-only --check`
 
 ---
 
-_Issue opened by @jakajancar on 2025-02-03 07:57_
+_@jakajancar_
 
 ### Description
 

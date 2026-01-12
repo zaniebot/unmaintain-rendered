@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T04:26:24Z
 updated_at: 2026-01-02T09:11:33Z
 url: https://github.com/astral-sh/uv/issues/11175
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # option to specify a project root directory to be added to the python path
 
 ---
 
-_Issue opened by @DetachHead on 2025-02-03 04:26_
+_@DetachHead_
 
 ### Summary
 

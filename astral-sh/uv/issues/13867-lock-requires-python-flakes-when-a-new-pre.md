@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T17:16:47Z
 updated_at: 2025-06-06T18:35:21Z
 url: https://github.com/astral-sh/uv/issues/13867
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `lock_requires_python` flakes when a new pre-releases version is addeded
 
 ---
 
-_Issue opened by @zanieb on 2025-06-05 17:16_
+_@zanieb_
 
 ```
     running 1 test

@@ -12,14 +12,14 @@ head: backend-path-is-supported
 created_at: 2023-11-13T08:15:50Z
 updated_at: 2023-11-13T08:19:21Z
 url: https://github.com/astral-sh/uv/pull/405
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Backend path is supported
 
 ---
 
-_Pull request opened by @konstin on 2023-11-13 08:15_
+_@konstin_
 
 The check is outdated now
 

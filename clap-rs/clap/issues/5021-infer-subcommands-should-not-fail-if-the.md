@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-19T14:19:14Z
 updated_at: 2023-09-25T20:56:29Z
 url: https://github.com/clap-rs/clap/issues/5021
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # infer_subcommands should not fail if the ambiguity is over aliases
 
 ---
 
-_Issue opened by @Xophmeister on 2023-07-19 14:19_
+_@Xophmeister_
 
 ### Please complete the following tasks
 

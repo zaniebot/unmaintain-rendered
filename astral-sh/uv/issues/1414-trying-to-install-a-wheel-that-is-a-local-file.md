@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T02:32:13Z
 updated_at: 2024-02-16T02:35:52Z
 url: https://github.com/astral-sh/uv/issues/1414
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Trying to install a wheel that is a local file fails
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-02-16 02:32_
+_@CoolCat467_
 
 I think this might be a duplicate but I'm not sure, but trying to `uv pip install` a wheel that is a local file fails because uv seems to think it should be a URL.
 

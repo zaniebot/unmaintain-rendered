@@ -12,14 +12,14 @@ head: charlie/scopes
 created_at: 2023-04-28T03:51:46Z
 updated_at: 2023-04-29T23:11:25Z
 url: https://github.com/astral-sh/ruff/pull/4138
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove `ScopeStack` in favor of child-parent `ScopeId` pointers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-28 03:51_
+_@charliermarsh_
 
 ## Summary
 

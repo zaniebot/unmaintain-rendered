@@ -13,14 +13,14 @@ head: update-readme
 created_at: 2024-07-21T16:04:52Z
 updated_at: 2024-07-21T16:17:30Z
 url: https://github.com/astral-sh/ruff/pull/12433
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add IBM to Who is Using ruff
 
 ---
 
-_Pull request opened by @IvanIsCoding on 2024-07-21 16:04_
+_@IvanIsCoding_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

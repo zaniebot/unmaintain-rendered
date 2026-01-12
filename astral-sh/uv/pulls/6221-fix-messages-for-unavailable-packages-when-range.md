@@ -13,14 +13,14 @@ head: zb/plural-unavailable-range
 created_at: 2024-08-19T18:31:23Z
 updated_at: 2024-08-19T19:07:08Z
 url: https://github.com/astral-sh/uv/pull/6221
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Fix messages for unavailable packages when range is plural
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 18:31_
+_@zanieb_
 
 Not in love with the implementation, but it seems like the easiest path forward for now.
 

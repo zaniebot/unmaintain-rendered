@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-21T13:08:39Z
 updated_at: 2023-10-21T19:29:47Z
 url: https://github.com/astral-sh/ruff/issues/8104
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # B006 (mutable-argument-default) no longer offers autofix even with --unsafe-fixes
 
 ---
 
-_Issue opened by @cjolowicz on 2023-10-21 13:08_
+_@cjolowicz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

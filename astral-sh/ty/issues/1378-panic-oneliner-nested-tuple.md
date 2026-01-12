@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-17T08:53:41Z
 updated_at: 2025-10-17T09:00:34Z
 url: https://github.com/astral-sh/ty/issues/1378
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic oneliner: nested tuple
 
 ---
 
-_Issue opened by @hjalmarlucius on 2025-10-17 08:53_
+_@hjalmarlucius_
 
 ### Summary
 

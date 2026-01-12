@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T03:39:12Z
 updated_at: 2024-05-12T21:39:48Z
 url: https://github.com/astral-sh/ruff/issues/10594
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Provide code action to ignore the diagnostic (via `noqa`)
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-26 03:39_
+_@dhruvmanila_
 
 Provide "Disable for this line" code action to automatically add `noqa` comment for the selected diagnostic:
 

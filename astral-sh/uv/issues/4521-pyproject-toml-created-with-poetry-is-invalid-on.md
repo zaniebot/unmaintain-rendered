@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-25T16:34:57Z
 updated_at: 2024-06-25T18:53:16Z
 url: https://github.com/astral-sh/uv/issues/4521
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # pyproject.toml created with poetry is invalid on versions after 0.2.11
 
 ---
 
-_Issue opened by @lskbr on 2024-06-25 16:34_
+_@lskbr_
 
 I updated my uv to version 0.2.15 today, and I noticed some configurations in my pyproject.toml were not being applied, especially extra indexes. Running in debug mode, I noticed it complains that the pyproject.toml is malformed and misses a project section.
 In version 0.2.15, the error is the same, but after it, the section [tool.uv.pip] is ignored. In version 0.2.11, the project section is not present and the error reported is the same, but [tool.uv.pip] is honored.

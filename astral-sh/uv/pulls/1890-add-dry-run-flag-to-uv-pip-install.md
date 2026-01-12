@@ -12,14 +12,14 @@ head: zb/dry-run
 created_at: 2024-02-23T00:23:56Z
 updated_at: 2024-03-04T23:25:02Z
 url: https://github.com/astral-sh/uv/pull/1890
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Add `--dry-run` flag to `uv pip install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-23 00:23_
+_@zanieb_
 
 Demo for #1436 
 

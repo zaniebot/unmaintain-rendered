@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T09:56:47Z
 updated_at: 2024-03-04T01:51:04Z
 url: https://github.com/astral-sh/uv/issues/1466
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Full shebang path might be invalid
 
 ---
 
-_Issue opened by @astrojuanlu on 2024-02-16 09:56_
+_@astrojuanlu_
 
 I noticed that `uv` creates executables with the full interpreter path in the shebang. Which is a smart solution, but might create invalid scripts:
 

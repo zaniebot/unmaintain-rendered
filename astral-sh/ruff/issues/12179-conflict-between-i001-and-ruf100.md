@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T05:03:30Z
 updated_at: 2024-07-07T23:51:39Z
 url: https://github.com/astral-sh/ruff/issues/12179
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # (🐞) conflict between `I001` and `RUF100`
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-07-04 05:03_
+_@KotlinIsland_
 
 ```py
 from pydantic import BaseModel, ConfigDict, TypeAdapter as _TypeAdapter, ValidationError  # noqa: TID251

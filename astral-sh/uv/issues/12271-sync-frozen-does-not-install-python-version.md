@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T10:37:04Z
 updated_at: 2025-04-15T13:42:31Z
 url: https://github.com/astral-sh/uv/issues/12271
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Sync --frozen does not install python version
 
 ---
 
-_Issue opened by @eruvanos on 2025-03-18 10:37_
+_@eruvanos_
 
 ### Question
 

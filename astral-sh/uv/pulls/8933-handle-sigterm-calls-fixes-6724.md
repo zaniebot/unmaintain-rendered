@@ -13,14 +13,14 @@ head: shane/sigterm
 created_at: 2024-11-08T11:45:07Z
 updated_at: 2024-11-12T02:48:22Z
 url: https://github.com/astral-sh/uv/pull/8933
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Handle sigterm calls, fixes #6724
 
 ---
 
-_Pull request opened by @shaneikennedy on 2024-11-08 11:45_
+_@shaneikennedy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

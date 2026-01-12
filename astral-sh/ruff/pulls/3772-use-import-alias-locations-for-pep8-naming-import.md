@@ -13,14 +13,14 @@ head: charlie/noqa-names
 created_at: 2023-03-28T15:35:08Z
 updated_at: 2023-03-28T16:10:16Z
 url: https://github.com/astral-sh/ruff/pull/3772
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use import alias locations for `pep8-naming` import rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 15:35_
+_@charliermarsh_
 
 ## Summary
 

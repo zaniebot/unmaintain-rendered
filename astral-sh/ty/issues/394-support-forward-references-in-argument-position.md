@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T18:34:37Z
 updated_at: 2025-11-29T22:27:25Z
 url: https://github.com/astral-sh/ty/issues/394
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support forward references in argument-position type expressions in stubs
 
 ---
 
-_Issue opened by @jorenham on 2025-05-14 18:34_
+_@jorenham_
 
 The following `.pyi` snippet is reported as `error[unresolved-reference]: Name `_WarnLog` used when not defined`:
 

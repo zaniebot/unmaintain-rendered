@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T13:45:19Z
 updated_at: 2025-07-31T02:03:19Z
 url: https://github.com/astral-sh/uv/issues/14971
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Incorrect precedence of UV_DEFAULT_INDEX vs tool.uv.index-url
 
 ---
 
-_Issue opened by @gab23r on 2025-07-30 13:45_
+_@gab23r_
 
 ### Summary
 

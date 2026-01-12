@@ -14,14 +14,14 @@ head: dcreager/fix-intersection-bug
 created_at: 2025-12-10T15:54:07Z
 updated_at: 2025-12-10T20:07:52Z
 url: https://github.com/astral-sh/ruff/pull/21897
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Fix negation upper bounds in constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-10 15:54_
+_@dcreager_
 
 This fixes the logic error that @sharkdp [found](https://github.com/astral-sh/ruff/pull/21871#discussion_r2605755588) in the constraint set upper bound normalization logic I introduced in #21871.
 

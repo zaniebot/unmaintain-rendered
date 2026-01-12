@@ -12,14 +12,14 @@ head: thomas/issue_5050
 created_at: 2023-06-14T08:28:45Z
 updated_at: 2023-06-14T14:57:10Z
 url: https://github.com/astral-sh/ruff/pull/5079
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Consider ignore-names in all pep8 naming rules
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-14 08:28_
+_@Thomasdezeeuw_
 
 ## Summary
 

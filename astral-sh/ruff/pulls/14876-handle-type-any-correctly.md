@@ -13,14 +13,14 @@ head: dcreager/type-of-any
 created_at: 2024-12-09T15:16:32Z
 updated_at: 2024-12-10T21:12:40Z
 url: https://github.com/astral-sh/ruff/pull/14876
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Handle type[Any] correctly
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-09 15:16_
+_@dcreager_
 
 This adds support for `type[Any]`, which represents an unknown type (not an instance of an unknown type), and `type`, which we are choosing to interpret as `type[object]`.
 

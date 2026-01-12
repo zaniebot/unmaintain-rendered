@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T08:25:42Z
 updated_at: 2025-04-25T09:28:24Z
 url: https://github.com/astral-sh/uv/issues/13084
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # `uv pip install ...` should install all local packages
 
 ---
 
-_Issue opened by @ErwandKe on 2025-04-24 08:25_
+_@ErwandKe_
 
 ### Summary
 

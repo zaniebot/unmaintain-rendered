@@ -14,14 +14,14 @@ head: david/handle-unions-of-callables
 created_at: 2025-10-14T08:23:49Z
 updated_at: 2025-10-14T09:47:51Z
 url: https://github.com/astral-sh/ruff/pull/20858
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Handle decorators which return unions of `Callable`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-14 08:23_
+_@sharkdp_
 
 ## Summary
 

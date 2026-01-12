@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T13:34:20Z
 updated_at: 2025-07-18T19:15:32Z
 url: https://github.com/astral-sh/ty/issues/841
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Stricter Ignore
 
 ---
 
-_Issue opened by @carelvniekerk on 2025-07-17 13:34_
+_@carelvniekerk_
 
 ### Question
 

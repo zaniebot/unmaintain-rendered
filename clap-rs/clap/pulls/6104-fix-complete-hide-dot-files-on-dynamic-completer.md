@@ -12,14 +12,14 @@ head: hide
 created_at: 2025-08-11T20:46:01Z
 updated_at: 2025-08-11T21:02:35Z
 url: https://github.com/clap-rs/clap/pull/6104
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(complete): Hide dot files on dynamic completer
 
 ---
 
-_Pull request opened by @epage on 2025-08-11 20:46_
+_@epage_
 
 <!--
 Thanks for helping out!

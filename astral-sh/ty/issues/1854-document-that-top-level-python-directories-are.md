@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T15:11:31Z
 updated_at: 2025-12-13T12:14:15Z
 url: https://github.com/astral-sh/ty/issues/1854
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Document that top-level "python" directories are auto-added as search paths, like "src" directories
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-11 15:11_
+_@AlexWaygood_
 
 We added this feature in https://github.com/astral-sh/ruff/pull/20263 but never documented it in https://docs.astral.sh/ty/reference/configuration/#root
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T17:39:46Z
 updated_at: 2025-04-21T19:06:55Z
 url: https://github.com/astral-sh/uv/issues/12973
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # mono repo structure breaks uv behavior
 
 ---
 
-_Issue opened by @kotoroshinoto on 2025-04-18 17:39_
+_@kotoroshinoto_
 
 ### Summary
 

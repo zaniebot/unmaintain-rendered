@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-12T16:44:57Z
 updated_at: 2024-08-23T18:39:23Z
 url: https://github.com/astral-sh/uv/issues/622
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Show versions ignore due to platform (bad error message)
 
 ---
 
-_Issue opened by @konstin on 2023-12-12 16:44_
+_@konstin_
 
 When trying to resolve torchaudio on python 3.12, when there are no wheels for 3.12 and no source dist, we give a bad message, pretending there are no versions even though they exist, just not for our platform/python version.
 ```

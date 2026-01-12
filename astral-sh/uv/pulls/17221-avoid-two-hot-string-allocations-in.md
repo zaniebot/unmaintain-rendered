@@ -13,14 +13,14 @@ head: ww/alloc
 created_at: 2025-12-22T21:20:24Z
 updated_at: 2026-01-05T20:26:25Z
 url: https://github.com/astral-sh/uv/pull/17221
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Avoid two hot String allocations in deserialization
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-22 21:20_
+_@woodruffw_
 
 ## Summary
 

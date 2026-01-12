@@ -13,14 +13,14 @@ head: charlie/link
 created_at: 2023-10-29T16:09:16Z
 updated_at: 2023-10-29T16:14:51Z
 url: https://github.com/astral-sh/ruff/pull/8325
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Consistently link more settings in the documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 16:09_
+_@charliermarsh_
 
 _No description provided._
 

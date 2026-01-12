@@ -12,14 +12,14 @@ head: ag/squash-hardlink-warning
 created_at: 2024-09-04T12:44:48Z
 updated_at: 2024-09-04T14:45:41Z
 url: https://github.com/astral-sh/uv/pull/7012
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # uv/tests: filter out link mode warning in one test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-04 12:44_
+_@BurntSushi_
 
 In the `lock_redact_https` test specifically, it prompts a link mode
 warning from `uv` on my system. Debugging seems to suggest it is

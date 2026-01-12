@@ -13,14 +13,14 @@ head: charlie/dist-info
 created_at: 2024-05-21T14:06:44Z
 updated_at: 2024-05-21T18:05:41Z
 url: https://github.com/astral-sh/uv/pull/3697
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Add PEP 714 support for HTML API client
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 14:06_
+_@charliermarsh_
 
 ## Summary
 

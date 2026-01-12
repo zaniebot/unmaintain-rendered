@@ -14,14 +14,14 @@ head: konsti/set-thread-size-for-rayon-and-tokio-too
 created_at: 2025-04-11T16:05:43Z
 updated_at: 2025-04-16T07:27:47Z
 url: https://github.com/astral-sh/uv/pull/12839
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Set 4MB stack size for all threads, introduce `UV_STACK_SIZE`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-11 16:05_
+_@konstin_
 
 See #12769 for the motivation. We set the 4MB not only for the main thread, but also for all tokio and rayon threads to fix a stack overflow while unpacking wheels in production on Windows.
 

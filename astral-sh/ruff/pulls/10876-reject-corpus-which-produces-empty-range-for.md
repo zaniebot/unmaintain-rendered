@@ -14,14 +14,14 @@ head: dhruv/fuzz-reject-empty-range
 created_at: 2024-04-11T12:16:51Z
 updated_at: 2024-04-11T12:28:35Z
 url: https://github.com/astral-sh/ruff/pull/10876
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Reject corpus which produces empty range for LALRPOP parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-11 12:16_
+_@dhruvmanila_
 
 ## Summary
 

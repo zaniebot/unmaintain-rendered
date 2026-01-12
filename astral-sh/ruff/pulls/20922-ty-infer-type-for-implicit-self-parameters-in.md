@@ -14,14 +14,14 @@ head: david/type-of-self-in-methods-integration
 created_at: 2025-10-16T14:30:35Z
 updated_at: 2025-10-23T13:14:29Z
 url: https://github.com/astral-sh/ruff/pull/20922
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Infer type for implicit `self` parameters in method bodies
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-16 14:30_
+_@sharkdp_
 
 ## Summary
 

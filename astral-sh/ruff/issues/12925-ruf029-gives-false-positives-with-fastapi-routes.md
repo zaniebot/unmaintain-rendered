@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T10:18:48Z
 updated_at: 2024-08-17T14:25:16Z
 url: https://github.com/astral-sh/ruff/issues/12925
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF029 gives false positives with FastApi routes
 
 ---
 
-_Issue opened by @TomerBin on 2024-08-16 10:18_
+_@TomerBin_
 
 I would like to suggest that RUF029 will skip functions that are FastApi routes. In their [docs](https://fastapi.tiangolo.com/async/#very-technical-details), it is explicitly mentioned that sometimes routes should be declared as async function, even when not doing any asynchronous operation.
 As a first step we can introduce a new rule setting that will allow opting into this new behavior. 

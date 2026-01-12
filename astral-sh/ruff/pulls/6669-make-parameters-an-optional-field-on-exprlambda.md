@@ -13,14 +13,14 @@ head: charlie/lambda
 created_at: 2023-08-18T04:36:07Z
 updated_at: 2023-08-18T15:34:55Z
 url: https://github.com/astral-sh/ruff/pull/6669
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Make `Parameters` an optional field on `ExprLambda`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-18 04:36_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-20T15:35:09Z
 updated_at: 2025-02-06T18:35:53Z
 url: https://github.com/astral-sh/ruff/issues/15620
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Detect mix of generic type parameters and `Generic` subclass
 
 ---
 
-_Issue opened by @ntBre on 2025-01-20 15:35_
+_@ntBre_
 
 ```pycon
 >>> from typing import TypeVar

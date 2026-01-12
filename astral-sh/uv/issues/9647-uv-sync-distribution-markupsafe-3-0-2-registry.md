@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-04T20:13:16Z
 updated_at: 2025-02-07T12:17:32Z
 url: https://github.com/astral-sh/uv/issues/9647
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # `uv sync`: Distribution `markupsafe==3.0.2 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @jfaust on 2024-12-04 20:13_
+_@jfaust_
 
 Similar to #8922, but with `uv sync`. With the following pyproject.toml:
 ```

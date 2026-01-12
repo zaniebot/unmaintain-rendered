@@ -14,14 +14,14 @@ head: cli-doc
 created_at: 2025-05-24T11:20:20Z
 updated_at: 2025-05-25T11:09:02Z
 url: https://github.com/astral-sh/ruff/pull/18285
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Add long help for `--config` argument
 
 ---
 
-_Pull request opened by @j178 on 2025-05-24 11:20_
+_@j178_
 
 ## Summary
 

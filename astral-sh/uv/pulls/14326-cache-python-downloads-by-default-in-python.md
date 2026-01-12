@@ -13,14 +13,14 @@ head: zb/py-install-cache
 created_at: 2025-06-27T19:25:53Z
 updated_at: 2025-07-28T17:33:58Z
 url: https://github.com/astral-sh/uv/pull/14326
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Cache Python downloads by default in `python install` tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 19:25_
+_@zanieb_
 
 Adds a cache bucket for Python installs and uses it by default during tests, extending the opt-in cache added in https://github.com/astral-sh/uv/pull/12175
 

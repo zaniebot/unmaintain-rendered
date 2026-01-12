@@ -13,14 +13,14 @@ head: cjm/sympy2
 created_at: 2025-09-12T20:29:39Z
 updated_at: 2025-09-12T20:42:26Z
 url: https://github.com/astral-sh/ruff/pull/20370
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [DO NOT LAND] No-op change to trigger CI
 
 ---
 
-_Pull request opened by @carljm on 2025-09-12 20:29_
+_@carljm_
 
 _No description provided._
 

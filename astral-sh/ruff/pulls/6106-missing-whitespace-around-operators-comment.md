@@ -13,14 +13,14 @@ head: missing-whitespace-around-operators
 created_at: 2023-07-26T21:10:22Z
 updated_at: 2023-07-27T18:52:44Z
 url: https://github.com/astral-sh/ruff/pull/6106
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # missing-whitespace-around-operators comment
 
 ---
 
-_Pull request opened by @arembridge on 2023-07-26 21:10_
+_@arembridge_
 
 **Summary**
 

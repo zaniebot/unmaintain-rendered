@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-04T08:41:32Z
 updated_at: 2025-01-07T17:26:06Z
 url: https://github.com/astral-sh/ruff/issues/15248
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Long freeze(>3 minutes - probably infinite) when checking file
 
 ---
 
-_Issue opened by @qarmin on 2025-01-04 08:41_
+_@qarmin_
 
 Probably caused by #10891 - CC @augustelalande 
 

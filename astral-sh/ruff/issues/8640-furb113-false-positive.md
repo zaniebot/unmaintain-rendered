@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-12T23:30:25Z
 updated_at: 2023-11-13T05:36:50Z
 url: https://github.com/astral-sh/ruff/issues/8640
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `FURB113`: False positive
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 23:30_
+_@ofek_
 
 ```
 Use `output.extend(...)` instead of repeatedly calling `output.append()`

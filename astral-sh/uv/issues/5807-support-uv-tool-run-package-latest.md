@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T02:36:10Z
 updated_at: 2024-08-19T16:58:38Z
 url: https://github.com/astral-sh/uv/issues/5807
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Support `uv tool run {package}@latest`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-06 02:36_
+_@charliermarsh_
 
 We support, e.g., `uv tool run ruff@0.4.0`. We may want to add `uv tool run ruff@latest`. What should the semantics be, though?
 

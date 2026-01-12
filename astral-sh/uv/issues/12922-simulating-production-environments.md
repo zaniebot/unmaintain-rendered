@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T18:07:26Z
 updated_at: 2025-04-17T19:02:47Z
 url: https://github.com/astral-sh/uv/issues/12922
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Simulating production environments
 
 ---
 
-_Issue opened by @stefangstark on 2025-04-16 18:07_
+_@stefangstark_
 
 ### Question
 

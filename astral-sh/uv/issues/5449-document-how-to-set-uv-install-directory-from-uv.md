@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T15:32:00Z
 updated_at: 2024-10-17T01:06:25Z
 url: https://github.com/astral-sh/uv/issues/5449
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Document how to set `uv` install directory from `uv-installer.sh`
 
 ---
 
-_Issue opened by @SamuelMarks on 2024-07-25 15:32_
+_@SamuelMarks_
 
 Was about to add a feature request then realised it already works:
 

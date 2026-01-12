@@ -13,14 +13,14 @@ head: charlie/idem
 created_at: 2023-06-05T20:03:29Z
 updated_at: 2023-06-05T20:34:10Z
 url: https://github.com/astral-sh/ruff/pull/4875
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix round-tripping of nested functions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 20:03_
+_@charliermarsh_
 
 Closes #4825.
 

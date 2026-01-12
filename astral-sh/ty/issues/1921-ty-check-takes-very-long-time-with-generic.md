@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-16T11:59:05Z
 updated_at: 2026-01-09T13:44:03Z
 url: https://github.com/astral-sh/ty/issues/1921
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty check takes very long time with generic protocols
 
 ---
 
-_Issue opened by @n-gao on 2025-12-16 11:59_
+_@n-gao_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/percent
 created_at: 2024-02-16T21:23:53Z
 updated_at: 2024-02-16T21:47:05Z
 url: https://github.com/astral-sh/uv/pull/1544
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Apply percent-decoding to filepaths in HTML find-links
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 21:23_
+_@charliermarsh_
 
 ## Summary
 

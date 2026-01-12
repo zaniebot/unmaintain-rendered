@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T15:12:14Z
 updated_at: 2025-11-18T16:10:21Z
 url: https://github.com/astral-sh/ty/issues/189
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Path handling on non-case sensitive systems
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-26 15:12_
+_@MichaReiser_
 
 The project file discovery and the `Files` interner assume that two paths that only different in casing are two unique paths. However, this is not true on all file systems and it could result in Red Knot considering two files as being different even though they're the same on disk. 
 

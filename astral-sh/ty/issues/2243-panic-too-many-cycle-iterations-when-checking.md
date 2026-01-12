@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-27T22:54:47Z
 updated_at: 2026-01-09T13:44:36Z
 url: https://github.com/astral-sh/ty/issues/2243
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # [panic] too many cycle iterations when checking Callable type alias with narwhals.LazyFrame
 
 ---
 
-_Issue opened by @matthiaskaeding on 2025-12-27 22:54_
+_@matthiaskaeding_
 
 ## Description
 

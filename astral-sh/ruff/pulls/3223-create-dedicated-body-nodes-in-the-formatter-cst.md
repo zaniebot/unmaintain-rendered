@@ -13,14 +13,14 @@ head: charlie/body
 created_at: 2023-02-25T04:29:17Z
 updated_at: 2023-02-27T22:55:07Z
 url: https://github.com/astral-sh/ruff/pull/3223
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Create dedicated `Body` nodes in the formatter CST
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-25 04:29_
+_@charliermarsh_
 
 We need dedicated body nodes so that we can properly attach comments across disparate code blocks within the same AST node. For example, if we have own-line comments in an `if` and `else` block, right now, we have no way to ensure those are attached to nodes within the `if` or `else` block.
 

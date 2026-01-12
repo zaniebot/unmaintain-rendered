@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T03:15:30Z
 updated_at: 2024-03-10T15:02:26Z
 url: https://github.com/astral-sh/uv/issues/2323
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # 401 Installing from Internal Index due to .netrc
 
 ---
 
-_Issue opened by @hmc-cs-mdrissi on 2024-03-10 03:15_
+_@hmc-cs-mdrissi_
 
 I was excited by the work done in this [issue](https://github.com/astral-sh/uv/issues/2220), so I tried checking out main and testing uv to see if it improved performance on 1 package I found slow. Instead I found that using main uv now gives me a 401 error for installing any internal package with index server. Packages that previously worked to install now fail. I've bisected commits to find the first commit that fails is this [commit](https://github.com/astral-sh/uv/pull/2241).
 

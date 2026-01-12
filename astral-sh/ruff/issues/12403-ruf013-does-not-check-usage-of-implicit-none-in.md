@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T07:18:13Z
 updated_at: 2024-07-22T14:05:47Z
 url: https://github.com/astral-sh/ruff/issues/12403
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RUF013 does not check usage of implicit None in class constructors
 
 ---
 
-_Issue opened by @mikeweltevrede on 2024-07-19 07:18_
+_@mikeweltevrede_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

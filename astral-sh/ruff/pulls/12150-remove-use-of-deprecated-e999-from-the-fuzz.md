@@ -13,14 +13,14 @@ head: fuzzer-e999
 created_at: 2024-07-02T13:08:42Z
 updated_at: 2024-07-02T13:18:57Z
 url: https://github.com/astral-sh/ruff/pull/12150
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove use of deprecated `E999` from the `fuzz-parser` script
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-02 13:08_
+_@AlexWaygood_
 
 ## Summary
 

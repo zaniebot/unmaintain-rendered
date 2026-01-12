@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-14T15:10:52Z
 updated_at: 2025-07-16T20:43:04Z
 url: https://github.com/astral-sh/ruff/issues/19329
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # False negative for `invalid-pathlib-with-suffix` (`PTH210`) if method called on direct instantiation
 
 ---
 
-_Issue opened by @dylwil3 on 2025-07-14 15:10_
+_@dylwil3_
 
 ### Summary
 

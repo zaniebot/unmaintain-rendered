@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-10-01T12:48:48Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/295
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # 14_groups example panics at 'ArgGroup 'vers' can not have same name as arg inside it'
 
 ---
 
-_Issue opened by @huonw on 2015-10-01 12:48_
+_@huonw_
 
 ```
 $ cargo clean

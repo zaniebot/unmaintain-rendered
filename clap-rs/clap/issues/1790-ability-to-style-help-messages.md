@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-07T07:09:36Z
 updated_at: 2022-01-11T18:42:37Z
 url: https://github.com/clap-rs/clap/issues/1790
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Ability to style help messages
 
 ---
 
-_Issue opened by @pickfire on 2020-04-07 07:09_
+_@pickfire_
 
 [Closing comment](https://github.com/clap-rs/clap/issues/1790#issuecomment-955036046)
 > Rather than embedding a styling API into clap, might I suggest the following issues as a focus point for users and maintainers:

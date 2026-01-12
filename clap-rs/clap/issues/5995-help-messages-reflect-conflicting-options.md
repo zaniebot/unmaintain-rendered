@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-09T10:40:07Z
 updated_at: 2025-05-23T14:46:24Z
 url: https://github.com/clap-rs/clap/issues/5995
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Help messages reflect conflicting options
 
 ---
 
-_Issue opened by @XingHuang35 on 2025-05-09 10:40_
+_@XingHuang35_
 
 ### Please complete the following tasks
 

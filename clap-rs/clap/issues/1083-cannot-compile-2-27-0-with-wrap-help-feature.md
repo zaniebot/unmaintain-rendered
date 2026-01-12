@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-25T21:06:11Z
 updated_at: 2018-08-02T03:30:13Z
 url: https://github.com/clap-rs/clap/issues/1083
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cannot compile 2.27.0 with `wrap_help` feature - unresolved import `term_size`
 
 ---
 
-_Issue opened by @mistodon on 2017-10-25 21:06_
+_@mistodon_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

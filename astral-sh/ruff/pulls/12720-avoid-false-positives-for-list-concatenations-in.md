@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-08-06T20:12:27Z
 updated_at: 2024-08-06T20:26:07Z
 url: https://github.com/astral-sh/ruff/pull/12720
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Avoid false-positives for list concatenations in SQL construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-06 20:12_
+_@charliermarsh_
 
 ## Summary
 

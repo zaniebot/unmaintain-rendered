@@ -13,14 +13,14 @@ head: dhruv/argument-type-expansion
 created_at: 2025-05-30T03:06:18Z
 updated_at: 2025-06-04T16:07:37Z
 url: https://github.com/astral-sh/ruff/pull/18382
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Argument type expansion for overload call evaluation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-30 03:06_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: era001-fixed
 created_at: 2024-06-30T20:16:34Z
 updated_at: 2024-07-01T02:03:32Z
 url: https://github.com/astral-sh/ruff/pull/12112
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [ERA001] remove outdated "known problems" section
 
 ---
 
-_Pull request opened by @tusharsadhwani on 2024-06-30 20:16_
+_@tusharsadhwani_
 
 Resolves #12108 
 

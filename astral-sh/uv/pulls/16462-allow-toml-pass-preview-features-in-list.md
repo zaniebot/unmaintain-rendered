@@ -11,14 +11,14 @@ head: toml-preview-features
 created_at: 2025-10-27T02:44:53Z
 updated_at: 2025-11-04T02:40:36Z
 url: https://github.com/astral-sh/uv/pull/16462
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # allow toml pass preview features in list
 
 ---
 
-_Pull request opened by @hyqshr on 2025-10-27 02:44_
+_@hyqshr_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

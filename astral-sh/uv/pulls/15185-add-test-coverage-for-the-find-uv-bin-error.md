@@ -13,14 +13,14 @@ head: zb/find-uv-bin-err
 created_at: 2025-08-09T00:17:20Z
 updated_at: 2025-08-09T00:28:41Z
 url: https://github.com/astral-sh/uv/pull/15185
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add test coverage for the `find_uv_bin` error message
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-09 00:17_
+_@zanieb_
 
 All of these went away as we fixed the bugs! it seems nice to retain a snapshot of the error
 

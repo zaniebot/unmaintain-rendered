@@ -13,14 +13,14 @@ head: charlie/contents
 created_at: 2024-11-30T15:20:52Z
 updated_at: 2024-11-30T15:36:20Z
 url: https://github.com/astral-sh/uv/pull/9541
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Remove uses of `Option<MarkerTreeContents>` in `PubGrubPackage`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-30 15:20_
+_@charliermarsh_
 
 ## Summary
 

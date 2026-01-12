@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-09T14:59:10Z
 updated_at: 2025-07-09T15:30:20Z
 url: https://github.com/astral-sh/ruff/issues/19235
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ANN201 NoReturn AutoFix overzealous on methods
 
 ---
 
-_Issue opened by @Skylion007 on 2025-07-09 14:59_
+_@Skylion007_
 
 ### Summary
 

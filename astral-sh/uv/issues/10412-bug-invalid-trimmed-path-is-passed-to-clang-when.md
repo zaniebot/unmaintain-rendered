@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T21:54:39Z
 updated_at: 2025-01-08T22:37:03Z
 url: https://github.com/astral-sh/uv/issues/10412
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # BUG: Invalid trimmed path is passed to clang when space character is in installation path
 
 ---
 
-_Issue opened by @saada on 2025-01-08 21:54_
+_@saada_
 
 ## Description
 

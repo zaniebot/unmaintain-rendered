@@ -12,14 +12,14 @@ head: jupyter-notebook-support
 created_at: 2023-03-10T13:51:00Z
 updated_at: 2023-03-20T14:41:02Z
 url: https://github.com/astral-sh/ruff/pull/3440
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add basic jupyter notebook support
 
 ---
 
-_Pull request opened by @konstin on 2023-03-10 13:51_
+_@konstin_
 
 This feature is disabled by default for now behind the `jupyter_notebook` feature.
 

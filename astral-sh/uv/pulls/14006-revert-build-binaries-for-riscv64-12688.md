@@ -11,14 +11,14 @@ head: gankra/revertv64
 created_at: 2025-06-12T21:54:58Z
 updated_at: 2025-06-13T13:57:11Z
 url: https://github.com/astral-sh/uv/pull/14006
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Revert "build-binaries for riscv64  (#12688)"
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-12 21:54_
+_@Gankra_
 
 This reverts commit 210b5791880ea60700e0fb6513783efb10c3b086.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T14:16:12Z
 updated_at: 2024-09-05T08:50:49Z
 url: https://github.com/astral-sh/ruff/issues/13244
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Why D103 complains about docstring with f-string?
 
 ---
 
-_Issue opened by @alanwilter on 2024-09-04 14:16_
+_@alanwilter_
 
 
 ```python

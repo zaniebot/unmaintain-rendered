@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-28T08:59:11Z
 updated_at: 2025-10-04T19:30:07Z
 url: https://github.com/astral-sh/ruff/issues/3269
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support rules from flake8-force-keyword-arguments
 
 ---
 
-_Issue opened by @Riezebos on 2023-02-28 08:59_
+_@Riezebos_
 
 Calling a function with a lot of unnamed arguments is a lot less readable than using keyword arguments. These rules enforce keyword arguments if a function has a lot of parameters, which should lead to more readable code. I believe adding them to ruff would be a good idea!
 

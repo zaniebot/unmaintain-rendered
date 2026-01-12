@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T15:46:46Z
 updated_at: 2025-12-30T16:29:10Z
 url: https://github.com/astral-sh/ty/issues/2279
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Cannot narrow tagged unions of `TypedDict`s with match statements
 
 ---
 
-_Issue opened by @felixgwilliams on 2025-12-30 15:46_
+_@felixgwilliams_
 
 ### Summary
 

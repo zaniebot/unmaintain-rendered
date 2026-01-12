@@ -14,14 +14,14 @@ head: ast-autogen-stmt
 created_at: 2025-03-11T19:40:42Z
 updated_at: 2025-03-13T15:16:54Z
 url: https://github.com/astral-sh/ruff/pull/16645
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Auto generate statement nodes
 
 ---
 
-_Pull request opened by @Glyphack on 2025-03-11 19:40_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

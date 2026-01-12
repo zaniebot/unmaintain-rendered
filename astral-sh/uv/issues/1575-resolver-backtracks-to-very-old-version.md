@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T05:23:13Z
 updated_at: 2024-07-09T09:30:54Z
 url: https://github.com/astral-sh/uv/issues/1575
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Resolver backtracks to very old version unnecessarily 
 
 ---
 
-_Issue opened by @hynek on 2024-02-17 05:23_
+_@hynek_
 
 I've noticed that when installing packages that contain type hints, those hints don't get installed.
 

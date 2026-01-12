@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T00:55:15Z
 updated_at: 2024-05-23T01:47:41Z
 url: https://github.com/astral-sh/uv/issues/3782
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # UV Fails to install with Docker
 
 ---
 
-_Issue opened by @Nneji123 on 2024-05-23 00:55_
+_@Nneji123_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

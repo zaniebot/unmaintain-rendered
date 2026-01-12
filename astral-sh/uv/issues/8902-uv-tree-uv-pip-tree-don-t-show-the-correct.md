@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T23:04:07Z
 updated_at: 2024-11-09T02:17:30Z
 url: https://github.com/astral-sh/uv/issues/8902
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv tree & uv pip tree don't show the correct package names.
 
 ---
 
-_Issue opened by @dsully on 2024-11-07 23:04_
+_@dsully_
 
 `uv tree` and `uv pip tree` don't show "official" package names from an installed `METADATA` file.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T15:08:38Z
 updated_at: 2025-07-07T15:30:47Z
 url: https://github.com/astral-sh/uv/issues/14486
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Sign Windows Executables with a digital certificate
 
 ---
 
-_Issue opened by @tianmiaohu-fis on 2025-07-07 15:08_
+_@tianmiaohu-fis_
 
 ### Summary
 

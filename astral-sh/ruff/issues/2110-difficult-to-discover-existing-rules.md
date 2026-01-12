@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T17:21:43Z
 updated_at: 2023-01-27T03:42:05Z
 url: https://github.com/astral-sh/ruff/issues/2110
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Difficult to discover existing rules
 
 ---
 
-_Issue opened by @brianmego on 2023-01-23 17:21_
+_@brianmego_
 
 First off, thank you so much for building and maintaining this repo. My team and I discovered it last week and got so excited we independently went home and started contributing the same feature to it over the weekend. We also ran into the same stumbling block, which seemed worth reporting.
 

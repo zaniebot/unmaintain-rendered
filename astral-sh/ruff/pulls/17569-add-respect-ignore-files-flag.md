@@ -14,14 +14,14 @@ head: feature/red-knot-respect-ignore-files
 created_at: 2025-04-23T01:59:28Z
 updated_at: 2025-04-26T19:57:14Z
 url: https://github.com/astral-sh/ruff/pull/17569
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Add --respect-ignore-files flag
 
 ---
 
-_Pull request opened by @thejchap on 2025-04-23 01:59_
+_@thejchap_
 
 ## Summary
 astral-sh/ty#219

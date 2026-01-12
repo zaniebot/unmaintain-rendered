@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T18:57:27Z
 updated_at: 2024-09-20T19:17:50Z
 url: https://github.com/clap-rs/clap/issues/5742
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # support windows style command line parse 
 
 ---
 
-_Issue opened by @i-xiao-zi on 2024-09-20 18:57_
+_@i-xiao-zi_
 
 ### Please complete the following tasks
 

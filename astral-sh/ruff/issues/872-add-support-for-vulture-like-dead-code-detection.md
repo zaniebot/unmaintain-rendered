@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-22T14:27:25Z
 updated_at: 2025-09-10T14:37:42Z
 url: https://github.com/astral-sh/ruff/issues/872
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add support for `vulture`-like dead code detection
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-22 14:27_
+_@charliermarsh_
 
 As a maintainer of a large Python codebase, I found [`vulture`](https://github.com/jendrikseipp/vulture) to be really useful, especially for detecting unused functions and unused modules.
 

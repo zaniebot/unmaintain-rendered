@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T23:50:15Z
 updated_at: 2025-02-06T22:04:29Z
 url: https://github.com/astral-sh/uv/issues/10619
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Non-deterministic .pyc file with `UV_COMPILE_BYTECODE`
 
 ---
 
-_Issue opened by @jackvreeken on 2025-01-14 23:50_
+_@jackvreeken_
 
 While playing around with getting deterministic builds to work (see #10523 ), I noticed something odd. I was getting two possible image digests, with the difference between the two solely being because of a differently sized .pyc file (one is a few bytes larger than the other).
 

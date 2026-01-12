@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T22:01:24Z
 updated_at: 2025-08-27T13:59:53Z
 url: https://github.com/astral-sh/uv/issues/15021
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Does `uv publish` work with devpi index?
 
 ---
 
-_Issue opened by @yitoli-c on 2025-08-01 22:01_
+_@yitoli-c_
 
 ### Question
 

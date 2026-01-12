@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T09:44:59Z
 updated_at: 2025-05-07T14:04:51Z
 url: https://github.com/astral-sh/ruff/issues/13051
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `UP038` documentation outdated wrt. fix safety
 
 ---
 
-_Issue opened by @VeckoTheGecko on 2024-08-22 09:44_
+_@VeckoTheGecko_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

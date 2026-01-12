@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T02:15:38Z
 updated_at: 2025-03-17T16:55:38Z
 url: https://github.com/astral-sh/uv/issues/12211
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `winget install astral-sh.uv` causes unexpected error
 
 ---
 
-_Issue opened by @kk-ntt on 2025-03-17 02:15_
+_@kk-ntt_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/ldd
 created_at: 2023-11-28T05:51:18Z
 updated_at: 2023-11-28T05:55:06Z
 url: https://github.com/astral-sh/uv/pull/506
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Error when `ldd` is not in path
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-28 05:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/493.
 

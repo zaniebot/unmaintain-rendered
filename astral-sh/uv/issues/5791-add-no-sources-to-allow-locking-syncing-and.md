@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T12:53:26Z
 updated_at: 2024-08-06T14:14:21Z
 url: https://github.com/astral-sh/uv/issues/5791
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Add `--no-sources` to allow locking, syncing, and installing without `tool.uv.sources`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-05 12:53_
+_@charliermarsh_
 
 It's seems important to be able to test this workflow, if you consider sources to be dev dependencies.
 

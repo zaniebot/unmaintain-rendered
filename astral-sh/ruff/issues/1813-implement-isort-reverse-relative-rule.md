@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-12T10:50:51Z
 updated_at: 2023-01-12T20:48:42Z
 url: https://github.com/astral-sh/ruff/issues/1813
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement isort `reverse_relative` rule
 
 ---
 
-_Issue opened by @leroyvn on 2023-01-12 10:50_
+_@leroyvn_
 
 I'd love to move my import sorting to ruff; however I'm missing the "Reverse Relative" rule (see description here: https://pycqa.github.io/isort/docs/configuration/options.html#reverse-relative). Any chance to see it implemented in a foreseeable future?
 

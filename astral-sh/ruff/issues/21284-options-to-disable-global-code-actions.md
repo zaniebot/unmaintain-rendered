@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:39:05Z
 updated_at: 2025-11-06T01:21:21Z
 url: https://github.com/astral-sh/ruff/issues/21284
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Options to disable global code actions
 
 ---
 
-_Issue opened by @injust on 2025-11-05 17:39_
+_@injust_
 
 Zed shows code actions inline in the buffer. As Ruff provides global "Fix all auto-fixable problems" and "Organize imports" code actions, this makes the code actions button appear on every single line of code (not all at once, but whenever a line is focused, the button appears).
 

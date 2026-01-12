@@ -14,14 +14,14 @@ head: tuple-comprehensions
 created_at: 2024-08-04T00:31:29Z
 updated_at: 2024-08-15T23:04:30Z
 url: https://github.com/astral-sh/ruff/pull/12657
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [flake8-comprehensions] Account for list and set comprehensions in `unnecessary-literal-within-tuple-call` (`C409`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-04 00:31_
+_@dylwil3_
 
 ## Summary
 

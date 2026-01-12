@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-15T17:45:50Z
 updated_at: 2015-05-15T18:21:11Z
 url: https://github.com/clap-rs/clap/issues/118
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # value_t*! macros errors should have same number of newlines as other errors
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-15 17:45_
+_@kbknapp_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dhruv/syntax-error-5
 created_at: 2024-06-27T03:05:49Z
 updated_at: 2024-06-27T07:04:53Z
 url: https://github.com/astral-sh/ruff/pull/12059
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add server config to filter out syntax error diagnostics
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-27 03:05_
+_@dhruvmanila_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: fix/ruf017-pep798
 created_at: 2026-01-06T16:04:50Z
 updated_at: 2026-01-07T08:38:37Z
 url: https://github.com/astral-sh/ruff/pull/22419
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Allow Python 3.15 as valid `target-version` value in preview
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-06 16:04_
+_@Jkhall81_
 
 ## Summary
 Adds support for Python 3.15 to the Ruff workspace, gating it behind the `preview` flag with an unstable version warning as requested.

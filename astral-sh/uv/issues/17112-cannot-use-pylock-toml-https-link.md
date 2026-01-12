@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T20:24:59Z
 updated_at: 2025-12-17T00:16:24Z
 url: https://github.com/astral-sh/uv/issues/17112
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Cannot use pylock.toml https link
 
 ---
 
-_Issue opened by @paugier on 2025-12-12 20:24_
+_@paugier_
 
 ### Summary
 

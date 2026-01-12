@@ -13,14 +13,14 @@ head: ag/tweak-http-cache-heuristic
 created_at: 2024-07-31T14:23:20Z
 updated_at: 2024-07-31T15:12:13Z
 url: https://github.com/astral-sh/uv/pull/5654
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # uv-client: switch heuristic freshness lifetime to hard-coded value
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-31 14:23_
+_@BurntSushi_
 
 The comment in the code explains the bulk of this:
 

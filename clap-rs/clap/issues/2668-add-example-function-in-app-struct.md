@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-08-07T16:56:21Z
 updated_at: 2021-08-09T02:02:14Z
 url: https://github.com/clap-rs/clap/issues/2668
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Add example function in App struct
 
 ---
 
-_Issue opened by @Ebedthan on 2021-08-07 16:56_
+_@Ebedthan_
 
 ### Please complete the following tasks
 

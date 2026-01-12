@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-12T11:38:32Z
 updated_at: 2025-12-12T14:08:30Z
 url: https://github.com/astral-sh/uv/issues/13408
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run
 
 ---
 
-_Issue opened by @nth10sd on 2025-05-12 11:38_
+_@nth10sd_
 
 ### Summary
 

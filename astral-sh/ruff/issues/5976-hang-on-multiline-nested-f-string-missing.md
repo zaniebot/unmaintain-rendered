@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T12:47:56Z
 updated_at: 2023-07-26T11:48:02Z
 url: https://github.com/astral-sh/ruff/issues/5976
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Hang on multiline nested f-string missing placeholder with CRLF line endings
 
 ---
 
-_Issue opened by @DanGonite57 on 2023-07-22 12:47_
+_@DanGonite57_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

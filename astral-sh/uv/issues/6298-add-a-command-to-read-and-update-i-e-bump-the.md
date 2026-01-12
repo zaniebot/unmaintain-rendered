@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T04:56:20Z
 updated_at: 2025-05-19T13:41:15Z
 url: https://github.com/astral-sh/uv/issues/6298
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add a command to read and update (i.e., bump) the project version, e.g., `uv version`
 
 ---
 
-_Issue opened by @cauebs on 2024-08-21 04:56_
+_@cauebs_
 
 :white_check_mark: Both Rye and Poetry have this, and it's quite useful both...
 - to avoid manually incrementing the version number (and potentially making a mistake there with the digits),

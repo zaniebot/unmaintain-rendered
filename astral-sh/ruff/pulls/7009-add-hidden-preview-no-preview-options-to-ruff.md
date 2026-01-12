@@ -13,14 +13,14 @@ head: cli/preview
 created_at: 2023-08-30T15:50:28Z
 updated_at: 2023-08-31T15:05:20Z
 url: https://github.com/astral-sh/ruff/pull/7009
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add hidden `--preview` / `--no-preview` options to `ruff check`
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-30 15:50_
+_@zanieb_
 
 Per discussion at https://github.com/astral-sh/ruff/discussions/6998
 

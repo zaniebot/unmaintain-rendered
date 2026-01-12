@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T03:46:47Z
 updated_at: 2024-12-26T08:11:51Z
 url: https://github.com/astral-sh/ruff/issues/15142
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [linter] `ANN401` for `__setattr__`/`__getattr__`?
 
 ---
 
-_Issue opened by @eliegoudout on 2024-12-26 03:46_
+_@eliegoudout_
 
 Hello,
 

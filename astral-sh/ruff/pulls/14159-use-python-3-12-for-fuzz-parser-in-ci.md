@@ -13,14 +13,14 @@ head: alex/fix-ci
 created_at: 2024-11-07T15:23:49Z
 updated_at: 2024-11-07T15:51:07Z
 url: https://github.com/astral-sh/ruff/pull/14159
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use Python 3.12 for `fuzz-parser` in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-07 15:23_
+_@AlexWaygood_
 
 ## Summary
 

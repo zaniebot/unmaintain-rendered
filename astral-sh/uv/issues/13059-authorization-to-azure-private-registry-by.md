@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T18:41:03Z
 updated_at: 2025-04-23T18:44:46Z
 url: https://github.com/astral-sh/uv/issues/13059
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Authorization to azure private registry by environment variable doesn't work
 
 ---
 
-_Issue opened by @krasnikau-andrei on 2025-04-22 18:41_
+_@krasnikau-andrei_
 
 ### Summary
 

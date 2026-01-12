@@ -12,14 +12,14 @@ head: zb/resolver-tests
 created_at: 2023-11-29T19:54:16Z
 updated_at: 2023-12-06T17:53:17Z
 url: https://github.com/astral-sh/uv/pull/517
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Allow switching out the resolver's IO
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-29 19:54_
+_@zanieb_
 
 I'm working off of @konstin's commit here to implement arbitrary unsat test cases for the resolver.
 

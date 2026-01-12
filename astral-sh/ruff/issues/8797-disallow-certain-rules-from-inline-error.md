@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-20T22:15:05Z
 updated_at: 2024-07-11T04:08:24Z
 url: https://github.com/astral-sh/ruff/issues/8797
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Disallow Certain Rules from Inline Error Supression
 
 ---
 
-_Issue opened by @travis-cook-sfdc on 2023-11-20 22:15_
+_@travis-cook-sfdc_
 
 hi there -
 

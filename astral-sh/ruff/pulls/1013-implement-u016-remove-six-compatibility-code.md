@@ -12,14 +12,14 @@ head: u016-remove-six-compat
 created_at: 2022-12-03T14:18:55Z
 updated_at: 2023-02-28T18:07:40Z
 url: https://github.com/astral-sh/ruff/pull/1013
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement U016: Remove six compatibility code
 
 ---
 
-_Pull request opened by @martinlehoux on 2022-12-03 14:18_
+_@martinlehoux_
 
 - #827 
 - There are still a few things to fix, but I've been holding onto this one for too long

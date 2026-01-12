@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T17:45:11Z
 updated_at: 2025-11-07T14:05:25Z
 url: https://github.com/astral-sh/ruff/issues/21301
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Disable B018 rule for Marimo notebooks?
 
 ---
 
-_Issue opened by @wlach on 2025-11-06 17:45_
+_@wlach_
 
 ### Summary
 

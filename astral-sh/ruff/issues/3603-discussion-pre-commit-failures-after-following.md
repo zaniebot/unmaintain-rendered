@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-19T07:05:11Z
 updated_at: 2023-03-19T19:29:48Z
 url: https://github.com/astral-sh/ruff/issues/3603
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Discussion: `Pre-commit` failures after following Contributing guide
 
 ---
 
-_Issue opened by @luke396 on 2023-03-19 07:05_
+_@luke396_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

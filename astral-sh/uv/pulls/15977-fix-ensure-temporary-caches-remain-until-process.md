@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-09-22T05:00:17Z
 updated_at: 2025-10-06T15:50:05Z
 url: https://github.com/astral-sh/uv/pull/15977
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # fix: ensure temporary caches remain until process completion
 
 ---
 
-_Pull request opened by @monosans on 2025-09-22 05:00_
+_@monosans_
 
 Fixes #15967 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T11:48:01Z
 updated_at: 2025-10-11T01:23:01Z
 url: https://github.com/astral-sh/uv/issues/6934
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Can't install uWSGI on macOS with UV python 
 
 ---
 
-_Issue opened by @mbeijen on 2024-09-02 11:48_
+_@mbeijen_
 
 I'm using a UV installed python on macOS and I can't install the uWSGI module with it because it's missing the python headers apparently. I'm on macOS Monterey 12.7.6.
 

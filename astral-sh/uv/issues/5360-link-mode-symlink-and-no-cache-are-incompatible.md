@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-23T18:09:28Z
 updated_at: 2024-08-23T15:21:48Z
 url: https://github.com/astral-sh/uv/issues/5360
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `--link-mode=symlink` and `--no-cache` are incompatible
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-23 18:09_
+_@charliermarsh_
 
 We end up persisting to a directory that we then remove. You end up with errors like:
 

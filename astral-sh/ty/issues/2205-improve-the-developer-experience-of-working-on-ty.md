@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T13:46:27Z
 updated_at: 2025-12-24T21:06:56Z
 url: https://github.com/astral-sh/ty/issues/2205
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve the developer experience of working on ty
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-24 13:46_
+_@AlexWaygood_
 
 We discussed in a recent ty planning meeting that it can sometimes feel a bit painful to work on ty right now as a developer. Things that we discussed which might help include:
 - Improving the typing-conformance workflow. All lines in the typing-conformance test suite where a type checker _should_ emit an error have an `# E` comment next to them; a type checker is not expected to emit an error on any other lines. It should therefore not be too hard to improve this workflow so that it automatically tells you whether a diagnostic being added or going away is a good or bad change.

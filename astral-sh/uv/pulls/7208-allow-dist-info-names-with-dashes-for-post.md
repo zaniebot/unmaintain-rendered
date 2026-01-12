@@ -14,14 +14,14 @@ head: charlie/dist-info
 created_at: 2024-09-09T00:36:38Z
 updated_at: 2024-09-09T14:21:32Z
 url: https://github.com/astral-sh/uv/pull/7208
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Allow `.dist-info` names with dashes for post releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-09 00:36_
+_@charliermarsh_
 
 ## Summary
 

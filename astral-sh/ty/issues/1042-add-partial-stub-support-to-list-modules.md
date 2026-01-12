@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T12:45:15Z
 updated_at: 2026-01-09T15:32:57Z
 url: https://github.com/astral-sh/ty/issues/1042
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # add partial stub support to "list modules" implementation
 
 ---
 
-_Issue opened by @BurntSushi on 2025-08-18 12:45_
+_@BurntSushi_
 
 Once https://github.com/astral-sh/ruff/pull/19931 is merged, we should add similar logic to `list_modules` (which is itself still unmerged at time of writing in https://github.com/astral-sh/ruff/pull/19883).
 

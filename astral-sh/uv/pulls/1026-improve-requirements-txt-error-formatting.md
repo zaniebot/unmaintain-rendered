@@ -13,14 +13,14 @@ head: charlie/pos
 created_at: 2024-01-20T18:19:37Z
 updated_at: 2024-01-22T13:42:19Z
 url: https://github.com/astral-sh/uv/pull/1026
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Improve `requirements-txt` error formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-20 18:19_
+_@charliermarsh_
 
 - Wrap filename in quotes
 - Only show the start position (I think the end is a bit noisy)

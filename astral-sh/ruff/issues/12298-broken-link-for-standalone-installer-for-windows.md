@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T12:05:58Z
 updated_at: 2024-07-12T12:21:51Z
 url: https://github.com/astral-sh/ruff/issues/12298
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Broken link for standalone installer for Windows
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-12 12:05_
+_@dhruvmanila_
 
 It seems that https://astral.sh/ruff/install.ps1 doesn't work but https://astral.sh/ruff/0.5.1/install.ps1 does. The former leads to a 404 page on the website.
 

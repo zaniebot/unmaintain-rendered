@@ -13,14 +13,14 @@ head: feature/ruff066-direct-member-import
 created_at: 2025-10-29T03:06:59Z
 updated_at: 2025-10-29T17:19:56Z
 url: https://github.com/astral-sh/ruff/pull/21118
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`ruff`] Implement `direct-member-import` (RUF066)
 
 ---
 
-_Pull request opened by @revmischa on 2025-10-29 03:06_
+_@revmischa_
 
 ## Summary
 

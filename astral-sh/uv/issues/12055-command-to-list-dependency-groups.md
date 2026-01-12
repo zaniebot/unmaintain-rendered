@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T18:48:36Z
 updated_at: 2025-08-21T15:32:45Z
 url: https://github.com/astral-sh/uv/issues/12055
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Command to list dependency groups
 
 ---
 
-_Issue opened by @jpgoldberg on 2025-03-07 18:48_
+_@jpgoldberg_
 
 ### Summary
 

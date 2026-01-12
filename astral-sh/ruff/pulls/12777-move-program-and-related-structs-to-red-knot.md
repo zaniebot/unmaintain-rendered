@@ -13,14 +13,14 @@ head: move-program
 created_at: 2024-08-09T09:29:20Z
 updated_at: 2024-08-09T09:50:47Z
 url: https://github.com/astral-sh/ruff/pull/12777
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Move Program and related structs to `red_knot_python_semantic`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-09 09:29_
+_@MichaReiser_
 
 ## Summary
 

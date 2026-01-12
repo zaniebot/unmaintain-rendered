@@ -13,14 +13,14 @@ head: micha/upgrade-benchmark-script
 created_at: 2024-12-23T09:04:07Z
 updated_at: 2024-12-23T10:14:17Z
 url: https://github.com/astral-sh/ruff/pull/15120
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Update benchmark scripts, use uv
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-23 09:04_
+_@MichaReiser_
 
 ## Summary
 

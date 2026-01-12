@@ -13,14 +13,14 @@ head: sitecustomize-to-path
 created_at: 2024-09-07T09:38:27Z
 updated_at: 2024-10-08T12:37:31Z
 url: https://github.com/astral-sh/uv/pull/7161
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Use path file instead of `sitecustomize.py`
 
 ---
 
-_Pull request opened by @bluss on 2024-09-07 09:38_
+_@bluss_
 
 ## Summary
 

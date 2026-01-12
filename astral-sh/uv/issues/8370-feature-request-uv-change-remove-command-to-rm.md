@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-19T20:07:57Z
 updated_at: 2024-10-21T01:30:09Z
 url: https://github.com/astral-sh/uv/issues/8370
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # [Feature request] UV change remove command to rm
 
 ---
 
-_Issue opened by @orion160 on 2024-10-19 20:07_
+_@orion160_
 
 ```bash
 uv rm <package>

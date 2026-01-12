@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-15T09:03:07Z
 updated_at: 2023-06-15T13:46:30Z
 url: https://github.com/astral-sh/ruff/issues/5116
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # C405 autofix can remove comments
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-06-15 09:03_
+_@hauntsaninja_
 
 Thanks for everything! This is a low priority issue, but came up in some real world use.
 ```

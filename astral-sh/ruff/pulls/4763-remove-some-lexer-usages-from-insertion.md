@@ -12,14 +12,14 @@ head: charlie/insertions
 created_at: 2023-05-31T18:25:11Z
 updated_at: 2023-06-01T20:08:55Z
 url: https://github.com/astral-sh/ruff/pull/4763
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove some lexer usages from `Insertion`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-31 18:25_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

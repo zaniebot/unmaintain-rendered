@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-25T18:13:02Z
 updated_at: 2023-01-25T19:06:28Z
 url: https://github.com/astral-sh/ruff/issues/2164
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # TRY201 false positive
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-25 18:13_
+_@JonathanPlasse_
 
 This code raises `TRY201`.
 ```python

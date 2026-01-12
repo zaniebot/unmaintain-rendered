@@ -14,14 +14,14 @@ head: micha/cache-known-class-to-class-literal
 created_at: 2025-12-16T10:08:48Z
 updated_at: 2025-12-16T12:04:15Z
 url: https://github.com/astral-sh/ruff/pull/22000
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Cache `KnownClass::to_class_literal`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-16 10:08_
+_@MichaReiser_
 
 This PR adds salsa caching to `KnownClass::to_class_literal`. 
 

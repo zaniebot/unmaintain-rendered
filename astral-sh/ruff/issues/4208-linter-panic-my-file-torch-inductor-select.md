@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-03T14:11:03Z
 updated_at: 2023-05-07T02:32:42Z
 url: https://github.com/astral-sh/ruff/issues/4208
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] My File: torch\_inductor\select_algorithm.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-03 14:11_
+_@FishAlchemist_
 
 ruff version 0.0.264 (ruff --version)
 

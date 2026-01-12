@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T14:17:58Z
 updated_at: 2024-11-29T17:21:03Z
 url: https://github.com/astral-sh/uv/issues/6084
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Unable to install pyre2 with uv
 
 ---
 
-_Issue opened by @sgrimee on 2024-08-14 14:17_
+_@sgrimee_
 
 Unable to install pyre2 with uv pip, it works with pip directly.
 

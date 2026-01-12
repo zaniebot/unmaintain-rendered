@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T13:05:33Z
 updated_at: 2025-09-17T05:49:08Z
 url: https://github.com/astral-sh/uv/issues/13129
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Request for `--root` Support for Multi-Stage Docker Builds
 
 ---
 
-_Issue opened by @vivodi on 2025-04-27 13:05_
+_@vivodi_
 
 ### Summary
 

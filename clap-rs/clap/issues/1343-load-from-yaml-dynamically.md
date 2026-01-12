@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-17T02:42:45Z
 updated_at: 2018-09-19T05:29:17Z
 url: https://github.com/clap-rs/clap/issues/1343
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # load from YAML dynamically
 
 ---
 
-_Issue opened by @whoizit on 2018-09-17 02:42_
+_@whoizit_
 
 Just a question.
 Can I load YAML file dynamically, without recompilation?

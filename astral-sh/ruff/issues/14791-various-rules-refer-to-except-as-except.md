@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-05T14:39:16Z
 updated_at: 2024-12-08T17:37:36Z
 url: https://github.com/astral-sh/ruff/issues/14791
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Various rules refer to `except*` as `except`
 
 ---
 
-_Issue opened by @jakkdl on 2024-12-05 14:39_
+_@jakkdl_
 
 I did a pass on all flake8-bugbear rules upstream to check for `except*` handling (https://github.com/PyCQA/flake8-bugbear/pull/500), and then also checked ruff.. which already handles all of them 🥳 But a bunch of them assume `except` in their message, which could perhaps be confusing to users - but tbh it's mostly a nitpick.
 

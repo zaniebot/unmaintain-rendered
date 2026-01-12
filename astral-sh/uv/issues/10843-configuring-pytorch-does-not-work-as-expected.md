@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T05:48:06Z
 updated_at: 2025-01-22T16:53:45Z
 url: https://github.com/astral-sh/uv/issues/10843
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Configuring PyTorch does not work as expected
 
 ---
 
-_Issue opened by @Jsakkos on 2025-01-22 05:48_
+_@Jsakkos_
 
 ### Summary
 

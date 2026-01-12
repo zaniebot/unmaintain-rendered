@@ -12,14 +12,14 @@ head: charlie/standard-library
 created_at: 2023-07-25T15:42:58Z
 updated_at: 2023-07-25T16:21:31Z
 url: https://github.com/astral-sh/ruff/pull/6074
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Ignore some common builtin overrides on standard library subclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-25 15:42_
+_@charliermarsh_
 
 ## Summary
 

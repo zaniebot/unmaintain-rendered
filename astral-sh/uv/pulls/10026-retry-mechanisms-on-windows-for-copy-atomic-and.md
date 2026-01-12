@@ -13,14 +13,14 @@ head: persist-retry-the-rest
 created_at: 2024-12-19T11:37:40Z
 updated_at: 2024-12-19T13:44:03Z
 url: https://github.com/astral-sh/uv/pull/10026
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Retry mechanisms on Windows for copy_atomic and write_atomic
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-12-19 11:37_
+_@Coruscant11_
 
 Hello! :slightly_smiling_face: 
 

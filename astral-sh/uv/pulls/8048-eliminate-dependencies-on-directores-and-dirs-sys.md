@@ -13,14 +13,14 @@ head: dir
 created_at: 2024-10-09T15:33:54Z
 updated_at: 2024-10-24T14:30:27Z
 url: https://github.com/astral-sh/uv/pull/8048
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Eliminate dependencies on `directores` and `dirs-sys`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-09 15:33_
+_@j178_
 
 ## Summary
 

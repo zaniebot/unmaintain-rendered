@@ -14,14 +14,14 @@ head: add_unshielded_await
 created_at: 2024-11-15T21:58:34Z
 updated_at: 2025-01-20T15:02:15Z
 url: https://github.com/astral-sh/ruff/pull/14370
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # implement flake8_async ASYNC102 await in finally or cancelled
 
 ---
 
-_Pull request opened by @altendky on 2024-11-15 21:58_
+_@altendky_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

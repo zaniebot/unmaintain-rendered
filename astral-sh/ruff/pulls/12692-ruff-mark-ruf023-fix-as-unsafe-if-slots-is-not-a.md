@@ -14,14 +14,14 @@ head: alex/unsafe-ruf023
 created_at: 2024-08-05T16:46:21Z
 updated_at: 2024-08-07T09:52:37Z
 url: https://github.com/astral-sh/ruff/pull/12692
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`ruff`] Mark `RUF023` fix as unsafe if `__slots__` is not a set and the binding is used elsewhere
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-05 16:46_
+_@AlexWaygood_
 
 Fixes #12653. This required a little bit of refactoring: in order to know whether the `__slots__` binding is used or not, the rule must run after the AST tree has been visited in its entirety; that meant that the rule's hook had to be moved out of `statements.rs` and into `bindings.rs`. This, in turn, meant that the function implementing the rule had to accept a `Binding` rather than two AST nodes, and had to return an `Option<Diagnostic>` rather than `()`.
 

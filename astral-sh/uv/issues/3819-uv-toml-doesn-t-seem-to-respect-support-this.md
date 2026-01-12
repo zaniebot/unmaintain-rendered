@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T12:41:16Z
 updated_at: 2024-05-24T13:31:47Z
 url: https://github.com/astral-sh/uv/issues/3819
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv.toml doesn't seem to respect/support this:
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-24 12:41_
+_@charliermarsh_
 
               uv.toml doesn't seem to respect/support this:
 

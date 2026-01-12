@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T17:07:52Z
 updated_at: 2025-02-17T08:23:25Z
 url: https://github.com/astral-sh/ruff/issues/15151
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature: Disable cache from pyproject.toml
 
 ---
 
-_Issue opened by @orlandodiaz on 2024-12-26 17:07_
+_@orlandodiaz_
 
 We have can pass --no-cache via the CLI to disable cache. Do we not have a setting to do this in the pyproject.toml?
 

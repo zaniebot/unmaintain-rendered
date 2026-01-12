@@ -12,14 +12,14 @@ head: charlie/worker
 created_at: 2023-10-23T01:05:14Z
 updated_at: 2023-10-23T06:47:54Z
 url: https://github.com/astral-sh/uv/pull/168
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Update worker to avoid downloading entire wheel
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-23 01:05_
+_@charliermarsh_
 
 The previous solution downloaded the entire wheel in-memory. This solution reads lazily.
 

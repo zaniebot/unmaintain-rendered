@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T09:53:52Z
 updated_at: 2025-02-12T20:41:30Z
 url: https://github.com/astral-sh/ruff/issues/14427
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # COM818 with ruff format fixes the error too harshly
 
 ---
 
-_Issue opened by @neikow on 2024-11-18 09:53_
+_@neikow_
 
 Hi ! Thanks for providing us with such a great tool !
 

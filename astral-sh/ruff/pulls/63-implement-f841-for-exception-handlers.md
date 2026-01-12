@@ -12,14 +12,14 @@ head: charlie/F841
 created_at: 2022-08-31T22:16:54Z
 updated_at: 2022-09-07T21:14:11Z
 url: https://github.com/astral-sh/ruff/pull/63
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F841 (for exception handlers)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-31 22:16_
+_@charliermarsh_
 
 _No description provided._
 

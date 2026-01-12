@@ -14,14 +14,14 @@ head: PIE800
 created_at: 2025-02-07T00:30:59Z
 updated_at: 2025-02-07T15:12:09Z
 url: https://github.com/astral-sh/ruff/pull/16008
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pie`] Remove following comma correctly when the unpacked dictionary is empty (`PIE800`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-07 00:30_
+_@InSyncWithFoo_
 
 ## Summary
 

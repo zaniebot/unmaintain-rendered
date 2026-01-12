@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-20T23:08:08Z
 updated_at: 2026-01-02T15:59:30Z
 url: https://github.com/astral-sh/ty/issues/2137
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support `extend` configuration field (like `ruff`) for config inheritance
 
 ---
 
-_Issue opened by @aeroyorch on 2025-12-20 23:08_
+_@aeroyorch_
 
 First of all, thanks for ty!
 

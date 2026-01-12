@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T12:46:08Z
 updated_at: 2025-03-12T12:46:08Z
 url: https://github.com/astral-sh/ruff/issues/16673
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # S3*: Rules now also report non-function calls
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-12 12:46_
+_@MichaReiser_
 
 ### Summary
 

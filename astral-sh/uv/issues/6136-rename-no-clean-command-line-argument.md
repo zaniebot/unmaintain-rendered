@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T02:21:02Z
 updated_at: 2024-08-28T18:17:30Z
 url: https://github.com/astral-sh/uv/issues/6136
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Rename `--no-clean` command-line argument
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-16 02:21_
+_@charliermarsh_
 
 Let's try to come up with something that doesn't introduce a new concept ("clean").
 

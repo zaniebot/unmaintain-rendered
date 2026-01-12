@@ -14,14 +14,14 @@ head: ag/completion-vs-code-sort
 created_at: 2025-06-24T14:29:59Z
 updated_at: 2025-06-24T15:31:10Z
 url: https://github.com/astral-sh/ruff/pull/18917
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Enforce sort order of completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-24 14:29_
+_@BurntSushi_
 
 We achieve this by setting the "sort text" field of every completion.
 Since we are trying to be smart about the order, we want the client to

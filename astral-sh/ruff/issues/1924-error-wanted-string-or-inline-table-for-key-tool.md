@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T22:03:32Z
 updated_at: 2023-01-17T18:28:55Z
 url: https://github.com/astral-sh/ruff/issues/1924
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Error: wanted string or inline table for key `tool.ruff.target-version`
 
 ---
 
-_Issue opened by @thisfred on 2023-01-16 22:03_
+_@thisfred_
 
 Since today I'm suddenly getting this error when I run ruff (either standalone or under pre-commit):
 

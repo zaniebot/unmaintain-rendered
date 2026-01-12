@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-09T07:04:22Z
 updated_at: 2022-12-09T17:20:16Z
 url: https://github.com/astral-sh/ruff/issues/1158
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # force-wrap-aliases = true has no effect
 
 ---
 
-_Issue opened by @tekumara on 2022-12-09 07:04_
+_@tekumara_
 
 ```
 from .utils import (

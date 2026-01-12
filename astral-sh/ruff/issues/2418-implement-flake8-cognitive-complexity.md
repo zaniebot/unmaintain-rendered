@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-31T21:28:06Z
 updated_at: 2026-01-07T12:17:16Z
 url: https://github.com/astral-sh/ruff/issues/2418
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-cognitive-complexity`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 21:28_
+_@ngnpope_
 
 [GitHub](https://github.com/Melevir/flake8-cognitive-complexity), [PyPI](https://pypi.org/project/flake8-cognitive-complexity/).
 

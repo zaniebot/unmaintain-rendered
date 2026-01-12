@@ -13,14 +13,14 @@ head: fix-fix-safety-docs-example
 created_at: 2025-12-20T21:03:34Z
 updated_at: 2025-12-22T14:25:28Z
 url: https://github.com/astral-sh/ruff/pull/22118
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # Fix iter example in usafe fixes doc
 
 ---
 
-_Pull request opened by @PeterJCLaw on 2025-12-20 21:03_
+_@PeterJCLaw_
 
 ## Summary
 

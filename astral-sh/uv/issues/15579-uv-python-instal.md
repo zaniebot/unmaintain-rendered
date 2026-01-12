@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T07:22:02Z
 updated_at: 2025-08-30T07:36:20Z
 url: https://github.com/astral-sh/uv/issues/15579
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # uv python instal
 
 ---
 
-_Issue opened by @classronin on 2025-08-29 07:22_
+_@classronin_
 
 ### Summary
 

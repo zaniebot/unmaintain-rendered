@@ -14,14 +14,14 @@ head: charlie/spec
 created_at: 2026-01-11T22:28:08Z
 updated_at: 2026-01-12T14:20:33Z
 url: https://github.com/astral-sh/ruff/pull/22510
-synced_at: 2026-01-12T15:03:37Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Fix `__file__` type in completions to show `str` instead of `str | None`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-11 22:28_
+_@charliermarsh_
 
 ## Summary
 

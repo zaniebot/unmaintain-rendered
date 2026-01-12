@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T03:47:47Z
 updated_at: 2024-02-20T17:40:20Z
 url: https://github.com/astral-sh/ruff/issues/10056
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ERA001: detect single-line code for try:, except:, etc.
 
 ---
 
-_Issue opened by @ottaviohartman on 2024-02-20 03:47_
+_@ottaviohartman_
 
 ```
 ❯ ruff --version

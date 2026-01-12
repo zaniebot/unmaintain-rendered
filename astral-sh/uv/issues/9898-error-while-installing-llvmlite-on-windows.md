@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-14T20:24:28Z
 updated_at: 2025-01-06T20:55:04Z
 url: https://github.com/astral-sh/uv/issues/9898
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Error while installing llvmlite on Windows
 
 ---
 
-_Issue opened by @jgobbo on 2024-12-14 20:24_
+_@jgobbo_
 
 I'm trying to add numba as a dependency on my project but it's failing to install llvmlite. I tried the solutions in https://github.com/astral-sh/uv/issues/6281 namely adding "llvmlite >=0.43.0" to constraint-dependencies, but even with the newest version of llvmlite, the installation fails. I've tried clearing the uv cache and updating Visual Studio with no change in the result. Any help is greatly appreciated.
 

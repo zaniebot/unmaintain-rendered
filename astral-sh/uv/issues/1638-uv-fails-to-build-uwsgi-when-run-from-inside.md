@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T10:15:10Z
 updated_at: 2024-02-19T08:31:05Z
 url: https://github.com/astral-sh/uv/issues/1638
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # uv fails to build uWSGI when run from inside virtual env
 
 ---
 
-_Issue opened by @Tonius on 2024-02-18 10:15_
+_@Tonius_
 
 When using `pip`, installing `uWSGI` works:
 

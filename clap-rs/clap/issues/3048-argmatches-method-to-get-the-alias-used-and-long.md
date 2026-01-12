@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-24T18:25:35Z
 updated_at: 2025-04-08T21:48:27Z
 url: https://github.com/clap-rs/clap/issues/3048
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # ArgMatches method to get the alias used (and long or short version)
 
 ---
 
-_Issue opened by @MarcelRobitaille on 2021-11-24 18:25_
+_@MarcelRobitaille_
 
 ### Please complete the following tasks
 

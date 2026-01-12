@@ -13,14 +13,14 @@ head: david/dataclass-field-default-type
 created_at: 2025-10-16T11:00:38Z
 updated_at: 2025-10-16T11:13:47Z
 url: https://github.com/astral-sh/ruff/pull/20915
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Use field-specifier return type as the default type for the field
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-16 11:00_
+_@sharkdp_
 
 ## Summary
 

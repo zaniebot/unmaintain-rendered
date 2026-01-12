@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T07:23:45Z
 updated_at: 2024-04-07T00:29:45Z
 url: https://github.com/astral-sh/uv/issues/2799
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # feature request : shiv/pyinstaller like functionality?
 
 ---
 
-_Issue opened by @sahmad-d2x on 2024-04-03 07:23_
+_@sahmad-d2x_
 
 Hi,
 

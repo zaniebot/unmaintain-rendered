@@ -13,14 +13,14 @@ head: alex/types-cleanup
 created_at: 2024-11-05T11:57:45Z
 updated_at: 2024-11-05T12:46:19Z
 url: https://github.com/astral-sh/ruff/pull/14104
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # `types.rs`: remove unused `is_stdlib_symbol` methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-05 11:57_
+_@AlexWaygood_
 
 ## Summary
 

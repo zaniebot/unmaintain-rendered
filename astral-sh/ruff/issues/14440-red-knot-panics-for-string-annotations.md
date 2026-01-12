@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T18:54:13Z
 updated_at: 2024-11-25T15:57:04Z
 url: https://github.com/astral-sh/ruff/issues/14440
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics for string annotations
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-18 18:54_
+_@sharkdp_
 
 Red knot currently panics for the following string annotation, which is completely pointless, but not invalid syntax. The example comes from a `crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py` and has apparently caused problems in Ruff before:
 

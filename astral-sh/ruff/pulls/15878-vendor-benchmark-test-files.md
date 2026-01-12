@@ -13,14 +13,14 @@ head: micha/remove-download-functionality-from-bench
 created_at: 2025-02-02T16:10:42Z
 updated_at: 2025-02-02T18:19:37Z
 url: https://github.com/astral-sh/ruff/pull/15878
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Vendor benchmark test files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-02 16:10_
+_@MichaReiser_
 
 ## Summary
 This PR vendors the benchmark test files. This has the advantage

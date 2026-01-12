@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-27T15:57:04Z
 updated_at: 2023-01-02T21:34:18Z
 url: https://github.com/astral-sh/ruff/issues/921
-synced_at: 2026-01-10T12:05:22Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support rules in `flake8-pytest-style`
 
 ---
 
-_Issue opened by @harupy on 2022-11-27 15:57_
+_@harupy_
 
 https://github.com/m-burst/flake8-pytest-style
 

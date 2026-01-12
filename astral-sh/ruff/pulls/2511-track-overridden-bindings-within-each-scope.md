@@ -12,14 +12,14 @@ head: charlie/overrides
 created_at: 2023-02-03T03:24:57Z
 updated_at: 2023-02-03T03:31:47Z
 url: https://github.com/astral-sh/ruff/pull/2511
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Track overridden bindings within each scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 03:24_
+_@charliermarsh_
 
 A follow-up to #2509 that lets us track a few more cases while still avoiding the errors raised in #2207.
 

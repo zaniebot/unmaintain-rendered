@@ -12,14 +12,14 @@ head: remove-in_f_string
 created_at: 2022-12-31T04:10:55Z
 updated_at: 2022-12-31T04:49:06Z
 url: https://github.com/astral-sh/ruff/pull/1494
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Stop overriding locations for expressions within f-strings
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 04:10_
+_@harupy_
 
 https://github.com/RustPython/RustPython/pull/4384 fixed the location of `FormattedValue`. Now, expressions within f-strings should have the correct locations. Here's a quick demo.
 

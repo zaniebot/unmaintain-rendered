@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T20:32:13Z
 updated_at: 2024-02-07T21:30:52Z
 url: https://github.com/astral-sh/ruff/issues/9863
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Docs request: linking `mypy`'s `ignore-without-code` in `PGH003`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-02-06 20:32_
+_@jamesbraza_
 
 `mypy` has an opt-in rule [`ignore-without-code`](https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-type-ignore-include-an-error-code-ignore-without-code) that prevents blanket type ignores.
 

@@ -13,14 +13,14 @@ head: zb/fix-docstring
 created_at: 2024-10-18T00:17:00Z
 updated_at: 2024-10-18T00:37:08Z
 url: https://github.com/astral-sh/uv/pull/8314
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Fixup `HTTP_BASIC` reference in docstring
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 00:17_
+_@zanieb_
 
 _No description provided._
 

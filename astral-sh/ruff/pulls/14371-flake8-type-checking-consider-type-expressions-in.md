@@ -13,14 +13,14 @@ head: quote-annots
 created_at: 2024-11-15T22:11:08Z
 updated_at: 2024-11-18T06:57:53Z
 url: https://github.com/astral-sh/ruff/pull/14371
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-type-checking`] Consider type expressions in list for quoting annotations
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-15 22:11_
+_@dylwil3_
 
 This PR adds corrected handling of  list expressions to the `Visitor` implementation of `QuotedAnnotator` in `flake8_type_checking::helpers`.
 

@@ -14,14 +14,14 @@ head: charlie/bench
 created_at: 2024-08-20T16:29:24Z
 updated_at: 2024-08-20T16:42:58Z
 url: https://github.com/astral-sh/uv/pull/6258
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Update `BENCHMARKS.md`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 16:29_
+_@charliermarsh_
 
 _No description provided._
 

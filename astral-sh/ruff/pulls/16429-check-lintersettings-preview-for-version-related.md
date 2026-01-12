@@ -13,14 +13,14 @@ head: brent/preview-syntax-errors
 created_at: 2025-02-28T03:23:28Z
 updated_at: 2025-02-28T17:45:52Z
 url: https://github.com/astral-sh/ruff/pull/16429
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Check `LinterSettings::preview` for version-related syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-28 03:23_
+_@ntBre_
 
 Summary
 --

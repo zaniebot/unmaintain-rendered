@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T18:23:51Z
 updated_at: 2024-10-23T02:19:59Z
 url: https://github.com/astral-sh/uv/issues/8389
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # `uv sync` tries to resolve optional source packages even though environment markers exclude the package from the environment
 
 ---
 
-_Issue opened by @benniekiss on 2024-10-20 18:23_
+_@benniekiss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

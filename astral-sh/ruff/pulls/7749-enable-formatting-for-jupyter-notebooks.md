@@ -13,14 +13,14 @@ head: charlie/format-jupyter
 created_at: 2023-10-01T23:34:00Z
 updated_at: 2023-10-02T15:02:57Z
 url: https://github.com/astral-sh/ruff/pull/7749
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Enable formatting for Jupyter notebooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 23:34_
+_@charliermarsh_
 
 ## Summary
 

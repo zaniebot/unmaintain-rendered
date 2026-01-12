@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-22T03:31:08Z
 updated_at: 2023-09-22T06:17:49Z
 url: https://github.com/astral-sh/ruff/issues/7587
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # ✨ Allow disabling specific rule for specific directory or file
 
 ---
 
-_Issue opened by @jd-solanki on 2023-09-22 03:31_
+_@jd-solanki_
 
 Hi 👋🏻 
 

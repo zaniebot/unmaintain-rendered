@@ -13,14 +13,14 @@ head: charlie/dist-types
 created_at: 2023-11-19T19:24:24Z
 updated_at: 2023-11-20T08:40:28Z
 url: https://github.com/astral-sh/uv/pull/458
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Rename `puffin-distribution` to `distribution-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 19:24_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/git-lock
 created_at: 2024-05-15T20:22:12Z
 updated_at: 2024-05-16T15:18:10Z
 url: https://github.com/astral-sh/uv/pull/3623
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Add basic tests for lockfile generation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 20:22_
+_@charliermarsh_
 
 _No description provided._
 

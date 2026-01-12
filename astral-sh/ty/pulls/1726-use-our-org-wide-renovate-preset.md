@@ -13,14 +13,14 @@ head: renovate/reconfigure
 created_at: 2025-12-02T17:38:10Z
 updated_at: 2025-12-02T18:08:39Z
 url: https://github.com/astral-sh/ty/pull/1726
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use our org-wide Renovate preset
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-02 17:38_
+_@woodruffw_
 
 ## Summary
 

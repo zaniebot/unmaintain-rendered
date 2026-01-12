@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T08:00:25Z
 updated_at: 2025-02-20T14:29:44Z
 url: https://github.com/astral-sh/uv/issues/11657
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # List UV venv's and current venv
 
 ---
 
-_Issue opened by @oliverangelil on 2025-02-20 08:00_
+_@oliverangelil_
 
 ### Question
 

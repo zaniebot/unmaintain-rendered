@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-12T16:53:27Z
 updated_at: 2025-11-12T16:57:36Z
 url: https://github.com/astral-sh/ty/issues/1531
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider adding an incremental adoption mechanism
 
 ---
 
-_Issue opened by @ewilazarus on 2025-11-12 16:53_
+_@ewilazarus_
 
 Hey coming from `mypy`, there's this https://github.com/orsinium-labs/mypy-baseline/ project that I have successfully used in an existing codebase to aid incremental type-checker adoption over time.
 

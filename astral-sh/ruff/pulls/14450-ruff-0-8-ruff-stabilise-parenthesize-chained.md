@@ -13,14 +13,14 @@ head: alex/stabilise-ruf021
 created_at: 2024-11-19T13:25:17Z
 updated_at: 2024-11-19T15:10:13Z
 url: https://github.com/astral-sh/ruff/pull/14450
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff-0.8] [`ruff`] Stabilise `parenthesize-chained-operators` (`RUF021`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-19 13:25_
+_@AlexWaygood_
 
 ## Summary
 

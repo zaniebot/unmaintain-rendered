@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-26T12:51:40Z
 updated_at: 2025-01-28T17:17:28Z
 url: https://github.com/astral-sh/uv/issues/10967
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Universal resolution docs need adjusting for Python version forking
 
 ---
 
-_Issue opened by @edmorley on 2025-01-26 12:51_
+_@edmorley_
 
 The universal resolution docs currently say:
 

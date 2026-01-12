@@ -12,14 +12,14 @@ head: fix-match_annotated_subscript
 created_at: 2023-01-02T13:21:11Z
 updated_at: 2023-01-02T17:13:46Z
 url: https://github.com/astral-sh/ruff/pull/1554
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix typing::match_annotated_subscript matching ExprKind::Call
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-02 13:21_
+_@not-my-profile_
 
 Fixes #1552.
 

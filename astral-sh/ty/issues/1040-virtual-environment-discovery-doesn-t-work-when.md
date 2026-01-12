@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T10:44:42Z
 updated_at: 2025-08-18T10:49:30Z
 url: https://github.com/astral-sh/ty/issues/1040
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # virtual environment discovery doesn't work when using `--project`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-18 10:44_
+_@MichaReiser_
 
 ### Summary
 

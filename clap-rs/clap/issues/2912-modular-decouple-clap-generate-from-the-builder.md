@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-19T15:36:38Z
 updated_at: 2021-12-13T22:05:54Z
 url: https://github.com/clap-rs/clap/issues/2912
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [modular] Decouple clap_generate from the builder API
 
 ---
 
-_Issue opened by @epage on 2021-10-19 15:36_
+_@epage_
 
 ### Please complete the following tasks
 

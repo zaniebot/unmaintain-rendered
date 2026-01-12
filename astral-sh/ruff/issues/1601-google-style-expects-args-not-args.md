@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-03T15:00:27Z
 updated_at: 2023-01-03T23:17:43Z
 url: https://github.com/astral-sh/ruff/issues/1601
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Google style expects *args not args
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-03 15:00_
+_@twoertwein_
 
 ```py
 def test(*args, **kwargs):

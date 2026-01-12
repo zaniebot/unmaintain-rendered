@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T23:48:22Z
 updated_at: 2025-12-17T19:55:58Z
 url: https://github.com/astral-sh/ty/issues/1966
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # vscode extension -- Getting "Cannot resolve imported module `myproject.my_module.my_file`" with a `backend` folder at the root
 
 ---
 
-_Issue opened by @ColemanDunn on 2025-12-16 23:48_
+_@ColemanDunn_
 
 ### Summary
 

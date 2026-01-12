@@ -13,14 +13,14 @@ head: renovate/rustix-1.x
 created_at: 2025-04-28T03:18:46Z
 updated_at: 2025-04-28T12:49:55Z
 url: https://github.com/astral-sh/uv/pull/13168
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:34Z
 ```
 
 # Update Rust crate rustix to v1
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 03:18_
+_@renovate_
 
 This PR contains the following updates:
 

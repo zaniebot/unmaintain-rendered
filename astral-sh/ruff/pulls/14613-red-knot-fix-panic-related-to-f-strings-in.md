@@ -13,14 +13,14 @@ head: david/fix-panic-fstring-annotation
 created_at: 2024-11-26T15:27:42Z
 updated_at: 2024-11-26T15:35:47Z
 url: https://github.com/astral-sh/ruff/pull/14613
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Fix panic related to f-strings in annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-26 15:27_
+_@sharkdp_
 
 ## Summary
 

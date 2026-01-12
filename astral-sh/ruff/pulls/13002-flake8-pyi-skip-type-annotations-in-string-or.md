@@ -14,14 +14,14 @@ head: pyi053-ignore-annotation
 created_at: 2024-08-20T03:31:26Z
 updated_at: 2024-08-20T10:54:02Z
 url: https://github.com/astral-sh/ruff/pull/13002
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-pyi`] Skip type annotations in `string-or-bytes-too-long` (`PYI053`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-20 03:31_
+_@dylwil3_
 
 PYI053 is meant to protect against default arguments being too lengthy, not, e.g., type annotations with long literal strings.
 

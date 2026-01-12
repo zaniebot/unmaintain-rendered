@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T19:04:21Z
 updated_at: 2025-08-07T21:37:18Z
 url: https://github.com/astral-sh/ruff/issues/19789
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New rule from refurb: `FURB115`
 
 ---
 
-_Issue opened by @chirizxc on 2025-08-06 19:04_
+_@chirizxc_
 
 <img width="1146" height="457" alt="Image" src="https://github.com/user-attachments/assets/ff42d62c-e192-4fe8-99d2-e8815a5d2d50" />
 

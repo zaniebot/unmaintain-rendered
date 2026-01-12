@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-22T15:37:25Z
 updated_at: 2025-05-22T18:24:41Z
 url: https://github.com/astral-sh/uv/issues/13596
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Compiling bytecode can significantly increase Docker image size
 
 ---
 
-_Issue opened by @maxfirman on 2025-05-22 15:37_
+_@maxfirman_
 
 I had a Docker image that went from 750MB to 900MB with the `UV_COMPILE_BYTECODE=1` set. 
 

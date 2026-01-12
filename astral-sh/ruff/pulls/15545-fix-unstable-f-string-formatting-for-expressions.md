@@ -14,14 +14,14 @@ head: micha/f-string-trailing-comma
 created_at: 2025-01-17T07:52:48Z
 updated_at: 2025-01-17T09:08:12Z
 url: https://github.com/astral-sh/ruff/pull/15545
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Fix unstable f-string formatting for expressions containing a trailing comma
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-17 07:52_
+_@MichaReiser_
 
 ## Summary
 

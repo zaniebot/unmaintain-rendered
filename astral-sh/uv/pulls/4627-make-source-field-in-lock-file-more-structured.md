@@ -12,14 +12,14 @@ head: ag/rejigger-source
 created_at: 2024-06-28T16:17:55Z
 updated_at: 2024-07-01T07:19:16Z
 url: https://github.com/astral-sh/uv/pull/4627
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # make `source` field in lock file more structured
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-28 16:17_
+_@BurntSushi_
 
 The essence of this change is from this:
 

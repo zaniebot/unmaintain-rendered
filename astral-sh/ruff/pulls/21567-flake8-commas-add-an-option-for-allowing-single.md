@@ -13,14 +13,14 @@ head: push-nzpmoolkmvxw
 created_at: 2025-11-21T18:14:42Z
 updated_at: 2025-11-24T17:23:37Z
 url: https://github.com/astral-sh/ruff/pull/21567
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [flake8-commas] Add an option for allowing single-argument functions (COM812)
 
 ---
 
-_Pull request opened by @davidt on 2025-11-21 18:14_
+_@davidt_
 
 ## Summary
 

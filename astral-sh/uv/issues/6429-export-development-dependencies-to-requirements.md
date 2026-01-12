@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T13:06:28Z
 updated_at: 2024-08-22T13:16:46Z
 url: https://github.com/astral-sh/uv/issues/6429
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Export development dependencies to requirements.txt
 
 ---
 
-_Issue opened by @Winand on 2024-08-22 13:06_
+_@Winand_
 
 In Poetry I export all the dependencies including the dev ones using the following command:
 ```bash

@@ -13,14 +13,14 @@ head: charlie/fastapi
 created_at: 2024-08-22T02:44:16Z
 updated_at: 2024-08-23T02:09:46Z
 url: https://github.com/astral-sh/uv/pull/6401
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Add a guide for using uv with FastAPI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 02:44_
+_@charliermarsh_
 
 _No description provided._
 

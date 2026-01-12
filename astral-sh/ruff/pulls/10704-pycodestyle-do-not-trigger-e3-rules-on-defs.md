@@ -14,14 +14,14 @@ head: fix-10211
 created_at: 2024-04-01T12:21:55Z
 updated_at: 2024-04-15T08:27:14Z
 url: https://github.com/astral-sh/ruff/pull/10704
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pycodestyle`] Do not trigger `E3` rules on defs following a function/method with a dummy body
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-04-01 12:21_
+_@hoel-bagard_
 
 ## Summary
 

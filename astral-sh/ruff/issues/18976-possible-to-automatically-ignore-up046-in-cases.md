@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-27T05:52:59Z
 updated_at: 2025-06-27T13:49:02Z
 url: https://github.com/astral-sh/ruff/issues/18976
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Possible to automatically ignore UP046 in cases of manual variance setting
 
 ---
 
-_Issue opened by @max-muoto on 2025-06-27 05:52_
+_@max-muoto_
 
 ### Question
 

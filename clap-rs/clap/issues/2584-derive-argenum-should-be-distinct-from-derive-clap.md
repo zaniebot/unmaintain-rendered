@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-07-14T15:29:41Z
 updated_at: 2021-07-14T17:01:31Z
 url: https://github.com/clap-rs/clap/issues/2584
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # derive(ArgEnum) should be distinct from derive(Clap)
 
 ---
 
-_Issue opened by @epage on 2021-07-14 15:29_
+_@epage_
 
 ### Please complete the following tasks
 

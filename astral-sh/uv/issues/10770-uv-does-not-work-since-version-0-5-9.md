@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-20T02:54:43Z
 updated_at: 2025-01-20T03:20:02Z
 url: https://github.com/astral-sh/uv/issues/10770
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # UV does not work since version==0.5.9
 
 ---
 
-_Issue opened by @panda-king-ys on 2025-01-20 02:54_
+_@panda-king-ys_
 
 Everything worked correctly with UV version 0.5.8. However, when using UV version 0.5.9 or later, it doesn't perform any actions.
 

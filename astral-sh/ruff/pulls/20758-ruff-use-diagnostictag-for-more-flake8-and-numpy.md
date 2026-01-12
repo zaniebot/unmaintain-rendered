@@ -13,14 +13,14 @@ head: add-DiagnosticTag-to-flake8-rules
 created_at: 2025-10-08T07:22:34Z
 updated_at: 2025-10-13T08:29:15Z
 url: https://github.com/astral-sh/ruff/pull/20758
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`ruff`] Use DiagnosticTag for more flake8 and numpy rules
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-08 07:22_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

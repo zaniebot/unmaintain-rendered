@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-18T01:25:21Z
 updated_at: 2024-01-10T16:35:23Z
 url: https://github.com/astral-sh/ruff/issues/5850
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add unit tests for file discovery
 
 ---
 
-_Issue opened by @zanieb on 2023-07-18 01:25_
+_@zanieb_
 
 > Unfortunately we don’t have any unit tests for the file discovery behavior right now, so we’d need to establish some new patterns.
 

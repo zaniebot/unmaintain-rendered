@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-19T15:29:19Z
 updated_at: 2024-08-08T01:34:20Z
 url: https://github.com/astral-sh/uv/issues/5224
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Support specifying mirror for `indygreg/python-build-standalone` in `uv python` 
 
 ---
 
-_Issue opened by @Vigilans on 2024-07-19 15:29_
+_@Vigilans_
 
 Simliar to nodejs `nvm`'s [`NVM_NODEJS_ORG_MIRROR`](https://github.com/nvm-sh/nvm/blob/master/README.md#use-a-mirror-of-node-binaries) environment variable, `uv` may provide variable like `UV_PYTHON_INSTALL_MIRROR` to allow user to specify a mirror for `indygreg/python-build-standalone`'s github release.
 

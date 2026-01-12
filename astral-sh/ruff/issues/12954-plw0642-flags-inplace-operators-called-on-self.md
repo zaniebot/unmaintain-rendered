@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-17T15:33:23Z
 updated_at: 2024-08-18T15:31:10Z
 url: https://github.com/astral-sh/ruff/issues/12954
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PLW0642 flags inplace operators called on self
 
 ---
 
-_Issue opened by @Skylion007 on 2024-08-17 15:33_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

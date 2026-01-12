@@ -13,14 +13,14 @@ head: jane/server/error-spam
 created_at: 2024-06-04T22:41:26Z
 updated_at: 2024-06-05T00:18:22Z
 url: https://github.com/astral-sh/ruff/pull/11745
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server`: Formatting a document with syntax problems no longer spams a visible error popup
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-04 22:41_
+_@snowsignal_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: revert-20156-alex/classvar-assignment-code
 created_at: 2025-08-29T18:37:08Z
 updated_at: 2025-08-29T18:48:47Z
 url: https://github.com/astral-sh/ruff/pull/20158
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # Revert "[ty] Use `invalid-assignment` error code for invalid assignments to `ClassVar`s"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-29 18:37_
+_@AlexWaygood_
 
 Reverts astral-sh/ruff#20156. As @sharkdp noted in his post-merge review, there were several issues with that PR that I didn't spot before merging — but I'm out for four days now, and would rather not leave things in an inconsistent state for that long. I'll revisit this on Wednesday.
 

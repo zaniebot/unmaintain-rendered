@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-20T12:07:42Z
 updated_at: 2022-09-22T18:53:43Z
 url: https://github.com/clap-rs/clap/issues/4238
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Vector of anonymous args + named arg + subcommand leads to USAGE which fails to parse with `cargo run ... --`
 
 ---
 
-_Issue opened by @jacg on 2022-09-20 12:07_
+_@jacg_
 
 ### Please complete the following tasks
 

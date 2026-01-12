@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-27T10:15:09Z
 updated_at: 2024-12-27T14:29:06Z
 url: https://github.com/astral-sh/uv/issues/10192
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # python-install-mirror in uv.toml
 
 ---
 
-_Issue opened by @andreas-vester on 2024-12-27 10:15_
+_@andreas-vester_
 
 I am getting an error when configuring ``python-install-mirror`` in ``uv.toml`` rather than an environment variable.
 

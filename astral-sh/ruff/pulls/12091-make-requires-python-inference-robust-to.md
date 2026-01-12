@@ -13,14 +13,14 @@ head: charlie/detect
 created_at: 2024-06-28T12:08:00Z
 updated_at: 2024-06-28T13:38:18Z
 url: https://github.com/astral-sh/ruff/pull/12091
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Make `requires-python` inference robust to `==`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-28 12:08_
+_@charliermarsh_
 
 ## Summary
 

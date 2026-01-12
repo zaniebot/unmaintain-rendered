@@ -13,14 +13,14 @@ head: konsti/cargo-fast-build
 created_at: 2025-11-19T18:03:07Z
 updated_at: 2025-12-11T13:51:39Z
 url: https://github.com/astral-sh/uv/pull/16780
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # CI Perf: fast-build
 
 ---
 
-_Pull request opened by @konstin on 2025-11-19 18:03_
+_@konstin_
 
 _No description provided._
 

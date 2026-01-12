@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-20T09:21:13Z
 updated_at: 2024-04-21T08:28:34Z
 url: https://github.com/astral-sh/uv/issues/3159
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add support for `--upgrade-strategy` or specify behavior
 
 ---
 
-_Issue opened by @luiscastro193 on 2024-04-20 09:21_
+_@luiscastro193_
 
 By default, `pip --upgrade` only upgrades packages specified on pip’s command line. Ideally, at least dependencies would also be considered. This can be fixed with `--upgrade-strategy eager`.
 

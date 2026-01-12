@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T08:42:03Z
 updated_at: 2024-08-01T21:16:34Z
 url: https://github.com/astral-sh/ruff/issues/11854
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New Rule: Formatted string passed to logging module PYL-W1203
 
 ---
 
-_Issue opened by @Zerotask on 2024-06-13 08:42_
+_@Zerotask_
 
 Deepsource warns you, when you use a formatted string with the [logging](https://docs.python.org/3/library/logging.html) module.
 

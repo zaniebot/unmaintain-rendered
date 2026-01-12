@@ -13,14 +13,14 @@ head: konsti/build-backend-wheel-data
 created_at: 2024-11-18T13:50:52Z
 updated_at: 2025-06-06T09:40:55Z
 url: https://github.com/astral-sh/uv/pull/9197
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Build backend: Support data files 
 
 ---
 
-_Pull request opened by @konstin on 2024-11-18 13:50_
+_@konstin_
 
 Allow including data files in wheels, configured through `pyproject.toml`. This configuration is currently only read in the build backend. We'd only start using it in the frontend when we're adding a fast path.
 

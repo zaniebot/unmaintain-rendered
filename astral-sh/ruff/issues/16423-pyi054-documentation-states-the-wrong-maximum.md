@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T21:03:23Z
 updated_at: 2025-02-28T14:53:16Z
 url: https://github.com/astral-sh/ruff/issues/16423
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PYI054 documentation states the wrong maximum length
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-27 21:03_
+_@dscorbett_
 
 The documentation for [`numeric-literal-too-long` (PYI054)](https://docs.astral.sh/ruff/rules/numeric-literal-too-long/#numeric-literal-too-long-pyi054) says:
 > If a function has a default value where the literal representation is greater than 50 characters, the value is likely to be an implementation detail or a constant that varies depending on the system you're running on.

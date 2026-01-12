@@ -13,14 +13,14 @@ head: zb/env-retain
 created_at: 2024-02-18T21:10:28Z
 updated_at: 2024-02-18T21:22:40Z
 url: https://github.com/astral-sh/uv/pull/1667
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Ensure we retain existing environment variables during `python -m uv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-18 21:10_
+_@zanieb_
 
 From https://github.com/astral-sh/uv/issues/1623#issuecomment-1951368507
 

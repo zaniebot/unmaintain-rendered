@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T16:58:52Z
 updated_at: 2024-08-13T15:35:48Z
 url: https://github.com/astral-sh/uv/issues/4732
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Handle overlapping and incomplete markers when forking
 
 ---
 
-_Issue opened by @konstin on 2024-07-02 16:58_
+_@konstin_
 
 In python, a package can declare conflicting requirements as long as the markers are disjoint, e.g.:
 ```

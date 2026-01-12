@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-25T13:48:44Z
 updated_at: 2023-05-26T19:18:53Z
 url: https://github.com/astral-sh/ruff/issues/4657
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF009 hints for float('-inf')
 
 ---
 
-_Issue opened by @alkatar21 on 2023-05-25 13:48_
+_@alkatar21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: RUF055
 created_at: 2025-01-07T15:06:46Z
 updated_at: 2025-01-07T17:12:33Z
 url: https://github.com/astral-sh/ruff/pull/15318
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Treat `)` as a regex metacharacter (`RUF043`, `RUF055`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-07 15:06_
+_@InSyncWithFoo_
 
 ## Summary
 

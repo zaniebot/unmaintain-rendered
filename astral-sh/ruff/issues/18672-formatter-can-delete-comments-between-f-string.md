@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-14T00:49:20Z
 updated_at: 2025-06-17T05:39:43Z
 url: https://github.com/astral-sh/ruff/issues/18672
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatter can delete comments between f-string expr and format spec
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-14 00:49_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-23T18:39:53Z
 updated_at: 2025-02-25T23:12:26Z
 url: https://github.com/astral-sh/uv/issues/11727
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Poor progress bar contrast with solarized color scheme
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-23 18:39_
+_@chrisrodrigue_
 
 ### Summary
 

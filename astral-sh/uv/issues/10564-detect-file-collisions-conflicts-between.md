@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T14:37:31Z
 updated_at: 2025-04-06T06:23:51Z
 url: https://github.com/astral-sh/uv/issues/10564
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Detect file collisions / conflicts between different packages while installing
 
 ---
 
-_Issue opened by @mgorny on 2025-01-13 14:37_
+_@mgorny_
 
 It is possible for two PyPI projects to provide files using the same names. When using `uv pip install`, installing both would result in `uv` silently overwriting files from the package installed earlier, and leaving over metadata for both.
 

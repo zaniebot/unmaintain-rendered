@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T09:27:51Z
 updated_at: 2025-01-24T15:32:05Z
 url: https://github.com/astral-sh/uv/issues/10932
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Ability to "Run Python file" using "uv run" in VS Code
 
 ---
 
-_Issue opened by @valentincalomme on 2025-01-24 09:27_
+_@valentincalomme_
 
 ### Summary
 

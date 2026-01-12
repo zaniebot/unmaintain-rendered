@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T19:39:15Z
 updated_at: 2024-03-20T20:39:52Z
 url: https://github.com/astral-sh/uv/issues/2572
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # How i can change UV_HTTP_TIMEOUT ? 
 
 ---
 
-_Issue opened by @Technolog796 on 2024-03-20 19:39_
+_@Technolog796_
 
 I'm trying to install PyTorch, but I'm getting the following error:
 

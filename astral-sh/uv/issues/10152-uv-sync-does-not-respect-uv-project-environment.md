@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-25T04:44:52Z
 updated_at: 2024-12-25T09:28:39Z
 url: https://github.com/astral-sh/uv/issues/10152
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # uv sync does not respect UV_PROJECT_ENVIRONMENT
 
 ---
 
-_Issue opened by @hongquan on 2024-12-25 04:44_
+_@hongquan_
 
 I set `UV_PROJECT_ENVIRONMENT` environment variable to an absolute path (I want to have venv folder outside my project). Then I run `uv sync`, but it insists on creating `.venv` folder and install packages to this folder, instead of installing to the folder I provided via `UV_PROJECT_ENVIRONMENT`.
 

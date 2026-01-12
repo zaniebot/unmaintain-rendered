@@ -13,14 +13,14 @@ head: konsti/uv-build-in-make-project
 created_at: 2025-10-14T17:23:47Z
 updated_at: 2025-10-15T18:45:34Z
 url: https://github.com/astral-sh/uv/pull/16298
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Use `uv_build` in `make_project` tests
 
 ---
 
-_Pull request opened by @konstin on 2025-10-14 17:23_
+_@konstin_
 
 Skip downloading and running setuptools.
 

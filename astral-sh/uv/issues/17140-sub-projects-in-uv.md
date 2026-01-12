@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T07:48:53Z
 updated_at: 2025-12-16T11:47:44Z
 url: https://github.com/astral-sh/uv/issues/17140
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # sub-projects in uv?
 
 ---
 
-_Issue opened by @M-Lauronen on 2025-12-16 07:48_
+_@M-Lauronen_
 
 ### Question
 

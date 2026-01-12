@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-08T04:53:32Z
 updated_at: 2023-02-22T00:06:45Z
 url: https://github.com/astral-sh/ruff/issues/1138
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # feature-request: Create a recommended workaround for files with match statements
 
 ---
 
-_Issue opened by @j-carson on 2022-12-08 04:53_
+_@j-carson_
 
 Right now, if a file uses the match statement, you have to manually exclude the file from ruff in your environment. It would be better to have an official workaround, such as:
 

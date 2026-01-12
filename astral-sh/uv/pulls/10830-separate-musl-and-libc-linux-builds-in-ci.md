@@ -14,14 +14,14 @@ head: zb/libc-musl
 created_at: 2025-01-21T22:07:38Z
 updated_at: 2025-01-23T21:19:28Z
 url: https://github.com/astral-sh/uv/pull/10830
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Separate musl and libc linux builds in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 22:07_
+_@zanieb_
 
 We have a lot of jobs downstream of the `build-binary-linux` job, but the job is significantly slower than the other binary builds because we need to configure musl. Instead, we split this into two jobs (as it was before https://github.com/astral-sh/uv/pull/2309#discussion_r1520101330) to speed things up.
 

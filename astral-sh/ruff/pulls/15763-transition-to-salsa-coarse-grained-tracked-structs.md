@@ -14,14 +14,14 @@ head: salsa-coarse-deps
 created_at: 2025-01-27T04:30:14Z
 updated_at: 2025-02-11T17:16:24Z
 url: https://github.com/astral-sh/ruff/pull/15763
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Transition to salsa coarse-grained tracked structs
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-01-27 04:30_
+_@ibraheemdev_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

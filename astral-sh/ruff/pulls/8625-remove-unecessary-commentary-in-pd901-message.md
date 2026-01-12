@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-11-12T02:07:52Z
 updated_at: 2023-11-12T23:23:55Z
 url: https://github.com/astral-sh/ruff/pull/8625
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove unecessary commentary in PD901 message
 
 ---
 
-_Pull request opened by @OtherBarry on 2023-11-12 02:07_
+_@OtherBarry_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

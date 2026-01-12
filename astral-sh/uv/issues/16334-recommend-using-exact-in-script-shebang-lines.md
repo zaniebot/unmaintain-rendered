@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T03:04:50Z
 updated_at: 2025-10-17T08:30:33Z
 url: https://github.com/astral-sh/uv/issues/16334
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Recommend using `--exact` in script shebang lines
 
 ---
 
-_Issue opened by @treyhunner on 2025-10-17 03:04_
+_@treyhunner_
 
 I found it surprising that removing dependencies from a script with inline metadata does not affect the auto-created virtual environment for that script when the script is run.
 

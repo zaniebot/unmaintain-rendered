@@ -11,14 +11,14 @@ head: gankra/package_juice
 created_at: 2025-02-13T16:51:36Z
 updated_at: 2025-02-13T22:06:20Z
 url: https://github.com/astral-sh/uv/pull/11485
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # rename hello.py to <package>.py
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-13 16:51_
+_@Gankra_
 
 Alternative for #10369
 

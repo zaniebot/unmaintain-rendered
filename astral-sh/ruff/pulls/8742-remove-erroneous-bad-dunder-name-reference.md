@@ -13,14 +13,14 @@ head: charlie/dunder
 created_at: 2023-11-17T17:21:14Z
 updated_at: 2023-11-17T17:33:33Z
 url: https://github.com/astral-sh/ruff/pull/8742
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove erroneous bad-dunder-name reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 17:21_
+_@charliermarsh_
 
 Closes #8731.
 

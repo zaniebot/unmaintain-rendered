@@ -13,14 +13,14 @@ head: zb/system-install-musl
 created_at: 2024-03-11T23:05:38Z
 updated_at: 2024-03-12T09:11:37Z
 url: https://github.com/astral-sh/uv/pull/2370
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Use musl for system test builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-11 23:05_
+_@zanieb_
 
 _No description provided._
 

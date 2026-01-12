@@ -14,14 +14,14 @@ head: alex/mdtest-watch-typeshed
 created_at: 2025-04-29T17:10:43Z
 updated_at: 2025-04-29T18:27:51Z
 url: https://github.com/astral-sh/ruff/pull/17718
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] mdtest.py: Watch for changes in `red_knot_vendored` and `red_knot_test` as well as in `red_knot_python_semantic`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 17:10_
+_@AlexWaygood_
 
 ## Summary
 

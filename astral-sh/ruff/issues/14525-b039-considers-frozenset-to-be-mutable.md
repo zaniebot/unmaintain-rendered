@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T11:13:52Z
 updated_at: 2024-11-24T02:29:26Z
 url: https://github.com/astral-sh/ruff/issues/14525
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B039 considers `frozenset` to be mutable
 
 ---
 
-_Issue opened by @layday on 2024-11-22 11:13_
+_@layday_
 
 ```
 $ cat foo.py 

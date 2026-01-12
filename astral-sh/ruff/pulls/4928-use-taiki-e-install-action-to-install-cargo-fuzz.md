@@ -12,14 +12,14 @@ head: cargo_fuzz_install
 created_at: 2023-06-07T13:58:12Z
 updated_at: 2023-06-07T16:18:15Z
 url: https://github.com/astral-sh/ruff/pull/4928
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use taiki-e/install-action to install cargo fuzz
 
 ---
 
-_Pull request opened by @konstin on 2023-06-07 13:58_
+_@konstin_
 
 The cargo fuzz ci run seems to sometimes fail for unclear reasons (https://github.com/charliermarsh/ruff/actions/runs/5200348677/jobs/9379742606?pr=4900). I hope that this might fix it. I'll push more commits to this PR to check the caching behaviour.
 

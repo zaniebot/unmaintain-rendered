@@ -13,14 +13,14 @@ head: charlie/pip-sync
 created_at: 2024-05-14T02:20:24Z
 updated_at: 2024-05-14T02:28:40Z
 url: https://github.com/astral-sh/uv/pull/3567
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Move dry-run method to the top-level
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 02:20_
+_@charliermarsh_
 
 Trying to pull out some small, no-op refactors.
 

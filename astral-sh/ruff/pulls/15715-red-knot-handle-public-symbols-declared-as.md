@@ -13,14 +13,14 @@ head: david/union-for-declared-types
 created_at: 2025-01-24T13:15:14Z
 updated_at: 2025-01-25T12:25:02Z
 url: https://github.com/astral-sh/ruff/pull/15715
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Handle public symbols declared as `Unknown` like undeclared symbols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-24 13:15_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T01:02:49Z
 updated_at: 2025-10-21T15:12:38Z
 url: https://github.com/astral-sh/ruff/issues/21008
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rectification information for D205 is not very helpful
 
 ---
 
-_Issue opened by @varchasgopalaswamy on 2025-10-21 01:02_
+_@varchasgopalaswamy_
 
 ### Summary
 

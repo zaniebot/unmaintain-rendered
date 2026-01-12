@@ -13,14 +13,14 @@ head: interactive-publish
 created_at: 2024-10-13T15:55:13Z
 updated_at: 2024-10-15T11:23:49Z
 url: https://github.com/astral-sh/uv/pull/8158
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Support interactive input in `uv publish`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-13 15:55_
+_@blueraft_
 
 ## Summary
 

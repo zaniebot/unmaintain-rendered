@@ -13,14 +13,14 @@ head: fix-20965
 created_at: 2025-10-27T01:34:15Z
 updated_at: 2025-10-29T21:53:37Z
 url: https://github.com/astral-sh/ruff/pull/21092
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`ruff-ecosystem`] Fix CLI crash on Python 3.14
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-27 01:34_
+_@danparizher_
 
 ## Summary
 

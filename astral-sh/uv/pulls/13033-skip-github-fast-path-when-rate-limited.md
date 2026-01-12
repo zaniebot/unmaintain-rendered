@@ -13,14 +13,14 @@ head: gh-fast-path/429
 created_at: 2025-04-21T23:19:11Z
 updated_at: 2025-06-24T19:20:48Z
 url: https://github.com/astral-sh/uv/pull/13033
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Skip GitHub fast path when rate-limited
 
 ---
 
-_Pull request opened by @christeefy on 2025-04-21 23:19_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-30T01:46:59Z
 updated_at: 2023-05-30T17:44:20Z
 url: https://github.com/astral-sh/ruff/issues/4719
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `CONTRIBUTING.md` `MkDocs` incomplete: adding that `cargo` is required
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-30 01:46_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

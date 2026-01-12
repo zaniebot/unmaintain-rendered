@@ -14,14 +14,14 @@ head: charlie/doc-generate
 created_at: 2024-07-15T13:50:45Z
 updated_at: 2024-07-15T19:48:41Z
 url: https://github.com/astral-sh/uv/pull/5072
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Generate API reference for options documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-15 13:50_
+_@charliermarsh_
 
 ## Summary
 

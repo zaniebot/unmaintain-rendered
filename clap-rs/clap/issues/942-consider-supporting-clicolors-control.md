@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-04-25T23:05:12Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/942
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Consider supporting clicolors_control
 
 ---
 
-_Issue opened by @mitsuhiko on 2017-04-25 23:05_
+_@mitsuhiko_
 
 I pushed up this crate because I'm a bit tired of having to configure many different things for CLI color support. What do you think of having something like this?
 

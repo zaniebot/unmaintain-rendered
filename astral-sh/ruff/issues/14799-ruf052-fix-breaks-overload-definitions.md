@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-05T23:08:17Z
 updated_at: 2024-12-06T14:54:44Z
 url: https://github.com/astral-sh/ruff/issues/14799
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF052 Fix Breaks Overload Definitions
 
 ---
 
-_Issue opened by @oguzhanmeteozturk on 2024-12-05 23:08_
+_@oguzhanmeteozturk_
 
 The automatic fix for RUF052 introduces inconsistent parameter renaming in overload definitions. Specifically, if a parameter name is prefixed with an underscore (e.g., _param), the fixer renames it inconsistently across overloads and the main function. This leads to invalid overload definitions, as parameter names must match exactly between overloads and the implementation.
 

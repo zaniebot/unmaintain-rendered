@@ -13,14 +13,14 @@ head: charlie/shrink-tags-more
 created_at: 2025-01-14T03:25:12Z
 updated_at: 2025-01-14T14:49:19Z
 url: https://github.com/astral-sh/uv/pull/10583
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Reduce `WheelFilename` to 48 bytes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 03:25_
+_@charliermarsh_
 
 ## Summary
 

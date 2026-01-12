@@ -12,14 +12,14 @@ head: charlie/webinar
 created_at: 2023-02-15T03:25:51Z
 updated_at: 2023-02-15T03:28:13Z
 url: https://github.com/astral-sh/ruff/pull/2910
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove JetBrains webinar badge
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 03:25_
+_@charliermarsh_
 
 _No description provided._
 

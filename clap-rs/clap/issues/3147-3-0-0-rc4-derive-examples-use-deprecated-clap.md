@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-10T22:55:19Z
 updated_at: 2021-12-11T00:03:03Z
 url: https://github.com/clap-rs/clap/issues/3147
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # 3.0.0-rc4: derive examples use deprecated clap::Subcommand
 
 ---
 
-_Issue opened by @japert on 2021-12-10 22:55_
+_@japert_
 
 ### Please complete the following tasks
 

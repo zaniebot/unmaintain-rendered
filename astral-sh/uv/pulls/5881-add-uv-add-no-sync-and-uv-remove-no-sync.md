@@ -14,14 +14,14 @@ head: charlie/no-sync
 created_at: 2024-08-07T17:35:31Z
 updated_at: 2024-08-07T18:09:16Z
 url: https://github.com/astral-sh/uv/pull/5881
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Add `uv add --no-sync` and `uv remove --no-sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 17:35_
+_@charliermarsh_
 
 ## Summary
 

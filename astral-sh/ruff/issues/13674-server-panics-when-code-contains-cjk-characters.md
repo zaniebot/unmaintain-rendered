@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T06:39:41Z
 updated_at: 2024-11-01T07:16:55Z
 url: https://github.com/astral-sh/ruff/issues/13674
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Server panics when code contains CJK characters
 
 ---
 
-_Issue opened by @HusuSama on 2024-10-08 06:39_
+_@HusuSama_
 
 When I use Click, errors occur. I'm not sure if it's because of my Chinese comments or the decorators.
 

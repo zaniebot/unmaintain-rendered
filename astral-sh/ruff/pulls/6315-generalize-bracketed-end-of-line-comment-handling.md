@@ -13,14 +13,14 @@ head: charlie/placement
 created_at: 2023-08-03T19:54:50Z
 updated_at: 2023-08-04T06:02:46Z
 url: https://github.com/astral-sh/ruff/pull/6315
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Generalize bracketed end-of-line comment handling
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 19:54_
+_@charliermarsh_
 
 Micha suggested this in https://github.com/astral-sh/ruff/pull/6274#discussion_r1282774151, and it allows us to unify the implementations for arguments and type params.
 

@@ -14,14 +14,14 @@ head: charlie/num
 created_at: 2023-10-13T21:13:41Z
 updated_at: 2023-10-16T01:42:01Z
 url: https://github.com/astral-sh/ruff/pull/7956
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add trailing zero between dot and exponential
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-13 21:13_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7952.
 

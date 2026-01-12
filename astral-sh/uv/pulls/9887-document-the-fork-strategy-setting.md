@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-12-13T21:27:17Z
 updated_at: 2024-12-13T21:35:21Z
 url: https://github.com/astral-sh/uv/pull/9887
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Document the `--fork-strategy` setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-13 21:27_
+_@charliermarsh_
 
 _No description provided._
 

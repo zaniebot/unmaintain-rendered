@@ -13,14 +13,14 @@ head: zb/error-unavailable
 created_at: 2024-08-16T16:41:11Z
 updated_at: 2024-08-19T14:02:04Z
 url: https://github.com/astral-sh/uv/pull/6154
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Collapse unavailable packages in resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 16:41_
+_@zanieb_
 
 Uses my expanding tree reduction knowledge from #6092 to improve the long-standing issue of verbose messages for unavailable packages.
 

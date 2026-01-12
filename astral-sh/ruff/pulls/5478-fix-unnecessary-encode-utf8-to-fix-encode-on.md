@@ -13,14 +13,14 @@ head: fix-unnecessary_encode_utf8
 created_at: 2023-07-03T13:26:25Z
 updated_at: 2023-07-03T14:11:10Z
 url: https://github.com/astral-sh/ruff/pull/5478
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix `unnecessary-encode-utf8` to fix `encode` on parenthesized strings correctly
 
 ---
 
-_Pull request opened by @harupy on 2023-07-03 13:26_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

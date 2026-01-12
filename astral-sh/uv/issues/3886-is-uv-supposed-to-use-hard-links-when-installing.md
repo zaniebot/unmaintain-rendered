@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-28T18:40:16Z
 updated_at: 2024-05-28T19:01:37Z
 url: https://github.com/astral-sh/uv/issues/3886
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Is uv supposed to use hard links when installing dependencies in virtualenvs?
 
 ---
 
-_Issue opened by @pawamoy on 2024-05-28 18:40_
+_@pawamoy_
 
 The README says:
 

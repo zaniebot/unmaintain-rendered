@@ -13,14 +13,14 @@ head: zb/no-wheel-platform
 created_at: 2024-02-13T03:12:09Z
 updated_at: 2024-02-15T16:48:16Z
 url: https://github.com/astral-sh/uv/pull/1293
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Report incompatible distributions to users
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-13 03:12_
+_@zanieb_
 
 Instead of dropping versions without a compatible distribution, we track them as incompatibilities in the solver. This implementation follows patterns established in https://github.com/astral-sh/puffin/pull/1290.
 

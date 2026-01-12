@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-13T11:27:09Z
 updated_at: 2024-09-05T02:08:58Z
 url: https://github.com/astral-sh/ruff/issues/7940
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Line length rule, E501, incorrectly handled in some circumstances
 
 ---
 
-_Issue opened by @LasseGravesenSaxo on 2023-10-13 11:27_
+_@LasseGravesenSaxo_
 
 ### `ruff` version and settings
 `ruff` version:

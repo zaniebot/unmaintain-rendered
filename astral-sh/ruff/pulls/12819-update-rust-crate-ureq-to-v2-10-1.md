@@ -13,14 +13,14 @@ head: renovate/ureq-2.x-lockfile
 created_at: 2024-08-12T00:13:20Z
 updated_at: 2024-08-12T00:37:16Z
 url: https://github.com/astral-sh/ruff/pull/12819
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update Rust crate ureq to v2.10.1
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 00:13_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

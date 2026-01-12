@@ -13,14 +13,14 @@ head: shear-dependencies
 created_at: 2024-03-19T16:12:23Z
 updated_at: 2024-03-19T17:10:10Z
 url: https://github.com/astral-sh/uv/pull/2543
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Remove unused dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-19 16:12_
+_@MichaReiser_
 
 ## Summary
 

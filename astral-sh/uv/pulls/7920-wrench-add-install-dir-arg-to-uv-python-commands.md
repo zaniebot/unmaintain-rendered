@@ -13,14 +13,14 @@ head: python-install-dir-cli-arg
 created_at: 2024-10-04T10:52:50Z
 updated_at: 2024-12-10T17:04:32Z
 url: https://github.com/astral-sh/uv/pull/7920
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # :wrench: add `--install-dir` arg to `uv python` commands
 
 ---
 
-_Pull request opened by @danielgafni on 2024-10-04 10:52_
+_@danielgafni_
 
 ## Summary
 

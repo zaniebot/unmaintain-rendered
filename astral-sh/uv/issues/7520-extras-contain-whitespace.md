@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T22:56:53Z
 updated_at: 2024-09-25T17:41:56Z
 url: https://github.com/astral-sh/uv/issues/7520
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Extras contain whitespace
 
 ---
 
-_Issue opened by @alexeagle on 2024-09-18 22:56_
+_@alexeagle_
 
 Using https://github.com/astral-sh/uv/releases/download/0.4.12
 

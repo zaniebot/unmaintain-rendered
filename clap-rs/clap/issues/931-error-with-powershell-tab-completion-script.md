@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-04-11T19:53:50Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/931
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Error with Powershell tab completion script
 
 ---
 
-_Issue opened by @elirnm on 2017-04-11 19:53_
+_@elirnm_
 
 Reposted from https://github.com/BurntSushi/ripgrep/issues/445
 

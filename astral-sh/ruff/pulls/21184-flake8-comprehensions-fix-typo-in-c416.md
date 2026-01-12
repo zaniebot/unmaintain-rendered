@@ -13,14 +13,14 @@ head: c416-typo
 created_at: 2025-11-01T15:36:38Z
 updated_at: 2025-11-03T19:12:21Z
 url: https://github.com/astral-sh/ruff/pull/21184
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`flake8-comprehensions`] Fix typo in `C416` documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2025-11-01 15:36_
+_@tjkuson_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T05:50:24Z
 updated_at: 2025-10-15T07:50:58Z
 url: https://github.com/astral-sh/ruff/issues/19751
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Panic `f-string: unexpected token TStringMiddle`
 
 ---
 
-_Issue opened by @qarmin on 2025-08-05 05:50_
+_@qarmin_
 
 Quite similar to https://github.com/astral-sh/ruff/issues/18860
 

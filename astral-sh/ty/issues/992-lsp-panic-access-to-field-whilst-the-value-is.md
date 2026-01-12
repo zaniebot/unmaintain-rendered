@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T18:14:13Z
 updated_at: 2025-12-31T16:36:56Z
 url: https://github.com/astral-sh/ty/issues/992
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # LSP Panic: access to field whilst the value is being initialized
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-14 18:14_
+_@MichaReiser_
 
 ### Summary
 

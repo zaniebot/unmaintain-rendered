@@ -13,14 +13,14 @@ head: charlie/comment-in-import
 created_at: 2023-08-01T01:08:46Z
 updated_at: 2023-08-01T19:15:05Z
 url: https://github.com/astral-sh/ruff/pull/6216
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Preserve end-of-line comments on import-from statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 01:08_
+_@charliermarsh_
 
 ## Summary
 

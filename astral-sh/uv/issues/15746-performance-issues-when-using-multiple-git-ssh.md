@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-08T23:06:26Z
 updated_at: 2026-01-05T21:57:28Z
 url: https://github.com/astral-sh/uv/issues/15746
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Performance issues when using multiple git+ssh dependencies
 
 ---
 
-_Issue opened by @jasondamour on 2025-09-08 23:06_
+_@jasondamour_
 
 ### Summary
 

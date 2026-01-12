@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T07:14:37Z
 updated_at: 2024-11-05T13:07:45Z
 url: https://github.com/astral-sh/uv/issues/8823
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Add required-version settings
 
 ---
 
-_Issue opened by @TomerBin on 2024-11-05 07:14_
+_@TomerBin_
 
 Ruff supports setting a version specifier that is enforced at runtime. It might be beneficial to have this feature in UV as well. [Ruff required-version](https://docs.astral.sh/ruff/settings/#required-version)
 

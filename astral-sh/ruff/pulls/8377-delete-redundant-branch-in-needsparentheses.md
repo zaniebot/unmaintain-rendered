@@ -13,14 +13,14 @@ head: delete-dead-branch
 created_at: 2023-10-31T11:49:55Z
 updated_at: 2023-10-31T12:06:18Z
 url: https://github.com/astral-sh/ruff/pull/8377
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Delete redundant branch in `NeedsParentheses`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-31 11:49_
+_@MichaReiser_
 
 
 ## Summary

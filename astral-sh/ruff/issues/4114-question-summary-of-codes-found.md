@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T07:47:29Z
 updated_at: 2023-04-27T11:41:32Z
 url: https://github.com/astral-sh/ruff/issues/4114
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Question: Summary of codes found
 
 ---
 
-_Issue opened by @leon1995 on 2023-04-26 07:47_
+_@leon1995_
 
 is there a way to just get the list of codes that were found without duplication?
 e.g. if there are multiple errors found of the same code, the code will only be contained in the summary one time. Such that you get an overview of what codes are found.

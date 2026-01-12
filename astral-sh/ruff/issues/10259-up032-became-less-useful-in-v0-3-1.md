@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-06T23:48:54Z
 updated_at: 2024-03-07T13:59:48Z
 url: https://github.com/astral-sh/ruff/issues/10259
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP032 became less useful in v0.3.1
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-03-06 23:48_
+_@ThiefMaster_
 
 The whole change in that rule to trigger even when it causes a longer line feels kind of annoying and the fact that there's no autofix doesn't make it better: Fixing it requires manual work anyway, but I'd rather start from a too-long line which I just need to wrap somehow, than having to do the whole fix myself. --> Couldn't it simply be an unsafe autofix in such cases?
 

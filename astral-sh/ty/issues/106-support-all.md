@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-01T13:57:35Z
 updated_at: 2025-05-07T16:12:44Z
 url: https://github.com/astral-sh/ty/issues/106
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support `__all__`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 13:57_
+_@dhruvmanila_
 
 _No description provided._
 

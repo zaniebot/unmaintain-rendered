@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-31T21:51:15Z
 updated_at: 2024-06-01T22:33:33Z
 url: https://github.com/astral-sh/ruff/issues/11656
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR6104 misses cases with chained associative operators
 
 ---
 
-_Issue opened by @Avasam on 2024-05-31 21:51_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

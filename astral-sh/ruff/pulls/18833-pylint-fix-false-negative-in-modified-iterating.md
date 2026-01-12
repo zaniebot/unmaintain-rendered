@@ -11,14 +11,14 @@ head: fix/ruff-18818
 created_at: 2025-06-20T20:10:07Z
 updated_at: 2025-06-24T06:22:23Z
 url: https://github.com/astral-sh/ruff/pull/18833
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`pylint`] Fix false negative in `modified-iterating-set` lint when target variable is reassigned
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-06-20 20:10_
+_@IDrokin117_
 
 ## Summary
 

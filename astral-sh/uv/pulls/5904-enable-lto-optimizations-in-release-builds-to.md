@@ -13,14 +13,14 @@ head: task/enable-lto
 created_at: 2024-08-08T11:27:08Z
 updated_at: 2025-04-30T12:55:25Z
 url: https://github.com/astral-sh/uv/pull/5904
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Enable LTO optimizations in release builds to reduce binary size
 
 ---
 
-_Pull request opened by @davfsa on 2024-08-08 11:27_
+_@davfsa_
 
 ## Summary
 

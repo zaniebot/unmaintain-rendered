@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T23:22:44Z
 updated_at: 2024-08-27T18:08:11Z
 url: https://github.com/astral-sh/uv/issues/6471
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv init` should create a runnable project
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-22 23:22_
+_@charliermarsh_
 
 I got some feedback on Twitter that it'd be nice if `uv init` created something that you could then `uv run` and immediately see feedback, similar to how `cargo new` gives you a "Hello, world!" application. You shouldn't need to figure out how to change the project to make it runnable, etc.
 

@@ -14,14 +14,14 @@ head: zb/extra-build-dependencies
 created_at: 2025-07-18T17:37:54Z
 updated_at: 2025-07-30T14:53:09Z
 url: https://github.com/astral-sh/uv/pull/14735
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Add `extra-build-dependencies`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-18 17:37_
+_@zanieb_
 
 Replaces https://github.com/astral-sh/uv/pull/14092
 

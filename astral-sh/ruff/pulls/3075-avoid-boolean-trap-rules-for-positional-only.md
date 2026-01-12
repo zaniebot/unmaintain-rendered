@@ -13,14 +13,14 @@ head: charlie/fbt
 created_at: 2023-02-20T23:05:58Z
 updated_at: 2023-02-20T23:08:20Z
 url: https://github.com/astral-sh/ruff/pull/3075
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid boolean-trap rules for positional-only builtin calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 23:05_
+_@charliermarsh_
 
 Closes #3073.
 

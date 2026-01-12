@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T14:39:29Z
 updated_at: 2025-05-08T04:46:34Z
 url: https://github.com/astral-sh/uv/issues/12718
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Sharing code between two libraries published from the same workspace
 
 ---
 
-_Issue opened by @xixixao on 2025-04-07 14:39_
+_@xixixao_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-15T10:51:32Z
 updated_at: 2024-07-18T18:21:41Z
 url: https://github.com/astral-sh/uv/issues/5068
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # “warning: pyproject.toml does not contain `project` table”, though there is a [project] section
 
 ---
 
-_Issue opened by @MacLake on 2024-07-15 10:51_
+_@MacLake_
 
 Since uv 0.2.5 up until the current version 0.2.24 I get the following warning every time I let uv resolve dependencies:
 

@@ -14,14 +14,14 @@ head: alex/optimize-fields
 created_at: 2025-11-18T15:29:43Z
 updated_at: 2025-11-18T19:16:16Z
 url: https://github.com/astral-sh/ruff/pull/21512
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add Salsa caching to `ClassLiteral::fields`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-18 15:29_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-08T13:56:42Z
 updated_at: 2025-11-09T12:46:35Z
 url: https://github.com/astral-sh/uv/issues/16642
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Installer: add option to use local binary .tar.gz
 
 ---
 
-_Issue opened by @mariomadproductions on 2025-11-08 13:56_
+_@mariomadproductions_
 
 ### Summary
 

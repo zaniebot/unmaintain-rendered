@@ -13,14 +13,14 @@ head: wm-settingchange
 created_at: 2026-01-11T05:02:22Z
 updated_at: 2026-01-11T14:25:02Z
 url: https://github.com/astral-sh/uv/pull/17404
-synced_at: 2026-01-12T02:26:33Z
+synced_at: 2026-01-12T16:12:46Z
 ```
 
 # Broadcast WM_SETTINGCHANGE on uv tool update-shell
 
 ---
 
-_Pull request opened by @samypr100 on 2026-01-11 05:02_
+_@samypr100_
 
 ## Summary
 

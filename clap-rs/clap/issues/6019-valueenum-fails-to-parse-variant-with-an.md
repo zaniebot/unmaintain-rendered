@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T13:10:27Z
 updated_at: 2025-05-28T14:11:52Z
 url: https://github.com/clap-rs/clap/issues/6019
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # ValueEnum fails to parse variant with an unmatched ToString implementation
 
 ---
 
-_Issue opened by @zeozeozeo on 2025-05-28 13:10_
+_@zeozeozeo_
 
 ### Please complete the following tasks
 

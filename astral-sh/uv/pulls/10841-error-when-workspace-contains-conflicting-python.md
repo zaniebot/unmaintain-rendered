@@ -13,14 +13,14 @@ head: charlie/conflict
 created_at: 2025-01-22T02:46:09Z
 updated_at: 2025-01-22T17:22:54Z
 url: https://github.com/astral-sh/uv/pull/10841
-synced_at: 2026-01-10T11:45:14Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Error when workspace contains conflicting Python requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 02:46_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T18:23:54Z
 updated_at: 2026-01-12T07:41:22Z
 url: https://github.com/astral-sh/ty/issues/2404
-synced_at: 2026-01-12T07:59:26Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # add dedicated support for attrs
 
 ---
 
-_Issue opened by @carljm on 2026-01-08 18:23_
+_@carljm_
 
 _No description provided._
 

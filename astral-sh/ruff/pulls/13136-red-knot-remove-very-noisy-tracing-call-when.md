@@ -13,14 +13,14 @@ head: redknot-cleanup-import-logs
 created_at: 2024-08-28T10:00:32Z
 updated_at: 2024-08-28T10:14:37Z
 url: https://github.com/astral-sh/ruff/pull/13136
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Remove very noisy tracing call when resolving `ImportFrom` statements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-28 10:00_
+_@AlexWaygood_
 
 ## Summary
 

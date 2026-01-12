@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-12T19:12:23Z
 updated_at: 2023-11-13T04:42:44Z
 url: https://github.com/astral-sh/ruff/issues/8633
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Possible simplify rule false-negative
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 19:12_
+_@ofek_
 
 ```python
 @cached_property

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T15:56:56Z
 updated_at: 2024-10-24T16:23:57Z
 url: https://github.com/astral-sh/uv/issues/8465
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Error or warn when `uv.lock` version is unsupported
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-22 15:56_
+_@charliermarsh_
 
 Right now, I don't think we validate this anywhere.
 

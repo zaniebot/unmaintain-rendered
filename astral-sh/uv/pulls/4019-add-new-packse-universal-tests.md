@@ -12,14 +12,14 @@ head: ag/forking-tests
 created_at: 2024-06-04T18:01:59Z
 updated_at: 2024-06-04T18:25:00Z
 url: https://github.com/astral-sh/uv/pull/4019
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # add new packse universal tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-04 18:01_
+_@BurntSushi_
 
 This makes some changes to our packse integration scripts to support the new
 universal tests. And then runs the scripts to bring them in.

@@ -12,14 +12,14 @@ head: charlie/multi-paths
 created_at: 2022-10-26T20:34:51Z
 updated_at: 2022-10-26T20:36:13Z
 url: https://github.com/astral-sh/ruff/pull/479
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Handle multi-segment import-from removal
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-26 20:34_
+_@charliermarsh_
 
 Resolves #475.
 

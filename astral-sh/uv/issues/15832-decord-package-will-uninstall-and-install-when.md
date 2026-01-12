@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-14T06:05:41Z
 updated_at: 2025-10-03T19:14:14Z
 url: https://github.com/astral-sh/uv/issues/15832
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Decord package will uninstall and install when running uv sync
 
 ---
 
-_Issue opened by @HarborYuan on 2025-09-14 06:05_
+_@HarborYuan_
 
 ### Summary
 

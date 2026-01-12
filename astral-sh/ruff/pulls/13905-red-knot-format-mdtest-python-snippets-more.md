@@ -13,14 +13,14 @@ head: blacken-docs-upgrade
 created_at: 2024-10-24T11:04:37Z
 updated_at: 2024-10-24T11:18:45Z
 url: https://github.com/astral-sh/ruff/pull/13905
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Format mdtest Python snippets more concisely
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-24 11:04_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/json-rendering
 created_at: 2025-07-03T22:02:07Z
 updated_at: 2025-07-11T19:04:48Z
 url: https://github.com/astral-sh/ruff/pull/19133
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # Render Azure, JSON, and JSON lines output with the new diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-03 22:02_
+_@ntBre_
 
 ## Summary
 

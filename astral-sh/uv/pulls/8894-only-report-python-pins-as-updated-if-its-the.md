@@ -13,14 +13,14 @@ head: zb/pin-report
 created_at: 2024-11-07T18:37:58Z
 updated_at: 2024-11-07T19:24:40Z
 url: https://github.com/astral-sh/uv/pull/8894
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Only report Python pins as updated if its the same file
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-07 18:37_
+_@zanieb_
 
 _No description provided._
 

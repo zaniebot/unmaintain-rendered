@@ -13,14 +13,14 @@ head: report-changed-files
 created_at: 2023-08-30T06:36:44Z
 updated_at: 2023-08-30T06:47:46Z
 url: https://github.com/astral-sh/ruff/pull/7003
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Show changed files
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-30 06:36_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-15T18:50:49Z
 updated_at: 2025-03-15T19:26:26Z
 url: https://github.com/astral-sh/ruff/issues/16767
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # blind-except (BLE001) is not active at all
 
 ---
 
-_Issue opened by @dolfandringa on 2025-03-15 18:50_
+_@dolfandringa_
 
 ### Summary
 

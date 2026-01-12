@@ -14,14 +14,14 @@ head: gankra/mod-goto
 created_at: 2025-12-18T00:39:30Z
 updated_at: 2025-12-18T07:28:08Z
 url: https://github.com/astral-sh/ruff/pull/22042
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Fix goto-declaration on the RHS of `from module import submodule`
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-18 00:39_
+_@Gankra_
 
 * Fixes https://github.com/astral-sh/ty/issues/1969
 

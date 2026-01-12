@@ -14,14 +14,14 @@ head: async_context
 created_at: 2025-08-02T12:00:50Z
 updated_at: 2025-08-05T14:41:37Z
 url: https://github.com/astral-sh/ruff/pull/19704
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Diagnostics for async context managers
 
 ---
 
-_Pull request opened by @silamon on 2025-08-02 12:00_
+_@silamon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

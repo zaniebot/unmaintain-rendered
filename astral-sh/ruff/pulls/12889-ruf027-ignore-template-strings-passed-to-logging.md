@@ -14,14 +14,14 @@ head: ruf027-gettext-logging
 created_at: 2024-08-14T09:53:46Z
 updated_at: 2024-08-14T10:27:37Z
 url: https://github.com/astral-sh/ruff/pull/12889
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # RUF027: Ignore template strings passed to logging calls and `builtins._()` calls
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-14 09:53_
+_@AlexWaygood_
 
 ## Summary
 

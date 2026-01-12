@@ -13,14 +13,14 @@ head: builtin-slice-immutable
 created_at: 2025-12-06T13:06:34Z
 updated_at: 2025-12-08T22:04:16Z
 url: https://github.com/astral-sh/ruff/pull/21823
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [`flake8-bugbear`] Accept immutable slice default arguments (`B008`)
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-12-06 13:06_
+_@LoicRiegel_
 
 Closes issue #21565
 

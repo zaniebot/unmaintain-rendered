@@ -15,14 +15,14 @@ head: dhruv/f-string-multiline-triple-quoted
 created_at: 2024-11-27T05:05:14Z
 updated_at: 2024-11-27T10:27:07Z
 url: https://github.com/astral-sh/ruff/pull/14624
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Do not consider f-strings with escaped newlines as multiline
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 05:05_
+_@dhruvmanila_
 
 ## Summary
 

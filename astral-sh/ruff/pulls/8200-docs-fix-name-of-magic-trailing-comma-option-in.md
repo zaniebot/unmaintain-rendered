@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-25T05:52:30Z
 updated_at: 2023-10-25T06:32:30Z
 url: https://github.com/astral-sh/ruff/pull/8200
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # docs: fix name of `magic-trailing-comma` option in README
 
 ---
 
-_Pull request opened by @ran-isenberg on 2023-10-25 05:52_
+_@ran-isenberg_
 
 Fix issue #8199 https://github.com/astral-sh/ruff/issues/8199
 

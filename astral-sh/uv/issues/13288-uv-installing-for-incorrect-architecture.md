@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-04T23:33:11Z
 updated_at: 2025-06-10T20:50:36Z
 url: https://github.com/astral-sh/uv/issues/13288
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv installing for incorrect architecture (raspberry pi)
 
 ---
 
-_Issue opened by @jonathancyu on 2025-05-04 23:33_
+_@jonathancyu_
 
 ### Summary
 

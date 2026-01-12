@@ -13,14 +13,14 @@ head: conda-base
 created_at: 2025-10-01T22:36:18Z
 updated_at: 2025-10-03T13:56:06Z
 url: https://github.com/astral-sh/ruff/pull/20675
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] improve base conda distinction from child conda
 
 ---
 
-_Pull request opened by @Danielkonge on 2025-10-01 22:36_
+_@Danielkonge_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

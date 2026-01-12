@@ -12,14 +12,14 @@ head: charlie/no
 created_at: 2023-12-22T15:12:53Z
 updated_at: 2023-12-23T18:00:43Z
 url: https://github.com/astral-sh/ruff/pull/9247
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Run cargo with `--locked` in CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-22 15:12_
+_@charliermarsh_
 
 This should ensure that CI fails if the lockfile is not up-to-date (see: https://github.com/astral-sh/ruff/pull/9235).
 

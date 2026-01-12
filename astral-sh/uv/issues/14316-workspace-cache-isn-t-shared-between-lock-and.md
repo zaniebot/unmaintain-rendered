@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T14:04:19Z
 updated_at: 2025-06-27T18:48:42Z
 url: https://github.com/astral-sh/uv/issues/14316
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Workspace cache isn't shared between lock and install steps in `uv sync`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-27 14:04_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T15:29:14Z
 updated_at: 2025-12-05T16:10:17Z
 url: https://github.com/astral-sh/ty/issues/1709
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # imports from non-terminating modules silently resolved as Never
 
 ---
 
-_Issue opened by @zilto on 2025-12-01 15:29_
+_@zilto_
 
 ### Summary
 

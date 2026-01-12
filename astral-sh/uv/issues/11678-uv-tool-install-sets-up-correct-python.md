@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T20:16:53Z
 updated_at: 2025-02-20T22:05:05Z
 url: https://github.com/astral-sh/uv/issues/11678
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # `uv tool install` sets up correct Python environment only on second installation
 
 ---
 
-_Issue opened by @trallnag on 2025-02-20 20:16_
+_@trallnag_
 
 ### Summary
 

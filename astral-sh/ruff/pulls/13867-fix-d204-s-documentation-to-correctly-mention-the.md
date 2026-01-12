@@ -13,14 +13,14 @@ head: micha/blank-after-class-doc
 created_at: 2024-10-21T19:51:08Z
 updated_at: 2024-10-22T14:52:00Z
 url: https://github.com/astral-sh/ruff/pull/13867
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fix `D204`'s documentation to correctly mention the conventions when it is enabled
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-21 19:51_
+_@MichaReiser_
 
 ## Summary
 

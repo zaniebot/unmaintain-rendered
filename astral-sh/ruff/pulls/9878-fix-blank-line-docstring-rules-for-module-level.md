@@ -14,14 +14,14 @@ head: charlie/doc
 created_at: 2024-02-07T21:03:23Z
 updated_at: 2024-02-07T21:55:05Z
 url: https://github.com/astral-sh/ruff/pull/9878
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix blank-line docstring rules for module-level docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-07 21:03_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T02:41:17Z
 updated_at: 2024-09-03T15:40:28Z
 url: https://github.com/astral-sh/uv/issues/6905
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv python list not showing pypy correctly
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-09-01 02:41_
+_@inoa-jboliveira_
 
 Using uv 0.4.1 on Windows 11
 

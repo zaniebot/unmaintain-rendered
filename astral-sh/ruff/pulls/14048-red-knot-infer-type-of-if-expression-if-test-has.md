@@ -13,14 +13,14 @@ head: tomer/infer-statically-known-if-expressions
 created_at: 2024-11-01T17:45:36Z
 updated_at: 2024-11-01T20:11:22Z
 url: https://github.com/astral-sh/ruff/pull/14048
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Infer type of if-expression if test has statically known truthiness
 
 ---
 
-_Pull request opened by @TomerBin on 2024-11-01 17:45_
+_@TomerBin_
 
 
 ## Summary

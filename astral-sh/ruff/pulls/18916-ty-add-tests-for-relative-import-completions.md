@@ -15,14 +15,14 @@ head: ag/test-relative-import-completions
 created_at: 2025-06-24T14:04:42Z
 updated_at: 2025-06-24T15:41:36Z
 url: https://github.com/astral-sh/ruff/pull/18916
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Add tests for relative import completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-24 14:04_
+_@BurntSushi_
 
 We first do a little refactoring here to make the test setup nicer.
 Basically, we make it so a cursor test can have multiple files *and*

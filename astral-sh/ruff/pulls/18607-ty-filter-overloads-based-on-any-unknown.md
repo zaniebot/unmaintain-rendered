@@ -13,14 +13,14 @@ head: dhruv/overload-step-5
 created_at: 2025-06-10T08:23:10Z
 updated_at: 2025-06-17T10:05:11Z
 url: https://github.com/astral-sh/ruff/pull/18607
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Filter overloads based on `Any` / `Unknown`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-10 08:23_
+_@dhruvmanila_
 
 ## Summary
 
@@ -690,7 +690,80 @@ _Review requested from @dcreager by @dhruvmanila on 2025-06-13 10:42_
 
 ---
 
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:409 on 2025-06-13 18:36_
+
+```suggestion
+This is the step 5 of the overload call evaluation algorithm which specifies that:
+```
+
+---
+
 _Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-16 22:35_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:511 on 2025-06-17 01:09_
+
+```suggestion
+    # All materializations are assignable to first overload, so second and third are eliminated
+    reveal_type(f(int_str))  # revealed: int
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:515 on 2025-06-17 01:10_
+
+```suggestion
+    # All materializations are assignable to the second overload, so the third is eliminated;
+    # first and second have the same return type.
+    reveal_type(f(int_any))  # revealed: int
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:548 on 2025-06-17 01:12_
+
+I'm not sure what this comment is trying to say by "it's only the combination... that is assignable to the third overload"
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:545 on 2025-06-17 01:13_
+
+I don't think explanatory comments like the ones I suggested in the above test would hurt here, but maybe we don't have to do it for all tests if it repeats previous concepts
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:577 on 2025-06-17 01:14_
+
+```suggestion
+    # Pyright and mypy both reveal `str` here, contrary to the spec.
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:578 on 2025-06-17 01:15_
+
+To be honest, I think we should reveal `str` here also, even though that's not what the spec says. Perhaps the spec should be changed. It feels like `str` is just a strictly superior result here.
+
+If the return types don't have a subtype relation, then unioning will create lots of false positives (and break the gradual guarantee), since callers would be forced to handle both possibilities (a `OneOf` connective would be ideal here.) But when the possible return types _do_ have a subtype relation, there are no false positives created by just returning the wider type.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:623 on 2025-06-17 01:19_
+
+Can we also show that passing e.g. `list[str]` returns `str`, just to clarify the handling of the generic second overload?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2025-06-17 01:24_
+
+That expansion should contribute `Any` to the union. I think this is what already happens (and is tested above), so not sure we need this TODO?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:1689 on 2025-06-17 01:26_
+
+Why do we need this new enum instead of just setting the return type to `Unknown` eagerly when ambiguous? I don't see anywhere else that we match on this enum.
 
 ---
 
@@ -704,7 +777,21 @@ _@dhruvmanila reviewed on 2025-06-17 03:59_
 
 ---
 
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:1689 on 2025-06-17 03:59_
+
+The main purpose here is for documentation as it makes it explicit that the return type of the overload call evaluation has been decided by either of these two cases.
+
+I'd also document it in the `overload_call_return_type` field on `CallableBinding` and maybe that's sufficient and we don't need to create this enum.
+
+---
+
 _@dhruvmanila reviewed on 2025-06-17 03:59_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2025-06-17 03:59_
+
+Yeah, this was mainly for me to check whether this is correct or not. I'll remove the TODO.
 
 ---
 
@@ -712,7 +799,21 @@ _@dhruvmanila reviewed on 2025-06-17 04:00_
 
 ---
 
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:578 on 2025-06-17 04:00_
+
+I'll create a new tracking issue for this, I think it is a reasonable change but would be also useful to get it into the spec as well.
+
+---
+
 _@dhruvmanila reviewed on 2025-06-17 04:03_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:548 on 2025-06-17 04:03_
+
+The meaning here is that the remaining overloads can be filtered out only if all materializations of _both_ the argument types are assignable to the parameter types. Concretely, all materializations of `list[int]` (first parameter) is already assignable to the first overload but the second parameter `tuple[Any, Any]` isn't yet. So, this test is to make sure the logic accounts for _all_ argument types instead of just one.
+
+Does that make sense? I'll improve the wording here.
 
 ---
 
@@ -720,7 +821,19 @@ _@dhruvmanila reviewed on 2025-06-17 04:35_
 
 ---
 
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:545 on 2025-06-17 04:35_
+
+Yeah, I agree. I'll add the comments. I think some amount of repetition is fine if it makes things easier for our future selves :)
+
+---
+
 _@dhruvmanila reviewed on 2025-06-17 04:38_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:548 on 2025-06-17 04:38_
+
+Actually, this is the case for other test cases as well, so I'll make this comment similar to others stating which overload does each argument types materialization are assignable to and which overloads are filtered out.
 
 ---
 
@@ -728,7 +841,36 @@ _@dhruvmanila reviewed on 2025-06-17 04:55_
 
 ---
 
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:578 on 2025-06-17 04:55_
+
+Opened: https://github.com/astral-sh/ty/issues/665
+
+---
+
 _@dhruvmanila reviewed on 2025-06-17 04:59_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:623 on 2025-06-17 04:59_
+
+Huh, it's actually giving me `Any` instead, let me look at it.
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:623 on 2025-06-17 05:02_
+
+This is giving me false:
+```py
+from ty_extensions import static_assert, is_assignable_to
+from typing import TypeVar
+
+T = TypeVar("T")
+
+# False
+static_assert(is_assignable_to(list[str], list[T]))
+```
+
+Shouldn't this be assignable?
 
 ---
 
@@ -737,6 +879,12 @@ _@dhruvmanila reviewed on 2025-06-17 05:02_
 ---
 
 _@dhruvmanila reviewed on 2025-06-17 09:32_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:623 on 2025-06-17 09:32_
+
+Opened https://github.com/astral-sh/ty/issues/669 for now.
 
 ---
 

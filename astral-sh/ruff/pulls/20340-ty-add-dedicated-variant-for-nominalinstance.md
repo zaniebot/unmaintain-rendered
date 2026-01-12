@@ -15,14 +15,14 @@ head: dcreager/object-variant
 created_at: 2025-09-10T21:19:26Z
 updated_at: 2025-09-11T17:03:00Z
 url: https://github.com/astral-sh/ruff/pull/20340
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Add dedicated variant for `NominalInstance(object)`
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-10 21:19_
+_@dcreager_
 
 Previously, `Type::object` would find the definition of the `object` class in typeshed, load that in (to produce a `ClassLiteral` and `ClassType`), and then create a `NominalInstance` of that class.
 

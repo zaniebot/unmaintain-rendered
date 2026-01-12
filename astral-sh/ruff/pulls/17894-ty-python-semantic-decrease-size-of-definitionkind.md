@@ -12,14 +12,14 @@ head: ag/memoryopt-slimmer-definition-kind
 created_at: 2025-05-06T17:40:43Z
 updated_at: 2025-05-07T13:14:43Z
 url: https://github.com/astral-sh/ruff/pull/17894
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # ty_python_semantic: decrease size of `DefinitionKind`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-06 17:40_
+_@BurntSushi_
 
 This drops the size from 56 bytes to 24. I made this change on a theory
 that this would decrease overall memory usage, since a `DefinitionKind`

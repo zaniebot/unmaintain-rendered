@@ -13,14 +13,14 @@ head: micha/pin-maturin
 created_at: 2026-01-08T08:37:38Z
 updated_at: 2026-01-08T11:39:53Z
 url: https://github.com/astral-sh/ruff/pull/22454
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Pin maturin version
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-08 08:37_
+_@MichaReiser_
 
 ## Summary
 Same as https://github.com/astral-sh/ty/pull/2387 but for Ruff

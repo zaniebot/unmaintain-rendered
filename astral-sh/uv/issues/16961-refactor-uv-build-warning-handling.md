@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-03T11:20:54Z
 updated_at: 2025-12-03T12:59:30Z
 url: https://github.com/astral-sh/uv/issues/16961
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Refactor `uv_build` warning handling
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-03 11:20_
+_@EliteTK_
 
 ### Summary
 

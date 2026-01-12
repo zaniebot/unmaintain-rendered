@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T19:45:40Z
 updated_at: 2025-02-19T05:44:00Z
 url: https://github.com/astral-sh/ruff/issues/15307
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `@no_type_check` is not respected for string annotations
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-01-06 19:45_
+_@InSyncWithFoo_
 
 For some reason, the logic implemented in #15215 failed to suppress this ([playground](https://play.ruff.rs/cef33e0d-088e-4c49-9ead-ca5d07792f7f)):
 

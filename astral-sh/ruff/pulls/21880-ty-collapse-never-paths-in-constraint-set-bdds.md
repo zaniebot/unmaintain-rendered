@@ -14,14 +14,14 @@ head: dcreager/queasy-reduced
 created_at: 2025-12-09T21:21:10Z
 updated_at: 2025-12-09T23:22:58Z
 url: https://github.com/astral-sh/ruff/pull/21880
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Collapse `never` paths in constraint set BDDs
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-09 21:21_
+_@dcreager_
 
 #21744 fixed some non-determinism in our constraint set implementation by switching our BDD representation from being "fully reduced" to being "quasi-reduced". We still deduplicate identical nodes (via salsa interning), but we removed the logic to prune redundant nodes (one with identical outgoing true and false edges). This ensures that the BDD "remembers" all of the individual constraints that it was created with.
 

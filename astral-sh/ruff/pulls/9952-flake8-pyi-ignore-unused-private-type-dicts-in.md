@@ -13,14 +13,14 @@ head: charlie/private
 created_at: 2024-02-12T15:09:24Z
 updated_at: 2024-02-12T17:11:08Z
 url: https://github.com/astral-sh/ruff/pull/9952
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`flake8-pyi`] Ignore 'unused' private type dicts in class scopes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 15:09_
+_@charliermarsh_
 
 ## Summary
 

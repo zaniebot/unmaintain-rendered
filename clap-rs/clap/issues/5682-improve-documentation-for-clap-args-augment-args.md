@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T16:43:09Z
 updated_at: 2024-08-16T19:12:09Z
 url: https://github.com/clap-rs/clap/issues/5682
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Improve documentation for clap::Args::augment_args and clap::Args::augment_args_for_update
 
 ---
 
-_Issue opened by @nwalfield on 2024-08-16 16:43_
+_@nwalfield_
 
 ### Please complete the following tasks
 

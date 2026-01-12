@@ -14,14 +14,14 @@ head: support-setitem
 created_at: 2025-07-27T20:00:58Z
 updated_at: 2025-11-06T11:49:04Z
 url: https://github.com/astral-sh/ruff/pull/19578
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Support `__setitem__` and improve `__getitem__` related diagnostics
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-27 20:00_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

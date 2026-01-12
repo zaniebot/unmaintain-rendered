@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T11:00:03Z
 updated_at: 2025-02-06T08:45:42Z
 url: https://github.com/astral-sh/ruff/issues/15782
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # I001: Inconsistent application of I001 between neovim and vscode
 
 ---
 
-_Issue opened by @leonlonsdale on 2025-01-28 11:00_
+_@leonlonsdale_
 
 ### Description
 

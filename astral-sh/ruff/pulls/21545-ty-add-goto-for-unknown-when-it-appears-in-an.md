@@ -14,14 +14,14 @@ head: alex/unknown-goto-type
 created_at: 2025-11-20T18:39:39Z
 updated_at: 2025-11-20T18:55:15Z
 url: https://github.com/astral-sh/ruff/pull/21545
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Add goto for `Unknown` when it appears in an inlay hint
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-20 18:39_
+_@AlexWaygood_
 
 ## Summary
 

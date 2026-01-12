@@ -13,14 +13,14 @@ head: lazy-scope-place-lookup2
 created_at: 2025-08-15T18:41:24Z
 updated_at: 2025-09-09T01:23:40Z
 url: https://github.com/astral-sh/ruff/pull/19932
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] more precise lazy scope place lookup
 
 ---
 
-_Pull request opened by @mtshiba on 2025-08-15 18:41_
+_@mtshiba_
 
 ## Summary
 

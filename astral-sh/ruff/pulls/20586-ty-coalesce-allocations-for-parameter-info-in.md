@@ -14,14 +14,14 @@ head: coalesce_argmatcher_param_info_allocations
 created_at: 2025-09-25T21:47:36Z
 updated_at: 2025-09-26T05:38:07Z
 url: https://github.com/astral-sh/ruff/pull/20586
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Coalesce allocations for parameter info in ArgumentMatcher
 
 ---
 
-_Pull request opened by @fgiacome on 2025-09-25 21:47_
+_@fgiacome_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

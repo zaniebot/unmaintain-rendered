@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T01:04:13Z
 updated_at: 2025-01-15T17:36:57Z
 url: https://github.com/astral-sh/uv/issues/10487
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # `cygpath: not found` in linux
 
 ---
 
-_Issue opened by @adhami3310 on 2025-01-11 01:04_
+_@adhami3310_
 
 Regression in `0.5.17`
 

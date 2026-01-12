@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-12T17:15:50Z
 updated_at: 2023-02-03T18:28:00Z
 url: https://github.com/astral-sh/ruff/issues/703
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Replace `settings.enabled` with a flat array or bitset library
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 17:15_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/pull/628
 

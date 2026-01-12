@@ -14,14 +14,14 @@ head: charlie/pie
 created_at: 2023-11-13T02:28:16Z
 updated_at: 2023-11-13T19:35:55Z
 url: https://github.com/astral-sh/ruff/pull/8641
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Extend `unnecessary-pass` (`PIE790`) to include ellipses in preview
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 02:28_
+_@charliermarsh_
 
 ## Summary
 

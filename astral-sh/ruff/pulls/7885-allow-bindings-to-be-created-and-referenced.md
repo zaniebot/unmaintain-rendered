@@ -13,14 +13,14 @@ head: charlie/annotate
 created_at: 2023-10-10T03:42:34Z
 updated_at: 2023-10-10T03:58:17Z
 url: https://github.com/astral-sh/ruff/pull/7885
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Allow bindings to be created and referenced within annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 03:42_
+_@charliermarsh_
 
 ## Summary
 

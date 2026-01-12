@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T02:27:27Z
 updated_at: 2025-12-10T18:21:56Z
 url: https://github.com/astral-sh/uv/issues/3783
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # SSH authentication skips password check, hangs
 
 ---
 
-_Issue opened by @mishpat on 2024-05-23 02:27_
+_@mishpat_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T15:07:35Z
 updated_at: 2025-03-26T15:53:03Z
 url: https://github.com/astral-sh/uv/issues/12489
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Is there a way to set uv installation Path?
 
 ---
 
-_Issue opened by @Crefok on 2025-03-26 15:07_
+_@Crefok_
 
 ### Question
 

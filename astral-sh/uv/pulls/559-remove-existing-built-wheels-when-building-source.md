@@ -13,14 +13,14 @@ head: charlie/rm
 created_at: 2023-12-05T01:47:43Z
 updated_at: 2023-12-05T17:45:26Z
 url: https://github.com/astral-sh/uv/pull/559
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Remove existing built wheels when building source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 01:47_
+_@charliermarsh_
 
 This PR modifies the source distribution building to replace any existing targets after building the new wheel. In some cases, the existence of an existing target may be indicative of a bug, so we warn. It's partially a workaround for some (but not all) of the errors in https://github.com/astral-sh/puffin/issues/554.
 

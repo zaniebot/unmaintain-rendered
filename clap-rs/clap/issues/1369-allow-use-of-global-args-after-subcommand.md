@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-11-01T10:09:33Z
 updated_at: 2018-11-01T10:14:44Z
 url: https://github.com/clap-rs/clap/issues/1369
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow use of global args after subcommand
 
 ---
 
-_Issue opened by @stevenroose on 2018-11-01 10:09_
+_@stevenroose_
 
 I can't find the `AppSetting` to allow this. 
 

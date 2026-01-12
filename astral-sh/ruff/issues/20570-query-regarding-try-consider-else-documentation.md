@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T10:47:05Z
 updated_at: 2025-10-01T21:43:43Z
 url: https://github.com/astral-sh/ruff/issues/20570
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Query regarding try-consider-else documentation
 
 ---
 
-_Issue opened by @LilMonk on 2025-09-25 10:47_
+_@LilMonk_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: micha/fix-is-directory
 created_at: 2026-01-08T11:14:10Z
 updated_at: 2026-01-08T17:27:31Z
 url: https://github.com/astral-sh/ruff/pull/22455
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Don't show diagnostics for excluded files
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-08 11:14_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: pip-compatibility-doc
 created_at: 2024-08-22T05:22:31Z
 updated_at: 2024-08-23T14:14:38Z
 url: https://github.com/astral-sh/uv/pull/6410
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # docs: Update pip compatibility pages to mention configuration files support
 
 ---
 
-_Pull request opened by @wimglenn on 2024-08-22 05:22_
+_@wimglenn_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

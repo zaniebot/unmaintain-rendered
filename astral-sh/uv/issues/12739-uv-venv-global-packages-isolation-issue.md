@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T09:04:57Z
 updated_at: 2025-04-08T19:43:34Z
 url: https://github.com/astral-sh/uv/issues/12739
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # "uv venv global packages isolation issue"
 
 ---
 
-_Issue opened by @misterdojo777 on 2025-04-08 09:04_
+_@misterdojo777_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: ag/fix-11479
 created_at: 2025-02-14T15:48:27Z
 updated_at: 2025-02-18T12:45:26Z
 url: https://github.com/astral-sh/uv/pull/11513
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # fix duplicate packages with multiple conflicting extras declared
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-14 15:48_
+_@BurntSushi_
 
 This implements a somewhat of a cop-out fix for #11479, where the lock
 file produced was missing some conflict markers. This in turn could lead

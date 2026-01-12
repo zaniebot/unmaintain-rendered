@@ -13,14 +13,14 @@ head: zb/best-practice-repro
 created_at: 2025-02-03T20:13:06Z
 updated_at: 2025-02-03T20:13:56Z
 url: https://github.com/astral-sh/uv/pull/11194
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Add best-practice flags to `pip install` example in troubleshooting guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-03 20:13_
+_@zanieb_
 
 _No description provided._
 

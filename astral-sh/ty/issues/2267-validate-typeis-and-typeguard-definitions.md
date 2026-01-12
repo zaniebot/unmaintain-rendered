@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-29T23:14:51Z
 updated_at: 2026-01-06T17:02:28Z
 url: https://github.com/astral-sh/ty/issues/2267
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # validate TypeIs and TypeGuard definitions
 
 ---
 
-_Issue opened by @carljm on 2025-12-29 23:14_
+_@carljm_
 
 In order to fully pass the conformance suite for `TypeIs` and `TypeGuard`, we need to add some extra validations of functions annotated with a `TypeIs` or `TypeGuard` return type.
 

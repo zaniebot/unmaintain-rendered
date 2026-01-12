@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T03:06:18Z
 updated_at: 2024-02-12T10:01:38Z
 url: https://github.com/astral-sh/ruff/issues/8897
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `wrap_long_dict_values_in_parens` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 03:06_
+_@MichaReiser_
 
 Implement Black's [`wrap_long_dict_values_in_parens`](https://github.com/psf/black/pull/3440) style as a Ruff preview style. 
 

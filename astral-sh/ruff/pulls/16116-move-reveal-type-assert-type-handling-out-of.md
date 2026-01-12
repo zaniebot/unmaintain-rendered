@@ -12,14 +12,14 @@ head: micha/call-outcome-step1
 created_at: 2025-02-12T12:37:19Z
 updated_at: 2025-02-14T14:41:01Z
 url: https://github.com/astral-sh/ruff/pull/16116
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Move `reveal_type`, `assert_type` handling out of `CallOutcome`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-12 12:37_
+_@MichaReiser_
 
 ## Summary
 

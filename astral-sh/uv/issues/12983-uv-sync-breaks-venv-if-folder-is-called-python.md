@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T16:55:43Z
 updated_at: 2025-04-25T07:10:12Z
 url: https://github.com/astral-sh/uv/issues/12983
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # uv sync breaks venv if folder is called python
 
 ---
 
-_Issue opened by @GuillaumeQuenneville on 2025-04-19 16:55_
+_@GuillaumeQuenneville_
 
 ### Summary
 

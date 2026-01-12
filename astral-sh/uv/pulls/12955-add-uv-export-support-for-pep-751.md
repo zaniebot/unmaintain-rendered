@@ -13,14 +13,14 @@ head: charlie/pep-751
 created_at: 2025-04-18T02:30:32Z
 updated_at: 2025-04-21T21:21:19Z
 url: https://github.com/astral-sh/uv/pull/12955
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Add `uv export` support for PEP 751
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-18 02:30_
+_@charliermarsh_
 
 ## Summary
 

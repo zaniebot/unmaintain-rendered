@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T20:57:36Z
 updated_at: 2025-01-25T15:49:05Z
 url: https://github.com/astral-sh/ruff/issues/15733
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # W505: Warning raised for comments in addition to docstrings
 
 ---
 
-_Issue opened by @martimlobao on 2025-01-24 20:57_
+_@martimlobao_
 
 ### Description
 

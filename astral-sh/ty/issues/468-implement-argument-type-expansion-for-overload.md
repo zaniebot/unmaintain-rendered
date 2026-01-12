@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-20T22:25:58Z
 updated_at: 2025-06-04T02:12:02Z
 url: https://github.com/astral-sh/ty/issues/468
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Implement argument type expansion for overload call evaluation
 
 ---
 
-_Issue opened by @AA-Turner on 2025-05-20 22:25_
+_@AA-Turner_
 
 ### Summary
 

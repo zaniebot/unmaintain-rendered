@@ -12,14 +12,14 @@ head: charlie/manifest
 created_at: 2024-01-22T20:16:08Z
 updated_at: 2024-01-23T19:46:50Z
 url: https://github.com/astral-sh/uv/pull/1044
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Avoid persisting manifest data in standalone file
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 20:16_
+_@charliermarsh_
 
 ## Summary
 

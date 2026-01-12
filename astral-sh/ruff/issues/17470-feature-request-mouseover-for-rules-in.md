@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T19:05:56Z
 updated_at: 2025-04-21T18:40:48Z
 url: https://github.com/astral-sh/ruff/issues/17470
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # feature request: mouseover for rules in configuration files
 
 ---
 
-_Issue opened by @beauxq on 2025-04-18 19:05_
+_@beauxq_
 
 Thank you for the mouseover tooltips for rules in the comments of code:
 ```python

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T19:16:39Z
 updated_at: 2026-01-12T05:47:17Z
 url: https://github.com/astral-sh/uv/issues/17402
-synced_at: 2026-01-12T06:55:09Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # cant activate python venv via nu shell batch
 
 ---
 
-_Issue opened by @PoomTheerapat on 2026-01-10 19:16_
+_@PoomTheerapat_
 
 ### Summary
 

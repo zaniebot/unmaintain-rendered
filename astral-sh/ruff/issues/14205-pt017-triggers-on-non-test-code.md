@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T14:54:39Z
 updated_at: 2024-11-29T13:11:21Z
 url: https://github.com/astral-sh/ruff/issues/14205
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PT017 triggers on non-test code
 
 ---
 
-_Issue opened by @ashb on 2024-11-08 14:54_
+_@ashb_
 
 I've ran into a case where the "pytest" rules are triggering on my non-tests code. This snippet triggers it (the `noqa` line shows where) 
 

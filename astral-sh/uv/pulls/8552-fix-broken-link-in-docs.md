@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-25T01:42:18Z
 updated_at: 2024-10-29T22:43:39Z
 url: https://github.com/astral-sh/uv/pull/8552
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Fix broken link in docs
 
 ---
 
-_Pull request opened by @ac3673 on 2024-10-25 01:42_
+_@ac3673_
 
 ## Summary
 

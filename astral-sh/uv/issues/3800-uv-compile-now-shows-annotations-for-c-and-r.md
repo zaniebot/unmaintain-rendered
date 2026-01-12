@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T19:08:37Z
 updated_at: 2024-05-24T18:57:39Z
 url: https://github.com/astral-sh/uv/issues/3800
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv compile now shows annotations for -c and -r paths that causes issues cross platform
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-05-23 19:08_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

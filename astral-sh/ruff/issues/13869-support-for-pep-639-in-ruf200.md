@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T20:31:09Z
 updated_at: 2024-11-18T17:20:17Z
 url: https://github.com/astral-sh/ruff/issues/13869
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Support for PEP 639 in RUF200
 
 ---
 
-_Issue opened by @henryiii on 2024-10-21 20:31_
+_@henryiii_
 
 In `--preview`, the following error is shown for PEP 639 style licenses:
 

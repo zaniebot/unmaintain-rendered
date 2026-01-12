@@ -13,14 +13,14 @@ head: renovate/swatinem-rust-cache-digest
 created_at: 2025-03-24T01:56:18Z
 updated_at: 2025-03-24T02:14:12Z
 url: https://github.com/astral-sh/uv/pull/12408
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Update Swatinem/rust-cache digest to 9d47c6a
 
 ---
 
-_Pull request opened by @renovate on 2025-03-24 01:56_
+_@renovate_
 
 This PR contains the following updates:
 

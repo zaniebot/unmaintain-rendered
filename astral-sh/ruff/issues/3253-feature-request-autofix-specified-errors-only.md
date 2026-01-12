@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-27T17:00:10Z
 updated_at: 2023-02-27T17:08:03Z
 url: https://github.com/astral-sh/ruff/issues/3253
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature request: autofix specified errors only
 
 ---
 
-_Issue opened by @thisfred on 2023-02-27 17:00_
+_@thisfred_
 
 There may be a way to do this already, but if so, I haven't found it.
 

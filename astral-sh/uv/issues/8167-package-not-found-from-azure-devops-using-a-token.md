@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T08:02:08Z
 updated_at: 2024-10-16T17:34:30Z
 url: https://github.com/astral-sh/uv/issues/8167
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Package not found from Azure DevOps using a token
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-10-14 08:02_
+_@AndreuCodina_
 
 With `uv sync`, we've tried to download the package `my-private-lib==1.0.0` from Azure DevOps, a private registry.
 

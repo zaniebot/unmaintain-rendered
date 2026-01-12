@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-16T01:47:57Z
 updated_at: 2025-10-04T13:09:12Z
 url: https://github.com/astral-sh/ruff/issues/1256
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature request: Support a "warning" level for linting
 
 ---
 
-_Issue opened by @lengau on 2022-12-16 01:47_
+_@lengau_
 
 It would be really nice if, like `ignore`, we could select specific issues to turn into warnings rather than errors. That is, it would still output a warning to `stdout`, (perhaps separating errors and warnings), but it would still return with exit status 0. 
 

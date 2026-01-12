@@ -13,14 +13,14 @@ head: typeshed-empty-line-rules
 created_at: 2023-09-06T17:17:53Z
 updated_at: 2023-09-11T08:04:01Z
 url: https://github.com/astral-sh/ruff/pull/7206
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Format empty lines in stub files like black's preview style
 
 ---
 
-_Pull request opened by @konstin on 2023-09-06 17:17_
+_@konstin_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: formatter-2024-deviations
 created_at: 2024-03-18T08:15:22Z
 updated_at: 2024-03-18T08:22:29Z
 url: https://github.com/astral-sh/ruff/pull/10444
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Move deviations from formatter README to documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-18 08:15_
+_@MichaReiser_
 
 ## Summary
 

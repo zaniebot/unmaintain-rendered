@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T15:58:46Z
 updated_at: 2023-09-29T01:39:13Z
 url: https://github.com/astral-sh/ruff/issues/7600
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `unnecessary-pass` (`PIE790`) only checks for docstrings immediately followed by a `pass` statement
 
 ---
 
-_Issue opened by @tjkuson on 2023-09-22 15:58_
+_@tjkuson_
 
 Currently, `PIE790` triggers on
 

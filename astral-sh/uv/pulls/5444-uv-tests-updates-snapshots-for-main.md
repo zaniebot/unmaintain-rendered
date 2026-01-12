@@ -13,14 +13,14 @@ head: ag/update-snapshots
 created_at: 2024-07-25T14:30:17Z
 updated_at: 2024-07-25T14:42:27Z
 url: https://github.com/astral-sh/uv/pull/5444
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # uv/tests: updates snapshots for main
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-25 14:30_
+_@BurntSushi_
 
 It looks like we had a bad merge where the result caused some test
 failures. This commit just updates the snapshots to the new reality. I

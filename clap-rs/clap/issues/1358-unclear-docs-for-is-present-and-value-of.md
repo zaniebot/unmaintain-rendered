@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-10-10T10:01:14Z
 updated_at: 2020-12-23T17:45:26Z
 url: https://github.com/clap-rs/clap/issues/1358
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Unclear docs for is_present and value_of
 
 ---
 
-_Issue opened by @mark-summerfield on 2018-10-10 10:01_
+_@mark-summerfield_
 
 ### Rust Version
 

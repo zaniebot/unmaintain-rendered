@@ -13,14 +13,14 @@ head: charlie/tb
 created_at: 2025-11-09T19:03:36Z
 updated_at: 2025-11-10T15:26:14Z
 url: https://github.com/astral-sh/uv/pull/16655
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Remove `torch-model-archiver` and `torch-tb-profiler` from PyTorch backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-09 19:03_
+_@charliermarsh_
 
 ## Summary
 

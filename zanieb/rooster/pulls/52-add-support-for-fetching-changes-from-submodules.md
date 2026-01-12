@@ -12,14 +12,14 @@ head: zb/submodule
 created_at: 2025-05-02T20:29:18Z
 updated_at: 2025-05-03T21:47:52Z
 url: https://github.com/zanieb/rooster/pull/52
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Add support for fetching changes from submodules
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-02 20:29_
+_@zanieb_
 
 _No description provided._
 

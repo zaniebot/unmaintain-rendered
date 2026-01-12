@@ -13,14 +13,14 @@ head: string-processing-example
 created_at: 2023-05-16T10:17:39Z
 updated_at: 2023-05-16T17:42:41Z
 url: https://github.com/astral-sh/ruff/pull/4449
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Prototype Black's string joining/splitting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-16 10:17_
+_@MichaReiser_
 
 This PR adds a test to verify that the `fill` element can be used to implement Black's [string-processing](https://github.com/psf/black/issues/3292)
 

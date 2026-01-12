@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T22:12:10Z
 updated_at: 2026-01-09T22:13:19Z
 url: https://github.com/astral-sh/ty/issues/2428
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # wrong inference of bound-method / function literals off nominal-instance / subclass-of types
 
 ---
 
-_Issue opened by @carljm on 2026-01-09 22:12_
+_@carljm_
 
 > I think our inference of singleton function or bound-method types when accessed off nominal-instance or subclass-of types is simply wrong and needs to be fixed. The nominal-instance type `A` includes instances of `A` and all subclasses of `A`. That means it is wrong to say that `instance_of_a.method` is a singleton bound-method type, unless either `A` or `A.method` is marked as final. Similarly, `type[A]` includes subclasses of `A`, so `subclass_of_A.method` cannot be a singleton function literal type.
 > 

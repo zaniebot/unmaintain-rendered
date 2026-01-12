@@ -12,14 +12,14 @@ head: konsti/failing-windows-test
 created_at: 2025-10-09T12:30:07Z
 updated_at: 2025-10-09T13:19:17Z
 url: https://github.com/astral-sh/uv/pull/16205
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Add failing windows python install manager test
 
 ---
 
-_Pull request opened by @konstin on 2025-10-09 12:30_
+_@konstin_
 
 Don't mind me I'm just trying to fail CI.
 

@@ -13,14 +13,14 @@ head: konsti/build-backend-frontend-error-handling
 created_at: 2024-12-03T16:45:04Z
 updated_at: 2024-12-04T09:04:24Z
 url: https://github.com/astral-sh/uv/pull/9611
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Improve build frontend error handling
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 16:45_
+_@konstin_
 
 Move the error handling for `build_package` into an enum, to avoid `bail!` and duplicated `.context()` calls.
 

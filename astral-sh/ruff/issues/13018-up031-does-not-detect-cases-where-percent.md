@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T22:18:42Z
 updated_at: 2025-07-10T00:08:31Z
 url: https://github.com/astral-sh/ruff/issues/13018
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # UP031 does not detect cases where percent operator is used on an f-string
 
 ---
 
-_Issue opened by @richardxia on 2024-08-20 22:18_
+_@richardxia_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

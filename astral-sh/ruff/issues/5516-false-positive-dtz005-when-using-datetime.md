@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-04T21:47:41Z
 updated_at: 2023-07-06T04:03:24Z
 url: https://github.com/astral-sh/ruff/issues/5516
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False Positive `DTZ005`: When using `datetime.datetime.now().astimezone()`
 
 ---
 
-_Issue opened by @LawrenceJGD on 2023-07-04 21:47_
+_@LawrenceJGD_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-02-16T20:47:54Z
 updated_at: 2025-02-16T20:55:28Z
 url: https://github.com/astral-sh/uv/pull/11562
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:53Z
 ```
 
 # Remove clone from marker evaluation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-16 20:47_
+_@charliermarsh_
 
 ## Summary
 

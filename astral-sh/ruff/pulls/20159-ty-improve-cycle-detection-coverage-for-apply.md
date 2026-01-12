@@ -13,14 +13,14 @@ head: cjm/recursive-callable
 created_at: 2025-08-29T18:38:12Z
 updated_at: 2025-08-29T23:20:08Z
 url: https://github.com/astral-sh/ruff/pull/20159
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] improve cycle-detection coverage for apply_type_mapping
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 18:38_
+_@carljm_
 
 ## Summary
 

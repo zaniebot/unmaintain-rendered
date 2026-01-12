@@ -12,14 +12,14 @@ head: refactor-new-code
 created_at: 2023-02-10T08:58:36Z
 updated_at: 2023-02-10T13:24:23Z
 url: https://github.com/astral-sh/ruff/pull/2715
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Refactor new code
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-10 08:58_
+_@not-my-profile_
 
 _No description provided._
 

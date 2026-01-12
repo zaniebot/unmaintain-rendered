@@ -11,14 +11,14 @@ head: boolean-chained-comparison-order
 created_at: 2025-12-26T13:41:41Z
 updated_at: 2025-12-26T13:43:15Z
 url: https://github.com/astral-sh/ruff/pull/22206
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`ruff`] Fix false negatives of `chained-comparison` (PLR1716)
 
 ---
 
-_Pull request opened by @Bnyro on 2025-12-26 13:41_
+_@Bnyro_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

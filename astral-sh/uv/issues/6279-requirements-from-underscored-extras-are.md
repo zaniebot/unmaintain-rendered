@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T21:55:15Z
 updated_at: 2024-08-22T01:03:40Z
 url: https://github.com/astral-sh/uv/issues/6279
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Requirements from underscored extras are accidentally included as package dependencies
 
 ---
 
-_Issue opened by @adaamz on 2024-08-20 21:55_
+_@adaamz_
 
 Hello,
 I would like to ask/report one issue with `uv pip compile` when using "private" extras (underscored extras).

@@ -13,14 +13,14 @@ head: david/equivalent_to-property-tests
 created_at: 2025-01-15T08:13:49Z
 updated_at: 2025-01-15T14:54:50Z
 url: https://github.com/astral-sh/ruff/pull/15488
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] 'is_equivalent_to' is an equivalence relation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-15 08:13_
+_@sharkdp_
 
 ## Summary
 

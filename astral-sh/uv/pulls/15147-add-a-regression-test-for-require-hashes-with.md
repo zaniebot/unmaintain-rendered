@@ -13,14 +13,14 @@ head: zb/require-hashes-build-deps
 created_at: 2025-08-07T19:50:31Z
 updated_at: 2025-08-07T20:04:19Z
 url: https://github.com/astral-sh/uv/pull/15147
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Add a regression test for `--require-hashes` with unpinned build requirements
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-07 19:50_
+_@zanieb_
 
 Test case for https://github.com/astral-sh/uv/issues/15146
 

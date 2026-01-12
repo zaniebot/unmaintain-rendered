@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T17:33:35Z
 updated_at: 2024-02-22T02:51:23Z
 url: https://github.com/astral-sh/uv/issues/1659
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Conflict due to package and package-extra when installing airflow
 
 ---
 
-_Issue opened by @erdembanak on 2024-02-18 17:33_
+_@erdembanak_
 
 I'm trying to install airflow 2.4.2 with the constraints file provided by airflow ([file](https://raw.githubusercontent.com/invent-analytics/airflow-constraints/main/2.4.2/constraints-3.8.txt)) with the following command (I have downloaded the file):
 

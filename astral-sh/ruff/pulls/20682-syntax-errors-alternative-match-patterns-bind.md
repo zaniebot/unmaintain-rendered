@@ -12,14 +12,14 @@ head: alternate_pattern_binding
 created_at: 2025-10-02T16:06:11Z
 updated_at: 2025-10-27T19:31:33Z
 url: https://github.com/astral-sh/ruff/pull/20682
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [syntax-errors] Alternative `match` patterns bind different names
 
 ---
 
-_Pull request opened by @11happy on 2025-10-02 16:06_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

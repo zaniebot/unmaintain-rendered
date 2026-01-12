@@ -12,14 +12,14 @@ head: charlie/s608
 created_at: 2023-02-11T20:03:33Z
 updated_at: 2023-02-11T20:05:59Z
 url: https://github.com/astral-sh/ruff/pull/2780
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove raw string from hardcoded-sql-expression
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 20:03_
+_@charliermarsh_
 
 Bandit doesn't show these inline either, only via our equivalent of `--show-source`.
 

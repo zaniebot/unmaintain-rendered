@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T09:03:57Z
 updated_at: 2024-03-14T07:53:07Z
 url: https://github.com/astral-sh/uv/issues/2353
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Regression from 0.1.15 to 0.1.16/17 when using --system on some RHEL based Docker images
 
 ---
 
-_Issue opened by @alexprengere on 2024-03-11 09:03_
+_@alexprengere_
 
 I have a Docker image from a private registry which boils down to:
 

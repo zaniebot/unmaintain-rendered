@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-10T18:03:43Z
 updated_at: 2025-10-10T18:30:36Z
 url: https://github.com/astral-sh/ty/issues/1336
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # error when returning dict[str, object] for function declared to return dict[str, str]
 
 ---
 
-_Issue opened by @gjcarneiro on 2025-10-10 18:03_
+_@gjcarneiro_
 
 ### Summary
 

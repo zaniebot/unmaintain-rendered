@@ -13,14 +13,14 @@ head: david/remove-protocol-satisfiability-hack
 created_at: 2025-09-25T10:09:00Z
 updated_at: 2025-09-25T11:35:48Z
 url: https://github.com/astral-sh/ruff/pull/20568
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Remove hack in protocol satisfiability check
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-25 10:09_
+_@sharkdp_
 
 ## Summary
 

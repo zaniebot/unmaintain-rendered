@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-06T19:11:15Z
 updated_at: 2024-07-09T05:29:56Z
 url: https://github.com/astral-sh/uv/issues/4848
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # "No download found" error should avoid debug representation
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-06 19:11_
+_@charliermarsh_
 
 E.g., given `cargo run -- run -vv --preview --isolated --python 3.12.4 python -V`:
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-10T11:43:02Z
 updated_at: 2024-06-10T15:04:05Z
 url: https://github.com/clap-rs/clap/issues/5525
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `#[arg(from_global)]` with `#[command(flatten)]`
 
 ---
 
-_Issue opened by @abesto on 2024-06-10 11:43_
+_@abesto_
 
 ### Please complete the following tasks
 

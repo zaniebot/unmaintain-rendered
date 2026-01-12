@@ -12,14 +12,14 @@ head: hint-http-timeout
 created_at: 2024-02-25T00:29:39Z
 updated_at: 2024-03-01T01:54:48Z
 url: https://github.com/astral-sh/uv/pull/1961
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # feat: improved msg for network timeouts
 
 ---
 
-_Pull request opened by @samypr100 on 2024-02-25 00:29_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

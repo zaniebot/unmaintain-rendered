@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-08T06:29:01Z
 updated_at: 2024-07-08T07:50:15Z
 url: https://github.com/astral-sh/ruff/issues/12237
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Supports multi `--output-format` at the same time
 
 ---
 
-_Issue opened by @Zxilly on 2024-07-08 06:29_
+_@Zxilly_
 
 For example, while running in the `GitHub Actions`, I want to use the `github` format to see details on the web ui, while also outputting the `SARIF` format to upload the result to the CodeQL.
 

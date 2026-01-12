@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T15:39:53Z
 updated_at: 2025-03-07T20:49:57Z
 url: https://github.com/astral-sh/uv/issues/12048
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Does uv lock require a source distribution and a wheel distribution be present in our index in order to lock a file?
 
 ---
 
-_Issue opened by @jamesharris-garmin on 2025-03-07 15:39_
+_@jamesharris-garmin_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T04:08:53Z
 updated_at: 2024-08-28T12:57:02Z
 url: https://github.com/astral-sh/uv/issues/6739
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # RFE: Add `uv build`
 
 ---
 
-_Issue opened by @gotmax23 on 2024-08-28 04:08_
+_@gotmax23_
 
 It would be great to have a `uv build` command that could be used to build a plain sdist and/or wheel from a source tree.
 

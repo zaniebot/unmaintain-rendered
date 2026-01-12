@@ -13,14 +13,14 @@ head: micha/fix-mdtest-assertion
 created_at: 2024-12-11T13:16:00Z
 updated_at: 2024-12-11T13:37:15Z
 url: https://github.com/astral-sh/ruff/pull/14914
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Support `lint:<rule>` in mdtests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-11 13:16_
+_@MichaReiser_
 
 ## Summary
 

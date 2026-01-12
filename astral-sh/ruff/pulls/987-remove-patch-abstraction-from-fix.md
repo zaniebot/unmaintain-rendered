@@ -12,14 +12,14 @@ head: charlie/patch
 created_at: 2022-12-01T20:36:35Z
 updated_at: 2022-12-01T21:04:43Z
 url: https://github.com/astral-sh/ruff/pull/987
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove Patch abstraction from Fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-01 20:36_
+_@charliermarsh_
 
 _No description provided._
 

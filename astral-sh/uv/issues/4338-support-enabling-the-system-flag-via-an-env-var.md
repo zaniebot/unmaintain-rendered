@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-15T06:45:55Z
 updated_at: 2024-06-15T14:00:17Z
 url: https://github.com/astral-sh/uv/issues/4338
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support enabling the `--system` flag via an env var?
 
 ---
 
-_Issue opened by @hoechenberger on 2024-06-15 06:45_
+_@hoechenberger_
 
 Hello, I'm using `uv` in a dev container with a global Python installation (no venv) to keep complexity low. Now, I naturally need to pass the `--system` flag to `uv pip install`. I was wondering if you'd consider adding support for switching this flag on / off via an environment variable (which I could then bake into the container). This would make things a little easier for the users of the container.
 

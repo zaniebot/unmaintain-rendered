@@ -13,14 +13,14 @@ head: david/division-by-zero-unions
 created_at: 2025-04-02T16:12:36Z
 updated_at: 2025-04-02T16:21:29Z
 url: https://github.com/astral-sh/ruff/pull/17157
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Detect division-by-zero in unions and intersections
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-02 16:12_
+_@sharkdp_
 
 ## Summary
 

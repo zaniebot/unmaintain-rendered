@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T12:30:35Z
 updated_at: 2025-12-21T16:43:36Z
 url: https://github.com/astral-sh/uv/issues/17206
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # uv sync --locked failed when I have a prerelease user config?
 
 ---
 
-_Issue opened by @lxl66566 on 2025-12-21 12:30_
+_@lxl66566_
 
 ### Question
 

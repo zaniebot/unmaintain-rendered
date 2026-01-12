@@ -12,14 +12,14 @@ head: pyi046
 created_at: 2024-01-05T18:34:43Z
 updated_at: 2024-01-05T18:56:20Z
 url: https://github.com/astral-sh/ruff/pull/9405
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [flake8-pyi] Fix false negative for PYI046 with unused generic protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-05 18:34_
+_@AlexWaygood_
 
 I just fixed this false negative in flake8-pyi (https://github.com/PyCQA/flake8-pyi/pull/460), and then realised ruff has the exact same bug! Luckily it's a very easy fix.
 

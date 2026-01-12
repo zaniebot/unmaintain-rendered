@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T21:16:09Z
 updated_at: 2025-01-15T21:16:26Z
 url: https://github.com/astral-sh/uv/issues/10648
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Improve performance of `git` tests on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-01-15 21:16_
+_@zanieb_
 
 For example, the test `sync_stale_egg_info` which clones a couple git repositories can take upwards of 50s on a busy CI machine. What's this like for users? Are there improvements to be made here? Is it a test-only problem?
 

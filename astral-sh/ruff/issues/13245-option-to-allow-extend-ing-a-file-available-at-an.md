@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-04T15:03:59Z
 updated_at: 2024-09-04T15:19:43Z
 url: https://github.com/astral-sh/ruff/issues/13245
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Option to allow `extend`ing a file available at an HTTPS URL
 
 ---
 
-_Issue opened by @lengau on 2024-09-04 15:03_
+_@lengau_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

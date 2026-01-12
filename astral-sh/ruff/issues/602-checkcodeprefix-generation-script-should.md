@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-05T14:46:11Z
 updated_at: 2022-11-05T18:30:19Z
 url: https://github.com/astral-sh/ruff/issues/602
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `CheckCodePrefix` generation script should automatically write to `checks_gen.rs`.
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-05 14:46_
+_@charliermarsh_
 
 _No description provided._
 

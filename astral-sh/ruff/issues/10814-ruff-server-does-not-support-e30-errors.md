@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-07T15:26:31Z
 updated_at: 2024-05-04T04:05:57Z
 url: https://github.com/astral-sh/ruff/issues/10814
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff server does not support E30* errors?
 
 ---
 
-_Issue opened by @a1401358759 on 2024-04-07 15:26_
+_@a1401358759_
 
 ruff version: 0.3.5
 lsp ocnfig:

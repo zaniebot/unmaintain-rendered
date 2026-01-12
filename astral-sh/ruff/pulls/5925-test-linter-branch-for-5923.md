@@ -12,14 +12,14 @@ head: random-linter-change
 created_at: 2023-07-20T14:52:29Z
 updated_at: 2023-07-24T15:01:16Z
 url: https://github.com/astral-sh/ruff/pull/5925
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Test linter branch for 5923
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 14:52_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

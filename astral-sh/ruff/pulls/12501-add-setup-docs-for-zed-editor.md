@@ -13,14 +13,14 @@ head: dhruv/zed-setup
 created_at: 2024-07-25T05:12:31Z
 updated_at: 2024-08-26T06:55:03Z
 url: https://github.com/astral-sh/ruff/pull/12501
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add setup docs for Zed editor
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-25 05:12_
+_@dhruvmanila_
 
 ## Summary
 

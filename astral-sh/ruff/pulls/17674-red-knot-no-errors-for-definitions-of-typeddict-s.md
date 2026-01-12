@@ -13,14 +13,14 @@ head: david/typed-dict-todo
 created_at: 2025-04-28T08:01:48Z
 updated_at: 2025-04-28T11:13:30Z
 url: https://github.com/astral-sh/ruff/pull/17674
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] No errors for definitions of `TypedDict`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-28 08:01_
+_@sharkdp_
 
 ## Summary
 

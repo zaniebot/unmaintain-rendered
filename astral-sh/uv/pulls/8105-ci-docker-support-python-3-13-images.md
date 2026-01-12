@@ -13,14 +13,14 @@ head: docker-image-py313
 created_at: 2024-10-10T19:02:39Z
 updated_at: 2024-10-10T19:44:41Z
 url: https://github.com/astral-sh/uv/pull/8105
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # ci(docker): support python 3.13 images
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-10 19:02_
+_@samypr100_
 
 ## Summary
 

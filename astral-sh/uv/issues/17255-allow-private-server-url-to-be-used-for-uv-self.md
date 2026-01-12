@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T19:31:17Z
 updated_at: 2025-12-29T19:31:17Z
 url: https://github.com/astral-sh/uv/issues/17255
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Allow private server URL to be used for `uv self update` without explicit version number
 
 ---
 
-_Issue opened by @rzuckerm on 2025-12-29 19:31_
+_@rzuckerm_
 
 ### Summary
 

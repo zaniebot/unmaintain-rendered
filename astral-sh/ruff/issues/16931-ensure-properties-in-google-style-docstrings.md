@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T23:45:07Z
 updated_at: 2025-05-07T06:39:00Z
 url: https://github.com/astral-sh/ruff/issues/16931
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ensure properties in Google-style docstrings start the correct way
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-23 23:45_
+_@gtkacz_
 
 ### Summary
 

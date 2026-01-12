@@ -14,14 +14,14 @@ head: dhruv/issue-7291
 created_at: 2023-09-13T04:41:49Z
 updated_at: 2023-09-28T03:58:51Z
 url: https://github.com/astral-sh/ruff/pull/7326
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Detect `noqa` directives for multi-line f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-13 04:41_
+_@dhruvmanila_
 
 ## Summary
 

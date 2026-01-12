@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-22T12:29:40Z
 updated_at: 2024-04-23T15:09:05Z
 url: https://github.com/astral-sh/ruff/issues/11090
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Allowed captalized arg names configuration for N803
 
 ---
 
-_Issue opened by @Malachov on 2024-04-22 12:29_
+_@Malachov_
 
 # Feature request
 

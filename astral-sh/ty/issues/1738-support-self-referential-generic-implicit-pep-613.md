@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T08:40:12Z
 updated_at: 2025-12-26T12:25:43Z
 url: https://github.com/astral-sh/ty/issues/1738
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support self-referential generic implicit/PEP-613 type aliases
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-03 08:40_
+_@sharkdp_
 
 We currently handle self-referential generic implicit (and PEP 613) type aliases by [falling back to `Divergent`](https://github.com/astral-sh/ruff/blob/f4e4229683936a486f689aebb9d7d06b3985952d/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md?plain=1#L1532-L1548). This prevents infinite recursion and false positive diagnostics, but we should properly support them. For example, this should be an error, but currently is not:
 ```py

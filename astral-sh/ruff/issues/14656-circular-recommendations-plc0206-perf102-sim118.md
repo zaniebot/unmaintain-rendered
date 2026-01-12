@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T14:01:31Z
 updated_at: 2024-11-28T14:53:29Z
 url: https://github.com/astral-sh/ruff/issues/14656
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Circular recommendations: PLC0206, PERF102, SIM118
 
 ---
 
-_Issue opened by @njsaunders on 2024-11-28 14:01_
+_@njsaunders_
 
 I have the following code:
 

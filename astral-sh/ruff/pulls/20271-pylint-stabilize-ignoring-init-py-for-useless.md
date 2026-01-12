@@ -13,14 +13,14 @@ head: dylan/stabilize-ignore-init
 created_at: 2025-09-05T19:00:46Z
 updated_at: 2025-09-08T17:34:12Z
 url: https://github.com/astral-sh/ruff/pull/20271
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`pylint`] Stabilize ignoring `__init__.py` for `useless-import-alias` (`PLC0414`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:00_
+_@dylwil3_
 
 Stabilizes change from #18400. Removed gating, updated docs, updated tests.
 

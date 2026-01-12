@@ -13,14 +13,14 @@ head: RUF042
 created_at: 2024-12-08T00:40:36Z
 updated_at: 2025-04-28T07:07:03Z
 url: https://github.com/astral-sh/ruff/pull/14831
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Unnecessary intermediate representation (`RUF042`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-08 00:40_
+_@InSyncWithFoo_
 
 ## Summary
 

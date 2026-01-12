@@ -14,14 +14,14 @@ head: f821-false-negs
 created_at: 2024-03-12T16:01:13Z
 updated_at: 2024-03-12T17:07:47Z
 url: https://github.com/astral-sh/ruff/pull/10362
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # F821: Fix false negatives in `.py` files when `from __future__ import annotations` is active
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-12 16:01_
+_@AlexWaygood_
 
 ## Summary
 

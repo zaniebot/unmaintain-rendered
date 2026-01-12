@@ -12,14 +12,14 @@ head: ag/improve-wheel-tag-matching
 created_at: 2023-11-08T19:36:23Z
 updated_at: 2023-11-09T14:01:05Z
 url: https://github.com/astral-sh/uv/pull/367
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # distribution-filename: speed up is_compatible
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-08 19:36_
+_@BurntSushi_
 
 This PR tweaks the representation of `Tags` in order to offer a
 faster implementation of `WheelFilename::is_compatible`. We now use a

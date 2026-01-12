@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T09:06:13Z
 updated_at: 2024-07-18T12:37:29Z
 url: https://github.com/astral-sh/ruff/issues/12358
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # C419 in --preview does not warn if a second parameter is passed to sum()
 
 ---
 
-_Issue opened by @ember91 on 2024-07-17 09:06_
+_@ember91_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

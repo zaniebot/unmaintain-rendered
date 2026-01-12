@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-07T16:22:12Z
 updated_at: 2024-10-08T21:20:59Z
 url: https://github.com/astral-sh/uv/issues/7977
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # uv python install does not respect rc qualifiers
 
 ---
 
-_Issue opened by @gaborbernat on 2024-10-07 16:22_
+_@gaborbernat_
 
 It installs rc2 even though I request rc3... 😊 
 

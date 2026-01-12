@@ -13,14 +13,14 @@ head: fix_unicode_in_PLE2515
 created_at: 2023-04-06T10:59:06Z
 updated_at: 2023-04-06T17:54:57Z
 url: https://github.com/astral-sh/ruff/pull/3898
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix unicode handling in PLE2515
 
 ---
 
-_Pull request opened by @konstin on 2023-04-06 10:59_
+_@konstin_
 
 Previously, we used byte indices when we should have used char indices, causing crashes when the were non-ascii characters before our replaces
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T02:24:21Z
 updated_at: 2025-04-23T02:44:29Z
 url: https://github.com/astral-sh/uv/issues/8238
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Uv script example on windows gives error
 
 ---
 
-_Issue opened by @mert-kurttutan on 2024-10-16 02:24_
+_@mert-kurttutan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

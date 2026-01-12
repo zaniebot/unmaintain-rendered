@@ -13,14 +13,14 @@ head: red-knot-directories
 created_at: 2024-07-12T18:14:44Z
 updated_at: 2024-08-12T07:52:23Z
 url: https://github.com/astral-sh/ruff/pull/12306
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Analyze an entire directory
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-12 18:14_
+_@MichaReiser_
 
 _No description provided._
 

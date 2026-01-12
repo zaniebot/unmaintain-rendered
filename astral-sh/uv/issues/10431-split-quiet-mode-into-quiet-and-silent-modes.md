@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T14:47:17Z
 updated_at: 2025-03-26T20:46:18Z
 url: https://github.com/astral-sh/uv/issues/10431
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Split `--quiet` mode into "quiet" and "silent" modes
 
 ---
 
-_Issue opened by @zanieb on 2025-01-09 14:47_
+_@zanieb_
 
 e.g., `-q` is quiet, only prints important information and `-qq` is silent, doesn't print anything
 

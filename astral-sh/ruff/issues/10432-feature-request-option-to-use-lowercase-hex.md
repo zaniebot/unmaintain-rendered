@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-16T22:59:14Z
 updated_at: 2025-12-24T02:53:19Z
 url: https://github.com/astral-sh/ruff/issues/10432
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature request: Option to use lowercase hex literals
 
 ---
 
-_Issue opened by @DavidBuchanan314 on 2024-03-16 22:59_
+_@DavidBuchanan314_
 
 For a brief time window, `black` had this feature, before it was reverted https://github.com/psf/black/issues/1692
 

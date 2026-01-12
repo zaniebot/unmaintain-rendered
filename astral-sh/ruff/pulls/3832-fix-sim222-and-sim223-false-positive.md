@@ -13,14 +13,14 @@ head: fix-sim222-sim223-false-positive
 created_at: 2023-03-31T17:19:22Z
 updated_at: 2023-03-31T18:51:28Z
 url: https://github.com/astral-sh/ruff/pull/3832
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix SIM222 and SIM223 false positive
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-31 17:19_
+_@JonathanPlasse_
 
 - Close #3830
 

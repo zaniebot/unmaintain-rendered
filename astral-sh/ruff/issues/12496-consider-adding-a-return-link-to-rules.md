@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T19:55:08Z
 updated_at: 2024-07-25T04:46:00Z
 url: https://github.com/astral-sh/ruff/issues/12496
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Consider adding a return link to rules?
 
 ---
 
-_Issue opened by @Anselmoo on 2024-07-24 19:55_
+_@Anselmoo_
 
 Currently, rules are listed under https://docs.astral.sh/ruff/rules. When a rule is selected, for instance, [unpacked-list-comprehension](https://docs.astral.sh/ruff/rules/unpacked-list-comprehension/), there is no way to return to the overview.
 

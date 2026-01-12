@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T11:44:20Z
 updated_at: 2025-06-19T11:07:59Z
 url: https://github.com/astral-sh/ruff/issues/18720
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff seems to detect git repo above (outside) my current git rep
 
 ---
 
-_Issue opened by @kaddkaka on 2025-06-17 11:44_
+_@kaddkaka_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: redknot-decorators
 created_at: 2024-05-02T23:08:53Z
 updated_at: 2024-05-02T23:58:57Z
 url: https://github.com/astral-sh/ruff/pull/11253
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add decorator types to function type
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-02 23:08_
+_@plredmond_
 
 * Add `decorators: Vec<Type>` to `FunctionType` struct
 * Thread decorators through two `add_function` definitions

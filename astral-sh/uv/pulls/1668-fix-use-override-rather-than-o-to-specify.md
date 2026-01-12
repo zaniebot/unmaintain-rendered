@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-18T22:28:23Z
 updated_at: 2024-02-18T23:55:28Z
 url: https://github.com/astral-sh/uv/pull/1668
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # fix: use --override rather than -o to specify overrides in README.md
 
 ---
 
-_Pull request opened by @kopp on 2024-02-18 22:28_
+_@kopp_
 
 
 ## Summary

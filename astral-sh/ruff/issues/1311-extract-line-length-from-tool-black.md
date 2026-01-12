@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-21T18:55:54Z
 updated_at: 2022-12-22T00:05:19Z
 url: https://github.com/astral-sh/ruff/issues/1311
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Extract `line-length` from `tool.black`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-21 18:55_
+_@charliermarsh_
 
 _No description provided._
 

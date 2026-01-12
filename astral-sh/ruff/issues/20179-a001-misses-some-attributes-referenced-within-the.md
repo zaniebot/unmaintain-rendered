@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-31T18:47:31Z
 updated_at: 2025-11-08T20:31:10Z
 url: https://github.com/astral-sh/ruff/issues/20179
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # A001 misses some attributes referenced within the class scope
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-31 18:47_
+_@dscorbett_
 
 ### Summary
 

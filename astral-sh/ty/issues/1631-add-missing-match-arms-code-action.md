@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T13:20:15Z
 updated_at: 2025-11-26T08:39:48Z
 url: https://github.com/astral-sh/ty/issues/1631
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add missing match arms code action
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-11-25 13:20_
+_@MatthewMckee4_
 
 Been looking through the R-A code actions and https://rust-analyzer.github.io/book/assists.html#add_missing_match_arms looks quite cool.
 

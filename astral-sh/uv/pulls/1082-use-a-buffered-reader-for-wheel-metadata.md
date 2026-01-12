@@ -12,14 +12,14 @@ head: charlie/buf
 created_at: 2024-01-24T20:09:12Z
 updated_at: 2024-01-25T13:48:32Z
 url: https://github.com/astral-sh/uv/pull/1082
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Use a buffered reader for wheel metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 20:09_
+_@charliermarsh_
 
 ## Summary
 

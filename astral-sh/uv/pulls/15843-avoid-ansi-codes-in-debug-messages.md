@@ -13,14 +13,14 @@ head: charlie/ansi
 created_at: 2025-09-14T18:52:11Z
 updated_at: 2025-09-17T14:30:44Z
 url: https://github.com/astral-sh/uv/pull/15843
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:58Z
 ```
 
 # Avoid ANSI codes in debug! messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-14 18:52_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T18:59:26Z
 updated_at: 2025-11-29T19:45:27Z
 url: https://github.com/astral-sh/uv/issues/16893
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Inconsistency with handling pre-release packages - installing from pypi vs installing from git
 
 ---
 
-_Issue opened by @Andrej730 on 2025-11-29 18:59_
+_@Andrej730_
 
 ### Summary
 

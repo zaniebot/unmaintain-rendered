@@ -13,14 +13,14 @@ head: format-for
 created_at: 2023-06-17T15:55:30Z
 updated_at: 2023-07-07T20:48:20Z
 url: https://github.com/astral-sh/ruff/pull/5163
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format StmtFor
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-17 15:55_
+_@davidszotten_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

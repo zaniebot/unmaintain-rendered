@@ -15,14 +15,14 @@ head: zb/reimpl-op-unsafe
 created_at: 2024-10-03T17:25:39Z
 updated_at: 2024-10-03T21:48:30Z
 url: https://github.com/astral-sh/ruff/pull/13613
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Mark `FURB118` fix as unsafe
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-03 17:25_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13421
 

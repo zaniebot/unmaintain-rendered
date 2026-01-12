@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-28T10:55:32Z
 updated_at: 2024-02-28T12:23:00Z
 url: https://github.com/astral-sh/uv/issues/2042
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv pip without venv
 
 ---
 
-_Issue opened by @combiz on 2024-02-28 10:55_
+_@combiz_
 
 We often use docker-based dev containers. In these, we typically skip creating a venv; with pip we can install the packages and freeze them without one. With uv, working with a venv seems to be enforced -- is this the case?
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-10-01T19:30:10Z
 updated_at: 2025-10-07T17:03:37Z
 url: https://github.com/astral-sh/ruff/issues/20673
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New first-party import detection feature breaks documented behavior of `detect-same-package` config
 
 ---
 
-_Issue opened by @bkurtz on 2025-10-01 19:30_
+_@bkurtz_
 
 ### Summary
 

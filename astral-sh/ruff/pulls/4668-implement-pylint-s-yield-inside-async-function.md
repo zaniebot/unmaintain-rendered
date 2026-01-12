@@ -13,14 +13,14 @@ head: PLE1700
 created_at: 2023-05-26T09:29:41Z
 updated_at: 2023-05-27T01:34:40Z
 url: https://github.com/astral-sh/ruff/pull/4668
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement Pylint's `yield-inside-async-function` rule (`PLE1700`) 
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-05-26 09:29_
+_@chanman3388_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

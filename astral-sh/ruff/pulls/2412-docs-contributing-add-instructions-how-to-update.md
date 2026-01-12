@@ -12,14 +12,14 @@ head: contributing
 created_at: 2023-01-31T20:25:32Z
 updated_at: 2023-02-01T12:44:21Z
 url: https://github.com/astral-sh/ruff/pull/2412
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # docs(CONTRIBUTING): add instructions how to update the test snapshots
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-31 20:25_
+_@spaceone_
 
 I am not used to it and always forgot. Probably helpful for newbies?
 

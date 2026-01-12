@@ -12,14 +12,14 @@ head: feat/resolve-cache-key-globs
 created_at: 2025-05-15T14:07:29Z
 updated_at: 2025-07-11T15:35:59Z
 url: https://github.com/astral-sh/uv/pull/13469
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # More efficient cache-key globbing + support parent paths in globs
 
 ---
 
-_Pull request opened by @aldanor on 2025-05-15 14:07_
+_@aldanor_
 
 ## Summary
 

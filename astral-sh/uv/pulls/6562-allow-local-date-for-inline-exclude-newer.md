@@ -13,14 +13,14 @@ head: exclude-nwer
 created_at: 2024-08-23T23:36:46Z
 updated_at: 2024-08-30T03:16:41Z
 url: https://github.com/astral-sh/uv/pull/6562
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Allow local date for inline exclude newer
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-08-23 23:36_
+_@hauntsaninja_
 
 Resolves #6555
 

@@ -13,14 +13,14 @@ head: charlie/min-dots
 created_at: 2025-07-24T19:16:28Z
 updated_at: 2025-07-24T19:50:34Z
 url: https://github.com/astral-sh/ruff/pull/19538
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # Add support for specifying minimum dots in detected string imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-24 19:16_
+_@charliermarsh_
 
 ## Summary
 

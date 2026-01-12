@@ -13,14 +13,14 @@ head: alex/tvar-solving-order
 created_at: 2025-08-08T13:50:34Z
 updated_at: 2025-08-08T16:50:39Z
 url: https://github.com/astral-sh/ruff/pull/19829
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Improve ability to solve TypeVars when they appear in unions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-08 13:50_
+_@AlexWaygood_
 
 ## Summary
 

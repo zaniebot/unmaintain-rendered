@@ -13,14 +13,14 @@ head: dhruv/syntax-error-1
 created_at: 2024-06-17T11:56:51Z
 updated_at: 2024-06-19T07:39:55Z
 url: https://github.com/astral-sh/ruff/pull/11900
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Update `E999` to show all syntax errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-17 11:56_
+_@dhruvmanila_
 
 ## Summary
 

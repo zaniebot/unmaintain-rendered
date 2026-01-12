@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T17:37:24Z
 updated_at: 2025-02-17T04:20:37Z
 url: https://github.com/astral-sh/uv/issues/11136
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Add hint for DevPi indexes without `/+simple`
 
 ---
 
-_Issue opened by @zanieb on 2025-01-31 17:37_
+_@zanieb_
 
 ### Summary
 

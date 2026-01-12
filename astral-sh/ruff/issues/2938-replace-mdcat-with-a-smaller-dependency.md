@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-15T21:10:57Z
 updated_at: 2023-04-16T22:59:34Z
 url: https://github.com/astral-sh/ruff/issues/2938
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Replace `mdcat` with a smaller dependency
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-15 21:10_
+_@charliermarsh_
 
 I didn't realize it at the time, but `mdcat` is a huge dependency, because it pulls in a request library, an image-rendering library, etc.
 

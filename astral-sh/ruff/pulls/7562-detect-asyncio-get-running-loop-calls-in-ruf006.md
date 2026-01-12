@@ -13,14 +13,14 @@ head: charlie/create_task
 created_at: 2023-09-21T04:25:43Z
 updated_at: 2023-09-21T04:43:50Z
 url: https://github.com/astral-sh/ruff/pull/7562
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Detect `asyncio.get_running_loop` calls in RUF006
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 04:25_
+_@charliermarsh_
 
 ## Summary
 

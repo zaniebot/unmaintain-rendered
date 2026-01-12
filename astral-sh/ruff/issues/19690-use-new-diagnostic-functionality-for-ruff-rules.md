@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T15:16:13Z
 updated_at: 2025-08-14T19:43:28Z
 url: https://github.com/astral-sh/ruff/issues/19690
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Use new `Diagnostic` functionality for Ruff rules
 
 ---
 
-_Issue opened by @ntBre on 2025-08-01 15:16_
+_@ntBre_
 
 It's a bit late in the process, but it seemed useful to write up a tracking issue for the remaining TODOs before we can take advantage of our new `Diagnostic` infrastructure in Ruff. This is primarily focused on the `full` output format, which is where the new functionality like multiple annotations will be visible. We've already switched over the `concise` and a few other formats without any user-visible changes.
 

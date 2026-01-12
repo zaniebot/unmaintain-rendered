@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-27T12:11:12Z
 updated_at: 2024-07-17T16:57:28Z
 url: https://github.com/astral-sh/ruff/issues/12069
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLW1514: extend or change autofix with `encoding="utf-8"`
 
 ---
 
-_Issue opened by @xmo-odoo on 2024-06-27 12:11_
+_@xmo-odoo_
 
 #8883 requested that the `open`/`read` calls without an explicit encoding be autofixed to use the locale, however *the use of the locale is exactly why PEP 597 / EncodingWarning was implemented*: in this day and age, and especially when interacting with internal data or software-created files, following the possibly wonky and misconfigured locale of the host machine is actively detrimental. Even more so when accounting for Windows where the locale is essentially always useless (it generally defaults to a single-byte windows codepage, changing the locale to UTF8 -- codepage 65001 -- is possible but uncommon).
 

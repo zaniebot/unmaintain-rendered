@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-25T15:09:44Z
 updated_at: 2024-10-21T21:38:23Z
 url: https://github.com/astral-sh/uv/issues/6610
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # UV fails to install packages from private index hosted on jfrog artifactory
 
 ---
 
-_Issue opened by @Mushahar on 2024-08-25 15:09_
+_@Mushahar_
 
 While running "uv pip install" with uv version **0.3.2** and Python 3.10.x, Jfrog Artifactory (v 7.68.21) returns HTTP error 500 as shown below. The same command installs the package successfully with "pip".
 

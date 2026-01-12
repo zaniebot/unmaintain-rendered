@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-19T01:32:14Z
 updated_at: 2024-02-19T01:33:11Z
 url: https://github.com/astral-sh/uv/issues/1676
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Windows - installing wheel fails with `Unable to extract filename from URL`
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-19 01:32_
+_@gaborbernat_
 
 When trying to add Windows to the tox-uv CI in https://github.com/tox-dev/tox-uv/pull/19, I noticed I get this failure:
 

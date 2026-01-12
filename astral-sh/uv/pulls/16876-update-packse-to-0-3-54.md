@@ -13,14 +13,14 @@ head: konsti/packse-0.3.54
 created_at: 2025-11-27T14:52:20Z
 updated_at: 2025-12-08T12:53:38Z
 url: https://github.com/astral-sh/uv/pull/16876
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Update packse to 0.3.54
 
 ---
 
-_Pull request opened by @konstin on 2025-11-27 14:52_
+_@konstin_
 
 Add https://github.com/astral-sh/packse/pull/293 for https://github.com/astral-sh/uv/pull/16824#discussion_r2556176057
 

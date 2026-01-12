@@ -13,14 +13,14 @@ head: charlie/slashes
 created_at: 2025-06-29T13:18:16Z
 updated_at: 2025-06-29T13:36:15Z
 url: https://github.com/astral-sh/uv/pull/14346
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Drop trailing slashes when converting index URL from URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-29 13:18_
+_@charliermarsh_
 
 ## Summary
 

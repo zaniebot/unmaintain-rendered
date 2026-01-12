@@ -13,14 +13,14 @@ head: zb/fix-run
 created_at: 2024-05-21T20:11:10Z
 updated_at: 2024-05-21T20:33:40Z
 url: https://github.com/astral-sh/uv/pull/3721
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Fix `uv tool run` interpreter lookup
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 20:11_
+_@zanieb_
 
 _No description provided._
 

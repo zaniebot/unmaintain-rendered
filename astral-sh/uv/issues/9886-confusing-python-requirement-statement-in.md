@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T21:11:16Z
 updated_at: 2024-12-13T22:32:10Z
 url: https://github.com/astral-sh/uv/issues/9886
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Confusing Python requirement statement in resolver error
 
 ---
 
-_Issue opened by @zanieb on 2024-12-13 21:11_
+_@zanieb_
 
 The message `Because the requested Python version (>=3.8.0) does not satisfy Python>=3.10 and the requested Python version (>=3.8.0) does not satisfy Python>=3.9,<3.10, we can conclude that Python>=3.9 is incompatible.` is basically incomprehensible.
 

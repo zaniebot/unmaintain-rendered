@@ -13,14 +13,14 @@ head: zb/tool-interpreter-fix
 created_at: 2024-09-20T17:56:11Z
 updated_at: 2024-09-20T19:01:16Z
 url: https://github.com/astral-sh/uv/pull/7596
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Fix handling of `sys.base_prefix` collision in interpreter identity check during tool installs
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 17:56_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7586
 

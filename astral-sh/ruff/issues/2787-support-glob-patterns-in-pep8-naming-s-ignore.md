@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T00:55:25Z
 updated_at: 2023-06-13T15:37:15Z
 url: https://github.com/astral-sh/ruff/issues/2787
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support glob patterns in `pep8-naming`’s `ignore-names` option.
 
 ---
 
-_Issue opened by @manueljacob on 2023-02-12 00:55_
+_@manueljacob_
 
 The original `pep8-naming` supports glob patterns in the `ignore-names` [option](https://pypi.org/project/pep8-naming/#options). Currently, Ruff supports only fixed strings.
 

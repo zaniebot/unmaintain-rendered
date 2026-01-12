@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-05T19:33:59Z
 updated_at: 2024-11-22T09:08:45Z
 url: https://github.com/astral-sh/uv/issues/8840
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Unable to authenticate with Azure artifact feed in github actions
 
 ---
 
-_Issue opened by @maarten-betman on 2024-11-05 19:33_
+_@maarten-betman_
 
 Dear Astral team,
 

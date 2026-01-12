@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T11:42:27Z
 updated_at: 2024-09-10T21:29:44Z
 url: https://github.com/astral-sh/uv/issues/7165
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Opt-into / opt-out of automatic re-sync with `uv run`?
 
 ---
 
-_Issue opened by @pawamoy on 2024-09-07 11:42_
+_@pawamoy_
 
 uv 0.4.5.
 

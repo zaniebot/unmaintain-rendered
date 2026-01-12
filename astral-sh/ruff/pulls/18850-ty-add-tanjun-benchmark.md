@@ -14,14 +14,14 @@ head: micha/tanjun
 created_at: 2025-06-21T15:45:13Z
 updated_at: 2025-06-21T16:29:03Z
 url: https://github.com/astral-sh/ruff/pull/18850
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Add Tanjun benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-21 15:45_
+_@MichaReiser_
 
 As discussed in https://github.com/astral-sh/ruff/pull/18714#issuecomment-2992419866
 

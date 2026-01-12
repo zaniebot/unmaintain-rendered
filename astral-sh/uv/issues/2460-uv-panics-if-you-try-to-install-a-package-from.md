@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-14T14:52:26Z
 updated_at: 2024-03-14T17:47:17Z
 url: https://github.com/astral-sh/uv/issues/2460
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv` panics if you try to install a package from git using a web URL and you incorrectly put two colons after `https`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-14 14:52_
+_@AlexWaygood_
 
 ```zsh
 (.venv) [101] % RUST_BACKTRACE=full uv pip install 'uv @ git+https:://github.com/astral-sh/uv.git'                                                                                                 ~/dev/typeshed

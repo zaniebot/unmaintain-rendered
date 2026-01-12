@@ -13,14 +13,14 @@ head: david/better-inlay-hint-example
 created_at: 2025-12-16T14:03:14Z
 updated_at: 2025-12-16T14:07:29Z
 url: https://github.com/astral-sh/ty/pull/1933
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Better inlay hint + hover example
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 14:03_
+_@sharkdp_
 
 Thanks @AlexWaygood 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T11:47:13Z
 updated_at: 2025-06-16T12:46:02Z
 url: https://github.com/astral-sh/uv/issues/5595
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # `uv pip install` failing to add netrc auth to 302 redirected request
 
 ---
 
-_Issue opened by @RichardDRJ on 2024-07-30 11:47_
+_@RichardDRJ_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

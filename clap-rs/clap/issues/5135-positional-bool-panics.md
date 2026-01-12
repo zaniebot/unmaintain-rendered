@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T10:37:13Z
 updated_at: 2023-09-25T15:19:17Z
 url: https://github.com/clap-rs/clap/issues/5135
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Positional bool panics
 
 ---
 
-_Issue opened by @gierens on 2023-09-25 10:37_
+_@gierens_
 
 ### Please complete the following tasks
 

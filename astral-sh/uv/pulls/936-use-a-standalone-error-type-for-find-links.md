@@ -13,14 +13,14 @@ head: charlie/find-links-error
 created_at: 2024-01-15T19:46:54Z
 updated_at: 2024-01-15T19:48:49Z
 url: https://github.com/astral-sh/uv/pull/936
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Use a standalone error type for `--find-links` registry
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 19:46_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: rename-dynamically-typed-expr
 created_at: 2023-02-10T23:30:58Z
 updated_at: 2023-02-11T00:02:31Z
 url: https://github.com/astral-sh/ruff/pull/2751
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Rename dynamically-typed-expression to any-type
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-10 23:30_
+_@not-my-profile_
 
 _No description provided._
 

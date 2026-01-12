@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-19T07:38:28Z
 updated_at: 2023-06-20T09:10:29Z
 url: https://github.com/astral-sh/ruff/issues/5176
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # formatter: debug panic in placement::find_pos_only_slash_offset
 
 ---
 
-_Issue opened by @davidszotten on 2023-06-19 07:38_
+_@davidszotten_
 
 while working on comments inside tuple unpacking between stars and name (following https://github.com/astral-sh/ruff/pull/5167#discussion_r1233371050 )
 

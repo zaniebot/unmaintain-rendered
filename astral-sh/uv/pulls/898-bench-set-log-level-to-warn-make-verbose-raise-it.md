@@ -13,14 +13,14 @@ head: ag/quiet-please
 created_at: 2024-01-12T14:42:54Z
 updated_at: 2024-01-12T15:08:00Z
 url: https://github.com/astral-sh/uv/pull/898
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # bench: set log level to WARN, make --verbose raise it to INFO
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-12 14:42_
+_@BurntSushi_
 
 I personally found the output by default somewhat noisy, especially for
 large requirements files. Since --verbose is already a thing, I propose

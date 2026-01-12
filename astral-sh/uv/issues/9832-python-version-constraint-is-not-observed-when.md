@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T07:08:33Z
 updated_at: 2024-12-13T03:19:30Z
 url: https://github.com/astral-sh/uv/issues/9832
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Python version constraint is not observed when building non-workspace package that depends on workspace packages
 
 ---
 
-_Issue opened by @imrehg on 2024-12-12 07:08_
+_@imrehg_
 
 I'm trying a setup, when the workspace has a `requires-python` value while a non-workspace has a different (more loose) constraints, but requires a package from the workspace. It seems like when I installing that latter, non-workspace package, the workspace `requires-python` is not being observed.
 

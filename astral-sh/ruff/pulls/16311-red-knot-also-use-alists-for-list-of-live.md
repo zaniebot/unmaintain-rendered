@@ -14,14 +14,14 @@ head: dcreager/alist-for-live-bds
 created_at: 2025-02-21T22:40:26Z
 updated_at: 2025-02-28T19:58:26Z
 url: https://github.com/astral-sh/ruff/pull/16311
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Also use alists for list of live bindings/declarations
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-21 22:40_
+_@dcreager_
 
 This PR extends #16306 to also use association lists to store the list of live bindings and declarations for each symbol in the use-def map.
 

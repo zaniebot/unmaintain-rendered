@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T12:40:54Z
 updated_at: 2022-12-24T09:45:41Z
 url: https://github.com/astral-sh/ruff/issues/1056
-synced_at: 2026-01-10T12:05:22Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Special case E721 (use isinstance instead of type comparison) for `type(None)`
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 12:40_
+_@smackesey_
 
 Comparison to `type(None)` occasionally comes up in our codebase:
 

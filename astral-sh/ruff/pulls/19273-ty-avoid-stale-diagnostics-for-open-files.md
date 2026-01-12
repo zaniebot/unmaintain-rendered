@@ -15,14 +15,14 @@ head: dhruv/stale-diagnostic-open-files-mode
 created_at: 2025-07-11T03:27:41Z
 updated_at: 2025-07-11T10:59:18Z
 url: https://github.com/astral-sh/ruff/pull/19273
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Avoid stale diagnostics for open files diagnostic mode
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-11 03:27_
+_@dhruvmanila_
 
 ## Summary
 

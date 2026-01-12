@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-04-21T09:26:48Z
 updated_at: 2020-04-28T10:31:37Z
 url: https://github.com/clap-rs/clap/issues/1847
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Feature Request: Parsing unknown arguments
 
 ---
 
-_Issue opened by @elichai on 2020-04-21 09:26_
+_@elichai_
 
 Hi,
 I'm writing a wrapper around another program, I have my own flags and inputs and the rest I want to pass through to the other program without knowing what are they.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-23T08:14:12Z
 updated_at: 2025-07-14T03:00:52Z
 url: https://github.com/astral-sh/uv/issues/6499
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add Support for Script Execution via Configuration File
 
 ---
 
-_Issue opened by @CucumberKing on 2024-08-23 08:14_
+_@CucumberKing_
 
 Could you introduce an option in `uv` to allow running scripts defined in a configuration file, similar to the functionality provided by PDM and Rye.
 

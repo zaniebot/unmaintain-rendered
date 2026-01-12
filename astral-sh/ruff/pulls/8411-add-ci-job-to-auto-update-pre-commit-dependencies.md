@@ -11,14 +11,14 @@ head: zanie/pre-commit-update
 created_at: 2023-11-01T17:06:21Z
 updated_at: 2024-03-25T18:44:58Z
 url: https://github.com/astral-sh/ruff/pull/8411
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add CI job to auto-update pre-commit dependencies weekly
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 17:06_
+_@zanieb_
 
 pre-commit provides an `autoupdate` command to bump dependency versions in the pre-commit configuration. Not only are our current versions all stale, with #8410 we'll want a reasonable way to update the Ruff version we are using.
 

@@ -12,14 +12,14 @@ head: diff-check-by-default
 created_at: 2024-07-31T15:28:01Z
 updated_at: 2024-09-04T21:57:14Z
 url: https://github.com/astral-sh/ruff/pull/12595
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Display fixes by default (#7352)
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-07-31 15:28_
+_@chriskrycho_
 
 ## Summary
 

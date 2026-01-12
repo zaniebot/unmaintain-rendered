@@ -13,14 +13,14 @@ head: uv-typo
 created_at: 2024-11-18T02:38:57Z
 updated_at: 2024-11-18T02:55:21Z
 url: https://github.com/astral-sh/uv/pull/9186
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Fix typo in environment variable name
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-11-18 02:38_
+_@hauntsaninja_
 
 https://github.com/astral-sh/uv/pull/9170/files#r1845768798
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:14:56Z
 updated_at: 2021-12-09T16:40:58Z
 url: https://github.com/clap-rs/clap/issues/3121
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # How to express "either ... or ..." relationship
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:14_
+_@epage_
 
 <a href="https://github.com/vbrandl"><img src="https://avatars.githubusercontent.com/u/20639051?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [vbrandl](https://github.com/vbrandl)**
 _Monday Oct 08, 2018 at 14:58 GMT_

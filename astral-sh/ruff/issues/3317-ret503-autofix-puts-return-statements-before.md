@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-03T01:28:37Z
 updated_at: 2023-03-03T19:15:57Z
 url: https://github.com/astral-sh/ruff/issues/3317
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET503: autofix puts return statements before comments of preceeding line
 
 ---
 
-_Issue opened by @onerandomusername on 2023-03-03 01:28_
+_@onerandomusername_
 
 ### Summary
 

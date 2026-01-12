@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-18T02:34:34Z
 updated_at: 2023-11-21T11:52:30Z
 url: https://github.com/astral-sh/ruff/issues/8750
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # __main__ is considered third party by isort
 
 ---
 
-_Issue opened by @Numerlor on 2023-11-18 02:34_
+_@Numerlor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

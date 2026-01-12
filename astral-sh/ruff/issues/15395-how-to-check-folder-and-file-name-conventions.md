@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T10:06:28Z
 updated_at: 2025-01-25T10:52:45Z
 url: https://github.com/astral-sh/ruff/issues/15395
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to check folder and file name conventions (missing init-hook)?
 
 ---
 
-_Issue opened by @fhg-isi on 2025-01-10 10:06_
+_@fhg-isi_
 
 Currently I use pylint in combination with an init-hook to check folder and file name conventions.
 I would like to switch to ruff but ruff does not seem to support init-hooks to include custom checks.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-25T20:07:26Z
 updated_at: 2022-05-25T23:38:36Z
 url: https://github.com/clap-rs/clap/issues/785
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Printing help on bare command invocation
 
 ---
 
-_Issue opened by @xpe on 2016-12-25 20:07_
+_@xpe_
 
 Thanks for this great library!
 

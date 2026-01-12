@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-11-29T19:15:00Z
 updated_at: 2024-12-03T12:48:05Z
 url: https://github.com/astral-sh/uv/pull/9528
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Un-gate `--emit-marker-expression` tests via `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-29 19:15_
+_@charliermarsh_
 
 These are tedious to update on non-Linux, but I think we can just use `--python-platform` to make them work on all platforms.
 

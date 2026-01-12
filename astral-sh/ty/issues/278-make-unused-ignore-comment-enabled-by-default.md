@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T16:23:50Z
 updated_at: 2026-01-09T10:58:45Z
 url: https://github.com/astral-sh/ty/issues/278
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Make `unused-ignore-comment` enabled by default
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-08 16:23_
+_@AlexWaygood_
 
 We made this rule disabled by default in https://github.com/astral-sh/ruff/pull/17955, on the following grounds:
 

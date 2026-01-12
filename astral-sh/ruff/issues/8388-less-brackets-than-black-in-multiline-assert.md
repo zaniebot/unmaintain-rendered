@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-31T19:41:41Z
 updated_at: 2023-10-31T21:52:26Z
 url: https://github.com/astral-sh/ruff/issues/8388
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # less brackets than black in multiline assert
 
 ---
 
-_Issue opened by @peterjc on 2023-10-31 19:41_
+_@peterjc_
 
 Excerpt from https://github.com/peterjc/thapbi-pict/blob/v1.0.3/thapbi_pict/prepare.py formatted by black (e.g. black version 23.10.1):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T08:08:48Z
 updated_at: 2025-04-11T06:54:34Z
 url: https://github.com/astral-sh/uv/issues/12800
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Recommended way to install additional packages in existing unmanaged environment
 
 ---
 
-_Issue opened by @KukumavMozolo on 2025-04-10 08:08_
+_@KukumavMozolo_
 
 ### Question
 

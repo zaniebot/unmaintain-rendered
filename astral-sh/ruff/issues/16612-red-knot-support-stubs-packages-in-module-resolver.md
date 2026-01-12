@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T23:13:41Z
 updated_at: 2025-04-07T12:40:51Z
 url: https://github.com/astral-sh/ruff/issues/16612
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] support -stubs packages in module resolver
 
 ---
 
-_Issue opened by @carljm on 2025-03-10 23:13_
+_@carljm_
 
 The package `foo-stubs`, if present in `site-packages`, should take priority over the package `foo` from `site-packages`.
 

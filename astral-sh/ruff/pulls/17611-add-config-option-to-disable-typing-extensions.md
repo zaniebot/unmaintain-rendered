@@ -14,14 +14,14 @@ head: brent/typing-extensions-config
 created_at: 2025-04-24T15:31:39Z
 updated_at: 2025-04-28T18:57:38Z
 url: https://github.com/astral-sh/ruff/pull/17611
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Add config option to disable `typing_extensions` imports 
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-24 15:31_
+_@ntBre_
 
 Summary
 --

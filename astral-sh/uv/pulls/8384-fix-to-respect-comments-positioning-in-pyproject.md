@@ -13,14 +13,14 @@ head: fix_comments_position_in_pyproject.toml
 created_at: 2024-10-20T15:07:37Z
 updated_at: 2024-10-20T17:16:13Z
 url: https://github.com/astral-sh/uv/pull/8384
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Fix to respect comments positioning in pyproject.toml on change
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-10-20 15:07_
+_@flyaroundme_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

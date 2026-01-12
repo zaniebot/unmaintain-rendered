@@ -13,14 +13,14 @@ head: zb/guard-symlink
 created_at: 2024-06-25T14:59:20Z
 updated_at: 2024-06-25T18:47:41Z
 url: https://github.com/astral-sh/uv/pull/4519
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Add guard to `replace_symlink` on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 14:59_
+_@zanieb_
 
 `junction::create` apparently will happily succeed but not create a link to files? Since our symlink function does not indicate that it cannot handle files, this was quite surprising.
 

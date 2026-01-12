@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-11-19T23:27:36Z
 updated_at: 2023-11-20T11:32:23Z
 url: https://github.com/astral-sh/uv/pull/463
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Store downloaded wheels in a local cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 23:27_
+_@charliermarsh_
 
 This PR modifies the `Fetcher` to cache remote wheels that we _already_ store to-disk. We might read these again in the future, so we might as well store them in the cache for consistency (rather than using a temporary directory).
 

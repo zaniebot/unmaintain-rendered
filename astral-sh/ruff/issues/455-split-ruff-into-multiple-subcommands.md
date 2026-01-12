@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-18T21:50:48Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/455
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Split `ruff` into multiple subcommands
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-18 21:50_
+_@charliermarsh_
 
 We could already support `ruff format` or `ruff fmt` or `ruff rtrip` (in Astor parlance). Soon there will be more tools and sub-commands, e.g., #423.
 

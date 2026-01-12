@@ -13,14 +13,14 @@ head: charlie/pip-docs
 created_at: 2025-07-20T13:39:17Z
 updated_at: 2025-07-20T13:44:27Z
 url: https://github.com/astral-sh/uv/pull/14752
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Clarify which portions of requires-python behavior are consistent with pip
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 13:39_
+_@charliermarsh_
 
 See: #14711
 

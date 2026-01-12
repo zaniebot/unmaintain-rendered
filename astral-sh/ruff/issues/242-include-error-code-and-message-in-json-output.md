@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-21T15:27:19Z
 updated_at: 2022-09-23T00:29:22Z
 url: https://github.com/astral-sh/ruff/issues/242
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Include error code and message in json output
 
 ---
 
-_Issue opened by @harupy on 2022-09-21 15:27_
+_@harupy_
 
 It'd be nice if the JSON output includes error code and message.
 

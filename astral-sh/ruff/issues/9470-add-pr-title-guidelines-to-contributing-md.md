@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T15:37:06Z
 updated_at: 2024-03-30T00:14:18Z
 url: https://github.com/astral-sh/ruff/issues/9470
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add PR title guidelines to `CONTRIBUTING.md`
 
 ---
 
-_Issue opened by @trag1c on 2024-01-11 15:37_
+_@trag1c_
 
 I had difficulty deciding on a suitable name when opening a pull request recently. I couldn't find any guidance on naming PRs in `CONTRIBUTING.md` despite seeing some of them be renamed before merging (e.g., #9166, #9174, #8995, #8036).
 

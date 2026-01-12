@@ -13,14 +13,14 @@ head: dhruv/format-python-code-in-docs
 created_at: 2024-08-10T10:29:30Z
 updated_at: 2024-08-10T11:43:29Z
 url: https://github.com/astral-sh/ruff/pull/12794
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Format Python code in docs with "black==24.3.0"
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-10 10:29_
+_@dhruvmanila_
 
 ## Summary
 

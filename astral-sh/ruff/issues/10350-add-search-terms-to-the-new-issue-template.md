@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T01:01:22Z
 updated_at: 2024-03-13T03:32:45Z
 url: https://github.com/astral-sh/ruff/issues/10350
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # (🎁) Add "Search terms" to the new issue template
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-03-12 01:01_
+_@KotlinIsland_
 
 typescript has this super useful section in the issue template where you list searchable terms:
 

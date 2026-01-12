@@ -12,14 +12,14 @@ head: charlie/length
 created_at: 2022-09-12T02:54:07Z
 updated_at: 2022-09-12T02:54:12Z
 url: https://github.com/astral-sh/ruff/pull/165
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Include line length in E501 messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-12 02:54_
+_@charliermarsh_
 
 Resolves #164.
 

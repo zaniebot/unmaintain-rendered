@@ -13,14 +13,14 @@ head: rk-ellipsis-type
 created_at: 2024-08-27T16:26:00Z
 updated_at: 2025-05-07T15:24:00Z
 url: https://github.com/astral-sh/ruff/pull/13124
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # red-knot: infer and display ellipsis type
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-27 16:26_
+_@chriskrycho_
 
 ## Summary
 

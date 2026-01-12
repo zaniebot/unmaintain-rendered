@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-08T08:07:04Z
 updated_at: 2025-10-20T07:09:53Z
 url: https://github.com/astral-sh/ruff/issues/9891
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add easier way to gather all available rules from ruff
 
 ---
 
-_Issue opened by @qarmin on 2024-02-08 08:07_
+_@qarmin_
 
 Since 0.2.0 version, my fuzzer CI stopped working.
 

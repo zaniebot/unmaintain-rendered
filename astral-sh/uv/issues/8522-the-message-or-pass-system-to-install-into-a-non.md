@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T10:55:50Z
 updated_at: 2024-10-24T15:23:23Z
 url: https://github.com/astral-sh/uv/issues/8522
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # the message  "or pass `--system` to install into a non-virtual environment" needs greater detail or is wrong. or something
 
 ---
 
-_Issue opened by @twobob on 2024-10-24 10:55_
+_@twobob_
 
 
 

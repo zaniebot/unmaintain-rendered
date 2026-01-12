@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T15:28:36Z
 updated_at: 2025-12-17T15:23:16Z
 url: https://github.com/astral-sh/uv/issues/17135
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # create-python-mirror has many download failures
 
 ---
 
-_Issue opened by @keestux on 2025-12-15 15:28_
+_@keestux_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/comma
 created_at: 2023-02-22T15:54:32Z
 updated_at: 2023-02-22T16:17:15Z
 url: https://github.com/astral-sh/ruff/pull/3130
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Upgrade RustPython to handle trailing commas in map patterns
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 15:54_
+_@charliermarsh_
 
 Closes #3118.
 

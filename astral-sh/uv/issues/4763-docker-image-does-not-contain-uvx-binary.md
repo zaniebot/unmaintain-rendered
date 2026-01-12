@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-03T11:38:16Z
 updated_at: 2024-07-03T11:51:57Z
 url: https://github.com/astral-sh/uv/issues/4763
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Docker image does not contain uvx binary
 
 ---
 
-_Issue opened by @Di-Is on 2024-07-03 11:38_
+_@Di-Is_
 
 It seems that the docker image `ghcr.io/astral-sh/uv` does not contain uvx binary.
 

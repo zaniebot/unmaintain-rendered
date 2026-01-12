@@ -14,14 +14,14 @@ head: konsti/which-uv
 created_at: 2024-12-19T14:08:19Z
 updated_at: 2024-12-20T09:15:26Z
 url: https://github.com/astral-sh/uv/pull/10028
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Use `shutil.which` for the build backend
 
 ---
 
-_Pull request opened by @konstin on 2024-12-19 14:08_
+_@konstin_
 
 From PEP 517:
 

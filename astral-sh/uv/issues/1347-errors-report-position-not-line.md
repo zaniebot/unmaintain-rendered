@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:15:09Z
 updated_at: 2024-02-27T12:34:59Z
 url: https://github.com/astral-sh/uv/issues/1347
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Errors report "position" not line
 
 ---
 
-_Issue opened by @emsi on 2024-02-15 21:15_
+_@emsi_
 
 When reporting errors `uv`  provides a position rather than line numer which makes it harder to debug:
 

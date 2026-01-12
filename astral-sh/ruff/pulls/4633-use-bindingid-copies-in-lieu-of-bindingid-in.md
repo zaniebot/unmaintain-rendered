@@ -12,14 +12,14 @@ head: charlie/copy
 created_at: 2023-05-24T14:54:44Z
 updated_at: 2023-05-24T16:23:00Z
 url: https://github.com/astral-sh/ruff/pull/4633
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use `BindingId` copies in lieu of `&BindingId` in semantic model methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-24 14:54_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: cjm/use-def-improvements
 created_at: 2024-07-17T23:40:38Z
 updated_at: 2024-07-18T16:33:19Z
 url: https://github.com/astral-sh/ruff/pull/12373
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] small efficiency improvements and bugfixes to use-def map building
 
 ---
 
-_Pull request opened by @carljm on 2024-07-17 23:40_
+_@carljm_
 
 Adds inference tests sufficient to give full test coverage of the `UseDefMapBuilder::merge` method.
 

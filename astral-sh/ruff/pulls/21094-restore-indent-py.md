@@ -13,14 +13,14 @@ head: micha/restore-indent-test
 created_at: 2025-10-27T10:30:08Z
 updated_at: 2025-10-27T10:41:13Z
 url: https://github.com/astral-sh/ruff/pull/21094
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Restore `indent.py`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-27 10:30_
+_@MichaReiser_
 
 ## Summary
 The content of this test was removed in https://github.com/astral-sh/ruff/pull/6999

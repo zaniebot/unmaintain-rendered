@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-13T13:29:20Z
 updated_at: 2025-01-13T14:43:41Z
 url: https://github.com/astral-sh/uv/issues/10563
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # SSL Verification Issue
 
 ---
 
-_Issue opened by @sssaha on 2025-01-13 13:29_
+_@sssaha_
 
 Hello 
 How can I avoid putting this string `pip --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org install ` every time I want to use UV to install packages via PIP? 

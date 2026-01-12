@@ -14,14 +14,14 @@ head: leave-aliases-in-tuple
 created_at: 2025-12-17T05:05:51Z
 updated_at: 2025-12-23T21:22:54Z
 url: https://github.com/astral-sh/ruff/pull/22015
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] don't expand type aliases in implicit tuple aliases
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-17 05:05_
+_@mtshiba_
 
 ## Summary
 

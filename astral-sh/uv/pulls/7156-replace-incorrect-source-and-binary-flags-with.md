@@ -13,14 +13,14 @@ head: fix_build_doc
 created_at: 2024-09-07T03:37:49Z
 updated_at: 2024-09-09T22:03:37Z
 url: https://github.com/astral-sh/uv/pull/7156
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 #  Replace incorrect ``--source`` and ``--binary`` flags with correct ``--sdist`` and ``--wheel`` flags in ``uv build``
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-09-07 03:37_
+_@FishAlchemist_
 
 
 ## Summary

@@ -14,14 +14,14 @@ head: newtype_float
 created_at: 2025-12-10T04:28:51Z
 updated_at: 2025-12-12T00:52:31Z
 url: https://github.com/astral-sh/ruff/pull/21886
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] support `NewType`s of `float` and `complex`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-10 04:28_
+_@oconnor663_
 
 https://github.com/astral-sh/ty/issues/1818
 

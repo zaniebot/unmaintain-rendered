@@ -12,14 +12,14 @@ head: return-in-init
 created_at: 2023-02-18T12:03:22Z
 updated_at: 2023-02-19T14:54:44Z
 url: https://github.com/astral-sh/ruff/pull/3007
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`PLE0101`] error when `__init__` returns a value
 
 ---
 
-_Pull request opened by @r3m0t on 2023-02-18 12:03_
+_@r3m0t_
 
 It's my first PR on any rust project 🥳 
 

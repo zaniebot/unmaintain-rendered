@@ -13,14 +13,14 @@ head: charlie/consistent
 created_at: 2023-08-31T15:14:45Z
 updated_at: 2023-08-31T20:45:27Z
 url: https://github.com/astral-sh/ruff/pull/7024
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Improve compatibility between multi-statement PYI rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-31 15:14_
+_@charliermarsh_
 
 ## Summary
 

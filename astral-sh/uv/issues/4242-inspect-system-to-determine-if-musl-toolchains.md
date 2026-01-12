@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-11T17:52:51Z
 updated_at: 2024-08-27T00:06:55Z
 url: https://github.com/astral-sh/uv/issues/4242
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Inspect system to determine if musl toolchains should be used
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:52_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/uv/pull/4160#issuecomment-2157850192
 

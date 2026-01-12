@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T09:11:20Z
 updated_at: 2024-05-15T12:35:13Z
 url: https://github.com/astral-sh/ruff/issues/11319
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Rule request] Missing return statement
 
 ---
 
-_Issue opened by @mrcljx on 2024-05-07 09:11_
+_@mrcljx_
 
 I just stumbled over a bug in our codebase:
 

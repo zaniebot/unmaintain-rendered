@@ -13,14 +13,14 @@ head: charlie/float
 created_at: 2023-12-07T02:27:34Z
 updated_at: 2023-12-07T02:39:53Z
 url: https://github.com/astral-sh/ruff/pull/9033
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Document use of math.isnan for self-comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-07 02:27_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8833.
 

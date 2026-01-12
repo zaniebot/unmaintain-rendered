@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-02T22:26:12Z
 updated_at: 2025-02-05T09:29:12Z
 url: https://github.com/astral-sh/ruff/issues/15887
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLR1730 autofixes max/mins in the wrong order
 
 ---
 
-_Issue opened by @TylerYep on 2025-02-02 22:26_
+_@TylerYep_
 
 ### Description
 

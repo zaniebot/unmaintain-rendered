@@ -13,14 +13,14 @@ head: e713-e714-improve-description
 created_at: 2024-05-21T17:43:38Z
 updated_at: 2024-05-21T19:24:37Z
 url: https://github.com/astral-sh/ruff/pull/11483
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Clarify motivation for E713 and E714
 
 ---
 
-_Pull request opened by @mnme on 2024-05-21 17:43_
+_@mnme_
 
 The wording 'negative comparison' is a rather vague description of the 'is not' operation and does not describe what the 'not in' operation does (potentially copied from 'is not'). This was replaced with more precise language to describe the operators taken from the official python docs[1].
 

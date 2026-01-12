@@ -14,14 +14,14 @@ head: konsti/multiple-modules
 created_at: 2025-07-04T14:33:13Z
 updated_at: 2025-07-09T17:45:45Z
 url: https://github.com/astral-sh/uv/pull/14460
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:14Z
 ```
 
 # Multiple modules in namespace packages
 
 ---
 
-_Pull request opened by @konstin on 2025-07-04 14:33_
+_@konstin_
 
 Support multiple root modules in namespace packages by enumerating them:
 

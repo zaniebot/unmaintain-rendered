@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-28T01:25:32Z
 updated_at: 2025-10-25T13:05:54Z
 url: https://github.com/astral-sh/ruff/issues/6140
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add support for Quarto notebooks 
 
 ---
 
-_Issue opened by @mjkanji on 2023-07-28 01:25_
+_@mjkanji_
 
 Copy-pasting my comment from #3792 below. Since Ruff already supports Jupyter notebooks, and Quarto is a plaintext equivalent of notebooks, it should hopefully be (relatively) easy to add support. The holy grail would be if the VS Code extension can highlight linting errors in the code blocks in an open `.qmd` file, but even just CLI support would be great to have as a start.
 

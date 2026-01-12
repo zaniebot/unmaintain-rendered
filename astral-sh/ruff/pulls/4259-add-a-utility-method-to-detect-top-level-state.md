@@ -12,14 +12,14 @@ head: charlie/top-level
 created_at: 2023-05-06T20:19:39Z
 updated_at: 2023-05-06T20:48:38Z
 url: https://github.com/astral-sh/ruff/pull/4259
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add a utility method to detect top-level state
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-06 20:19_
+_@charliermarsh_
 
 _No description provided._
 

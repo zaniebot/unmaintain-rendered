@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T23:56:43Z
 updated_at: 2024-06-19T00:31:47Z
 url: https://github.com/astral-sh/uv/issues/4320
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # How to change and manage python version? 
 
 ---
 
-_Issue opened by @takan1 on 2024-06-13 23:56_
+_@takan1_
 
 I switched from rye recently and with rye, I was able to manage python version with `rye pin`. What's the best way to manage the python versions with uv?
 

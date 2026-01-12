@@ -14,14 +14,14 @@ head: alex/union-type-from-elements
 created_at: 2026-01-03T14:08:47Z
 updated_at: 2026-01-03T14:19:07Z
 url: https://github.com/astral-sh/ruff/pull/22357
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Use `UnionType` helper methods more consistently
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 14:08_
+_@AlexWaygood_
 
 ## Summary
 

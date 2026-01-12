@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-21T07:46:29Z
 updated_at: 2023-11-21T19:30:49Z
 url: https://github.com/astral-sh/ruff/issues/8803
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive F821 (Undefined name) for NamedTuple
 
 ---
 
-_Issue opened by @cbeytas on 2023-11-21 07:46_
+_@cbeytas_
 
 ruff 0.1.6, Python 3.11
 

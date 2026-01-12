@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-21T03:31:40Z
 updated_at: 2024-11-21T04:27:12Z
 url: https://github.com/astral-sh/uv/issues/9303
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # uvx confused about executables "visidata" provides on windows
 
 ---
 
-_Issue opened by @hwine on 2024-11-21 03:31_
+_@hwine_
 
 `uvx` is confused confused about executables provided by package `visidata` on windows:
 ```bash

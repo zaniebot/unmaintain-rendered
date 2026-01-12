@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T17:29:37Z
 updated_at: 2024-10-21T17:35:24Z
 url: https://github.com/astral-sh/uv/issues/8421
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Adding git tags to cache keys causes pyproject.toml parse error
 
 ---
 
-_Issue opened by @kwaegel on 2024-10-21 17:29_
+_@kwaegel_
 
 When I try to use the code suggested in the [uv caching of dynamic metadata](https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) help doc to include git tags, I get a parse error. I suspect this is just a typo in the docs.
 

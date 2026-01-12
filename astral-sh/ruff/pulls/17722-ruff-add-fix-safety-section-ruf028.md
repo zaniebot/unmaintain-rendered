@@ -13,14 +13,14 @@ head: document-fix-safety-invalid-formatter-suppresion-comments
 created_at: 2025-04-29T20:16:59Z
 updated_at: 2025-04-30T19:06:25Z
 url: https://github.com/astral-sh/ruff/pull/17722
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`ruff`] add fix safety section (`RUF028`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-29 20:16_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `RUF028` (https://github.com/astral-sh/ruff/issues/15584 )
 

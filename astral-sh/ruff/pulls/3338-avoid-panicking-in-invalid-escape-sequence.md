@@ -12,14 +12,14 @@ head: charlie/r
 created_at: 2023-03-04T16:29:51Z
 updated_at: 2023-03-04T17:14:34Z
 url: https://github.com/astral-sh/ruff/pull/3338
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid panicking in invalid_escape_sequence
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-04 16:29_
+_@charliermarsh_
 
 We need to handle carriage returns properly, but we shouldn't be panicking there.
 

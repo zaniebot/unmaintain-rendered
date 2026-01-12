@@ -13,14 +13,14 @@ head: move-http-timeout-to-EnvironmentOptions
 created_at: 2025-09-26T13:10:48Z
 updated_at: 2025-10-09T17:28:30Z
 url: https://github.com/astral-sh/uv/pull/16040
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Add `UV_UPLOAD_HTTP_TIMEOUT` and respect `UV_HTTP_TIMEOUT` in uploads
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-09-26 13:10_
+_@andrey-berenda_
 
 ## Summary
 - Move  parsing `UV_HTTP_TIMEOUT`, `UV_REQUEST_TIMEOUT` and `HTTP_TIMEOUT` to `EnvironmentOptions`

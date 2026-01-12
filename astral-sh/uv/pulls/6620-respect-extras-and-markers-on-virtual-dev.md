@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-08-25T22:52:03Z
 updated_at: 2024-08-26T00:31:43Z
 url: https://github.com/astral-sh/uv/pull/6620
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Respect extras and markers on virtual dev dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 22:52_
+_@charliermarsh_
 
 ## Summary
 

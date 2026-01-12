@@ -13,14 +13,14 @@ head: fix-more-dropped-fstring-comments
 created_at: 2023-08-10T16:07:08Z
 updated_at: 2023-08-11T07:22:37Z
 url: https://github.com/astral-sh/ruff/pull/6481
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # move comments from expressions in f-strings out
 
 ---
 
-_Pull request opened by @davidszotten on 2023-08-10 16:07_
+_@davidszotten_
 
 move comments from expressions inside f-strings out to the containing f-string.
 

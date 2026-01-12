@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T21:33:49Z
 updated_at: 2024-04-19T21:51:10Z
 url: https://github.com/astral-sh/ruff/issues/11049
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FR: rule for use of macOS quotes
 
 ---
 
-_Issue opened by @ofek on 2024-04-19 21:33_
+_@ofek_
 
 I would love for the characters `“`, `”` and `’` to be forbidden in code comments and docstrings. I have to always write scripts to check for these in CI or be on heightened alert during code reviews. The auto fix would be completely safe as well.
 

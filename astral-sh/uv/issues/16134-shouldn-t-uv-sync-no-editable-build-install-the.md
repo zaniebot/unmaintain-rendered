@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-06T08:51:21Z
 updated_at: 2025-10-12T07:03:32Z
 url: https://github.com/astral-sh/uv/issues/16134
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Shouldn't `uv sync --no-editable` build & install the editable packages?
 
 ---
 
-_Issue opened by @tamir-bahar on 2025-10-06 08:51_
+_@tamir-bahar_
 
 ### Question
 

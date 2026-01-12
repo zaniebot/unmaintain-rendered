@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T11:54:34Z
 updated_at: 2024-11-01T13:55:26Z
 url: https://github.com/astral-sh/uv/issues/8751
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Can't uninstall python versions on uv 0.4.29
 
 ---
 
-_Issue opened by @NovaliX-Dev on 2024-11-01 11:54_
+_@NovaliX-Dev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

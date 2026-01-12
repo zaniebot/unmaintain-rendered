@@ -13,14 +13,14 @@ head: git-bug
 created_at: 2024-07-01T16:39:42Z
 updated_at: 2024-07-02T21:02:48Z
 url: https://github.com/astral-sh/uv/pull/4698
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Fix implementation of `GitDatabase::contains`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 16:39_
+_@ibraheemdev_
 
 ## Summary
 

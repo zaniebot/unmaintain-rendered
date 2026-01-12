@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-03-02T17:44:20Z
 updated_at: 2025-09-23T22:49:36Z
 url: https://github.com/clap-rs/clap/issues/1717
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap_derive: support tuples as shortcut for number_of_values = N, different validators
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-03-02 17:44_
+_@CreepySkeleton_
 
 Transferred from: TeXitoi/structopt#349
 

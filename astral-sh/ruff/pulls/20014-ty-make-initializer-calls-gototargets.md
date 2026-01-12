@@ -14,14 +14,14 @@ head: gankra/goto-init
 created_at: 2025-08-21T00:19:37Z
 updated_at: 2025-09-02T18:49:16Z
 url: https://github.com/astral-sh/ruff/pull/20014
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Make initializer calls GotoTargets
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-21 00:19_
+_@Gankra_
 
 This introduces `GotoTarget::Call` that represents the kind of ambiguous/overloaded click of a callable-being-called:
 

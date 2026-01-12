@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-06T15:37:37Z
 updated_at: 2025-04-07T17:35:01Z
 url: https://github.com/astral-sh/ruff/issues/17234
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] `...` should be an acceptable default value for any parameter in protocol methods, abstract methods and overloaded methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-06 15:37_
+_@AlexWaygood_
 
 ### Summary
 

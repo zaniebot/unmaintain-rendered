@@ -13,14 +13,14 @@ head: charlie/py2
 created_at: 2024-05-09T00:52:37Z
 updated_at: 2024-05-09T03:25:23Z
 url: https://github.com/astral-sh/uv/pull/3476
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Skip Python 2 versions when locating Python
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 00:52_
+_@charliermarsh_
 
 ## Summary
 

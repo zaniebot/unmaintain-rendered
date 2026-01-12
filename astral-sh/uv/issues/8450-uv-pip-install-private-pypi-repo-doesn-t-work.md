@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T13:06:54Z
 updated_at: 2025-11-06T18:39:27Z
 url: https://github.com/astral-sh/uv/issues/8450
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # `uv pip install` private pypi repo doesn't work when used in docker by default
 
 ---
 
-_Issue opened by @Pebin on 2024-10-22 13:06_
+_@Pebin_
 
 
 uv:0.4.24

@@ -12,14 +12,14 @@ head: using-prefect
 created_at: 2023-04-24T19:49:41Z
 updated_at: 2023-04-24T23:49:12Z
 url: https://github.com/astral-sh/ruff/pull/4084
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add `PrefectHQ/prefect` to list of ruff users
 
 ---
 
-_Pull request opened by @zanieb on 2023-04-24 19:49_
+_@zanieb_
 
 Prefect switched their main repository to use ruff in https://github.com/PrefectHQ/prefect/pull/9283
 

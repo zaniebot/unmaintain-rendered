@@ -14,14 +14,14 @@ head: dhruv/refactor-bool-op
 created_at: 2024-04-21T06:03:55Z
 updated_at: 2024-04-21T15:55:08Z
 url: https://github.com/astral-sh/ruff/pull/11066
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Use `BoolOp` parameter in boolean expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-21 06:03_
+_@dhruvmanila_
 
 ## Summary
 

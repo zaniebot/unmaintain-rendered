@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-30T17:43:33Z
 updated_at: 2024-08-02T21:27:09Z
 url: https://github.com/astral-sh/uv/issues/5618
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # error messages expose a dependency relationship between `a` and `a{marker}`
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-30 17:43_
+_@BurntSushi_
 
 For example:
 

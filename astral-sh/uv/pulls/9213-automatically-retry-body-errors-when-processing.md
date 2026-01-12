@@ -13,14 +13,14 @@ head: charlie/deny
 created_at: 2024-11-19T02:08:44Z
 updated_at: 2024-11-19T14:50:11Z
 url: https://github.com/astral-sh/uv/pull/9213
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Automatically retry body errors when processing response
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-19 02:08_
+_@charliermarsh_
 
 ## Summary
 

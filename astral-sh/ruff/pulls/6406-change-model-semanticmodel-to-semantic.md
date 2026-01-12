@@ -12,14 +12,14 @@ head: charlie/semantic
 created_at: 2023-08-07T19:59:44Z
 updated_at: 2023-08-07T20:37:08Z
 url: https://github.com/astral-sh/ruff/pull/6406
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Change `model: &SemanticModel` to `semantic: &SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 19:59_
+_@charliermarsh_
 
 Use the same naming conventions everywhere. See: https://github.com/astral-sh/ruff/pull/6314/files#r1284457874.
 

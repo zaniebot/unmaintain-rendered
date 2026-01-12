@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T14:47:54Z
 updated_at: 2026-01-12T13:14:17Z
 url: https://github.com/astral-sh/ty/issues/2366
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add option to limit auto-import completions to direct dependencies
 
 ---
 
-_Issue opened by @BurntSushi on 2026-01-06 14:47_
+_@BurntSushi_
 
 This idea was offered here: https://github.com/astral-sh/ty/issues/2254#issuecomment-3703049537
 

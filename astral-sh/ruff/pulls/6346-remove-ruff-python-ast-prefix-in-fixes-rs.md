@@ -13,14 +13,14 @@ head: charlie/comp
 created_at: 2023-08-04T16:39:20Z
 updated_at: 2023-08-04T17:14:48Z
 url: https://github.com/astral-sh/ruff/pull/6346
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `ruff_python_ast` prefix in fixes.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 16:39_
+_@charliermarsh_
 
 _No description provided._
 

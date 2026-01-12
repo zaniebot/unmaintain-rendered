@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T18:56:28Z
 updated_at: 2025-08-26T15:04:48Z
 url: https://github.com/astral-sh/ruff/issues/20087
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP035 breaks code
 
 ---
 
-_Issue opened by @IvanKirpichnikov on 2025-08-25 18:56_
+_@IvanKirpichnikov_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: claude/apply-ci-workflow-patch-bsMJR
 created_at: 2025-12-18T23:07:53Z
 updated_at: 2025-12-19T00:54:23Z
 url: https://github.com/astral-sh/uv/pull/17184
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Configure prettier `prose-wrap` in `.prettierrc` instead of the CLI
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-18 23:07_
+_@zanieb_
 
 This also removes the file-specific targets from prettier execution which means we're including `.json`, `.css`, and `.html` files, which seems like an improvement.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-17T20:37:30Z
 updated_at: 2015-10-29T07:02:08Z
 url: https://github.com/clap-rs/clap/issues/256
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Setting or function to prohibit process termination
 
 ---
 
-_Issue opened by @Drakulix on 2015-09-17 20:37_
+_@Drakulix_
 
 I would like to use clap's easy syntax for different stages in my program then just command line argument parsing. E.g. to parse remote commands with arguments read from sockets. I can already utilize clap using get_matches_from. But even get_matches_from_safe terminates my program when --help or --version gets passed to. I would like to have either an even safer _safe method or an app-setting, that completely blocks any terminate inside the clap crate and some kind of indication, if parsing did succeed or it should have terminated.
 

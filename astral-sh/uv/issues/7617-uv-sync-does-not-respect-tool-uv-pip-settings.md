@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-22T10:06:42Z
 updated_at: 2024-09-22T23:27:41Z
 url: https://github.com/astral-sh/uv/issues/7617
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv sync does not respect [tool.uv.pip] settings
 
 ---
 
-_Issue opened by @GalOzRlz on 2024-09-22 10:06_
+_@GalOzRlz_
 
 Hello again! I believe this might be another issue, but if i have misunderstood the documentation please let me know.
 

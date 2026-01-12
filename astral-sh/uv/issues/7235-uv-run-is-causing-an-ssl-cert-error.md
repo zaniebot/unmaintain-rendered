@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T23:35:40Z
 updated_at: 2024-10-21T21:48:14Z
 url: https://github.com/astral-sh/uv/issues/7235
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # `uv run` is causing an SSL_CERT error
 
 ---
 
-_Issue opened by @mattpodolak on 2024-09-09 23:35_
+_@mattpodolak_
 
 I'm using uv from Git Bash on Windows, loaded in a conda env
 ```

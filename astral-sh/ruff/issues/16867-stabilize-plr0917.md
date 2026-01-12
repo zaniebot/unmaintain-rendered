@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T11:55:09Z
 updated_at: 2025-10-02T12:39:31Z
 url: https://github.com/astral-sh/ruff/issues/16867
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Stabilize `PLR0917`
 
 ---
 
-_Issue opened by @flying-sheep on 2025-03-20 11:55_
+_@flying-sheep_
 
 I think it looks pretty stable, no?
 

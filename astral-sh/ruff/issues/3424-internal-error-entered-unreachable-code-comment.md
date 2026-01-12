@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-09T20:59:06Z
 updated_at: 2023-03-13T04:02:51Z
 url: https://github.com/astral-sh/ruff/issues/3424
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # 'internal error: entered unreachable code: Comment should contain '#' character'
 
 ---
 
-_Issue opened by @qarmin on 2023-03-09 20:59_
+_@qarmin_
 
 0.0.254
 

@@ -13,14 +13,14 @@ head: dhruv/f-string-parsing
 created_at: 2024-03-11T06:20:57Z
 updated_at: 2024-03-12T08:23:37Z
 url: https://github.com/astral-sh/ruff/pull/10327
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove `FStringElement::Invalid`, improve parsing logic
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-11 06:20_
+_@dhruvmanila_
 
 ## Summary
 

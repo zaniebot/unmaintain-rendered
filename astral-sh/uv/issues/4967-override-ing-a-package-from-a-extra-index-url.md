@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T16:35:02Z
 updated_at: 2024-07-28T00:38:35Z
 url: https://github.com/astral-sh/uv/issues/4967
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `--override`ing a package from a `--extra-index-url` index is not registered in the cache properly
 
 ---
 
-_Issue opened by @aabtop on 2024-07-10 16:35_
+_@aabtop_
 
 When the package is not registered properly in the cache, subsequent installations with the `--offline` fail.
 

@@ -13,14 +13,14 @@ head: stmt-pass
 created_at: 2023-06-08T13:30:05Z
 updated_at: 2023-06-08T14:29:28Z
 url: https://github.com/astral-sh/ruff/pull/4959
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Implement StmtPass
 
 ---
 
-_Pull request opened by @konstin on 2023-06-08 13:30_
+_@konstin_
 
 This implements StmtPass as `pass`.
 

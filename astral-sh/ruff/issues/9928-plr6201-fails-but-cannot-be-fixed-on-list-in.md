@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T04:12:59Z
 updated_at: 2024-02-13T05:44:23Z
 url: https://github.com/astral-sh/ruff/issues/9928
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PLR6201 fails but cannot be fixed on `list in tuple(list, list)`
 
 ---
 
-_Issue opened by @gboeing on 2024-02-11 04:12_
+_@gboeing_
 
 Thanks for developing and supporting this wonderful tool! I'm using ruff 0.2.0. Say I have a bit of code to check if some list appears in a predefined collection of lists:
 

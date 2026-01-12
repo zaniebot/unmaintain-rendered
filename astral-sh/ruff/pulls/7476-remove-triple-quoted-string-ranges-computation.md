@@ -13,14 +13,14 @@ head: dhruv/indexer-cleanup
 created_at: 2023-09-18T07:00:50Z
 updated_at: 2023-09-18T15:27:50Z
 url: https://github.com/astral-sh/ruff/pull/7476
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove triple-quoted string ranges computation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-18 07:00_
+_@dhruvmanila_
 
 ## Summary
 

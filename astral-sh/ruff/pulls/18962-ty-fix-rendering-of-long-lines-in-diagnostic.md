@@ -15,14 +15,14 @@ head: ag/fix-diagnostic-rendering-panic
 created_at: 2025-06-26T14:55:54Z
 updated_at: 2025-06-26T15:12:52Z
 url: https://github.com/astral-sh/ruff/pull/18962
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Fix rendering of long lines in diagnostic messages that are indented with tabs
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-26 14:55_
+_@BurntSushi_
 
 It turns out that `annotate-snippets` doesn't do a great job of
 consistently handling tabs. The intent of the implementation is clearly

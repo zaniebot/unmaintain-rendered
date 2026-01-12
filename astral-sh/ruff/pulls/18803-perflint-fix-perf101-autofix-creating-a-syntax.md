@@ -14,14 +14,14 @@ head: fix-PERF101
 created_at: 2025-06-19T20:00:31Z
 updated_at: 2025-06-23T13:18:25Z
 url: https://github.com/astral-sh/ruff/pull/18803
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`perflint`] Fix `PERF101` autofix creating a syntax error and mark autofix as unsafe if there are comments in the `list` call expr
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-19 20:00_
+_@LaBatata101_
 
 
 

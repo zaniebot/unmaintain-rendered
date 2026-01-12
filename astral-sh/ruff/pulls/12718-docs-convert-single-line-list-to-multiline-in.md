@@ -12,14 +12,14 @@ head: sa/update-config-example-in-docs
 created_at: 2024-08-06T17:28:31Z
 updated_at: 2024-08-08T12:29:39Z
 url: https://github.com/astral-sh/ruff/pull/12718
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [docs] Convert single line list to multiline in configuration examples
 
 ---
 
-_Pull request opened by @Cjkjvfnby on 2024-08-06 17:28_
+_@Cjkjvfnby_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: chore-fmt-docs
 created_at: 2023-07-16T15:11:30Z
 updated_at: 2023-07-16T18:03:44Z
 url: https://github.com/astral-sh/ruff/pull/5809
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update generate.py comment
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-16 15:11_
+_@cnpryer_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-07-23T19:39:34Z
 updated_at: 2025-07-23T20:00:58Z
 url: https://github.com/astral-sh/uv/pull/14854
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Use `cache_index_credentials` in `uv venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-23 19:39_
+_@charliermarsh_
 
 _No description provided._
 

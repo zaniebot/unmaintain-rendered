@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T14:02:01Z
 updated_at: 2025-09-30T16:16:21Z
 url: https://github.com/astral-sh/uv/issues/12280
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Provide feedback and improve doc on keyring index authentication
 
 ---
 
-_Issue opened by @LSerranoPEReN on 2025-03-18 14:02_
+_@LSerranoPEReN_
 
 ### Summary
 

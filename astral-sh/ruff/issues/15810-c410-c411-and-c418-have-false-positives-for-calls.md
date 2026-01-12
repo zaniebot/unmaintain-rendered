@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T14:30:06Z
 updated_at: 2025-01-30T23:10:45Z
 url: https://github.com/astral-sh/ruff/issues/15810
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # C410, C411, and C418 have false positives for calls with extra arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-29 14:30_
+_@dscorbett_
 
 ### Description
 

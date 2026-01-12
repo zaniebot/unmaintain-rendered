@@ -13,14 +13,14 @@ head: zb/lock-perms
 created_at: 2025-11-25T15:08:29Z
 updated_at: 2025-12-01T18:09:45Z
 url: https://github.com/astral-sh/uv/pull/16845
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Use 0o666 permissions for flock files instead of 0o777
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-25 15:08_
+_@zanieb_
 
 This removes executable permissions while retaining global read / global write.
 

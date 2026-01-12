@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T01:55:23Z
 updated_at: 2024-10-21T21:38:44Z
 url: https://github.com/astral-sh/uv/issues/6736
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Need to activate venv for nvim to recognize venv
 
 ---
 
-_Issue opened by @AlphaSeekr on 2024-08-28 01:55_
+_@AlphaSeekr_
 
 Nvim doesn't recognize venv unless it is explicitly activated. Is this an expected behaviour?
 

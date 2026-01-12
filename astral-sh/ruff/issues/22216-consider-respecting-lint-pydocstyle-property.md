@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-26T23:16:00Z
 updated_at: 2025-12-26T23:16:00Z
 url: https://github.com/astral-sh/ruff/issues/22216
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Consider respecting `lint.pydocstyle.property-decorators` in `RUF066`
 
 ---
 
-_Issue opened by @ntBre on 2025-12-26 23:16_
+_@ntBre_
 
 The other references to this `is_property` function end up passing the [property-decorators](https://docs.astral.sh/ruff/settings/#lint_pydocstyle_property-decorators) setting, so I think we should do the same here.
 

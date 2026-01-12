@@ -12,14 +12,14 @@ head: renovate/libz-ng-sys-1.x
 created_at: 2024-11-04T01:13:57Z
 updated_at: 2024-11-04T02:15:35Z
 url: https://github.com/astral-sh/uv/pull/8788
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Update Rust crate libz-ng-sys to <1.1.21
 
 ---
 
-_Pull request opened by @renovate on 2024-11-04 01:13_
+_@renovate_
 
 This PR contains the following updates:
 

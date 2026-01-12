@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T02:47:21Z
 updated_at: 2025-03-25T22:12:03Z
 url: https://github.com/astral-sh/ruff/issues/16942
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Weird N805 functionality when using `aenum`
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-24 02:47_
+_@gtkacz_
 
 ### Summary
 

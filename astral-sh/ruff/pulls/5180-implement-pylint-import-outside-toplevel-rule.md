@@ -13,14 +13,14 @@ head: import-outside-toplevel
 created_at: 2023-06-19T14:17:47Z
 updated_at: 2023-10-29T16:50:23Z
 url: https://github.com/astral-sh/ruff/pull/5180
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Implement pylint import-outside-toplevel rule (C0415)
 
 ---
 
-_Pull request opened by @ashanbrown on 2023-06-19 14:17_
+_@ashanbrown_
 
 ## Summary
 

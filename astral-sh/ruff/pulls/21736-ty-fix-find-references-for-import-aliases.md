@@ -14,14 +14,14 @@ head: micha/fix-find-references-import-alias
 created_at: 2025-12-01T17:37:55Z
 updated_at: 2025-12-02T13:37:52Z
 url: https://github.com/astral-sh/ruff/pull/21736
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix find-references for import aliases
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-01 17:37_
+_@MichaReiser_
 
 ## Summary
 

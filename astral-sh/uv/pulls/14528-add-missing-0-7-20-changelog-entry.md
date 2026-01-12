@@ -14,14 +14,14 @@ head: zb/720-mis
 created_at: 2025-07-09T20:34:48Z
 updated_at: 2025-07-09T20:36:09Z
 url: https://github.com/astral-sh/uv/pull/14528
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Add missing 0.7.20 changelog entry
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-09 20:34_
+_@zanieb_
 
 _No description provided._
 

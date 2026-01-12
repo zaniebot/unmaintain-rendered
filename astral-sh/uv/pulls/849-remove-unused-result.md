@@ -12,14 +12,14 @@ head: konsti/remove-unused-option
 created_at: 2024-01-09T16:25:19Z
 updated_at: 2024-01-09T16:35:11Z
 url: https://github.com/astral-sh/uv/pull/849
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Remove unused `Result`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-09 16:25_
+_@konstin_
 
 Remove some dead code, seems to be a refactoring oversight
 

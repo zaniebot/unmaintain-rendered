@@ -13,14 +13,14 @@ head: dhruv/e27-soft-keyword
 created_at: 2024-05-16T11:39:48Z
 updated_at: 2024-05-20T05:47:44Z
 url: https://github.com/astral-sh/ruff/pull/11446
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider soft keywords for `E27` rules
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-16 11:39_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: mabelanger/tree-json
 created_at: 2025-10-21T20:17:59Z
 updated_at: 2025-10-24T14:56:18Z
 url: https://github.com/astral-sh/uv/pull/16398
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Add JSON output for the `tree` command
 
 ---
 
-_Pull request opened by @belmarca-bia on 2025-10-21 20:17_
+_@belmarca-bia_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

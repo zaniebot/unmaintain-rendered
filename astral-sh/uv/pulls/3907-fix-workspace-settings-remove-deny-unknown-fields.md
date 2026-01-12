@@ -14,14 +14,14 @@ head: fix-toml-settings
 created_at: 2024-05-29T15:23:57Z
 updated_at: 2024-05-29T15:31:07Z
 url: https://github.com/astral-sh/uv/pull/3907
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Fix workspace settings - remove deny unknown fields
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-29 15:23_
+_@blueraft_
 
 ## Summary
 

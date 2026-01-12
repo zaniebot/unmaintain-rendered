@@ -13,14 +13,14 @@ head: better-site-packages-lookup
 created_at: 2025-05-19T17:55:50Z
 updated_at: 2025-05-20T19:16:26Z
 url: https://github.com/astral-sh/ruff/pull/18203
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Add support for PyPy virtual environments
 
 ---
 
-_Pull request opened by @Mathemmagician on 2025-05-19 17:55_
+_@Mathemmagician_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

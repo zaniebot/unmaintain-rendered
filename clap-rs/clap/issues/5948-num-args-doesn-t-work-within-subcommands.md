@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T18:37:33Z
 updated_at: 2025-03-13T18:51:59Z
 url: https://github.com/clap-rs/clap/issues/5948
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `num_args` doesn't work within subcommands
 
 ---
 
-_Issue opened by @yongqli on 2025-03-13 18:37_
+_@yongqli_
 
 ### Please complete the following tasks
 

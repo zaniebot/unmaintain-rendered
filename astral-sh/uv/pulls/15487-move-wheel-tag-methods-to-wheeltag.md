@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2025-08-24T17:49:20Z
 updated_at: 2025-08-24T18:00:10Z
 url: https://github.com/astral-sh/uv/pull/15487
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Move wheel tag methods to `WheelTag`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 17:49_
+_@charliermarsh_
 
 ## Summary
 

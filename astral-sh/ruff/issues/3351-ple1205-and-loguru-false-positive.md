@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-05T20:18:55Z
 updated_at: 2023-09-01T00:36:47Z
 url: https://github.com/astral-sh/ruff/issues/3351
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE1205 and loguru "false positive"
 
 ---
 
-_Issue opened by @OMEGARAZER on 2023-03-05 20:18_
+_@OMEGARAZER_
 
 Not sure if this is something that can actually be done, but I figured it might be worth mentioning, in case someone else runs into this as it took me a bit (longer than it should have anyway) to realize that the check seems specific to the base logging module.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-30T11:50:55Z
 updated_at: 2024-04-30T15:08:09Z
 url: https://github.com/astral-sh/ruff/issues/11211
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add new configuration setting `lint.pydocstyle.allow-missing-docstring-nested-class-names`
 
 ---
 
-_Issue opened by @CarrotManMatt on 2024-04-30 11:50_
+_@CarrotManMatt_
 
 This setting would be used by linting rule [D106](https://docs.astral.sh/ruff/rules/undocumented-public-nested-class/).
 It would be of type `list[str]` representing the names of public nested classes that are allowed to not contain a docstring.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T17:12:29Z
 updated_at: 2024-07-09T10:41:32Z
 url: https://github.com/astral-sh/uv/issues/4311
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # The managed toolchain directory should be robust to concurrent access
 
 ---
 
-_Issue opened by @zanieb on 2024-06-13 17:12_
+_@zanieb_
 
 e.g. fetches should be safe to run concurrently and _reading_ a toolchain should not occur mid-fetch.
 

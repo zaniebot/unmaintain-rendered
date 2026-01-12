@@ -13,14 +13,14 @@ head: charlie/arch
 created_at: 2024-02-25T00:16:37Z
 updated_at: 2024-02-25T01:31:48Z
 url: https://github.com/astral-sh/uv/pull/1959
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Re-sync editables on-change
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-25 00:16_
+_@charliermarsh_
 
 ## Summary
 

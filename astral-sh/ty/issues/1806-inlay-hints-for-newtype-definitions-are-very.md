@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T12:56:11Z
 updated_at: 2025-12-08T16:07:35Z
 url: https://github.com/astral-sh/ty/issues/1806
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Inlay hints for `NewType` definitions are very verbose and somewhat fatuous
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-08 12:56_
+_@AlexWaygood_
 
 It feels like the inlay hint here is just repeating exactly the same information that can be gleaned without any inlay:
 

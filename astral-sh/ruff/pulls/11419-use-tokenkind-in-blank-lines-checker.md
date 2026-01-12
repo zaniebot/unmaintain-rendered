@@ -13,14 +13,14 @@ head: dhruv/token-kind-blanklines
 created_at: 2024-05-14T03:19:50Z
 updated_at: 2024-05-14T17:12:52Z
 url: https://github.com/astral-sh/ruff/pull/11419
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use `TokenKind` in blank lines checker
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-14 03:19_
+_@dhruvmanila_
 
 ## Summary
 

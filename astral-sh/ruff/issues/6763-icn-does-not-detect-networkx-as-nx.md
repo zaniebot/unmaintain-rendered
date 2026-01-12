@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T09:32:05Z
 updated_at: 2023-08-22T16:49:05Z
 url: https://github.com/astral-sh/ruff/issues/6763
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ICN does not detect `networkx as nx`
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2023-08-22 09:32_
+_@AbdealiLoKo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

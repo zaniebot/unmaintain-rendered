@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T15:42:00Z
 updated_at: 2025-03-11T08:35:18Z
 url: https://github.com/astral-sh/ruff/issues/14001
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter can insert mysterious extraneous parentheses in `with` statements
 
 ---
 
-_Issue opened by @lpulley on 2024-10-30 15:42_
+_@lpulley_
 
 My `ruff --version` is 0.7.1.
 

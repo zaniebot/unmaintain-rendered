@@ -12,14 +12,14 @@ head: Update-pyproject-toml-to-0.8.0-
 created_at: 2023-11-06T13:13:11Z
 updated_at: 2023-11-06T13:16:38Z
 url: https://github.com/astral-sh/uv/pull/329
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Update pyproject-toml to 0.8.0
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 13:13_
+_@konstin_
 
 _No description provided._
 

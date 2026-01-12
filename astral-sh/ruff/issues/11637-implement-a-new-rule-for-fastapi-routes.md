@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T13:07:59Z
 updated_at: 2024-07-26T01:27:11Z
 url: https://github.com/astral-sh/ruff/issues/11637
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Implement a new rule for FastApi routes
 
 ---
 
-_Issue opened by @TomerBin on 2024-05-31 13:07_
+_@TomerBin_
 
 Hi there,
 

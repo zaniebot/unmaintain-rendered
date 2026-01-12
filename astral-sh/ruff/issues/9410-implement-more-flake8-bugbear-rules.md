@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-06T17:45:57Z
 updated_at: 2024-01-06T22:41:03Z
 url: https://github.com/astral-sh/ruff/issues/9410
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Implement more flake8-bugbear rules
 
 ---
 
-_Issue opened by @mikaelarguedas on 2024-01-06 17:45_
+_@mikaelarguedas_
 
  (B035 aka RUF011 implemented in bugbear https://github.com/PyCQA/flake8-bugbear/issues/391)
 - [ ] B035: Found dict comprehension with a static key - either a constant value or variable not from the comprehension expression. This will result in a dict with a single key that was repeatedly overwritten.

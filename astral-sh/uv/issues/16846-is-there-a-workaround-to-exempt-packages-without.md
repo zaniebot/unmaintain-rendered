@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-25T15:39:42Z
 updated_at: 2025-11-26T13:15:34Z
 url: https://github.com/astral-sh/uv/issues/16846
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Is there a workaround to exempt packages without an upload date from `exclude-newer`?
 
 ---
 
-_Issue opened by @SAI-Marko on 2025-11-25 15:39_
+_@SAI-Marko_
 
 ### Question
 

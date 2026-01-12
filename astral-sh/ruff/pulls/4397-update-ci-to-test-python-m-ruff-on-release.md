@@ -12,14 +12,14 @@ head: ci/4394
 created_at: 2023-05-12T18:41:53Z
 updated_at: 2023-05-12T19:52:48Z
 url: https://github.com/astral-sh/ruff/pull/4397
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update CI to test `python -m ruff` on release
 
 ---
 
-_Pull request opened by @zanieb on 2023-05-12 18:41_
+_@zanieb_
 
 To prevent future regressions like https://github.com/charliermarsh/ruff/issues/4394
 

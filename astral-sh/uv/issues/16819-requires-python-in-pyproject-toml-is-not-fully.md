@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-22T22:26:23Z
 updated_at: 2025-11-23T17:06:27Z
 url: https://github.com/astral-sh/uv/issues/16819
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # requires-python in pyproject.toml is not (fully) taken into account
 
 ---
 
-_Issue opened by @bohning on 2025-11-22 22:26_
+_@bohning_
 
 ### Summary
 I have 

@@ -12,14 +12,14 @@ head: charlie/split
 created_at: 2022-12-29T00:37:36Z
 updated_at: 2022-12-29T01:14:34Z
 url: https://github.com/astral-sh/ruff/pull/1432
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Split into lint and lint-and-fix methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-29 00:37_
+_@charliermarsh_
 
 This is more verbose, but it lets us perform a small optimization in the non-fix case (we can avoid some string allocations of the entire source code).
 

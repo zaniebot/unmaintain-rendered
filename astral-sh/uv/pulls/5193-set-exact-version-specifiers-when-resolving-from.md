@@ -13,14 +13,14 @@ head: ibraheem/prefill-version-specifier
 created_at: 2024-07-18T16:48:41Z
 updated_at: 2024-07-18T17:02:10Z
 url: https://github.com/astral-sh/uv/pull/5193
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Set exact version specifiers when resolving from lockfile
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-18 16:48_
+_@ibraheemdev_
 
 ## Summary
 

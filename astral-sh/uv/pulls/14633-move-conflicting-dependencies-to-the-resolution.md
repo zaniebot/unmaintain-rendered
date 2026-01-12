@@ -13,14 +13,14 @@ head: zb/conflicting
 created_at: 2025-07-15T19:08:41Z
 updated_at: 2025-07-15T21:47:44Z
 url: https://github.com/astral-sh/uv/pull/14633
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Move "Conflicting dependencies" to the "Resolution" page
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 19:08_
+_@zanieb_
 
 _No description provided._
 

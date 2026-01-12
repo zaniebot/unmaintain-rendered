@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T23:06:59Z
 updated_at: 2025-11-20T19:10:13Z
 url: https://github.com/astral-sh/uv/issues/16765
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # `uv init --package` creates invalid pyproject.toml if git username contains quotes
 
 ---
 
-_Issue opened by @NMertsch on 2025-11-17 23:06_
+_@NMertsch_
 
 ### Summary
 `uv init` does not escape quotes when inserting the git "user.name" config value as "project.author.name".

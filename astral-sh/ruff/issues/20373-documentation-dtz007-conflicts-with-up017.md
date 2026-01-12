@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T21:35:02Z
 updated_at: 2025-09-16T17:48:12Z
 url: https://github.com/astral-sh/ruff/issues/20373
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Documentation DTZ007 conflicts with UP017
 
 ---
 
-_Issue opened by @Jmandarino on 2025-09-12 21:35_
+_@Jmandarino_
 
 ### Summary
 

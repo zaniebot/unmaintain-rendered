@@ -13,14 +13,14 @@ head: format-no-project
 created_at: 2025-08-28T16:43:13Z
 updated_at: 2025-09-09T08:09:35Z
 url: https://github.com/astral-sh/uv/pull/15572
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # support `--no-project` in `uv format`
 
 ---
 
-_Pull request opened by @younver on 2025-08-28 16:43_
+_@younver_
 
 When a user passes `--no-project` argument to `uv format` command, instead of running the formatter in the context of the current project, run it in the context of the current directory. This is useful when the current directory is not a project.
 

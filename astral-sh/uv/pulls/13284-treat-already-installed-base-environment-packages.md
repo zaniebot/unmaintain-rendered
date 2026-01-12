@@ -13,14 +13,14 @@ head: charlie/non-lock-constraint
 created_at: 2025-05-04T15:40:47Z
 updated_at: 2025-05-04T23:24:58Z
 url: https://github.com/astral-sh/uv/pull/13284
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Treat already-installed base environment packages as preferences in `uv run --with`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-04 15:40_
+_@charliermarsh_
 
 ## Summary
 

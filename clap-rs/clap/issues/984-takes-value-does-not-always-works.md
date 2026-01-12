@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-06-09T11:58:38Z
 updated_at: 2020-04-12T21:56:39Z
 url: https://github.com/clap-rs/clap/issues/984
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # takes_value does not always works
 
 ---
 
-_Issue opened by @mantal on 2017-06-09 11:58_
+_@mantal_
 
 ```
     let matches = App::new("foo")

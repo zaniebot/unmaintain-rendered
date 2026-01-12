@@ -12,14 +12,14 @@ head: expr-lambda
 created_at: 2023-07-20T01:47:50Z
 updated_at: 2023-07-20T11:27:38Z
 url: https://github.com/astral-sh/ruff/pull/5903
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use `dangling_node_comments` in `lambda` formatting
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-20 01:47_
+_@cnpryer_
 
 ## Summary
 

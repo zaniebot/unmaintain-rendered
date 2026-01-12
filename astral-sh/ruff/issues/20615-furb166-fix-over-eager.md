@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-28T21:14:55Z
 updated_at: 2025-11-06T13:27:56Z
 url: https://github.com/astral-sh/ruff/issues/20615
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB166: fix: over-eager
 
 ---
 
-_Issue opened by @smurfix on 2025-09-28 21:14_
+_@smurfix_
 
 ### Summary
 

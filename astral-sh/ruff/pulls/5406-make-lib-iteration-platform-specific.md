@@ -12,14 +12,14 @@ head: charlie/libs
 created_at: 2023-06-27T22:07:31Z
 updated_at: 2023-06-28T14:09:12Z
 url: https://github.com/astral-sh/ruff/pull/5406
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Make lib iteration platform-specific
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 22:07_
+_@charliermarsh_
 
 _No description provided._
 

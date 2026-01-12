@@ -13,14 +13,14 @@ head: deprecated-unittest-alias-docs-fix
 created_at: 2024-09-11T15:50:35Z
 updated_at: 2024-09-11T18:27:08Z
 url: https://github.com/astral-sh/ruff/pull/13327
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pyupgrade`] Fix broken doc link and clarify that deprecated aliases were removed in Python 3.12 (`UP005`)
 
 ---
 
-_Pull request opened by @dizzy57 on 2024-09-11 15:50_
+_@dizzy57_
 
 
 ## Summary

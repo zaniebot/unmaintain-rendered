@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-11T11:25:44Z
 updated_at: 2025-12-11T12:34:31Z
 url: https://github.com/astral-sh/ty/issues/1853
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `iter` and `next` return types are unknown
 
 ---
 
-_Issue opened by @oriori1703 on 2025-12-11 11:25_
+_@oriori1703_
 
 ### Summary
 

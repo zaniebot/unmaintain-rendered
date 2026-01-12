@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-23T00:11:24Z
 updated_at: 2025-08-25T13:07:31Z
 url: https://github.com/astral-sh/uv/issues/15466
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # There should be a comment in `.profile` when modifying it to add uv to `$PATH`
 
 ---
 
-_Issue opened by @Logan-Pageler on 2025-08-23 00:11_
+_@Logan-Pageler_
 
 ### Summary
 

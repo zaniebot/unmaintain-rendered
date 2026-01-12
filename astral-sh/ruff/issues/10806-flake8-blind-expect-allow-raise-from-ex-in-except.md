@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-06T18:33:38Z
 updated_at: 2024-04-24T15:56:13Z
 url: https://github.com/astral-sh/ruff/issues/10806
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [`flake8-blind-expect`] Allow `raise ... from ex` in `except Exception as ex` in BLE001
 
 ---
 
-_Issue opened by @autinerd on 2024-04-06 18:33_
+_@autinerd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

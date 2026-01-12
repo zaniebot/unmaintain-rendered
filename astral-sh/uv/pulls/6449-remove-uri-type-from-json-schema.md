@@ -13,14 +13,14 @@ head: charlie/uri
 created_at: 2024-08-22T17:06:04Z
 updated_at: 2024-08-23T14:21:54Z
 url: https://github.com/astral-sh/uv/pull/6449
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Remove URI type from JSON Schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 17:06_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-23T10:27:39Z
 updated_at: 2024-04-23T20:21:00Z
 url: https://github.com/astral-sh/uv/issues/3204
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Progress bar style might induce bad memories and mental health issues
 
 ---
 
-_Issue opened by @minusf on 2024-04-23 10:27_
+_@minusf_
 
 First off let me say this is a very cool project! Finally true offline cache (bye bye devpi)
 

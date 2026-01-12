@@ -14,14 +14,14 @@ head: isort-lines-before-empty
 created_at: 2023-02-22T19:15:41Z
 updated_at: 2023-02-22T19:36:01Z
 url: https://github.com/astral-sh/ruff/pull/3139
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix isort `no-lines-before` preceded by an empty section
 
 ---
 
-_Pull request opened by @bluetech on 2023-02-22 19:15_
+_@bluetech_
 
 Fix #3138.
 

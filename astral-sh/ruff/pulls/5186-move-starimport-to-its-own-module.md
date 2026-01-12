@@ -12,14 +12,14 @@ head: charlie/star-import
 created_at: 2023-06-19T16:04:47Z
 updated_at: 2023-06-20T17:25:15Z
 url: https://github.com/astral-sh/ruff/pull/5186
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move `StarImport` to its own module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 16:04_
+_@charliermarsh_
 
 _No description provided._
 

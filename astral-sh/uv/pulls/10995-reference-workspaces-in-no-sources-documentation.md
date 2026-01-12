@@ -13,14 +13,14 @@ head: charlie/no-sources
 created_at: 2025-01-27T18:16:12Z
 updated_at: 2025-01-27T18:56:12Z
 url: https://github.com/astral-sh/uv/pull/10995
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Reference workspaces in `--no-sources` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 18:16_
+_@charliermarsh_
 
 ## Summary
 

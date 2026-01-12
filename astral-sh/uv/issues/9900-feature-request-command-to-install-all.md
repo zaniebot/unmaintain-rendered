@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-14T22:30:31Z
 updated_at: 2024-12-17T11:36:47Z
 url: https://github.com/astral-sh/uv/issues/9900
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Feature Request: Command to Install All Dependencies Listed in pyproject.toml
 
 ---
 
-_Issue opened by @dimanu-py on 2024-12-14 22:30_
+_@dimanu-py_
 
 I've been using uv and really enjoy it, but I've noticed a missing feature that other package managers like pdm provide: a command to install all the dependencies listed in the pyproject.toml file.
 

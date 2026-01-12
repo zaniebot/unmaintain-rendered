@@ -12,14 +12,14 @@ head: py-typed
 created_at: 2024-02-19T11:29:03Z
 updated_at: 2024-02-20T08:04:25Z
 url: https://github.com/astral-sh/uv/pull/1685
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Py.typed
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-19 11:29_
+_@sbrugman_
 
 Suggested implementation for https://github.com/astral-sh/uv/issues/1677
 

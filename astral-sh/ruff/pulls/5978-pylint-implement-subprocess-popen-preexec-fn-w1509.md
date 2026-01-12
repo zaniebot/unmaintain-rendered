@@ -13,14 +13,14 @@ head: preexec-fn
 created_at: 2023-07-22T13:25:54Z
 updated_at: 2023-07-24T22:30:40Z
 url: https://github.com/astral-sh/ruff/pull/5978
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`pylint`] Implement `subprocess-popen-preexec-fn`  (`W1509`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-22 13:25_
+_@tjkuson_
 
 ## Summary
 

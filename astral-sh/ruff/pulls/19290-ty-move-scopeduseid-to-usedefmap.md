@@ -14,14 +14,14 @@ head: micha/delete-ast-ids
 created_at: 2025-07-11T18:30:47Z
 updated_at: 2025-07-13T15:13:29Z
 url: https://github.com/astral-sh/ruff/pull/19290
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Move `ScopedUseId` to `UseDefMap`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-11 18:30_
+_@MichaReiser_
 
 ## Summary
 

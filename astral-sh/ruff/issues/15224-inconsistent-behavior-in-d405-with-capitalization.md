@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-02T16:53:46Z
 updated_at: 2025-01-07T03:13:37Z
 url: https://github.com/astral-sh/ruff/issues/15224
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Inconsistent behavior in D405 with capitalization in Google docstrings
 
 ---
 
-_Issue opened by @mgilson on 2025-01-02 16:53_
+_@mgilson_
 
 Consider the following simple snippet:
 

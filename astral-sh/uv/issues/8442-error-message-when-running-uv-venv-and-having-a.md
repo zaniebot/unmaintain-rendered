@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T10:05:24Z
 updated_at: 2024-10-23T09:57:48Z
 url: https://github.com/astral-sh/uv/issues/8442
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Error message when running uv venv and having a .python-version file
 
 ---
 
-_Issue opened by @TheUncharted on 2024-10-22 10:05_
+_@TheUncharted_
 
 In my project i have a .python-version file 
 I want to create a virtual env with the commands 

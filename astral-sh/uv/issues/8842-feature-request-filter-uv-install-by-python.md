@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-05T21:31:24Z
 updated_at: 2024-11-05T21:39:13Z
 url: https://github.com/astral-sh/uv/issues/8842
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # ✨[Feature Request]: Filter uv install by Python Package Authority's Security Advisory Database.✨
 
 ---
 
-_Issue opened by @galenseilis on 2024-11-05 21:31_
+_@galenseilis_
 
 # What's the problem this feature will solve?
 

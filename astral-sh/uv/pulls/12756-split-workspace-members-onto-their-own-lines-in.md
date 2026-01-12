@@ -13,14 +13,14 @@ head: charlie/split
 created_at: 2025-04-08T19:33:37Z
 updated_at: 2025-04-08T19:51:24Z
 url: https://github.com/astral-sh/uv/pull/12756
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Split workspace members onto their own lines in `uv init`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-08 19:33_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/shquote
 created_at: 2025-02-26T21:31:12Z
 updated_at: 2025-02-26T21:45:36Z
 url: https://github.com/astral-sh/uv/pull/11812
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Vendor r-shquote's unquote implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-26 21:31_
+_@charliermarsh_
 
 ## Summary
 

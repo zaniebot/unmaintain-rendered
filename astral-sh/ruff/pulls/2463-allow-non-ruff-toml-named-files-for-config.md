@@ -12,14 +12,14 @@ head: charlie/any-name
 created_at: 2023-02-02T02:09:25Z
 updated_at: 2023-02-02T02:35:43Z
 url: https://github.com/astral-sh/ruff/pull/2463
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Allow non-ruff.toml-named files for --config
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 02:09_
+_@charliermarsh_
 
 Previously, if you passed in a file on the command-line via `--config`, it had to be named either `pyproject.toml` or `ruff.toml` -- otherwise, we errored. I think this is too strict. `pyproject.toml` is a special name in the ecosystem, so we should require _that_; but otherwise, let's just assume it's in `ruff.toml` format.
 

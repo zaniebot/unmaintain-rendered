@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-23T16:13:50Z
 updated_at: 2025-06-26T15:53:53Z
 url: https://github.com/astral-sh/ruff/issues/16325
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF010 has false positives and false negatives
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-23 16:13_
+_@dscorbett_
 
 ### Description
 

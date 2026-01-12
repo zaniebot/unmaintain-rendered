@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T11:25:21Z
 updated_at: 2025-09-17T09:29:59Z
 url: https://github.com/astral-sh/ruff/issues/15927
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [formatter]: Black 2025 style guide differences
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-04 11:25_
+_@MichaReiser_
 
 ### Description
 

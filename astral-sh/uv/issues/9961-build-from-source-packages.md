@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T07:40:39Z
 updated_at: 2024-12-17T15:25:30Z
 url: https://github.com/astral-sh/uv/issues/9961
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Build from source packages
 
 ---
 
-_Issue opened by @hoegge on 2024-12-17 07:40_
+_@hoegge_
 
 
 # Feature Request: Add fallback to `pip` for building/installing packages from source in `uv sync`

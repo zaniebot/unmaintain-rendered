@@ -14,14 +14,14 @@ head: zb/release-runners
 created_at: 2025-03-04T14:07:11Z
 updated_at: 2025-03-04T19:28:16Z
 url: https://github.com/astral-sh/uv/pull/11948
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Use the Depot Ubuntu runners instead of GitHub for release workflows
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-04 14:07_
+_@zanieb_
 
 See
 

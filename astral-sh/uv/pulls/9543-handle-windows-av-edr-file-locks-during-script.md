@@ -13,14 +13,14 @@ head: install-script-retries-on-windows
 created_at: 2024-11-30T15:40:26Z
 updated_at: 2024-12-01T23:02:42Z
 url: https://github.com/astral-sh/uv/pull/9543
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Handle Windows AV/EDR file locks during script installations
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-11-30 15:40_
+_@Coruscant11_
 
 Fixes #9531
 

@@ -13,14 +13,14 @@ head: david/fix-union-type-panic
 created_at: 2024-11-21T10:39:38Z
 updated_at: 2024-11-21T13:09:18Z
 url: https://github.com/astral-sh/ruff/pull/14510
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Fix: Infer type for typing.Union[..] tuple expression
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-21 10:39_
+_@sharkdp_
 
 ## Summary
 

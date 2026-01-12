@@ -13,14 +13,14 @@ head: zb/uvx-version-fix
 created_at: 2025-04-25T16:34:22Z
 updated_at: 2025-04-28T17:33:02Z
 url: https://github.com/astral-sh/uv/pull/13109
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Fix display name for `uvx --version`
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-25 16:34_
+_@zanieb_
 
 Based on #13108 because I don't want to deal with rebasing conflicts across `main` and `release/070`.
 

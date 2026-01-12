@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-01T16:35:41Z
 updated_at: 2024-03-01T16:58:57Z
 url: https://github.com/astral-sh/ruff/issues/10186
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # allow inline dummy_implementations (aka ellipsis on the same line) to be disabled
 
 ---
 
-_Issue opened by @toppk on 2024-03-01 16:35_
+_@toppk_
 
 while I do appreciate ruff following black's lead, and I do think that this default not the biggest annoyance in the world,  there are many eyes that are used to seeing:
 

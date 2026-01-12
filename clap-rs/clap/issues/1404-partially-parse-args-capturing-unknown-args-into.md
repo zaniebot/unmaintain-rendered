@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-01-23T23:53:56Z
 updated_at: 2022-12-08T10:38:51Z
 url: https://github.com/clap-rs/clap/issues/1404
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Partially parse args, capturing unknown args into a vec, rather than error
 
 ---
 
-_Issue opened by @nkeor on 2019-01-23 23:53_
+_@nkeor_
 
 Maintainer's notes
 

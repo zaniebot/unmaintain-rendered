@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-28T23:07:29Z
 updated_at: 2024-07-12T22:49:29Z
 url: https://github.com/astral-sh/uv/issues/3892
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv run` should only resolve when lockfile is out-of-sync
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-28 23:07_
+_@charliermarsh_
 
 As long as the lockfile satisfies the requirements, we should accept it (even if dependencies are outdated). Updating the lockfile should be done via `uv update` or `uv lock` or comparable.
 

@@ -13,14 +13,14 @@ head: charlie/requires-python
 created_at: 2024-06-06T23:35:00Z
 updated_at: 2024-06-06T23:46:00Z
 url: https://github.com/astral-sh/uv/pull/4116
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Remove PubGrub dependency from `uv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 23:35_
+_@charliermarsh_
 
 ## Summary
 

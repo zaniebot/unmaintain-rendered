@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-28T16:54:07Z
 updated_at: 2023-10-30T15:44:39Z
 url: https://github.com/astral-sh/ruff/issues/8310
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `S604` shows warning for any type, not just `True`
 
 ---
 
-_Issue opened by @adamhl8 on 2023-10-28 16:54_
+_@adamhl8_
 
 Say you have something like this:
 ```python

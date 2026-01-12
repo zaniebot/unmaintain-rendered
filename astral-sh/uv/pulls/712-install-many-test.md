@@ -13,14 +13,14 @@ head: konsti/install-many
 created_at: 2023-12-20T13:22:18Z
 updated_at: 2023-12-24T18:20:48Z
 url: https://github.com/astral-sh/uv/pull/712
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Install many test
 
 ---
 
-_Pull request opened by @konstin on 2023-12-20 13:22_
+_@konstin_
 
 This script can install a large set of packages in batches of 100, ignoring build failures and missing wheels.
 

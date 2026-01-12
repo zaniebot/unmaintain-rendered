@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T02:43:27Z
 updated_at: 2024-03-07T20:29:44Z
 url: https://github.com/astral-sh/uv/issues/2260
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # UnknownIssuer in docker image run from nox
 
 ---
 
-_Issue opened by @marvin8 on 2024-03-07 02:43_
+_@marvin8_
 
 I have a docker image with the latest supported versions of Python and the latest version of [Nox](https://github.com/wntrblm/nox/releases/tag/2024.03.02) for my CI environment.
 

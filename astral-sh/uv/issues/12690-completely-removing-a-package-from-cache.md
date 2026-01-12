@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T08:23:33Z
 updated_at: 2025-04-06T09:19:59Z
 url: https://github.com/astral-sh/uv/issues/12690
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Completely removing a package from cache
 
 ---
 
-_Issue opened by @ArseniyKorobenko on 2025-04-06 08:23_
+_@ArseniyKorobenko_
 
 ### Question
 

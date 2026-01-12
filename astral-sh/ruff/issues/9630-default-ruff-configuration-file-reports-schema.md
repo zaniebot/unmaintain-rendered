@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T19:35:43Z
 updated_at: 2024-01-24T04:26:04Z
 url: https://github.com/astral-sh/ruff/issues/9630
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 #  Default Ruff configuration file reports schema error
 
 ---
 
-_Issue opened by @ssteinerx on 2024-01-23 19:35_
+_@ssteinerx_
 
 [Ruff config](https://docs.astral.sh/ruff/configuration/) gives a .toml file that is equivalent to the default configuration.
 

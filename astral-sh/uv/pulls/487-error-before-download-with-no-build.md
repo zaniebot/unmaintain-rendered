@@ -12,14 +12,14 @@ head: Error-before-download-with-no_build-
 created_at: 2023-11-22T10:33:35Z
 updated_at: 2023-11-22T10:38:11Z
 url: https://github.com/astral-sh/uv/pull/487
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Error before download with no_build
 
 ---
 
-_Pull request opened by @konstin on 2023-11-22 10:33_
+_@konstin_
 
 This is fixes a performance regression where when `--no-build` was set, the fetcher would still download the source dist only to error afterwards.
 

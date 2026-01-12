@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T20:51:54Z
 updated_at: 2025-04-04T16:04:50Z
 url: https://github.com/astral-sh/uv/issues/12660
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Can I install a project's `optional-dependencies` without its `dependencies` with `uv`?
 
 ---
 
-_Issue opened by @alph0n5e on 2025-04-03 20:51_
+_@alph0n5e_
 
 ### Question
 

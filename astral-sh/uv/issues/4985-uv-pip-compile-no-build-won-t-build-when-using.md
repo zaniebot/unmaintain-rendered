@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T04:11:15Z
 updated_at: 2024-07-13T07:10:24Z
 url: https://github.com/astral-sh/uv/issues/4985
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv pip compile --no-build` won't build when using dynamic metadata for dependencies in `pyproject.toml`
 
 ---
 
-_Issue opened by @9ao9ai9ar on 2024-07-11 04:11_
+_@9ao9ai9ar_
 
 I am trying to use the [secure installs](https://pip.pypa.io/en/stable/topics/secure-installs/) mechanism of `pip`, but encounters a problem when I specify the dependencies as dynamic metadata inside my `pyproject.toml` file:
 ```toml

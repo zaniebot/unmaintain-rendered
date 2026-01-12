@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T18:23:07Z
 updated_at: 2024-09-09T14:02:01Z
 url: https://github.com/astral-sh/ruff/issues/13197
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Add meta descriptions to rule pages
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-01 18:23_
+_@charliermarsh_
 
 Sometimes we're showing the Markdown right now?!
 

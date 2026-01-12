@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-25T17:04:24Z
 updated_at: 2025-01-25T18:42:29Z
 url: https://github.com/astral-sh/ruff/issues/15742
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF058 fix is broken when `zip` arguments are starred empty iterables
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-25 17:04_
+_@dscorbett_
 
 ### Description
 

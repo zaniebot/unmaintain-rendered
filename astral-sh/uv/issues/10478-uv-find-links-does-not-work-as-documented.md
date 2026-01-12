@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T19:52:30Z
 updated_at: 2025-01-11T02:42:08Z
 url: https://github.com/astral-sh/uv/issues/10478
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # UV_FIND_LINKS does not work as documented
 
 ---
 
-_Issue opened by @foxcroftjn on 2025-01-10 19:52_
+_@foxcroftjn_
 
 The [`UV_FIND_LINKS`](https://docs.astral.sh/uv/configuration/environment/#uv_find_links) environment variable is currently documented as:
 

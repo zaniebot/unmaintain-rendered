@@ -13,14 +13,14 @@ head: zb/uv-contrib
 created_at: 2024-09-27T15:24:59Z
 updated_at: 2024-09-30T19:43:01Z
 url: https://github.com/astral-sh/ruff/pull/13540
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use uv in contribution document
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-27 15:24_
+_@zanieb_
 
 _No description provided._
 

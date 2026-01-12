@@ -13,14 +13,14 @@ head: jane/server/correct-diagnostic-severity
 created_at: 2024-03-28T05:58:02Z
 updated_at: 2024-03-28T11:14:18Z
 url: https://github.com/astral-sh/ruff/pull/10643
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` now highlights most issues as warnings
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-28 05:58_
+_@snowsignal_
 
 ## Summary
 

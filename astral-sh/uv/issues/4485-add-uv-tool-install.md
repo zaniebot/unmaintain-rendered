@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T19:21:00Z
 updated_at: 2024-06-26T15:24:30Z
 url: https://github.com/astral-sh/uv/issues/4485
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Add `uv tool install`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-24 19:21_
+_@zanieb_
 
 Should install a tool at the user-level. See #3560 
 

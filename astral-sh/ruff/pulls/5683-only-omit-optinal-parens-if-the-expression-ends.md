@@ -13,14 +13,14 @@ head: only-omit-optional-parens-if-expresison-starts-or-ends-with-parentheses
 created_at: 2023-07-11T11:05:04Z
 updated_at: 2023-07-11T15:24:51Z
 url: https://github.com/astral-sh/ruff/pull/5683
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Only omit optinal parens if the expression ends or starts with a parenthesized expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-11 11:05_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

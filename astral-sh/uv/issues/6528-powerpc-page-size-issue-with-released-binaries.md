@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-23T15:47:33Z
 updated_at: 2024-09-11T18:13:51Z
 url: https://github.com/astral-sh/uv/issues/6528
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # PowerPC page size issue with released binaries
 
 ---
 
-_Issue opened by @rjzak on 2024-08-23 15:47_
+_@rjzak_
 
 The released binaries for powerpc64le don't run on 64k page size systems, but uv runs on those systems when compiled from source.
 

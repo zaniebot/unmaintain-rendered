@@ -12,14 +12,14 @@ head: konsti/speedup-version-parsing
 created_at: 2023-12-15T12:37:02Z
 updated_at: 2023-12-15T19:03:37Z
 url: https://github.com/astral-sh/uv/pull/660
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Speed up version parsing for a 1.27±0.03 speedup in transformers-extras with conservative changes
 
 ---
 
-_Pull request opened by @konstin on 2023-12-15 12:37_
+_@konstin_
 
 Two low-hanging fruits as optimizations for version parsing: A fast path for release only versions and removing the regex from version specifiers (still calling into version's parsing regex if required). This enables optimizing the serde format since we now see the serde part instead of only PEP 440 parsing. I intentionally didn't rewrite the full PEP 440 at this step.
 

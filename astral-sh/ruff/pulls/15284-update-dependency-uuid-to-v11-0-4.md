@@ -13,14 +13,14 @@ head: renovate/uuid-11.x-lockfile
 created_at: 2025-01-06T00:54:32Z
 updated_at: 2025-01-06T01:05:46Z
 url: https://github.com/astral-sh/ruff/pull/15284
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Update dependency uuid to v11.0.4
 
 ---
 
-_Pull request opened by @renovate on 2025-01-06 00:54_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: renovate/taiki-e-install-action-2.x
 created_at: 2025-11-17T01:59:19Z
 updated_at: 2025-11-17T05:18:43Z
 url: https://github.com/astral-sh/ruff/pull/21493
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # Update taiki-e/install-action action to v2.62.52
 
 ---
 
-_Pull request opened by @renovate on 2025-11-17 01:59_
+_@renovate_
 
 This PR contains the following updates:
 

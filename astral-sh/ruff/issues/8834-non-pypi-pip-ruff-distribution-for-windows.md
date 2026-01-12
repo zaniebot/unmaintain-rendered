@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-24T22:19:05Z
 updated_at: 2023-12-04T20:15:19Z
 url: https://github.com/astral-sh/ruff/issues/8834
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Non-PyPI/Pip Ruff distribution for Windows
 
 ---
 
-_Issue opened by @swaldhoer on 2023-11-24 22:19_
+_@swaldhoer_
 
 ## Problem to be solved
 

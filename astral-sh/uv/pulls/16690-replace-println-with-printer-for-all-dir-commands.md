@@ -13,14 +13,14 @@ head: mikayla/workspace-dir-quick-followups
 created_at: 2025-11-11T20:12:04Z
 updated_at: 2025-11-11T20:36:32Z
 url: https://github.com/astral-sh/uv/pull/16690
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Replace println with Printer for all `dir` commands & workspace dir followups
 
 ---
 
-_Pull request opened by @mikaylathompson on 2025-11-11 20:12_
+_@mikaylathompson_
 
 ## Summary
 

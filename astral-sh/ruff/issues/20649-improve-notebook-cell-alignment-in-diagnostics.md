@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-30T15:58:43Z
 updated_at: 2025-09-30T15:58:43Z
 url: https://github.com/astral-sh/ruff/issues/20649
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Improve notebook cell alignment in diagnostics
 
 ---
 
-_Issue opened by @ntBre on 2025-09-30 15:58_
+_@ntBre_
 
 This is somewhat related to https://github.com/astral-sh/ruff/issues/20648, but when rendering diagnostics for notebooks, there is sometimes an offset between different cells' line number separators, if the cells have different numbers of lines:
 

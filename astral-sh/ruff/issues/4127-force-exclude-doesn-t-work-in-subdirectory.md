@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-27T00:25:33Z
 updated_at: 2024-02-16T12:06:26Z
 url: https://github.com/astral-sh/ruff/issues/4127
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # force-exclude doesn't work in subdirectory
 
 ---
 
-_Issue opened by @brandonchinn178 on 2023-04-27 00:25_
+_@brandonchinn178_
 
 When a python project is in a subdirectory (e.g. the `pyproject.toml` is in `subdir/pyproject.toml`), `force-exclude` no longer excludes files passed on the command line.
 

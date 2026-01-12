@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-05T14:28:17Z
 updated_at: 2023-06-06T06:06:03Z
 url: https://github.com/astral-sh/ruff/issues/4865
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F523 should not be marked as always-fixable
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-05 14:28_
+_@addisoncrump_
 
 It is possible to split a format invocation across multiple lines:
 

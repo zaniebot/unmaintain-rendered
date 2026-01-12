@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T16:07:32Z
 updated_at: 2025-05-20T14:26:48Z
 url: https://github.com/astral-sh/ruff/issues/18199
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff format does not support ignore despite explicit instructions to do so
 
 ---
 
-_Issue opened by @utdrmac on 2025-05-19 16:07_
+_@utdrmac_
 
 ### Summary
 

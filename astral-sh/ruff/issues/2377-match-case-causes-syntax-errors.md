@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T05:32:51Z
 updated_at: 2023-02-22T00:05:02Z
 url: https://github.com/astral-sh/ruff/issues/2377
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Match-case causes syntax errors
 
 ---
 
-_Issue opened by @nefrob on 2023-01-31 05:32_
+_@nefrob_
 
 Ex.
 

@@ -13,14 +13,14 @@ head: zb/pip-compatibility
 created_at: 2024-08-19T17:06:03Z
 updated_at: 2024-08-19T22:47:08Z
 url: https://github.com/astral-sh/uv/pull/6213
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Move pip compatibility guide to the documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 17:06_
+_@zanieb_
 
 First, I synced the documents manually following the output of `diff` then replaced the old one with a link. 
 

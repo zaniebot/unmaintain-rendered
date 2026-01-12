@@ -13,14 +13,14 @@ head: charlie/import-lines
 created_at: 2023-08-22T15:55:06Z
 updated_at: 2023-08-22T16:29:29Z
 url: https://github.com/astral-sh/ruff/pull/6777
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Allow up to two empty lines after top-level imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 15:55_
+_@charliermarsh_
 
 ## Summary
 

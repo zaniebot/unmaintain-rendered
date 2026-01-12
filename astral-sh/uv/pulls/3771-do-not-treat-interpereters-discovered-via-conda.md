@@ -13,14 +13,14 @@ head: zb/conda-prefix
 created_at: 2024-05-22T20:33:31Z
 updated_at: 2024-05-22T21:27:34Z
 url: https://github.com/astral-sh/uv/pull/3771
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Do not treat interpereters discovered via `CONDA_PREFIX` as system interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 20:33_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/3769
 

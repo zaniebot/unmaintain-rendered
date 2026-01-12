@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-14T20:41:56Z
 updated_at: 2025-10-15T12:06:13Z
 url: https://github.com/astral-sh/ruff/pull/20873
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # fix(docs): Fix typo in `RUF015` description
 
 ---
 
-_Pull request opened by @Paillat-dev on 2025-10-14 20:41_
+_@Paillat-dev_
 
 ## Summary
 Fixed a typo. It should be "or", not "of". Both `.pop()` and `next()` on an empty collection will raise `IndexError`, not "`[0]` of the `pop()` function"

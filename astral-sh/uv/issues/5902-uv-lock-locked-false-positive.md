@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T08:57:08Z
 updated_at: 2024-08-12T14:31:09Z
 url: https://github.com/astral-sh/uv/issues/5902
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `uv lock --locked` false positive
 
 ---
 
-_Issue opened by @tpgillam on 2024-08-08 08:57_
+_@tpgillam_
 
 Using uv `0.2.34`. A potentially similar issue to #5851 
 

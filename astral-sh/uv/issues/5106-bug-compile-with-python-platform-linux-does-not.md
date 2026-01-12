@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T14:32:43Z
 updated_at: 2024-07-16T16:10:55Z
 url: https://github.com/astral-sh/uv/issues/5106
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Bug: compile with --python-platform linux does not consider manylinux 
 
 ---
 
-_Issue opened by @jbw-vtl on 2024-07-16 14:32_
+_@jbw-vtl_
 
 Hi All,
 

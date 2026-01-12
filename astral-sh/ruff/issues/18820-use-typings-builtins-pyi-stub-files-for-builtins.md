@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T09:57:49Z
 updated_at: 2025-07-24T12:00:43Z
 url: https://github.com/astral-sh/ruff/issues/18820
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Use `typings/__builtins__.pyi` stub files for builtins
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-06-20 09:57_
+_@Julian-J-S_
 
 ### Summary
 

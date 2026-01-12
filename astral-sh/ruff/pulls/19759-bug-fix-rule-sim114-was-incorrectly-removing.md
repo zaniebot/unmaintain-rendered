@@ -13,14 +13,14 @@ head: fix(#19576)/safe-fix-removes-comments
 created_at: 2025-08-05T11:03:54Z
 updated_at: 2025-11-21T08:06:47Z
 url: https://github.com/astral-sh/ruff/pull/19759
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # :bug: Fix: rule (SIM114) was incorrectly removing comments when mergi…
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-05 11:03_
+_@mikeleppane_
 
 …ng consecutive if/elif branches with identical bodies.
 

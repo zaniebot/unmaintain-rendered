@@ -13,14 +13,14 @@ head: docs/gitlab
 created_at: 2024-10-08T10:51:57Z
 updated_at: 2024-10-08T14:49:57Z
 url: https://github.com/astral-sh/uv/pull/8000
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Fix and improve GitLab integration docs
 
 ---
 
-_Pull request opened by @sisp on 2024-10-08 10:51_
+_@sisp_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

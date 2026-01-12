@@ -13,14 +13,14 @@ head: charlie/shellex
 created_at: 2024-08-29T19:36:06Z
 updated_at: 2024-08-29T19:50:11Z
 url: https://github.com/astral-sh/uv/pull/6829
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Expand tildes when matching against PATH
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 19:36_
+_@charliermarsh_
 
 ## Summary
 

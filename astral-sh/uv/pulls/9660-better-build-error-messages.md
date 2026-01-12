@@ -13,14 +13,14 @@ head: konsti/better-build-errors
 created_at: 2024-12-05T12:53:34Z
 updated_at: 2024-12-17T15:44:45Z
 url: https://github.com/astral-sh/uv/pull/9660
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Better build error messages
 
 ---
 
-_Pull request opened by @konstin on 2024-12-05 12:53_
+_@konstin_
 
 Build failures are one of the most common user facing failures that aren't "obivous" errors (such as typos) or resolver errors. Currently, they show more technical details than being focussed on this being an error in a subprocess that is either on the side of the package or - more likely - in the build environment, e.g. the user needs to install a dev package or their python version is incompatible.
 

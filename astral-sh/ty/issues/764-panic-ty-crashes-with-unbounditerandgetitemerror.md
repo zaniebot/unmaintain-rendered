@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T10:54:41Z
 updated_at: 2025-07-25T10:16:06Z
 url: https://github.com/astral-sh/ty/issues/764
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] ty crashes with UnboundIterAndGetitemError on Iterable types during type checking
 
 ---
 
-_Issue opened by @SoraKukyo on 2025-07-04 10:54_
+_@SoraKukyo_
 
 ### Bug report: `ty` panics during type checking on Iterable-related code
 

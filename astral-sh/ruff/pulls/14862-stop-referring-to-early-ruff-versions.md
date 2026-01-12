@@ -13,14 +13,14 @@ head: v
 created_at: 2024-12-09T08:38:10Z
 updated_at: 2024-12-09T16:07:55Z
 url: https://github.com/astral-sh/ruff/pull/14862
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Stop referring to early ruff versions
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-12-09 08:38_
+_@DimitriPapadopoulos_
 
 ## Summary
 

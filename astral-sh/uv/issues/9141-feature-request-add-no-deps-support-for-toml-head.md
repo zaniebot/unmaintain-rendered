@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T04:42:27Z
 updated_at: 2024-11-16T04:03:40Z
 url: https://github.com/astral-sh/uv/issues/9141
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Feature request: add --no-deps support for TOML head dependencies section
 
 ---
 
-_Issue opened by @shelper on 2024-11-15 04:42_
+_@shelper_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

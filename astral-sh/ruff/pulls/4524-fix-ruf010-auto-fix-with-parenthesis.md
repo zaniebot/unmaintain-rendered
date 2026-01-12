@@ -13,14 +13,14 @@ head: fix-ruf010-auto-fix
 created_at: 2023-05-19T09:30:25Z
 updated_at: 2023-05-19T19:27:16Z
 url: https://github.com/astral-sh/ruff/pull/4524
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix RUF010 auto-fix with parenthesis
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-19 09:30_
+_@JonathanPlasse_
 
 - Close #4520
 - From #4423

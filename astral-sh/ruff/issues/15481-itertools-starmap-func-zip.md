@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T21:54:21Z
 updated_at: 2025-01-16T14:18:13Z
 url: https://github.com/astral-sh/ruff/issues/15481
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `itertools.starmap(func, zip(...))`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-01-14 21:54_
+_@InSyncWithFoo_
 
 #14835 asked that [`FURB140`](https://docs.astral.sh/ruff/rules/reimplemented-starmap/) be changed to accommodate the pattern `itertools.starmap(func, zip(...))`, suggesting `map(func, ...)` as the replacement.
 

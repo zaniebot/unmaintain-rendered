@@ -11,14 +11,14 @@ head: master
 created_at: 2025-09-19T12:42:29Z
 updated_at: 2025-09-19T17:05:30Z
 url: https://github.com/clap-rs/clap/pull/6135
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # add regression tests for issue #6134
 
 ---
 
-_Pull request opened by @vjgaur on 2025-09-19 12:42_
+_@vjgaur_
 
 ## Summary
 Adds regression tests for issue [#6134](https://github.com/clap-rs/clap/issues/6134) to document the expected behavior when positional arguments start with dashes.

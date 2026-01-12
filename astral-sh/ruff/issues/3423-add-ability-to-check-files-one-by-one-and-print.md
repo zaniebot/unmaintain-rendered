@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-09T19:39:09Z
 updated_at: 2023-03-13T21:14:09Z
 url: https://github.com/astral-sh/ruff/issues/3423
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add ability to check files one by one and print which are currently checked/parsed
 
 ---
 
-_Issue opened by @qarmin on 2023-03-09 19:39_
+_@qarmin_
 
 When trying to found file which crashes, I use binary search so I:
 1. run ruff to check for crash

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T22:51:49Z
 updated_at: 2023-03-10T20:49:51Z
 url: https://github.com/astral-sh/ruff/issues/1084
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug?] Questionable docstring first line fix (`D205`)
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 22:51_
+_@smackesey_
 
 I ran `ruff --fix` (with `D205` selected) to format our docstrings and it did this to docstrings with leading paragraphs:
 

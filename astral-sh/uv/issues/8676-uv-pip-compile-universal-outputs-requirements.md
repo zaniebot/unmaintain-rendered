@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T18:10:55Z
 updated_at: 2024-11-01T20:11:41Z
 url: https://github.com/astral-sh/uv/issues/8676
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # `uv pip compile --universal` outputs requirements with `python_version < '0'` marker
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-10-29 18:10_
+_@notatallshaw-gts_
 
 uv 0.4.28
 

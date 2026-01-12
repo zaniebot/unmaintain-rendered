@@ -14,14 +14,14 @@ head: konsti/build-backend-force-pep517
 created_at: 2024-12-03T08:33:38Z
 updated_at: 2024-12-03T10:15:56Z
 url: https://github.com/astral-sh/uv/pull/9600
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 #  Build backend: Rename `--no-fast-path` to `--force-pep517`
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 08:33_
+_@konstin_
 
 See https://github.com/astral-sh/uv/pull/9556#discussion_r1865046353
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T12:19:48Z
 updated_at: 2025-06-13T09:51:00Z
 url: https://github.com/astral-sh/uv/issues/13831
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # uv 0.7.10: "Connection reset by peer" on macOS Apple Silicon
 
 ---
 
-_Issue opened by @lucarosa on 2025-06-04 12:19_
+_@lucarosa_
 
 ### Summary
 

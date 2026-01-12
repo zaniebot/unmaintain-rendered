@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-30T13:56:57Z
 updated_at: 2022-11-07T13:38:54Z
 url: https://github.com/clap-rs/clap/issues/4300
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support reading `SHELL` into `Shell`
 
 ---
 
-_Issue opened by @XyLyXyRR on 2022-09-30 13:56_
+_@XyLyXyRR_
 
 ### Please complete the following tasks
 

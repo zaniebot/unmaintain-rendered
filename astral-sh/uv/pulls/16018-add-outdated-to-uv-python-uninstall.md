@@ -12,14 +12,14 @@ head: feat/python-uninstall-outdated
 created_at: 2025-09-24T18:21:19Z
 updated_at: 2025-11-25T19:08:23Z
 url: https://github.com/astral-sh/uv/pull/16018
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Add `--outdated` to `uv python uninstall`
 
 ---
 
-_Pull request opened by @yumeminami on 2025-09-24 18:21_
+_@yumeminami_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

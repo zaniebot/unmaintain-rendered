@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T09:35:56Z
 updated_at: 2024-10-09T10:20:48Z
 url: https://github.com/astral-sh/uv/issues/8042
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Python 3.13 Versions
 
 ---
 
-_Issue opened by @Odud on 2024-10-09 09:35_
+_@Odud_
 
 A question, not really an issue. When I install Python 3.13 I see that it is picking up release candidate 3 `Python 3.13.0rc3 (main, Oct  2 2024, 16:40:04)` and not the final version released on Oct 7. it probably makes no difference to me but I was wondering when the version that uv sees gets updated. 
 

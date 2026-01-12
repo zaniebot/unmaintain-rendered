@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-09T14:51:05Z
 updated_at: 2023-11-14T00:57:06Z
 url: https://github.com/astral-sh/uv/issues/379
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Skip yanked packages
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-09 14:51_
+_@charliermarsh_
 
 We already have this metadata on `File` -- we should just skip any `File` entries that are yanked, unless the user requests that specific version or something. Apparently we have some leeway in how we treat yanked versions per https://peps.python.org/pep-0592/.
 

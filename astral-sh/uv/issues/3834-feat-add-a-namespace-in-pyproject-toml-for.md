@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-25T08:37:30Z
 updated_at: 2024-06-03T23:27:43Z
 url: https://github.com/astral-sh/uv/issues/3834
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # feat: add a namespace in pyproject.toml for dependency override
 
 ---
 
-_Issue opened by @Di-Is on 2024-05-25 08:37_
+_@Di-Is_
 
 Are there any plans to add a namespace in pyproject.toml that can be used with the dependency override feature?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T16:19:34Z
 updated_at: 2024-05-21T17:15:29Z
 url: https://github.com/astral-sh/uv/issues/3701
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # For `uv pip compile` don't output requirements to stdout when output file selected
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-21 16:19_
+_@notatallshaw-gts_
 
 Or at least have an option for this? Maybe it already exists and I missed it?
 

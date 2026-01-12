@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T06:07:26Z
 updated_at: 2024-08-29T11:57:54Z
 url: https://github.com/astral-sh/ruff/issues/13134
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Update FAQ to reflect the default value of `src`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-28 06:07_
+_@dhruvmanila_
 
 Update to FAQ.md at https://github.com/astral-sh/ruff/blob/main/docs/faq.md is merited as a result of this change I think.
 

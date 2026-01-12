@@ -13,14 +13,14 @@ head: renovate/github-artifact-actions
 created_at: 2025-09-15T02:55:33Z
 updated_at: 2025-09-15T09:26:50Z
 url: https://github.com/astral-sh/ruff/pull/20405
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Update actions/download-artifact action to v5
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 02:55_
+_@renovate_
 
 This PR contains the following updates:
 

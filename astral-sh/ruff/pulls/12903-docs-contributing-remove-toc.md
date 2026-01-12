@@ -13,14 +13,14 @@ head: docs/hide-contributing-toc-in-mkdocs
 created_at: 2024-08-15T10:47:18Z
 updated_at: 2024-08-19T09:38:09Z
 url: https://github.com/astral-sh/ruff/pull/12903
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # docs(contributing): remove TOC
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-15 10:47_
+_@mkniewallner_
 
 ## Summary
 

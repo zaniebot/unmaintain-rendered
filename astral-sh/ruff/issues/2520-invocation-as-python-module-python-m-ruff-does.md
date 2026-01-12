@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T09:19:10Z
 updated_at: 2023-02-04T13:23:25Z
 url: https://github.com/astral-sh/ruff/issues/2520
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Invocation as python module `python -m ruff` does not work properly
 
 ---
 
-_Issue opened by @trottomv on 2023-02-03 09:19_
+_@trottomv_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

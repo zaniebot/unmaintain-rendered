@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-31T19:00:10Z
 updated_at: 2025-11-03T15:56:32Z
 url: https://github.com/astral-sh/uv/issues/16540
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Why it looks like uv is not respecting the manylinux config from PYTHONPATH
 
 ---
 
-_Issue opened by @ccoulombe on 2025-10-31 19:00_
+_@ccoulombe_
 
 ### Question
 

@@ -11,14 +11,14 @@ head: rustix-1.1.1
 created_at: 2025-09-20T12:57:17Z
 updated_at: 2025-09-22T10:53:06Z
 url: https://github.com/astral-sh/ruff/pull/20489
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # Upgrade rustix to 1.1.1
 
 ---
 
-_Pull request opened by @WhyNotHugo on 2025-09-20 12:57_
+_@WhyNotHugo_
 
 Rustix fails to build on loongarch64 due to ambiguous glob imports for the same symbol. This was fixed in 1.1.1.
 

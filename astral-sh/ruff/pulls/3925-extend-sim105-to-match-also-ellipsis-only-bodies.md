@@ -12,14 +12,14 @@ head: Extend-SIM105
 created_at: 2023-04-10T08:31:12Z
 updated_at: 2023-04-10T13:55:03Z
 url: https://github.com/astral-sh/ruff/pull/3925
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Extend SIM105 to match also 'Ellipsis only' bodies in exception handlers
 
 ---
 
-_Pull request opened by @leiserfg on 2023-04-10 08:31_
+_@leiserfg_
 
 _No description provided._
 

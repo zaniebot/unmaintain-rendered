@@ -13,14 +13,14 @@ head: dhruv/use-ty-server
 created_at: 2025-05-13T16:22:43Z
 updated_at: 2025-05-13T16:35:56Z
 url: https://github.com/astral-sh/ty/pull/360
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use `ty server` instead of `ty lsp`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-13 16:22_
+_@dhruvmanila_
 
 _No description provided._
 

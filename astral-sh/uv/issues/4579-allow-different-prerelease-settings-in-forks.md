@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T09:52:37Z
 updated_at: 2024-07-23T15:57:15Z
 url: https://github.com/astral-sh/uv/issues/4579
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Allow different prerelease settings in forks
 
 ---
 
-_Issue opened by @konstin on 2024-06-27 09:52_
+_@konstin_
 
 As we allow different URLs in forks, we should also split the prerelease settings by fork.
 

@@ -14,14 +14,14 @@ head: zb/plural-workspace-member
 created_at: 2024-08-15T21:02:26Z
 updated_at: 2024-08-15T21:08:42Z
 url: https://github.com/astral-sh/uv/pull/6128
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Use the proper singular form for workspace member dependencies in resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 21:02_
+_@zanieb_
 
 _No description provided._
 

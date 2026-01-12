@@ -13,14 +13,14 @@ head: ibraheem/bench-profiling
 created_at: 2024-08-08T19:59:26Z
 updated_at: 2024-09-10T18:25:55Z
 url: https://github.com/astral-sh/uv/pull/5927
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Run benchmarks with `--profile profiling`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-08 19:59_
+_@ibraheemdev_
 
 ## Summary
 

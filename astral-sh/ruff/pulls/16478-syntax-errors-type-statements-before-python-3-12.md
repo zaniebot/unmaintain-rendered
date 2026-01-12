@@ -14,14 +14,14 @@ head: brent/syn-type-stmt
 created_at: 2025-03-03T18:59:06Z
 updated_at: 2025-03-04T17:24:22Z
 url: https://github.com/astral-sh/ruff/pull/16478
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] `type` statements before Python 3.12
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 18:59_
+_@ntBre_
 
 Summary
 --

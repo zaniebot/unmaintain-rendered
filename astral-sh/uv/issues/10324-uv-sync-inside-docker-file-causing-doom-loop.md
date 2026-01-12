@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T10:01:54Z
 updated_at: 2025-05-26T04:23:48Z
 url: https://github.com/astral-sh/uv/issues/10324
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # UV sync inside docker file causing doom loop
 
 ---
 
-_Issue opened by @Goldziher on 2025-01-06 10:01_
+_@Goldziher_
 
 Hi there,
 

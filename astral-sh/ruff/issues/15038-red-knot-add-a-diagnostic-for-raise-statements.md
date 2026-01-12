@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-17T15:29:15Z
 updated_at: 2024-12-18T18:31:26Z
 url: https://github.com/astral-sh/ruff/issues/15038
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Add a diagnostic for `raise` statements used with non-exceptions
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-17 15:29_
+_@AlexWaygood_
 
 Red-knot currently doesn't emit a diagnostic on this snippet:
 

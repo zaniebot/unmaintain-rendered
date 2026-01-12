@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T23:23:08Z
 updated_at: 2025-05-08T19:28:48Z
 url: https://github.com/astral-sh/uv/issues/8847
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Warn when `.python-version` conflicts with `uv venv -p <version>` in projects
 
 ---
 
-_Issue opened by @tleonhardt on 2024-11-05 23:23_
+_@tleonhardt_
 
 # Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-10T20:41:51Z
 updated_at: 2022-09-11T14:44:28Z
 url: https://github.com/astral-sh/ruff/issues/146
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F841` false negative when access from inner function
 
 ---
 
-_Issue opened by @nikolaik on 2022-09-10 20:41_
+_@nikolaik_
 
 ```python
 # yolo.py:

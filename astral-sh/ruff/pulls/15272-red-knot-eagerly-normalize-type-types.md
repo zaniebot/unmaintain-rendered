@@ -13,14 +13,14 @@ head: alex/normalize-subclass-of
 created_at: 2025-01-05T16:41:04Z
 updated_at: 2025-01-07T12:55:33Z
 url: https://github.com/astral-sh/ruff/pull/15272
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Eagerly normalize `type[]` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-05 16:41_
+_@AlexWaygood_
 
 ## Summary
 

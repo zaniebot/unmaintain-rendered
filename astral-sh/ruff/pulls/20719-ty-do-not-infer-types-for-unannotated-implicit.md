@@ -14,14 +14,14 @@ head: david/do-not-infer-unannotated-implicit-instance-attributes
 created_at: 2025-10-06T13:23:31Z
 updated_at: 2025-10-08T09:47:55Z
 url: https://github.com/astral-sh/ruff/pull/20719
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Do not infer types for unannotated implicit instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-06 13:23_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

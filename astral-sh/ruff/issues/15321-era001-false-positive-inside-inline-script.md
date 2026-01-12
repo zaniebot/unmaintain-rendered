@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T15:32:46Z
 updated_at: 2025-01-07T21:22:24Z
 url: https://github.com/astral-sh/ruff/issues/15321
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ERA001 false positive inside inline script metadata with trailing additional comment
 
 ---
 
-_Issue opened by @Julian on 2025-01-07 15:32_
+_@Julian_
 
 This code:
 

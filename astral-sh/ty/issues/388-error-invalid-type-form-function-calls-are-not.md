@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T15:45:22Z
 updated_at: 2025-06-24T18:31:00Z
 url: https://github.com/astral-sh/ty/issues/388
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # error[invalid-type-form]: Function calls are not allowed in type expressions with Pydantic conlist
 
 ---
 
-_Issue opened by @alex-goswag on 2025-05-14 15:45_
+_@alex-goswag_
 
 ### Summary
 

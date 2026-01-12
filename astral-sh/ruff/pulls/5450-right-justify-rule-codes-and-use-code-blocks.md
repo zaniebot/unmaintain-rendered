@@ -11,14 +11,14 @@ head: main
 created_at: 2023-06-30T03:09:48Z
 updated_at: 2023-07-06T22:07:02Z
 url: https://github.com/astral-sh/ruff/pull/5450
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Right-justify rule codes and use code blocks around them
 
 ---
 
-_Pull request opened by @MicaelJarniac on 2023-06-30 03:09_
+_@MicaelJarniac_
 
 Right-justify rule codes on the Table of Contents (ToC), and wrap them in code blocks.
 

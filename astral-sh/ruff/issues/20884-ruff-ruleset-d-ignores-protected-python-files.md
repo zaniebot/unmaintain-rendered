@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-15T07:45:49Z
 updated_at: 2025-10-16T13:37:05Z
 url: https://github.com/astral-sh/ruff/issues/20884
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff ruleset D ignores protected python files.
 
 ---
 
-_Issue opened by @Jtachan on 2025-10-15 07:45_
+_@Jtachan_
 
 ### Summary
 

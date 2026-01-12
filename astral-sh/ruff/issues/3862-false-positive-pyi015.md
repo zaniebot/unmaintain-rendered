@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-03T10:46:04Z
 updated_at: 2023-04-03T10:47:06Z
 url: https://github.com/astral-sh/ruff/issues/3862
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive: PYI015
 
 ---
 
-_Issue opened by @pmmmwh on 2023-04-03 10:46_
+_@pmmmwh_
 
 ## Reproduction
 

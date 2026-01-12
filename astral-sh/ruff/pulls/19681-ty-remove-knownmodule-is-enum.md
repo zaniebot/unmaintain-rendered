@@ -14,14 +14,14 @@ head: david/visibility
 created_at: 2025-08-01T08:23:18Z
 updated_at: 2025-08-01T08:34:01Z
 url: https://github.com/astral-sh/ruff/pull/19681
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Remove `KnownModule::is_enum`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-01 08:23_
+_@sharkdp_
 
 ## Summary
 

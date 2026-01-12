@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T05:39:00Z
 updated_at: 2025-07-28T14:56:56Z
 url: https://github.com/astral-sh/uv/issues/8878
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # uv add and uv sync doesn't install packages in virtual env created by uv venv <custom venv name> but creates the default .venv
 
 ---
 
-_Issue opened by @amanchaudhary-95 on 2024-11-07 05:39_
+_@amanchaudhary-95_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

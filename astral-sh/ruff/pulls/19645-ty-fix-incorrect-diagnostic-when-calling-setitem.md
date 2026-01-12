@@ -13,14 +13,14 @@ head: fix-set-attr-diagnostic
 created_at: 2025-07-30T17:57:01Z
 updated_at: 2025-11-06T11:49:03Z
 url: https://github.com/astral-sh/ruff/pull/19645
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Fix incorrect diagnostic when calling `__setitem__`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-30 17:57_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

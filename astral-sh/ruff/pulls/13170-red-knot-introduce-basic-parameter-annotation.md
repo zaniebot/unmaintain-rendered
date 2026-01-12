@@ -12,14 +12,14 @@ head: rk-basic-param-annotations
 created_at: 2024-08-30T22:39:23Z
 updated_at: 2024-09-04T21:57:14Z
 url: https://github.com/astral-sh/ruff/pull/13170
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] introduce basic parameter annotation expression inference
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-30 22:39_
+_@chriskrycho_
 
 ## Summary
 

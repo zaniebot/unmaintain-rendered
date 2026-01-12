@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T18:59:02Z
 updated_at: 2025-06-27T18:59:06Z
 url: https://github.com/astral-sh/uv/issues/14324
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # `install_transparent_patch_upgrade_uv_venv` timed out after 90s on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-06-27 18:59_
+_@zanieb_
 
 ```
   TIMEOUT [  90.060s] uv::it python_install::install_transparent_patch_upgrade_uv_venv

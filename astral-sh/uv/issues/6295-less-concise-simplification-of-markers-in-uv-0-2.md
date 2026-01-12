@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T02:27:14Z
 updated_at: 2024-08-21T13:50:46Z
 url: https://github.com/astral-sh/uv/issues/6295
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Less concise simplification of markers in uv 0.2.35
 
 ---
 
-_Issue opened by @A5rocks on 2024-08-21 02:27_
+_@A5rocks_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

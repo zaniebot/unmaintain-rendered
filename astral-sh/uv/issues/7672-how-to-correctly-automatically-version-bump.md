@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T20:22:58Z
 updated_at: 2025-01-24T19:32:31Z
 url: https://github.com/astral-sh/uv/issues/7672
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # How to correctly automatically version bump
 
 ---
 
-_Issue opened by @yannsartori on 2024-09-24 20:22_
+_@yannsartori_
 
 Hello,
 

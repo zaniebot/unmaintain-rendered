@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T11:16:48Z
 updated_at: 2025-07-01T19:52:58Z
 url: https://github.com/astral-sh/uv/issues/5594
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # RFC: Handling diverging requires-python in workspaces with forking on the python version
 
 ---
 
-_Issue opened by @konstin on 2024-07-30 11:16_
+_@konstin_
 
 When using workspaces, we uses the combined requires-python of all packages. Say you have foo that requires python 3.8 and bar that requires python 3.12, we require that all dependencies are compatible with python 3.8. This limits the usefulness of workspaces (#5578, #5398).
 

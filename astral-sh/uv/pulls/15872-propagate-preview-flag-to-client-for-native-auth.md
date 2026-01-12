@@ -14,14 +14,14 @@ head: zb/native-preview
 created_at: 2025-09-15T14:39:08Z
 updated_at: 2025-09-15T15:51:47Z
 url: https://github.com/astral-sh/uv/pull/15872
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Propagate preview flag to client for `native-auth` feature
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-15 14:39_
+_@zanieb_
 
 Somehow propagation of this got dropped during a rebase, so we never actually used the native store during resolution.
 

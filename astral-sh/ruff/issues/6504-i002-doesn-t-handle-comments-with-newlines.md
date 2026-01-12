@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-11T14:36:43Z
 updated_at: 2023-08-13T00:08:31Z
 url: https://github.com/astral-sh/ruff/issues/6504
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `I002` doesn't handle comments with newlines properly
 
 ---
 
-_Issue opened by @durumu on 2023-08-11 14:36_
+_@durumu_
 
 Hello! I noticed a case where ruff has different behavior than isort, which I think is a bug.
 

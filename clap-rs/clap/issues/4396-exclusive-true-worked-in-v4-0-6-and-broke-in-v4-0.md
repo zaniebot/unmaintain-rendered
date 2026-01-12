@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-17T22:35:07Z
 updated_at: 2022-10-18T00:43:41Z
 url: https://github.com/clap-rs/clap/issues/4396
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `exclusive(true)` worked in `v4.0.6` and broke in `v4.0.7`
 
 ---
 
-_Issue opened by @SamWilsn on 2022-10-17 22:35_
+_@SamWilsn_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T06:52:27Z
 updated_at: 2023-07-11T06:36:27Z
 url: https://github.com/astral-sh/ruff/issues/5287
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `Delete`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-22 06:52_
+_@MichaReiser_
 
 _No description provided._
 

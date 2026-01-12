@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T02:36:25Z
 updated_at: 2024-01-10T16:28:57Z
 url: https://github.com/astral-sh/ruff/issues/8894
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `parenthesize_long_type_hints` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 02:36_
+_@MichaReiser_
 
 Implement Black's [`parenthesize_long_type_hints`](https://github.com/psf/black/pull/3899) as a preview style in Ruff. 
 

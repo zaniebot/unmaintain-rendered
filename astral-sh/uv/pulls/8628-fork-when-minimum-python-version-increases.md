@@ -14,14 +14,14 @@ head: charlie/fork
 created_at: 2024-10-28T01:38:33Z
 updated_at: 2024-10-28T13:48:07Z
 url: https://github.com/astral-sh/uv/pull/8628
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Fork when minimum Python version increases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-28 01:38_
+_@charliermarsh_
 
 ## Summary
 

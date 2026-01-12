@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-05T18:24:53Z
 updated_at: 2025-12-05T20:04:07Z
 url: https://github.com/astral-sh/ty/issues/1783
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type narrowing with typevars fails in certain paths
 
 ---
 
-_Issue opened by @aidandj on 2025-12-05 18:24_
+_@aidandj_
 
 ### Summary
 

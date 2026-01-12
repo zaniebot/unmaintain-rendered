@@ -14,14 +14,14 @@ head: fix/manual-list-comprehension
 created_at: 2025-06-01T15:38:35Z
 updated_at: 2025-06-18T13:50:36Z
 url: https://github.com/astral-sh/ruff/pull/18412
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`perflint`] fix missing parentheses for lambda and ternary conditions (PERF401, PERF403)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-01 15:38_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

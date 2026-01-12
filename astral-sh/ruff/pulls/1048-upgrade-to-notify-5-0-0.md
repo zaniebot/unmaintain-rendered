@@ -12,14 +12,14 @@ head: notify-5
 created_at: 2022-12-05T04:55:32Z
 updated_at: 2022-12-05T15:00:09Z
 url: https://github.com/astral-sh/ruff/pull/1048
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Upgrade to notify 5.0.0
 
 ---
 
-_Pull request opened by @messense on 2022-12-05 04:55_
+_@messense_
 
 Changelog: https://github.com/notify-rs/notify/blob/main/CHANGELOG.md#notify-500-2022-08-28
 

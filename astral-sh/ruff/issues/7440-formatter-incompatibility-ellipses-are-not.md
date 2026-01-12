@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-16T16:40:33Z
 updated_at: 2023-10-26T15:33:28Z
 url: https://github.com/astral-sh/ruff/issues/7440
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter incompatibility: ellipses are not inlined in `.py` files
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-16 16:40_
+_@charliermarsh_
 
 Given:
 

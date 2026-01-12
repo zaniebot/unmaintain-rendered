@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T13:36:04Z
 updated_at: 2025-01-29T16:17:24Z
 url: https://github.com/astral-sh/uv/issues/11061
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # feat: install python development headers with the virtual environment
 
 ---
 
-_Issue opened by @ZeyadMoustafaKamal on 2025-01-29 13:36_
+_@ZeyadMoustafaKamal_
 
 ### Summary
 

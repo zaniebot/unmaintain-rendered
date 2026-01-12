@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T09:36:40Z
 updated_at: 2025-11-27T15:12:00Z
 url: https://github.com/astral-sh/ruff/issues/18492
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Proposal: C422 Unnecessary filter() usage
 
 ---
 
-_Issue opened by @grihabor on 2025-06-06 09:36_
+_@grihabor_
 
 ### Summary
 

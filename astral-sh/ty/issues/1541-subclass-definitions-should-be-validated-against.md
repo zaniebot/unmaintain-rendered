@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T20:20:16Z
 updated_at: 2025-11-13T20:20:16Z
 url: https://github.com/astral-sh/ty/issues/1541
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Subclass definitions should be validated against superclass `__init_subclass__` definitions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-13 20:20_
+_@AlexWaygood_
 
 ### Summary
 

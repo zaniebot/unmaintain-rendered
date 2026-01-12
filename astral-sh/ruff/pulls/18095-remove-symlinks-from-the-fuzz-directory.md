@@ -13,14 +13,14 @@ head: dhruv/fuzz-symlinks
 created_at: 2025-05-14T15:17:35Z
 updated_at: 2025-05-14T15:35:54Z
 url: https://github.com/astral-sh/ruff/pull/18095
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # Remove symlinks from the fuzz directory
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-14 15:17_
+_@dhruvmanila_
 
 ## Summary
 

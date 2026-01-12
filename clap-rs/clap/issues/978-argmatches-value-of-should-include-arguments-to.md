@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-06-03T13:38:45Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/978
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `ArgMatches::value_of` should include arguments to subcommands
 
 ---
 
-_Issue opened by @sgrif on 2017-06-03 13:38_
+_@sgrif_
 
 In Diesel CLI we are using a global argument in combination with subcommands. I'd expect `matches.value_of("ARG")` to return the argument regardless of where it appeared. However, in Diesel CLI (which is using clap 2.24.2), running `diesel migration run --database-url something` will complain that the argument isn't present. Running `diesel migration --database-url something run` works.
 

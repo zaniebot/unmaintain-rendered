@@ -12,14 +12,14 @@ head: charlie/D415
 created_at: 2022-12-06T01:10:07Z
 updated_at: 2022-12-06T01:24:57Z
 url: https://github.com/astral-sh/ruff/pull/1094
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for D400 and D415
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 01:10_
+_@charliermarsh_
 
 Resolves #1090.
 

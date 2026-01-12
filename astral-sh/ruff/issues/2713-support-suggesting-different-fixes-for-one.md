@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T06:30:57Z
 updated_at: 2023-02-18T20:48:54Z
 url: https://github.com/astral-sh/ruff/issues/2713
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support suggesting different fixes for one violation
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-10 06:30_
+_@not-my-profile_
 
 Some violations can be fixed in different ways. The Language Server Protocol supports multiple code actions for one location, so it would be nice if ruff could also suggest multiple autofixes for one violation.
 

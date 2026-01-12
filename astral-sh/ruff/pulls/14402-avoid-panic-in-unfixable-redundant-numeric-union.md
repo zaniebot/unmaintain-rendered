@@ -14,14 +14,14 @@ head: charlie/try
 created_at: 2024-11-17T17:02:59Z
 updated_at: 2024-11-17T17:17:10Z
 url: https://github.com/astral-sh/ruff/pull/14402
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Avoid panic in unfixable `redundant-numeric-union`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-17 17:02_
+_@charliermarsh_
 
 ## Summary
 

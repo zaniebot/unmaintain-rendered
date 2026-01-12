@@ -14,14 +14,14 @@ head: konsti/airflow2-case
 created_at: 2025-01-10T09:36:08Z
 updated_at: 2025-01-10T14:42:05Z
 url: https://github.com/astral-sh/uv/pull/10463
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Add second apache airflow test case
 
 ---
 
-_Pull request opened by @konstin on 2025-01-10 09:36_
+_@konstin_
 
 Add the slow test case from #10438
 

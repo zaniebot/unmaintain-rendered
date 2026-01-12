@@ -12,14 +12,14 @@ head: charlie/sdist
 created_at: 2024-11-12T19:18:11Z
 updated_at: 2024-12-02T02:16:42Z
 url: https://github.com/astral-sh/uv/pull/9069
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Rename `src` directory to `sdist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-12 19:18_
+_@charliermarsh_
 
 ## Summary
 

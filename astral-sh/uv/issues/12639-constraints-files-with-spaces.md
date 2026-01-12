@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T21:09:48Z
 updated_at: 2025-11-09T03:16:22Z
 url: https://github.com/astral-sh/uv/issues/12639
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Constraints files with spaces
 
 ---
 
-_Issue opened by @henryiii on 2025-04-02 21:09_
+_@henryiii_
 
 ### Summary
 

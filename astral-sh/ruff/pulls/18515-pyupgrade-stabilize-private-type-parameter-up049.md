@@ -13,14 +13,14 @@ head: brent/stabilize-up049
 created_at: 2025-06-06T21:26:09Z
 updated_at: 2025-06-10T20:11:37Z
 url: https://github.com/astral-sh/ruff/pull/18515
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [pyupgrade] Stabilize private-type-parameter (UP049)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 21:26_
+_@ntBre_
 
 ## Summary
 Stabilizes the UP049 rule (private-type-parameter) by moving it from Preview to Stable.

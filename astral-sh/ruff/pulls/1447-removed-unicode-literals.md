@@ -11,14 +11,14 @@ head: main
 created_at: 2022-12-29T20:21:15Z
 updated_at: 2022-12-29T20:30:54Z
 url: https://github.com/astral-sh/ruff/pull/1447
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Removed unicode literals
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-29 20:21_
+_@colin99d_
 
 A part of #827 
 

@@ -14,14 +14,14 @@ head: zb/uvx-help
 created_at: 2024-07-03T14:14:42Z
 updated_at: 2024-07-03T16:38:55Z
 url: https://github.com/astral-sh/uv/pull/4770
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Add dedicated help menu for `uvx`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 14:14_
+_@zanieb_
 
 Closes #4749 
 

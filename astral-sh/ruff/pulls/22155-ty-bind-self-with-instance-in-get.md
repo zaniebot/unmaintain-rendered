@@ -14,14 +14,14 @@ head: charlie/self
 created_at: 2025-12-23T03:38:51Z
 updated_at: 2025-12-23T19:26:00Z
 url: https://github.com/astral-sh/ruff/pull/22155
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Bind self with instance in `__get__`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-23 03:38_
+_@charliermarsh_
 
 ## Summary
 

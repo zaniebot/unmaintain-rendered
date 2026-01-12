@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T21:59:14Z
 updated_at: 2025-02-16T19:13:56Z
 url: https://github.com/astral-sh/uv/issues/8059
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Stale dependencies when running in scripts
 
 ---
 
-_Issue opened by @aaronsteers on 2024-10-09 21:59_
+_@aaronsteers_
 
 ## Context
 

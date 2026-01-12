@@ -13,14 +13,14 @@ head: remove-fstring-skip-comment-placement
 created_at: 2025-09-25T18:30:25Z
 updated_at: 2025-11-10T15:51:35Z
 url: https://github.com/astral-sh/ruff/pull/20580
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # Remove unnecessary f-string handling in comment placement
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-25 18:30_
+_@dylwil3_
 
 In #7047 some logic was added to comment placement in order to address a panic in #6898 . I believe that panic was caused by old behavior of `SimpleTokenizer` that is no longer present, because it does not occur if the new logic is simply removed.
 

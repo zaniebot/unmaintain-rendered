@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-13T14:29:05Z
 updated_at: 2023-10-13T19:44:18Z
 url: https://github.com/astral-sh/ruff/issues/7945
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # TCH false positive to generic runtime base classes
 
 ---
 
-_Issue opened by @iurisilvio on 2023-10-13 14:29_
+_@iurisilvio_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

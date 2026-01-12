@@ -14,14 +14,14 @@ head: extract-suggested-AIR-changes
 created_at: 2025-04-02T14:34:18Z
 updated_at: 2025-04-09T14:43:07Z
 url: https://github.com/astral-sh/ruff/pull/17152
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`airflow`] Extract `AIR312` from `AIR302` rules (`AIR302`, `AIR312`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-02 14:34_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

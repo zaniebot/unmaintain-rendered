@@ -12,14 +12,14 @@ head: PLC1802
 created_at: 2025-03-22T21:40:13Z
 updated_at: 2025-03-23T11:17:34Z
 url: https://github.com/astral-sh/ruff/pull/16920
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`pylint`] Fix typo in documentation of PLC1802
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-22 21:40_
+_@VascoSch92_
 
 The PR adresses issue #16797 
 

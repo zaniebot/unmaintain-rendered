@@ -12,14 +12,14 @@ head: mikayla/init-with-project-arg
 created_at: 2025-11-10T19:30:07Z
 updated_at: 2025-11-10T23:33:10Z
 url: https://github.com/astral-sh/uv/pull/16674
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Deprecate `--project` arg for init
 
 ---
 
-_Pull request opened by @mikaylathompson on 2025-11-10 19:30_
+_@mikaylathompson_
 
 Addresses https://github.com/astral-sh/uv/issues/15790
 

@@ -13,14 +13,14 @@ head: feat-enable-configuration-of-no-progress-with-env-var
 created_at: 2024-10-26T19:58:39Z
 updated_at: 2024-10-27T19:14:13Z
 url: https://github.com/astral-sh/uv/pull/8600
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # feat: add environment variable to disable progress output
 
 ---
 
-_Pull request opened by @zzztimbo on 2024-10-26 19:58_
+_@zzztimbo_
 
 The changes in this commit introduce the `UV_NO_PROGRESS` environment variable as an alternative way to control progress output suppression in uv-cli, equivalent to using the `--no-progress` flag. This enhancement simplifies configuration in CI environments and automated scripts by eliminating the need to detect whether the script is running in a CI environment.
 

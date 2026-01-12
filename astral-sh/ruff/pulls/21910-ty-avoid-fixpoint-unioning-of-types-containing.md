@@ -14,14 +14,14 @@ head: cjm/nodiv
 created_at: 2025-12-11T00:32:52Z
 updated_at: 2025-12-12T03:52:36Z
 url: https://github.com/astral-sh/ruff/pull/21910
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] avoid fixpoint unioning of types containing current-cycle Divergent
 
 ---
 
-_Pull request opened by @carljm on 2025-12-11 00:32_
+_@carljm_
 
 Partially addresses https://github.com/astral-sh/ty/issues/1732
 

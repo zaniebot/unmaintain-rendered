@@ -13,14 +13,14 @@ head: add-empty-index
 created_at: 2025-06-10T05:23:54Z
 updated_at: 2025-06-18T08:48:21Z
 url: https://github.com/astral-sh/uv/pull/13940
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Warn on empty index directory
 
 ---
 
-_Pull request opened by @aaron-ang on 2025-06-10 05:23_
+_@aaron-ang_
 
 Close #13922
 

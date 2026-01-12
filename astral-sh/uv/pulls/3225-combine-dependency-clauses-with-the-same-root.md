@@ -12,14 +12,14 @@ head: combine-clauses
 created_at: 2024-04-23T20:37:52Z
 updated_at: 2024-04-26T22:07:43Z
 url: https://github.com/astral-sh/uv/pull/3225
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Combine dependency clauses with the same root
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-23 20:37_
+_@ibraheemdev_
 
 ## Summary
 

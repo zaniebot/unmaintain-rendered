@@ -14,14 +14,14 @@ head: konsti/insecure-host-in-publish
 created_at: 2024-10-22T09:27:20Z
 updated_at: 2024-10-22T12:07:34Z
 url: https://github.com/astral-sh/uv/pull/8440
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Respect allow insecure host in publish
 
 ---
 
-_Pull request opened by @konstin on 2024-10-22 09:27_
+_@konstin_
 
 Switch to respecting the allow insecure host setting in all places where we use the client.
 

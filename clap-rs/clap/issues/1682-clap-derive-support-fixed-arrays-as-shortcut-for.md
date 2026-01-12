@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-02-09T15:03:22Z
 updated_at: 2022-11-08T05:15:37Z
 url: https://github.com/clap-rs/clap/issues/1682
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap_derive: support fixed arrays as shortcut for number_of_values = N
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-09 15:03_
+_@CreepySkeleton_
 
 Transferred from: https://github.com/TeXitoi/structopt/issues/349
 

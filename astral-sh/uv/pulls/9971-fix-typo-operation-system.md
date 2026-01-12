@@ -13,14 +13,14 @@ head: opsys
 created_at: 2024-12-17T13:14:44Z
 updated_at: 2024-12-17T13:37:11Z
 url: https://github.com/astral-sh/uv/pull/9971
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Fix typo "operation system"
 
 ---
 
-_Pull request opened by @akx on 2024-12-17 13:14_
+_@akx_
 
 ## Summary
 

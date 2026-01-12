@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T17:42:50Z
 updated_at: 2024-07-28T18:35:20Z
 url: https://github.com/astral-sh/uv/issues/5227
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Don't warn when the direct dependency is an extra on root
 
 ---
 
-_Issue opened by @konstin on 2024-07-19 17:42_
+_@konstin_
 
 Got this error in packse, which is nonsensical since the root package doesn't need a bound:
 

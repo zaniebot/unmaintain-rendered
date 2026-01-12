@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-23T07:47:57Z
 updated_at: 2024-01-23T10:06:17Z
 url: https://github.com/astral-sh/ruff/issues/9621
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [New rule request] Check for the usage of the `@pytest.mark.only` decorator
 
 ---
 
-_Issue opened by @vdusek on 2024-01-23 07:47_
+_@vdusek_
 
 
 There is such a rule for Flake8 - [flake8-no-pytest-mark-only](https://github.com/fnesveda/flake8-no-pytest-mark-only).

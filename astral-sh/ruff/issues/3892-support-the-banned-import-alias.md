@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-05T22:36:48Z
 updated_at: 2023-04-12T03:29:26Z
 url: https://github.com/astral-sh/ruff/issues/3892
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support the `banned-import-alias`
 
 ---
 
-_Issue opened by @stancld on 2023-04-05 22:36_
+_@stancld_
 
 ## 🚀  Feature request
 

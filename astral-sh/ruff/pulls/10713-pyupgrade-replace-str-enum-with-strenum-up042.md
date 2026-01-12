@@ -14,14 +14,14 @@ head: main
 created_at: 2024-04-01T15:17:01Z
 updated_at: 2024-04-06T01:59:16Z
 url: https://github.com/astral-sh/ruff/pull/10713
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pyupgrade`] Replace str,Enum with StrEnum `UP042`
 
 ---
 
-_Pull request opened by @Warchant on 2024-04-01 15:17_
+_@Warchant_
 
 <sup>Disclaimer: I am first time contributor to Ruff, relatively new to Rust. Doing this to learn the language, study how ruff project is structured and to pay back for using my favourite python tool :)</sup>
 

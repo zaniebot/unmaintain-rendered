@@ -13,14 +13,14 @@ head: zb/install-message
 created_at: 2024-07-09T19:39:33Z
 updated_at: 2024-07-18T19:10:36Z
 url: https://github.com/astral-sh/uv/pull/4939
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # When installing a single Python version, do not display number installed
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 19:39_
+_@zanieb_
 
 e.g.,
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T15:50:06Z
 updated_at: 2024-08-26T18:40:30Z
 url: https://github.com/astral-sh/uv/issues/6529
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `uv run -` should pipe input
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-23 15:50_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/6481#discussion_r1728931167
 

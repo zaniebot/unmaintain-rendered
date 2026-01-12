@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T17:16:36Z
 updated_at: 2025-09-23T17:27:57Z
 url: https://github.com/astral-sh/uv/issues/7036
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Can't use tkinter with new venv set up with uv
 
 ---
 
-_Issue opened by @dstansby on 2024-09-04 17:16_
+_@dstansby_
 
 ---
 

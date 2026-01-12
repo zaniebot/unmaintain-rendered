@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T17:54:06Z
 updated_at: 2024-02-23T23:02:10Z
 url: https://github.com/astral-sh/uv/issues/1927
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Support for Alpine on aarch64
 
 ---
 
-_Issue opened by @ilanschnell on 2024-02-23 17:54_
+_@ilanschnell_
 
 On Alpine (3.19.1) on an aarch64 machine, I get:
 ```

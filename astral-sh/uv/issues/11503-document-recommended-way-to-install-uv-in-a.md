@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-14T07:39:13Z
 updated_at: 2025-05-19T12:22:51Z
 url: https://github.com/astral-sh/uv/issues/11503
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # Document recommended way to install uv in a Dockerfile
 
 ---
 
-_Issue opened by @snickell on 2025-02-14 07:39_
+_@snickell_
 
 ### Summary
 

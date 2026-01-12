@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T18:49:48Z
 updated_at: 2024-05-15T19:11:08Z
 url: https://github.com/astral-sh/uv/issues/3617
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `find-links` TOML parse error: expected `Path` or `Url`
 
 ---
 
-_Issue opened by @masonkirchner on 2024-05-15 18:49_
+_@masonkirchner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

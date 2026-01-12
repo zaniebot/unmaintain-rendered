@@ -12,14 +12,14 @@ head: zb/accept
 created_at: 2023-12-19T16:47:06Z
 updated_at: 2023-12-19T18:22:54Z
 url: https://github.com/astral-sh/uv/pull/701
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Include `Accept` header specifying that we can only parse JSON responses
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-19 16:47_
+_@zanieb_
 
 Otherwise, when an index does not support the query variable we get an HTML response and a JSON parse error.
 

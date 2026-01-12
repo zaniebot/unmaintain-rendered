@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T18:36:29Z
 updated_at: 2024-03-22T19:52:58Z
 url: https://github.com/astral-sh/ruff/issues/10528
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Autofix for `I001` unexpectedly altering characters from Unicode Block “Letterlike Symbols”
 
 ---
 
-_Issue opened by @namurphy on 2024-03-22 18:36_
+_@namurphy_
 
 With ruff 0.3.4, I ran into unexpected behavior where the autofix for ruff rule [`I001`](https://docs.astral.sh/ruff/rules/unsorted-imports/) is now altering some characters from [Unicode Block “Letterlike Symbols” (U+2100)](https://www.compart.com/en/unicode/block/U+2100). I suspect that this is related to #10412. 🤔 This might not be the only Unicode block that is affected by this.
 

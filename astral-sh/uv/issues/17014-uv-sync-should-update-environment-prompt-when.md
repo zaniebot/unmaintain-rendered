@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-06T05:58:50Z
 updated_at: 2025-12-08T12:21:38Z
 url: https://github.com/astral-sh/uv/issues/17014
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # `uv sync` should update environment `PROMPT` when `[project].name` changes
 
 ---
 
-_Issue opened by @Saltsmart on 2025-12-06 05:58_
+_@Saltsmart_
 
 ### Summary
 

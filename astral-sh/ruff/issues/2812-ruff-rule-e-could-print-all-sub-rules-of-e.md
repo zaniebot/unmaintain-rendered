@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T12:34:05Z
 updated_at: 2023-09-21T02:05:41Z
 url: https://github.com/astral-sh/ruff/issues/2812
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `ruff rule E` could print all sub-rules of E
 
 ---
 
-_Issue opened by @spaceone on 2023-02-12 12:34_
+_@spaceone_
 
 ```sh
 $ ruff rule E1

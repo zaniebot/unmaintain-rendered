@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T23:53:49Z
 updated_at: 2024-03-25T21:07:16Z
 url: https://github.com/clap-rs/clap/issues/5407
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Cannot use non-literal expressions for `name` attribute
 
 ---
 
-_Issue opened by @mwu-tow on 2024-03-20 23:53_
+_@mwu-tow_
 
 ### Please complete the following tasks
 

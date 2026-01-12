@@ -12,14 +12,14 @@ head: isort-separate
 created_at: 2023-01-27T17:11:48Z
 updated_at: 2023-02-02T13:08:04Z
 url: https://github.com/astral-sh/ruff/pull/2268
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # isort: support forced_separate
 
 ---
 
-_Pull request opened by @akx on 2023-01-27 17:11_
+_@akx_
 
 Support for [`forced_separate`](https://pycqa.github.io/isort/docs/configuration/options.html#forced-separate):
 

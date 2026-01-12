@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-21T21:00:00Z
 updated_at: 2022-10-11T13:56:21Z
 url: https://github.com/astral-sh/ruff/issues/249
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support for stdin?
 
 ---
 
-_Issue opened by @fsouza on 2022-09-21 21:00_
+_@fsouza_
 
 Hey there, thanks for working on this project. I'm curious if you'd be open to support stdin, similar to how flake8 does it? (i.e. support `-` as the file name and a flag to identify the filename for error messages -- `--stdin-display-name`)
 

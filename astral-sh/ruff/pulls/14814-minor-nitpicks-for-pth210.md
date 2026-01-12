@@ -13,14 +13,14 @@ head: ruf049-nits
 created_at: 2024-12-06T12:18:36Z
 updated_at: 2024-12-06T12:48:02Z
 url: https://github.com/astral-sh/ruff/pull/14814
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Minor nitpicks for PTH210
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-06 12:18_
+_@AlexWaygood_
 
 ## Summary
 

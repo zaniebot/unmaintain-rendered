@@ -14,14 +14,14 @@ head: zb/init-backtick
 created_at: 2024-07-22T18:04:12Z
 updated_at: 2024-07-22T18:18:38Z
 url: https://github.com/astral-sh/uv/pull/5302
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Use backticks in project init message
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 18:04_
+_@zanieb_
 
 _No description provided._
 

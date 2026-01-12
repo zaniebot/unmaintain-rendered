@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-10T09:48:40Z
 updated_at: 2026-01-10T09:53:36Z
 url: https://github.com/astral-sh/ty/issues/2433
-synced_at: 2026-01-10T11:36:43Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Specify pyproject.toml as config file
 
 ---
 
-_Issue opened by @TurtleOrangina on 2026-01-10 09:48_
+_@TurtleOrangina_
 
 ### Issue
 

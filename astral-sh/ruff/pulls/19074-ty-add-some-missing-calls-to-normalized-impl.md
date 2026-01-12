@@ -14,14 +14,14 @@ head: alex/normalized-impl
 created_at: 2025-07-01T16:14:44Z
 updated_at: 2025-07-01T16:57:53Z
 url: https://github.com/astral-sh/ruff/pull/19074
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Add some missing calls to `normalized_impl`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-01 16:14_
+_@AlexWaygood_
 
 ## Summary
 

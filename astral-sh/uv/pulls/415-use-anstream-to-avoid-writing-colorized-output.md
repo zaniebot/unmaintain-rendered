@@ -13,14 +13,14 @@ head: charlie/colors
 created_at: 2023-11-13T19:50:15Z
 updated_at: 2023-11-13T20:00:14Z
 url: https://github.com/astral-sh/uv/pull/415
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Use `anstream` to avoid writing colorized output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 19:50_
+_@charliermarsh_
 
 A more robust solution to avoiding colorized output by ensuring we write to `stdout` and `stderr` via the [`anstream`](https://docs.rs/anstream/latest/anstream/) crate.
 

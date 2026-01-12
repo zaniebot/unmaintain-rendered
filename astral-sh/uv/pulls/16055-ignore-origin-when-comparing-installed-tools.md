@@ -13,14 +13,14 @@ head: charlie/origin
 created_at: 2025-09-28T19:05:57Z
 updated_at: 2025-09-29T17:23:19Z
 url: https://github.com/astral-sh/uv/pull/16055
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Ignore origin when comparing installed tools
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-28 19:05_
+_@charliermarsh_
 
 ## Summary
 

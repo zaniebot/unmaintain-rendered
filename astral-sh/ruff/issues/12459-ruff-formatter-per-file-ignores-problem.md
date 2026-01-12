@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T18:13:18Z
 updated_at: 2024-07-22T18:23:20Z
 url: https://github.com/astral-sh/ruff/issues/12459
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff formatter per file ignores problem
 
 ---
 
-_Issue opened by @nonoash on 2024-07-22 18:13_
+_@nonoash_
 
 Hi,
 

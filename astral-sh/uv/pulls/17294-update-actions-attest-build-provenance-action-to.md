@@ -13,14 +13,14 @@ head: renovate/actions-attest-build-provenance-3.x
 created_at: 2026-01-02T16:43:47Z
 updated_at: 2026-01-02T16:55:48Z
 url: https://github.com/astral-sh/uv/pull/17294
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:42Z
 ```
 
 # Update actions/attest-build-provenance action to v3
 
 ---
 
-_Pull request opened by @renovate on 2026-01-02 16:43_
+_@renovate_
 
 This PR contains the following updates:
 

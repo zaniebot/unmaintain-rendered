@@ -14,14 +14,14 @@ head: force-parens-lint
 created_at: 2024-01-08T15:22:45Z
 updated_at: 2024-01-11T11:42:25Z
 url: https://github.com/astral-sh/ruff/pull/9440
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add rule to enforce parentheses in `a or b and c`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-08 15:22_
+_@AlexWaygood_
 
 Fixes #8721
 

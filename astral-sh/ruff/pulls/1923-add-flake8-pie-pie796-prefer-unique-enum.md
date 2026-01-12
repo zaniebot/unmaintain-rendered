@@ -12,14 +12,14 @@ head: flake8-pie796
 created_at: 2023-01-16T21:48:00Z
 updated_at: 2023-01-17T00:30:29Z
 url: https://github.com/astral-sh/ruff/pull/1923
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add flake8-pie PIE796: prefer-unique-enum
 
 ---
 
-_Pull request opened by @ljesparis on 2023-01-16 21:48_
+_@ljesparis_
 
 I accept any suggestion. By the way, I have a doubt, I have checked and all flake8-pie plugins can be fixed by ruff, but is it necessary that this one is also fixed automatically ?
 

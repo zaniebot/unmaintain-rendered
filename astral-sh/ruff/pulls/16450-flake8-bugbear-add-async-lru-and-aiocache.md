@@ -13,14 +13,14 @@ head: extend-flake8-bugbear-with-async-decorators
 created_at: 2025-03-01T16:03:00Z
 updated_at: 2025-03-04T10:35:46Z
 url: https://github.com/astral-sh/ruff/pull/16450
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [flake8-bugbear] Add async-lru and aiocache decorators to the B019 rule checker
 
 ---
 
-_Pull request opened by @LuckySting on 2025-03-01 16:03_
+_@LuckySting_
 
 ## Summary
 

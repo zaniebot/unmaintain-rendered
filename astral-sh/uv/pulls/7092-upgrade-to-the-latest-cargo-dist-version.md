@@ -13,14 +13,14 @@ head: zb/cargo-dist
 created_at: 2024-09-05T17:44:05Z
 updated_at: 2024-09-05T18:30:34Z
 url: https://github.com/astral-sh/uv/pull/7092
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Upgrade to the latest cargo-dist version
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-05 17:44_
+_@zanieb_
 
 Notably includes support for [`UV_INSTALL_DIR`](https://github.com/axodotdev/cargo-dist/blob/main/CHANGELOG.md#app-branded-installer-environment-variables)
 

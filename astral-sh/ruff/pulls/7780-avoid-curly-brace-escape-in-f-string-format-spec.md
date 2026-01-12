@@ -13,14 +13,14 @@ head: dhruv/no-double-curly-escape-in-format-spec
 created_at: 2023-10-03T13:47:57Z
 updated_at: 2023-10-03T14:08:04Z
 url: https://github.com/astral-sh/ruff/pull/7780
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid curly brace escape in f-string format spec
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-03 13:47_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: feat/async-interpreter
 created_at: 2025-07-29T14:40:11Z
 updated_at: 2025-07-31T11:42:31Z
 url: https://github.com/astral-sh/uv/pull/14956
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Make the `BuildDispatch` interpreter method async
 
 ---
 
-_Pull request opened by @tdejager on 2025-07-29 14:40_
+_@tdejager_
 
 This is a bit of a weird request, but in [pixi](https://pixi.sh) we are making use of this function to lazily instantiate a conda environment. Well, in actuality we are using a shim to the `BuildDispatch` to actually to only create a conda prefix, if some package needs to be built during the resolution phase. Otherwise we can resolve everything without an enviroment containing a python intepreter.
 

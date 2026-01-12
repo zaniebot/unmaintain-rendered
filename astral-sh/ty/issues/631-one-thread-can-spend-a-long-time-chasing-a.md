@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T01:20:52Z
 updated_at: 2025-12-19T08:23:03Z
 url: https://github.com/astral-sh/ty/issues/631
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # one thread can spend a long time chasing a dependency trail
 
 ---
 
-_Issue opened by @carljm on 2025-06-11 01:20_
+_@carljm_
 
 Observed running ty on large codebases: our current parallelism model splits work among threads at the granularity of "checking a file", where "a file" is a file the user has requested be checked.
 

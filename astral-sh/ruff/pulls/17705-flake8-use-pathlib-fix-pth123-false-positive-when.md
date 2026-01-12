@@ -14,14 +14,14 @@ head: fix-PTH123
 created_at: 2025-04-29T13:54:07Z
 updated_at: 2025-04-30T20:55:03Z
 url: https://github.com/astral-sh/ruff/pull/17705
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`flake8-use-pathlib`] Fix `PTH123` false positive when `open` is passed a file descriptor from a function call
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-29 13:54_
+_@LaBatata101_
 
 
 

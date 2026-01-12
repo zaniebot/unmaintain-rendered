@@ -11,14 +11,14 @@ head: main
 created_at: 2025-12-15T15:17:53Z
 updated_at: 2025-12-18T13:08:28Z
 url: https://github.com/astral-sh/uv/pull/17134
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Add Nix flake for installing uv from GitHub
 
 ---
 
-_Pull request opened by @deadlovelll on 2025-12-15 15:17_
+_@deadlovelll_
 
 ## Summary
 

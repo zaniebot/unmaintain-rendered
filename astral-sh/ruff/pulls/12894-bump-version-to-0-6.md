@@ -13,14 +13,14 @@ head: bump-version-ruff-0.6
 created_at: 2024-08-14T16:19:02Z
 updated_at: 2024-08-15T12:17:24Z
 url: https://github.com/astral-sh/ruff/pull/12894
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Bump version to 0.6
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-14 16:19_
+_@MichaReiser_
 
 ## Summary
 

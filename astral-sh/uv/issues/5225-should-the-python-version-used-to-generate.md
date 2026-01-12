@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T16:15:12Z
 updated_at: 2024-08-09T22:15:37Z
 url: https://github.com/astral-sh/uv/issues/5225
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Should the Python version used to generate documentation in CONTRIBUTING docs be explicitly specified?
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-19 16:15_
+_@FishAlchemist_
 
 Explicitly specify the Python version when creating the Python virtual environment for generating documentation.
 Instead of letting UV only look for the Python available in the environment, it is suggested to specify the minimum required Python version.

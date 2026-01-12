@@ -12,14 +12,14 @@ head: revert
 created_at: 2025-04-11T19:34:45Z
 updated_at: 2025-04-11T19:41:10Z
 url: https://github.com/clap-rs/clap/pull/5968
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Revert "feat(help): Only print short when required"
 
 ---
 
-_Pull request opened by @epage on 2025-04-11 19:34_
+_@epage_
 
 Concern was raised over the alignment in #5963 and decided to defer this for now.  This wasn't part of the original issue and hadn't been discussed before.
 

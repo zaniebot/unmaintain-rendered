@@ -13,14 +13,14 @@ head: add_info_message_for_empty_uvx_run
 created_at: 2024-09-23T14:24:55Z
 updated_at: 2024-09-27T09:45:04Z
 url: https://github.com/astral-sh/uv/pull/7641
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # uvx/uv tool run: Add context message before listing available tools when no arguments are provided
 
 ---
 
-_Pull request opened by @kakkoyun on 2024-09-23 14:24_
+_@kakkoyun_
 
 ## Summary
 

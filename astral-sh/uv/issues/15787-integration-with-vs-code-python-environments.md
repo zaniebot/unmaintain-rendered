@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T12:26:12Z
 updated_at: 2025-09-13T17:13:21Z
 url: https://github.com/astral-sh/uv/issues/15787
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Integration with VS Code "Python Environments" extension
 
 ---
 
-_Issue opened by @schlich on 2025-09-11 12:26_
+_@schlich_
 
 ### Summary
 

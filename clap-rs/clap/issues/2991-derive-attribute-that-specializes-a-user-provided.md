@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-04T21:24:43Z
 updated_at: 2022-01-11T18:49:39Z
 url: https://github.com/clap-rs/clap/issues/2991
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Derive attribute that specializes a user-provided function that gets to modify `Arg`
 
 ---
 
-_Issue opened by @marjakm on 2021-11-04 21:24_
+_@marjakm_
 
 ### Please complete the following tasks
 

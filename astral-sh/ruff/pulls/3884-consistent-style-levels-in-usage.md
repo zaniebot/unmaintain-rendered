@@ -12,14 +12,14 @@ head: usage-indent
 created_at: 2023-04-05T03:01:35Z
 updated_at: 2023-04-05T03:25:30Z
 url: https://github.com/astral-sh/ruff/pull/3884
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Consistent Style/Levels in Usage 
 
 ---
 
-_Pull request opened by @brucearctor on 2023-04-05 03:01_
+_@brucearctor_
 
 <img width="201" alt="Screen Shot 2023-04-04 at 7 57 58 PM" src="https://user-images.githubusercontent.com/5032356/229970122-9592e885-0d31-4899-ba1c-cd9991779e02.png">
 

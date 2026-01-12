@@ -12,14 +12,14 @@ head: extract_quote
 created_at: 2022-10-28T22:51:11Z
 updated_at: 2022-11-20T01:59:34Z
 url: https://github.com/astral-sh/ruff/pull/497
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix “not a char boundary” error with Unicode in extract_quote
 
 ---
 
-_Pull request opened by @andersk on 2022-10-28 22:51_
+_@andersk_
 
 Fixes this error:
 

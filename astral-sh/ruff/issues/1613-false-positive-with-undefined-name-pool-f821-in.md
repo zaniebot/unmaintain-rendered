@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T01:49:26Z
 updated_at: 2023-01-04T02:27:27Z
 url: https://github.com/astral-sh/ruff/issues/1613
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # false positive with `Undefined name Pool F821` in .pyi 
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-04 01:49_
+_@sbdchd_
 
 minimal reproducible example of [a larger module type stub](https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/typings/asyncio_redis/pool.pyi#L4-L4) aka `.pyi` file:
 

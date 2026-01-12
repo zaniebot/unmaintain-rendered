@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T12:35:39Z
 updated_at: 2025-03-18T07:13:58Z
 url: https://github.com/astral-sh/ruff/issues/16774
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Organize Imports code action silently does nothing when `# noqa` is present
 
 ---
 
-_Issue opened by @xhrnca00 on 2025-03-16 12:35_
+_@xhrnca00_
 
 ### Summary
 

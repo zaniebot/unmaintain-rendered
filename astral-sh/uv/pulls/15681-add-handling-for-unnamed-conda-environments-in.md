@@ -13,14 +13,14 @@ head: zb/conda-no-name
 created_at: 2025-09-04T13:28:50Z
 updated_at: 2025-09-17T16:34:25Z
 url: https://github.com/astral-sh/uv/pull/15681
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Add handling for unnamed conda environments in base environment detection
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-04 13:28_
+_@zanieb_
 
 While investigating https://github.com/astral-sh/uv/pull/15679, I created an unnamed conda environment and noticed this quality which allows us to detect that it's not the base environment.
 

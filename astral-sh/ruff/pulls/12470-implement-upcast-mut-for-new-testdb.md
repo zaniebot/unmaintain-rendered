@@ -13,14 +13,14 @@ head: fix-merge-race
 created_at: 2024-07-23T07:01:01Z
 updated_at: 2024-07-23T07:20:51Z
 url: https://github.com/astral-sh/ruff/pull/12470
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Implement `upcast_mut` for new `TestDb`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-23 07:01_
+_@MichaReiser_
 
 ## Summary
 

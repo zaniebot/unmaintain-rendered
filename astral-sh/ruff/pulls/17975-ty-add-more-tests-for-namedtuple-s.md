@@ -14,14 +14,14 @@ head: dataclass
 created_at: 2025-05-09T06:44:38Z
 updated_at: 2025-05-10T08:46:08Z
 url: https://github.com/astral-sh/ruff/pull/17975
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Add more tests for `NamedTuple`s
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-05-09 06:44_
+_@abhijeetbodas2001_
 
 ## Summary
 

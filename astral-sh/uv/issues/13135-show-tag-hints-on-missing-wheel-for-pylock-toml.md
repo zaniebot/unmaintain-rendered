@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T16:28:42Z
 updated_at: 2025-04-27T16:56:51Z
 url: https://github.com/astral-sh/uv/issues/13135
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Show tag hints on missing wheel for `pylock.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-04-27 16:28_
+_@charliermarsh_
 
 _No description provided._
 

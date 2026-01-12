@@ -13,14 +13,14 @@ head: static-key
 created_at: 2023-06-07T14:23:52Z
 updated_at: 2023-06-09T02:26:25Z
 url: https://github.com/astral-sh/ruff/pull/4929
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [`ruff`] Add a rule for static keys in dict comprehensions 
 
 ---
 
-_Pull request opened by @rodjunger on 2023-06-07 14:23_
+_@rodjunger_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

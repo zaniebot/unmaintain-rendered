@@ -13,14 +13,14 @@ head: pypi-feature-20251209
 created_at: 2025-12-09T23:37:48Z
 updated_at: 2025-12-10T09:41:48Z
 url: https://github.com/astral-sh/uv/pull/17059
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Gate a few more tests on the pypi feature
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-12-09 23:37_
+_@musicinmybrain_
 
 
 

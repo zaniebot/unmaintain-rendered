@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-28T13:55:23Z
 updated_at: 2025-10-30T10:44:09Z
 url: https://github.com/astral-sh/uv/issues/16484
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # UV ignores extra dependencies for overrided library
 
 ---
 
-_Issue opened by @Wintreist on 2025-10-28 13:55_
+_@Wintreist_
 
 ### Summary
 

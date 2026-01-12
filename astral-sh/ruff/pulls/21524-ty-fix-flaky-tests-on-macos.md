@@ -14,14 +14,14 @@ head: dcreager/flaky-constraints
 created_at: 2025-11-19T14:00:04Z
 updated_at: 2025-11-19T14:44:34Z
 url: https://github.com/astral-sh/ruff/pull/21524
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Fix flaky tests on macos
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-19 14:00_
+_@dcreager_
 
 We're seeing flaky test failures on macos, which seems to be caused by different Salsa ID orderings on the different platforms. Constraint set BDDs order their internal nodes based on the Salsa IDs of the interned typevar structs, and we had some code that depended on variable ordering in an unexpected way.
 

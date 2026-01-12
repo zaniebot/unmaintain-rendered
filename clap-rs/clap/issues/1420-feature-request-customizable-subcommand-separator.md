@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-02-19T19:38:07Z
 updated_at: 2021-12-09T19:45:50Z
 url: https://github.com/clap-rs/clap/issues/1420
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [feature request] customizable subcommand separator besides space
 
 ---
 
-_Issue opened by @samuela on 2019-02-19 19:38_
+_@samuela_
 
 Many CLIs use colons to separate subcommands instead of spaces, eg. `heroku auth:login`, `heroku auth:logout`, etc. It would be nice to have support for this sort of thing in clap as well. It becomes especially important when maintaining backwards compatibility with CLIs written in this format.
 

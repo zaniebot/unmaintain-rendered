@@ -12,14 +12,14 @@ head: charlie/setter
 created_at: 2023-02-21T19:27:04Z
 updated_at: 2023-02-21T19:31:02Z
 url: https://github.com/astral-sh/ruff/pull/3092
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Ignore setters in flake8-boolean-trap
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 19:27_
+_@charliermarsh_
 
 Closes #3078.
 

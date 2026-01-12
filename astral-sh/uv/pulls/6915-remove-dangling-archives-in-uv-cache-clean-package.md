@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-09-01T17:09:56Z
 updated_at: 2024-09-01T17:27:15Z
 url: https://github.com/astral-sh/uv/pull/6915
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Remove dangling archives in `uv cache clean ${package}`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-01 17:09_
+_@charliermarsh_
 
 ## Summary
 

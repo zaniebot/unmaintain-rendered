@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T12:21:19Z
 updated_at: 2024-06-08T05:48:54Z
 url: https://github.com/astral-sh/ruff/issues/11751
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `lint.per-file-ignores` option is ignored by the new language server
 
 ---
 
-_Issue opened by @DetachHead on 2024-06-05 12:21_
+_@DetachHead_
 
 when enabling the new `ruff.nativeServer` setting in vscode, it seems to ignore `tool.ruff.lint.per-file-ignores`
 ```toml

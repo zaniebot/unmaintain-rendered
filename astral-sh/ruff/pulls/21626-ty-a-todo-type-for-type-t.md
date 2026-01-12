@@ -14,14 +14,14 @@ head: david/type-t-todo
 created_at: 2025-11-25T10:28:59Z
 updated_at: 2025-11-25T10:59:44Z
 url: https://github.com/astral-sh/ruff/pull/21626
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] A todo type for type[T]
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-25 10:28_
+_@sharkdp_
 
 ## Summary
 

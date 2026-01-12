@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T11:14:11Z
 updated_at: 2025-05-30T02:06:56Z
 url: https://github.com/astral-sh/uv/issues/13052
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Add configuration setting to make `uv run --exact` the default
 
 ---
 
-_Issue opened by @ptc-swalk on 2025-04-22 11:14_
+_@ptc-swalk_
 
 ### Summary
 

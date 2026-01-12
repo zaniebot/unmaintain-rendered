@@ -15,14 +15,14 @@ head: david/many_tuple_assignments-reduce-size
 created_at: 2025-05-16T13:11:53Z
 updated_at: 2025-05-16T13:28:26Z
 url: https://github.com/astral-sh/ruff/pull/18131
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Reduce size of the many-tuple-assignments benchmark
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-16 13:11_
+_@sharkdp_
 
 ## Summary
 

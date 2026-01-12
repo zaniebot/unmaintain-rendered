@@ -12,14 +12,14 @@ head: charlie/esc
 created_at: 2023-01-23T19:07:42Z
 updated_at: 2023-01-23T19:11:26Z
 url: https://github.com/astral-sh/ruff/pull/2112
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Escape curly braces when converting .format() strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-23 19:07_
+_@charliermarsh_
 
 Closes #2111.
 

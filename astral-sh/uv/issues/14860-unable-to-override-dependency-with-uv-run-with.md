@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T01:18:31Z
 updated_at: 2025-07-24T12:08:18Z
 url: https://github.com/astral-sh/uv/issues/14860
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Unable to override dependency with `uv run --with` after 0.8.0
 
 ---
 
-_Issue opened by @SumanthRH on 2025-07-24 01:18_
+_@SumanthRH_
 
 ## Summary
 

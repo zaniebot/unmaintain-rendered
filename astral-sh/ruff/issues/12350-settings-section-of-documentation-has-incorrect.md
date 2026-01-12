@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T16:48:10Z
 updated_at: 2024-07-19T17:51:48Z
 url: https://github.com/astral-sh/ruff/issues/12350
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Settings section of documentation has incorrect default value for output-format
 
 ---
 
-_Issue opened by @sashko1988 on 2024-07-16 16:48_
+_@sashko1988_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

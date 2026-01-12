@@ -13,14 +13,14 @@ head: dhruv/red-knot-server-opt
 created_at: 2024-08-06T14:16:39Z
 updated_at: 2024-08-06T14:54:51Z
 url: https://github.com/astral-sh/ruff/pull/12715
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Keep subcommands optional for the binary
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-06 14:16_
+_@dhruvmanila_
 
 ## Summary
 

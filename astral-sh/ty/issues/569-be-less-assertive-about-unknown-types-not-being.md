@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T18:08:07Z
 updated_at: 2025-06-02T19:44:53Z
 url: https://github.com/astral-sh/ty/issues/569
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Be less assertive about unknown types not being iterable
 
 ---
 
-_Issue opened by @JacobCallahan on 2025-06-02 18:08_
+_@JacobCallahan_
 
 I believe there should be a distinction between known not-iterable conditions and unknown not-iterable conditions.
 

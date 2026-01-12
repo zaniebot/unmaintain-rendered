@@ -13,14 +13,14 @@ head: cjm/signaturecycle
 created_at: 2025-05-04T15:46:51Z
 updated_at: 2025-05-05T19:12:40Z
 url: https://github.com/astral-sh/ruff/pull/17833
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [ty] add cycle handling for FunctionType::signature query
 
 ---
 
-_Pull request opened by @carljm on 2025-05-04 15:46_
+_@carljm_
 
 This fixes cycle panics in several ecosystem projects (moved to `good.txt` in a following PR https://github.com/astral-sh/ruff/pull/17834 because our mypy-primer job doesn't handle it well if we move projects to `good.txt` in the same PR that fixes `ty` to handle them), as well as in the minimal case in the added mdtest. It also fixes a number of panicking fuzzer seeds. It doesn't appear to cause any regression in any ecosystem project or any fuzzer seed.
 

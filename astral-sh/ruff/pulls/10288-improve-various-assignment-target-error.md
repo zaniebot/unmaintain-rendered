@@ -13,14 +13,14 @@ head: dhruv/assign-target-error
 created_at: 2024-03-08T02:51:02Z
 updated_at: 2024-03-08T17:54:10Z
 url: https://github.com/astral-sh/ruff/pull/10288
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Improve various assignment target error
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-08 02:51_
+_@dhruvmanila_
 
 ## Summary
 

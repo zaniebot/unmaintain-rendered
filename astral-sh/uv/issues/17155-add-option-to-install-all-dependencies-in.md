@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T22:34:50Z
 updated_at: 2025-12-21T21:43:09Z
 url: https://github.com/astral-sh/uv/issues/17155
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Add option to install all dependencies in editable mode
 
 ---
 
-_Issue opened by @danijar on 2025-12-16 22:34_
+_@danijar_
 
 ### Summary
 

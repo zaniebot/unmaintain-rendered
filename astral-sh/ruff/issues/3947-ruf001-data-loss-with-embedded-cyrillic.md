@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-12T14:29:47Z
 updated_at: 2023-05-22T14:42:28Z
 url: https://github.com/astral-sh/ruff/issues/3947
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF001: data loss with embedded Cyrillic characters when auto-fix is enabled
 
 ---
 
-_Issue opened by @acdha on 2023-04-12 14:29_
+_@acdha_
 
 I ran into an interesting problem with some test code:
 

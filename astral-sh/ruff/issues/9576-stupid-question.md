@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T08:00:06Z
 updated_at: 2024-01-19T08:38:19Z
 url: https://github.com/astral-sh/ruff/issues/9576
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # stupid question
 
 ---
 
-_Issue opened by @inikishev on 2024-01-19 08:00_
+_@inikishev_
 
 I tried every setting but nothing worked. I wanted to only use ruff for formatting, I don't want it to show everything as warnings in my code. How do I do that?
 

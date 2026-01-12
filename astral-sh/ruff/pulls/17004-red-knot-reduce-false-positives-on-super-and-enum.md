@@ -13,14 +13,14 @@ head: alex/enum-attrs
 created_at: 2025-03-26T20:38:59Z
 updated_at: 2025-03-27T21:30:58Z
 url: https://github.com/astral-sh/ruff/pull/17004
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Reduce false positives on `super()` and enum-class attribute accesses
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-26 20:38_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/resolver
 created_at: 2022-12-12T15:43:33Z
 updated_at: 2022-12-12T15:43:52Z
 url: https://github.com/astral-sh/ruff/pull/1211
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Move Python file resolution into resolver.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-12 15:43_
+_@charliermarsh_
 
 _No description provided._
 

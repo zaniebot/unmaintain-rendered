@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T16:58:55Z
 updated_at: 2024-12-17T04:19:41Z
 url: https://github.com/astral-sh/ruff/issues/13966
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] declarations in try blocks
 
 ---
 
-_Issue opened by @carljm on 2024-10-28 16:58_
+_@carljm_
 
 Type declarations via variable annotations in red-knot are control-flow sensitive. That is, if you have
 

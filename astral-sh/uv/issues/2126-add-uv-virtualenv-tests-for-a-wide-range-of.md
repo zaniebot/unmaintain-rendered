@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-02T01:48:58Z
 updated_at: 2024-04-14T16:19:03Z
 url: https://github.com/astral-sh/uv/issues/2126
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Add `uv-virtualenv` tests for a wide range of Pythons
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-02 01:48_
+_@charliermarsh_
 
 `virtualenv` has a nice setup for this: https://github.com/pypa/virtualenv/blob/main/.github/workflows/check.yml.
 

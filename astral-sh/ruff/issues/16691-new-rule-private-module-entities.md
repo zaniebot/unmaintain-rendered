@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T19:11:55Z
 updated_at: 2025-03-13T20:26:04Z
 url: https://github.com/astral-sh/ruff/issues/16691
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [new-rule] Private module entities
 
 ---
 
-_Issue opened by @danmur97 on 2025-03-12 19:11_
+_@danmur97_
 
 ### Summary
 

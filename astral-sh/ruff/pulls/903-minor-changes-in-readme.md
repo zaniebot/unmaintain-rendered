@@ -12,14 +12,14 @@ head: xuan.hu/minor-README
 created_at: 2022-11-25T06:19:04Z
 updated_at: 2022-11-26T03:04:48Z
 url: https://github.com/astral-sh/ruff/pull/903
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Minor changes in README.
 
 ---
 
-_Pull request opened by @huxuan on 2022-11-25 06:19_
+_@huxuan_
 
 1. Remove a redundant space.
 2. Align the order in the table of contents to the real content.

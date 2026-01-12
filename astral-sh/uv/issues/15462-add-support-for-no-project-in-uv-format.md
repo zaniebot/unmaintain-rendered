@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T19:22:50Z
 updated_at: 2025-09-08T21:16:41Z
 url: https://github.com/astral-sh/uv/issues/15462
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Add support for `--no-project` in `uv format`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-22 19:22_
+_@zanieb_
 
 _Originally posted by @zanieb in https://github.com/astral-sh/uv/pull/15440#discussion_r2294492197_
             

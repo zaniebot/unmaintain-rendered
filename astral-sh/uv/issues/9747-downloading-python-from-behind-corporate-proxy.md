@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-09T19:39:28Z
 updated_at: 2025-03-13T11:02:52Z
 url: https://github.com/astral-sh/uv/issues/9747
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Downloading python from behind corporate proxy fails to download in `uv` but works with `wget` and `rye`
 
 ---
 
-_Issue opened by @aglove2189 on 2024-12-09 19:39_
+_@aglove2189_
 
 ## uv
 ```sh

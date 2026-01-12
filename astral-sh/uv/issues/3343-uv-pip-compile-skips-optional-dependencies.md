@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T11:38:12Z
 updated_at: 2024-05-07T18:54:11Z
 url: https://github.com/astral-sh/uv/issues/3343
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # uv pip compile skips optional dependencies
 
 ---
 
-_Issue opened by @nmichlo on 2024-05-03 11:38_
+_@nmichlo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

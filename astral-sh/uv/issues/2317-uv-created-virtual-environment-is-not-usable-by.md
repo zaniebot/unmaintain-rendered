@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T12:01:44Z
 updated_at: 2024-03-09T14:43:20Z
 url: https://github.com/astral-sh/uv/issues/2317
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv Created Virtual Environment is not Usable by PyCharm
 
 ---
 
-_Issue opened by @bwanshoom on 2024-03-09 12:01_
+_@bwanshoom_
 
 PyCharm will not recognize a virtual environment created by uv. I'm not sure what it's looking for in a virtual environment, but one created by python -m venv .venv is somehow different from one created by uv venv --seed.
 

@@ -12,14 +12,14 @@ head: home
 created_at: 2025-08-07T21:11:33Z
 updated_at: 2025-08-07T21:27:43Z
 url: https://github.com/clap-rs/clap/pull/6094
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(complete): Expand ~ in native completions
 
 ---
 
-_Pull request opened by @epage on 2025-08-07 21:11_
+_@epage_
 
 This is part of #6069
 

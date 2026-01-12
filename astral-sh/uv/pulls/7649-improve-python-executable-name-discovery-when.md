@@ -13,14 +13,14 @@ head: zb/executable-names-ref
 created_at: 2024-09-23T20:17:37Z
 updated_at: 2024-09-23T22:17:56Z
 url: https://github.com/astral-sh/uv/pull/7649
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Improve Python executable name discovery when using alternative implementations
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-23 20:17_
+_@zanieb_
 
 There are two parts to this. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T13:59:41Z
 updated_at: 2024-12-09T15:22:56Z
 url: https://github.com/astral-sh/uv/issues/8764
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # `uv run --script` should imply `--no-project`
 
 ---
 
-_Issue opened by @offbyone on 2024-11-02 13:59_
+_@offbyone_
 
 I'm running into a variation of https://github.com/astral-sh/uv/issues/8666
 

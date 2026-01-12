@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T09:18:21Z
 updated_at: 2025-01-29T20:39:31Z
 url: https://github.com/astral-sh/uv/issues/10956
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Clean up `[tool.uv.sources]` after `uv remove --dev <foo>`
 
 ---
 
-_Issue opened by @kajic on 2025-01-25 09:18_
+_@kajic_
 
 ### Question
 

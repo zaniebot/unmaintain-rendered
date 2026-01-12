@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T22:43:51Z
 updated_at: 2025-03-20T22:44:47Z
 url: https://github.com/astral-sh/uv/issues/12353
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Add `default-packages = [...]` and `default-packages = "all"` for workspaces
 
 ---
 
-_Issue opened by @zanieb on 2025-03-20 22:43_
+_@zanieb_
 
 We should consider allowing setting the default sync packages as we do for dependency groups.
 

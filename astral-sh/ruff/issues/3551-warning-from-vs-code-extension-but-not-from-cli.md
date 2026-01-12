@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-15T22:22:28Z
 updated_at: 2023-03-16T00:12:34Z
 url: https://github.com/astral-sh/ruff/issues/3551
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Warning from VS Code extension but not from CLI
 
 ---
 
-_Issue opened by @adamhl8 on 2023-03-15 22:22_
+_@adamhl8_
 
 I have some code that looks like this:
 

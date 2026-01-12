@@ -12,14 +12,14 @@ head: zanie/ci-head-ref
 created_at: 2023-09-12T14:56:08Z
 updated_at: 2023-09-12T15:34:06Z
 url: https://github.com/astral-sh/ruff/pull/7304
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Set the target deployment to `main` during dispatched documentation deployments
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-12 14:56_
+_@zanieb_
 
 Closes #7276 by deploying to production when not triggered by a pull request.
 

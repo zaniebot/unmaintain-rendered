@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T10:47:41Z
 updated_at: 2024-06-28T13:38:18Z
 url: https://github.com/astral-sh/ruff/issues/12088
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # UP006 Do not work if `requires-python = "== 3.11"` in pyproject.toml
 
 ---
 
-_Issue opened by @artefactop on 2024-06-28 10:47_
+_@artefactop_
 
 ```
 ruff version

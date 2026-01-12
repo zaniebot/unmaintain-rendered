@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-16T14:46:53Z
 updated_at: 2021-12-16T15:02:24Z
 url: https://github.com/clap-rs/clap/issues/3186
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # 2.33.4 and 2.34.0 git tag  missing ?
 
 ---
 
-_Issue opened by @Carreau on 2021-12-16 14:46_
+_@Carreau_
 
 ### Please complete the following tasks
 

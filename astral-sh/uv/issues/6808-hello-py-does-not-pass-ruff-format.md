@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T12:34:11Z
 updated_at: 2024-08-29T14:31:53Z
 url: https://github.com/astral-sh/uv/issues/6808
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `hello.py` does not pass `ruff format`
 
 ---
 
-_Issue opened by @my1e5 on 2024-08-29 12:34_
+_@my1e5_
 
 uv version 0.4.0 creates a `hello.py` file by default when running
 ```

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-19T15:18:21Z
 updated_at: 2024-08-27T00:13:04Z
 url: https://github.com/astral-sh/uv/issues/6209
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `uv pip compile` selects old version; different behavior between install vs. compile
 
 ---
 
-_Issue opened by @sk1p on 2024-08-19 15:18_
+_@sk1p_
 
 Consider the following scenario:
 

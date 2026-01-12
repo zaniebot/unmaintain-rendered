@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-04T10:05:10Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/566
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # gen_completion to string
 
 ---
 
-_Issue opened by @davidszotten on 2016-07-04 10:05_
+_@davidszotten_
 
 until there is a way to ship additional files with `cargo install`, i'd like to add a subcommand to my binary that prints the completion code to stdout, (that users can redirect to a file at location at their convenience; this seems more intuitive than pointing the commend at a directory and have it write there)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T05:07:20Z
 updated_at: 2024-12-07T13:51:23Z
 url: https://github.com/astral-sh/ruff/issues/14805
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Autofix request] B028: no-explicit-stacklevel
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-12-06 05:07_
+_@DanielYang59_
 
 Can I request an autofix for B028: no-explicit-stacklevel?
 

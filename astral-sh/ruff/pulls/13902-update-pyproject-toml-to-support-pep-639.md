@@ -14,14 +14,14 @@ head: konsti/pep639
 created_at: 2024-10-24T09:26:31Z
 updated_at: 2024-11-18T14:16:04Z
 url: https://github.com/astral-sh/ruff/pull/13902
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Update pyproject-toml to support PEP 639
 
 ---
 
-_Pull request opened by @konstin on 2024-10-24 09:26_
+_@konstin_
 
 PEP 639 is provisionally accepted, we were previously shipping definitions from an earlier draft.
 

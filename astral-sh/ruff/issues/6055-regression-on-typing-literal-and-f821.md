@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T07:18:06Z
 updated_at: 2023-07-25T15:02:04Z
 url: https://github.com/astral-sh/ruff/issues/6055
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Regression on typing.Literal and F821
 
 ---
 
-_Issue opened by @hynek on 2023-07-25 07:18_
+_@hynek_
 
 As of 0.0.279 and 0.0.280 this raises an F821:
 

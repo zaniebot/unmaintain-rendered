@@ -13,14 +13,14 @@ head: konsti/build-backend7-fixes-to-hashes-and-entrypoints
 created_at: 2024-10-07T17:34:17Z
 updated_at: 2024-10-08T14:21:40Z
 url: https://github.com/astral-sh/uv/pull/7979
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 #  Fix problems with build backend metadata files
 
 ---
 
-_Pull request opened by @konstin on 2024-10-07 17:34_
+_@konstin_
 
 Additional work on top of https://github.com/astral-sh/uv/pull/7966:
 

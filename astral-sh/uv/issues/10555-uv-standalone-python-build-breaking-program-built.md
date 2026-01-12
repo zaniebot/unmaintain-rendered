@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-13T07:20:44Z
 updated_at: 2025-09-30T13:29:40Z
 url: https://github.com/astral-sh/uv/issues/10555
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # uv Standalone Python Build Breaking Program Built with Nuitka
 
 ---
 
-_Issue opened by @nazdridoy on 2025-01-13 07:20_
+_@nazdridoy_
 
 
 

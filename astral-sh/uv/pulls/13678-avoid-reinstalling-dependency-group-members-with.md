@@ -13,14 +13,14 @@ head: charlie/dev
 created_at: 2025-05-27T12:31:38Z
 updated_at: 2025-05-27T12:43:08Z
 url: https://github.com/astral-sh/uv/pull/13678
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Avoid reinstalling dependency group members with `--all-packages`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-27 12:31_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-05-22T18:49:58Z
 updated_at: 2024-05-22T19:43:21Z
 url: https://github.com/astral-sh/uv/pull/3755
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Reuse reporting operation in `venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 18:49_
+_@charliermarsh_
 
 _No description provided._
 

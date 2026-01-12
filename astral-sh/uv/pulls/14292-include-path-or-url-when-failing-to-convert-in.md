@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2025-06-26T19:30:24Z
 updated_at: 2025-06-26T19:42:05Z
 url: https://github.com/astral-sh/uv/pull/14292
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Include path or URL when failing to convert in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-26 19:30_
+_@charliermarsh_
 
 ## Summary
 

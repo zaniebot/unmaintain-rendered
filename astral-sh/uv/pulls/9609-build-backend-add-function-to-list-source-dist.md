@@ -12,14 +12,14 @@ head: konsti/build-backend-list
 created_at: 2024-12-03T15:22:40Z
 updated_at: 2024-12-03T15:31:38Z
 url: https://github.com/astral-sh/uv/pull/9609
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Build backend: Add function to list source dist files only
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 15:22_
+_@konstin_
 
 Add the backend implementation for `uv build --list` without wiring it up to the CLI. We're using the directory writer to capture which file would be added to the archive, without actually adding them. This does not yet add the CLI part.
 

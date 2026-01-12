@@ -13,14 +13,14 @@ head: dcreager/special-class
 created_at: 2025-03-27T20:25:22Z
 updated_at: 2025-05-07T15:19:54Z
 url: https://github.com/astral-sh/ruff/pull/17023
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Allow explicit specialization of generic classes
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-27 20:25_
+_@dcreager_
 
 This PR lets you explicitly specialize a generic class using a subscript expression. It introduces three new Rust types for representing classes:
 

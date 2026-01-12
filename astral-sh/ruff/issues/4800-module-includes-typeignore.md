@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-02T06:35:10Z
 updated_at: 2023-06-20T07:56:47Z
 url: https://github.com/astral-sh/ruff/issues/4800
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `Module` (includes `TypeIgnore`) 
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-02 06:35_
+_@MichaReiser_
 
 _No description provided._
 

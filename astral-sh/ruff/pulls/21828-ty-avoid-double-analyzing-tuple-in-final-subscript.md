@@ -14,14 +14,14 @@ head: charlie/sli
 created_at: 2025-12-06T22:26:14Z
 updated_at: 2025-12-07T14:27:15Z
 url: https://github.com/astral-sh/ruff/pull/21828
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Avoid double-analyzing tuple in `Final` subscript
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-06 22:26_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T15:35:39Z
 updated_at: 2023-06-01T19:48:44Z
 url: https://github.com/astral-sh/ruff/issues/4758
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TID rule with namespace packages
 
 ---
 
-_Issue opened by @Saelyos on 2023-05-31 15:35_
+_@Saelyos_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

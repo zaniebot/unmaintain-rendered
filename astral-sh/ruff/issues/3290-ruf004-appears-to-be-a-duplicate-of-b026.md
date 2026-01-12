@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-01T10:51:43Z
 updated_at: 2023-03-01T18:00:04Z
 url: https://github.com/astral-sh/ruff/issues/3290
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RUF004 appears to be a duplicate of B026
 
 ---
 
-_Issue opened by @calumy on 2023-03-01 10:51_
+_@calumy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

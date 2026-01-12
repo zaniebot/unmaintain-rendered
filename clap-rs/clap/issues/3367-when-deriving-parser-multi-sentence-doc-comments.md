@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-29T04:57:45Z
 updated_at: 2024-08-07T13:52:40Z
 url: https://github.com/clap-rs/clap/issues/3367
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # When deriving Parser, multi-sentence doc comments have final period removed
 
 ---
 
-_Issue opened by @nyanpasu64 on 2022-01-29 04:57_
+_@nyanpasu64_
 
 ### Please complete the following tasks
 

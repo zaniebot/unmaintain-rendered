@@ -12,14 +12,14 @@ head: charlie/fixes
 created_at: 2022-11-22T23:25:20Z
 updated_at: 2022-11-22T23:51:31Z
 url: https://github.com/astral-sh/ruff/pull/880
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix clippy::unnecessary_wraps (pedantic)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-22 23:25_
+_@charliermarsh_
 
 https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_wraps
 

@@ -13,14 +13,14 @@ head: charlie/blue
 created_at: 2024-11-15T20:39:19Z
 updated_at: 2024-11-15T21:11:21Z
 url: https://github.com/astral-sh/uv/pull/9155
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Include cyan for prefix on versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-15 20:39_
+_@charliermarsh_
 
 ## Summary
 

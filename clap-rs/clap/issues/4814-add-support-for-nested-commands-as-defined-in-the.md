@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T14:17:12Z
 updated_at: 2023-03-31T16:50:52Z
 url: https://github.com/clap-rs/clap/issues/4814
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add support for "nested commands" (as defined in the description) or "Parsing from the string" as opposed to `sys.env`
 
 ---
 
-_Issue opened by @Davoodeh on 2023-03-31 14:17_
+_@Davoodeh_
 
 ### Please complete the following tasks
 

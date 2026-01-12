@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-07T02:42:11Z
 updated_at: 2024-07-09T17:58:02Z
 url: https://github.com/astral-sh/uv/issues/4852
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # pip compile --universal is adding tags for python versions lower than requires-python
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-07-07 02:42_
+_@inoa-jboliveira_
 
 Hi everyone, thank you for adding the new `--universal` option to pip compile, it will simplify a lot my workflow.
 

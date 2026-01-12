@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T10:39:14Z
 updated_at: 2025-12-03T09:05:11Z
 url: https://github.com/astral-sh/ty/issues/789
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Enable LRU for `parsed_module`, `semantic_index` and maybe more queries
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-09 10:39_
+_@MichaReiser_
 
 Enable Salsa's LRU eviction for some of the most dominent Salsa queries. This should help reduce memory usage after the initial type checking completed (mainly relevant in the LSP use case)
 

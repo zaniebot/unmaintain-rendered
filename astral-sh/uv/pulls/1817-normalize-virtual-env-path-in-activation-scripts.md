@@ -14,14 +14,14 @@ head: normalize-venv-path
 created_at: 2024-02-21T15:48:18Z
 updated_at: 2024-02-21T15:52:34Z
 url: https://github.com/astral-sh/uv/pull/1817
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Normalize `VIRTUAL_ENV` path in activation scripts
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-21 15:48_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: stdlib3.14
 created_at: 2025-05-11T07:58:20Z
 updated_at: 2025-05-11T17:08:36Z
 url: https://github.com/astral-sh/ruff/pull/18014
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # python_stdlib: update for 3.14
 
 ---
 
-_Pull request opened by @Rogdham on 2025-05-11 07:58_
+_@Rogdham_
 
 ## Summary
 

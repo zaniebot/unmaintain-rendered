@@ -12,14 +12,14 @@ head: charlie/isort
 created_at: 2022-11-07T03:40:08Z
 updated_at: 2024-06-12T10:51:12Z
 url: https://github.com/astral-sh/ruff/pull/633
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement import sorting
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 03:40_
+_@charliermarsh_
 
 This PR implements `isort`-like import sorting behavior. The intent is to mirror `isort` when used with the following configuration:
 

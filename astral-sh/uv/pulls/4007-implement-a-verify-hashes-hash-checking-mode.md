@@ -13,14 +13,14 @@ head: charlie/ver
 created_at: 2024-06-04T01:51:13Z
 updated_at: 2024-07-17T21:25:32Z
 url: https://github.com/astral-sh/uv/pull/4007
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Implement a `--verify-hashes` hash-checking mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-04 01:51_
+_@charliermarsh_
 
 ## Summary
 

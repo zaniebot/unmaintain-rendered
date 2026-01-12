@@ -12,14 +12,14 @@ head: charlie/synta
 created_at: 2023-02-03T00:51:33Z
 updated_at: 2023-02-03T01:02:11Z
 url: https://github.com/astral-sh/ruff/pull/2507
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Notify user if autofix introduces syntax error
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 00:51_
+_@charliermarsh_
 
 Closes #1970.
 

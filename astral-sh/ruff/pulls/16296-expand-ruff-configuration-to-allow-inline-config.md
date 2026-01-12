@@ -13,14 +13,14 @@ head: dhruv/server-configuration
 created_at: 2025-02-21T08:35:25Z
 updated_at: 2025-02-26T04:49:01Z
 url: https://github.com/astral-sh/ruff/pull/16296
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Expand `ruff.configuration` to allow inline config
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-21 08:35_
+_@dhruvmanila_
 
 ## Summary
 

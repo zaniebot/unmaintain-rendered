@@ -13,14 +13,14 @@ head: feat/autofixes
 created_at: 2025-07-12T06:58:37Z
 updated_at: 2025-07-17T16:09:32Z
 url: https://github.com/astral-sh/ruff/pull/19298
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`flake8-use-pathlib`] Add autofix for `PTH101`, `PTH104`, `PTH105`, `PTH121`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-07-12 06:58_
+_@chirizxc_
 
 ## Summary
 Part of https://github.com/astral-sh/ruff/issues/2331

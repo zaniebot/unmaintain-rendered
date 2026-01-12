@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-29T07:05:32Z
 updated_at: 2025-04-03T13:48:09Z
 url: https://github.com/astral-sh/ruff/issues/11595
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` update `lsp-types` to 0.96.0
 
 ---
 
-_Issue opened by @ismail on 2024-05-29 07:05_
+_@ismail_
 
 Looks like https://github.com/gluon-lang/lsp-types has released version 0.96.0 with notebook support, would it be possible to use it instead of using a custom fork?
 

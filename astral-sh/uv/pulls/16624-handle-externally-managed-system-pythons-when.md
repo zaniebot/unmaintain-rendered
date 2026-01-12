@@ -11,14 +11,14 @@ head: handle-externally-managed-pythons-ci
 created_at: 2025-11-06T22:29:20Z
 updated_at: 2025-11-07T16:11:01Z
 url: https://github.com/astral-sh/uv/pull/16624
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Handle externally managed system Pythons when validating global installs
 
 ---
 
-_Pull request opened by @terror on 2025-11-06 22:29_
+_@terror_
 
 This PR auto-detects `EXTERNALLY-MANAGED` marker files before running the “validate global Python install” script and append `--break-system-packages` to every `uv pip ... --system` call when needed. This lets the CI step keep exercising the real system interpreter (including Homebrew’s Python 3.14 on macOS) while staying compliant with [PEP 668](https://peps.python.org/pep-0668/) protections, and it avoids requiring job-level flags or hard-coded platform checks.
 

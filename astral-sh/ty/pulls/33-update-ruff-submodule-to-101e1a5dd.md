@@ -12,14 +12,14 @@ head: sync/ruff-101e1a5dd
 created_at: 2025-05-05T17:32:49Z
 updated_at: 2025-07-08T10:39:14Z
 url: https://github.com/astral-sh/ty/pull/33
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update ruff submodule to 101e1a5dd
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 17:32_
+_@zanieb_
 
 _No description provided._
 

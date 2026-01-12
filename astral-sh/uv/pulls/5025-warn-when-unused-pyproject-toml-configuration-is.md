@@ -14,14 +14,14 @@ head: charlie/warns
 created_at: 2024-07-12T21:42:41Z
 updated_at: 2024-07-12T21:50:05Z
 url: https://github.com/astral-sh/uv/pull/5025
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Warn when unused `pyproject.toml` configuration is detected
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 21:42_
+_@charliermarsh_
 
 ## Summary
 

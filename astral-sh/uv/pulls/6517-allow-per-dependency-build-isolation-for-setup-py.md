@@ -13,14 +13,14 @@ head: feat/allow-build-isolation-setup-py
 created_at: 2024-08-23T14:03:43Z
 updated_at: 2024-08-26T14:41:28Z
 url: https://github.com/astral-sh/uv/pull/6517
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Allow per dependency build isolation for setup.py projects as well
 
 ---
 
-_Pull request opened by @tdejager on 2024-08-23 14:03_
+_@tdejager_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

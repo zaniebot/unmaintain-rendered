@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-11-13T18:58:59Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/343
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Multi-valued options not working?
 
 ---
 
-_Issue opened by @mgalgs on 2015-11-13 18:58_
+_@mgalgs_
 
 Maybe I'm missing something, but I can't get multi-valued options working.
 

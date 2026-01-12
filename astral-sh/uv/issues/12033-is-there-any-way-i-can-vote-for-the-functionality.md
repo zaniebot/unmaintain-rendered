@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T07:59:24Z
 updated_at: 2025-03-07T10:48:32Z
 url: https://github.com/astral-sh/uv/issues/12033
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Is there any way I can vote for the functionality that I would like to see in UV?
 
 ---
 
-_Issue opened by @Wintreist on 2025-03-07 07:59_
+_@Wintreist_
 
 ### Question
 

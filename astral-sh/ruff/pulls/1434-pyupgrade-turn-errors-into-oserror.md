@@ -12,14 +12,14 @@ head: osalias
 created_at: 2022-12-29T02:00:13Z
 updated_at: 2023-01-02T04:43:49Z
 url: https://github.com/astral-sh/ruff/pull/1434
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # PyUpgrade: Turn errors into OSError
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-29 02:00_
+_@colin99d_
 
 A part of #827. The following needs to be happen for this to be moved out of draft status:
 

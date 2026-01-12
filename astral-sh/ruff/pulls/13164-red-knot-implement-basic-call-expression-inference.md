@@ -13,14 +13,14 @@ head: rk-call-expression-inference
 created_at: 2024-08-30T15:31:56Z
 updated_at: 2024-09-05T15:27:24Z
 url: https://github.com/astral-sh/ruff/pull/13164
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] implement basic call expression inference
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-30 15:31_
+_@chriskrycho_
 
 ## Summary
 

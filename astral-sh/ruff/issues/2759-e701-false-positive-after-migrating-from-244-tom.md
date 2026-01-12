@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T08:19:16Z
 updated_at: 2023-02-11T17:22:55Z
 url: https://github.com/astral-sh/ruff/issues/2759
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E701 false positive after migrating from 244 tom 245
 
 ---
 
-_Issue opened by @alexprengere on 2023-02-11 08:19_
+_@alexprengere_
 
 This used to be fine, but now raises `E701 Multiple statements on one line (colon)`:
 

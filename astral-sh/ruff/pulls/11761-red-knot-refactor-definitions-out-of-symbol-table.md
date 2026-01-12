@@ -13,14 +13,14 @@ head: cjm/defmod
 created_at: 2024-06-05T20:19:36Z
 updated_at: 2024-06-05T20:35:02Z
 url: https://github.com/astral-sh/ruff/pull/11761
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] refactor Definitions out of symbol table
 
 ---
 
-_Pull request opened by @carljm on 2024-06-05 20:19_
+_@carljm_
 
 ## Summary
 

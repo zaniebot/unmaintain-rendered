@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T03:33:33Z
 updated_at: 2023-10-27T03:50:18Z
 url: https://github.com/astral-sh/ruff/issues/8239
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: use aliases for format command
 
 ---
 
-_Issue opened by @savioxavier on 2023-10-26 03:33_
+_@savioxavier_
 
 
 Consider adding aliases for the new formatter feature. For instance, `fmt` is a commonly used alias for "format code"

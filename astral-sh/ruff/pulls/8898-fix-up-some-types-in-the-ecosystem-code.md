@@ -13,14 +13,14 @@ head: ecosystem-type-updates
 created_at: 2023-11-29T03:29:27Z
 updated_at: 2023-11-30T22:02:25Z
 url: https://github.com/astral-sh/ruff/pull/8898
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix up some types in the ecosystem code
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-11-29 03:29_
+_@diceroll123_
 
 ## Summary
 

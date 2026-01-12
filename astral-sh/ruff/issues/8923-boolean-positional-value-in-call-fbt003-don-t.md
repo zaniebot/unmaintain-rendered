@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T12:01:00Z
 updated_at: 2024-05-04T21:33:09Z
 url: https://github.com/astral-sh/ruff/issues/8923
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `boolean-positional-value-in-call` (`FBT003`) - don't warn when function name starts with `set_` and only takes one argument
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-30 12:01_
+_@DetachHead_
 
 functions like these should not report the error imo, since the meaning of the bool is self explanatory, which is often the case when the functin starts with `set_`:
 

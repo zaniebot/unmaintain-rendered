@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-11-24T17:28:41Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/350
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update usage parser (potentially with nom or chomp)
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-24 17:28_
+_@kbknapp_
 
 With [nom](https://github.com/Geal/nom) recently reaching 1.0 I'm wondering if using would be any benefit to this project. Particularly in the test-ability, performance, and maintainability.
 

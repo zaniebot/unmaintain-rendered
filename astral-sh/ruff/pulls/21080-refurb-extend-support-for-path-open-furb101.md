@@ -14,14 +14,14 @@ head: extend_furb103
 created_at: 2025-10-26T10:43:15Z
 updated_at: 2025-12-17T14:18:14Z
 url: https://github.com/astral-sh/ruff/pull/21080
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`refurb`] Extend support for `Path.open` (`FURB101`, `FURB103`)
 
 ---
 
-_Pull request opened by @11happy on 2025-10-26 10:43_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-22T20:06:28Z
 updated_at: 2024-04-23T18:18:22Z
 url: https://github.com/astral-sh/uv/issues/3198
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Release pipeline does not stop if part fails
 
 ---
 
-_Issue opened by @zanieb on 2024-04-22 20:06_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/actions/runs/8789651447
 

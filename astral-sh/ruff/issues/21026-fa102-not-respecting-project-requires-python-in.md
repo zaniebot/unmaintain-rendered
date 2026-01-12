@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T06:45:59Z
 updated_at: 2025-11-06T13:33:51Z
 url: https://github.com/astral-sh/ruff/issues/21026
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FA102 not respecting project.requires-python in pyproject.toml
 
 ---
 
-_Issue opened by @jsh9 on 2025-10-22 06:45_
+_@jsh9_
 
 ### Summary
 

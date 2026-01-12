@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-26T07:54:27Z
 updated_at: 2024-05-01T09:08:52Z
 url: https://github.com/astral-sh/ruff/issues/11158
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` should check `find_user_settings_toml()` if no file configuration exists
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-26 07:54_
+_@snowsignal_
 
 When a workspace folder doesn't have any configuration available, `ruff server` should try `find_user_settings_toml()` as a fallback. This would try reading `~/.config/ruff/.ruff.toml`, `~/.config/ruff/ruff.toml` and `~/.config/ruff/pyproject.toml` on Linux.
 

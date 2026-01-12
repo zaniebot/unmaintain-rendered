@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T20:20:36Z
 updated_at: 2026-01-08T19:41:33Z
 url: https://github.com/astral-sh/ty/issues/719
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type narrowing fails to account for reassignment in a conditional based on an intermediate variable (aliased conditional expressions)
 
 ---
 
-_Issue opened by @matthewlloyd on 2025-06-27 20:20_
+_@matthewlloyd_
 
 ### Summary
 

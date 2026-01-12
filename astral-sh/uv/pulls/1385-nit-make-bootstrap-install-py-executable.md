@@ -14,14 +14,14 @@ head: install-exec
 created_at: 2024-02-15T23:34:52Z
 updated_at: 2024-02-16T00:14:30Z
 url: https://github.com/astral-sh/uv/pull/1385
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # nit: make bootstrap/install.py executable
 
 ---
 
-_Pull request opened by @MithicSpirit on 2024-02-15 23:34_
+_@MithicSpirit_
 
 The shebang isn't very useful if it's not executable... This also brings it in line with `fetch-version-metadata.py` in the same directory.
 

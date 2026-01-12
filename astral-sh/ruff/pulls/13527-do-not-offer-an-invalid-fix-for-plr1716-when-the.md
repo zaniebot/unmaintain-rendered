@@ -13,14 +13,14 @@ head: zb/plr1716-paren
 created_at: 2024-09-26T15:01:09Z
 updated_at: 2024-09-26T19:10:15Z
 url: https://github.com/astral-sh/ruff/pull/13527
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Do not offer an invalid fix for PLR1716 when the comparisons contain parenthesis
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-26 15:01_
+_@zanieb_
 
 Related to https://github.com/astral-sh/ruff/issues/13524
 

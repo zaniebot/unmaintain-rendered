@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T20:08:48Z
 updated_at: 2023-12-07T03:08:24Z
 url: https://github.com/astral-sh/ruff/issues/9013
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # SLF001 and type annotations
 
 ---
 
-_Issue opened by @ofek on 2023-12-05 20:08_
+_@ofek_
 
 Should this trigger for type annotations?
 

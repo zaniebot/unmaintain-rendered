@@ -12,14 +12,14 @@ head: ag/update-snapshots
 created_at: 2025-01-28T16:50:34Z
 updated_at: 2025-01-28T17:29:07Z
 url: https://github.com/astral-sh/uv/pull/11023
-synced_at: 2026-01-10T11:45:23Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # tests: update snapshots
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-28 16:50_
+_@BurntSushi_
 
 I'm getting these updates locally, and wondering if they specific to my
 local setup or if there was a recent release. So let's see what CI says.

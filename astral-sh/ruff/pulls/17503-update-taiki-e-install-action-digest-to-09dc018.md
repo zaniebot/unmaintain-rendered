@@ -13,14 +13,14 @@ head: renovate/taiki-e-install-action-digest
 created_at: 2025-04-21T01:33:57Z
 updated_at: 2025-04-21T01:50:28Z
 url: https://github.com/astral-sh/ruff/pull/17503
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Update taiki-e/install-action digest to 09dc018
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 01:33_
+_@renovate_
 
 This PR contains the following updates:
 

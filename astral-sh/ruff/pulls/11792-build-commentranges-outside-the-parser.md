@@ -13,14 +13,14 @@ head: dhruv/lazy-comment-ranges
 created_at: 2024-06-07T04:14:50Z
 updated_at: 2024-06-09T10:11:10Z
 url: https://github.com/astral-sh/ruff/pull/11792
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Build `CommentRanges` outside the parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-07 04:14_
+_@dhruvmanila_
 
 ## Summary
 

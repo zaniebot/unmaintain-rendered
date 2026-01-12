@@ -13,14 +13,14 @@ head: renovate/actions-checkout-4.x
 created_at: 2025-04-07T02:04:57Z
 updated_at: 2025-04-07T06:48:36Z
 url: https://github.com/astral-sh/ruff/pull/17257
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Update actions/checkout action to v4.2.2
 
 ---
 
-_Pull request opened by @renovate on 2025-04-07 02:04_
+_@renovate_
 
 This PR contains the following updates:
 

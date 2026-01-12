@@ -13,14 +13,14 @@ head: cjm/divergent-generic
 created_at: 2025-09-12T01:41:49Z
 updated_at: 2025-09-16T23:44:12Z
 url: https://github.com/astral-sh/ruff/pull/20359
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] no more diverging query cycles in type expressions
 
 ---
 
-_Pull request opened by @carljm on 2025-09-12 01:41_
+_@carljm_
 
 ## Summary
 

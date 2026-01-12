@@ -13,14 +13,14 @@ head: PYI047
 created_at: 2023-07-27T21:02:02Z
 updated_at: 2023-07-29T00:43:44Z
 url: https://github.com/astral-sh/ruff/pull/6134
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Implement PYI047
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-07-27 21:02_
+_@LaBatata101_
 
 ## Summary
 

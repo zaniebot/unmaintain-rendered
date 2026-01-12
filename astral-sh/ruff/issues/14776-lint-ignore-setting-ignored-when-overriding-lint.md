@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T19:20:53Z
 updated_at: 2024-12-05T21:26:53Z
 url: https://github.com/astral-sh/ruff/issues/14776
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # lint.ignore setting ignored when overriding lint.select via --config flag
 
 ---
 
-_Issue opened by @MichalG96 on 2024-12-04 19:20_
+_@MichalG96_
 
 This is my configuration:
 

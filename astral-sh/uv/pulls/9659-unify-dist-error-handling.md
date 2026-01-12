@@ -13,14 +13,14 @@ head: konsti/unify-dist-err
 created_at: 2024-12-05T12:44:42Z
 updated_at: 2024-12-06T01:54:16Z
 url: https://github.com/astral-sh/uv/pull/9659
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Unify dist error handling
 
 ---
 
-_Pull request opened by @konstin on 2024-12-05 12:44_
+_@konstin_
 
 This came up when trying to improve the build error reporting. Introduces `DistErrorKind` to avoid error variants for each case that are only different in one line of the message.
 

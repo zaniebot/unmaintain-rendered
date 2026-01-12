@@ -13,14 +13,14 @@ head: david/fix-312
 created_at: 2025-05-15T14:06:12Z
 updated_at: 2025-05-15T15:16:06Z
 url: https://github.com/astral-sh/ruff/pull/18121
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] `type[…]` is always assignable to `type`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-15 14:06_
+_@sharkdp_
 
 ## Summary
 

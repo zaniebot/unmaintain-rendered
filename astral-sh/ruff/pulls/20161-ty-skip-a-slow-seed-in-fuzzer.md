@@ -14,14 +14,14 @@ head: cjm/fuzzer
 created_at: 2025-08-29T20:05:32Z
 updated_at: 2025-08-29T23:16:36Z
 url: https://github.com/astral-sh/ruff/pull/20161
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] skip a slow seed in fuzzer
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 20:05_
+_@carljm_
 
 ## Summary
 

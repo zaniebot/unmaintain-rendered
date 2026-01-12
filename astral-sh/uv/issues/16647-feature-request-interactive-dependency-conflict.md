@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-09T02:52:44Z
 updated_at: 2025-11-10T14:38:17Z
 url: https://github.com/astral-sh/uv/issues/16647
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Feature Request: Interactive Dependency Conflict Resolution Assistant
 
 ---
 
-_Issue opened by @cherchyk on 2025-11-09 02:52_
+_@cherchyk_
 
 # Feature Request: Interactive Dependency Conflict Resolution Assistant
 

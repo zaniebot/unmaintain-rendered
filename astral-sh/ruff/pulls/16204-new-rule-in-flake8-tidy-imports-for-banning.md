@@ -14,14 +14,14 @@ head: at/banned-function-rule
 created_at: 2025-02-17T03:49:57Z
 updated_at: 2025-03-07T08:11:42Z
 url: https://github.com/astral-sh/ruff/pull/16204
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # New rule in flake8-tidy-imports for banning specific function calls
 
 ---
 
-_Pull request opened by @kujenga on 2025-02-17 03:49_
+_@kujenga_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T10:19:07Z
 updated_at: 2025-11-07T15:23:26Z
 url: https://github.com/astral-sh/uv/issues/16608
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Prerelease versions shouldn't satisfy release versions
 
 ---
 
-_Issue opened by @flofriday on 2025-11-06 10:19_
+_@flofriday_
 
 ### Summary
 

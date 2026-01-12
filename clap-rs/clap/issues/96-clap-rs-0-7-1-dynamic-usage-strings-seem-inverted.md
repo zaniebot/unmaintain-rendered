@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-02T07:20:28Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/96
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # clap-rs 0.7.1: dynamic usage strings seem 'inverted'
 
 ---
 
-_Issue opened by @Byron on 2015-05-02 07:20_
+_@Byron_
 
 With a program exhibiting the following grammar ...
 

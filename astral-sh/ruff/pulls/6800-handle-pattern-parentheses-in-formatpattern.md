@@ -13,14 +13,14 @@ head: charlie/paren-value
 created_at: 2023-08-23T01:58:17Z
 updated_at: 2023-08-25T04:18:19Z
 url: https://github.com/astral-sh/ruff/pull/6800
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Handle pattern parentheses in `FormatPattern`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 01:58_
+_@charliermarsh_
 
 ## Summary
 

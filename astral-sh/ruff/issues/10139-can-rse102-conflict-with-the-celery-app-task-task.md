@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T16:23:18Z
 updated_at: 2024-03-11T17:53:28Z
 url: https://github.com/astral-sh/ruff/issues/10139
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Can RSE102 conflict with the celery.app.task.Task.retry() method?
 
 ---
 
-_Issue opened by @cclauss on 2024-02-26 16:23_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

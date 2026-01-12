@@ -13,14 +13,14 @@ head: stacklevel-fix
 created_at: 2024-12-07T03:50:22Z
 updated_at: 2024-12-07T13:27:11Z
 url: https://github.com/astral-sh/ruff/pull/14829
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-bugbear`] Offer unsafe autofix for `no-explicit-stacklevel` (`B028`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-07 03:50_
+_@dylwil3_
 
 This PR introduces an unsafe autofix for [no-explicit-stacklevel (B028)](https://docs.astral.sh/ruff/rules/no-explicit-stacklevel/#no-explicit-stacklevel-b028): we add the `stacklevel` argument, set to `2`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-17T10:41:10Z
 updated_at: 2024-10-24T14:33:03Z
 url: https://github.com/astral-sh/ruff/issues/10993
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule idea: Validate named imports
 
 ---
 
-_Issue opened by @silverwind on 2024-04-17 10:41_
+_@silverwind_
 
 A rule to validate whether a named import exists on a imported file would be very useful, equivalent to [this rule](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/named.md) in JS. For example:
 

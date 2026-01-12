@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-01-05T17:27:02Z
 updated_at: 2025-01-09T16:32:51Z
 url: https://github.com/clap-rs/clap/issues/5868
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Single Variant ValueEnum Produces \{ in Fish Shell Completions
 
 ---
 
-_Issue opened by @tetzng on 2025-01-05 17:27_
+_@tetzng_
 
 ### Please complete the following tasks
 

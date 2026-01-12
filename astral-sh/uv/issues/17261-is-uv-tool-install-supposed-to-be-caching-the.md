@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-30T09:21:00Z
 updated_at: 2026-01-06T16:57:58Z
 url: https://github.com/astral-sh/uv/issues/17261
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Is uv tool install . supposed to be caching the local folder?
 
 ---
 
-_Issue opened by @EternityForest on 2025-12-30 09:21_
+_@EternityForest_
 
 ### Question
 

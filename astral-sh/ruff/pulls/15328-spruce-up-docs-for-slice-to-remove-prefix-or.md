@@ -13,14 +13,14 @@ head: alex/furb188-docs
 created_at: 2025-01-07T19:39:33Z
 updated_at: 2025-01-07T19:58:36Z
 url: https://github.com/astral-sh/ruff/pull/15328
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Spruce up docs for `slice-to-remove-prefix-or-suffix` (`FURB188`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-07 19:39_
+_@AlexWaygood_
 
 ## Summary
 

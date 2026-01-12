@@ -13,14 +13,14 @@ head: junction-windows-only
 created_at: 2024-04-15T20:46:20Z
 updated_at: 2024-04-15T21:01:24Z
 url: https://github.com/astral-sh/uv/pull/3043
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Make the junction crate dependency Windows-only
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-04-15 20:46_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

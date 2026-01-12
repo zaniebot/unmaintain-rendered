@@ -13,14 +13,14 @@ head: charlie/setup-i
 created_at: 2024-03-23T02:02:41Z
 updated_at: 2024-03-23T13:33:30Z
 url: https://github.com/astral-sh/uv/pull/2632
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Limit overrides and constraints to `requirements.txt` format
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-23 02:02_
+_@charliermarsh_
 
 ## Summary
 

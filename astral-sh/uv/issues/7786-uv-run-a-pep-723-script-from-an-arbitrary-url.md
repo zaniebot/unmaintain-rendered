@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T22:42:10Z
 updated_at: 2024-10-11T09:50:15Z
 url: https://github.com/astral-sh/uv/issues/7786
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv run a PEP 723 script from an arbitrary URL
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-09-29 22:42_
+_@hauntsaninja_
 
 It would be neat to just point uv at a URL
 

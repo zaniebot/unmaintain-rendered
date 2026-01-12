@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T19:35:38Z
 updated_at: 2025-08-01T10:30:11Z
 url: https://github.com/astral-sh/uv/issues/15006
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Feature request: `pyproject.toml` formatting and validation
 
 ---
 
-_Issue opened by @gorewilliams on 2025-07-31 19:35_
+_@gorewilliams_
 
 ### Summary
 

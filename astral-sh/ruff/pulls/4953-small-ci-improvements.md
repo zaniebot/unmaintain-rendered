@@ -12,14 +12,14 @@ head: small_ci_improvement
 created_at: 2023-06-08T10:19:24Z
 updated_at: 2023-06-09T07:03:36Z
 url: https://github.com/astral-sh/ruff/pull/4953
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Small CI improvements
 
 ---
 
-_Pull request opened by @konstin on 2023-06-08 10:19_
+_@konstin_
 
 * Replace the unmaintained actions-rs/cargo that github actions complains about using an old node version with plain cargo (this was the original motivation for this PR)
 * Use taiki-e/install-action to install critcmp directly

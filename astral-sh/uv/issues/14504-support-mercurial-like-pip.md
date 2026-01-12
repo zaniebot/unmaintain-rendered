@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T10:25:46Z
 updated_at: 2025-07-09T10:50:17Z
 url: https://github.com/astral-sh/uv/issues/14504
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Support Mercurial like pip
 
 ---
 
-_Issue opened by @paugier on 2025-07-08 10:25_
+_@paugier_
 
 ### Summary
 

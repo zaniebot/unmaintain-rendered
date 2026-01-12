@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T19:17:35Z
 updated_at: 2023-01-31T17:28:32Z
 url: https://github.com/astral-sh/ruff/issues/1073
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support remaining pycodestyle rules
 
 ---
 
-_Issue opened by @horseinthesky on 2022-12-05 19:17_
+_@horseinthesky_
 
 Would be great to have these:
 ```

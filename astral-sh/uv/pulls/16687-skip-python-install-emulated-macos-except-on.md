@@ -13,14 +13,14 @@ head: zsol/jj-rqszyytlrnrl
 created_at: 2025-11-11T17:55:27Z
 updated_at: 2025-11-12T13:48:18Z
 url: https://github.com/astral-sh/uv/pull/16687
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Skip python_install_emulated_macos except on ARM64 macos with rosetta
 
 ---
 
-_Pull request opened by @zsol on 2025-11-11 17:55_
+_@zsol_
 
 ## Summary
 

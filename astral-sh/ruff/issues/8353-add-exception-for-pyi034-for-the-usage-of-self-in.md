@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T10:51:16Z
 updated_at: 2023-11-13T00:47:49Z
 url: https://github.com/astral-sh/ruff/issues/8353
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add exception for PYI034 for the usage of Self in metaclasses
 
 ---
 
-_Issue opened by @ZeeD on 2023-10-30 10:51_
+_@ZeeD_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

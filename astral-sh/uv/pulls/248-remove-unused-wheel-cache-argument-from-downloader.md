@@ -12,14 +12,14 @@ head: charlie/wheel
 created_at: 2023-10-31T02:15:02Z
 updated_at: 2023-10-31T02:23:52Z
 url: https://github.com/astral-sh/uv/pull/248
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Remove unused wheel cache argument from downloader
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 02:15_
+_@charliermarsh_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-04T22:19:25Z
 updated_at: 2019-10-21T10:26:42Z
 url: https://github.com/clap-rs/clap/issues/1564
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clippy::cyclomatic_complexity is deprecated
 
 ---
 
-_Issue opened by @alarsyo on 2019-10-04 22:19_
+_@alarsyo_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

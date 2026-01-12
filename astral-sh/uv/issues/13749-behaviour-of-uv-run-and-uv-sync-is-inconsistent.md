@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-31T06:49:01Z
 updated_at: 2025-12-02T19:55:48Z
 url: https://github.com/astral-sh/uv/issues/13749
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Behaviour of `uv run` and `uv sync` is inconsistent based on current directory in a workspace
 
 ---
 
-_Issue opened by @bradezard131 on 2025-05-31 06:49_
+_@bradezard131_
 
 ### Summary
 

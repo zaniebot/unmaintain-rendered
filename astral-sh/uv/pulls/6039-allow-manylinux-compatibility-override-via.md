@@ -14,14 +14,14 @@ head: no-manylinux
 created_at: 2024-08-12T17:35:19Z
 updated_at: 2024-08-21T01:58:10Z
 url: https://github.com/astral-sh/uv/pull/6039
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # allow manylinux compatibility override via `_manylinux` module.
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-08-12 17:35_
+_@ChannyClaus_
 
 ## Summary
 resolves https://github.com/astral-sh/uv/issues/5915, not entirely sure if `manylinux_compatible` should be a separate field in the JSON returned by the interpreter or there's some way to use the existing `platform` for it.

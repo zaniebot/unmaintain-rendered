@@ -12,14 +12,14 @@ head: charlie/small
 created_at: 2023-01-18T19:34:10Z
 updated_at: 2023-01-18T19:50:35Z
 url: https://github.com/astral-sh/ruff/pull/1972
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Convert remaining call path sites to use `SmallVec`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 19:34_
+_@charliermarsh_
 
 _No description provided._
 

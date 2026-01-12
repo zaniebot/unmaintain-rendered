@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T16:25:29Z
 updated_at: 2025-10-30T17:09:16Z
 url: https://github.com/astral-sh/uv/issues/16519
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # uv standalone: `uv self update [TARGET_VERSION]` doesn't work in a mirrored/offline/non-internet environment
 
 ---
 
-_Issue opened by @zamanh on 2025-10-30 16:25_
+_@zamanh_
 
 ### Summary
 

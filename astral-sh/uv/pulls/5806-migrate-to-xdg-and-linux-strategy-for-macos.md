@@ -13,14 +13,14 @@ head: charlie/xdg
 created_at: 2024-08-06T01:49:03Z
 updated_at: 2024-08-19T19:33:23Z
 url: https://github.com/astral-sh/uv/pull/5806
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Migrate to XDG and Linux strategy for macOS directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-06 01:49_
+_@charliermarsh_
 
 ## Summary
 

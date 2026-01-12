@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-30T11:55:14Z
 updated_at: 2025-01-25T16:47:11Z
 url: https://github.com/astral-sh/uv/issues/10961
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Add more use-case based documentation - syncing projects across machines
 
 ---
 
-_Issue opened by @bjornasm on 2024-10-30 11:55_
+_@bjornasm_
 
 First of all, thank you for a great tool!
 

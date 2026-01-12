@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T08:53:53Z
 updated_at: 2025-02-05T19:01:59Z
 url: https://github.com/astral-sh/ruff/issues/15866
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Revisit diagnostic range for unresolved-import
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-01 08:53_
+_@MichaReiser_
 
 ### Description
 

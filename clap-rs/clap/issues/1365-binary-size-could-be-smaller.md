@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-10-19T21:59:13Z
 updated_at: 2025-01-28T17:22:10Z
 url: https://github.com/clap-rs/clap/issues/1365
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Binary size could be smaller
 
 ---
 
-_Issue opened by @smklein on 2018-10-19 21:59_
+_@smklein_
 
 ### Rust Version
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-16T17:17:55Z
 updated_at: 2025-02-02T19:52:43Z
 url: https://github.com/astral-sh/ruff/issues/5150
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff fails on the issue introduced during fix
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2023-06-16 17:17_
+_@Cjkjvfnby_
 
 Applying FLY002 to the code creates a code that does not pass `E501 Line too long`
 

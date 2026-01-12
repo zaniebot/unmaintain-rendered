@@ -13,14 +13,14 @@ head: dhruv/ecosystem
 created_at: 2024-07-03T03:03:06Z
 updated_at: 2024-07-03T08:39:38Z
 url: https://github.com/astral-sh/ruff/pull/12160
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove `demisto/content` from ecosystem checks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-03 03:03_
+_@dhruvmanila_
 
 ## Summary
 

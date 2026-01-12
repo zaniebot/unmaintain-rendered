@@ -14,14 +14,14 @@ head: typing-self-argument
 created_at: 2025-05-10T16:47:08Z
 updated_at: 2025-09-22T18:59:53Z
 url: https://github.com/astral-sh/ruff/pull/18007
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Assume type of self is `typing.Self` in method calls
 
 ---
 
-_Pull request opened by @Glyphack on 2025-05-10 16:47_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

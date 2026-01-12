@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T10:34:54Z
 updated_at: 2024-03-25T11:19:32Z
 url: https://github.com/astral-sh/ruff/issues/10228
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E302 and E305 cause the linter and formatter to make conflicting changes in notebooks
 
 ---
 
-_Issue opened by @vancromy on 2024-03-04 10:34_
+_@vancromy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

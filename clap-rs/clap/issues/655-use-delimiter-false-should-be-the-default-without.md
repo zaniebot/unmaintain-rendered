@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-09-10T19:18:19Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/655
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # use_delimiter(false) should be the default without multiples
 
 ---
 
-_Issue opened by @kbknapp on 2016-09-10 19:18_
+_@kbknapp_
 
 This has been an issue with a few projects. Because `use_delimiter(true)` is the default, which is meant for multiple values, but it takes affect even with a single value for an option or arg. This means a valid single value, `--option "some thing, with commas, and stuff"` will get split up and causes confusing errors.
 

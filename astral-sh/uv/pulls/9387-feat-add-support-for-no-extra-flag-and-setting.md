@@ -14,14 +14,14 @@ head: main
 created_at: 2024-11-23T16:24:54Z
 updated_at: 2024-11-24T02:25:09Z
 url: https://github.com/astral-sh/uv/pull/9387
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # feat: add support for `--no-extra` flag and setting
 
 ---
 
-_Pull request opened by @alan910127 on 2024-11-23 16:24_
+_@alan910127_
 
 <!--  
 Thank you for contributing to uv! To help us review effectively, please ensure that:  

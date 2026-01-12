@@ -13,14 +13,14 @@ head: docs/too-many-public-methods
 created_at: 2024-06-09T01:37:59Z
 updated_at: 2024-06-09T23:55:49Z
 url: https://github.com/astral-sh/ruff/pull/11809
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [`pylint`] Fix flag name in `too-many-public-methods` (`PLR0904`)
 
 ---
 
-_Pull request opened by @Peiffap on 2024-06-09 01:37_
+_@Peiffap_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

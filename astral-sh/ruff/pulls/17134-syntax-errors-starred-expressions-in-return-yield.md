@@ -14,14 +14,14 @@ head: brent/syn-single-stars
 created_at: 2025-04-01T20:21:08Z
 updated_at: 2025-04-02T12:38:28Z
 url: https://github.com/astral-sh/ruff/pull/17134
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Starred expressions in return, yield, and for
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-01 20:21_
+_@ntBre_
 
 Summary
 --

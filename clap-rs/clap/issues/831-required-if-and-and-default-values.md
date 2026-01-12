@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-01-30T02:10:59Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/831
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # required_if and and default values
 
 ---
 
-_Issue opened by @kbknapp on 2017-01-30 02:10_
+_@kbknapp_
 
 From #824 
 

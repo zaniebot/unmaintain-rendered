@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-03T10:17:17Z
 updated_at: 2023-04-03T15:28:48Z
 url: https://github.com/astral-sh/ruff/issues/3860
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # flake8-pyi: PYI015 false positive on TypeVar assignment
 
 ---
 
-_Issue opened by @bluetech on 2023-04-03 10:17_
+_@bluetech_
 
 Given this pyi file:
 

@@ -13,14 +13,14 @@ head: dhruv/callable-type-from-function
 created_at: 2025-03-12T16:09:36Z
 updated_at: 2025-03-13T02:19:36Z
 url: https://github.com/astral-sh/ruff/pull/16683
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Add `CallableTypeFromFunction` special form
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-12 16:09_
+_@dhruvmanila_
 
 ## Summary
 

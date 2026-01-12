@@ -13,14 +13,14 @@ head: cjm/union-norm
 created_at: 2025-08-29T02:40:33Z
 updated_at: 2025-08-29T16:02:36Z
 url: https://github.com/astral-sh/ruff/pull/20147
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] ensure union normalization really normalizes
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 02:40_
+_@carljm_
 
 ## Summary
 

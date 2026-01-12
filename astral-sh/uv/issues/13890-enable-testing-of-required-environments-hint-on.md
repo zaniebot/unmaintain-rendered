@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T19:12:40Z
 updated_at: 2025-06-12T02:47:41Z
 url: https://github.com/astral-sh/uv/issues/13890
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Enable testing of `required-environments` hint on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-06-06 19:12_
+_@zanieb_
 
 We added a Windows wheel to https://github.com/astral-sh/uv/pull/13575 so we can test this on Unix, but we should be able to choose some other wheel file name that enables us to test on all our normal platforms?
 

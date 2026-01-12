@@ -13,14 +13,14 @@ head: zb/traits-types
 created_at: 2024-03-26T19:52:32Z
 updated_at: 2024-03-26T20:39:44Z
 url: https://github.com/astral-sh/uv/pull/2674
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Rename `uv-traits` and split into separate modules
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-26 19:52_
+_@zanieb_
 
 This is driving me a little crazy and is becoming a larger problem in #2596 where I need to move more types (like `Upgrade` and `Reinstall`) into this crate. Anything that's shared across our core resolver, install, and build crates needs to be defined in this crate to avoid cyclic dependencies. We've outgrown it being a single file with some shared traits.
 

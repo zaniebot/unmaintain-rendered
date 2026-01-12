@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T16:41:43Z
 updated_at: 2025-01-10T09:02:12Z
 url: https://github.com/astral-sh/uv/issues/10436
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # `index` in uv.toml in parent directory not recognized
 
 ---
 
-_Issue opened by @NicholasPini on 2025-01-09 16:41_
+_@NicholasPini_
 
 I have a bunch of separated python projects. Since they all have the same private index in their pyproject.toml, I figured it is better to move the index definition to a uv.toml file in a parent directory:
 

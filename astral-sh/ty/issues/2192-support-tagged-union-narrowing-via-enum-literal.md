@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T19:42:07Z
 updated_at: 2026-01-04T18:47:42Z
 url: https://github.com/astral-sh/ty/issues/2192
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # support "tagged union" narrowing via enum literal tags
 
 ---
 
-_Issue opened by @carljm on 2025-12-23 19:42_
+_@carljm_
 
 We currently support "tagged union" narrowing of TypedDicts via string/bytes/int literals. We should also support fields whose value is an enum literal. (We need to watch out for enums that override `__eq__`.)
 

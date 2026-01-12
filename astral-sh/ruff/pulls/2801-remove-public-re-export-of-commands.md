@@ -12,14 +12,14 @@ head: charlie/export
 created_at: 2023-02-12T04:56:50Z
 updated_at: 2023-02-12T04:59:36Z
 url: https://github.com/astral-sh/ruff/pull/2801
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove public re-export of commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 04:56_
+_@charliermarsh_
 
 _No description provided._
 

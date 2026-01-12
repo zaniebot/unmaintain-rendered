@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-10T12:25:56Z
 updated_at: 2025-12-10T12:49:19Z
 url: https://github.com/astral-sh/ty/issues/1838
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Resolve `ParamSpec` with the matching overload
 
 ---
 
-_Issue opened by @leddy231 on 2025-12-10 12:25_
+_@leddy231_
 
 ### Summary
 

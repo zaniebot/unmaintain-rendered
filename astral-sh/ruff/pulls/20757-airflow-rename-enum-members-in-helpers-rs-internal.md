@@ -12,14 +12,14 @@ head: fix-comments
 created_at: 2025-10-07T23:44:22Z
 updated_at: 2025-12-10T17:41:18Z
 url: https://github.com/astral-sh/ruff/pull/20757
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`airflow`]: Rename Enum members in helpers.rs (`internal`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-10-07 23:44_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-22T16:30:25Z
 updated_at: 2025-07-31T12:17:43Z
 url: https://github.com/astral-sh/ruff/issues/19492
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatter inserts trailing newline at the end of a file even when inside a `fmt: off` region
 
 ---
 
-_Issue opened by @MilkClouds on 2025-07-22 16:30_
+_@MilkClouds_
 
 ### Summary
 

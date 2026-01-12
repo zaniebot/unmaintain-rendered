@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-21T15:16:25Z
 updated_at: 2023-03-21T15:32:33Z
 url: https://github.com/astral-sh/ruff/issues/3647
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Infinite loop] Infinite loop related to noqa
 
 ---
 
-_Issue opened by @qarmin on 2023-03-21 15:16_
+_@qarmin_
 
 Ruff 33394e4a693077ffe966af772fd5fec8853f786e
 ```

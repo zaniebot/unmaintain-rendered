@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T15:45:32Z
 updated_at: 2024-10-30T20:33:59Z
 url: https://github.com/astral-sh/uv/issues/8292
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Feature request: Install only packages from an optional group
 
 ---
 
-_Issue opened by @chris48s on 2024-10-17 15:45_
+_@chris48s_
 
 Sometimes it would be useful to be able to install only the packages from an optional group (but not the main or dev dependencies).
 

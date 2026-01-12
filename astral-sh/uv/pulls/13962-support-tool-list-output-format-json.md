@@ -11,14 +11,14 @@ head: tool-list-json
 created_at: 2025-06-11T11:28:52Z
 updated_at: 2025-12-15T20:25:03Z
 url: https://github.com/astral-sh/uv/pull/13962
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Support `tool list --output-format=json`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-06-11 11:28_
+_@InSyncWithFoo_
 
 ## Summary
 

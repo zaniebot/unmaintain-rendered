@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T12:35:59Z
 updated_at: 2024-04-03T02:10:05Z
 url: https://github.com/astral-sh/ruff/issues/10736
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Errors in multiline docstrings point to the first line of the string
 
 ---
 
-_Issue opened by @ts933 on 2024-04-02 12:35_
+_@ts933_
 
 _ruff version==0.2.1_
 

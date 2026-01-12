@@ -14,14 +14,14 @@ head: brent/f-string-quotes
 created_at: 2025-01-28T21:11:11Z
 updated_at: 2025-01-29T18:28:24Z
 url: https://github.com/astral-sh/ruff/pull/15794
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Preserve quotes in generated f-strings
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-28 21:11_
+_@ntBre_
 
 ## Summary
 

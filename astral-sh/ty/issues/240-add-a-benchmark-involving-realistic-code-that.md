@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-29T16:15:19Z
 updated_at: 2025-08-15T12:26:11Z
 url: https://github.com/astral-sh/ty/issues/240
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add a benchmark involving realistic code that creates large unions
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-09-29 16:15_
+_@AlexWaygood_
 
 Code that creates large unions (explicitly or implicitly) is known to be hard for type checkers to analyze in a performant way. Both mypy and pyright have had lots of issues regarding performance for these, and both have implemented several optimizations to deal with them. We should add at least one benchmark (probably several) that measures how we do on this.
 

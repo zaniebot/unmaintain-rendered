@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-30T15:15:10Z
 updated_at: 2025-10-30T16:27:19Z
 url: https://github.com/astral-sh/uv/issues/16513
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Document whether `uv-build` backend respects lock file
 
 ---
 
-_Issue opened by @arthur-tacca on 2025-10-30 15:15_
+_@arthur-tacca_
 
 Looking at the [documentation for the new build backend](https://docs.astral.sh/uv/concepts/build-backend/) I have two questions:
 

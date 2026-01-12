@@ -12,14 +12,14 @@ head: charlie/12
 created_at: 2023-06-22T19:45:07Z
 updated_at: 2023-06-22T20:21:18Z
 url: https://github.com/astral-sh/ruff/pull/5316
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add `PythonVersion::Py312`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 19:45_
+_@charliermarsh_
 
 Closes #5310.
 

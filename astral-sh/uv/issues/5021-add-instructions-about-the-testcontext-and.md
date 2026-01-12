@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T19:09:23Z
 updated_at: 2024-07-12T19:09:27Z
 url: https://github.com/astral-sh/uv/issues/5021
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add instructions about the `TestContext` and filters in CONTRIBUTING docs
 
 ---
 
-_Issue opened by @zanieb on 2024-07-12 19:09_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

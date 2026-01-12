@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T09:08:41Z
 updated_at: 2025-08-17T23:35:38Z
 url: https://github.com/astral-sh/ruff/issues/19143
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Config file discovery on Mac OS inconsistent with documentation
 
 ---
 
-_Issue opened by @gkowzan on 2025-07-04 09:08_
+_@gkowzan_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-11T09:51:01Z
 updated_at: 2025-06-25T15:06:36Z
 url: https://github.com/astral-sh/ruff/issues/4368
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add config to disable S101 (assert detected) and a few others in test folders
 
 ---
 
-_Issue opened by @jankatins on 2023-05-11 09:51_
+_@jankatins_
 
 Per convention, testfolders usually reside in `<reporoot>/test/` or `<reporoot>/tests/`. Right now, every time I add certain rules, specifically S101, ARG, FBT, and a few others (e.g. via "ALL"), I have to add a folder exclude for these rules for the `tests/` folder:
 

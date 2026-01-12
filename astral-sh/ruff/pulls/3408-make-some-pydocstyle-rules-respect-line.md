@@ -12,14 +12,14 @@ head: main
 created_at: 2023-03-08T20:49:27Z
 updated_at: 2023-05-07T17:26:43Z
 url: https://github.com/astral-sh/ruff/pull/3408
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Make some pydocstyle rules respect line continuation character
 
 ---
 
-_Pull request opened by @yuxqiu on 2023-03-08 20:49_
+_@yuxqiu_
 
 Currently, pydocstyle rules produce many false positives on code bases that use continuation characters in docstrings. This PR tries to make some pydocstyle rules respect line continuation character. 
 

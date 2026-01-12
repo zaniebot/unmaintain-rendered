@@ -13,14 +13,14 @@ head: renovate/memchr-2.x-lockfile
 created_at: 2025-06-16T00:44:54Z
 updated_at: 2025-06-16T01:37:22Z
 url: https://github.com/astral-sh/uv/pull/14048
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Update Rust crate memchr to v2.7.5
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 00:44_
+_@renovate_
 
 This PR contains the following updates:
 

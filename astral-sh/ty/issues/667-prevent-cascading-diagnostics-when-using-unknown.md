@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-17T07:45:26Z
 updated_at: 2025-11-18T16:10:33Z
 url: https://github.com/astral-sh/ty/issues/667
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Prevent cascading diagnostics when using unknown type form
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-17 07:45_
+_@sharkdp_
 
 We currently report multiple diagnostics in situations like the following:
 

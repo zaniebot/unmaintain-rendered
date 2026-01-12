@@ -13,14 +13,14 @@ head: pip-tree-fix
 created_at: 2024-06-28T05:05:27Z
 updated_at: 2024-06-28T13:28:43Z
 url: https://github.com/astral-sh/uv/pull/4611
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # fix the incorrect handling of markers in `pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-28 05:05_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

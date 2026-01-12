@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T12:44:44Z
 updated_at: 2024-02-16T06:46:49Z
 url: https://github.com/astral-sh/ruff/issues/9998
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # B006 --fix --unsafe-fixes does not fix type to become Optional ( | None) (fails type check)
 
 ---
 
-_Issue opened by @ehiggs on 2024-02-15 12:44_
+_@ehiggs_
 
 Given the following file:
 

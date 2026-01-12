@@ -12,14 +12,14 @@ head: B027-false-positive
 created_at: 2023-02-18T17:37:42Z
 updated_at: 2023-02-19T17:26:22Z
 url: https://github.com/astral-sh/ruff/pull/3016
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid raising `B027` violations in `.pyi` files
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-18 17:37_
+_@JonathanPlasse_
 
 - Close #3012 
 

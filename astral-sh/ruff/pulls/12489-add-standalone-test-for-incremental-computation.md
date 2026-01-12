@@ -13,14 +13,14 @@ head: standalone-incremental-test
 created_at: 2024-07-24T10:49:00Z
 updated_at: 2024-08-12T07:51:54Z
 url: https://github.com/astral-sh/ruff/pull/12489
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add standalone test for incremental computation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-24 10:49_
+_@MichaReiser_
 
 Run with `cargo test --package red_knot --test perf_issues incremental -- --exact`
 

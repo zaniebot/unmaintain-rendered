@@ -12,14 +12,14 @@ head: zb/pyprojt
 created_at: 2025-05-07T13:37:14Z
 updated_at: 2025-07-08T10:38:09Z
 url: https://github.com/astral-sh/ty/pull/66
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add pyproject metadata
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 13:37_
+_@zanieb_
 
 _No description provided._
 

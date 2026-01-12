@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-10T09:07:52Z
 updated_at: 2022-10-10T14:25:28Z
 url: https://github.com/astral-sh/ruff/issues/385
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Do not require `# noqa: F821` in try block with ` except NameError` block.
 
 ---
 
-_Issue opened by @ghuls on 2022-10-10 09:07_
+_@ghuls_
 
 Do not require `# noqa: F821` in try block with ` except NameError` block.
 

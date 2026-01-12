@@ -15,14 +15,14 @@ head: david/update-mypy_primer-materialize
 created_at: 2025-09-16T08:34:47Z
 updated_at: 2025-09-17T07:54:17Z
 url: https://github.com/astral-sh/ruff/pull/20433
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Update mypy_primer
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-16 08:34_
+_@sharkdp_
 
 ## Summary
 

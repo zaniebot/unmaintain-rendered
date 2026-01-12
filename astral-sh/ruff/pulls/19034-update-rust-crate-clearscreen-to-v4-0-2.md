@@ -13,14 +13,14 @@ head: renovate/clearscreen-4.x-lockfile
 created_at: 2025-06-30T01:01:26Z
 updated_at: 2025-06-30T07:36:12Z
 url: https://github.com/astral-sh/ruff/pull/19034
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # Update Rust crate clearscreen to v4.0.2
 
 ---
 
-_Pull request opened by @renovate on 2025-06-30 01:01_
+_@renovate_
 
 This PR contains the following updates:
 

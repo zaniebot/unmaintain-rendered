@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T22:31:22Z
 updated_at: 2023-01-14T01:39:55Z
 url: https://github.com/astral-sh/ruff/issues/1790
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # UP024 fixer replaces wrong members with "as" alias import
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 22:31_
+_@spaceone_
 
 ```
 $ ruff --isolated  --select UP foo.py

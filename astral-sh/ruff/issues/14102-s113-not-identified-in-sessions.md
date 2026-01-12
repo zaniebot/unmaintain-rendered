@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-05T10:41:51Z
 updated_at: 2024-11-06T04:46:59Z
 url: https://github.com/astral-sh/ruff/issues/14102
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # S113: Not identified in sessions
 
 ---
 
-_Issue opened by @kiblik on 2024-11-05 10:41_
+_@kiblik_
 
 S113 can idenify if request is missing timeout and it runs "natively". However, it does not identify run from existing sessions.
 

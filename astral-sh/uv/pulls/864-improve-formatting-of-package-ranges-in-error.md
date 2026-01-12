@@ -13,14 +13,14 @@ head: zb/clause-fmt
 created_at: 2024-01-10T00:20:03Z
 updated_at: 2024-01-11T09:04:07Z
 url: https://github.com/astral-sh/uv/pull/864
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Improve formatting of package ranges in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 00:20_
+_@zanieb_
 
 Closes #810
 Closes https://github.com/astral-sh/puffin/issues/812

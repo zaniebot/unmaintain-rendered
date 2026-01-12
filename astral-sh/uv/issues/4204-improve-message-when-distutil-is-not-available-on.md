@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-10T16:37:20Z
 updated_at: 2025-02-19T23:41:53Z
 url: https://github.com/astral-sh/uv/issues/4204
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Improve message when distutil is not available on legacy python. 
 
 ---
 
-_Issue opened by @mgaitan on 2024-06-10 16:37_
+_@mgaitan_
 
 I use a local venv in python3.10 but compile requirements for python 3.8 (requirements used for dockerized apps) . I have both versions (along the default python 3.12) installed. 
 

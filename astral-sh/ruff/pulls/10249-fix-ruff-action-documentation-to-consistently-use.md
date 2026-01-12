@@ -13,14 +13,14 @@ head: ruff-action-example
 created_at: 2024-03-06T16:20:13Z
 updated_at: 2024-03-06T17:09:46Z
 url: https://github.com/astral-sh/ruff/pull/10249
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix `ruff-action` documentation to consistently use `args` instead of `options`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-06 16:20_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/10246

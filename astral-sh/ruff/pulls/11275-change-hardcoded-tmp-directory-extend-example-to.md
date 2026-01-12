@@ -13,14 +13,14 @@ head: main
 created_at: 2024-05-04T00:01:53Z
 updated_at: 2024-05-04T01:44:38Z
 url: https://github.com/astral-sh/ruff/pull/11275
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Change `hardcoded-tmp-directory-extend` example to follow the schema
 
 ---
 
-_Pull request opened by @carloshbcabral on 2024-05-04 00:01_
+_@carloshbcabral_
 
 ## Summary
 Change `hardcoded-tmp-directory-extend` example to follow the schema:

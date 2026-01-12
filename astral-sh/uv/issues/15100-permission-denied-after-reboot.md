@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T06:13:20Z
 updated_at: 2025-08-07T08:47:27Z
 url: https://github.com/astral-sh/uv/issues/15100
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Permission denied after reboot
 
 ---
 
-_Issue opened by @mainrs on 2025-08-06 06:13_
+_@mainrs_
 
 ### Question
 

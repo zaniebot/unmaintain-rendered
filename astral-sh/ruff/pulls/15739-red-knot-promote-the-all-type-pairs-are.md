@@ -14,14 +14,14 @@ head: alex/promote-property-test
 created_at: 2025-01-25T16:21:50Z
 updated_at: 2025-01-25T16:26:38Z
 url: https://github.com/astral-sh/ruff/pull/15739
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Promote the `all_type_pairs_are_assignable_to_their_union` property test to stable
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-25 16:21_
+_@AlexWaygood_
 
 ## Summary
 

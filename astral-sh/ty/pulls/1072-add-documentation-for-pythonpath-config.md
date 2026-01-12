@@ -12,14 +12,14 @@ head: main
 created_at: 2025-08-21T01:49:55Z
 updated_at: 2025-12-29T09:34:09Z
 url: https://github.com/astral-sh/ty/pull/1072
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add documentation for PYTHONPATH config
 
 ---
 
-_Pull request opened by @natelust on 2025-08-21 01:49_
+_@natelust_
 
 Add documentation on how to configure ty to read the paths defined in the PYTHONPATH environment variable.
 

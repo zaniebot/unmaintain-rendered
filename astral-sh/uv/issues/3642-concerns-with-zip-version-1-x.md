@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-17T16:05:56Z
 updated_at: 2025-03-15T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/3642
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Concerns with zip version 1.x
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-05-17 16:05_
+_@musicinmybrain_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

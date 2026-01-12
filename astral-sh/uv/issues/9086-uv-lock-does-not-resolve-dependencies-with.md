@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-13T15:43:18Z
 updated_at: 2024-11-29T13:11:33Z
 url: https://github.com/astral-sh/uv/issues/9086
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # uv lock does not resolve dependencies with multiple indexes and `extra` markers as expected
 
 ---
 
-_Issue opened by @Karlinator on 2024-11-13 15:43_
+_@Karlinator_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

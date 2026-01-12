@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T01:41:38Z
 updated_at: 2025-10-24T22:23:38Z
 url: https://github.com/astral-sh/uv/issues/15799
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Wrongly recognized platform, unnecessary rebuilds
 
 ---
 
-_Issue opened by @fleetingbytes on 2025-09-12 01:41_
+_@fleetingbytes_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: alex/dup-bases-diagnostic
 created_at: 2025-05-07T12:47:22Z
 updated_at: 2025-05-07T15:27:46Z
 url: https://github.com/astral-sh/ruff/pull/17914
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Improve UX for `[duplicate-base]` diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-07 12:47_
+_@AlexWaygood_
 
 ## Summary
 

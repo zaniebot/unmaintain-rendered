@@ -14,14 +14,14 @@ head: dcreager/remove-constraint-trait
 created_at: 2025-09-11T18:46:48Z
 updated_at: 2025-09-12T00:55:30Z
 url: https://github.com/astral-sh/ruff/pull/20355
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Remove the `Constraints` trait
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-11 18:46_
+_@dcreager_
 
 This PR removes the `Constraints` trait. We removed the `bool` implementation several weeks back, and are using `ConstraintSet` everywhere. There have been discussions about trying to include the reason for an assignability failure as part of the result, but that there are no concrete plans to do so soon, and it's not clear that we'll need the `Constraints` trait to do that. (We can ideally just update the `ConstraintSet` type directly.)
 

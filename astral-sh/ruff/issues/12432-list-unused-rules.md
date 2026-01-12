@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-21T16:03:38Z
 updated_at: 2025-01-15T07:42:02Z
 url: https://github.com/astral-sh/ruff/issues/12432
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # List unused rules
 
 ---
 
-_Issue opened by @valentincalomme on 2024-07-21 16:03_
+_@valentincalomme_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

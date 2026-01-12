@@ -11,14 +11,14 @@ head: fix-21295
 created_at: 2025-11-07T04:35:43Z
 updated_at: 2025-11-10T22:25:47Z
 url: https://github.com/astral-sh/ruff/pull/21310
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [`flake8-logging-format`] Fix G004 preview mode breaking on f-strings with control characters (`G004`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-07 04:35_
+_@danparizher_
 
 ## Summary
 

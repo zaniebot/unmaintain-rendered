@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T19:29:33Z
 updated_at: 2023-01-18T21:25:26Z
 url: https://github.com/astral-sh/ruff/issues/1971
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # E501 not triggered in context managers
 
 ---
 
-_Issue opened by @zevisert on 2023-01-18 19:29_
+_@zevisert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

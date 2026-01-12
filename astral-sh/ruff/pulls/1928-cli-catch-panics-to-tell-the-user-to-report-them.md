@@ -12,14 +12,14 @@ head: please-report-panics
 created_at: 2023-01-17T03:41:15Z
 updated_at: 2023-01-17T22:17:10Z
 url: https://github.com/astral-sh/ruff/pull/1928
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # cli: Catch panics to tell the user to report them
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-17 03:41_
+_@not-my-profile_
 
 _No description provided._
 

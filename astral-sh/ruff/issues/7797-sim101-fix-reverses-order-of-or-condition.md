@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T03:02:03Z
 updated_at: 2023-10-04T04:42:15Z
 url: https://github.com/astral-sh/ruff/issues/7797
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # SIM101 fix reverses order of `or` condition
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-10-04 03:02_
+_@JelleZijlstra_
 
 ```
 $ cat sim101.py

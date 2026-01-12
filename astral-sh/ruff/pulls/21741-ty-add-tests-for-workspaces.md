@@ -14,14 +14,14 @@ head: gankra/add-tests
 created_at: 2025-12-01T21:07:32Z
 updated_at: 2025-12-03T14:48:11Z
 url: https://github.com/astral-sh/ruff/pull/21741
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] add tests for workspaces
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-01 21:07_
+_@Gankra_
 
 Here are a bunch of (variously failing and passing) mdtests that reflect the kinds of issues people encounter when running ty over an entire workspace without sufficient hand-holding (especially because in the IDE it is unclear *how* to provide that hand-holding).
 

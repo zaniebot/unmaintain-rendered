@@ -13,14 +13,14 @@ head: charlie/deps
 created_at: 2024-05-11T17:26:58Z
 updated_at: 2024-05-11T17:33:50Z
 url: https://github.com/astral-sh/uv/pull/3527
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Remove unused dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-11 17:26_
+_@charliermarsh_
 
 Surfaced with `cargo shear`.
 

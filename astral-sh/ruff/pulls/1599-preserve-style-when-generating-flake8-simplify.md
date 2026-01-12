@@ -12,14 +12,14 @@ head: charlie/style
 created_at: 2023-01-03T13:05:50Z
 updated_at: 2023-01-03T13:05:56Z
 url: https://github.com/astral-sh/ruff/pull/1599
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Preserve style when generating flake8-simplify messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-03 13:05_
+_@charliermarsh_
 
 _No description provided._
 

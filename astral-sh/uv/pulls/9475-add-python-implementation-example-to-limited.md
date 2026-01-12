@@ -13,14 +13,14 @@ head: zb/lre-pypy
 created_at: 2024-11-27T15:43:39Z
 updated_at: 2024-11-27T15:53:41Z
 url: https://github.com/astral-sh/uv/pull/9475
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Add Python implementation example to limited resolution environments docs
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-27 15:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/9473
 

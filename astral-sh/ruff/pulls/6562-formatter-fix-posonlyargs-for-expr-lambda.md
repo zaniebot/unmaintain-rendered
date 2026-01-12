@@ -13,14 +13,14 @@ head: fix/lambdaformat
 created_at: 2023-08-14T15:01:19Z
 updated_at: 2023-08-14T15:42:10Z
 url: https://github.com/astral-sh/ruff/pull/6562
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Formatter: Fix posonlyargs for `expr_lambda`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-08-14 15:01_
+_@qdegraaf_
 
 ## Summary
 

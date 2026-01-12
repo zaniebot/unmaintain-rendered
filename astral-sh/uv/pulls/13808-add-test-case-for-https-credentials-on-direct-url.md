@@ -13,14 +13,14 @@ head: zb/https-creds
 created_at: 2025-06-03T13:42:44Z
 updated_at: 2025-06-03T14:11:15Z
 url: https://github.com/astral-sh/uv/pull/13808
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Add test case for HTTPS credentials on direct URL in `uv export`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-03 13:42_
+_@zanieb_
 
 Related to 
 

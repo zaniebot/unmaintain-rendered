@@ -14,14 +14,14 @@ head: add-trio-110-suppor
 created_at: 2023-11-07T12:23:41Z
 updated_at: 2023-11-07T22:13:19Z
 url: https://github.com/astral-sh/ruff/pull/8537
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add TRIO110 rule
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-11-07 12:23_
+_@karpetrosyan_
 
 ## Summary
 

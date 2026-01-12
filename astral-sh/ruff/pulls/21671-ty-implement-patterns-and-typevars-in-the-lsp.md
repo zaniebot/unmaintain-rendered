@@ -14,14 +14,14 @@ head: gankra/stmtz
 created_at: 2025-11-27T22:44:08Z
 updated_at: 2025-11-28T13:41:23Z
 url: https://github.com/astral-sh/ruff/pull/21671
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Implement patterns and typevars in the LSP
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-27 22:44_
+_@Gankra_
 
 ## Summary
 

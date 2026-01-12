@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-08T21:57:46Z
 updated_at: 2021-12-15T16:47:48Z
 url: https://github.com/clap-rs/clap/issues/3096
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Too much whitespace in output
 
 ---
 
-_Issue opened by @epage on 2021-12-08 21:57_
+_@epage_
 
 ### Please complete the following tasks
 

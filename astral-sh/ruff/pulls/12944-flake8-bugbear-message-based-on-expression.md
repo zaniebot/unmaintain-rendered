@@ -13,14 +13,14 @@ head: ruff-b015
 created_at: 2024-08-16T22:21:22Z
 updated_at: 2024-08-17T11:54:19Z
 url: https://github.com/astral-sh/ruff/pull/12944
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [flake8_bugbear] message based on expression location [B015]
 
 ---
 
-_Pull request opened by @dsal3389 on 2024-08-16 22:21_
+_@dsal3389_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

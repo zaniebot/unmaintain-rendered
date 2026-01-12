@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T16:31:40Z
 updated_at: 2024-06-25T13:47:39Z
 url: https://github.com/astral-sh/uv/issues/4477
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # [Feature Request] pyproject.toml validation?
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-06-24 16:31_
+_@charlesnicholson_
 
 I don't know if this is a FR for uv or ruff or neither- Our python tools are under CI for unit tests and ruff linting, but because they do complex work with IoT devices, don't get as much functional testing love as they deserve (it's very complicated to orchestrate).
 

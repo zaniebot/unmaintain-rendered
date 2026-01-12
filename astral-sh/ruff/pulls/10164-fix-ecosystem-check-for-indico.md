@@ -13,14 +13,14 @@ head: fix-ecosystem-check
 created_at: 2024-02-29T08:18:46Z
 updated_at: 2024-02-29T09:29:00Z
 url: https://github.com/astral-sh/ruff/pull/10164
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix ecosystem check for indico
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-29 08:18_
+_@MichaReiser_
 
 ## Summary
 Remove the `S410` rule from the indico ecosystem check

@@ -13,14 +13,14 @@ head: charlie/filter
 created_at: 2024-05-09T04:10:08Z
 updated_at: 2024-05-09T04:51:24Z
 url: https://github.com/astral-sh/uv/pull/3479
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Filter irrelevant requirements from source annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 04:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-19T10:52:18Z
 updated_at: 2025-09-23T12:02:27Z
 url: https://github.com/astral-sh/ty/issues/1208
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Can not pass generic function to generic function
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-19 10:52_
+_@sharkdp_
 
 The following example …
 ```py

@@ -14,14 +14,14 @@ head: alex/rename-liskov-module
 created_at: 2025-11-29T13:13:42Z
 updated_at: 2025-11-29T14:54:02Z
 url: https://github.com/astral-sh/ruff/pull/21694
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Rename `types::liskov` to `types::overrides`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-29 13:13_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: latyshev/furb129
 created_at: 2024-02-07T21:16:19Z
 updated_at: 2024-02-13T09:34:25Z
 url: https://github.com/astral-sh/ruff/pull/9880
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`refurb`] Implement `readlines_in_for` lint (FURB129)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-02-07 21:16_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

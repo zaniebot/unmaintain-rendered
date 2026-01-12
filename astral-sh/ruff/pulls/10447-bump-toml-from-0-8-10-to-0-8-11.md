@@ -13,14 +13,14 @@ head: dependabot/cargo/toml-0.8.11
 created_at: 2024-03-18T08:19:44Z
 updated_at: 2024-03-18T08:39:31Z
 url: https://github.com/astral-sh/ruff/pull/10447
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bump toml from 0.8.10 to 0.8.11
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-18 08:19_
+_@dependabot_
 
 Bumps [toml](https://github.com/toml-rs/toml) from 0.8.10 to 0.8.11.
 <details>

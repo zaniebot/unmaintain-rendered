@@ -13,14 +13,14 @@ head: charlie/walrus
 created_at: 2023-08-09T04:44:07Z
 updated_at: 2023-08-11T18:48:32Z
 url: https://github.com/astral-sh/ruff/pull/6438
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add test case for walrus operators in return types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 04:44_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix-S101-range
 created_at: 2023-01-21T08:15:43Z
 updated_at: 2023-01-21T12:15:00Z
 url: https://github.com/astral-sh/ruff/pull/2052
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix S101 range to only highlight `assert`
 
 ---
 
-_Pull request opened by @harupy on 2023-01-21 08:15_
+_@harupy_
 
 Fix:
 

@@ -12,14 +12,14 @@ head: charlie/fix-F901
 created_at: 2022-11-03T15:58:43Z
 updated_at: 2022-11-03T15:58:55Z
 url: https://github.com/astral-sh/ruff/pull/571
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for F901
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 15:58_
+_@charliermarsh_
 
 _No description provided._
 

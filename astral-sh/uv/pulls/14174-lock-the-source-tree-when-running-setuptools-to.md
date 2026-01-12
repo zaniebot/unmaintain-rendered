@@ -12,14 +12,14 @@ head: jack/lock_wheel_builds
 created_at: 2025-06-20T23:30:35Z
 updated_at: 2025-06-26T19:28:17Z
 url: https://github.com/astral-sh/uv/pull/14174
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Lock the source tree when running setuptools, to protect concurrent builds
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-20 23:30_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/uv/issues/13703.
 

@@ -14,14 +14,14 @@ head: david/nested-generics-tests
 created_at: 2025-09-29T14:35:50Z
 updated_at: 2025-09-30T06:44:20Z
 url: https://github.com/astral-sh/ruff/pull/20631
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Add tests for nested generic functions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-29 14:35_
+_@sharkdp_
 
 ## Summary
 

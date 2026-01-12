@@ -13,14 +13,14 @@ head: zb/find-virtual
 created_at: 2025-02-06T18:31:07Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11287
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Add `--virtual` flag to `uv python find`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-06 18:31_
+_@zanieb_
 
 Mainly useful for testing, confusing that this was not available
 

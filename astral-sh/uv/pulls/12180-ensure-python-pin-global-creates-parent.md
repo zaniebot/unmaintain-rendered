@@ -13,14 +13,14 @@ head: python-pin-dir-fix
 created_at: 2025-03-15T01:42:43Z
 updated_at: 2025-03-15T03:14:40Z
 url: https://github.com/astral-sh/uv/pull/12180
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Ensure `python pin --global` creates parent directories if missing
 
 ---
 
-_Pull request opened by @samypr100 on 2025-03-15 01:42_
+_@samypr100_
 
 ## Summary
 

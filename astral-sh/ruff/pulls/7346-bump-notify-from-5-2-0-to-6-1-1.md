@@ -12,14 +12,14 @@ head: dependabot/cargo/notify-6.1.1
 created_at: 2023-09-13T15:57:17Z
 updated_at: 2023-09-13T16:54:06Z
 url: https://github.com/astral-sh/ruff/pull/7346
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump notify from 5.2.0 to 6.1.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-13 15:57_
+_@dependabot_
 
 Bumps [notify](https://github.com/notify-rs/notify) from 5.2.0 to 6.1.1.
 <details>

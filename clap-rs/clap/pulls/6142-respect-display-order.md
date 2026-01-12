@@ -12,14 +12,14 @@ head: respect-display-order
 created_at: 2025-09-26T22:19:04Z
 updated_at: 2025-10-22T16:10:28Z
 url: https://github.com/clap-rs/clap/pull/6142
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Respect display order
 
 ---
 
-_Pull request opened by @thomas-zahner on 2025-09-26 22:19_
+_@thomas-zahner_
 
 This is branched off #6072 and fixes #3362. The work over at #6072 seems to have stalled. With this PR, I'd like to get the feature ready and merged.
 

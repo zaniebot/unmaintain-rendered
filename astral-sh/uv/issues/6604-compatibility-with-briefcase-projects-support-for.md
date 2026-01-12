@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-25T13:17:17Z
 updated_at: 2025-01-17T23:45:36Z
 url: https://github.com/astral-sh/uv/issues/6604
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Compatibility with Briefcase Projects: Support for New Configuration File
 
 ---
 
-_Issue opened by @NADOOITChristophBa on 2024-08-25 13:17_
+_@NADOOITChristophBa_
 
 **Title:** Compatibility with Briefcase Projects: Support for New Configuration File
 

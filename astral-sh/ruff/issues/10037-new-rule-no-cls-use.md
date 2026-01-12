@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T04:28:44Z
 updated_at: 2024-07-26T01:51:32Z
 url: https://github.com/astral-sh/ruff/issues/10037
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # new rule - `no-cls-use`
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-19 04:28_
+_@DetachHead_
 
 `no-self-use` (`PLR6301`) identifies methods that do not use the `self` argument:
 ```py

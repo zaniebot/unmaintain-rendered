@@ -13,14 +13,14 @@ head: micha/options-venv-path
 created_at: 2025-01-21T09:32:52Z
 updated_at: 2025-01-21T14:11:45Z
 url: https://github.com/astral-sh/ruff/pull/15631
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Change `EnvironmentOptions::venv-path` to `Option<SystemPathBuf>`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-21 09:32_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: konsti/remove-some-duplication-untar
 created_at: 2024-09-09T16:33:33Z
 updated_at: 2024-09-24T10:33:40Z
 url: https://github.com/astral-sh/uv/pull/7224
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Deduplicate source dist unpack code
 
 ---
 
-_Pull request opened by @konstin on 2024-09-09 16:33_
+_@konstin_
 
 Use a generic instead of having the same code again.
 

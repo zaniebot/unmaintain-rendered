@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T12:19:31Z
 updated_at: 2024-03-06T17:54:31Z
 url: https://github.com/astral-sh/ruff/issues/8164
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improve message for 'true-false-comparison' (E712)
 
 ---
 
-_Issue opened by @nikacvet on 2023-10-24 12:19_
+_@nikacvet_
 
 Using Ruff version `0.1.1`, for code like this: `if a == True` ruff returns the following error message:
 `E712 Comparison to 'True' should be 'cond is True' or 'if cond'`

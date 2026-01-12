@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-12T07:21:03Z
 updated_at: 2024-04-12T14:56:42Z
 url: https://github.com/astral-sh/ruff/issues/10900
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `non-augmented-assignment` (`PLR6104`) - false positive on operators where the variable is on the other side
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-12 07:21_
+_@DetachHead_
 
 ```py
 a = 1

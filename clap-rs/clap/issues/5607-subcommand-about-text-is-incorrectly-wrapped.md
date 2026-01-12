@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T02:15:42Z
 updated_at: 2024-07-31T21:24:11Z
 url: https://github.com/clap-rs/clap/issues/5607
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Subcommand about text is incorrectly wrapped
 
 ---
 
-_Issue opened by @noc7c9 on 2024-07-30 02:15_
+_@noc7c9_
 
 ### Please complete the following tasks
 

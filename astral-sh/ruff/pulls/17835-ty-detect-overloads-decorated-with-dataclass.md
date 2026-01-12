@@ -13,14 +13,14 @@ head: dataclass
 created_at: 2025-05-04T19:31:22Z
 updated_at: 2025-05-07T16:27:20Z
 url: https://github.com/astral-sh/ruff/pull/17835
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [ty] Detect overloads decorated with `@dataclass_transform`
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-05-04 19:31_
+_@abhijeetbodas2001_
 
 ## Summary
 

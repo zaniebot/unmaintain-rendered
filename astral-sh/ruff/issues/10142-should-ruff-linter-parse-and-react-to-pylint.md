@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-26T21:19:28Z
 updated_at: 2024-02-27T08:13:44Z
 url: https://github.com/astral-sh/ruff/issues/10142
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Should Ruff linter parse and react to pylint disable waiver comments?
 
 ---
 
-_Issue opened by @kaddkaka on 2024-02-26 21:19_
+_@kaddkaka_
 
 Probably many people that start to use ruff linter have been using pylint previously. These users might already have some pylint rules disabled in their codebase:
 

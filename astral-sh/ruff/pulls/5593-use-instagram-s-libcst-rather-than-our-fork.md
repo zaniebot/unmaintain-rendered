@@ -12,14 +12,14 @@ head: charlie/libcst
 created_at: 2023-07-07T13:45:01Z
 updated_at: 2023-07-07T14:11:04Z
 url: https://github.com/astral-sh/ruff/pull/5593
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use Instagram's LibCST rather than our fork
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-07 13:45_
+_@charliermarsh_
 
 ## Summary
 

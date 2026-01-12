@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T18:59:41Z
 updated_at: 2022-12-10T21:45:35Z
 url: https://github.com/astral-sh/ruff/issues/1144
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement autofix for `F504`, `F522`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-08 18:59_
+_@charliermarsh_
 
 These are the "extra arguments in string-format call" codes.
 

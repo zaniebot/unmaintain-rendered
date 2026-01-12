@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-02-05T07:59:59Z
 updated_at: 2020-05-01T12:10:28Z
 url: https://github.com/clap-rs/clap/issues/1165
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `validator_os` takes `&OsStr`, but `validator` takes `String`
 
 ---
 
-_Issue opened by @oli-obk on 2018-02-05 07:59_
+_@oli-obk_
 
 If find it somewhat inconsistent that one function borrows the value, while the other takes it by value. It is very unlikely that anyone just forwards the argument passed to the `Err` return value, so there's no benefit of offering users an owned `String`.
 

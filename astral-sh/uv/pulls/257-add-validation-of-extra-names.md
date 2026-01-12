@@ -12,14 +12,14 @@ head: zanie/extra-validate
 created_at: 2023-10-31T18:38:34Z
 updated_at: 2023-11-01T15:40:44Z
 url: https://github.com/astral-sh/uv/pull/257
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Add validation of extra names
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 18:38_
+_@zanieb_
 
 Extends #254 
 

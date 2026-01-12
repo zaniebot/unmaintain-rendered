@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T07:50:26Z
 updated_at: 2025-07-16T16:02:30Z
 url: https://github.com/astral-sh/uv/issues/14479
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # How to reinstall a broken package? (`--reinstall` and similar have no effect)
 
 ---
 
-_Issue opened by @turbotimon on 2025-07-07 07:50_
+_@turbotimon_
 
 ### Question
 

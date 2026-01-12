@@ -13,14 +13,14 @@ head: charlie/self-deps
 created_at: 2024-12-07T14:10:47Z
 updated_at: 2024-12-09T15:42:06Z
 url: https://github.com/astral-sh/uv/pull/9705
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Enforce correctness of self-dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-07 14:10_
+_@charliermarsh_
 
 ## Summary
 

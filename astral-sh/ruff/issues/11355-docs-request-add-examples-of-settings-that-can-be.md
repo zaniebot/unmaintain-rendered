@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-09T22:21:49Z
 updated_at: 2024-07-26T01:28:50Z
 url: https://github.com/astral-sh/ruff/issues/11355
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Docs Request: Add examples of settings that can be turned on and off
 
 ---
 
-_Issue opened by @DeflateAwning on 2024-05-09 22:21_
+_@DeflateAwning_
 
 I wish there were way more examples of the possible configuration settings in ruff. For example, it would be great to see an example of how to flip between these two auto-format modes:
 

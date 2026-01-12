@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-15T04:20:51Z
 updated_at: 2024-10-15T06:55:15Z
 url: https://github.com/astral-sh/uv/issues/8197
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # error: No interpreter found for Python =={version} in managed installations, system path, or `py` launcher
 
 ---
 
-_Issue opened by @fraser-langton on 2024-10-15 04:20_
+_@fraser-langton_
 
 Am I missing something here? What else do I need to configure?
 

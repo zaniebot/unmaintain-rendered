@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-19T17:21:39Z
 updated_at: 2022-08-19T17:54:09Z
 url: https://github.com/clap-rs/clap/issues/4098
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Suggestion: flags share aliases
 
 ---
 
-_Issue opened by @InCogNiTo124 on 2022-08-19 17:21_
+_@InCogNiTo124_
 
 ### Please complete the following tasks
 

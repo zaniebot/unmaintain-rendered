@@ -13,14 +13,14 @@ head: charlie/diag
 created_at: 2024-04-05T02:51:13Z
 updated_at: 2024-04-05T03:13:02Z
 url: https://github.com/astral-sh/uv/pull/2829
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Show resolution diagnostics after `pip install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 02:51_
+_@charliermarsh_
 
 ## Summary
 

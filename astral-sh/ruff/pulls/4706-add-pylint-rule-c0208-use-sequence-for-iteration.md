@@ -13,14 +13,14 @@ head: iterate-over-set
 created_at: 2023-05-29T15:33:28Z
 updated_at: 2023-07-10T09:55:30Z
 url: https://github.com/astral-sh/ruff/pull/4706
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add Pylint rule `C0208` (`use-sequence-for-iteration`) as `PLC0208` (`iteration-over-set`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-29 15:33_
+_@tjkuson_
 
 ## Summary
 

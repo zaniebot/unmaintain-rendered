@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-01-25T16:25:59Z
 updated_at: 2025-01-25T16:30:35Z
 url: https://github.com/astral-sh/uv/pull/10959
-synced_at: 2026-01-10T11:45:20Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # tiny typo (duplicate word)
 
 ---
 
-_Pull request opened by @hutch3232 on 2025-01-25 16:25_
+_@hutch3232_
 
 Fix an apparent typo
 

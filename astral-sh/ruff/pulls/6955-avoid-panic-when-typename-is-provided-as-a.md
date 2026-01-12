@@ -13,14 +13,14 @@ head: charlie/UP014
 created_at: 2023-08-28T20:51:24Z
 updated_at: 2023-08-28T21:11:11Z
 url: https://github.com/astral-sh/ruff/pull/6955
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid panic when `typename` is provided as a keyword argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 20:51_
+_@charliermarsh_
 
 ## Summary
 

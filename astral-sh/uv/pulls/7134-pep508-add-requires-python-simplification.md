@@ -12,14 +12,14 @@ head: ag/remove-hidden-state
 created_at: 2024-09-06T18:29:40Z
 updated_at: 2024-09-07T17:46:05Z
 url: https://github.com/astral-sh/uv/pull/7134
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # pep508: add requires-python simplification/complexification to `MarkerTree`
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-06 18:29_
+_@BurntSushi_
 
 In #6268, we refactored how we handled `requires-python`. Before
 that PR, we simplified markers inside resolution in lock-step with

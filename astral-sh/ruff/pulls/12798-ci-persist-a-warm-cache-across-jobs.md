@@ -12,14 +12,14 @@ head: don/ci/shared-warm-caching
 created_at: 2024-08-11T02:48:49Z
 updated_at: 2024-09-03T07:47:11Z
 url: https://github.com/astral-sh/ruff/pull/12798
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # ci: persist a warm cache across jobs
 
 ---
 
-_Pull request opened by @DonIsaac on 2024-08-11 02:48_
+_@DonIsaac_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: dict-comp
 created_at: 2025-01-30T21:30:56Z
 updated_at: 2025-01-30T21:49:14Z
 url: https://github.com/astral-sh/ruff/pull/15837
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-comprehensions`] Handle builtins at top of file correctly for `unnecessary-dict-comprehension-for-iterable` (`C420`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-30 21:30_
+_@dylwil3_
 
 Builtin bindings are given a range of `0..0`, which causes strange behavior when range checks are made at the top of the file. In this case, the logic of the rule demands that the value of the dict comprehension is not self-referential (i.e. it does not contain definitions for any of the variables used within it). This logic was confused by builtins which looked like they were defined "in the comprehension", if the comprehension appeared at the top of the file.
 

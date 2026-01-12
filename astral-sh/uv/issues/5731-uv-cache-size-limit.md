@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-02T16:53:19Z
 updated_at: 2025-12-21T23:47:10Z
 url: https://github.com/astral-sh/uv/issues/5731
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # uv cache size limit
 
 ---
 
-_Issue opened by @FrancescElies on 2024-08-02 16:53_
+_@FrancescElies_
 
 Unless I missed it, I think currently there is no way to limit the cache size.
 

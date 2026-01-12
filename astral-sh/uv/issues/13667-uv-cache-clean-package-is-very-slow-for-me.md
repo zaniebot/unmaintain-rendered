@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T21:47:27Z
 updated_at: 2025-05-27T01:43:25Z
 url: https://github.com/astral-sh/uv/issues/13667
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # `uv cache clean package` is very slow for me
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-05-26 21:47_
+_@hauntsaninja_
 
 Cleaning up one package takes about 3 minutes
 ```

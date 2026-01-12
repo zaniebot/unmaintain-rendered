@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-10T10:02:56Z
 updated_at: 2026-01-12T08:13:19Z
 url: https://github.com/astral-sh/ty/issues/2434
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Strings are considered as LiteralStrings
 
 ---
 
-_Issue opened by @Salamandar on 2026-01-10 10:02_
+_@Salamandar_
 
 ### Summary
 

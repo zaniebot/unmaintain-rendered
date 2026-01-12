@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-30T23:53:57Z
 updated_at: 2025-04-01T23:27:16Z
 url: https://github.com/astral-sh/uv/issues/12566
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Add possibility to fail on lower-unbound dependency with --resolution lowest*
 
 ---
 
-_Issue opened by @potiuk on 2025-03-30 23:53_
+_@potiuk_
 
 ### Summary
 

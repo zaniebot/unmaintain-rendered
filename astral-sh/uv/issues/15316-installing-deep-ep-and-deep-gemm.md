@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T20:28:24Z
 updated_at: 2025-12-13T17:00:23Z
 url: https://github.com/astral-sh/uv/issues/15316
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Installing deep_ep and deep_gemm
 
 ---
 
-_Issue opened by @vwxyzjn on 2025-08-15 20:28_
+_@vwxyzjn_
 
 ### Question
 

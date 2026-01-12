@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T17:13:55Z
 updated_at: 2025-01-27T21:10:15Z
 url: https://github.com/astral-sh/uv/issues/7434
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Cache is hitting race conditions when when sharing the cache directory across multiple running docker containers
 
 ---
 
-_Issue opened by @henryborchers on 2024-09-16 17:13_
+_@henryborchers_
 
 While building wheels on my CI machine, I've been running into an issue involving the cache directory trying to access and write to the same files. This only happens when I have two or more containers running with the same mounted path, the location of UV_CACHE_DIR aka cache path.  This doesn't happen every time, just when uv is trying to access the same files in the cache. For this reason the ci pipeline could be fine depending on which stages are running at the same time. 
 

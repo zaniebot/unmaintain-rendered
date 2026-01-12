@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-29T22:28:29Z
 updated_at: 2022-10-29T22:49:53Z
 url: https://github.com/astral-sh/ruff/issues/511
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # C402 false positive with extra kwargs to dict()
 
 ---
 
-_Issue opened by @andersk on 2022-10-29 22:28_
+_@andersk_
 
 `ruff --select=C402` gives “C402 Unnecessary generator - rewrite as a `dict` comprehension” on both of these lines. But the second cannot be rewritten as a `dict` comprehension due to the extra keyword argument `c`, so only the first should be an error.
 

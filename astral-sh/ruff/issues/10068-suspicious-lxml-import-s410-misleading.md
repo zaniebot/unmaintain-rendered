@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T04:27:09Z
 updated_at: 2024-02-21T04:28:30Z
 url: https://github.com/astral-sh/ruff/issues/10068
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Suspicious lxml import (S410) misleading
 
 ---
 
-_Issue opened by @stacy-rendall on 2024-02-21 04:27_
+_@stacy-rendall_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

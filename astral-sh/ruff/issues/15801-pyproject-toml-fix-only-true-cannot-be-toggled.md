@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T00:55:33Z
 updated_at: 2025-02-04T20:57:58Z
 url: https://github.com/astral-sh/ruff/issues/15801
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # pyproject.toml fix-only=True cannot be toggled per directory by using multiple pyproject.toml files and the extend setting.
 
 ---
 
-_Issue opened by @jogo-openai on 2025-01-29 00:55_
+_@jogo-openai_
 
 ### Description
 

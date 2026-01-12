@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T04:51:57Z
 updated_at: 2024-06-13T23:41:20Z
 url: https://github.com/astral-sh/uv/issues/4303
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # No solution found when resolving dependencies (torch==2.3.1)
 
 ---
 
-_Issue opened by @mariomeissner on 2024-06-13 04:51_
+_@mariomeissner_
 
 UV Version: `0.2.11`
 

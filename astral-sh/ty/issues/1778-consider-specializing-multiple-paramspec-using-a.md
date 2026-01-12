@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T15:00:13Z
 updated_at: 2025-12-05T15:01:14Z
 url: https://github.com/astral-sh/ty/issues/1778
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider specializing multiple `ParamSpec` using a common behavioral supertype
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-12-05 15:00_
+_@dhruvmanila_
 
 > Just as with traditional `TypeVars`, a user may include the same `ParamSpec` multiple times in the arguments of the same function, to indicate a dependency between multiple arguments. In these cases a type checker may choose to solve to a common behavioral supertype (i.e. a set of parameters for which all of the valid calls are valid in both of the subtypes), but is not obligated to do so.
 >

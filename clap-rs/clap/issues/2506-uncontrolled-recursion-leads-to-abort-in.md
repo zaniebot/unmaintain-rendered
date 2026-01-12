@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-28T07:56:27Z
 updated_at: 2021-05-28T09:13:23Z
 url: https://github.com/clap-rs/clap/issues/2506
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Uncontrolled recursion leads to abort in deserialization
 
 ---
 
-_Issue opened by @vireshk on 2021-05-28 07:56_
+_@vireshk_
 
 ### Please complete the following tasks
 

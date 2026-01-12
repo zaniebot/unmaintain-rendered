@@ -13,14 +13,14 @@ head: npy201-tests
 created_at: 2024-06-28T07:46:51Z
 updated_at: 2024-06-28T07:59:56Z
 url: https://github.com/astral-sh/ruff/pull/12087
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add more NPY201 tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-28 07:46_
+_@MichaReiser_
 
 ## Summary
 

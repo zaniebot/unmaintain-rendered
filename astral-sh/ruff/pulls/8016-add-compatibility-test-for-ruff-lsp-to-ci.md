@@ -13,14 +13,14 @@ head: zanie/lsp-check
 created_at: 2023-10-17T14:22:07Z
 updated_at: 2023-10-23T20:44:52Z
 url: https://github.com/astral-sh/ruff/pull/8016
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add compatibility test for `ruff-lsp` to CI
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-17 14:22_
+_@zanieb_
 
 Adds a CI job which runs `ruff-lsp` tests against the current Ruff build.
 

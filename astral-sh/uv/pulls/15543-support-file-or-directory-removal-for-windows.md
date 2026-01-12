@@ -14,14 +14,14 @@ head: charlie/rm
 created_at: 2025-08-27T02:02:30Z
 updated_at: 2025-08-27T11:43:04Z
 url: https://github.com/astral-sh/uv/pull/15543
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Support file or directory removal for Windows symlinks
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-27 02:02_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T06:58:42Z
 updated_at: 2025-07-24T01:38:34Z
 url: https://github.com/astral-sh/uv/issues/11920
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # how to add deps who only supports `setup.py`. e.g. nvidia/Megatron-LM
 
 ---
 
-_Issue opened by @pplmx on 2025-03-03 06:58_
+_@pplmx_
 
 ### Question
 

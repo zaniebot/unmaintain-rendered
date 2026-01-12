@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-25T23:42:38Z
 updated_at: 2025-10-27T06:59:45Z
 url: https://github.com/astral-sh/ty/issues/1437
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # "Too many cycle iterations" panic in `exported_names` query
 
 ---
 
-_Issue opened by @f-schnabel on 2025-10-25 23:42_
+_@f-schnabel_
 
 ```
 error[panic]: Panicked at C:\Users\runneradmin\.cargo\git\checkouts\salsa-e6f3bb7c2a062968\d38145c\src\function\execute.rs:417:17 when checking `...pyrekordbox\mysettings\structs.py`: `exported_names(Id(c1b)): execute: too many cycle iterations`

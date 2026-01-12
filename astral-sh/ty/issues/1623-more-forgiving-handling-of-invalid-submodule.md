@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-24T17:36:11Z
 updated_at: 2025-11-24T20:28:41Z
 url: https://github.com/astral-sh/ty/issues/1623
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # more forgiving handling of invalid submodule-attribute access
 
 ---
 
-_Issue opened by @carljm on 2025-11-24 17:36_
+_@carljm_
 
 if we hit this branch, we have pretty high confidence that we know what the user _meant_ here -- we could even consider inferring the module-literal type of the submodule rather than inferring `Unknown`. (Or `<submodule type> | Unknown`...?)
 

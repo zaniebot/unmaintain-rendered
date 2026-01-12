@@ -13,14 +13,14 @@ head: pth_100
 created_at: 2025-09-17T14:47:12Z
 updated_at: 2025-09-17T16:11:56Z
 url: https://github.com/astral-sh/ruff/pull/20452
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [`flake8-use-pathlib`] A bit clean up `PTH100`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-09-17 14:47_
+_@chirizxc_
 
 ## Summary
 

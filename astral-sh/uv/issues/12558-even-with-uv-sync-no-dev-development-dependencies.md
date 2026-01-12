@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T14:28:03Z
 updated_at: 2026-01-02T11:43:19Z
 url: https://github.com/astral-sh/uv/issues/12558
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Even with `uv sync --no-dev`, development dependencies are still installed when workflow executes.
 
 ---
 
-_Issue opened by @WitherZuo on 2025-03-30 14:28_
+_@WitherZuo_
 
 With the documentation of uv, I used `uv sync --no-dev` in order to not install the development dependencies while the GitHub Actions workflow is running, however the switch `--no-dev` doesn't seem to work while the workflow is running, with this switch it still installs all of the dependencies including the development dependencies. using `uv sync --no-dev` locally works perfectly fine and does not install development dependencies when installing dependencies.
 

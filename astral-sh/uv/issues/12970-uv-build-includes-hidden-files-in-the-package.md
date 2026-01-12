@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T14:50:45Z
 updated_at: 2025-04-18T18:43:17Z
 url: https://github.com/astral-sh/uv/issues/12970
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # `uv build` includes hidden files in the package
 
 ---
 
-_Issue opened by @skorokithakis on 2025-04-18 14:50_
+_@skorokithakis_
 
 ### Summary
 

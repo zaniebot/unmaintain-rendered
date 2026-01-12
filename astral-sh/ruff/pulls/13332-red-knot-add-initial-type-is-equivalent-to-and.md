@@ -13,14 +13,14 @@ head: cjm/assignable
 created_at: 2024-09-12T02:20:05Z
 updated_at: 2024-09-12T18:15:28Z
 url: https://github.com/astral-sh/ruff/pull/13332
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] add initial Type::is_equivalent_to and Type::is_assignable_to
 
 ---
 
-_Pull request opened by @carljm on 2024-09-12 02:20_
+_@carljm_
 
 These are quite incomplete, but I needed to start stubbing them out in order to build and test declared-types.
 

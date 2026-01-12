@@ -14,14 +14,14 @@ head: gankra/full-weak
 created_at: 2025-11-27T02:17:19Z
 updated_at: 2025-12-13T20:21:11Z
 url: https://github.com/astral-sh/ruff/pull/21653
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] uniformly weak imports
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-27 02:17_
+_@Gankra_
 
 Split out from #21583 to analyze the effect of this one change.
 

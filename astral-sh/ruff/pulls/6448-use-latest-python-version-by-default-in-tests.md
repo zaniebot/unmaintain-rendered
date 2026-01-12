@@ -13,14 +13,14 @@ head: charlie/310-default
 created_at: 2023-08-09T12:32:35Z
 updated_at: 2023-08-09T15:45:36Z
 url: https://github.com/astral-sh/ruff/pull/6448
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use latest Python version by default in tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 12:32_
+_@charliermarsh_
 
 ## Summary
 

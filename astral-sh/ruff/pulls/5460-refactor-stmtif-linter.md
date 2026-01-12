@@ -12,14 +12,14 @@ head: refactor-if-statement-linter
 created_at: 2023-07-01T20:23:50Z
 updated_at: 2023-07-11T15:32:17Z
 url: https://github.com/astral-sh/ruff/pull/5460
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor `StmtIf`: Linter
 
 ---
 
-_Pull request opened by @konstin on 2023-07-01 20:23_
+_@konstin_
 
 See https://github.com/astral-sh/ruff/pull/5458 for detailed information
 

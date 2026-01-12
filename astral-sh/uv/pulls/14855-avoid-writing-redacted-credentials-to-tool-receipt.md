@@ -13,14 +13,14 @@ head: charlie/tool-index
 created_at: 2025-07-23T19:48:17Z
 updated_at: 2025-07-23T20:01:12Z
 url: https://github.com/astral-sh/uv/pull/14855
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Avoid writing redacted credentials to tool receipt
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-23 19:48_
+_@charliermarsh_
 
 ## Summary
 

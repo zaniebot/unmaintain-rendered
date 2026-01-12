@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T09:59:50Z
 updated_at: 2025-06-18T14:16:29Z
 url: https://github.com/astral-sh/ty/issues/219
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Configuration
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 09:59_
+_@MichaReiser_
 
 Support configuring Red Knot in a persistent configuration:
 

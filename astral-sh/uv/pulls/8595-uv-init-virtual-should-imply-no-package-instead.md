@@ -12,14 +12,14 @@ head: virtual
 created_at: 2024-10-26T14:22:42Z
 updated_at: 2024-11-01T03:48:55Z
 url: https://github.com/astral-sh/uv/pull/8595
-synced_at: 2026-01-10T12:08:42Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # uv init: `--virtual` should imply `--no-package` instead
 
 ---
 
-_Pull request opened by @j178 on 2024-10-26 14:22_
+_@j178_
 
 ## Summary
 

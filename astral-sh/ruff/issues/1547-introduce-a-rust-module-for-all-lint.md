@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T07:41:30Z
 updated_at: 2023-01-14T16:48:03Z
 url: https://github.com/astral-sh/ruff/issues/1547
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Introduce a Rust module for all lint implementations
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-02 07:41_
+_@not-my-profile_
 
 The code is currently split up across the following Rust modules:
 

@@ -12,14 +12,14 @@ head: charlie/indent
 created_at: 2023-05-11T02:23:57Z
 updated_at: 2023-05-11T02:56:28Z
 url: https://github.com/astral-sh/ruff/pull/4364
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid debug panic with empty indent replacement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 02:23_
+_@charliermarsh_
 
 Closes #4363.
 

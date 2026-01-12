@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T11:18:55Z
 updated_at: 2025-06-07T08:51:35Z
 url: https://github.com/astral-sh/ruff/issues/18331
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # unnecessary-literal-set (C405): also warn about `set({})`
 
 ---
 
-_Issue opened by @bluetech on 2025-05-27 11:18_
+_@bluetech_
 
 ### Summary
 

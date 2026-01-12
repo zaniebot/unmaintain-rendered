@@ -13,14 +13,14 @@ head: upgrade-python
 created_at: 2024-08-22T16:57:43Z
 updated_at: 2024-09-26T01:28:32Z
 url: https://github.com/astral-sh/uv/pull/6448
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Support `uv tool upgrade --python <PYTHON>`
 
 ---
 
-_Pull request opened by @j178 on 2024-08-22 16:57_
+_@j178_
 
 Closes #6297
 

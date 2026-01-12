@@ -14,14 +14,14 @@ head: david/isinstance-inference
 created_at: 2025-07-23T08:52:02Z
 updated_at: 2025-07-23T12:42:18Z
 url: https://github.com/astral-sh/ruff/pull/19503
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Reachability analysis for `isinstance(…)` branches
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-23 08:52_
+_@sharkdp_
 
 ## Summary
 

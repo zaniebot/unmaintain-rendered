@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T20:33:10Z
 updated_at: 2025-07-12T16:56:12Z
 url: https://github.com/astral-sh/uv/issues/14549
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # No solution found when resolving dependencies for split
 
 ---
 
-_Issue opened by @bra-fsn on 2025-07-10 20:33_
+_@bra-fsn_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: alex/lock-fuzzer
 created_at: 2025-10-17T14:10:56Z
 updated_at: 2025-10-17T14:57:18Z
 url: https://github.com/astral-sh/ruff/pull/20940
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Update usage instructions and lockfile for py-fuzzer script
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-17 14:10_
+_@AlexWaygood_
 
 ## Summary
 

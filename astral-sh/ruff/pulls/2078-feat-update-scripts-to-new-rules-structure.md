@@ -12,14 +12,14 @@ head: scripts-update
 created_at: 2023-01-22T00:03:58Z
 updated_at: 2023-01-22T00:20:15Z
 url: https://github.com/astral-sh/ruff/pull/2078
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: update scripts to new rules structure
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-22 00:03_
+_@sbrugman_
 
 - optional `prefix` argument for `add_plugin.py`
 - rules directory instead of `rules.rs`

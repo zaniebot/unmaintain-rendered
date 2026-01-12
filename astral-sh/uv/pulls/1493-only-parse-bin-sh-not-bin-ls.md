@@ -13,14 +13,14 @@ head: ag/fix-i1486
 created_at: 2024-02-16T14:32:34Z
 updated_at: 2024-02-16T14:44:48Z
 url: https://github.com/astral-sh/uv/pull/1493
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # only parse /bin/sh (not /bin/ls)
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-16 14:32_
+_@BurntSushi_
 
 It turns out that /bin/ls can sometimes be plain text file. For
 example, in Rocky Linux 9:

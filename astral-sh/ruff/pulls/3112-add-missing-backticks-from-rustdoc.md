@@ -12,14 +12,14 @@ head: charlie/ticks
 created_at: 2023-02-22T04:59:43Z
 updated_at: 2023-02-22T05:03:08Z
 url: https://github.com/astral-sh/ruff/pull/3112
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add missing backticks from rustdoc
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 04:59_
+_@charliermarsh_
 
 _No description provided._
 

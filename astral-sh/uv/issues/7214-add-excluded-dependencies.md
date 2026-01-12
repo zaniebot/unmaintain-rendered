@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-09T11:01:23Z
 updated_at: 2026-01-03T07:05:34Z
 url: https://github.com/astral-sh/uv/issues/7214
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Add excluded dependencies
 
 ---
 
-_Issue opened by @MrPandir on 2024-09-09 11:01_
+_@MrPandir_
 
 I want to request functionality to exclude dependencies, even if it's a sub dependency.
 

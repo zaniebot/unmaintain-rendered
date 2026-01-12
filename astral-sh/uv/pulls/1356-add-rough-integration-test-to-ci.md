@@ -12,14 +12,14 @@ head: zb/integration
 created_at: 2024-02-15T21:27:15Z
 updated_at: 2024-02-16T02:11:16Z
 url: https://github.com/astral-sh/uv/pull/1356
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add rough integration test to CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 21:27_
+_@zanieb_
 
 _No description provided._
 

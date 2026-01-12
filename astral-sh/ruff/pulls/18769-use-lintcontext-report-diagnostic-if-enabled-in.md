@@ -14,14 +14,14 @@ head: brent/check-check-tokens
 created_at: 2025-06-18T20:42:11Z
 updated_at: 2025-06-18T21:05:38Z
 url: https://github.com/astral-sh/ruff/pull/18769
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Use `LintContext::report_diagnostic_if_enabled` in `check_tokens`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-18 20:42_
+_@ntBre_
 
 ## Summary
 

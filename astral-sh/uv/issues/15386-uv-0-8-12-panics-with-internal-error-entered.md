@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T00:29:05Z
 updated_at: 2025-08-20T14:04:40Z
 url: https://github.com/astral-sh/uv/issues/15386
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # uv 0.8.12 panics with internal error: entered unreachable code: Installed distribution could not be found in site-packages
 
 ---
 
-_Issue opened by @alex on 2025-08-20 00:29_
+_@alex_
 
 ### Summary
 

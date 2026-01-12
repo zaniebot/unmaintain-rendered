@@ -14,14 +14,14 @@ head: dcreager/unconstrained-typevar
 created_at: 2025-11-20T15:00:56Z
 updated_at: 2025-11-24T20:57:09Z
 url: https://github.com/astral-sh/ruff/pull/21539
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Distinguish "unconstrained" from "constrained to any type"
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-20 15:00_
+_@dcreager_
 
 Before, we would collapse any constraint of the form `Never ≤ T ≤ object` down to the "always true" constraint set. This is correct in terms of BDD semantics, but loses information, since "not constraining a typevar at all" is different than "constraining a typevar to take on any type". Once we get to specialization inference, we should fall back on the typevar's default for the former, but not for the latter.
 

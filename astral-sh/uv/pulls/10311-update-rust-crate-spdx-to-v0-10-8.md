@@ -13,14 +13,14 @@ head: renovate/spdx-0.x-lockfile
 created_at: 2025-01-06T00:59:58Z
 updated_at: 2025-01-06T01:16:16Z
 url: https://github.com/astral-sh/uv/pull/10311
-synced_at: 2026-01-10T11:44:41Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Update Rust crate spdx to v0.10.8
 
 ---
 
-_Pull request opened by @renovate on 2025-01-06 00:59_
+_@renovate_
 
 This PR contains the following updates:
 

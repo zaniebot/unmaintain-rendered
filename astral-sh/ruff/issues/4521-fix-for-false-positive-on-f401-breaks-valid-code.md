@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-19T08:19:38Z
 updated_at: 2023-06-06T00:48:55Z
 url: https://github.com/astral-sh/ruff/issues/4521
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Fix for false positive on F401 breaks valid code
 
 ---
 
-_Issue opened by @RUrlus on 2023-05-19 08:19_
+_@RUrlus_
 
 * ruff v0.0.269
 * CPython 3.10.9

@@ -14,14 +14,14 @@ head: micha/fix-script-comment-era001
 created_at: 2024-09-08T16:18:06Z
 updated_at: 2024-09-09T18:47:41Z
 url: https://github.com/astral-sh/ruff/pull/13283
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # `ERA001`: Ignore script-comments with multiple end-tags
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-08 16:18_
+_@MichaReiser_
 
 ## Summary
 

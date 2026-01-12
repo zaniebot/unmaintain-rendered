@@ -13,14 +13,14 @@ head: charlie/nan
 created_at: 2024-04-12T02:16:00Z
 updated_at: 2024-04-12T02:49:21Z
 url: https://github.com/astral-sh/ruff/pull/10894
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Recode `nan-comparison` rule to `W0177`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 02:16_
+_@charliermarsh_
 
 ## Summary
 

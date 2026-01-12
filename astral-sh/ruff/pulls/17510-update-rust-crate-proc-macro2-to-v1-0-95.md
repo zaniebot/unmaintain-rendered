@@ -13,14 +13,14 @@ head: renovate/proc-macro2-1.x-lockfile
 created_at: 2025-04-21T01:52:13Z
 updated_at: 2025-04-21T02:06:59Z
 url: https://github.com/astral-sh/ruff/pull/17510
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Update Rust crate proc-macro2 to v1.0.95
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 01:52_
+_@renovate_
 
 This PR contains the following updates:
 

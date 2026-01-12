@@ -12,14 +12,14 @@ head: charlie/period
 created_at: 2022-12-01T17:25:33Z
 updated_at: 2022-12-01T17:25:38Z
 url: https://github.com/astral-sh/ruff/pull/983
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove trailing punctuation from error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-01 17:25_
+_@charliermarsh_
 
 _No description provided._
 

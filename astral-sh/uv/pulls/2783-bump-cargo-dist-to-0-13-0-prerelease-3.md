@@ -13,14 +13,14 @@ head: charlie/cargo-dist
 created_at: 2024-04-02T21:15:23Z
 updated_at: 2024-04-02T21:23:56Z
 url: https://github.com/astral-sh/uv/pull/2783
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Bump `cargo-dist` to 0.13.0-prerelease.3
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 21:15_
+_@charliermarsh_
 
 Closes #2770.
 

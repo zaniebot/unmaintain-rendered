@@ -12,14 +12,14 @@ head: EmptyWithDanglingComments
 created_at: 2023-07-21T15:50:15Z
 updated_at: 2023-07-23T12:32:17Z
 url: https://github.com/astral-sh/ruff/pull/5951
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Formatter: Add EmptyWithDanglingComments helper
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 15:50_
+_@konstin_
 
 **Summary** Add a `EmptyWithDanglingComments` format helper that formats comments inside empty parentheses, brackets or curly braces. Previously, this was implemented separately, and partially incorrectly, for each use case.
 

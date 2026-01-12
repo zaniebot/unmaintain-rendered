@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-02T17:32:33Z
 updated_at: 2025-08-03T07:15:52Z
 url: https://github.com/astral-sh/ruff/issues/19705
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # scripts:1:1: E902 The system cannot find the file specified
 
 ---
 
-_Issue opened by @alanmehio on 2025-08-02 17:32_
+_@alanmehio_
 
 ### Summary
 

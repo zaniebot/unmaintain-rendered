@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-14T06:36:32Z
 updated_at: 2025-01-10T09:09:27Z
 url: https://github.com/astral-sh/ruff/issues/14968
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF052: Don't flag assignments to private function arguments
 
 ---
 
-_Issue opened by @aiudirog on 2024-12-14 06:36_
+_@aiudirog_
 
 This is a follow up to #14796: attempting to assign a private function parameter still gets flagged in Ruff v0.8.3 ([playground](https://play.ruff.rs/e233076b-9184-492f-aa36-94306356bf12))
 

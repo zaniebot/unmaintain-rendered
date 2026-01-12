@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-20T17:29:41Z
 updated_at: 2026-01-05T17:25:41Z
 url: https://github.com/astral-sh/ruff/issues/9216
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How to use COM812 in linter but avoid conflict with formatter?
 
 ---
 
-_Issue opened by @jagerber48 on 2023-12-20 17:29_
+_@jagerber48_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

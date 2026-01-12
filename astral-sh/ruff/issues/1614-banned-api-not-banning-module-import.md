@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-04T02:01:37Z
 updated_at: 2023-01-04T02:43:04Z
 url: https://github.com/astral-sh/ruff/issues/1614
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # banned-api not banning module import
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-04 02:01_
+_@sbdchd_
 
 with the config:
 

@@ -13,14 +13,14 @@ head: zb/313-linux
 created_at: 2024-09-11T18:50:14Z
 updated_at: 2024-09-11T19:25:11Z
 url: https://github.com/astral-sh/uv/pull/7302
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Add Python 3.13 system test for Linux
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-11 18:50_
+_@zanieb_
 
 Previously we only had coverage on Windows
 

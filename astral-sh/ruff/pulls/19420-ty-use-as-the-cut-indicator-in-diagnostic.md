@@ -14,14 +14,14 @@ head: ag/cut-indicator
 created_at: 2025-07-18T11:28:22Z
 updated_at: 2025-07-18T11:46:49Z
 url: https://github.com/astral-sh/ruff/pull/19420
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Use `…` as the "cut" indicator in diagnostic rendering
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-18 11:28_
+_@BurntSushi_
 
 This makes ty match ruff's behavior. Specifically, we want to use `…`
 instead of the default `...` because `...` has special significance in

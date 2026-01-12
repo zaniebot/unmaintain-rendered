@@ -13,14 +13,14 @@ head: no-implicit-cwd
 created_at: 2023-09-28T21:16:21Z
 updated_at: 2023-09-29T02:25:23Z
 url: https://github.com/astral-sh/ruff/pull/7704
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`refurb`] Implement `implicit-cwd` (FURB177)
 
 ---
 
-_Pull request opened by @danparizher on 2023-09-28 21:16_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

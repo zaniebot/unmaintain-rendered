@@ -13,14 +13,14 @@ head: dylan/stabilize-bidi-forbid
 created_at: 2025-09-05T19:57:47Z
 updated_at: 2025-09-08T17:34:07Z
 url: https://github.com/astral-sh/ruff/pull/20276
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`pylint`] Stabilize adding U+061C to `bidirectional-unicode` (`PLE2502`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:57_
+_@dylwil3_
 
 Introduced in #20106. Removed gating. Updated tests. No documentation to update.
 

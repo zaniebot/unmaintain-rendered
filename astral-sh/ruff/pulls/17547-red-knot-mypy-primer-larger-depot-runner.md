@@ -14,14 +14,14 @@ head: david/mypy_primer-larger-depot-runner
 created_at: 2025-04-22T12:16:32Z
 updated_at: 2025-04-23T22:38:18Z
 url: https://github.com/astral-sh/ruff/pull/17547
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] mypy_primer: larger depot runner
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-22 12:16_
+_@sharkdp_
 
 ## Summary
 

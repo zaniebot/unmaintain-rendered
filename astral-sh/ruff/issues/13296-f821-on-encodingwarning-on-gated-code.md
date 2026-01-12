@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T21:41:12Z
 updated_at: 2024-10-28T07:55:15Z
 url: https://github.com/astral-sh/ruff/issues/13296
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F821 on EncodingWarning on gated code
 
 ---
 
-_Issue opened by @jaraco on 2024-09-09 21:41_
+_@jaraco_
 
 As [reported in discord](https://discord.com/channels/1039017663004942429/1070132471699607623/1282814518828990526), related to #13287, recent ruff versions (0.6.4 or so) are failing checks on [EncodingWarnings](https://github.com/jaraco/zipp/blob/5d2fa666ffae2e89a6e4ccbc5ed9b3a5b8d64fc0/tests/test_path.py#L191-L195).
 

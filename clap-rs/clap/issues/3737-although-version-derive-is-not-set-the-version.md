@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-19T11:15:35Z
 updated_at: 2022-05-19T19:26:36Z
 url: https://github.com/clap-rs/clap/issues/3737
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Although `version` derive is not set, the `--version` logic is exist
 
 ---
 
-_Issue opened by @greenhat616 on 2022-05-19 11:15_
+_@greenhat616_
 
 ### Please complete the following tasks
 

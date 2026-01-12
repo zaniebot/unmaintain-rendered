@@ -12,14 +12,14 @@ head: konsti/split-metadata-parsing
 created_at: 2024-09-24T11:51:52Z
 updated_at: 2024-09-24T15:25:51Z
 url: https://github.com/astral-sh/uv/pull/7656
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Split metadata parsing into a module
 
 ---
 
-_Pull request opened by @konstin on 2024-09-24 11:51_
+_@konstin_
 
 In preparation to vendoring Metadata23 from https://github.com/PyO3/python-pkginfo-rs/blob/main/src/metadata.rs for https://github.com/astral-sh/uv/pull/7475#pullrequestreview-2323104398 .
 

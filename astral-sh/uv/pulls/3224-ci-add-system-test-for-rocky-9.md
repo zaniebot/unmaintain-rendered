@@ -13,14 +13,14 @@ head: rocky-v9
 created_at: 2024-04-23T20:36:16Z
 updated_at: 2024-05-03T20:10:04Z
 url: https://github.com/astral-sh/uv/pull/3224
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # ci: add system test for rocky 9
 
 ---
 
-_Pull request opened by @samypr100 on 2024-04-23 20:36_
+_@samypr100_
 
 ## Summary
 

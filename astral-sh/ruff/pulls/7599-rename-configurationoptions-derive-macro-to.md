@@ -13,14 +13,14 @@ head: rename-configuration-options
 created_at: 2023-09-22T15:48:14Z
 updated_at: 2023-09-27T07:04:31Z
 url: https://github.com/astral-sh/ruff/pull/7599
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Rename `ConfigurationOptions` derive macro to `OptionsMetadata`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-22 15:48_
+_@MichaReiser_
 
 ## Summary
 

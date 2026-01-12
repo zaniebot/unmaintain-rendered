@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T10:22:33Z
 updated_at: 2024-10-30T19:12:25Z
 url: https://github.com/astral-sh/uv/issues/4920
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Support dependencies into git workspaces
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 10:22_
+_@konstin_
 
 Say we have our local workspace with a package `a`, and another workspace in a git repository with `c` and `d`. We have `a -> c`, `c -> d`. Currently, this fails by resolving `c` to the git repository but `d` to pypi.
 

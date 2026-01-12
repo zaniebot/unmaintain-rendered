@@ -13,14 +13,14 @@ head: improve-error-message-git-not-found
 created_at: 2024-11-18T16:47:36Z
 updated_at: 2024-11-18T17:41:22Z
 url: https://github.com/astral-sh/uv/pull/9206
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Better error message when `git` is not found
 
 ---
 
-_Pull request opened by @blueraft on 2024-11-18 16:47_
+_@blueraft_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T12:01:17Z
 updated_at: 2025-11-18T16:10:29Z
 url: https://github.com/astral-sh/ty/issues/536
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # uv integration
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 12:01_
+_@MichaReiser_
 
 Detect when a project uses uv/uv is available and use it to detect the python version / virtual environment path, ... 
 

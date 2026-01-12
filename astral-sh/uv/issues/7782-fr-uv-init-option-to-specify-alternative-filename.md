@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-29T16:56:07Z
 updated_at: 2025-02-13T22:06:49Z
 url: https://github.com/astral-sh/uv/issues/7782
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # FR: `uv init` option to specify alternative filename to `hello.py`  
 
 ---
 
-_Issue opened by @nbbaier on 2024-09-29 16:56_
+_@nbbaier_
 
 When using `uv init` (or `uv init --app`), I find it kind of strange that entrypoint file generated is named `hello.py` and not `main.py`. Right, as far as I can tell, now the _only_ solution is to manually change the filename.
 

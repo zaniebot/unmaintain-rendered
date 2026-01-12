@@ -13,14 +13,14 @@ head: zb/self-update-err
 created_at: 2025-04-30T13:57:59Z
 updated_at: 2025-05-04T12:25:45Z
 url: https://github.com/astral-sh/uv/pull/13229
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Use "error" instead of "warning" for self-update message
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-30 13:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13221
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-11-19T12:47:05Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/754
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # ZSH completion generation broken
 
 ---
 
-_Issue opened by @panicbit on 2016-11-19 12:47_
+_@panicbit_
 
 ### Rust Version
 

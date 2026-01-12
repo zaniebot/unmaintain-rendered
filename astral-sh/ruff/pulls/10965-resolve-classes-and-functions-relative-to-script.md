@@ -13,14 +13,14 @@ head: charlie/script
 created_at: 2024-04-16T02:58:44Z
 updated_at: 2024-04-18T04:55:56Z
 url: https://github.com/astral-sh/ruff/pull/10965
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Resolve classes and functions relative to script name
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-16 02:58_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

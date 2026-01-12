@@ -11,14 +11,14 @@ head: PLE0242
 created_at: 2024-03-09T18:28:57Z
 updated_at: 2024-04-25T14:14:53Z
 url: https://github.com/astral-sh/ruff/pull/10317
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pylint`] Implement `class-variable-slots-conflict` (`PLE0242`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2024-03-09 18:28_
+_@chanman3388_
 
 ## Summary
 

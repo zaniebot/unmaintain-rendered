@@ -14,14 +14,14 @@ head: zb/readme-center
 created_at: 2024-09-16T22:37:31Z
 updated_at: 2025-01-22T16:35:41Z
 url: https://github.com/astral-sh/uv/pull/7445
-synced_at: 2026-01-10T11:44:28Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Improvements to the README heading
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-16 22:37_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/uv/blob/zb/readme-center/README.md)
 

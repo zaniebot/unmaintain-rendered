@@ -12,14 +12,14 @@ head: remove-old-architecture-from-scripts
 created_at: 2023-05-24T12:08:56Z
 updated_at: 2023-05-24T16:22:44Z
 url: https://github.com/astral-sh/ruff/pull/4626
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove old architecture from scripts
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-24 12:08_
+_@JonathanPlasse_
 
 - Folded into #3747
 

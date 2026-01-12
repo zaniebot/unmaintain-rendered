@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T12:58:12Z
 updated_at: 2025-11-06T18:18:28Z
 url: https://github.com/astral-sh/uv/issues/16614
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Automatic workdir switching according to an entry point's target
 
 ---
 
-_Issue opened by @Dev-iL on 2025-11-06 12:58_
+_@Dev-iL_
 
 ### Question
 

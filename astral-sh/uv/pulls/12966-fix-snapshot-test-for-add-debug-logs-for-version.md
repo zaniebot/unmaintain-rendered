@@ -12,14 +12,14 @@ head: jtfm/version-file-debug-test
 created_at: 2025-04-18T12:41:26Z
 updated_at: 2025-04-18T16:21:56Z
 url: https://github.com/astral-sh/uv/pull/12966
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Fix snapshot test for Add debug logs for version file search
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-18 12:41_
+_@jtfmumm_
 
 _No description provided._
 

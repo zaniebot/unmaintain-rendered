@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T02:30:53Z
 updated_at: 2025-07-25T06:49:37Z
 url: https://github.com/astral-sh/ruff/issues/19547
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # format feature request: Fibonacci indentation
 
 ---
 
-_Issue opened by @michaelgmiller1 on 2025-07-25 02:30_
+_@michaelgmiller1_
 
 ### Summary
 

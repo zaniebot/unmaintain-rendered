@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T02:15:37Z
 updated_at: 2025-09-02T13:45:15Z
 url: https://github.com/astral-sh/uv/issues/15368
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Number of tests failing due to finding `/usr/bin/uv`
 
 ---
 
-_Issue opened by @mgorny on 2025-08-19 02:15_
+_@mgorny_
 
 ### Summary
 

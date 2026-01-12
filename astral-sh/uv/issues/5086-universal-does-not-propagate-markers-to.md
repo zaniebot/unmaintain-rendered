@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T01:23:48Z
 updated_at: 2024-07-26T14:28:21Z
 url: https://github.com/astral-sh/uv/issues/5086
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `--universal` does not propagate markers to transitive dependencies
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-16 01:23_
+_@ibraheemdev_
 
 For example, the following `requirements.in`:
 ```

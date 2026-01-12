@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2025-02-10T22:04:05Z
 updated_at: 2025-02-10T22:12:07Z
 url: https://github.com/astral-sh/uv/pull/11410
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Capture intermediary snapshots in `sync_dry_run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-10 22:04_
+_@charliermarsh_
 
 ## Summary
 

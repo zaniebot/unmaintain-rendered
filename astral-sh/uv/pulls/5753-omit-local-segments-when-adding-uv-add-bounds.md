@@ -14,14 +14,14 @@ head: charlie/local
 created_at: 2024-08-03T17:24:36Z
 updated_at: 2024-08-03T17:35:54Z
 url: https://github.com/astral-sh/uv/pull/5753
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Omit local segments when adding uv add bounds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-03 17:24_
+_@charliermarsh_
 
 ## Summary
 

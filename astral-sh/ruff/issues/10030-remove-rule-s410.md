@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T20:03:55Z
 updated_at: 2024-02-28T17:38:57Z
 url: https://github.com/astral-sh/ruff/issues/10030
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Remove rule S410
 
 ---
 
-_Issue opened by @ofek on 2024-02-18 20:03_
+_@ofek_
 
 See this discussion https://discuss.python.org/t/status-of-defusedxml-and-recommendation-in-docs/34762
 

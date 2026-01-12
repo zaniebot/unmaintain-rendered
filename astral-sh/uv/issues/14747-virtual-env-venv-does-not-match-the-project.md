@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-19T14:07:50Z
 updated_at: 2025-12-03T10:03:50Z
 url: https://github.com/astral-sh/uv/issues/14747
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # VIRTUAL_ENV=.venv` does not match the project environment path.  Forced to use --active
 
 ---
 
-_Issue opened by @Allena101 on 2025-07-19 14:07_
+_@Allena101_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: dhruv/parser-docs
 created_at: 2024-04-29T11:00:26Z
 updated_at: 2024-04-29T17:18:58Z
 url: https://github.com/astral-sh/ruff/pull/11199
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add basic docs for the parser crate
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-29 11:00_
+_@dhruvmanila_
 
 ## Summary
 

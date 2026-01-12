@@ -12,14 +12,14 @@ head: konsti/use-install-concurrency-for-installation-too
 created_at: 2025-02-19T09:04:57Z
 updated_at: 2025-02-20T11:23:43Z
 url: https://github.com/astral-sh/uv/pull/11615
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Use install concurrency for bytecode compilation too
 
 ---
 
-_Pull request opened by @konstin on 2025-02-19 09:04_
+_@konstin_
 
 Instead of always using all available threads for bytecode compilation, respect `UV_CONCURRENT_INSTALLS`, so the parallelism is configurable instead of hardcoded. We reuse the install limit since bytecode compilation only runs after install.
 

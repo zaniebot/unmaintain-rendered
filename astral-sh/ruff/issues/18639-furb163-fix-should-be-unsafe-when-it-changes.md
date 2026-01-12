@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-12T02:35:02Z
 updated_at: 2025-06-16T18:13:48Z
 url: https://github.com/astral-sh/ruff/issues/18639
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB163 fix should be unsafe when it changes behavior or deletes comments
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-12 02:35_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T10:23:43Z
 updated_at: 2025-10-22T12:40:45Z
 url: https://github.com/astral-sh/ty/issues/837
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Panic when building divergent tuple type for implicit instance attributes
 
 ---
 
-_Issue opened by @qarmin on 2025-07-17 10:23_
+_@qarmin_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/actions-setup-python-6.x
 created_at: 2026-01-02T17:12:18Z
 updated_at: 2026-01-02T17:51:51Z
 url: https://github.com/astral-sh/uv/pull/17299
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:42Z
 ```
 
 # Update actions/setup-python action to v6
 
 ---
 
-_Pull request opened by @renovate on 2026-01-02 17:12_
+_@renovate_
 
 This PR contains the following updates:
 

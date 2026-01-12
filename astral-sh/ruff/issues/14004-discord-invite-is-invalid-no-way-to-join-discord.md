@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T18:08:52Z
 updated_at: 2024-10-30T19:13:34Z
 url: https://github.com/astral-sh/ruff/issues/14004
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Discord invite is invalid / no way to join discord server
 
 ---
 
-_Issue opened by @jackklika on 2024-10-30 18:08_
+_@jackklika_
 
 Hi, I can't find a way to join the discord channel. The current invite link on the README of this project and the link in the docs links to an "invite invalid" screen.
 

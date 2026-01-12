@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T16:38:00Z
 updated_at: 2025-03-14T00:38:47Z
 url: https://github.com/astral-sh/uv/issues/11860
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Uv sources marker extra is not resolving a package correctly
 
 ---
 
-_Issue opened by @krystianMoras on 2025-02-28 16:38_
+_@krystianMoras_
 
 ### Summary
 

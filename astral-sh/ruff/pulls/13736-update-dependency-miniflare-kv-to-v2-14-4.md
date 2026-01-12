@@ -13,14 +13,14 @@ head: renovate/miniflare-kv-2.x-lockfile
 created_at: 2024-10-14T01:15:57Z
 updated_at: 2024-10-14T07:40:50Z
 url: https://github.com/astral-sh/ruff/pull/13736
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update dependency @miniflare/kv to v2.14.4
 
 ---
 
-_Pull request opened by @renovate on 2024-10-14 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

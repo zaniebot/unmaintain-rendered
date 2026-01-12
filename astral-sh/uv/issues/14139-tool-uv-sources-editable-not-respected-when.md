@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T21:29:12Z
 updated_at: 2025-07-11T02:20:13Z
 url: https://github.com/astral-sh/uv/issues/14139
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # `tool.uv.sources.editable` not respected when conditional on `group`
 
 ---
 
-_Issue opened by @SpencerMcO on 2025-06-18 21:29_
+_@SpencerMcO_
 
 ### Summary
 

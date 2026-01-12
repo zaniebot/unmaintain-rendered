@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-16T00:31:51Z
 updated_at: 2022-12-16T04:11:00Z
 url: https://github.com/astral-sh/ruff/issues/1255
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # FR: flake8-errmsg
 
 ---
 
-_Issue opened by @ofek on 2022-12-16 00:31_
+_@ofek_
 
 https://github.com/henryiii/flake8-errmsg
 

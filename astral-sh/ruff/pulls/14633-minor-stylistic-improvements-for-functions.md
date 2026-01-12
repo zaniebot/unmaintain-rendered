@@ -13,14 +13,14 @@ head: alex/enclosing-union-fixup
 created_at: 2024-11-27T11:25:01Z
 updated_at: 2024-11-27T11:33:29Z
 url: https://github.com/astral-sh/ruff/pull/14633
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Minor stylistic improvements for functions detecting PEP-604 unions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-27 11:25_
+_@AlexWaygood_
 
 More docs and fewer mutable variables. I didn't spot that we could write the functions like this until the relevant PRs were merged.
 

@@ -13,14 +13,14 @@ head: zb/fixup
 created_at: 2025-06-26T19:44:28Z
 updated_at: 2025-06-26T20:40:41Z
 url: https://github.com/astral-sh/uv/pull/14293
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Fix `Indexes::new` doc
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 19:44_
+_@zanieb_
 
 _No description provided._
 

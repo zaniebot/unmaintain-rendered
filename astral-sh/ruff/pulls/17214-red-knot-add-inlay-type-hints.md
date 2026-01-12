@@ -13,14 +13,14 @@ head: inlay-hints
 created_at: 2025-04-04T21:49:07Z
 updated_at: 2025-04-19T13:58:36Z
 url: https://github.com/astral-sh/ruff/pull/17214
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add inlay type hints
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-04 21:49_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

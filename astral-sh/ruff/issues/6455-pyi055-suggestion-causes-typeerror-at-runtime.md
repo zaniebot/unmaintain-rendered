@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-09T20:16:00Z
 updated_at: 2023-08-11T16:12:56Z
 url: https://github.com/astral-sh/ruff/issues/6455
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PYI055 suggestion causes TypeError at runtime
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-08-09 20:16_
+_@adamtheturtle_
 
 ruff 0.0.283 (error is new in this version)
 Python 3.11.4

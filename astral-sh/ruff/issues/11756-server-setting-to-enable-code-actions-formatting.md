@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T15:03:03Z
 updated_at: 2025-03-29T15:13:13Z
 url: https://github.com/astral-sh/ruff/issues/11756
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Server setting to enable code actions / formatting on save
 
 ---
 
-_Issue opened by @DanCardin on 2024-06-05 15:03_
+_@DanCardin_
 
 In the PR for adding the organizeImports code action, i saw a reference to:
 ```

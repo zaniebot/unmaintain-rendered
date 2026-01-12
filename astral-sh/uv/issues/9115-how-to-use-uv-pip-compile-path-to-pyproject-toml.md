@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T08:07:27Z
 updated_at: 2025-01-06T22:03:18Z
 url: https://github.com/astral-sh/uv/issues/9115
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # How to use `uv pip compile <path to pyproject.toml> -o requirements.txt` to generate a requirements.txt for a package member
 
 ---
 
-_Issue opened by @rushwing on 2024-11-14 08:07_
+_@rushwing_
 
 [Background]:
 Amazon AWS Greengrass doesn't support to install third party tools to manage python virtual env, but it's good to manage local development environment using uv.

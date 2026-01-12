@@ -13,14 +13,14 @@ head: fx-resolver
 created_at: 2024-05-17T15:55:44Z
 updated_at: 2024-05-17T19:04:22Z
 url: https://github.com/astral-sh/uv/pull/3641
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Use `FxHasher` in resolver
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-17 15:55_
+_@ibraheemdev_
 
 ## Summary
 

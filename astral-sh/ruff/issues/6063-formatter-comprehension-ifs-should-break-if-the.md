@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-25T10:46:23Z
 updated_at: 2024-02-13T00:00:17Z
 url: https://github.com/astral-sh/ruff/issues/6063
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Comprehension ifs should break if the comprehension breaks
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 10:46_
+_@konstin_
 
 Black breaks the `if` into its own line if the comprehension breaks
 ```python

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T21:34:57Z
 updated_at: 2025-09-28T18:17:27Z
 url: https://github.com/astral-sh/ruff/issues/10723
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # B007 guidance when variable used outside the loop only
 
 ---
 
-_Issue opened by @jaraco on 2024-04-01 21:34_
+_@jaraco_
 
 Bugbear returns a B007 for [this loop](https://github.com/jaraco/jaraco.postgres/blob/bf844a039822da656422e578460385b5b2fee266/jaraco/postgres/__init__.py#L507-L512) when `i` is used solely outside the loop, a usage that appears to be valid and have [endorsement from the community](https://stackoverflow.com/a/3611987/70170).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T12:08:29Z
 updated_at: 2025-05-21T12:28:09Z
 url: https://github.com/astral-sh/uv/issues/13573
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Is there a way to get the virtual environment with the requirements from the script?
 
 ---
 
-_Issue opened by @paulefoe on 2025-05-21 12:08_
+_@paulefoe_
 
 ### Question
 

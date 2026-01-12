@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T11:24:28Z
 updated_at: 2024-11-08T23:30:03Z
 url: https://github.com/astral-sh/ruff/issues/14199
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff should have a (subjective) blurb in docs when reimplementation differs from upstream
 
 ---
 
-_Issue opened by @jakkdl on 2024-11-08 11:24_
+_@jakkdl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

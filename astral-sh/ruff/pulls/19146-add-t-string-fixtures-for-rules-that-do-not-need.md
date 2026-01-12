@@ -13,14 +13,14 @@ head: no-change-t-string-rules
 created_at: 2025-07-04T15:34:40Z
 updated_at: 2025-07-14T14:46:32Z
 url: https://github.com/astral-sh/ruff/pull/19146
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Add t-string fixtures for rules that do not need to be modified
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-04 15:34_
+_@dylwil3_
 
 I used a script to attempt to identify those rules with the following property: changing f-strings to t-strings in the corresponding fixture altered the number of lint errors emitted. In other words, those rules for which f-strings and t-strings are not treated the same in the current implementation.
 

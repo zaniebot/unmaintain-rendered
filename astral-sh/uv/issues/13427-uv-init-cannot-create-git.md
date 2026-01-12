@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T08:55:16Z
 updated_at: 2025-05-27T13:11:28Z
 url: https://github.com/astral-sh/uv/issues/13427
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # `uv init` cannot create `.git`
 
 ---
 
-_Issue opened by @gbaian10 on 2025-05-13 08:55_
+_@gbaian10_
 
 ### Summary
 

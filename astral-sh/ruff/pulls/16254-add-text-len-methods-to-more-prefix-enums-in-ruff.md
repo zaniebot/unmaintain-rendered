@@ -13,14 +13,14 @@ head: alex/const-textlen
 created_at: 2025-02-19T14:43:31Z
 updated_at: 2025-02-19T14:52:51Z
 url: https://github.com/astral-sh/ruff/pull/16254
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add `text_len()` methods to more `*Prefix` enums in `ruff_python_ast`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-19 14:43_
+_@AlexWaygood_
 
 ## Summary
 

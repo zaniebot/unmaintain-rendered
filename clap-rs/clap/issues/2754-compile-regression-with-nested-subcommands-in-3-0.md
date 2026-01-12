@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-05T01:11:33Z
 updated_at: 2021-09-05T15:13:14Z
 url: https://github.com/clap-rs/clap/issues/2754
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Compile regression with nested subcommands in 3.0.0-beta.4
 
 ---
 
-_Issue opened by @asomers on 2021-09-05 01:11_
+_@asomers_
 
 ### Please complete the following tasks
 

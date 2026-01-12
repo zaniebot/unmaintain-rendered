@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-07T02:05:08Z
 updated_at: 2024-09-09T13:19:56Z
 url: https://github.com/astral-sh/uv/issues/7152
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv run --with` fails to include virtual environment in `sys.path` for Homebrew-installed Python
 
 ---
 
-_Issue opened by @dhduvall on 2024-09-07 02:05_
+_@dhduvall_
 
 I'm trying to run `uv run --with pylint -- pylint ...`, and `pylint` is complaining about not being able to resolve `import` statements in my source. Indeed, `sys.path` in that context doesn't have the virtual environment's packages.
 

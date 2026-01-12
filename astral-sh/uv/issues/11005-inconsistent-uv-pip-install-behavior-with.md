@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T21:33:44Z
 updated_at: 2025-01-27T21:33:44Z
 url: https://github.com/astral-sh/uv/issues/11005
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Inconsistent `uv pip install` behavior with workspace member that shadows pypi package
 
 ---
 
-_Issue opened by @konstin on 2025-01-27 21:33_
+_@konstin_
 
 ### Summary
 

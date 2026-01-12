@@ -13,14 +13,14 @@ head: charlie/ord
 created_at: 2024-07-19T01:14:02Z
 updated_at: 2024-07-19T12:35:18Z
 url: https://github.com/astral-sh/uv/pull/5205
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Use max rather than min to sort managed Pythons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 01:14_
+_@charliermarsh_
 
 ## Summary
 

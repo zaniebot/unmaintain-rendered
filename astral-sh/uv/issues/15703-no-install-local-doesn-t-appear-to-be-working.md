@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T14:08:49Z
 updated_at: 2025-09-10T10:22:01Z
 url: https://github.com/astral-sh/uv/issues/15703
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # `--no-install-local` doesn't appear to be working
 
 ---
 
-_Issue opened by @sebovzeoueb on 2025-09-05 14:08_
+_@sebovzeoueb_
 
 ### Summary
 

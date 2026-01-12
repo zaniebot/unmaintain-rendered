@@ -14,14 +14,14 @@ head: fix-min-max-stm
 created_at: 2025-02-10T15:07:18Z
 updated_at: 2025-02-12T09:27:50Z
 url: https://github.com/astral-sh/ruff/pull/16080
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pylint`] Correct ordering of arguments in fix for `if-stmt-min-max` (`PLR1730`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-10 15:07_
+_@VascoSch92_
 
 The PR addresses the issue #16040 .
 

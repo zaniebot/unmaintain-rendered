@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T18:41:20Z
 updated_at: 2024-09-26T19:59:39Z
 url: https://github.com/astral-sh/uv/issues/7720
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # How to get `dev-dependencies` in a few different `uv` repos at once
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-26 18:41_
+_@jamesbraza_
 
 We have a few repos that center on `uv` (with `dev-dependencies`). I have a teammate who uses one virtual environment for all projects, and he wants to install:
 - All repos editably

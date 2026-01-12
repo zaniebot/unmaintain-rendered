@@ -13,14 +13,14 @@ head: zb/clobber-typed
 created_at: 2024-09-12T19:01:21Z
 updated_at: 2024-09-12T19:10:31Z
 url: https://github.com/astral-sh/uv/pull/7338
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Avoid clobbering existing `py.typed` files contents in `uv init`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-12 19:01_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: zb/filter-system-preferences
 created_at: 2024-05-22T15:45:42Z
 updated_at: 2024-05-22T16:22:11Z
 url: https://github.com/astral-sh/uv/pull/3739
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Filter discovered Python interpreters by system preference
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 15:45_
+_@zanieb_
 
 Previously, we enforced `SystemPython` outside of the interpreter discovery exclusively with source selection. Now, we perform additional filtering of interpreters depending on if they are a virtual environment. This should not change any existing behavior, but will make it much easier to have consistent behavior in ambiguous cases like https://github.com/astral-sh/uv/pull/3736#discussion_r1610072262 where a source could provide either a system interpreter or virtual environment interpreter.
 

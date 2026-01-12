@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T11:21:30Z
 updated_at: 2025-04-28T08:33:35Z
 url: https://github.com/astral-sh/ruff/issues/17114
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff won't go active
 
 ---
 
-_Issue opened by @LeoAdavirat on 2025-04-01 11:21_
+_@LeoAdavirat_
 
 ### Summary
 

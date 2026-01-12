@@ -13,14 +13,14 @@ head: zb/fix-clippy
 created_at: 2024-10-22T16:21:48Z
 updated_at: 2024-10-22T16:56:57Z
 url: https://github.com/astral-sh/uv/pull/8468
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Replace `cargo xwin clippy` with native clippy run on Windows again
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-22 16:21_
+_@zanieb_
 
 Adds #8181 again
 

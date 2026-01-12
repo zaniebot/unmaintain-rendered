@@ -13,14 +13,14 @@ head: charlie/no-binary-meta
 created_at: 2024-08-01T19:28:51Z
 updated_at: 2024-08-06T18:14:13Z
 url: https://github.com/astral-sh/uv/pull/5707
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Allow downloading wheels for metadata with `--no-binary`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 19:28_
+_@charliermarsh_
 
 ## Summary
 

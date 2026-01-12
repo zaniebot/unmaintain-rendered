@@ -13,14 +13,14 @@ head: brent/syntax-errors-parser
 created_at: 2025-02-11T00:19:08Z
 updated_at: 2025-02-26T04:03:51Z
 url: https://github.com/astral-sh/ruff/pull/16090
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Start detecting version-related syntax errors in the parser
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-11 00:19_
+_@ntBre_
 
 ## Summary
 

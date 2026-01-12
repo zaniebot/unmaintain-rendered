@@ -12,14 +12,14 @@ head: dependabot/cargo/resvg-0.40.0
 created_at: 2024-03-11T21:35:13Z
 updated_at: 2024-03-11T21:46:40Z
 url: https://github.com/astral-sh/uv/pull/2368
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Bump resvg from 0.29.0 to 0.40.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 21:35_
+_@dependabot_
 
 Bumps [resvg](https://github.com/RazrFalcon/resvg) from 0.29.0 to 0.40.0.
 <details>

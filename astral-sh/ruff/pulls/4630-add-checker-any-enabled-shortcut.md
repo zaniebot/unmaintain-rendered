@@ -12,14 +12,14 @@ head: any_enabled_shortcut
 created_at: 2023-05-24T14:18:10Z
 updated_at: 2023-05-24T15:00:04Z
 url: https://github.com/astral-sh/ruff/pull/4630
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 #  Add Checker::any_enabled shortcut
 
 ---
 
-_Pull request opened by @konstin on 2023-05-24 14:18_
+_@konstin_
 
  ## Summary
 

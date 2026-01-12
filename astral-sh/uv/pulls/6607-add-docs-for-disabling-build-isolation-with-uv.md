@@ -13,14 +13,14 @@ head: charlie/build-docs
 created_at: 2024-08-25T14:42:20Z
 updated_at: 2025-02-01T02:30:43Z
 url: https://github.com/astral-sh/uv/pull/6607
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Add docs for disabling build isolation with `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 14:42_
+_@charliermarsh_
 
 ## Summary
 

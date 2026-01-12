@@ -13,14 +13,14 @@ head: konsti/better-validation-error
 created_at: 2025-11-13T13:10:12Z
 updated_at: 2025-12-05T15:14:22Z
 url: https://github.com/astral-sh/uv/pull/16720
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Tweak language for build backend validation errors
 
 ---
 
-_Pull request opened by @konstin on 2025-11-13 13:10_
+_@konstin_
 
 Validation errors can also come from files pulled in by `pyproject.toml`, and `pyproject.toml` can be in a subdirectory.
 

@@ -13,14 +13,14 @@ head: konsti/save-forks-in-lockfile
 created_at: 2024-07-22T18:03:48Z
 updated_at: 2024-07-23T18:54:03Z
 url: https://github.com/astral-sh/uv/pull/5301
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Simplify `Resolution` type
 
 ---
 
-_Pull request opened by @konstin on 2024-07-22 18:03_
+_@konstin_
 
 Looking at how to merge identical forks, i found that the `Resolution` can be simplified by treating it as a nodes and edges store (plus pins, they are separate since they are per name-version, not per (virtual-)package-version). This should also make #5294 more apparent, which i didn't touch here.
 

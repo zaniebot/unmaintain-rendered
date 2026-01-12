@@ -12,14 +12,14 @@ head: charlie/prelude
 created_at: 2023-06-26T14:59:09Z
 updated_at: 2023-06-26T15:58:11Z
 url: https://github.com/astral-sh/ruff/pull/5369
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove prelude from `ruff_python_ast`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-26 14:59_
+_@charliermarsh_
 
 ## Summary
 

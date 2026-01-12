@@ -13,14 +13,14 @@ head: dhruv/redirect-PLR1701-to-SIM101
 created_at: 2024-06-25T05:50:55Z
 updated_at: 2024-06-25T13:51:35Z
 url: https://github.com/astral-sh/ruff/pull/12021
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Redirect `PLR1701` to `SIM101`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-25 05:50_
+_@dhruvmanila_
 
 ## Summary
 

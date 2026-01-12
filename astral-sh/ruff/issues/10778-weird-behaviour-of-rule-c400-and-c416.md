@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-04T19:02:49Z
 updated_at: 2024-04-07T07:06:47Z
 url: https://github.com/astral-sh/ruff/issues/10778
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Weird behaviour of Rule C400 and C416
 
 ---
 
-_Issue opened by @VascoSch92 on 2024-04-04 19:02_
+_@VascoSch92_
 
 **Ruff version: 0.3.5**
 

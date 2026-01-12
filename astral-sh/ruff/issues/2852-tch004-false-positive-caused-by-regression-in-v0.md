@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T11:41:02Z
 updated_at: 2023-02-13T15:26:36Z
 url: https://github.com/astral-sh/ruff/issues/2852
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `TCH004`: False positive caused by regression in v0.0.246
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-13 11:41_
+_@ngnpope_
 
 For the following code:
 

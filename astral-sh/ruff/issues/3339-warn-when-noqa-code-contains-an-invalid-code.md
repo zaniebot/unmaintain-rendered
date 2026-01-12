@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-04T16:36:30Z
 updated_at: 2023-07-08T16:37:57Z
 url: https://github.com/astral-sh/ruff/issues/3339
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Warn when `# noqa: <code>` contains an invalid code
 
 ---
 
-_Issue opened by @martinlehoux on 2023-03-04 16:36_
+_@martinlehoux_
 
 With the following snippet, I can ignore the issue in 3 ways, but the 4th fails to ignore, and it's not consistant:
 - Add `# noqa: N815` on the line :heavy_check_mark: 

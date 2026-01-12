@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T11:21:21Z
 updated_at: 2025-03-18T11:21:21Z
 url: https://github.com/astral-sh/ruff/issues/16829
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Server: Support format on type capability
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-18 11:21_
+_@dhruvmanila_
 
 https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_onTypeFormatting
 

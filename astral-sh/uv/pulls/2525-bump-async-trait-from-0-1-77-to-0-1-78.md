@@ -13,14 +13,14 @@ head: dependabot/cargo/async-trait-0.1.78
 created_at: 2024-03-18T21:44:01Z
 updated_at: 2024-03-18T21:54:19Z
 url: https://github.com/astral-sh/uv/pull/2525
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Bump async-trait from 0.1.77 to 0.1.78
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-18 21:44_
+_@dependabot_
 
 Bumps [async-trait](https://github.com/dtolnay/async-trait) from 0.1.77 to 0.1.78.
 <details>

@@ -12,14 +12,14 @@ head: 20241227-analyze-live
 created_at: 2024-12-29T02:59:47Z
 updated_at: 2025-03-11T08:50:33Z
 url: https://github.com/astral-sh/ruff/pull/15178
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [PROPOSAL+WIP] implement a `ruff analyze live`
 
 ---
 
-_Pull request opened by @purajit on 2024-12-29 02:59_
+_@purajit_
 
 MVP implementation of https://github.com/astral-sh/ruff/issues/15198.
 

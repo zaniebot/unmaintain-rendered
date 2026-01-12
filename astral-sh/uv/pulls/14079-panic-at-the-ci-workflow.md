@@ -12,14 +12,14 @@ head: konsti/panic-at-the-ci-workflow
 created_at: 2025-06-16T16:21:28Z
 updated_at: 2025-06-16T16:35:08Z
 url: https://github.com/astral-sh/uv/pull/14079
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Panic at the CI workflow
 
 ---
 
-_Pull request opened by @konstin on 2025-06-16 16:21_
+_@konstin_
 
 Gotta test something here
 

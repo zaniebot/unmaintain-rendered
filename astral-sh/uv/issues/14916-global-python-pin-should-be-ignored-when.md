@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-26T15:15:19Z
 updated_at: 2025-07-26T15:15:19Z
 url: https://github.com/astral-sh/uv/issues/14916
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Global Python pin should be ignored when incompatible with project
 
 ---
 
-_Issue opened by @zanieb on 2025-07-26 15:15_
+_@zanieb_
 
 ```
 ❯ uv python pin --global 3.12

@@ -13,14 +13,14 @@ head: micha/rename
 created_at: 2025-12-12T12:37:15Z
 updated_at: 2025-12-12T12:57:44Z
 url: https://github.com/astral-sh/ty/pull/1863
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Remove documentation of `experimental.rename`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-12 12:37_
+_@MichaReiser_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: konsti/group-resolver-options
 created_at: 2024-08-07T12:29:16Z
 updated_at: 2024-08-07T18:12:00Z
 url: https://github.com/astral-sh/uv/pull/5853
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Group resolver options in lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-08-07 12:29_
+_@konstin_
 
 There are three options that determine resolver behavior:
 

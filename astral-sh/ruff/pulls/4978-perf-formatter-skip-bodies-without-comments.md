@@ -15,14 +15,14 @@ head: perf-skip-body
 created_at: 2023-06-09T05:57:05Z
 updated_at: 2023-06-09T09:33:58Z
 url: https://github.com/astral-sh/ruff/pull/4978
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # perf(formatter): Skip bodies without comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-09 05:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

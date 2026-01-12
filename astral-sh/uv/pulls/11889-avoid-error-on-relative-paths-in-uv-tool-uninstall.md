@@ -13,14 +13,14 @@ head: charlie/e
 created_at: 2025-03-02T01:03:51Z
 updated_at: 2025-03-02T01:12:52Z
 url: https://github.com/astral-sh/uv/pull/11889
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Avoid error on relative paths in `uv tool uninstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-02 01:03_
+_@charliermarsh_
 
 ## Summary
 

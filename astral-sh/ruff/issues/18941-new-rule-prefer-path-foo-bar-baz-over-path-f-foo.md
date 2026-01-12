@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-25T19:02:42Z
 updated_at: 2025-06-25T19:05:30Z
 url: https://github.com/astral-sh/ruff/issues/18941
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New rule: "Prefer `Path("/foo/bar/", baz)` over `Path(f"/foo/bar/{baz}"`
 
 ---
 
-_Issue opened by @septatrix on 2025-06-25 19:02_
+_@septatrix_
 
 ### Summary
 

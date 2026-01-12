@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T17:24:05Z
 updated_at: 2024-10-09T09:05:53Z
 url: https://github.com/astral-sh/uv/issues/5613
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # `--directory` should resolve relative paths relative to current working directory
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-30 17:24_
+_@charliermarsh_
 
 _No description provided._
 

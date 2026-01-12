@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T07:29:31Z
 updated_at: 2025-04-26T12:35:13Z
 url: https://github.com/astral-sh/uv/issues/13044
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # How to configure uv to use two azure package registry?
 
 ---
 
-_Issue opened by @krasnikau-andrei on 2025-04-22 07:29_
+_@krasnikau-andrei_
 
 ### Question
 

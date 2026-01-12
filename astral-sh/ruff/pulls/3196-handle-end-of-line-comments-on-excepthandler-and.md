@@ -13,14 +13,14 @@ head: charlie/except
 created_at: 2023-02-24T00:52:56Z
 updated_at: 2023-02-24T03:35:40Z
 url: https://github.com/astral-sh/ruff/pull/3196
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Handle end-of-line comments on `excepthandler` and `alias`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 00:52_
+_@charliermarsh_
 
 _No description provided._
 

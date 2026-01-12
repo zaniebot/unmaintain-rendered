@@ -12,14 +12,14 @@ head: ag/fix-rebuilds
 created_at: 2024-08-29T17:36:32Z
 updated_at: 2024-08-29T18:11:52Z
 url: https://github.com/astral-sh/uv/pull/6825
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # uv-cli: add worktree support to build.rs
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-29 17:36_
+_@BurntSushi_
 
 Previously, we were always asking Cargo to rebuild `uv-cli` if
 `.git/HEAD` had changed. But in a worktree, `.git` is a file, not a

@@ -13,14 +13,14 @@ head: charlie/yield
 created_at: 2023-09-16T17:39:57Z
 updated_at: 2023-09-16T18:46:57Z
 url: https://github.com/astral-sh/ruff/pull/7444
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid extra parentheses in `yield` expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-16 17:39_
+_@charliermarsh_
 
 ## Summary
 

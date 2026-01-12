@@ -12,14 +12,14 @@ head: charlie/binding-size
 created_at: 2023-05-07T03:52:25Z
 updated_at: 2023-05-08T11:45:46Z
 url: https://github.com/astral-sh/ruff/pull/4263
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Box `BindingKind` enum variants
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-07 03:52_
+_@charliermarsh_
 
 ## Summary
 

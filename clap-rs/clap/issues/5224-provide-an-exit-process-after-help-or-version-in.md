@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-26T21:58:26Z
 updated_at: 2024-09-30T15:58:20Z
 url: https://github.com/clap-rs/clap/issues/5224
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Provide an exit process after --help or --version in derive config
 
 ---
 
-_Issue opened by @ogesaku on 2023-11-26 21:58_
+_@ogesaku_
 
 ### Please complete the following tasks
 

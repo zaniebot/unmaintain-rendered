@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-18T09:53:23Z
 updated_at: 2024-02-12T09:30:09Z
 url: https://github.com/astral-sh/ruff/issues/9185
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Stabilize `quote-style: preserve`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-12-18 09:53_
+_@MichaReiser_
 
 Stabalize the new `quote-style` `preserve` and decide on its final semantics (does it preserve the quotes of multiline and docstrings)?
 

@@ -14,14 +14,14 @@ head: zb/docs-environment-existing
 created_at: 2024-08-13T16:30:23Z
 updated_at: 2024-08-13T16:47:40Z
 url: https://github.com/astral-sh/uv/pull/6058
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Fix some outdated documentation discussing Python environments
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-13 16:30_
+_@zanieb_
 
 Starting on https://github.com/astral-sh/uv/issues/5966 noticed various problems
 

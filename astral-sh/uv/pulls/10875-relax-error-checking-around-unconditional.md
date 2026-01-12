@@ -12,14 +12,14 @@ head: ag/unconditional-extra-conflict
 created_at: 2025-01-22T19:55:07Z
 updated_at: 2025-01-22T23:52:06Z
 url: https://github.com/astral-sh/uv/pull/10875
-synced_at: 2026-01-10T11:45:15Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # relax error checking around unconditional enabling of conflicting extras
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-22 19:55_
+_@BurntSushi_
 
 When I first added conflicting extras, I made `package[foo]` a hard
 error during resolution whenever `foo` was declared as a conflicting

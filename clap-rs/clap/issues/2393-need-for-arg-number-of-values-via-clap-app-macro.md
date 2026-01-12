@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-03-08T15:21:35Z
 updated_at: 2021-03-09T00:49:43Z
 url: https://github.com/clap-rs/clap/issues/2393
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Need for Arg::number_of_values via clap_app macro
 
 ---
 
-_Issue opened by @neithernut on 2021-03-08 15:21_
+_@neithernut_
 
 ### Please complete the following tasks
 

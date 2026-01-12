@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T15:44:31Z
 updated_at: 2025-07-07T15:34:58Z
 url: https://github.com/astral-sh/uv/issues/14424
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Warn when `uv tool install package@latest` does not use the actual latest version
 
 ---
 
-_Issue opened by @zanieb on 2025-07-02 15:44_
+_@zanieb_
 
 e.g., in https://github.com/astral-sh/uv/issues/14415#issuecomment-3028278275 it took me explicitly pinning the latest version to discover that we weren't allowing it for some reason.
 

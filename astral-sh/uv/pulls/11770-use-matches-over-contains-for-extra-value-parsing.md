@@ -13,14 +13,14 @@ head: charlie/p-7
 created_at: 2025-02-25T06:26:21Z
 updated_at: 2025-02-25T07:05:47Z
 url: https://github.com/astral-sh/uv/pull/11770
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Use matches over contains for extra value parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-25 06:26_
+_@charliermarsh_
 
 _No description provided._
 

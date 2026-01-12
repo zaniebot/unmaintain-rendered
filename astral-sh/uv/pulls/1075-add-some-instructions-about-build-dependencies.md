@@ -14,14 +14,14 @@ head: konsti/contributing-guide
 created_at: 2024-01-24T13:00:32Z
 updated_at: 2024-01-24T17:03:56Z
 url: https://github.com/astral-sh/uv/pull/1075
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Add some instructions about build dependencies
 
 ---
 
-_Pull request opened by @konstin on 2024-01-24 13:00_
+_@konstin_
 
 You need to install cmake on windows, so i added a hint about using `pipx install cmake`, and some more general notes on building and testing puffin.
 

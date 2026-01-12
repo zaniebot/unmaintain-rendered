@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T01:26:54Z
 updated_at: 2024-11-12T22:13:42Z
 url: https://github.com/astral-sh/uv/issues/9036
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # macos pytorch install broken since 0.5.0
 
 ---
 
-_Issue opened by @vvuk on 2024-11-12 01:26_
+_@vvuk_
 
 Given workspace pyproject.toml:
 

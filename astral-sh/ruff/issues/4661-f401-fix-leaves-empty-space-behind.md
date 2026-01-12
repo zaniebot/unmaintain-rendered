@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-25T19:29:22Z
 updated_at: 2023-05-28T23:55:15Z
 url: https://github.com/astral-sh/ruff/issues/4661
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F401 fix leaves empty space behind
 
 ---
 
-_Issue opened by @radeklat on 2023-05-25 19:29_
+_@radeklat_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

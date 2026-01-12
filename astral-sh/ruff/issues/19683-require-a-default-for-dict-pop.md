@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T09:03:49Z
 updated_at: 2025-08-01T13:13:43Z
 url: https://github.com/astral-sh/ruff/issues/19683
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Require a default for dict.pop
 
 ---
 
-_Issue opened by @ashrub-holvi on 2025-08-01 09:03_
+_@ashrub-holvi_
 
 ### Summary
 

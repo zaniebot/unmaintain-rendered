@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T03:17:07Z
 updated_at: 2024-03-21T12:53:51Z
 url: https://github.com/astral-sh/uv/issues/2445
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # pyinstaller installed by uv cannot work on Windows
 
 ---
 
-_Issue opened by @du33169 on 2024-03-14 03:17_
+_@du33169_
 
 **Description:**
 I try to install pyinstaller using uv, the installation is successful but pyinstaller doesn't work.

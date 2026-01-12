@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-25T20:49:16Z
 updated_at: 2025-08-05T06:40:50Z
 url: https://github.com/astral-sh/ruff/issues/18945
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`flake8-simplify`] `SIM109` fix reorders statements incorrectly
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-25 20:49_
+_@MeGaGiGaGon_
 
 ### Summary
 

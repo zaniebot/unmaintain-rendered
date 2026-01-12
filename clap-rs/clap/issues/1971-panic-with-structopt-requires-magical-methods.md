@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-06-10T10:37:51Z
 updated_at: 2020-08-12T11:50:26Z
 url: https://github.com/clap-rs/clap/issues/1971
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Panic with structopt `requires` magical methods
 
 ---
 
-_Issue opened by @pscott on 2020-06-10 10:37_
+_@pscott_
 
 ### Make sure you completed the following tasks
 

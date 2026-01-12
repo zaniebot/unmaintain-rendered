@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T22:05:59Z
 updated_at: 2024-02-22T15:01:45Z
 url: https://github.com/astral-sh/uv/issues/1837
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # uv init
 
 ---
 
-_Issue opened by @dbrtly on 2024-02-21 22:05_
+_@dbrtly_
 
 Most of the time I do:
 

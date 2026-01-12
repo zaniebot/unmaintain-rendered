@@ -13,14 +13,14 @@ head: konsti/static-lzma
 created_at: 2024-12-16T12:44:22Z
 updated_at: 2024-12-17T15:12:39Z
 url: https://github.com/astral-sh/uv/pull/9933
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Avoid `liblzma-dev` system dep in uv-dev and uv-bench
 
 ---
 
-_Pull request opened by @konstin on 2024-12-16 12:44_
+_@konstin_
 
 Enable `lzma-sys/static` through the performance feature not only in uv, but in uv-dev and uv-bench too, to avoid the system dependency on `liblzma-dev`.
 

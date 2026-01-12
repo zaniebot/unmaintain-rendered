@@ -13,14 +13,14 @@ head: jtfm/python-upgrade-bin
 created_at: 2025-05-19T08:55:36Z
 updated_at: 2025-06-10T18:05:00Z
 url: https://github.com/astral-sh/uv/pull/13531
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:43Z
 ```
 
 # Support transparently upgradeable Python bin installations
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-19 08:55_
+_@jtfmumm_
 
 For `uv python install --preview` and `uv python install <minor-version> --preview`, this installs transparently upgradeable executables into `bin`. On macOS/Linux, it uses a symlink pointing to a path containing a minor version directory symlink. On Windows, it uses a trampoline with a junction-containing path as its target.
 

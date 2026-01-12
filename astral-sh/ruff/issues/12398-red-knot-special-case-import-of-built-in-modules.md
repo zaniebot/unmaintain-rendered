@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-18T23:04:04Z
 updated_at: 2024-08-05T20:33:37Z
 url: https://github.com/astral-sh/ruff/issues/12398
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] special-case import of built-in modules
 
 ---
 
-_Issue opened by @carljm on 2024-07-18 23:04_
+_@carljm_
 
 Certain modules are imported by `BuiltinImporter`, which comes first in `sys.meta_path` by default (before `PathFinder` which implements the normal filesystem-based module resolution.) These modules will always take precedence over any module on the filesystem (i.e. first-party code can't ever shadow these modules, unless somebody starts rearranging `sys.meta_path`, which throws everything out the window and we can't reasonably support.)
 

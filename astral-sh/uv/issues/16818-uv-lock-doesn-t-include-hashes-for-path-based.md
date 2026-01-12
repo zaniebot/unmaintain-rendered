@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-22T20:23:02Z
 updated_at: 2025-11-26T01:05:59Z
 url: https://github.com/astral-sh/uv/issues/16818
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # `uv.lock` doesn't include hashes for path-based wheels
 
 ---
 
-_Issue opened by @charliermarsh on 2025-11-22 20:23_
+_@charliermarsh_
 
 Sometimes?
 

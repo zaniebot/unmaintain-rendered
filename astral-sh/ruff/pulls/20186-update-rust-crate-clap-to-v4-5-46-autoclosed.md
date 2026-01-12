@@ -13,14 +13,14 @@ head: renovate/clap-4.x-lockfile
 created_at: 2025-09-01T00:42:07Z
 updated_at: 2025-09-01T06:49:08Z
 url: https://github.com/astral-sh/ruff/pull/20186
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # Update Rust crate clap to v4.5.46 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-09-01 00:42_
+_@renovate_
 
 This PR contains the following updates:
 

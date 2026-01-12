@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T09:29:22Z
 updated_at: 2023-08-29T13:08:44Z
 url: https://github.com/astral-sh/ruff/issues/6970
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # new rule - always enforce `from __future__ import annotations`
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-29 09:29_
+_@DetachHead_
 
 there are existing rules that enforce it in some cases, but i would like one that enforces it all the time
 

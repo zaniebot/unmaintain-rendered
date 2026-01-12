@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-20T09:41:59Z
 updated_at: 2024-10-21T08:45:07Z
 url: https://github.com/astral-sh/ruff/issues/13830
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: update deprecated ruff settings automatically
 
 ---
 
-_Issue opened by @njzjz on 2024-10-20 09:41_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

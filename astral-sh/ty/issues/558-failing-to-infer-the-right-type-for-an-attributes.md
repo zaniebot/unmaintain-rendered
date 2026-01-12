@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-31T16:12:31Z
 updated_at: 2025-05-31T16:19:49Z
 url: https://github.com/astral-sh/ty/issues/558
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # failing to infer the right type for an attributes  with optional type in an if else statement
 
 ---
 
-_Issue opened by @martinResearch on 2025-05-31 16:12_
+_@martinResearch_
 
 ### Summary
 

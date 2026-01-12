@@ -13,14 +13,14 @@ head: dhruv/ipython-mode
 created_at: 2023-09-05T13:10:15Z
 updated_at: 2023-09-06T07:30:41Z
 url: https://github.com/astral-sh/ruff/pull/7153
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Rename parser mode from `Jupyter` to `Ipython`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-05 13:10_
+_@dhruvmanila_
 
 ## Summary
 

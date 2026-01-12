@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-13T16:27:02Z
 updated_at: 2023-07-13T17:25:56Z
 url: https://github.com/astral-sh/ruff/issues/5740
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Docs: Options sections of some rules are broken
 
 ---
 
-_Issue opened by @eggplants on 2023-07-13 16:27_
+_@eggplants_
 
 The docs for rules that have multiple options appears to be broken.
 

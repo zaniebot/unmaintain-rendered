@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-16T15:08:55Z
 updated_at: 2024-06-12T13:15:22Z
 url: https://github.com/astral-sh/uv/issues/3626
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # mTLS Support?
 
 ---
 
-_Issue opened by @SystemCoder99 on 2024-05-16 15:08_
+_@SystemCoder99_
 
 Now that uv.toml is implemented and we can set the native-tls flag, will there be support for mTLS? 
 Will we be able to pass a client_cert file path through the uv.toml so our developers and their package repos can authenticate each other?

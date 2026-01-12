@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T15:04:51Z
 updated_at: 2025-10-07T16:18:41Z
 url: https://github.com/astral-sh/uv/issues/15665
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Add a hint on `uv tool update <name>` when the package is pinned to a version
 
 ---
 
-_Issue opened by @zanieb on 2025-09-03 15:04_
+_@zanieb_
 
 e.g., in https://github.com/astral-sh/uv/issues/15662#issuecomment-3249450531 we should hint that the tool isn't going to be updated because it was installed with a specific version.
 

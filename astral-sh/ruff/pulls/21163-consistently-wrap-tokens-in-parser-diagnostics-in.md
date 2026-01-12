@@ -15,14 +15,14 @@ head: tokens_backticks
 created_at: 2025-10-31T13:39:14Z
 updated_at: 2025-10-31T15:59:12Z
 url: https://github.com/astral-sh/ruff/pull/21163
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # Consistently wrap tokens in parser diagnostics in `backticks` instead of 'quotes'
 
 ---
 
-_Pull request opened by @lucach on 2025-10-31 13:39_
+_@lucach_
 
 The parser currently uses single quotes to wrap tokens. This is inconsistent with the rest of ruff/ty, which use backticks.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T02:54:20Z
 updated_at: 2024-09-10T13:27:46Z
 url: https://github.com/astral-sh/uv/issues/7241
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # inconsistent behaviour of uv export with --no-emit-workspace option for the root project
 
 ---
 
-_Issue opened by @lucidfrontier45 on 2024-09-10 02:54_
+_@lucidfrontier45_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

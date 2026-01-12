@@ -12,14 +12,14 @@ head: 4348-merge-subsettings
 created_at: 2023-05-14T14:12:00Z
 updated_at: 2023-05-16T20:22:49Z
 url: https://github.com/astral-sh/ruff/pull/4431
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Merge subsettings when extending configurations
 
 ---
 
-_Pull request opened by @bendoerry on 2023-05-14 14:12_
+_@bendoerry_
 
 Currently we override entire config sections when extending configurations.
 This change allows us to preserve sections and only override specific config options.

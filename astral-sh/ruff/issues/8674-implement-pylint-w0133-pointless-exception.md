@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-14T10:44:13Z
 updated_at: 2023-11-14T16:40:28Z
 url: https://github.com/astral-sh/ruff/issues/8674
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # implement pylint W0133 pointless-exception-statement
 
 ---
 
-_Issue opened by @Yasu-umi on 2023-11-14 10:44_
+_@Yasu-umi_
 
 [pylint W0133 warning](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/pointless-exception-statement.html) is very useful feature that can help prevent human error.
 ```python

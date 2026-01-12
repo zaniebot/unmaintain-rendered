@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-12T17:29:58Z
 updated_at: 2023-01-07T12:29:40Z
 url: https://github.com/astral-sh/ruff/issues/704
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add comment text to `Tok::Comment` in RustPython
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 17:29_
+_@charliermarsh_
 
 This would let us avoid a lot of text accesses.
 

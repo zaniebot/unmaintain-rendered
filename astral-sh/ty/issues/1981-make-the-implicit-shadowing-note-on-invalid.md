@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-17T07:47:01Z
 updated_at: 2025-12-29T09:30:50Z
 url: https://github.com/astral-sh/ty/issues/1981
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Make the "implicit shadowing" note on `invalid-assignment` additional, don't replace the main message
 
 ---
 
-_Issue opened by @lucach on 2025-12-17 07:47_
+_@lucach_
 
 ### Summary
 

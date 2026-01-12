@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T15:59:01Z
 updated_at: 2025-02-06T10:21:53Z
 url: https://github.com/astral-sh/uv/issues/5816
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Installation of `BoltzTraP2` fails
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-08-06 15:59_
+_@DanielYang59_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

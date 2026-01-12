@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-22T08:12:10Z
 updated_at: 2025-08-07T13:33:49Z
 url: https://github.com/astral-sh/ruff/issues/4571
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Make `Range` and `SourceFile` optional in `Diagnostic` and `Message`
 
 ---
 
-_Issue opened by @konstin on 2023-05-22 08:12_
+_@konstin_
 
 There are some cases where we can't produce a relevant span or may not be able to read the source into a string, e.g. [`toml` sometimes doesn't emit spans](https://github.com/charliermarsh/ruff/pull/4496/files#r1198653173), `IOError` or files larger than 4GB. We should therefore make `Range` and `SourceFile` optional in `Diagnostic` and `Message`.
 

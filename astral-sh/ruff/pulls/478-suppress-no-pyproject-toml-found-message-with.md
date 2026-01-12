@@ -12,14 +12,14 @@ head: no-pyproject
 created_at: 2022-10-26T19:04:27Z
 updated_at: 2022-11-20T01:59:35Z
 url: https://github.com/astral-sh/ruff/pull/478
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Suppress “No pyproject.toml found” message with --quiet
 
 ---
 
-_Pull request opened by @andersk on 2022-10-26 19:04_
+_@andersk_
 
 Fixes part of #476.
 

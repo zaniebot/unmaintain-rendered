@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-17T19:05:54Z
 updated_at: 2025-01-30T13:55:32Z
 url: https://github.com/astral-sh/uv/issues/8302
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Create best practice example of uv workspace for vscode supporting tests and more
 
 ---
 
-_Issue opened by @NixBiks on 2024-10-17 19:05_
+_@NixBiks_
 
 I'm working on a monorepo and trying to make a good developer setup in vscode. I think my use case is pretty common so I'm wondering if it would make sense to create a "best practice" example.
 

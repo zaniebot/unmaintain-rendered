@@ -12,14 +12,14 @@ head: alex/global-statements
 created_at: 2025-03-24T20:53:12Z
 updated_at: 2025-03-28T18:04:17Z
 url: https://github.com/astral-sh/ruff/pull/16959
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Recognize an assignment in a function/class scopes as a global-scope definition for purposes of `*` imports if the assigned symbol is declared `global`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-24 20:53_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T21:37:09Z
 updated_at: 2024-12-20T17:54:56Z
 url: https://github.com/astral-sh/uv/issues/10042
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Unable to import ‘tensorflow' after installing via uv on macOS
 
 ---
 
-_Issue opened by @shatadrusaha on 2024-12-19 21:37_
+_@shatadrusaha_
 
 I am trying to install and use `tensorflow` for my project. I am using `uv` as package manager.
 

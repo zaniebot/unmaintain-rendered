@@ -11,14 +11,14 @@ head: chore/ignore-idea-folder
 created_at: 2024-04-01T13:43:45Z
 updated_at: 2024-04-01T16:21:34Z
 url: https://github.com/astral-sh/uv/pull/2756
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # chore(git): ignore Intellij settings
 
 ---
 
-_Pull request opened by @stegayet on 2024-04-01 13:43_
+_@stegayet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

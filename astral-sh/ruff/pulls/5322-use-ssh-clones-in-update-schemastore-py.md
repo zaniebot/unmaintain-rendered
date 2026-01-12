@@ -12,14 +12,14 @@ head: charlie/ssh
 created_at: 2023-06-23T03:21:24Z
 updated_at: 2023-06-23T13:50:11Z
 url: https://github.com/astral-sh/ruff/pull/5322
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use SSH clones in `update_schemastore.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-23 03:21_
+_@charliermarsh_
 
 HTTPS requires password-based input, I think?
 

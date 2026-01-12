@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-22T03:39:41Z
 updated_at: 2024-12-27T13:44:58Z
 url: https://github.com/astral-sh/uv/issues/10090
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # explicit = true on index is not honored
 
 ---
 
-_Issue opened by @tmatup on 2024-12-22 03:39_
+_@tmatup_
 
 pyproject.toml
 ````

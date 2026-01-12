@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T15:59:49Z
 updated_at: 2025-02-05T23:55:41Z
 url: https://github.com/astral-sh/uv/issues/11247
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Optional dependencies are missing when a requirement with option is overridden
 
 ---
 
-_Issue opened by @tderwedu on 2025-02-05 15:59_
+_@tderwedu_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: konsti/remove-dead-sha256
 created_at: 2024-10-04T16:52:58Z
 updated_at: 2024-10-04T20:25:54Z
 url: https://github.com/astral-sh/uv/pull/7929
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Remove dead Sha256Reader
 
 ---
 
-_Pull request opened by @konstin on 2024-10-04 16:52_
+_@konstin_
 
 It seems that this code is never used.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-25T10:25:50Z
 updated_at: 2023-10-25T10:40:37Z
 url: https://github.com/astral-sh/ruff/issues/8208
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False positive for DTZ005 when `datetime.now()` is used with `astimezone`
 
 ---
 
-_Issue opened by @smurfix on 2023-10-25 10:25_
+_@smurfix_
 
 `t = datetime.now().astimezone()`
 

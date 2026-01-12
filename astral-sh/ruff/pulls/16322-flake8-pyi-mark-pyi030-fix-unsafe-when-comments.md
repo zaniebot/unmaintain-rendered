@@ -15,14 +15,14 @@ head: fix-PYI030
 created_at: 2025-02-22T22:54:51Z
 updated_at: 2025-02-23T21:26:28Z
 url: https://github.com/astral-sh/ruff/pull/16322
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`flake8-pyi`] Mark `PYI030` fix unsafe when comments are deleted
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-22 22:54_
+_@VascoSch92_
 
 The PR addresses issue #16317 
 

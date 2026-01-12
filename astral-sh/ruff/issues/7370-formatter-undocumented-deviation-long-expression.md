@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T22:07:09Z
 updated_at: 2023-09-15T09:52:09Z
 url: https://github.com/astral-sh/ruff/issues/7370
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: long expression wrapped in extra parens and indented
 
 ---
 
-_Issue opened by @andersk on 2023-09-13 22:07_
+_@andersk_
 
 Input, unchanged by Black:
 

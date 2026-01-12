@@ -14,14 +14,14 @@ head: allow-newline-separator-in-UV_INDEX
 created_at: 2025-04-10T18:32:35Z
 updated_at: 2025-06-27T09:12:52Z
 url: https://github.com/astral-sh/uv/pull/12820
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Split UV_INDEX on all whitespace
 
 ---
 
-_Pull request opened by @winstonallo on 2025-04-10 18:32_
+_@winstonallo_
 
 ## Summary
 Closes #12806

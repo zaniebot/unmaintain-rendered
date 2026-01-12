@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-26T20:28:40Z
 updated_at: 2024-10-23T17:32:19Z
 url: https://github.com/astral-sh/uv/issues/6654
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Improve cached package "index of" page for pinned versions which are already downloaded and cached.
 
 ---
 
-_Issue opened by @albertferras-vrf on 2024-08-26 20:28_
+_@albertferras-vrf_
 
 **Summary**
 `uv` seems to cache the package's index-of page (example: https://pypi.org/simple/fastapi ) following cache-control headers, while `pip` doesn't seem to ever cache it.

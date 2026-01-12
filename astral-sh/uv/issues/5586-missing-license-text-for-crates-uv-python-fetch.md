@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T04:30:27Z
 updated_at: 2024-07-30T12:26:00Z
 url: https://github.com/astral-sh/uv/issues/5586
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Missing license text for crates/uv-python/fetch-download-metadata.py
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-07-30 04:30_
+_@musicinmybrain_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

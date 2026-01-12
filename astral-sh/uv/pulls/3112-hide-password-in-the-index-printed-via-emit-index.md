@@ -13,14 +13,14 @@ head: hide-password
 created_at: 2024-04-18T03:21:51Z
 updated_at: 2024-04-18T03:59:44Z
 url: https://github.com/astral-sh/uv/pull/3112
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Hide password in the index printed via `--emit-index-annotation`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-04-18 03:21_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

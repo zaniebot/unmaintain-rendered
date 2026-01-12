@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T20:08:57Z
 updated_at: 2025-05-05T04:32:00Z
 url: https://github.com/astral-sh/uv/issues/13279
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # `uv run` fails with `<(...)` process substitution
 
 ---
 
-_Issue opened by @Bobronium on 2025-05-03 20:08_
+_@Bobronium_
 
 ### Summary
 

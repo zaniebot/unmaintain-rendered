@@ -13,14 +13,14 @@ head: konsti/deactivate-zizmor
 created_at: 2025-10-21T15:24:15Z
 updated_at: 2025-10-21T15:36:21Z
 url: https://github.com/astral-sh/uv/pull/16390
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Deactivate zizmor due to GitHub ratelimiting
 
 ---
 
-_Pull request opened by @konstin on 2025-10-21 15:24_
+_@konstin_
 
 A lot of CI workflows are currently failing because we're hitting GitHub Actions limits. Temporarily disable zizmor, which makes a lot of GitHub API requests.
 

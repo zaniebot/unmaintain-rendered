@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions/setup-python-5
 created_at: 2023-12-11T08:06:35Z
 updated_at: 2023-12-11T20:49:34Z
 url: https://github.com/astral-sh/ruff/pull/9084
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump actions/setup-python from 4 to 5
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-11 08:06_
+_@dependabot_
 
 Bumps [actions/setup-python](https://github.com/actions/setup-python) from 4 to 5.
 <details>

@@ -13,14 +13,14 @@ head: charlie/ruff-100-multi-byte
 created_at: 2023-01-31T12:53:19Z
 updated_at: 2023-01-31T12:59:18Z
 url: https://github.com/astral-sh/ruff/pull/2392
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Handle multi-byte lines in RUF100
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 12:53_
+_@charliermarsh_
 
 The regex locations are byte locations, not character locations. Need to convert!
 

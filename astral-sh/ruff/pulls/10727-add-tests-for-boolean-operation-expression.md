@@ -14,14 +14,14 @@ head: dhruv/bool-op-expr
 created_at: 2024-04-02T02:15:19Z
 updated_at: 2024-04-03T09:28:47Z
 url: https://github.com/astral-sh/ruff/pull/10727
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for boolean operation expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 02:15_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-28T15:10:39Z
 updated_at: 2024-02-23T22:01:36Z
 url: https://github.com/astral-sh/ruff/issues/1425
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `wasm-pack` test is unreliable
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-28 15:10_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/actions/runs/3794761527/jobs/6453331265.
 

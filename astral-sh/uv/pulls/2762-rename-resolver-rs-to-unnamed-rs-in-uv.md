@@ -13,14 +13,14 @@ head: charlie/rename
 created_at: 2024-04-01T21:32:22Z
 updated_at: 2024-04-01T21:40:04Z
 url: https://github.com/astral-sh/uv/pull/2762
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Rename `resolver.rs` to `unnamed.rs` in `uv-requirements`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 21:32_
+_@charliermarsh_
 
 ## Summary
 

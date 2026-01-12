@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T16:31:00Z
 updated_at: 2024-06-05T20:22:09Z
 url: https://github.com/astral-sh/uv/issues/4052
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # universal-lock: include and verify Python version range in the lock file
 
 ---
 
-_Issue opened by @zanieb on 2024-06-05 16:31_
+_@zanieb_
 
 Mentioned at https://github.com/astral-sh/uv/issues/4050#issuecomment-2150423129
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T11:01:32Z
 updated_at: 2025-02-28T01:07:37Z
 url: https://github.com/astral-sh/uv/issues/11828
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Encoding issue in Windows cmd when path contains non-ASCII characters
 
 ---
 
-_Issue opened by @flaribbit on 2025-02-27 11:01_
+_@flaribbit_
 
 ### Summary
 

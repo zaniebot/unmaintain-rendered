@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T14:35:35Z
 updated_at: 2025-10-30T15:12:36Z
 url: https://github.com/astral-sh/ruff/issues/21140
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Process larger files first
 
 ---
 
-_Issue opened by @adamchainz on 2025-10-30 14:35_
+_@adamchainz_
 
 https://github.com/psf/black/issues/4771 describes ~20% speedup ofr Black by processing larger files first, so parallel workers pack the work better. After a quick look at Ruff, it seems that the same could work here, for example by sorting by size, descending, before `par_iter()` in `commands/check.rs`:
 

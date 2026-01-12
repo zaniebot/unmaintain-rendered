@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-09T21:01:04Z
 updated_at: 2023-02-09T21:07:27Z
 url: https://github.com/astral-sh/ruff/issues/2696
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support baseline (report errors only in new/changed code)
 
 ---
 
-_Issue opened by @Bobronium on 2023-02-09 21:01_
+_@Bobronium_
 
 @orsinium [flakehell](https://github.com/life4/flakehell) had a beautiful feature called [baseline](https://flakehell.readthedocs.io/commands/baseline.html#baseline-integrate-into-a-huge-project):
 

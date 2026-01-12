@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T18:58:26Z
 updated_at: 2024-09-20T18:03:33Z
 url: https://github.com/astral-sh/ruff/issues/13396
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Slicing string around `len()` (expansion of FURB188 slice-to-remove-prefix-or-suffix)
 
 ---
 
-_Issue opened by @opk12 on 2024-09-18 18:58_
+_@opk12_
 
 This old code slices a string, using the `len()` of the prefix (which is a string variable) and suffix (which is a literal). I don't know if it was a common idiom, but Python 3.9 [introduced](https://docs.python.org/3.9/library/stdtypes.html#str.removeprefix) the more readable alternatives, `str.removeprefix()` + `str.removesuffix()`. They have the advantage that they don't raise, if the string does not match the prefix / suffix.
 

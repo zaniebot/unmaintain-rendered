@@ -13,14 +13,14 @@ head: konsti/refactor-augment-requirement
 created_at: 2025-11-04T16:23:28Z
 updated_at: 2025-11-04T18:54:01Z
 url: https://github.com/astral-sh/uv/pull/16592
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Make `augment_requirement` a method
 
 ---
 
-_Pull request opened by @konstin on 2025-11-04 16:23_
+_@konstin_
 
 Fixing the pattern so we can be consistent in https://github.com/astral-sh/uv/pull/16143#discussion_r2479028440
 

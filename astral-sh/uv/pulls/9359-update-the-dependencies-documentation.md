@@ -13,14 +13,14 @@ head: zb/dependencies
 created_at: 2024-11-22T17:45:16Z
 updated_at: 2024-11-26T18:32:59Z
 url: https://github.com/astral-sh/uv/pull/9359
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Update the dependencies documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-22 17:45_
+_@zanieb_
 
 This is a first-pass at updating the "Managing dependencies" page after moving some of the project concept documentation into it. I want to do more things, like improve visibility into upgrading packages and reordering some sections, but will tackle those separately for review.
 

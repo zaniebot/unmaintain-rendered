@@ -14,14 +14,14 @@ head: zb/tool-install-dir
 created_at: 2024-08-19T14:41:37Z
 updated_at: 2024-08-19T21:10:52Z
 url: https://github.com/astral-sh/uv/pull/6207
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Allow customizing the tool install directory with `UV_TOOL_BIN_DIR`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 14:41_
+_@zanieb_
 
 Requested in #6067
 

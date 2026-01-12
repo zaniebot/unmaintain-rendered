@@ -13,14 +13,14 @@ head: charlie/bind-ref
 created_at: 2022-11-16T05:17:49Z
 updated_at: 2022-11-16T13:55:36Z
 url: https://github.com/astral-sh/ruff/pull/764
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid allocations for binding values
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-16 05:17_
+_@charliermarsh_
 
 This achieves a 1-1.5% performance improvement on the benchmark (shrug).
 

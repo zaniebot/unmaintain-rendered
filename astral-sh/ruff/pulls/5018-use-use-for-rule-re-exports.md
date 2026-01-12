@@ -12,14 +12,14 @@ head: charlie/pub-use
 created_at: 2023-06-12T00:20:09Z
 updated_at: 2023-06-12T00:50:28Z
 url: https://github.com/astral-sh/ruff/pull/5018
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `use::*` for rule re-exports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-12 00:20_
+_@charliermarsh_
 
 _No description provided._
 

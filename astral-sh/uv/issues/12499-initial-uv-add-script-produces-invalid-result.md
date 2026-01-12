@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T23:05:51Z
 updated_at: 2025-03-27T21:39:30Z
 url: https://github.com/astral-sh/uv/issues/12499
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Initial `uv add --script` produces invalid result with existing metadata section
 
 ---
 
-_Issue opened by @merlinz01 on 2025-03-26 23:05_
+_@merlinz01_
 
 ### Summary
 

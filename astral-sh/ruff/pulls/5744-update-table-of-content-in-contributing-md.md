@@ -13,14 +13,14 @@ head: dhruv/contributing-docs
 created_at: 2023-07-13T17:27:53Z
 updated_at: 2023-07-13T18:05:13Z
 url: https://github.com/astral-sh/ruff/pull/5744
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update table of content in CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-13 17:27_
+_@dhruvmanila_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dhruv/remove-debug-log
 created_at: 2025-03-11T04:38:03Z
 updated_at: 2025-03-11T08:23:08Z
 url: https://github.com/astral-sh/ruff/pull/16617
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Server: Remove log notification for `printDebugInformation` command
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-11 04:38_
+_@dhruvmanila_
 
 ## Summary
 

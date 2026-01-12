@@ -12,14 +12,14 @@ head: gankra/lock-extra
 created_at: 2025-01-29T14:20:00Z
 updated_at: 2025-02-11T19:38:41Z
 url: https://github.com/astral-sh/uv/pull/11063
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # add provides-extras to lockfile
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-29 14:20_
+_@Gankra_
 
 Fixes #10953 
 

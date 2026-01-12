@@ -13,14 +13,14 @@ head: charlie/env-var
 created_at: 2023-11-20T23:46:19Z
 updated_at: 2023-11-21T14:50:09Z
 url: https://github.com/astral-sh/uv/pull/471
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Add support for path dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-20 23:46_
+_@charliermarsh_
 
 ## Summary
 

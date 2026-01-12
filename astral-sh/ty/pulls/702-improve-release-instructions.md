@@ -13,14 +13,14 @@ head: alex/release-instructions
 created_at: 2025-06-25T11:37:10Z
 updated_at: 2025-06-25T12:51:05Z
 url: https://github.com/astral-sh/ty/pull/702
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Improve release instructions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-25 11:37_
+_@AlexWaygood_
 
 ## Summary
 

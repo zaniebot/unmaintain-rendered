@@ -13,14 +13,14 @@ head: renovate/indoc-2.x-lockfile
 created_at: 2024-04-01T01:01:59Z
 updated_at: 2024-04-01T01:20:41Z
 url: https://github.com/astral-sh/ruff/pull/10685
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # chore(deps): update rust crate indoc to v2.0.5
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 01:01_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

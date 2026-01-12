@@ -14,14 +14,14 @@ head: AlexWaygood-patch-1
 created_at: 2025-03-27T20:14:55Z
 updated_at: 2025-03-27T20:21:33Z
 url: https://github.com/astral-sh/ruff/pull/17022
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # mypy_primer: add typeshed-stats
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-27 20:14_
+_@AlexWaygood_
 
 This is a well-typed codebase on which we only emit 23 diagnostics right now, but which is highlighting some interesting issues. It uses some modern syntactic features such as `match` statements that aren't used much in other open-source projects in mypy_primer
 

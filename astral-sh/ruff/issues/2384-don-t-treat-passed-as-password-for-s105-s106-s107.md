@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-31T08:59:42Z
 updated_at: 2023-02-25T20:32:55Z
 url: https://github.com/astral-sh/ruff/issues/2384
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Don't treat "passed" as "password" for `S105`/`S106`/`S107`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 08:59_
+_@ngnpope_
 
 Using `v0.0.238` I get: `S105 Possible hardcoded password: "..."` when the variable/argument name contains `passed` in it.
 

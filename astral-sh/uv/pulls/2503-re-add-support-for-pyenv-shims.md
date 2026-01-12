@@ -13,14 +13,14 @@ head: charlie/pyenv
 created_at: 2024-03-18T02:39:00Z
 updated_at: 2024-03-18T02:57:38Z
 url: https://github.com/astral-sh/uv/pull/2503
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Re-add support for pyenv shims
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-18 02:39_
+_@charliermarsh_
 
 ## Summary
 

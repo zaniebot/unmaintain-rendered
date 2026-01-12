@@ -14,14 +14,14 @@ head: charlie/cli
 created_at: 2023-03-06T23:43:07Z
 updated_at: 2023-03-07T00:04:54Z
 url: https://github.com/astral-sh/ruff/pull/3375
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Include entire prefix when reporting rule selector errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 23:43_
+_@charliermarsh_
 
 This is a little more intuitive:
 

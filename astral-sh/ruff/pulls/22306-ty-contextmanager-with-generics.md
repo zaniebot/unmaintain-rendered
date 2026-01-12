@@ -13,14 +13,14 @@ head: contextmanager-types
 created_at: 2025-12-30T18:21:40Z
 updated_at: 2025-12-31T09:34:23Z
 url: https://github.com/astral-sh/ruff/pull/22306
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] contextmanager with generics
 
 ---
 
-_Pull request opened by @eclbg on 2025-12-30 18:21_
+_@eclbg_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

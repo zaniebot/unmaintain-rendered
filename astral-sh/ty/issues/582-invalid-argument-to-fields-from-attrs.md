@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-04T10:42:54Z
 updated_at: 2025-08-18T20:38:20Z
 url: https://github.com/astral-sh/ty/issues/582
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Invalid argument to `fields` from `attrs`
 
 ---
 
-_Issue opened by @my1e5 on 2025-06-04 10:42_
+_@my1e5_
 
 ### Summary
 

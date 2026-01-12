@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-17T13:07:22Z
 updated_at: 2024-11-24T02:39:06Z
 url: https://github.com/astral-sh/ruff/issues/12949
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # A005 (builtin module shadowing) should ignore private modules
 
 ---
 
-_Issue opened by @jab on 2024-08-17 13:07_
+_@jab_
 
 I just updated from ruff 0.5.0 to 0.6.1, and had to add an ignore for A005 so that ruff check would continue to pass:
 

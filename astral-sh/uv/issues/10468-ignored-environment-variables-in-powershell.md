@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T12:17:09Z
 updated_at: 2025-03-03T15:18:46Z
 url: https://github.com/astral-sh/uv/issues/10468
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Ignored environment variables in powershell
 
 ---
 
-_Issue opened by @MYCL94 on 2025-01-10 12:17_
+_@MYCL94_
 
 **Issue description:**
 

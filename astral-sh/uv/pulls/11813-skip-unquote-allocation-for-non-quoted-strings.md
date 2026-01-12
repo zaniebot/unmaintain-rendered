@@ -13,14 +13,14 @@ head: charlie/mem
 created_at: 2025-02-26T21:47:56Z
 updated_at: 2025-02-26T21:56:32Z
 url: https://github.com/astral-sh/uv/pull/11813
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Skip unquote allocation for non-quoted strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-26 21:47_
+_@charliermarsh_
 
 ## Summary
 

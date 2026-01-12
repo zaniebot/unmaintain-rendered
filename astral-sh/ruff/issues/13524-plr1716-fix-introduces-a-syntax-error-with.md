@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-26T13:35:32Z
 updated_at: 2024-12-09T04:58:46Z
 url: https://github.com/astral-sh/ruff/issues/13524
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLR1716 fix introduces a syntax error with unbalanced parentheses
 
 ---
 
-_Issue opened by @dscorbett on 2024-09-26 13:35_
+_@dscorbett_
 
 When the two expressions to be collapsed by [`boolean-chained-comparison` (PLR1716)](https://docs.astral.sh/ruff/rules/boolean-chained-comparison/) are parenthesized with different numbers of parentheses, the fix makes Ruff fail.
 

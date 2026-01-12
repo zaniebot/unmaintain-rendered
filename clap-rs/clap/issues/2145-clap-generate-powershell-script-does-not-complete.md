@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-09-27T22:50:49Z
 updated_at: 2023-07-05T15:36:59Z
 url: https://github.com/clap-rs/clap/issues/2145
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # clap_generate PowerShell script does not complete case sensitive options like -S. Only completes -s
 
 ---
 
-_Issue opened by @jfishe on 2020-09-27 22:50_
+_@jfishe_
 
 ### Make sure you completed the following tasks
 

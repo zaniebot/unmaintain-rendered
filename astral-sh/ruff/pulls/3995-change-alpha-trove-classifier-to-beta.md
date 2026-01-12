@@ -12,14 +12,14 @@ head: charlie/beta
 created_at: 2023-04-17T13:49:45Z
 updated_at: 2023-04-17T14:16:34Z
 url: https://github.com/astral-sh/ruff/pull/3995
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Change Alpha trove classifier to Beta
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-17 13:49_
+_@charliermarsh_
 
 Closes #3991.
 

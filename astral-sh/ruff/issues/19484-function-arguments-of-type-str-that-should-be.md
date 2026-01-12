@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-22T12:39:06Z
 updated_at: 2025-07-29T16:14:25Z
 url: https://github.com/astral-sh/ruff/issues/19484
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Function arguments of type `str` that should be `Literal`
 
 ---
 
-_Issue opened by @jlopezpena on 2025-07-22 12:39_
+_@jlopezpena_
 
 ### Summary
 

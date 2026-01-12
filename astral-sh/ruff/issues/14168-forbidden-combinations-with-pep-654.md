@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:15:38Z
 updated_at: 2024-11-08T15:54:28Z
 url: https://github.com/astral-sh/ruff/issues/14168
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Forbidden combinations with PEP-654
 
 ---
 
-_Issue opened by @jakkdl on 2024-11-07 16:15_
+_@jakkdl_
 
 ### continue/break/return in except*
 continue/break/return in `except*` is a syntax error, see https://peps.python.org/pep-0654/#forbidden-combinations

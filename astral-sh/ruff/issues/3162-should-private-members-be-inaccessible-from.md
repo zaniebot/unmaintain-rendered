@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T05:20:41Z
 updated_at: 2023-02-23T16:53:01Z
 url: https://github.com/astral-sh/ruff/issues/3162
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Should private members be inaccessible from objects of the same type?
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-02-23 05:20_
+_@NeilGirdhar_
 
 Should a class factory not be able to access the object it creates's private methods?  Should a comparison function not be able to access an object of the same type's private members?
 ```python

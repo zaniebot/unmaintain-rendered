@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T09:49:00Z
 updated_at: 2024-09-05T02:09:24Z
 url: https://github.com/astral-sh/uv/issues/6963
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv.lock gets invalid value when changing pyproject.toml manually
 
 ---
 
-_Issue opened by @Morgadoooo on 2024-09-03 09:49_
+_@Morgadoooo_
 
 Hi, 
 

@@ -14,14 +14,14 @@ head: fix-SIM911
 created_at: 2025-06-19T14:10:00Z
 updated_at: 2025-06-23T14:25:59Z
 url: https://github.com/astral-sh/ruff/pull/18793
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-simplify`] Fix `SIM911` autofix creating a syntax error
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-19 14:10_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

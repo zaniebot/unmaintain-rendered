@@ -13,14 +13,14 @@ head: ls-alias
 created_at: 2024-12-30T14:08:16Z
 updated_at: 2025-01-08T20:29:44Z
 url: https://github.com/astral-sh/uv/pull/10240
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Add `ls` alias to `uv {tool, python, pip} list`
 
 ---
 
-_Pull request opened by @unexge on 2024-12-30 14:08_
+_@unexge_
 
 ## Summary
 

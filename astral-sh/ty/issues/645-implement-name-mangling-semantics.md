@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T09:34:18Z
 updated_at: 2025-11-18T16:10:32Z
 url: https://github.com/astral-sh/ty/issues/645
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Implement name mangling semantics
 
 ---
 
-_Issue opened by @pratt-fds on 2025-06-13 09:34_
+_@pratt-fds_
 
 ### Summary
 

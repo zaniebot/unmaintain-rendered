@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T14:41:30Z
 updated_at: 2025-03-27T16:01:46Z
 url: https://github.com/astral-sh/ruff/issues/16950
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `pyproject.toml` is ignored when passed via stdin
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-24 14:41_
+_@InSyncWithFoo_
 
 This works:
 

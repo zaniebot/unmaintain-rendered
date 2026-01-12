@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T21:52:26Z
 updated_at: 2026-01-12T10:00:37Z
 url: https://github.com/astral-sh/ty/issues/2427
-synced_at: 2026-01-12T11:01:03Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Invalid solution to contravariant type variable with upper bound
 
 ---
 
-_Issue opened by @ibraheemdev on 2026-01-09 21:52_
+_@ibraheemdev_
 
 For example,
 

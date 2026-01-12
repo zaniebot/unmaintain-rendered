@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-18T21:04:29Z
 updated_at: 2025-04-18T21:04:35Z
 url: https://github.com/astral-sh/uv/issues/12975
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Invalidate Git repository cache when `UV_GIT_LFS` value differs
 
 ---
 
-_Issue opened by @zanieb on 2025-04-18 21:04_
+_@zanieb_
 
 We can get into a bad state with Git LFS if the repository is cached
 

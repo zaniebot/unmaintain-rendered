@@ -13,14 +13,14 @@ head: dhruv/diagnostic-mode-doc
 created_at: 2025-07-08T10:51:53Z
 updated_at: 2025-07-08T11:21:15Z
 url: https://github.com/astral-sh/ty/pull/779
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add docs for `ty.diagnosticMode`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-08 10:51_
+_@dhruvmanila_
 
 This PR adds documentation for the `ty.diagnosticMode` editor setting.
 

@@ -15,14 +15,14 @@ head: david/item-backreferences
 created_at: 2025-09-05T08:43:52Z
 updated_at: 2025-09-05T10:38:39Z
 url: https://github.com/astral-sh/ruff/pull/20262
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Add backreferences to TypedDict items in diagnostics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-05 08:43_
+_@sharkdp_
 
 ## Summary
 

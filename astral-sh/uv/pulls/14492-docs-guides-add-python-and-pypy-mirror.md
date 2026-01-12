@@ -11,14 +11,14 @@ head: python-mirror-docs
 created_at: 2025-07-07T19:58:52Z
 updated_at: 2025-08-08T15:38:56Z
 url: https://github.com/astral-sh/uv/pull/14492
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # docs(guides): Add Python and PyPy mirror configuration
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-07-07 19:58_
+_@FishAlchemist_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-12T16:17:25Z
 updated_at: 2023-08-09T04:58:53Z
 url: https://github.com/astral-sh/ruff/issues/5030
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add ability to handle magic commands in Jupyter notebook
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-06-12 16:17_
+_@dhruvmanila_
 
 Currently, if any cell contains any magic commands it'll be ignored even if the cell contains valid Python code. This might lead to false positive as some code is intentionally ignored for linting (undefined symbol).
 

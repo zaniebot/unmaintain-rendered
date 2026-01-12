@@ -13,14 +13,14 @@ head: charlie/suggested
 created_at: 2023-08-29T04:23:15Z
 updated_at: 2023-08-29T04:37:07Z
 url: https://github.com/astral-sh/ruff/pull/6967
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Make RUF100 a suggested fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-29 04:23_
+_@charliermarsh_
 
 I made this automatic when I removed the deprecated "unspecified" method, but I think suggested is actually more appropriate.
 

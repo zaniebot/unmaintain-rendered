@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-03T09:04:55Z
 updated_at: 2023-10-03T14:10:40Z
 url: https://github.com/astral-sh/ruff/issues/7776
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # option to select the ruff version on the playground
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-03 09:04_
+_@DetachHead_
 
 currently the version is displayed here but there's no option to change it (also it's currently outdated since the latest version is 0.0.292)
 

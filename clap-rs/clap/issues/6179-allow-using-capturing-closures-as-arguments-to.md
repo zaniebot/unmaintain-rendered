@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-08T19:09:43Z
 updated_at: 2025-11-16T15:59:35Z
 url: https://github.com/clap-rs/clap/issues/6179
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow using capturing closures as arguments to the `Command::defer` function
 
 ---
 
-_Issue opened by @calebkiage on 2025-11-08 19:09_
+_@calebkiage_
 
 ### Please complete the following tasks
 

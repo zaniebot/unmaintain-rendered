@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T18:08:37Z
 updated_at: 2023-11-21T11:53:43Z
 url: https://github.com/astral-sh/ruff/issues/8606
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Omit `asyncio.timeout` from `SIM117`
 
 ---
 
-_Issue opened by @maltevesper on 2023-11-10 18:08_
+_@maltevesper_
 
 While I generally agree with SIM117 (combine with statements where possible), I am wondering if there are cases where there should be exceptions to the rule, in particular `asyncio.timeout` comes to mind.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-09T09:37:26Z
 updated_at: 2025-07-09T10:46:14Z
 url: https://github.com/astral-sh/ruff/issues/19228
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # McCabe checker does not seem to work well with decorators
 
 ---
 
-_Issue opened by @travis-leith on 2025-07-09 09:37_
+_@travis-leith_
 
 ### Summary
 

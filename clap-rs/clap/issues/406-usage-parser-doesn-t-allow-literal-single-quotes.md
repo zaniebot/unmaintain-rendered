@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-31T19:31:23Z
 updated_at: 2016-02-01T06:38:41Z
 url: https://github.com/clap-rs/clap/issues/406
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # usage parser doesn't allow literal single quotes in help any more
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-31 19:31_
+_@kbknapp_
 
 `panic!` on `Arg::from_usage("<arg> 'some help with\' a literal single quote'")
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T21:46:44Z
 updated_at: 2025-07-04T02:13:06Z
 url: https://github.com/astral-sh/ty/issues/129
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add subtyping / assignability between callable types and classes
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-10 21:46_
+_@dhruvmanila_
 
 > Some other false positives appear to be because we lack handling of assignability/subtyping of a class literal or subclass-of type to a `Callable` type. I think the proper handling here (barring metaclass `__call__` handling) would consider the class to be an intersection of its `__init__` and `__new__` signatures. But we could also do a temporary version that just uses the current `Type::signatures()` implementation as forgiving gradual callable.
 >

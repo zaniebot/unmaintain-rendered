@@ -13,14 +13,14 @@ head: zb/display-err
 created_at: 2024-09-10T19:57:10Z
 updated_at: 2024-09-10T21:18:52Z
 url: https://github.com/astral-sh/uv/pull/7272
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Display the Python version in malformed installation key traces
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 19:57_
+_@zanieb_
 
 e.g., the existing message is bad?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T02:18:27Z
 updated_at: 2025-07-08T02:28:39Z
 url: https://github.com/astral-sh/uv/issues/6484
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Git operation fails if cache exists in subsequent uv pip compile runs
 
 ---
 
-_Issue opened by @nth10sd on 2024-08-23 02:18_
+_@nth10sd_
 
 In a `requirements.in` file:
 

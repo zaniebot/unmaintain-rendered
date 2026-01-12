@@ -14,14 +14,14 @@ head: E203_line_break
 created_at: 2024-04-17T13:38:04Z
 updated_at: 2024-06-08T23:29:45Z
 url: https://github.com/astral-sh/ruff/pull/10999
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Adapted fix to work identical to format
 
 ---
 
-_Pull request opened by @Philipp-Thiel on 2024-04-17 13:38_
+_@Philipp-Thiel_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

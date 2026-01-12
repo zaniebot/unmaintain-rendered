@@ -11,14 +11,14 @@ head: fix-noqa-regex
 created_at: 2022-11-19T16:33:42Z
 updated_at: 2022-11-19T17:19:59Z
 url: https://github.com/astral-sh/ruff/pull/818
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix regular expression for noqa comment
 
 ---
 
-_Pull request opened by @harupy on 2022-11-19 16:33_
+_@harupy_
 
 The current regular expression matches a string that looks like a noqa comment:
 

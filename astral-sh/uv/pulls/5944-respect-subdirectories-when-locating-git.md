@@ -13,14 +13,14 @@ head: charlie/sub
 created_at: 2024-08-09T00:03:20Z
 updated_at: 2024-08-09T00:13:25Z
 url: https://github.com/astral-sh/uv/pull/5944
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Respect subdirectories when locating Git workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 00:03_
+_@charliermarsh_
 
 ## Summary
 

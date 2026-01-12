@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T07:04:33Z
 updated_at: 2024-10-30T20:11:06Z
 url: https://github.com/astral-sh/uv/issues/8283
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # How to fetch packages from a private package repo (not git repo)
 
 ---
 
-_Issue opened by @dbogdoll on 2024-10-17 07:04_
+_@dbogdoll_
 
 Hi all,
 

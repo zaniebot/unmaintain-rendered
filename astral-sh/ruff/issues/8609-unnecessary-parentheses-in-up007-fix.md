@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T23:29:46Z
 updated_at: 2023-11-11T00:15:10Z
 url: https://github.com/astral-sh/ruff/issues/8609
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Unnecessary parentheses in UP007 fix
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-10 23:29_
+_@hauntsaninja_
 
 ```
 λ cat x.py

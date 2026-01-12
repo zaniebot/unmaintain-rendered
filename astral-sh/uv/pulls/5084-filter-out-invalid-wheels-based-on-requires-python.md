@@ -13,14 +13,14 @@ head: charlie/wheel-python
 created_at: 2024-07-16T00:48:52Z
 updated_at: 2024-07-16T01:01:40Z
 url: https://github.com/astral-sh/uv/pull/5084
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Filter out invalid wheels based on `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 00:48_
+_@charliermarsh_
 
 ## Summary
 

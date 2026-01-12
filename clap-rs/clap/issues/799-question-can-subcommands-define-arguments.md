@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-31T22:14:03Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/799
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Question: Can subcommands define arguments?
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-12-31 22:14_
+_@matthiasbeyer_
 
 I would love to have a way to pass arguments to subcommands, to build CLIs like this:
 

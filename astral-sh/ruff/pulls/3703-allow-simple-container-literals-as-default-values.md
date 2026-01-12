@@ -12,14 +12,14 @@ head: allow-simple-container-literals-as-default-values-pyi
 created_at: 2023-03-24T00:02:05Z
 updated_at: 2023-03-24T03:16:28Z
 url: https://github.com/astral-sh/ruff/pull/3703
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow simple container literals as default values
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 00:02_
+_@JonathanPlasse_
 
 - Implement PyCQA/flake8-pyi#358
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-29T23:52:12Z
 updated_at: 2022-12-31T04:16:05Z
 url: https://github.com/astral-sh/ruff/issues/1454
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add custom messages to the `Fix` API
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-29 23:52_
+_@charliermarsh_
 
 In LSP extensions, the action prompt is, like, `Fix F401`. We can make these a lot more specific and actionable (e.g., `Remove import Foo`).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T13:51:39Z
 updated_at: 2023-07-23T01:22:49Z
 url: https://github.com/astral-sh/ruff/issues/5981
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Remove regex from `blanket_noqa`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-22 13:51_
+_@charliermarsh_
 
 We should be able to do this with our existing `noqa` parser code instead of re-implementing here.
 

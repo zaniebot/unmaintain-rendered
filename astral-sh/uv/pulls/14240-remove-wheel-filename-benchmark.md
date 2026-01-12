@@ -13,14 +13,14 @@ head: charlie/be
 created_at: 2025-06-24T13:44:19Z
 updated_at: 2025-06-24T15:54:14Z
 url: https://github.com/astral-sh/uv/pull/14240
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Remove wheel filename benchmark
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-24 13:44_
+_@charliermarsh_
 
 ## Summary
 

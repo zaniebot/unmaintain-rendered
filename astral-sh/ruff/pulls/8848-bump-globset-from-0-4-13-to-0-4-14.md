@@ -13,14 +13,14 @@ head: dependabot/cargo/globset-0.4.14
 created_at: 2023-11-27T08:47:55Z
 updated_at: 2023-11-27T10:04:25Z
 url: https://github.com/astral-sh/ruff/pull/8848
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump globset from 0.4.13 to 0.4.14
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-27 08:47_
+_@dependabot_
 
 Bumps [globset](https://github.com/BurntSushi/ripgrep) from 0.4.13 to 0.4.14.
 <details>

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T01:18:10Z
 updated_at: 2024-08-21T06:44:57Z
 url: https://github.com/astral-sh/ruff/issues/12999
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `typed-argument-default-in-stub` (`PYI011`) - false positive when default value intentionally used to infer the default value of a generic
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-20 01:18_
+_@DetachHead_
 
 not sure if this is something that can be determined without type analysis (#3893), but sometimes `PYI011` conflicts with pyright's `reportInvalidTypeVarUse` rule. for example, in the following `.pyi` file:
 

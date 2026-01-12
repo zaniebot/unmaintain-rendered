@@ -11,14 +11,14 @@ head: fix/bar-chart-svg
 created_at: 2026-01-12T10:42:14Z
 updated_at: 2026-01-12T10:42:14Z
 url: https://github.com/astral-sh/ty/pull/2459
-synced_at: 2026-01-12T11:01:03Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Fix the docs links to the benchmark results
 
 ---
 
-_Pull request opened by @Iain-S on 2026-01-12 10:42_
+_@Iain-S_
 
 ## Summary
 

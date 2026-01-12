@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-22T14:54:08Z
 updated_at: 2024-12-22T15:23:28Z
 url: https://github.com/astral-sh/uv/issues/10094
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv add doesn't support URL fragments (e.g. subdirectory)
 
 ---
 
-_Issue opened by @MrNaif2018 on 2024-12-22 14:54_
+_@MrNaif2018_
 
 ```
 $ /Users/alex/.cargo/bin/uv add "karrio @ https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk"

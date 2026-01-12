@@ -13,14 +13,14 @@ head: charlie/cli
 created_at: 2024-06-23T23:51:59Z
 updated_at: 2024-06-24T10:16:23Z
 url: https://github.com/astral-sh/uv/pull/4456
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Add standalone CLI crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-23 23:51_
+_@charliermarsh_
 
 ## Summary
 

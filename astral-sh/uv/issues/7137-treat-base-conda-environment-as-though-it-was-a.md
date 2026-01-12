@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-06T21:23:04Z
 updated_at: 2024-11-07T20:29:57Z
 url: https://github.com/astral-sh/uv/issues/7137
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Treat base conda environment as though it was a system Python
 
 ---
 
-_Issue opened by @notatallshaw on 2024-09-06 21:23_
+_@notatallshaw_
 
 The base environment of conda is often not something that should be installed into as it can break conda.
 

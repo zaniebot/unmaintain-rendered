@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T16:42:18Z
 updated_at: 2025-10-30T14:15:03Z
 url: https://github.com/astral-sh/uv/issues/15141
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `uvx --from git...` doesn't respect the remote pyproject.toml's `tool.uv.default-groups`
 
 ---
 
-_Issue opened by @bradbeattie on 2025-08-07 16:42_
+_@bradbeattie_
 
 ### Summary
 

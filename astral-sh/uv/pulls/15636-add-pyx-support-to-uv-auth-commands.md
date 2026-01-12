@@ -13,14 +13,14 @@ head: zb/auth-pyx
 created_at: 2025-09-02T18:45:15Z
 updated_at: 2025-09-03T09:01:21Z
 url: https://github.com/astral-sh/uv/pull/15636
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Add pyx support to `uv auth` commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-02 18:45_
+_@charliermarsh_
 
 ## Summary
 

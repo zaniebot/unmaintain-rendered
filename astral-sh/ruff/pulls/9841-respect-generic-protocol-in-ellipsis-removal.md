@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-02-05T18:52:03Z
 updated_at: 2024-02-05T19:42:34Z
 url: https://github.com/astral-sh/ruff/pull/9841
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Respect generic `Protocol` in ellipsis removal
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-05 18:52_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9840.
 

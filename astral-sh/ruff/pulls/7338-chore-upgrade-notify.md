@@ -13,14 +13,14 @@ head: upgrade-notify
 created_at: 2023-09-13T13:53:13Z
 updated_at: 2023-09-14T09:58:02Z
 url: https://github.com/astral-sh/ruff/pull/7338
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # chore: Upgrade notify
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-13 13:53_
+_@MichaReiser_
 
 ## Summary
 

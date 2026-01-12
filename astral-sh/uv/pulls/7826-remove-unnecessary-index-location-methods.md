@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-10-01T04:28:54Z
 updated_at: 2024-10-01T04:44:54Z
 url: https://github.com/astral-sh/uv/pull/7826
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Remove unnecessary index location methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 04:28_
+_@charliermarsh_
 
 _No description provided._
 

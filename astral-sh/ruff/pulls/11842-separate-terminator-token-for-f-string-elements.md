@@ -14,14 +14,14 @@ head: dhruv/f-string-elements-kind
 created_at: 2024-06-12T05:08:00Z
 updated_at: 2024-06-12T08:27:36Z
 url: https://github.com/astral-sh/ruff/pull/11842
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Separate terminator token for f-string elements kind
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-12 05:08_
+_@dhruvmanila_
 
 ## Summary
 

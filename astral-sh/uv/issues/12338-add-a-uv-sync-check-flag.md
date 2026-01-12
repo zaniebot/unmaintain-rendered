@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T12:29:36Z
 updated_at: 2025-03-21T17:30:39Z
 url: https://github.com/astral-sh/uv/issues/12338
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Add a `uv sync --check` flag
 
 ---
 
-_Issue opened by @liiight on 2025-03-20 12:29_
+_@liiight_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dcreager/generic-horn-clauses
 created_at: 2025-12-18T00:44:47Z
 updated_at: 2025-12-19T22:33:00Z
 url: https://github.com/astral-sh/ruff/pull/22043
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Handle covariant "deep" mutual typevar constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-18 00:44_
+_@dcreager_
 
 This is the first step in supporting https://github.com/astral-sh/ty/issues/2045. This handles just the covariant (i.e. easy) case. With a quick `list` / `Sequence` switcheroo, we get:
 

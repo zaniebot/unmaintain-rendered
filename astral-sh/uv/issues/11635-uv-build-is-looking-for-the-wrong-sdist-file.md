@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T19:33:17Z
 updated_at: 2025-02-20T08:11:17Z
 url: https://github.com/astral-sh/uv/issues/11635
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # uv build is looking for the wrong sdist file
 
 ---
 
-_Issue opened by @edgarrmondragon on 2025-02-19 19:33_
+_@edgarrmondragon_
 
 ### Summary
 

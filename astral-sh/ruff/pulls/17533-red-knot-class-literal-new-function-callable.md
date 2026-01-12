@@ -13,14 +13,14 @@ head: class-literal-new-function-callable-subtyping
 created_at: 2025-04-21T23:21:44Z
 updated_at: 2025-04-25T20:55:09Z
 url: https://github.com/astral-sh/ruff/pull/17533
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Class literal `__new__` function callable subtyping
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-21 23:21_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

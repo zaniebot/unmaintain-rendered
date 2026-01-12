@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T14:34:17Z
 updated_at: 2025-03-31T14:11:42Z
 url: https://github.com/clap-rs/clap/issues/5962
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Docs: Add a derive example for Help where it's disabled
 
 ---
 
-_Issue opened by @joshka on 2025-03-28 14:34_
+_@joshka_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: fix-dataclass-transform-overrides
 created_at: 2025-10-08T10:17:30Z
 updated_at: 2025-10-09T07:34:49Z
 url: https://github.com/astral-sh/ruff/pull/20761
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] `dataclass_transform`: Support `frozen_default` and `kw_only_default`
 
 ---
 
-_Pull request opened by @fatelei on 2025-10-08 10:17_
+_@fatelei_
 
 ## Summary
 

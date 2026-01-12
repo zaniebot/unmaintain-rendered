@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T08:32:44Z
 updated_at: 2024-05-15T16:29:40Z
 url: https://github.com/astral-sh/uv/issues/3539
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Cleaning an empty cache removes 4 files
 
 ---
 
-_Issue opened by @konstin on 2024-05-13 08:32_
+_@konstin_
 
 Repeatedly calling `uv cache clean` removes 4 files every time on ubuntu 24.04. This should not happen, `uv cache clean` shouldn't create a cache directory before cleaning (and/or we should count correctly)
 

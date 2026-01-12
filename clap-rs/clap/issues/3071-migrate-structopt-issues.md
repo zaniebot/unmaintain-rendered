@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-07T21:47:45Z
 updated_at: 2021-12-09T17:05:37Z
 url: https://github.com/clap-rs/clap/issues/3071
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Migrate structopt issues
 
 ---
 
-_Issue opened by @epage on 2021-12-07 21:47_
+_@epage_
 
 By taking on the code, we've likely taken on the issues already reported in the structopt repo.  We should not lose track of that by bringing the issues over here.
 

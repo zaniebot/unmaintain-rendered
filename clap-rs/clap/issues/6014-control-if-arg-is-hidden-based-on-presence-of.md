@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-24T06:16:02Z
 updated_at: 2025-05-28T19:59:26Z
 url: https://github.com/clap-rs/clap/issues/6014
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Control if Arg is hidden based on presence of another Arg
 
 ---
 
-_Issue opened by @emersonford on 2025-05-24 06:16_
+_@emersonford_
 
 ### Please complete the following tasks
 

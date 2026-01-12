@@ -13,14 +13,14 @@ head: charlie/cache-env
 created_at: 2024-08-07T23:24:45Z
 updated_at: 2024-08-07T23:31:44Z
 url: https://github.com/astral-sh/uv/pull/5897
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Use cached environments for `--with` layers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 23:24_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: cache-prune-version
 created_at: 2024-06-18T04:54:01Z
 updated_at: 2024-06-18T07:35:06Z
 url: https://github.com/astral-sh/uv/pull/4375
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Fix cache-prune-test to work outside the git repository
 
 ---
 
-_Pull request opened by @mgorny on 2024-06-18 04:54_
+_@mgorny_
 
 ## Summary
 

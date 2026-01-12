@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T14:10:02Z
 updated_at: 2025-06-04T04:47:08Z
 url: https://github.com/astral-sh/uv/issues/13815
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # `uv publish` fails with a 404 when uploading to a GitLab.com package registry in CI using CI_JOB_TOKEN
 
 ---
 
-_Issue opened by @winpat on 2025-06-03 14:10_
+_@winpat_
 
 ### Summary
 

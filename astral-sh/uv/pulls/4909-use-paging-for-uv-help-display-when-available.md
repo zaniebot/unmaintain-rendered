@@ -13,14 +13,14 @@ head: zb/cli-help-pager
 created_at: 2024-07-08T20:55:37Z
 updated_at: 2024-07-09T18:06:28Z
 url: https://github.com/astral-sh/uv/pull/4909
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Use paging for `uv help` display when available
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-08 20:55_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/4906
 

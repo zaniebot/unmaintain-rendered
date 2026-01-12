@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T00:14:14Z
 updated_at: 2025-06-21T16:02:50Z
 url: https://github.com/astral-sh/uv/issues/13307
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Respect XDG specification on Windows
 
 ---
 
-_Issue opened by @leni8ec on 2025-05-06 00:14_
+_@leni8ec_
 
 ### Summary
 

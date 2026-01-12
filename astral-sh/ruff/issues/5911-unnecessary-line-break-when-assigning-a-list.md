@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T09:27:42Z
 updated_at: 2023-07-20T10:07:24Z
 url: https://github.com/astral-sh/ruff/issues/5911
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Unnecessary line break when assigning a list comprehension
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-20 09:27_
+_@MichaReiser_
 
 Ruff unnecessarily adds a line break before the `for` keyword
 

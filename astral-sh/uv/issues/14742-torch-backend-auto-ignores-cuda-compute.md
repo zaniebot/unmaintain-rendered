@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T22:54:26Z
 updated_at: 2025-07-23T01:29:50Z
 url: https://github.com/astral-sh/uv/issues/14742
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # `--torch-backend=auto` ignores CUDA compute capability when installing `torch` for GTX 1080 Ti
 
 ---
 
-_Issue opened by @hamzaq2000 on 2025-07-18 22:54_
+_@hamzaq2000_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/glob-0.x-lockfile
 created_at: 2025-08-18T02:07:30Z
 updated_at: 2025-08-19T14:39:26Z
 url: https://github.com/astral-sh/ruff/pull/19959
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # Update Rust crate glob to v0.3.3
 
 ---
 
-_Pull request opened by @renovate on 2025-08-18 02:07_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: cjm/bigunions
 created_at: 2025-04-14T14:46:46Z
 updated_at: 2025-04-14T18:09:25Z
 url: https://github.com/astral-sh/ruff/pull/17393
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] add a large-union-of-string-literals benchmark
 
 ---
 
-_Pull request opened by @carljm on 2025-04-14 14:46_
+_@carljm_
 
 ## Summary
 

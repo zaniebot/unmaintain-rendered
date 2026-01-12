@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-11T23:19:25Z
 updated_at: 2024-09-12T19:07:35Z
 url: https://github.com/astral-sh/uv/issues/7315
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # (docs): typo on `--build-constraints` (should be singular)
 
 ---
 
-_Issue opened by @lmmx on 2024-09-11 23:19_
+_@lmmx_
 
 > `uv build --build-constraints constraints.txt --require-hashes`
 

@@ -14,14 +14,14 @@ head: zb/flake-commit
 created_at: 2024-03-28T18:42:51Z
 updated_at: 2024-03-28T18:52:18Z
 url: https://github.com/astral-sh/uv/pull/2717
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Filter flake message for `install_git_public_https_missing_commit` on win32
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-28 18:42_
+_@zanieb_
 
 _No description provided._
 

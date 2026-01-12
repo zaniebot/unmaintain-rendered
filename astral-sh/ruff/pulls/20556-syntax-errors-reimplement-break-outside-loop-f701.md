@@ -13,14 +13,14 @@ head: F701
 created_at: 2025-09-24T16:52:30Z
 updated_at: 2025-10-13T20:18:39Z
 url: https://github.com/astral-sh/ruff/pull/20556
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [syntax-errors] Reimplement `break-outside-loop` (`F701`) as a semantic syntax error
 
 ---
 
-_Pull request opened by @11happy on 2025-09-24 16:52_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

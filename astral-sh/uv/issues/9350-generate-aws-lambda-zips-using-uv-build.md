@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-22T09:08:47Z
 updated_at: 2025-09-25T19:04:50Z
 url: https://github.com/astral-sh/uv/issues/9350
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Generate AWS lambda zips using `uv build`
 
 ---
 
-_Issue opened by @kishaningithub on 2024-11-22 09:08_
+_@kishaningithub_
 
 Generating python lambda zips is a cumbersome process. It would be great if `uv build` can have the ability to generate AWS Lambda zip files which can be used to create lambda function in AWS.
 

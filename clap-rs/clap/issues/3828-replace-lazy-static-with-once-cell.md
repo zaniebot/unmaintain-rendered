@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-06-14T13:57:51Z
 updated_at: 2022-06-14T14:44:17Z
 url: https://github.com/clap-rs/clap/issues/3828
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Replace lazy_static with once_cell
 
 ---
 
-_Issue opened by @jplatte on 2022-06-14 13:57_
+_@jplatte_
 
 Many other projects have switched from `lazy_static` to `once_cell` because it offers a macro-free solution to the same problem (with the only caveat being missing `no_std` support which I'm pretty sure is irrelevant for clap). Would you be open to a PR that does the same thing here?
 

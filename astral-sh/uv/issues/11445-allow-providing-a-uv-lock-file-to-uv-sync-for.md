@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T14:18:10Z
 updated_at: 2025-03-04T14:55:10Z
 url: https://github.com/astral-sh/uv/issues/11445
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Allow providing a uv.lock file to uv sync for clarity?
 
 ---
 
-_Issue opened by @nbelakovski on 2025-02-12 14:18_
+_@nbelakovski_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-31T18:48:00Z
 updated_at: 2024-09-20T20:00:12Z
 url: https://github.com/clap-rs/clap/issues/5058
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Filter and order completions based on input and importance for native completions
 
 ---
 
-_Issue opened by @ModProg on 2023-07-31 18:48_
+_@ModProg_
 
 While there are some shell specific behaviors for options, e.g. for `zsh` and `fish`:
 

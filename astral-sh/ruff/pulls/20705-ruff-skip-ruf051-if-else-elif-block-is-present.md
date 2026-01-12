@@ -14,14 +14,14 @@ head: RUF051-else-branch
 created_at: 2025-10-06T01:40:52Z
 updated_at: 2025-10-06T13:08:47Z
 url: https://github.com/astral-sh/ruff/pull/20705
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`ruff`] Skip `RUF051` if `else`/`elif` block is present
 
 ---
 
-_Pull request opened by @njhearp on 2025-10-06 01:40_
+_@njhearp_
 
 ## Summary
 

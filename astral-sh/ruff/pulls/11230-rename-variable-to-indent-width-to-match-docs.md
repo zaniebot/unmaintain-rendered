@@ -13,14 +13,14 @@ head: dhruv/indent-width-docs
 created_at: 2024-05-01T11:56:17Z
 updated_at: 2024-05-01T12:08:22Z
 url: https://github.com/astral-sh/ruff/pull/11230
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Rename variable to `indent_width` to match docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-01 11:56_
+_@dhruvmanila_
 
 Reference: https://github.com/astral-sh/ruff/issues/8705#issuecomment-2084726911
 

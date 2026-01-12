@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T15:31:49Z
 updated_at: 2025-12-16T22:29:07Z
 url: https://github.com/astral-sh/ty/issues/1826
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # No type narrowing on argparse.ArgumentParser.error
 
 ---
 
-_Issue opened by @hxtk on 2025-12-09 15:31_
+_@hxtk_
 
 ### Summary
 

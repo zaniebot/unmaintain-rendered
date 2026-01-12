@@ -13,14 +13,14 @@ head: alex/object-intersections
 created_at: 2025-01-15T19:40:55Z
 updated_at: 2025-01-15T20:08:06Z
 url: https://github.com/astral-sh/ruff/pull/15511
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Simplify `object` out of intersections
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-15 19:40_
+_@AlexWaygood_
 
 ## Summary
 

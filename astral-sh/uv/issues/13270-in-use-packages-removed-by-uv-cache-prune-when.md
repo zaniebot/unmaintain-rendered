@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T17:18:12Z
 updated_at: 2025-05-10T18:39:12Z
 url: https://github.com/astral-sh/uv/issues/13270
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # In-use Packages Removed by `uv cache prune` When Using Symlinks
 
 ---
 
-_Issue opened by @xyu on 2025-05-02 17:18_
+_@xyu_
 
 ### Summary
 

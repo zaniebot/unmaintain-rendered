@@ -13,14 +13,14 @@ head: alex/builtin-method-callability-2
 created_at: 2025-09-10T13:16:04Z
 updated_at: 2025-09-10T18:58:57Z
 url: https://github.com/astral-sh/ruff/pull/20330
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Ensure various special-cased bound methods are understood as assignable to `Callable`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-10 13:16_
+_@AlexWaygood_
 
 ## Summary
 

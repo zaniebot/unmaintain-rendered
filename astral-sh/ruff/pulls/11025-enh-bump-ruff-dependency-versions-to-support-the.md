@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-19T03:31:34Z
 updated_at: 2024-04-19T03:37:55Z
 url: https://github.com/astral-sh/ruff/pull/11025
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # ENH: Bump `ruff` dependency versions to support the latest release of `v0.4.0` and Python 3.12
 
 ---
 
-_Pull request opened by @HenryAsa on 2024-04-19 03:31_
+_@HenryAsa_
 
 ## Summary
 

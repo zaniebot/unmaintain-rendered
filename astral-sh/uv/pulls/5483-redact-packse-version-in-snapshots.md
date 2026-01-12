@@ -13,14 +13,14 @@ head: konsti/redact-packse-version
 created_at: 2024-07-26T14:27:18Z
 updated_at: 2024-07-29T15:04:48Z
 url: https://github.com/astral-sh/uv/pull/5483
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Redact packse version in snapshots
 
 ---
 
-_Pull request opened by @konstin on 2024-07-26 14:27_
+_@konstin_
 
 Every packse version update is currently causing a huge diff (the size of the `lock_scenarios.rs` diff in this PR). By redacting the version from the snapshots, we will only have the actual change in the diff and not the redundant version change noise.
 

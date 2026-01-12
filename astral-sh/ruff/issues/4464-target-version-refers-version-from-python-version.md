@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T03:49:33Z
 updated_at: 2023-05-17T15:33:24Z
 url: https://github.com/astral-sh/ruff/issues/4464
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # target-version refers version from .python-version file
 
 ---
 
-_Issue opened by @jay0129 on 2023-05-17 03:49_
+_@jay0129_
 
 .python-version
 

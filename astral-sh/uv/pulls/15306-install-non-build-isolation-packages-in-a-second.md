@@ -13,14 +13,14 @@ head: charlie/split-no-build-isolation
 created_at: 2025-08-15T13:11:26Z
 updated_at: 2025-08-15T22:03:42Z
 url: https://github.com/astral-sh/uv/pull/15306
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Install non-build-isolation packages in a second phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-15 13:11_
+_@charliermarsh_
 
 ## Summary
 

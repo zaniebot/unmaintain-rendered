@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-04T18:07:46Z
 updated_at: 2023-11-12T16:39:53Z
 url: https://github.com/astral-sh/ruff/issues/1040
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # RUF001 and RIGHT SINGLE QUOTATION MARK
 
 ---
 
-_Issue opened by @lovetox on 2022-12-04 18:07_
+_@lovetox_
 
 Hi,
 

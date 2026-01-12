@@ -13,14 +13,14 @@ head: charlie/uvx-constraints
 created_at: 2024-12-27T19:42:04Z
 updated_at: 2025-03-07T22:55:11Z
 url: https://github.com/astral-sh/uv/pull/10207
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Allow `--constraints` and `--overrides` in `uvx`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-27 19:42_
+_@charliermarsh_
 
 ## Summary
 

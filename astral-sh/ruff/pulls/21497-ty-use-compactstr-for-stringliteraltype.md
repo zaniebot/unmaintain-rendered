@@ -14,14 +14,14 @@ head: micha/string-literal-compact-str2
 created_at: 2025-11-17T08:22:27Z
 updated_at: 2025-11-17T09:01:23Z
 url: https://github.com/astral-sh/ruff/pull/21497
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Use `CompactStr` for `StringLiteralType`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-17 08:22_
+_@MichaReiser_
 
 Most `StringLiteralType` should be short (<24 bytes). We can use a `CompactStr` to avoid an extra allocation for short strings.
 

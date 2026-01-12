@@ -13,14 +13,14 @@ head: rust-1.78
 created_at: 2024-05-03T07:35:55Z
 updated_at: 2024-05-03T12:56:03Z
 url: https://github.com/astral-sh/ruff/pull/11260
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Upgrade to Rust 1.78
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-03 07:35_
+_@MichaReiser_
 
 ## Summary
 

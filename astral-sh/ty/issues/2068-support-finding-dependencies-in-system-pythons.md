@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T13:02:32Z
 updated_at: 2026-01-07T22:35:43Z
 url: https://github.com/astral-sh/ty/issues/2068
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support finding dependencies in system Pythons that ty is installed into
 
 ---
 
-_Issue opened by @leet0rz on 2025-12-18 13:02_
+_@leet0rz_
 
 ### Summary
 

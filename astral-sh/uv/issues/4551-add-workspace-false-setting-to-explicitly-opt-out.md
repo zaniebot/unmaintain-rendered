@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T16:25:38Z
 updated_at: 2024-07-01T20:17:44Z
 url: https://github.com/astral-sh/uv/issues/4551
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Add `workspace = false` setting to explicitly opt-out of `uv` project and workspace APIs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-26 16:25_
+_@charliermarsh_
 
 _No description provided._
 

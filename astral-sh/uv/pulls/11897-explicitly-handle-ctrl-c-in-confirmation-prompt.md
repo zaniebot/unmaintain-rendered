@@ -12,14 +12,14 @@ head: explicit-ctrl-c-handling
 created_at: 2025-03-02T19:19:34Z
 updated_at: 2025-03-03T15:30:48Z
 url: https://github.com/astral-sh/uv/pull/11897
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # explicitly handle ctrl-c in confirmation prompt instead of signal handler
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-02 19:19_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

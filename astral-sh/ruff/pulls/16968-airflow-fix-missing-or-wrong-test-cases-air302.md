@@ -13,14 +13,14 @@ head: add-missing-test-case
 created_at: 2025-03-25T13:40:26Z
 updated_at: 2025-03-31T08:23:47Z
 url: https://github.com/astral-sh/ruff/pull/16968
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [airflow] fix missing or wrong test cases (AIR302)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-25 13:40_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

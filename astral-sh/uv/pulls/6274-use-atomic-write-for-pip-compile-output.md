@@ -13,14 +13,14 @@ head: charlie/safe
 created_at: 2024-08-20T20:30:18Z
 updated_at: 2024-08-22T00:08:32Z
 url: https://github.com/astral-sh/uv/pull/6274
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Use atomic write for `pip compile` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 20:30_
+_@charliermarsh_
 
 ## Summary
 

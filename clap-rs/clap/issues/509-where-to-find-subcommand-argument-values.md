@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-05-20T03:07:51Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/509
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Where to find Subcommand argument values
 
 ---
 
-_Issue opened by @Cyberunner23 on 2016-05-20 03:07_
+_@Cyberunner23_
 
 I'm working on a tool which takes values from an argument inside a subcommand and I'm running into the issue where clap is not giving me the value of the argument. Here is some test code that shows the issue.
 

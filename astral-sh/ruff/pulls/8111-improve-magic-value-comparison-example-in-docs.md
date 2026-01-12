@@ -13,14 +13,14 @@ head: charlie/magic
 created_at: 2023-10-21T22:56:54Z
 updated_at: 2023-10-21T23:11:44Z
 url: https://github.com/astral-sh/ruff/pull/8111
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Improve `magic-value-comparison` example in docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-21 22:56_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8109.
 

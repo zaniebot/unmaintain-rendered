@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T07:13:53Z
 updated_at: 2025-05-10T14:29:42Z
 url: https://github.com/astral-sh/uv/issues/13375
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # Support flags in requirements.in for `uv pip compile`
 
 ---
 
-_Issue opened by @howsiyu on 2025-05-10 07:13_
+_@howsiyu_
 
 ### Summary
 

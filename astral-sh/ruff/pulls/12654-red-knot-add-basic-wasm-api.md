@@ -13,14 +13,14 @@ head: red-knot-wasm
 created_at: 2024-08-03T18:46:20Z
 updated_at: 2024-08-06T07:28:03Z
 url: https://github.com/astral-sh/ruff/pull/12654
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Add basic WASM API
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-03 18:46_
+_@MichaReiser_
 
 ## Summary
 

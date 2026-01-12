@@ -12,14 +12,14 @@ head: fix/win_arm64-implied-platform-machine-marker
 created_at: 2025-09-17T21:46:56Z
 updated_at: 2025-09-19T20:34:42Z
 url: https://github.com/astral-sh/uv/pull/15921
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Fix implied `platform_machine` marker for `win_arm64` platform tag
 
 ---
 
-_Pull request opened by @RazerM on 2025-09-17 21:46_
+_@RazerM_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

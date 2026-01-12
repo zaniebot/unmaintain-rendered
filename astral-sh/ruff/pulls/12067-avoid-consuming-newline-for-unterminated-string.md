@@ -13,14 +13,14 @@ head: dhruv/unterminated-string
 created_at: 2024-06-27T10:20:38Z
 updated_at: 2024-06-27T11:32:51Z
 url: https://github.com/astral-sh/ruff/pull/12067
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Avoid consuming newline for unterminated string
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-27 10:20_
+_@dhruvmanila_
 
 ## Summary
 

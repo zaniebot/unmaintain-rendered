@@ -13,14 +13,14 @@ head: konsti/hash-checking-direct-url-metadata
 created_at: 2025-05-30T17:23:02Z
 updated_at: 2025-05-30T17:39:42Z
 url: https://github.com/astral-sh/uv/pull/13736
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Don't fail direct URL hash checking with dependency metadata
 
 ---
 
-_Pull request opened by @konstin on 2025-05-30 17:23_
+_@konstin_
 
 Fixes #12512
 

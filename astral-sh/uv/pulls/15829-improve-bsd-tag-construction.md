@@ -13,14 +13,14 @@ head: charlie/bsd
 created_at: 2025-09-14T01:38:39Z
 updated_at: 2025-09-14T14:48:39Z
 url: https://github.com/astral-sh/uv/pull/15829
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Improve BSD tag construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-14 01:38_
+_@charliermarsh_
 
 ## Summary
 

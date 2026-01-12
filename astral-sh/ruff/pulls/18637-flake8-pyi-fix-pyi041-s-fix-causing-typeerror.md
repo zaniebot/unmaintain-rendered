@@ -14,14 +14,14 @@ head: fix/18298-PYI041-fix-causing-type-error
 created_at: 2025-06-11T21:51:00Z
 updated_at: 2025-06-24T20:52:11Z
 url: https://github.com/astral-sh/ruff/pull/18637
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`flake8_pyi`] Fix `PYI041`'s fix causing TypeError with `None | None | ...`
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-11 21:51_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

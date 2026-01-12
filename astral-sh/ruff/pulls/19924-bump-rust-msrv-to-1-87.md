@@ -12,14 +12,14 @@ head: bump-msrv-1.87
 created_at: 2025-08-15T07:40:01Z
 updated_at: 2025-08-15T15:55:40Z
 url: https://github.com/astral-sh/ruff/pull/19924
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # Bump Rust MSRV to 1.87
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-15 07:40_
+_@MichaReiser_
 
 ## Summary
 Bumps the minimum supported Rust version from 1.86 to 1.87. This is in accordance with our MSRV policy N-2 where N is 1.89.

@@ -13,14 +13,14 @@ head: micha/violation-derive-macro
 created_at: 2024-11-23T16:28:48Z
 updated_at: 2024-11-27T09:43:59Z
 url: https://github.com/astral-sh/ruff/pull/14557
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Use a derive macro for Violations
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-23 16:28_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-30T12:21:05Z
 updated_at: 2023-09-30T13:33:23Z
 url: https://github.com/clap-rs/clap/issues/5148
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `arg(required = false)` is ignored (argument is still required)
 
 ---
 
-_Issue opened by @Andrew15-5 on 2023-09-30 12:21_
+_@Andrew15-5_
 
 ### Please complete the following tasks
 

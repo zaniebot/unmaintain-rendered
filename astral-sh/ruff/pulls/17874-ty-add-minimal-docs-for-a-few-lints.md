@@ -14,14 +14,14 @@ head: document-lints
 created_at: 2025-05-05T22:57:42Z
 updated_at: 2025-05-06T17:36:48Z
 url: https://github.com/astral-sh/ruff/pull/17874
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Add minimal docs for a few lints
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-05-05 22:57_
+_@dylwil3_
 
 Just the bare minimum to remove a few TODOs - omitted examples, and only did 9 but I will check back tomorrow and try to knock out a few more!
 

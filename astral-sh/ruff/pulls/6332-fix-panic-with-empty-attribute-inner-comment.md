@@ -12,14 +12,14 @@ head: formatter-fix-panic-with-empty-attribute-inner-comment
 created_at: 2023-08-04T08:18:04Z
 updated_at: 2023-08-04T09:59:56Z
 url: https://github.com/astral-sh/ruff/pull/6332
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix panic with empty attribute inner comment
 
 ---
 
-_Pull request opened by @davidszotten on 2023-08-04 08:18_
+_@davidszotten_
 
 Fixes https://github.com/astral-sh/ruff/issues/6181
 

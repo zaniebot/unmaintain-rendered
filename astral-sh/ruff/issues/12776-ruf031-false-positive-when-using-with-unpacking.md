@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T08:12:34Z
 updated_at: 2024-08-09T15:30:30Z
 url: https://github.com/astral-sh/ruff/issues/12776
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF031: False positive when using with unpacking 
 
 ---
 
-_Issue opened by @alexfikl on 2024-08-09 08:12_
+_@alexfikl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

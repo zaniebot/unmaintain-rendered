@@ -12,14 +12,14 @@ head: marker-tree-intersection
 created_at: 2024-05-14T17:21:22Z
 updated_at: 2024-05-15T17:01:06Z
 url: https://github.com/astral-sh/uv/pull/3583
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Add routine for verifying two marker trees are disjoint
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-14 17:21_
+_@ibraheemdev_
 
 ## Summary
 

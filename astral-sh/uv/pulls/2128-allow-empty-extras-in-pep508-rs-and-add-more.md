@@ -14,14 +14,14 @@ head: pep508-allow-empty-extras
 created_at: 2024-03-02T09:49:11Z
 updated_at: 2024-03-03T02:38:58Z
 url: https://github.com/astral-sh/uv/pull/2128
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Allow empty extras in `pep508-rs` and add more corner case to tests
 
 ---
 
-_Pull request opened by @SigureMo on 2024-03-02 09:49_
+_@SigureMo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

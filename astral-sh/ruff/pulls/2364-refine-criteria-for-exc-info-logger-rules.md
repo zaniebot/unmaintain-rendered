@@ -13,14 +13,14 @@ head: charlie/G
 created_at: 2023-01-30T21:13:58Z
 updated_at: 2023-01-30T21:32:02Z
 url: https://github.com/astral-sh/ruff/pull/2364
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Refine criteria for `exc_info` logger rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-30 21:13_
+_@charliermarsh_
 
 We now only trigger `logging-exc-info` and `logging-redundant-exc-info` when in an exception handler, with an `exc_info` that isn't `true` or `sys.exc_info()`.
 

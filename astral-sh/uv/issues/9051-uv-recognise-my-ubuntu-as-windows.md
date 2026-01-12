@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T09:38:31Z
 updated_at: 2024-12-26T16:57:58Z
 url: https://github.com/astral-sh/uv/issues/9051
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Uv recognise my ubuntu as windows
 
 ---
 
-_Issue opened by @sharmas1ddharth on 2024-11-12 09:38_
+_@sharmas1ddharth_
 
 ❯ uv run main.py
 warning: `VIRTUAL_ENV=/home/siddharth/uv_envs/wms_invoice_ocr` does not match the project environment path `.venv` and will be ignored

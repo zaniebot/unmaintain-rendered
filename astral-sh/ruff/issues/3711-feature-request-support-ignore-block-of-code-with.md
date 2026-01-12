@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T07:25:40Z
 updated_at: 2025-12-17T21:59:14Z
 url: https://github.com/astral-sh/ruff/issues/3711
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [feature request] Support ignore block of code with noqa
 
 ---
 
-_Issue opened by @woile on 2023-03-24 07:25_
+_@woile_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: zb/report-versions
 created_at: 2025-04-21T21:59:01Z
 updated_at: 2025-04-25T18:06:47Z
 url: https://github.com/astral-sh/uv/pull/13027
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Report Python versions in `pyvenv.cfg` version mismatch
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 21:59_
+_@zanieb_
 
 When working on #13025 I noticed this message was lacking versions, which seems frustrating if you're debugging things.
 

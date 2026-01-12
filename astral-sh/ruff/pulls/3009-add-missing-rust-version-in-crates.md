@@ -12,14 +12,14 @@ head: add-missing-rust-version
 created_at: 2023-02-18T13:23:41Z
 updated_at: 2023-02-23T19:55:27Z
 url: https://github.com/astral-sh/ruff/pull/3009
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add missing rust-version in crates
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-18 13:23_
+_@JonathanPlasse_
 
 I used `cargo-msrv` to determine the Minimum Supported Rust Version.
 I could not get `ruff_macros` to compile on its own so I could not determine its msrv version.

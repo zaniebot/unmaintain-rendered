@@ -13,14 +13,14 @@ head: update-docs-error
 created_at: 2023-05-09T16:28:04Z
 updated_at: 2023-05-10T14:55:25Z
 url: https://github.com/astral-sh/ruff/pull/4312
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update `mkdocs` unformatted example error message
 
 ---
 
-_Pull request opened by @calumy on 2023-05-09 16:28_
+_@calumy_
 
 In #3979 it became clear that the error message could be clearer that only the example section of the documentation should be updated. This PR clarifies this.
 

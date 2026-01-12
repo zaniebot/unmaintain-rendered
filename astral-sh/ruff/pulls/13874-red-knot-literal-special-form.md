@@ -13,14 +13,14 @@ head: literal-type
 created_at: 2024-10-22T06:58:40Z
 updated_at: 2024-11-05T04:37:27Z
 url: https://github.com/astral-sh/ruff/pull/13874
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Literal special form
 
 ---
 
-_Pull request opened by @Glyphack on 2024-10-22 06:58_
+_@Glyphack_
 
 Handling `Literal` type in annotations.
 

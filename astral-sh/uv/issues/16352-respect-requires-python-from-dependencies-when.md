@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-18T01:40:27Z
 updated_at: 2025-11-01T21:27:14Z
 url: https://github.com/astral-sh/uv/issues/16352
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Respect requires-python from dependencies when running scripts with inline metadata
 
 ---
 
-_Issue opened by @jdumas on 2025-10-18 01:40_
+_@jdumas_
 
 ### Summary
 

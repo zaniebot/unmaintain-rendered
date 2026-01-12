@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-06T16:07:08Z
 updated_at: 2025-10-06T18:06:33Z
 url: https://github.com/astral-sh/ruff/issues/20724
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB188 fix should be marked unsafe except with known `str`s
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-06 16:07_
+_@dscorbett_
 
 ### Summary
 

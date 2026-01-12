@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-26T08:04:23Z
 updated_at: 2025-12-17T09:03:58Z
 url: https://github.com/clap-rs/clap/issues/2791
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Strings with a backslash before the ending quote results in a quote being included in the final arg value
 
 ---
 
-_Issue opened by @avborup on 2021-09-26 08:04_
+_@avborup_
 
 ### Please complete the following tasks
 

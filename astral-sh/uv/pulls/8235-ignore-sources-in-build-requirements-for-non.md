@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-10-16T00:46:37Z
 updated_at: 2024-10-16T00:53:20Z
 url: https://github.com/astral-sh/uv/pull/8235
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Ignore sources in build requirements for non-source trees
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-16 00:46_
+_@charliermarsh_
 
 ## Summary
 

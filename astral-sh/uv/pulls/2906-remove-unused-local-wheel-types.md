@@ -13,14 +13,14 @@ head: charlie/clean
 created_at: 2024-04-08T17:56:29Z
 updated_at: 2024-04-08T18:15:22Z
 url: https://github.com/astral-sh/uv/pull/2906
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Remove unused local wheel types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 17:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-04T00:09:34Z
 updated_at: 2024-01-04T01:29:07Z
 url: https://github.com/astral-sh/uv/issues/763
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Make virtual environment validation opt-in
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-04 00:09_
+_@charliermarsh_
 
 _No description provided._
 

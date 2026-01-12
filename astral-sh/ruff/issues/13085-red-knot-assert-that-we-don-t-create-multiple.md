@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T22:00:43Z
 updated_at: 2024-09-04T05:53:34Z
 url: https://github.com/astral-sh/ruff/issues/13085
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] assert that we don't create multiple definitions for one node
 
 ---
 
-_Issue opened by @carljm on 2024-08-23 22:00_
+_@carljm_
 
 I don't think this should happen, and if it does that suggests a bug. But a quick attempt to add the assert caused a panic, so apparently we are already relying on this. We should figure out why/where, fix it, and add the assert.
 

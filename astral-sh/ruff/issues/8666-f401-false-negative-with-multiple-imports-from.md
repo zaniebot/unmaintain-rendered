@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-13T23:05:52Z
 updated_at: 2023-11-14T00:12:19Z
 url: https://github.com/astral-sh/ruff/issues/8666
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # F401: False negative with multiple imports from same top-level package
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-13 23:05_
+_@ThiefMaster_
 
 ```python
 def _import_modules():

@@ -13,14 +13,14 @@ head: charlie/constraints
 created_at: 2024-07-19T20:40:46Z
 updated_at: 2024-07-19T20:49:23Z
 url: https://github.com/astral-sh/uv/pull/5231
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Don't apply irrelevant constraints when validating site-packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 20:40_
+_@charliermarsh_
 
 ## Summary
 

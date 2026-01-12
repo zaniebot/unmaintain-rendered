@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-24T13:36:05Z
 updated_at: 2022-08-28T00:58:08Z
 url: https://github.com/astral-sh/ruff/issues/27
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add support for binding-driven lint rules
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-24 13:36_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T12:43:07Z
 updated_at: 2025-05-15T17:50:24Z
 url: https://github.com/astral-sh/uv/issues/9501
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Migrate from Poetry to UV
 
 ---
 
-_Issue opened by @lluisCM on 2024-11-28 12:43_
+_@lluisCM_
 
 Hello, I'm not sure if this is the place to post a question, but I would like to get some feedback/experience on relation of replacing poetry to uv.
 

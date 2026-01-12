@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T20:17:17Z
 updated_at: 2025-05-22T19:04:00Z
 url: https://github.com/astral-sh/uv/issues/13584
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv export --output-file=../requirements.txt` doesn't resolve package paths to output file
 
 ---
 
-_Issue opened by @manzt on 2025-05-21 20:17_
+_@manzt_
 
 ### Question
 

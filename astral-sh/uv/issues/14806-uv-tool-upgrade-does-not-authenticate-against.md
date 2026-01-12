@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T08:42:39Z
 updated_at: 2025-08-05T15:17:06Z
 url: https://github.com/astral-sh/uv/issues/14806
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # uv tool upgrade does not authenticate against GitLab private pypi package registry
 
 ---
 
-_Issue opened by @lgatellier on 2025-07-22 08:42_
+_@lgatellier_
 
 ### Summary
 

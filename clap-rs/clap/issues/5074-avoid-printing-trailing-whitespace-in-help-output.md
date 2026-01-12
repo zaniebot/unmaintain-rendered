@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-16T13:49:16Z
 updated_at: 2023-08-16T14:04:12Z
 url: https://github.com/clap-rs/clap/issues/5074
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Avoid printing trailing whitespace in help output
 
 ---
 
-_Issue opened by @djc on 2023-08-16 13:49_
+_@djc_
 
 ### Please complete the following tasks
 

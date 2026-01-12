@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T14:21:48Z
 updated_at: 2024-09-18T09:31:00Z
 url: https://github.com/astral-sh/uv/issues/6330
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # transformers ecosystem test times out locally
 
 ---
 
-_Issue opened by @konstin on 2024-08-21 14:21_
+_@konstin_
 
 The transformers ecosystem test times out for me a lot locally, we need to either speed it up (e.g. add caching) or disable it be default.
 

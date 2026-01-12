@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-23T12:15:08Z
 updated_at: 2023-03-23T17:01:41Z
 url: https://github.com/astral-sh/ruff/issues/3684
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff runs all pydocstyle rules when the convention is specified in the config toml files
 
 ---
 
-_Issue opened by @felix-cw on 2023-03-23 12:15_
+_@felix-cw_
 
 This behaviour is new in 0.0.258
 

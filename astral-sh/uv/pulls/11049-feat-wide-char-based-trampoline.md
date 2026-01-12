@@ -12,14 +12,14 @@ head: wide-char-trampoline
 created_at: 2025-01-29T02:46:18Z
 updated_at: 2025-11-13T06:30:55Z
 url: https://github.com/astral-sh/uv/pull/11049
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # feat: wide char based trampoline
 
 ---
 
-_Pull request opened by @samypr100 on 2025-01-29 02:46_
+_@samypr100_
 
 ## Summary
 

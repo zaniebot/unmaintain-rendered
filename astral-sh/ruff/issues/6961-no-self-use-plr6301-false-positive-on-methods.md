@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-29T02:34:12Z
 updated_at: 2023-10-14T18:55:40Z
 url: https://github.com/astral-sh/ruff/issues/6961
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `no-self-use` (`PLR6301`) false positive on methods that call `super`
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-29 02:34_
+_@DetachHead_
 
 ```py
 from typing_extensions import override

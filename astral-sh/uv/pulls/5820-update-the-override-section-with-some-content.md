@@ -14,14 +14,14 @@ head: zb/docs-overrides
 created_at: 2024-08-06T17:20:05Z
 updated_at: 2024-08-06T20:23:59Z
 url: https://github.com/astral-sh/uv/pull/5820
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Update the override section with some content from the README
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 17:20_
+_@zanieb_
 
 _No description provided._
 

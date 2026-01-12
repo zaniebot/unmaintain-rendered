@@ -13,14 +13,14 @@ head: UP040
 created_at: 2025-02-07T17:16:29Z
 updated_at: 2025-02-07T20:44:47Z
 url: https://github.com/astral-sh/ruff/pull/16027
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Comments within parenthesized value ranges should not affect applicability (`UP040`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-07 17:16_
+_@InSyncWithFoo_
 
 ## Summary
 

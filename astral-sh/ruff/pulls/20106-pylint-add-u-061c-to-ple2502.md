@@ -14,14 +14,14 @@ head: main
 created_at: 2025-08-26T21:52:05Z
 updated_at: 2025-08-28T20:35:49Z
 url: https://github.com/astral-sh/ruff/pull/20106
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`pylint`] Add U+061C to `PLE2502`
 
 ---
 
-_Pull request opened by @kotx on 2025-08-26 21:52_
+_@kotx_
 
 Resolves #20058
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T10:47:01Z
 updated_at: 2024-07-29T01:13:21Z
 url: https://github.com/astral-sh/uv/issues/3980
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # `--index-strategy` not behaving as described
 
 ---
 
-_Issue opened by @casellimarco on 2024-06-03 10:47_
+_@casellimarco_
 
 ## Scenario
 I want to install the package `PACKAGE`. The package is present both on the global pypi, the default index-url, and in another extra-index-url `EXTRA_INDEX_URL`, but the specific version `VERSION_ONLY_ON_PYPI` is present only on the global pypi.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T03:29:24Z
 updated_at: 2025-11-29T19:30:53Z
 url: https://github.com/astral-sh/uv/issues/9653
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Add `uv check` command to validate `pyproject.toml` `uv` configuration
 
 ---
 
-_Issue opened by @johnthagen on 2024-12-05 03:29_
+_@johnthagen_
 
 Would it make sense to add some equivalent to `poetry check` into `uv`? 
 

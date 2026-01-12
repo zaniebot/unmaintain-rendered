@@ -13,14 +13,14 @@ head: alex/tuple-contains
 created_at: 2025-07-30T16:47:50Z
 updated_at: 2025-07-31T11:46:47Z
 url: https://github.com/astral-sh/ruff/pull/19642
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Remove special casing for string-literal-in-tuple `__contains__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-30 16:47_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/wrap
 created_at: 2023-06-08T18:03:49Z
 updated_at: 2023-06-08T18:40:44Z
 url: https://github.com/astral-sh/ruff/pull/4969
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove `unwrap` from none-comparison rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-08 18:03_
+_@charliermarsh_
 
 _No description provided._
 

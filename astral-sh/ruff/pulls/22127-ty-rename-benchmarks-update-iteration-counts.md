@@ -15,14 +15,14 @@ head: micha/rename-benchmarks
 created_at: 2025-12-21T12:32:32Z
 updated_at: 2025-12-21T20:15:38Z
 url: https://github.com/astral-sh/ruff/pull/22127
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Rename benchmarks, update iteration counts
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-21 12:32_
+_@MichaReiser_
 
 ## Summary
 

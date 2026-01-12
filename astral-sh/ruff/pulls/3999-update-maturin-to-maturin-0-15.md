@@ -12,14 +12,14 @@ head: update_maturin
 created_at: 2023-04-17T16:46:21Z
 updated_at: 2023-05-12T13:43:08Z
 url: https://github.com/astral-sh/ruff/pull/3999
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Update maturin to maturin 0.15
 
 ---
 
-_Pull request opened by @konstin on 2023-04-17 16:46_
+_@konstin_
 
 This allows removing the deprecated `[package.metadata.maturin]`
 

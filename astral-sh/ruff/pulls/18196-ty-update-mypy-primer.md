@@ -13,14 +13,14 @@ head: micha/upgrade-mypy-primer
 created_at: 2025-05-19T14:52:18Z
 updated_at: 2025-05-19T15:35:49Z
 url: https://github.com/astral-sh/ruff/pull/18196
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Update mypy primer
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-19 14:52_
+_@MichaReiser_
 
 ## Summary
 Pulls in https://github.com/hauntsaninja/mypy_primer/pull/171 which configures `psycopg`'s src root

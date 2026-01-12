@@ -13,14 +13,14 @@ head: charlie/ignore
 created_at: 2023-02-11T17:33:03Z
 updated_at: 2025-04-07T14:27:36Z
 url: https://github.com/astral-sh/ruff/pull/2773
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Remove multiple-statements-on-one-line-def (E704)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 17:33_
+_@charliermarsh_
 
 When I implemented this, I didn't realize that it's off-by-default in pycodestyle and Flake8, because they are "not rules unanimously accepted, and [PEP 8](http://www.python.org/dev/peps/pep-0008/) does not enforce them". Rather than opt-in to the complexity of maintaining an ignore list, I'd rather just omit those rules entirely.
 

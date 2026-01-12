@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T08:30:01Z
 updated_at: 2025-07-29T18:35:55Z
 url: https://github.com/astral-sh/ruff/issues/19348
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP030 replaces regex repetitions
 
 ---
 
-_Issue opened by @tobixx on 2025-07-15 08:30_
+_@tobixx_
 
 ### Summary
 

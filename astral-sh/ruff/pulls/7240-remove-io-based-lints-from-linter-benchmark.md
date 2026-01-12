@@ -13,14 +13,14 @@ head: remove-io-based-lints-from-benchmark
 created_at: 2023-09-08T09:10:21Z
 updated_at: 2023-09-08T11:39:51Z
 url: https://github.com/astral-sh/ruff/pull/7240
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove IO based lints from linter benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-08 09:10_
+_@MichaReiser_
 
 
 ## Summary

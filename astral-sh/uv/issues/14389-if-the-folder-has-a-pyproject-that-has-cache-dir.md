@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T10:55:48Z
 updated_at: 2025-07-03T14:25:01Z
 url: https://github.com/astral-sh/uv/issues/14389
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # If the folder has a pyproject that has `cache-dir=".venv/cache"` uv venv always fails because the dir already exists
 
 ---
 
-_Issue opened by @WilliamStam on 2025-07-01 10:55_
+_@WilliamStam_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T08:07:22Z
 updated_at: 2025-03-31T01:50:11Z
 url: https://github.com/astral-sh/uv/issues/12555
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Compatibility with Poetry
 
 ---
 
-_Issue opened by @Lyranile on 2025-03-30 08:07_
+_@Lyranile_
 
 # Question
 

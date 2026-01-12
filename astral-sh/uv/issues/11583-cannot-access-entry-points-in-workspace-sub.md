@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T20:45:48Z
 updated_at: 2025-04-15T11:33:14Z
 url: https://github.com/astral-sh/uv/issues/11583
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Cannot access entry points in workspace sub packages
 
 ---
 
-_Issue opened by @boccileonardo on 2025-02-17 20:45_
+_@boccileonardo_
 
 ### Summary
 

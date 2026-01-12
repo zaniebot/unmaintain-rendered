@@ -12,14 +12,14 @@ head: pyi-nested-union-fix
 created_at: 2024-11-08T23:01:11Z
 updated_at: 2024-11-11T14:00:45Z
 url: https://github.com/astral-sh/ruff/pull/14214
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Implement autofix and handle nested unions with single element (`PYI041 `, `PYI055`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-08 23:01_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

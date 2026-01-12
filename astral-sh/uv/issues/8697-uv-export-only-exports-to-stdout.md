@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-30T12:00:13Z
 updated_at: 2024-10-30T12:09:17Z
 url: https://github.com/astral-sh/uv/issues/8697
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # `uv export` only exports to STDOUT
 
 ---
 
-_Issue opened by @TiansuYu on 2024-10-30 12:00_
+_@TiansuYu_
 
 `uv export` even if including `--directory <some path> --format requirement-txt` only prints out to STDOUT, not in a `requirements.txt` file. 
 

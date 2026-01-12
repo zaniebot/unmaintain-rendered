@@ -13,14 +13,14 @@ head: konsti/build-no-gitignore
 created_at: 2025-10-20T09:34:13Z
 updated_at: 2025-10-28T12:25:33Z
 url: https://github.com/astral-sh/uv/pull/16369
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Add `--no-create-gitignore` to `uv build`
 
 ---
 
-_Pull request opened by @konstin on 2025-10-20 09:34_
+_@konstin_
 
 Fixes #16332
 

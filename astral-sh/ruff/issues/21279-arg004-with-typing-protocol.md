@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T06:57:17Z
 updated_at: 2025-11-06T19:16:11Z
 url: https://github.com/astral-sh/ruff/issues/21279
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ARG004 with typing.Protocol
 
 ---
 
-_Issue opened by @Lexxx42 on 2025-11-05 06:57_
+_@Lexxx42_
 
 ### Question
 

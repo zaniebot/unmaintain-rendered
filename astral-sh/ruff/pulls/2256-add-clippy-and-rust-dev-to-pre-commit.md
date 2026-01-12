@@ -12,14 +12,14 @@ head: pre-commit-clippy
 created_at: 2023-01-27T14:44:51Z
 updated_at: 2023-01-27T23:53:45Z
 url: https://github.com/astral-sh/ruff/pull/2256
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # add clippy and rust_dev to pre-commit
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-27 14:44_
+_@sbrugman_
 
 I presume the reasoning for not including clippy in `pre-commit` was that it passes all files. This can be turned off with `pass_filenames`, in which case it only runs once.
 

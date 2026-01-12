@@ -13,14 +13,14 @@ head: python_venv
 created_at: 2024-04-16T15:27:49Z
 updated_at: 2024-04-16T18:54:44Z
 url: https://github.com/astral-sh/uv/pull/3064
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Allow passing a venv to `uv pip --python`
 
 ---
 
-_Pull request opened by @pfmoore on 2024-04-16 15:27_
+_@pfmoore_
 
 Fixes https://github.com/astral-sh/uv/issues/3060
 

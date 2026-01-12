@@ -13,14 +13,14 @@ head: pytest-b017
 created_at: 2023-04-20T21:32:21Z
 updated_at: 2023-04-21T14:47:55Z
 url: https://github.com/astral-sh/ruff/pull/4052
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-bugbear`] Add `pytest.raises(Exception)` support to B017
 
 ---
 
-_Pull request opened by @alanhdu on 2023-04-20 21:32_
+_@alanhdu_
 
 `pytest.raises(Exception)` has the same problem as `self.assertRaises(Exception)`, and so we should also raise a lint error when people use it. This matches the upstream flake8-bugbear behavior (see https://github.com/PyCQA/flake8-bugbear/issues/169).
 

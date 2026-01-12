@@ -12,14 +12,14 @@ head: zb/no-dist-no-wheel
 created_at: 2024-02-12T18:27:23Z
 updated_at: 2024-02-12T18:51:51Z
 url: https://github.com/astral-sh/uv/pull/1284
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Fix incompatible wheel test scenarios
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-12 18:27_
+_@zanieb_
 
 I had specified the tags incorrectly https://github.com/zanieb/packse/pull/105
 

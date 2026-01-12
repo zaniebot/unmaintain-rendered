@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T21:02:25Z
 updated_at: 2025-09-05T13:49:28Z
 url: https://github.com/astral-sh/ruff/issues/20163
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # rule: same name "as import"
 
 ---
 
-_Issue opened by @spaceone on 2025-08-29 21:02_
+_@spaceone_
 
 ### Summary
 

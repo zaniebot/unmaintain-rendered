@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T11:50:28Z
 updated_at: 2024-11-01T14:16:23Z
 url: https://github.com/astral-sh/uv/issues/8750
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Editable install for dependencies without pyproject.toml or setup.py
 
 ---
 
-_Issue opened by @mpasson on 2024-11-01 11:50_
+_@mpasson_
 
 I have a few questions about the 'editable' option for dependencies pointing at local path. In order to test it, I set up the following toy model:
 

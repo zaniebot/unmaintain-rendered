@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-11-28T18:57:15Z
 updated_at: 2022-12-22T18:42:23Z
 url: https://github.com/clap-rs/clap/issues/4516
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Large `Args` struct causes stack overflow on Intel SGX
 
 ---
 
-_Issue opened by @trevor-crypto on 2022-11-28 18:57_
+_@trevor-crypto_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: dhruv/notebook-sync
 created_at: 2024-07-05T10:46:07Z
 updated_at: 2024-07-05T11:40:01Z
 url: https://github.com/astral-sh/ruff/pull/12203
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Consider the content of the new cells during notebook sync
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-05 10:46_
+_@dhruvmanila_
 
 ## Summary
 

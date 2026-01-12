@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T15:16:38Z
 updated_at: 2024-03-22T21:25:11Z
 url: https://github.com/astral-sh/uv/issues/1500
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Python package in format git+https://gitlab.com/<path_to_package>@<version> not recognized
 
 ---
 
-_Issue opened by @erwinmintiens on 2024-02-16 15:16_
+_@erwinmintiens_
 
 When installing with `uv pip install -r requirements.txt` an error occurs when adding packages from private repositories.
 Some packages in the requirements file can look like this:

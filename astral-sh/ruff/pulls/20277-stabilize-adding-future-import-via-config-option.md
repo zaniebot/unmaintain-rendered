@@ -15,14 +15,14 @@ head: dylan/stabilize-add-future-import
 created_at: 2025-09-05T20:26:28Z
 updated_at: 2025-09-08T14:20:41Z
 url: https://github.com/astral-sh/ruff/pull/20277
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # Stabilize adding future import via config option
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 20:26_
+_@dylwil3_
 
 Introduced in #19100. Removed gating, updated tests, removed warning(s), and updated documentation.
 

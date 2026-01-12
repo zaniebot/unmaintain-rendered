@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T10:28:17Z
 updated_at: 2024-11-20T10:31:21Z
 url: https://github.com/astral-sh/uv/issues/9269
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # `uv add` disregards venv called `venv`
 
 ---
 
-_Issue opened by @paveldikov on 2024-11-20 10:28_
+_@paveldikov_
 
 I think the insistence on `.venv` (with leading dot) is a bit too much. I get that the idea is to install in the project venv and not _any old venv_, but there should be a bit of give here.
 

@@ -13,14 +13,14 @@ head: dhruv/pattern-recovery-3
 created_at: 2024-03-22T10:00:17Z
 updated_at: 2024-03-22T14:53:45Z
 url: https://github.com/astral-sh/ruff/pull/10523
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Avoid dropping node from `as` pattern
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-22 10:00_
+_@dhruvmanila_
 
 ## Summary
 

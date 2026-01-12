@@ -12,14 +12,14 @@ head: code-in-snap-names
 created_at: 2023-02-10T16:31:24Z
 updated_at: 2023-02-10T18:15:48Z
 url: https://github.com/astral-sh/ruff/pull/2718
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # refactor: Stop including Rule::code() in pycodestyle .snap filenames
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-10 16:31_
+_@not-my-profile_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T19:46:47Z
 updated_at: 2024-04-23T12:58:01Z
 url: https://github.com/astral-sh/uv/issues/3073
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # `KeyringProvider::fetch_subprocess` should be async
 
 ---
 
-_Issue opened by @zanieb on 2024-04-16 19:46_
+_@zanieb_
 
 As far as I can tell, we're egregiously blocking the event loop for 80ms on keyring fetches. The function should be async and use an async subprocess API.
 

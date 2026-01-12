@@ -12,14 +12,14 @@ head: bandit-s108
 created_at: 2023-01-04T23:52:27Z
 updated_at: 2023-01-05T02:13:39Z
 url: https://github.com/astral-sh/ruff/pull/1644
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement flake8-bandit rule `S108`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-01-04 23:52_
+_@edgarrmondragon_
 
 Releated: #1646 
 

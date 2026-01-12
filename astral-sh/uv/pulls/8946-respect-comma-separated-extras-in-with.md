@@ -13,14 +13,14 @@ head: charlie/ex-split
 created_at: 2024-11-08T15:23:28Z
 updated_at: 2024-11-08T20:13:31Z
 url: https://github.com/astral-sh/uv/pull/8946
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Respect comma-separated extras in `--with`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 15:23_
+_@charliermarsh_
 
 ## Summary
 

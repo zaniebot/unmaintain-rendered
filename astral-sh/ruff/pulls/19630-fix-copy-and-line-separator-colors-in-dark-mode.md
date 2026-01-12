@@ -13,14 +13,14 @@ head: micha/fix-dark-mode-colors
 created_at: 2025-07-30T07:21:37Z
 updated_at: 2025-07-30T16:18:39Z
 url: https://github.com/astral-sh/ruff/pull/19630
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Fix copy and line separator colors in dark mode
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-30 07:21_
+_@MichaReiser_
 
 ## Summary
 

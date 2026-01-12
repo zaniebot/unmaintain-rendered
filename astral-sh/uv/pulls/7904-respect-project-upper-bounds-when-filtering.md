@@ -13,14 +13,14 @@ head: charlie/ignore
 created_at: 2024-10-03T17:57:35Z
 updated_at: 2024-10-04T10:35:52Z
 url: https://github.com/astral-sh/uv/pull/7904
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Respect project upper bounds when filtering wheels on requires-python
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-03 17:57_
+_@charliermarsh_
 
 ## Summary
 

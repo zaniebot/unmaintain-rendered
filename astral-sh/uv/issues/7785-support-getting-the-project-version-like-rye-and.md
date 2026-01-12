@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T20:42:44Z
 updated_at: 2025-02-19T15:33:30Z
 url: https://github.com/astral-sh/uv/issues/7785
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Support getting the project version (like Rye and poetry) from the pyproject.toml
 
 ---
 
-_Issue opened by @itamark-ug on 2024-09-29 20:42_
+_@itamark-ug_
 
 Hi,
 In both poetry and Rye there is an option to run `poetry version` or `rye version` and get the project version from the pyproject.toml.

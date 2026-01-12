@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-10-14T00:35:13Z
 updated_at: 2022-08-15T19:24:36Z
 url: https://github.com/clap-rs/clap/issues/2870
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Loosen requirement on using `&[]` to pass into builder functions
 
 ---
 
-_Issue opened by @epage on 2021-10-14 00:35_
+_@epage_
 
 ### Please complete the following tasks
 

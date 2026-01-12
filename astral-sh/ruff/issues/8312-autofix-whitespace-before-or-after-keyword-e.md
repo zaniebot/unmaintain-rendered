@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-28T18:11:09Z
 updated_at: 2023-11-12T00:23:04Z
 url: https://github.com/astral-sh/ruff/issues/8312
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autofix whitespace before or after keyword E prefix (preview)
 
 ---
 
-_Issue opened by @Skylion007 on 2023-10-28 18:11_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

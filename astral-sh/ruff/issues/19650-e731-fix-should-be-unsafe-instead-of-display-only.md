@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T20:58:05Z
 updated_at: 2025-08-15T19:09:56Z
 url: https://github.com/astral-sh/ruff/issues/19650
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E731 fix should be unsafe instead of display-only more often
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-30 20:58_
+_@dscorbett_
 
 ### Summary
 

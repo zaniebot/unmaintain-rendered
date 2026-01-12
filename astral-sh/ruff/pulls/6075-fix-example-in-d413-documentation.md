@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2023-07-25T16:02:49Z
 updated_at: 2023-07-25T16:22:12Z
 url: https://github.com/astral-sh/ruff/pull/6075
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix example in D413 documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-25 16:02_
+_@charliermarsh_
 
 See #6037.
 

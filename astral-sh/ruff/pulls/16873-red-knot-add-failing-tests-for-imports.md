@@ -13,14 +13,14 @@ head: alex/star-imports-tests
 created_at: 2025-03-20T16:24:01Z
 updated_at: 2025-03-21T14:18:49Z
 url: https://github.com/astral-sh/ruff/pull/16873
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Add failing tests for `*` imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-20 16:24_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/only-dev
 created_at: 2024-09-10T21:54:45Z
 updated_at: 2024-09-11T21:20:46Z
 url: https://github.com/astral-sh/uv/pull/7277
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Apply `--no-install` options when constructing resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 21:54_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: docs2024/specify-is-formatter-on-cli
 created_at: 2024-06-26T09:54:45Z
 updated_at: 2024-06-26T10:57:10Z
 url: https://github.com/astral-sh/ruff/pull/12042
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # docs: add `and formatter` to CLI startup message
 
 ---
 
-_Pull request opened by @baggiponte on 2024-06-26 09:54_
+_@baggiponte_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/pass
 created_at: 2022-11-12T16:39:06Z
 updated_at: 2022-11-12T16:39:10Z
 url: https://github.com/astral-sh/ruff/pull/700
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid generating empty statement bodies
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 16:39_
+_@charliermarsh_
 
 Resolves: #699.
 

@@ -12,14 +12,14 @@ head: feature/select-libc
 created_at: 2025-07-16T06:23:09Z
 updated_at: 2025-07-16T14:07:57Z
 url: https://github.com/astral-sh/uv/pull/14646
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Add UV_LIBC to allow libc selection in multi-libc environment
 
 ---
 
-_Pull request opened by @nathanscain on 2025-07-16 06:23_
+_@nathanscain_
 
 Closes #14262 
 

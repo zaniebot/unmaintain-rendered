@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-01-31T06:26:48Z
 updated_at: 2021-01-31T06:33:35Z
 url: https://github.com/clap-rs/clap/issues/2321
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Changing Clap App's name doesn't do anything
 
 ---
 
-_Issue opened by @henryboisdequin on 2021-01-31 06:26_
+_@henryboisdequin_
 
 ### Make sure you completed the following tasks
 

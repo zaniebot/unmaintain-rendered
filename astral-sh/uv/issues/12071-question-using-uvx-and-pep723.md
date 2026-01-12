@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-09T03:31:17Z
 updated_at: 2025-03-11T04:36:28Z
 url: https://github.com/astral-sh/uv/issues/12071
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # [Question] Using `uvx` and PEP723
 
 ---
 
-_Issue opened by @anzhi0708 on 2025-03-09 03:31_
+_@anzhi0708_
 
 ### Question
 

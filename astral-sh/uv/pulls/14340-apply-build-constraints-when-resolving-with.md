@@ -13,14 +13,14 @@ head: charlie/constraints
 created_at: 2025-06-28T01:25:02Z
 updated_at: 2025-06-28T01:39:36Z
 url: https://github.com/astral-sh/uv/pull/14340
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Apply build constraints when resolving `--with` dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-28 01:25_
+_@charliermarsh_
 
 ## Summary
 

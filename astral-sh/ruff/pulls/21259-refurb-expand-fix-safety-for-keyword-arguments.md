@@ -14,14 +14,14 @@ head: furb164
 created_at: 2025-11-03T16:18:22Z
 updated_at: 2025-11-04T10:11:57Z
 url: https://github.com/astral-sh/ruff/pull/21259
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [`refurb`] Expand fix safety for keyword arguments and `Decimal`s (`FURB164`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-11-03 16:18_
+_@chirizxc_
 
 ## Summary
 

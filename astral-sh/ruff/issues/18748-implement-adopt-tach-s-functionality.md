@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-18T13:03:13Z
 updated_at: 2025-06-19T14:47:36Z
 url: https://github.com/astral-sh/ruff/issues/18748
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Implement/adopt `tach`s functionality?
 
 ---
 
-_Issue opened by @gwdekker on 2025-06-18 13:03_
+_@gwdekker_
 
 ### Summary
 

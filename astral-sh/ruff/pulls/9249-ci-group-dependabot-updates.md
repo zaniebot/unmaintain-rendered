@@ -13,14 +13,14 @@ head: henryiii/ci/groupeddep
 created_at: 2023-12-22T23:01:56Z
 updated_at: 2024-01-10T21:46:34Z
 url: https://github.com/astral-sh/ruff/pull/9249
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # ci: group dependabot updates
 
 ---
 
-_Pull request opened by @henryiii on 2023-12-22 23:01_
+_@henryiii_
 
 See https://github.com/scientific-python/cookie/pull/348.
 

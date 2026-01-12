@@ -12,14 +12,14 @@ head: zb/cargo-update
 created_at: 2025-07-25T16:14:17Z
 updated_at: 2025-07-25T20:19:39Z
 url: https://github.com/astral-sh/uv/pull/14899
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Run `cargo update`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 16:14_
+_@zanieb_
 
 _No description provided._
 

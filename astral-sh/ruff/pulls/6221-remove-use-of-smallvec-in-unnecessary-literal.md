@@ -13,14 +13,14 @@ head: charlie/small
 created_at: 2023-08-01T03:55:40Z
 updated_at: 2023-08-01T04:28:32Z
 url: https://github.com/astral-sh/ruff/pull/6221
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove use of `SmallVec` in `unnecessary-literal-union`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 03:55_
+_@charliermarsh_
 
 I prefer to use this on an as-needed basis.
 

@@ -11,14 +11,14 @@ head: performance/6529-uv-run
 created_at: 2024-10-17T18:34:23Z
 updated_at: 2025-09-11T22:52:37Z
 url: https://github.com/astral-sh/uv/pull/8301
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Pipe input directly in `uv run` command
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-17 18:34_
+_@Aditya-PS-05_
 
 closes #6529
 

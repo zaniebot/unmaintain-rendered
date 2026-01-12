@@ -13,14 +13,14 @@ head: doc-copy-console
 created_at: 2024-08-06T09:49:06Z
 updated_at: 2024-08-12T07:21:07Z
 url: https://github.com/astral-sh/ruff/pull/12712
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Improvements to documentation
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-06 09:49_
+_@eth3lbert_
 
 ## Summary
 

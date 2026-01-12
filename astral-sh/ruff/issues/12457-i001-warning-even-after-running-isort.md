@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T17:50:04Z
 updated_at: 2024-07-22T22:25:57Z
 url: https://github.com/astral-sh/ruff/issues/12457
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # I001 warning even after running isort
 
 ---
 
-_Issue opened by @bje- on 2024-07-22 17:50_
+_@bje-_
 
 One of my source files produces a warning from `ruff`:
 

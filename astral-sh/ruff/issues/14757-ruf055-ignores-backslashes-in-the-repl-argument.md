@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T13:46:37Z
 updated_at: 2024-12-03T15:18:38Z
 url: https://github.com/astral-sh/ruff/issues/14757
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF055 ignores backslashes in the `repl` argument of `re.sub`
 
 ---
 
-_Issue opened by @dscorbett on 2024-12-03 13:46_
+_@dscorbett_
 
 In Ruff 0.8.1, [`unnecessary-regular-expression` (RUF055)](https://docs.astral.sh/ruff/rules/unnecessary-regular-expression/) reports a false positive for `re.sub` when the replacement string contains a backslash.
 

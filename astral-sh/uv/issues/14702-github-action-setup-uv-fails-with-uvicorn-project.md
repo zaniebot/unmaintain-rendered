@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T06:12:37Z
 updated_at: 2025-07-18T06:59:22Z
 url: https://github.com/astral-sh/uv/issues/14702
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Github action setup-uv fails with uvicorn project package dependency
 
 ---
 
-_Issue opened by @vpmedia on 2025-07-18 06:12_
+_@vpmedia_
 
 ### Summary
 

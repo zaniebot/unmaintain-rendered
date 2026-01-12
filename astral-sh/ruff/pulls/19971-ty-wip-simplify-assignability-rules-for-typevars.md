@@ -15,14 +15,14 @@ head: dcreager/non-inferable
 created_at: 2025-08-18T15:12:38Z
 updated_at: 2025-10-02T00:04:33Z
 url: https://github.com/astral-sh/ruff/pull/19971
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] WIP: Simplify assignability rules for typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-18 15:12_
+_@dcreager_
 
 Pushing this up mostly to see what the ecosystem impact is. If it's good, this will make #19838 much easier, and I'll write up a better description for this!
 

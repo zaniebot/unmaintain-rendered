@@ -14,14 +14,14 @@ head: dhruv/syntax-error-code-action
 created_at: 2024-07-02T11:13:09Z
 updated_at: 2024-07-04T04:34:58Z
 url: https://github.com/astral-sh/ruff/pull/12148
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Avoid syntax error notification for source code actions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-02 11:13_
+_@dhruvmanila_
 
 ## Summary
 

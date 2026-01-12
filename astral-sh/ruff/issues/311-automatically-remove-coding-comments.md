@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T22:21:38Z
 updated_at: 2022-11-06T19:23:08Z
 url: https://github.com/astral-sh/ruff/issues/311
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically remove coding comments 
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 22:21_
+_@charliermarsh_
 
 Source: https://github.com/asottile/pyupgrade
 

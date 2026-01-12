@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T09:13:53Z
 updated_at: 2023-12-22T08:40:38Z
 url: https://github.com/astral-sh/ruff/issues/9195
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # "N804 First argument of a class method should be named `cls`" on a property of a metaclass
 
 ---
 
-_Issue opened by @ZeeD on 2023-12-19 09:13_
+_@ZeeD_
 
 minimal case:
 

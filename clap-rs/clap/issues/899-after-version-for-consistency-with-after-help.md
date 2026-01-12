@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-13T11:40:19Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/899
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # after_version for consistency with after_help?
 
 ---
 
-_Issue opened by @swsnr on 2017-03-13 11:40_
+_@swsnr_
 
 Is there anything like `after_version`, to print an additional string after the default text for `--version`?
 

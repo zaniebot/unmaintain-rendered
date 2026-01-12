@@ -12,14 +12,14 @@ head: konsti/test-slimming
 created_at: 2024-01-30T13:31:01Z
 updated_at: 2024-01-31T16:11:11Z
 url: https://github.com/astral-sh/uv/pull/1187
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Abstract away test duplication in pip-compile
 
 ---
 
-_Pull request opened by @konstin on 2024-01-30 13:31_
+_@konstin_
 
 In preparation for the new windows handling, i want to introduce a `TestContext` and `puffin_snapshot!` abstraction. This PR applies those changes for pip-compile. My plan is to use those for all venv-based integration tests and build the custom windows filters on top of  `puffin_snapshot!`.
 

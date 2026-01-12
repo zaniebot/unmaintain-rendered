@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-04T11:35:40Z
 updated_at: 2025-03-03T03:21:17Z
 url: https://github.com/astral-sh/uv/issues/10296
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # How to move a package inside a uv workspace?
 
 ---
 
-_Issue opened by @kesitrifork on 2025-01-04 11:35_
+_@kesitrifork_
 
 I am trying to move a workspace package, but running `uv init` or `uv sync` gives errors. So how would you best move around a package?
 

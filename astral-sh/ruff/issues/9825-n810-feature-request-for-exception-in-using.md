@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T08:24:48Z
 updated_at: 2024-02-08T04:19:46Z
 url: https://github.com/astral-sh/ruff/issues/9825
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [N810] Feature Request for Exception in using CapWords for Class Names
 
 ---
 
-_Issue opened by @kunaltyagi on 2024-02-05 08:24_
+_@kunaltyagi_
 
 ```
 custom_ops.py:173:7: N801 Class name `PReLU_Function` should use CapWords convention

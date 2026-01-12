@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T07:41:27Z
 updated_at: 2025-09-26T09:03:04Z
 url: https://github.com/astral-sh/uv/issues/16021
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Install tool that contains packages from private index
 
 ---
 
-_Issue opened by @MauroPfister on 2025-09-25 07:41_
+_@MauroPfister_
 
 ### Question
 

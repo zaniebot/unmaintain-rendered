@@ -13,14 +13,14 @@ head: fix-preview-links
 created_at: 2024-11-03T04:01:00Z
 updated_at: 2024-11-03T11:45:36Z
 url: https://github.com/astral-sh/ruff/pull/14060
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix preview link references in 2 rule docs
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-03 04:01_
+_@diceroll123_
 
 ## Summary
 

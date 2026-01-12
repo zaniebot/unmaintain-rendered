@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T07:46:16Z
 updated_at: 2024-12-26T16:56:23Z
 url: https://github.com/astral-sh/uv/issues/9217
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # `uv` appears to be locking incorrect transitive dependencies when used by Renovate on `pyscss` with python 3.11
 
 ---
 
-_Issue opened by @samuelhwilliams on 2024-11-19 07:46_
+_@samuelhwilliams_
 
 ### Please tell us more about your question or problem
 

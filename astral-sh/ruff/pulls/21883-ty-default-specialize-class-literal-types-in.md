@@ -14,14 +14,14 @@ head: cjm/unspecassign
 created_at: 2025-12-10T02:10:42Z
 updated_at: 2025-12-10T16:18:11Z
 url: https://github.com/astral-sh/ruff/pull/21883
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] default-specialize class-literal types in assignment to generic-alias types
 
 ---
 
-_Pull request opened by @carljm on 2025-12-10 02:10_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1832, fixes https://github.com/astral-sh/ty/issues/1513
 

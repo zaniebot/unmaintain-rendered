@@ -13,14 +13,14 @@ head: zb/install-auto-test
 created_at: 2025-01-23T21:06:37Z
 updated_at: 2025-01-23T22:21:23Z
 url: https://github.com/astral-sh/uv/pull/10913
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Add test case for automatic installs
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 21:06_
+_@zanieb_
 
 Coverage for #10908 (and more)
 

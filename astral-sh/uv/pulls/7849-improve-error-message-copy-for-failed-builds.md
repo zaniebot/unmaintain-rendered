@@ -13,14 +13,14 @@ head: charlie/hints
 created_at: 2024-10-01T16:36:43Z
 updated_at: 2024-10-01T17:11:10Z
 url: https://github.com/astral-sh/uv/pull/7849
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Improve error message copy for failed builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 16:36_
+_@charliermarsh_
 
 _No description provided._
 

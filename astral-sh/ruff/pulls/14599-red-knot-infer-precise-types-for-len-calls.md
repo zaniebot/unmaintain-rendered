@@ -13,14 +13,14 @@ head: rk-len
 created_at: 2024-11-26T04:55:15Z
 updated_at: 2024-12-04T19:29:41Z
 url: https://github.com/astral-sh/ruff/pull/14599
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Infer precise types for `len()` calls
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-26 04:55_
+_@InSyncWithFoo_
 
 ## Summary
 

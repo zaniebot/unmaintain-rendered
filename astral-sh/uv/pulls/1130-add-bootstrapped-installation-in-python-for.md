@@ -14,14 +14,14 @@ head: zb/bootstrap-python-in-python
 created_at: 2024-01-26T18:09:40Z
 updated_at: 2024-01-28T16:24:50Z
 url: https://github.com/astral-sh/uv/pull/1130
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Add bootstrapped installation in Python for Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 18:09_
+_@zanieb_
 
 A 1:1 port of the Bash script to Python for use on Windows.
 

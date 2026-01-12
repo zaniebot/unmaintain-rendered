@@ -14,14 +14,14 @@ head: zb/uv-run-pyproject
 created_at: 2024-04-17T18:02:19Z
 updated_at: 2024-04-19T14:36:04Z
 url: https://github.com/astral-sh/uv/pull/3101
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Read base requirements from `pyproject.toml` in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 18:02_
+_@zanieb_
 
 In addition to the requested requirements, we include requirements from a `pyproject.toml` file if it exists and install the current directory.
 

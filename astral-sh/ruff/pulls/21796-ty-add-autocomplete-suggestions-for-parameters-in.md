@@ -14,14 +14,14 @@ head: function-param-completions
 created_at: 2025-12-04T19:18:31Z
 updated_at: 2025-12-09T05:24:37Z
 url: https://github.com/astral-sh/ruff/pull/21796
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Add autocomplete suggestions for parameters in function calls
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-04 19:18_
+_@RasmusNygren_
 
 This adds autocomplete suggestions for function arguments
  like `okay` in:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:16:16Z
 updated_at: 2024-10-08T19:33:20Z
 url: https://github.com/astral-sh/ruff/issues/11664
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] testing framework
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:16_
+_@carljm_
 
 We want a nice way to write tests of our type inference.
 

@@ -12,14 +12,14 @@ head: dhruv/log-guidance
 created_at: 2026-01-12T09:31:56Z
 updated_at: 2026-01-12T12:49:08Z
 url: https://github.com/astral-sh/ruff/pull/22530
-synced_at: 2026-01-12T12:59:59Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Improve log guidance message for Zed
 
 ---
 
-_Pull request opened by @dhruvmanila on 2026-01-12 09:31_
+_@dhruvmanila_
 
 ## Summary
 

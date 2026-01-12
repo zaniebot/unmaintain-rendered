@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T04:40:17Z
 updated_at: 2025-05-05T04:43:08Z
 url: https://github.com/astral-sh/uv/issues/13296
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Add subcommand that reports project root and workspace root information
 
 ---
 
-_Issue opened by @legendre6891 on 2025-05-05 04:40_
+_@legendre6891_
 
 ### Summary
 

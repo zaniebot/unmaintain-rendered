@@ -14,14 +14,14 @@ head: charlie/toc
 created_at: 2024-07-19T14:57:31Z
 updated_at: 2024-07-19T15:08:21Z
 url: https://github.com/astral-sh/uv/pull/5223
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Avoid TOCTOU errors in `.python-version` reads
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 14:57_
+_@charliermarsh_
 
 ## Summary
 

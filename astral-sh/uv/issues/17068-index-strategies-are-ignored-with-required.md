@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-10T11:16:51Z
 updated_at: 2025-12-10T11:16:51Z
 url: https://github.com/astral-sh/uv/issues/17068
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Index strategies are ignored with [required-]environments
 
 ---
 
-_Issue opened by @konstin on 2025-12-10 11:16_
+_@konstin_
 
 Continuing from https://github.com/astral-sh/uv/issues/17067: Adding `index-strategy = "unsafe-best-match"` or `index-strategy = "unsafe-first-match" doesn't help in the example below and don't pick up the source distribution.
 

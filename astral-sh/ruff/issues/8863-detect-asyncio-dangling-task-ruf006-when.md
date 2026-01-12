@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-28T00:33:23Z
 updated_at: 2023-12-09T21:10:39Z
 url: https://github.com/astral-sh/ruff/issues/8863
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Detect `asyncio-dangling-task` (`RUF006`) when discarding return value
 
 ---
 
-_Issue opened by @tjkuson on 2023-11-28 00:33_
+_@tjkuson_
 
 ```python
 import asyncio

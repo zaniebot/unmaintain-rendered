@@ -12,14 +12,14 @@ head: pip-user-scheme
 created_at: 2024-03-11T08:06:26Z
 updated_at: 2024-06-15T11:43:49Z
 url: https://github.com/astral-sh/uv/pull/2352
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Implement `--user` flag and user scheme support for `uv pip`
 
 ---
 
-_Pull request opened by @imfing on 2024-03-11 08:06_
+_@imfing_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

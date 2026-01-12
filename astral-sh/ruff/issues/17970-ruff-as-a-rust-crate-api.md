@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T21:48:10Z
 updated_at: 2025-05-09T06:01:09Z
 url: https://github.com/astral-sh/ruff/issues/17970
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff as a rust crate / API?
 
 ---
 
-_Issue opened by @twitchyliquid64 on 2025-05-08 21:48_
+_@twitchyliquid64_
 
 Hi there!
 

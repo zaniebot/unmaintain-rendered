@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-22T13:31:18Z
 updated_at: 2025-07-20T22:04:15Z
 url: https://github.com/astral-sh/ruff/issues/18860
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Panic `entered unreachable code f-string: unexpected token 'TStringMiddle' at 6..7` in `ruff_python_parser/src/parser/expression.rs`
 
 ---
 
-_Issue opened by @qarmin on 2025-06-22 13:31_
+_@qarmin_
 
 ### Summary
 

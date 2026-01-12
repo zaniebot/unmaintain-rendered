@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T13:32:01Z
 updated_at: 2024-08-21T13:49:48Z
 url: https://github.com/astral-sh/uv/issues/6325
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Question: Where is `ruff` located when running `uvx ruff`?
 
 ---
 
-_Issue opened by @pplmx on 2024-08-21 13:32_
+_@pplmx_
 
 As title
 

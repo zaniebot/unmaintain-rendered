@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T19:08:18Z
 updated_at: 2025-05-13T15:34:42Z
 url: https://github.com/astral-sh/uv/issues/13318
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # The hash value of the `aarch64.whl` is missing in the Docker container on the macOS M1 platform.
 
 ---
 
-_Issue opened by @eric-gitta-moore on 2025-05-06 19:08_
+_@eric-gitta-moore_
 
 ### Question
 

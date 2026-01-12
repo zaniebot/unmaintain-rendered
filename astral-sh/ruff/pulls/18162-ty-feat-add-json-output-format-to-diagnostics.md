@@ -13,14 +13,14 @@ head: feat/output-json
 created_at: 2025-05-18T14:38:01Z
 updated_at: 2025-07-10T14:12:13Z
 url: https://github.com/astral-sh/ruff/pull/18162
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] feat: Add JSON output format to diagnostics
 
 ---
 
-_Pull request opened by @agustif on 2025-05-18 14:38_
+_@agustif_
 
 ## Summary
 ![ty_json_focused_demo](https://github.com/user-attachments/assets/eca724e7-ad0a-4470-b261-9c64d1e07a2a)

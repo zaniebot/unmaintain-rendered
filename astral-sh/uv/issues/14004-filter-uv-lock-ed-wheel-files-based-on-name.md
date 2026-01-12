@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T19:56:05Z
 updated_at: 2025-07-01T23:34:34Z
 url: https://github.com/astral-sh/uv/issues/14004
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Filter `uv.lock`ed wheel files based on name
 
 ---
 
-_Issue opened by @JonZeolla on 2025-06-12 19:56_
+_@JonZeolla_
 
 ### Summary
 

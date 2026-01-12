@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-18T12:18:56Z
 updated_at: 2024-02-18T12:31:45Z
 url: https://github.com/astral-sh/ruff/issues/10025
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PLW1641: false positive for classes inheriting from builtins
 
 ---
 
-_Issue opened by @spaceone on 2024-02-18 12:18_
+_@spaceone_
 
 ```python
 class Foo(dict):

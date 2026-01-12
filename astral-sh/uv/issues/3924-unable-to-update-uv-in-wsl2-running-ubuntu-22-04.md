@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-30T12:54:24Z
 updated_at: 2024-10-21T21:29:31Z
 url: https://github.com/astral-sh/uv/issues/3924
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Unable to update uv in WSL2 running Ubuntu 22.04
 
 ---
 
-_Issue opened by @schergr on 2024-05-30 12:54_
+_@schergr_
 
 When I run the install of uv inside of a WSL2 Ubuntu instance following the Linux install procedure as follows. 
 

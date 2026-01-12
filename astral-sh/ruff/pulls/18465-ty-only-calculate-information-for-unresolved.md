@@ -15,14 +15,14 @@ head: alex/cleanup-unresolved-ref
 created_at: 2025-06-04T17:08:46Z
 updated_at: 2025-06-04T19:41:02Z
 url: https://github.com/astral-sh/ruff/pull/18465
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Only calculate information for unresolved-reference subdiagnostic if we know we'll emit the diagnostic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-04 17:08_
+_@AlexWaygood_
 
 ## Summary
 

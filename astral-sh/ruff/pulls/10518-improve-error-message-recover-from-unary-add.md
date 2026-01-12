@@ -13,14 +13,14 @@ head: dhruv/pattern-recovery-2
 created_at: 2024-03-22T07:23:13Z
 updated_at: 2024-03-22T08:02:34Z
 url: https://github.com/astral-sh/ruff/pull/10518
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Improve error message, recover from unary add
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-22 07:23_
+_@dhruvmanila_
 
 ## Summary
 

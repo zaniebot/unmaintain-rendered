@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T15:09:41Z
 updated_at: 2024-12-23T13:41:51Z
 url: https://github.com/astral-sh/ruff/issues/15068
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F841 should also lint dummy variables
 
 ---
 
-_Issue opened by @SaturnFromTitan on 2024-12-19 15:09_
+_@SaturnFromTitan_
 
 First off, thanks a ton for the fantastic project! I love how the Python lining ecosystem is streamlined by `ruff` ❤ 
 

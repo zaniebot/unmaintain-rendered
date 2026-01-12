@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-31T06:17:17Z
 updated_at: 2025-09-17T11:04:30Z
 url: https://github.com/astral-sh/uv/issues/15604
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # `uv pip list` shows system python packages instead of `.venv` python packages
 
 ---
 
-_Issue opened by @taoari on 2025-08-31 06:17_
+_@taoari_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T01:40:26Z
 updated_at: 2025-09-08T02:10:04Z
 url: https://github.com/astral-sh/uv/issues/15715
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Allow dependency metadata entries for path sources
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2025-09-08 01:40_
+_@nathanjmcdougall_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-21T08:48:03Z
 updated_at: 2025-08-21T22:10:12Z
 url: https://github.com/astral-sh/uv/issues/15403
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Tests in show_settings::* fail due to user-level uv.toml being loaded
 
 ---
 
-_Issue opened by @pposca on 2025-08-21 08:48_
+_@pposca_
 
 ### Summary
 

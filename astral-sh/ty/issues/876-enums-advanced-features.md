@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-23T06:51:35Z
 updated_at: 2025-12-18T12:34:31Z
 url: https://github.com/astral-sh/ty/issues/876
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Enums: advanced features
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-23 06:51_
+_@sharkdp_
 
 We have basic support for enums, but there is a long tail of things that could be improved:
 

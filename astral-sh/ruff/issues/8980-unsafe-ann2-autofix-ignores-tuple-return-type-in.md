@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-03T15:58:02Z
 updated_at: 2023-12-03T16:01:50Z
 url: https://github.com/astral-sh/ruff/issues/8980
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Unsafe ANN2 autofix ignores tuple return type in try black
 
 ---
 
-_Issue opened by @twoertwein on 2023-12-03 15:58_
+_@twoertwein_
 
 ```py
 def test():  # ruff adds -> None

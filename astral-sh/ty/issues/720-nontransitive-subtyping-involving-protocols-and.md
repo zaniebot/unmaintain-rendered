@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-28T15:42:35Z
 updated_at: 2025-09-10T11:13:19Z
 url: https://github.com/astral-sh/ty/issues/720
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Nontransitive subtyping involving protocols and `object`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-06-28 15:42_
+_@JelleZijlstra_
 
 ### Summary
 

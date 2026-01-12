@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T03:09:38Z
 updated_at: 2026-01-06T03:55:03Z
 url: https://github.com/astral-sh/uv/issues/17282
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # uv sync failed to install "."
 
 ---
 
-_Issue opened by @SafetyMary on 2026-01-02 03:09_
+_@SafetyMary_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T18:49:48Z
 updated_at: 2024-03-22T04:42:34Z
 url: https://github.com/astral-sh/uv/issues/2597
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Add lazy client construction to `BaseClientBuilder`
 
 ---
 
-_Issue opened by @zanieb on 2024-03-21 18:49_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/2434
 See example at #2439 

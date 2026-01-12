@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T02:03:23Z
 updated_at: 2025-05-30T03:54:39Z
 url: https://github.com/astral-sh/uv/issues/13727
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # subsequent image builds download numerous dependencies
 
 ---
 
-_Issue opened by @newne on 2025-05-30 02:03_
+_@newne_
 
 ### Summary
 

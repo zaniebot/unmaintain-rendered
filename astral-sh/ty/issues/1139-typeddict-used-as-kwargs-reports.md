@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-06T01:35:27Z
 updated_at: 2025-09-06T17:54:57Z
 url: https://github.com/astral-sh/ty/issues/1139
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # TypedDict used as kwargs reports
 
 ---
 
-_Issue opened by @strangemonad on 2025-09-06 01:35_
+_@strangemonad_
 
 ### Summary
 

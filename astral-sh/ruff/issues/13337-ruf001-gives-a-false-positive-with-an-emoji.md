@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T07:42:50Z
 updated_at: 2024-11-17T17:26:16Z
 url: https://github.com/astral-sh/ruff/issues/13337
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF001 gives a false-positive with an emoji
 
 ---
 
-_Issue opened by @RubenVanEldik on 2024-09-12 07:42_
+_@RubenVanEldik_
 
 I tried to find if there were any existing issues, but I couldn't find anything. 
 

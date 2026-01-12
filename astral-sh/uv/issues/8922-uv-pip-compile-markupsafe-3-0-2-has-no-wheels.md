@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T07:15:54Z
 updated_at: 2024-11-11T03:17:27Z
 url: https://github.com/astral-sh/uv/issues/8922
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # `uv pip compile`: markupsafe==3.0.2 has no wheels with a matching Python implementation tag
 
 ---
 
-_Issue opened by @daip-yxtay on 2024-11-08 07:15_
+_@daip-yxtay_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

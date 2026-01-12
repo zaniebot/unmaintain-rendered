@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T17:02:01Z
 updated_at: 2025-02-10T17:51:06Z
 url: https://github.com/astral-sh/uv/issues/11392
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `uv pip install` behavior deviates from `pip install`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-10 17:02_
+_@chrisrodrigue_
 
 ### Summary
 

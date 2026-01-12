@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T09:58:23Z
 updated_at: 2025-02-10T14:20:57Z
 url: https://github.com/astral-sh/ruff/issues/13791
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PERF401: split or improve message?
 
 ---
 
-_Issue opened by @xmo-odoo on 2024-10-17 09:58_
+_@xmo-odoo_
 
 I think PERF401 is a good rule, however while its message works fine for the "transformed copy" case e.g.
 ```python

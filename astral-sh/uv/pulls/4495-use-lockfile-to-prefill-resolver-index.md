@@ -14,14 +14,14 @@ head: ibraheem/lock-resolver
 created_at: 2024-06-24T22:50:17Z
 updated_at: 2024-07-12T22:49:30Z
 url: https://github.com/astral-sh/uv/pull/4495
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Use lockfile to prefill resolver index
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-24 22:50_
+_@ibraheemdev_
 
 ## Summary
 

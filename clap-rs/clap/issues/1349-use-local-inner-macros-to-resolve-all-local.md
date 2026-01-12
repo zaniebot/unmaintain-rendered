@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-28T16:20:13Z
 updated_at: 2020-02-02T05:09:07Z
 url: https://github.com/clap-rs/clap/issues/1349
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Use local_inner_macros to resolve all local macros within crate
 
 ---
 
-_Issue opened by @csmoe on 2018-09-28 16:20_
+_@csmoe_
 
 https://play.rust-lang.org/?gist=ad478428a2e018819b07ae7e381f662a&version=nightly&mode=debug&edition=2018
 cannot import macros from clap in rustc edition 2018: 

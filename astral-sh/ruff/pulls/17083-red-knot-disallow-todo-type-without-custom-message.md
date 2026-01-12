@@ -13,14 +13,14 @@ head: david/disallow-todo_type-without-message
 created_at: 2025-03-31T08:42:30Z
 updated_at: 2025-03-31T08:49:22Z
 url: https://github.com/astral-sh/ruff/pull/17083
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Disallow `todo_type!` without custom message
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-31 08:42_
+_@sharkdp_
 
 ## Summary
 

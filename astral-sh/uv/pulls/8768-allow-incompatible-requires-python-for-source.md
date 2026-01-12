@@ -13,14 +13,14 @@ head: charlie/later
 created_at: 2024-11-02T21:31:55Z
 updated_at: 2024-11-03T19:03:56Z
 url: https://github.com/astral-sh/uv/pull/8768
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Allow incompatible `requires-python` for source distributions with static metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-02 21:31_
+_@charliermarsh_
 
 ## Summary
 

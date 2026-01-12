@@ -12,14 +12,14 @@ head: charlie/downloads
 created_at: 2023-10-06T20:45:40Z
 updated_at: 2023-10-06T20:51:33Z
 url: https://github.com/astral-sh/uv/pull/28
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Do wheel downloads concurrently
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 20:45_
+_@charliermarsh_
 
 _No description provided._
 

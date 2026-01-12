@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T13:14:52Z
 updated_at: 2025-09-29T18:08:06Z
 url: https://github.com/astral-sh/ty/issues/1276
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Cannot resolve imported module: `<module import>` ty 'unresolved-import' for packages installed in editable mode
 
 ---
 
-_Issue opened by @sitar777 on 2025-09-29 13:14_
+_@sitar777_
 
 ### Summary
 

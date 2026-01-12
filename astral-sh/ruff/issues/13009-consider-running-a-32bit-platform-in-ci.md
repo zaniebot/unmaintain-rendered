@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T13:26:09Z
 updated_at: 2025-08-04T15:49:15Z
 url: https://github.com/astral-sh/ruff/issues/13009
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Consider running a 32bit platform in CI
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-08-20 13:26_
+_@WhyNotHugo_
 
 There have been several releases which inadvertently broke on 32bit architectures (and the more niche s390x), and this only came up when packaging the release downstream.
 

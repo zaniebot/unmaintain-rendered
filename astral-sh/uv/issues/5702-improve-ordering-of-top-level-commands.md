@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T18:24:51Z
 updated_at: 2024-08-06T21:18:06Z
 url: https://github.com/astral-sh/uv/issues/5702
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Improve ordering of top-level commands
 
 ---
 
-_Issue opened by @zanieb on 2024-08-01 18:24_
+_@zanieb_
 
 With https://github.com/astral-sh/uv/pull/5700, the ordering is all over the place in the documentation and help menu.
 

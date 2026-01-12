@@ -12,14 +12,14 @@ head: zb/cache-main
 created_at: 2024-01-10T20:51:28Z
 updated_at: 2024-01-10T21:04:28Z
 url: https://github.com/astral-sh/uv/pull/874
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Only write to rust cache in CI from main branch
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 20:51_
+_@zanieb_
 
 Each cache entry is ~1 GB of our allotted 10 GB for the repository which is quite a bit. We're probably losing cache entries all the time since we add an entry per commit per pull request.
 

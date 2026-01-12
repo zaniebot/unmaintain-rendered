@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T17:08:43Z
 updated_at: 2023-04-12T16:46:21Z
 url: https://github.com/astral-sh/ruff/issues/2630
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `PT006` & `PT007`: False negative with multiple `@pytest.mark.parametrize()` decorators
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-07 17:08_
+_@ngnpope_
 
 ```python
 import pytest

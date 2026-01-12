@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T14:16:38Z
 updated_at: 2023-06-27T15:28:15Z
 url: https://github.com/astral-sh/ruff/issues/5391
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support for legacy code base - baseline
 
 ---
 
-_Issue opened by @Pixel-Minions on 2023-06-27 14:16_
+_@Pixel-Minions_
 
 Hi, 
 

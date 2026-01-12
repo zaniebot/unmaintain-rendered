@@ -12,14 +12,14 @@ head: konsti/cleanup-deps-and-docs
 created_at: 2024-01-11T10:38:42Z
 updated_at: 2024-01-11T10:43:41Z
 url: https://github.com/astral-sh/uv/pull/882
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Cleanup deps and docs
 
 ---
 
-_Pull request opened by @konstin on 2024-01-11 10:38_
+_@konstin_
 
 Fix warnings from `cargo +nightly udeps` and `cargo doc`.
 

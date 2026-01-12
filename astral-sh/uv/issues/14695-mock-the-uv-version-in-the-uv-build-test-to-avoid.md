@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T22:07:16Z
 updated_at: 2025-07-18T10:50:05Z
 url: https://github.com/astral-sh/uv/issues/14695
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Mock the uv version in the `uv_build` test to avoid hash changes
 
 ---
 
-_Issue opened by @zanieb on 2025-07-17 22:07_
+_@zanieb_
 
 We should start mocking the uv version in this test to prevent this hash from changing.
 

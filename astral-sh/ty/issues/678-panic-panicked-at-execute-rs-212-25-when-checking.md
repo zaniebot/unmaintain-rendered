@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T14:06:34Z
 updated_at: 2025-06-19T19:26:32Z
 url: https://github.com/astral-sh/ty/issues/678
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] Panicked at .../execute.rs:212:25 when checking `.../gen_credits.py`: `infer_definition_types(Id(c406)): execute: too many cycle iterations`
 
 ---
 
-_Issue opened by @pawamoy on 2025-06-18 14:06_
+_@pawamoy_
 
 EDIT: Maybe a duplicate of https://github.com/astral-sh/ty/issues/525? I don't think I have any self-referential or recursive type in the snippet below though.
 

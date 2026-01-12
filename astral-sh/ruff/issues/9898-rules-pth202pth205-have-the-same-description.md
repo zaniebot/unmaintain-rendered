@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-08T17:41:32Z
 updated_at: 2024-02-09T20:47:08Z
 url: https://github.com/astral-sh/ruff/issues/9898
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rules PTH202–PTH205 have the same description
 
 ---
 
-_Issue opened by @trag1c on 2024-02-08 17:41_
+_@trag1c_
 
 It looks like rules PTH203–PTH205 had their descriptions copied from PTH202 with no modifications.
 

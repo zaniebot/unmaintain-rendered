@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-24T05:13:40Z
 updated_at: 2025-11-19T20:49:39Z
 url: https://github.com/clap-rs/clap/issues/5698
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add `default_values_if` to match `default_values`
 
 ---
 
-_Issue opened by @SuspiciousDuck on 2024-08-24 05:13_
+_@SuspiciousDuck_
 
 ### Please complete the following tasks
 

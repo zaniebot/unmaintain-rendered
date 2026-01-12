@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T11:55:21Z
 updated_at: 2024-09-13T12:56:00Z
 url: https://github.com/astral-sh/uv/issues/7358
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv pip install reinstalls packages that are available via --system-site-packages
 
 ---
 
-_Issue opened by @BubuOT on 2024-09-13 11:55_
+_@BubuOT_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

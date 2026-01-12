@@ -13,14 +13,14 @@ head: konsti/doc-cache-keys
 created_at: 2025-09-12T13:33:25Z
 updated_at: 2025-09-14T14:20:18Z
 url: https://github.com/astral-sh/uv/pull/15811
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Document cache-keys for native build backends
 
 ---
 
-_Pull request opened by @konstin on 2025-09-12 13:33_
+_@konstin_
 
 Update note for https://github.com/astral-sh/uv/pull/15705#issuecomment-3285240646
 

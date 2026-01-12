@@ -12,14 +12,14 @@ head: move-flake8-debugger-violations
 created_at: 2023-02-03T10:22:32Z
 updated_at: 2023-02-03T12:40:54Z
 url: https://github.com/astral-sh/ruff/pull/2522
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-debugger violation
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 10:22_
+_@akx_
 
 The latest in our series of the great violation migration!
 

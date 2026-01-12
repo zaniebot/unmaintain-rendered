@@ -13,14 +13,14 @@ head: david/dataclasses-pt3
 created_at: 2025-04-16T12:14:00Z
 updated_at: 2025-04-17T07:49:04Z
 url: https://github.com/astral-sh/ruff/pull/17428
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Dataclasses: synthesize `__init__` with proper signature
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-16 12:14_
+_@sharkdp_
 
 ## Summary
 

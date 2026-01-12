@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-25T09:29:54Z
 updated_at: 2024-02-14T16:28:48Z
 url: https://github.com/astral-sh/ruff/issues/7651
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Deprecate top-level lint options
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:29_
+_@MichaReiser_
 
 Deprecate the top level lint options in favor of `[lint]` https://github.com/astral-sh/ruff/pull/7549
 

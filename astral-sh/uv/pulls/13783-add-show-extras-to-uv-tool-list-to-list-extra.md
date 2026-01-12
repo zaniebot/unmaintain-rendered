@@ -13,14 +13,14 @@ head: main
 created_at: 2025-06-02T13:07:12Z
 updated_at: 2025-06-02T14:59:40Z
 url: https://github.com/astral-sh/uv/pull/13783
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # add `--show-extras` to `uv tool list` to list extra requirements installed with tools
 
 ---
 
-_Pull request opened by @gaardhus on 2025-06-02 13:07_
+_@gaardhus_
 
 ## Summary
 

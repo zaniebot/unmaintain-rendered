@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-07-19T21:37:05Z
 updated_at: 2021-07-27T08:06:39Z
 url: https://github.com/clap-rs/clap/issues/2608
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # value name with clap_derive doesn't follow common practices
 
 ---
 
-_Issue opened by @epage on 2021-07-19 21:37_
+_@epage_
 
 ### Please complete the following tasks
 

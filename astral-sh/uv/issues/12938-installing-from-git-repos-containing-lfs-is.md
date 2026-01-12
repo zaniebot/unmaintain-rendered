@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T10:06:31Z
 updated_at: 2025-10-09T06:34:56Z
 url: https://github.com/astral-sh/uv/issues/12938
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # installing from git repos containing LFS is unstable/unreliable
 
 ---
 
-_Issue opened by @thesofakillers on 2025-04-17 10:06_
+_@thesofakillers_
 
 ### Summary
 

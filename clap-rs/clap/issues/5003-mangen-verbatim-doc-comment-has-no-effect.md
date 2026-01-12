@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-10T09:27:18Z
 updated_at: 2025-12-10T19:59:16Z
 url: https://github.com/clap-rs/clap/issues/5003
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # mangen: verbatim_doc_comment has no effect
 
 ---
 
-_Issue opened by @WhyNotHugo on 2023-07-10 09:27_
+_@WhyNotHugo_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: alex/split-invalid-base
 created_at: 2025-05-21T20:13:42Z
 updated_at: 2025-05-21T22:02:41Z
 url: https://github.com/astral-sh/ruff/pull/18245
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Split `invalid-base` error code into two error codes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-21 20:13_
+_@AlexWaygood_
 
 ## Summary
 

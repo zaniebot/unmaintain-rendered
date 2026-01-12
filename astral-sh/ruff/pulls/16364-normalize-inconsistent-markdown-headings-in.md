@@ -13,14 +13,14 @@ head: docstring-consistency
 created_at: 2025-02-25T10:07:09Z
 updated_at: 2025-02-25T10:18:42Z
 url: https://github.com/astral-sh/ruff/pull/16364
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Normalize inconsistent markdown headings in docstrings
 
 ---
 
-_Pull request opened by @CNSeniorious000 on 2025-02-25 10:07_
+_@CNSeniorious000_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

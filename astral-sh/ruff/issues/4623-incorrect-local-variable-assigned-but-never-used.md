@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-24T10:47:06Z
 updated_at: 2023-05-24T14:10:17Z
 url: https://github.com/astral-sh/ruff/issues/4623
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Incorrect: Local variable assigned but never used.
 
 ---
 
-_Issue opened by @chebee7i on 2023-05-24 10:47_
+_@chebee7i_
 
 ```console
 $ python --version

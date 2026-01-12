@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T10:55:27Z
 updated_at: 2025-12-02T21:02:03Z
 url: https://github.com/astral-sh/ruff/issues/21750
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # `F704` wrong "await outside of a function" when using generators
 
 ---
 
-_Issue opened by @PabloRuizCuevas on 2025-12-02 10:55_
+_@PabloRuizCuevas_
 
 ### Summary
 

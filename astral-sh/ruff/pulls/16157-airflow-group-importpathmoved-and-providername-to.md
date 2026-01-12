@@ -13,14 +13,14 @@ head: reorganize-AIR303
 created_at: 2025-02-14T09:34:48Z
 updated_at: 2025-02-18T09:41:59Z
 url: https://github.com/astral-sh/ruff/pull/16157
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`airflow`] Group `ImportPathMoved` and `ProviderName` to avoid misusing (`AIR303`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-14 09:34_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-19T00:35:39Z
 updated_at: 2024-10-19T05:49:43Z
 url: https://github.com/astral-sh/uv/issues/8353
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # uv sync: project dev dependencies does not get installed
 
 ---
 
-_Issue opened by @bugzpodder on 2024-10-19 00:35_
+_@bugzpodder_
 
 prior to uv 0.4.9, if i do `uv sync` in workspace, both dev-dependencies in worspace and project gets installed.  after uv 0.4.10+ `uv sync` in workspace removes project dev-dependencies
 

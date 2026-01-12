@@ -14,14 +14,14 @@ head: amy/unwind-expect-range
 created_at: 2025-09-09T22:51:27Z
 updated_at: 2025-09-11T00:19:22Z
 url: https://github.com/astral-sh/ruff/pull/20322
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # Remove Diagnostic::expect_range and all consumers
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-09 22:51_
+_@amyreese_
 
 Replace usage with `range().unwrap_or_default()` or more appropriate
 alternatives based on context.

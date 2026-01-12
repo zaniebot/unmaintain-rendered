@@ -13,14 +13,14 @@ head: dhruv/remove-fstring-kind
 created_at: 2023-09-26T13:09:25Z
 updated_at: 2023-09-28T03:59:00Z
 url: https://github.com/astral-sh/ruff/pull/7667
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove `StringKind::FString` and `StringKind::RawFString`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-26 13:09_
+_@dhruvmanila_
 
 ## Summary
 

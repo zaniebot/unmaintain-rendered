@@ -12,14 +12,14 @@ head: charlie/builtin
 created_at: 2022-12-04T15:13:12Z
 updated_at: 2022-12-04T15:13:18Z
 url: https://github.com/astral-sh/ruff/pull/1037
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Allow import builtins under T100
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 15:13_
+_@charliermarsh_
 
 Resolves #1032.
 

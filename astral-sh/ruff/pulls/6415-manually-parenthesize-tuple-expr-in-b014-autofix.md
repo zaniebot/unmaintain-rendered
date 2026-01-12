@@ -13,14 +13,14 @@ head: dhruv/b014-autofix
 created_at: 2023-08-08T03:16:28Z
 updated_at: 2023-08-09T05:12:23Z
 url: https://github.com/astral-sh/ruff/pull/6415
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Manually parenthesize tuple expr in `B014` autofix
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-08 03:16_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T16:30:37Z
 updated_at: 2025-01-02T17:01:43Z
 url: https://github.com/astral-sh/uv/issues/10275
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # thread 'uv-resolver' panicked - The channel closed unexpectedly
 
 ---
 
-_Issue opened by @gaborbernat on 2025-01-02 16:30_
+_@gaborbernat_
 
 ```
 [2025-01-02T05:12:56.696Z] Using Python 3.11.11 environment at: .tox/dev

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-14T23:51:45Z
 updated_at: 2025-04-22T16:46:21Z
 url: https://github.com/astral-sh/ruff/issues/17401
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ✨FR: quote-style = "smart"
 
 ---
 
-_Issue opened by @dotysan on 2025-04-14 23:51_
+_@dotysan_
 
 ### Summary
 

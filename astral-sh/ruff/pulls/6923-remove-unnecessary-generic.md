@@ -13,14 +13,14 @@ head: charlie/encode
 created_at: 2023-08-27T19:33:57Z
 updated_at: 2023-08-27T19:55:24Z
 url: https://github.com/astral-sh/ruff/pull/6923
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove unnecessary generic
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 19:33_
+_@charliermarsh_
 
 _No description provided._
 

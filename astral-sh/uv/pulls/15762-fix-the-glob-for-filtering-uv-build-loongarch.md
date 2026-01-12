@@ -12,14 +12,14 @@ head: zb/fix-glib
 created_at: 2025-09-10T02:17:57Z
 updated_at: 2025-09-10T02:41:49Z
 url: https://github.com/astral-sh/uv/pull/15762
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Fix the glob for filtering `uv_build` loongarch wheels
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 02:17_
+_@zanieb_
 
 Introduced in https://github.com/astral-sh/uv/pull/15387 and broke the latest release.
 

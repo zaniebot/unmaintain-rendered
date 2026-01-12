@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T05:19:38Z
 updated_at: 2024-11-08T05:54:20Z
 url: https://github.com/astral-sh/uv/issues/8917
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv install 0.5.0 sh: line 1027: _force_install_dir: unbound variable
 
 ---
 
-_Issue opened by @fraser-langton on 2024-11-08 05:19_
+_@fraser-langton_
 
 Quite bizarre, the same install just started failing, without any changes, and it looks like it's the same version
 

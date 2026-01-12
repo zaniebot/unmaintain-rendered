@@ -13,14 +13,14 @@ head: bool-op-binary-like
 created_at: 2023-09-11T13:31:38Z
 updated_at: 2023-09-12T07:06:29Z
 url: https://github.com/astral-sh/ruff/pull/7269
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bool expression comment placement
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-11 13:31_
+_@MichaReiser_
 
 ## Summary
 

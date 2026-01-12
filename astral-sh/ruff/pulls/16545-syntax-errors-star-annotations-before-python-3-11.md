@@ -14,14 +14,14 @@ head: brent/syn-star-annotation
 created_at: 2025-03-06T23:38:51Z
 updated_at: 2025-03-14T15:24:59Z
 url: https://github.com/astral-sh/ruff/pull/16545
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Star annotations before Python 3.11
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-06 23:38_
+_@ntBre_
 
 Summary
 --

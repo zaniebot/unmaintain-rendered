@@ -13,14 +13,14 @@ head: revert-17569-feature/red-knot-respect-ignore-files
 created_at: 2025-04-26T10:27:21Z
 updated_at: 2025-04-26T10:30:51Z
 url: https://github.com/astral-sh/ruff/pull/17642
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Revert "[red-knot] Add --respect-ignore-files flag (#17569)"
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-26 10:27_
+_@MichaReiser_
 
 This reverts commit 2e95475f577c101a1dbc0d79e0bfdc31b176c0a2.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T12:51:34Z
 updated_at: 2024-09-24T14:55:25Z
 url: https://github.com/astral-sh/uv/issues/5598
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # add test infrastructure for ensuring none of our universal locks can produce a dependency tree with multiple versions of the same package for the same marker environment
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-30 12:51_
+_@BurntSushi_
 
 As witnessed in #5597, we have actual test outputs where it's possible to try to install two different versions of the same package for the same marker environment. We should add some kind of test or test helper that asserts that the locks we produce in tests do not suffer from this flaw.
 

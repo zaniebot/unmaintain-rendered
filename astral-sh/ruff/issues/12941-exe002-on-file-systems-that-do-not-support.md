@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T19:04:13Z
 updated_at: 2024-08-16T20:25:52Z
 url: https://github.com/astral-sh/ruff/issues/12941
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # EXE002 on file systems that do not support executable bit
 
 ---
 
-_Issue opened by @Argmaster on 2024-08-16 19:04_
+_@Argmaster_
 
 This issue is somewhat releated to #5445 and #10084 but applies to more generic version of reported issues.
 In general on `NTFS` and on `FAT` file systems executable permissions are not avialable by default resulting in all files being executable. What I noticed is that the problem is not as simple as avoiding checking this rule on windows / wsl etc. as NTFS and FAT system may also be used for drives which are shared between Windows and Linux OS.

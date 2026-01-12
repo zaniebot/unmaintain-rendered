@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-20T14:47:47Z
 updated_at: 2025-05-20T21:00:01Z
 url: https://github.com/astral-sh/ruff/issues/18219
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Not respecting gitignore for file in subdirectory
 
 ---
 
-_Issue opened by @PhilReinhold on 2025-05-20 14:47_
+_@PhilReinhold_
 
 ### Summary
 

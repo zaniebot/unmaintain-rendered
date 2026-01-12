@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-31T06:50:41Z
 updated_at: 2024-01-31T07:31:29Z
 url: https://github.com/astral-sh/ruff/issues/9729
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Unwelcome Error: memory allocation failed
 
 ---
 
-_Issue opened by @rumbarum on 2024-01-31 06:50_
+_@rumbarum_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

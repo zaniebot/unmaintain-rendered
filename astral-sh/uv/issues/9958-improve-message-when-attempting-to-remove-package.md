@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T05:06:21Z
 updated_at: 2024-12-17T14:16:02Z
 url: https://github.com/astral-sh/uv/issues/9958
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Improve message when attempting to remove package from wrong dependency group
 
 ---
 
-_Issue opened by @dean-tate on 2024-12-17 05:06_
+_@dean-tate_
 
 uv version: 0.5.9
 

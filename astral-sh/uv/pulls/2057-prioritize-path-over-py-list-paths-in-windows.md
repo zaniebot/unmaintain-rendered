@@ -14,14 +14,14 @@ head: charlie/win
 created_at: 2024-02-28T22:02:05Z
 updated_at: 2024-02-29T15:10:46Z
 url: https://github.com/astral-sh/uv/pull/2057
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Prioritize `PATH` over `py --list-paths` in Windows selection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 22:02_
+_@charliermarsh_
 
 `uv --system` is failing in GitHub Actions, because `py --list-paths` returns all the pre-cached Pythons:
 

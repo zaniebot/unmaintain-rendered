@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-25T19:46:57Z
 updated_at: 2024-08-25T22:31:08Z
 url: https://github.com/astral-sh/uv/issues/6615
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Some packages can not be installed with uv contrary to pip, like `ziglang`
 
 ---
 
-_Issue opened by @Coruscant11 on 2024-08-25 19:46_
+_@Coruscant11_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

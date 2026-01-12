@@ -14,14 +14,14 @@ head: charlie/with_dangling_comments
 created_at: 2023-08-07T19:04:38Z
 updated_at: 2023-08-07T19:41:46Z
 url: https://github.com/astral-sh/ruff/pull/6402
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add a `with_dangling_comments` to the parenthesized formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 19:04_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/pull/6376#discussion_r1285514328.
 

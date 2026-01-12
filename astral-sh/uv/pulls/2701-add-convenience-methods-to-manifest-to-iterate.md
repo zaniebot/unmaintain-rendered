@@ -13,14 +13,14 @@ head: charlie/manifest
 created_at: 2024-03-28T00:19:26Z
 updated_at: 2024-03-28T01:03:45Z
 url: https://github.com/astral-sh/uv/pull/2701
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Add convenience methods to `Manifest` to iterate over requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-28 00:19_
+_@charliermarsh_
 
 ## Summary
 

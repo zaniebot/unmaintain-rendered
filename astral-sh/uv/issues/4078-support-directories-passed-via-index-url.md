@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T22:33:48Z
 updated_at: 2024-12-13T14:59:03Z
 url: https://github.com/astral-sh/uv/issues/4078
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Support directories passed via --index-url
 
 ---
 
-_Issue opened by @ericmarkmartin on 2024-06-05 22:33_
+_@ericmarkmartin_
 
 The pip install docs say the following `--index-url` (emphasis mine)
 

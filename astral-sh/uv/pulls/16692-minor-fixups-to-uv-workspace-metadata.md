@@ -13,14 +13,14 @@ head: zb/workspace-metadata-fixs
 created_at: 2025-11-11T20:30:20Z
 updated_at: 2025-11-11T20:41:27Z
 url: https://github.com/astral-sh/uv/pull/16692
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Minor fixups to `uv workspace metadata`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-11 20:30_
+_@zanieb_
 
 _No description provided._
 

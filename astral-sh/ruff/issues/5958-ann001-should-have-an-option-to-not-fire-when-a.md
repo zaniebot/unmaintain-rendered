@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-21T21:59:45Z
 updated_at: 2023-07-27T01:06:31Z
 url: https://github.com/astral-sh/ruff/issues/5958
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `ANN001` should have an option to not fire when a non-`None` default argument is provided
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-21 21:59_
+_@tylerlaprade_
 
 This was already raised in #794 but closed for unclear reasons. It seemed to have positive support in that thread. When I do something like
 ```

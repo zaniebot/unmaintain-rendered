@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-13T19:07:18Z
 updated_at: 2023-11-21T23:36:16Z
 url: https://github.com/astral-sh/ruff/issues/8662
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # isort: support for ``from_first`` setting
 
 ---
 
-_Issue opened by @jelmer on 2023-11-13 19:07_
+_@jelmer_
 
 isort has a ``from_first`` setting that forces "from .. import .." lines to appear before "import .." lines.
 

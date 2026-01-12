@@ -12,14 +12,14 @@ head: stylist-tokens
 created_at: 2023-03-27T10:34:55Z
 updated_at: 2023-03-28T11:47:14Z
 url: https://github.com/astral-sh/ruff/pull/3757
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # perf(pycodestyle): Initialize Stylist from tokens
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-27 10:34_
+_@MichaReiser_
 
 This PR changes `Stylist` to initialize from tokens instead of re-lexing a string, which, in the worst case, requires re-lexing the whole program. 
 

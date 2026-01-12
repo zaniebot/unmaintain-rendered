@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T15:15:59Z
 updated_at: 2025-09-02T13:45:06Z
 url: https://github.com/clap-rs/clap/issues/6118
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Mapping raw args to desired type on-the-fly similar to `serde_with::TryFromInto`
 
 ---
 
-_Issue opened by @MrFoxPro on 2025-09-01 15:15_
+_@MrFoxPro_
 
 ### Clap Version
 

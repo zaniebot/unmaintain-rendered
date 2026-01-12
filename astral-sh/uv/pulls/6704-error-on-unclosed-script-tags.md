@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2024-08-27T17:19:07Z
 updated_at: 2024-08-27T17:47:12Z
 url: https://github.com/astral-sh/uv/pull/6704
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Error on unclosed script tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 17:19_
+_@charliermarsh_
 
 Should this be user-facing by default? It seems annoying because then it's unavoidable if you (for whatever reason) have an intentionally unclosed tag.
 

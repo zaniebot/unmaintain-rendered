@@ -13,14 +13,14 @@ head: konsti/document-requires-python
 created_at: 2024-07-04T09:52:53Z
 updated_at: 2024-07-04T12:27:04Z
 url: https://github.com/astral-sh/uv/pull/4798
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Document the `RequiresPython` fields
 
 ---
 
-_Pull request opened by @konstin on 2024-07-04 09:52_
+_@konstin_
 
 _No description provided._
 

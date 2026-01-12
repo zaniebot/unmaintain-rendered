@@ -13,14 +13,14 @@ head: run-logging
 created_at: 2025-01-14T09:20:59Z
 updated_at: 2025-01-15T19:05:03Z
 url: https://github.com/astral-sh/uv/pull/10588
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Silence log message to debug for uv run
 
 ---
 
-_Pull request opened by @rumpelsepp on 2025-01-14 09:20_
+_@rumpelsepp_
 
 ## Summary
 

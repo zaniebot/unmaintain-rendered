@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T12:08:52Z
 updated_at: 2024-02-16T07:05:21Z
 url: https://github.com/astral-sh/ruff/issues/9997
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # namespace-packages to supports globs
 
 ---
 
-_Issue opened by @zawsq on 2024-02-15 12:08_
+_@zawsq_
 
 Version: `ruff 0.2.1`
 

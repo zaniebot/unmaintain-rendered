@@ -14,14 +14,14 @@ head: EM101-byte-string
 created_at: 2025-06-22T21:46:08Z
 updated_at: 2025-06-25T14:53:56Z
 url: https://github.com/astral-sh/ruff/pull/18867
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`flake8-errmsg`] Extend `EM101` to support byte strings
 
 ---
 
-_Pull request opened by @njhearp on 2025-06-22 21:46_
+_@njhearp_
 
 ## Summary
 

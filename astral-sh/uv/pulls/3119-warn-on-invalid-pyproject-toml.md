@@ -12,14 +12,14 @@ head: konsti/warn-invalid-pyproject.toml
 created_at: 2024-04-18T11:17:04Z
 updated_at: 2024-04-25T10:35:35Z
 url: https://github.com/astral-sh/uv/pull/3119
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Warn on invalid pyproject.toml
 
 ---
 
-_Pull request opened by @konstin on 2024-04-18 11:17_
+_@konstin_
 
 When we try to compile a pyproject.toml, we currently silently fall back to PEP 517 when we can't parse it (according to PEP 621). This PR adds a warning. It would be even better if we could be strict and require a valid pyproject.toml.
 

@@ -11,14 +11,14 @@ head: uv6
 created_at: 2025-08-15T02:38:37Z
 updated_at: 2025-08-16T00:00:14Z
 url: https://github.com/astral-sh/uv/pull/15295
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Improved `match` statements
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-08-15 02:38_
+_@adamnemecek_
 
 Replacement of #15094.
 

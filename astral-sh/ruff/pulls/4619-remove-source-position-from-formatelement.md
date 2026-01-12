@@ -14,14 +14,14 @@ head: dynamic-text-element-remove-position
 created_at: 2023-05-24T07:46:01Z
 updated_at: 2023-05-24T14:50:04Z
 url: https://github.com/astral-sh/ruff/pull/4619
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove source position from `FormatElement::DynamicText`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-24 07:46_
+_@MichaReiser_
 
 ## Summary
 

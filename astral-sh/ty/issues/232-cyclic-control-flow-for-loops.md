@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T15:27:26Z
 updated_at: 2025-12-23T15:15:12Z
 url: https://github.com/astral-sh/ty/issues/232
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # cyclic control flow for loops
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 15:27_
+_@carljm_
 
 Currently we don't even model control flow back edges in loops (because they will often lead to inference cycles). Once we have fixpoint iteration support in Salsa, we need to add these back edges and tests for them, including cases where we have to fallback to avoid runaway fixpoint iteration, e.g.:
 

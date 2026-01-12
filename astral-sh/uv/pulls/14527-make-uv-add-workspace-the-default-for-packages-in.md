@@ -11,14 +11,14 @@ head: add-default-workspace-behavior
 created_at: 2025-07-09T18:03:08Z
 updated_at: 2025-07-11T18:40:04Z
 url: https://github.com/astral-sh/uv/pull/14527
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Make uv add --workspace the default for packages in the same source tree
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-07-09 18:03_
+_@Aditya-PS-05_
 
 closes #14524
 

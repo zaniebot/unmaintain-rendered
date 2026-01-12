@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T20:18:29Z
 updated_at: 2022-12-06T21:11:49Z
 url: https://github.com/astral-sh/ruff/issues/945
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Auto-generate options reference in `README.md`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-28 20:18_
+_@charliermarsh_
 
 I just put that together manually for now, roughly in the style of [rustfmt](https://rust-lang.github.io/rustfmt/?version=v1.5.1&search=), but it'd be far preferable to auto-generate that section.
 

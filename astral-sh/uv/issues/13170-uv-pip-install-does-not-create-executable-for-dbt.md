@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T08:43:53Z
 updated_at: 2025-09-22T09:47:33Z
 url: https://github.com/astral-sh/uv/issues/13170
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # uv pip install does not create executable for dbt
 
 ---
 
-_Issue opened by @dnabb on 2025-04-28 08:43_
+_@dnabb_
 
 ### Summary
 

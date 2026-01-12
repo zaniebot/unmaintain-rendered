@@ -13,14 +13,14 @@ head: charlie/format-cli
 created_at: 2023-08-27T20:08:26Z
 updated_at: 2023-08-27T20:32:34Z
 url: https://github.com/astral-sh/ruff/pull/6926
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use stdin for formatter when `--stdin-filename` is provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 20:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T17:12:11Z
 updated_at: 2025-03-05T17:22:37Z
 url: https://github.com/astral-sh/uv/issues/11984
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # Help and hint messages use inconsistent formatting
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-05 17:12_
+_@charliermarsh_
 
 I think `help:` comes from Miette and `hint:` we do ourselves.
 

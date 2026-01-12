@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T18:21:11Z
 updated_at: 2024-10-20T18:37:42Z
 url: https://github.com/astral-sh/uv/issues/6940
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Spurious test failures related to Windows permissions on temporary directory
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-02 18:21_
+_@charliermarsh_
 
 ```
 running 1 test

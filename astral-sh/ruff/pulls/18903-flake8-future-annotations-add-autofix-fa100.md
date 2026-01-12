@@ -13,14 +13,14 @@ head: brent/fa100-autofix
 created_at: 2025-06-23T20:11:36Z
 updated_at: 2025-06-25T12:37:19Z
 url: https://github.com/astral-sh/ruff/pull/18903
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`flake8-future-annotations`] Add autofix (`FA100`) 
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-23 20:11_
+_@ntBre_
 
 Summary
 --

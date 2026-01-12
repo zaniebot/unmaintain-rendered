@@ -13,14 +13,14 @@ head: charlie/ext
 created_at: 2023-12-31T16:47:09Z
 updated_at: 2023-12-31T18:23:34Z
 url: https://github.com/astral-sh/ruff/pull/9335
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Treat all `typing_extensions` members as typing aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 16:47_
+_@charliermarsh_
 
 ## Summary
 

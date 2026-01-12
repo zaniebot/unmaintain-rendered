@@ -13,14 +13,14 @@ head: polars
 created_at: 2023-11-14T22:02:29Z
 updated_at: 2023-12-17T15:34:16Z
 url: https://github.com/astral-sh/ruff/pull/8686
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # WIP Polars
 
 ---
 
-_Pull request opened by @MarcoGorelli on 2023-11-14 22:02_
+_@MarcoGorelli_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: init-author
 created_at: 2024-09-28T11:34:39Z
 updated_at: 2024-10-13T09:14:05Z
 url: https://github.com/astral-sh/uv/pull/7756
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Fill in `authors` filed during `uv init`
 
 ---
 
-_Pull request opened by @j178 on 2024-09-28 11:34_
+_@j178_
 
 ## Summary
 

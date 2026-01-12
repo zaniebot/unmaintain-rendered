@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-02T15:16:43Z
 updated_at: 2025-01-21T13:47:08Z
 url: https://github.com/astral-sh/ruff/issues/14733
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Update `unncessary-regular-expression` (`RUF055`) fix to use `var == value`
 
 ---
 
-_Issue opened by @zanieb on 2024-12-02 15:16_
+_@zanieb_
 
 I think this should be `s == "abc"`. It's a minor stylistic difference (in which I think `x == VALUE` is more idiomatic), but it can cause actual differences due to type checking implementations, e.g. https://github.com/microsoft/pyright/issues/9093
 

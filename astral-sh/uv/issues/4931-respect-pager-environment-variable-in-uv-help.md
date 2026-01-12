@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-09T18:00:01Z
 updated_at: 2024-10-01T17:50:47Z
 url: https://github.com/astral-sh/uv/issues/4931
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Respect `PAGER` environment variable in `uv help`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-09 18:00_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/4909#issuecomment-2218315681
 

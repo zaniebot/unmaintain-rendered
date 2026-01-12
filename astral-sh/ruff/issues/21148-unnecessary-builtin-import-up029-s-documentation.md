@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T17:22:13Z
 updated_at: 2025-10-30T18:02:20Z
 url: https://github.com/astral-sh/ruff/issues/21148
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `unnecessary-builtin-import` (UP029)’s documentation does not match its implementation
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-30 17:22_
+_@dscorbett_
 
 ### Summary
 

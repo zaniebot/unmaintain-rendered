@@ -13,14 +13,14 @@ head: charlie/test-snippet
 created_at: 2023-05-29T21:57:42Z
 updated_at: 2023-05-29T22:55:51Z
 url: https://github.com/astral-sh/ruff/pull/4714
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add ability to generate snapshot tests on code snippets 
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-29 21:57_
+_@charliermarsh_
 
 ## Summary
 

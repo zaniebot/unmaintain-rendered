@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T11:39:11Z
 updated_at: 2024-11-10T00:13:02Z
 url: https://github.com/astral-sh/uv/issues/8966
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # uv doesn't play well with meson-python build backend and pytest
 
 ---
 
-_Issue opened by @hacksparr0w on 2024-11-09 11:39_
+_@hacksparr0w_
 
 I'm having problems running tests in my project using the meson-python build backend. Whenever I run pytest using `uv run pytest`, the command fails due to a module resolution issue.
 

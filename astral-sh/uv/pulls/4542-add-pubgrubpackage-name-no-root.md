@@ -13,14 +13,14 @@ head: konsti/package-name-no-root
 created_at: 2024-06-26T12:05:59Z
 updated_at: 2024-06-26T12:29:27Z
 url: https://github.com/astral-sh/uv/pull/4542
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Add `PubGrubPackage::name_no_root`
 
 ---
 
-_Pull request opened by @konstin on 2024-06-26 12:05_
+_@konstin_
 
 Small code style improvement.
 

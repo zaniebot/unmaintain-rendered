@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T09:24:10Z
 updated_at: 2024-10-11T19:18:30Z
 url: https://github.com/astral-sh/uv/issues/7998
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # uv publish doesn't support trusted publisher with environment name
 
 ---
 
-_Issue opened by @iMicknl on 2024-10-08 09:24_
+_@iMicknl_
 
 If we want to leverage `uv publish` in GitHub Actions, best is to set a trusted publisher as mentioned in the uv docs. However, it seems there is no possibility to set the environment name via `uv publish`. Setting the environment name is a best practice according to the PyPi docs.
 

@@ -12,14 +12,14 @@ head: adjust-M001-range
 created_at: 2022-11-19T11:29:40Z
 updated_at: 2022-11-19T14:40:56Z
 url: https://github.com/astral-sh/ruff/pull/817
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Adjust `UnusedNOQA` start location
 
 ---
 
-_Pull request opened by @harupy on 2022-11-19 11:29_
+_@harupy_
 
 This PR adjusts the start location of `UnusedNOQA` to make it look less confusing.
 

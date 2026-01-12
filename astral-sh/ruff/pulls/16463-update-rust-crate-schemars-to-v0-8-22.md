@@ -13,14 +13,14 @@ head: renovate/schemars-0.x-lockfile
 created_at: 2025-03-03T03:19:52Z
 updated_at: 2025-03-03T07:13:37Z
 url: https://github.com/astral-sh/ruff/pull/16463
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Update Rust crate schemars to v0.8.22
 
 ---
 
-_Pull request opened by @renovate on 2025-03-03 03:19_
+_@renovate_
 
 This PR contains the following updates:
 

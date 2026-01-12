@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T18:03:31Z
 updated_at: 2025-05-24T17:59:53Z
 url: https://github.com/astral-sh/ruff/issues/8286
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Format Should Preserve Type Ignore Sub Expression
 
 ---
 
-_Issue opened by @saulshanabrook on 2023-10-27 18:03_
+_@saulshanabrook_
 
 It seems that the ruff formatter will collapse a multi line expression with a `# type: ignore` to one line, unlike black. 
 

@@ -13,14 +13,14 @@ head: charlie/tree
 created_at: 2024-10-29T18:18:45Z
 updated_at: 2024-10-29T18:59:28Z
 url: https://github.com/astral-sh/uv/pull/8677
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Simplify `pip tree` tests to improve performance
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 18:18_
+_@charliermarsh_
 
 ## Summary
 

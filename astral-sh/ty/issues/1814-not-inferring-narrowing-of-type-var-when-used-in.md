@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T23:33:02Z
 updated_at: 2025-12-09T00:48:48Z
 url: https://github.com/astral-sh/ty/issues/1814
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Not inferring narrowing of type var when used in return type
 
 ---
 
-_Issue opened by @hutchiko on 2025-12-08 23:33_
+_@hutchiko_
 
 ### Summary
 

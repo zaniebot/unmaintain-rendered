@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T08:41:25Z
 updated_at: 2023-03-28T15:00:50Z
 url: https://github.com/clap-rs/clap/issues/4800
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `clap_lex::OsStrExt` is unsound
 
 ---
 
-_Issue opened by @blyxxyz on 2023-03-28 08:41_
+_@blyxxyz_
 
 ```rust
 use std::ffi::OsStr;

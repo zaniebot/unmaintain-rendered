@@ -14,14 +14,14 @@ head: micha/union-builder-sub-unions
 created_at: 2025-12-19T07:54:14Z
 updated_at: 2025-12-27T14:04:04Z
 url: https://github.com/astral-sh/ruff/pull/22071
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Skip redundancy checks for sub-union-elements
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 07:54_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T17:13:07Z
 updated_at: 2025-08-06T09:27:26Z
 url: https://github.com/astral-sh/uv/issues/15085
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Couldn't parse requirement for git hash
 
 ---
 
-_Issue opened by @sdbds on 2025-08-05 17:13_
+_@sdbds_
 
 ### Summary
 

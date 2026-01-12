@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T22:31:55Z
 updated_at: 2024-06-13T23:53:39Z
 url: https://github.com/astral-sh/ruff/issues/11866
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Request For Security Contact
 
 ---
 
-_Issue opened by @avivkeller on 2024-06-13 22:31_
+_@avivkeller_
 
 Hi! I'm a security researcher, and I may have found a vulnerability in this project. Do you have a security contact?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T09:11:16Z
 updated_at: 2025-07-07T09:14:40Z
 url: https://github.com/astral-sh/uv/issues/14482
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # `uv pip install` does not recognize `pyproject.toml` in subfolder
 
 ---
 
-_Issue opened by @mikeweltevrede on 2025-07-07 09:11_
+_@mikeweltevrede_
 
 ### Summary
 

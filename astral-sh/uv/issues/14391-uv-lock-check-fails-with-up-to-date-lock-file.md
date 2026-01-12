@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T13:05:30Z
 updated_at: 2025-07-02T00:45:24Z
 url: https://github.com/astral-sh/uv/issues/14391
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # uv lock --check fails with up to date lock file
 
 ---
 
-_Issue opened by @niberger on 2025-07-01 13:05_
+_@niberger_
 
 ### Summary
 

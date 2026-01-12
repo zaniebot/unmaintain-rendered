@@ -13,14 +13,14 @@ head: fix-up044
 created_at: 2024-11-01T22:26:49Z
 updated_at: 2024-11-02T17:20:16Z
 url: https://github.com/astral-sh/ruff/pull/14053
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`pyupgrade`] - ignore kwarg unpacking for `UP044`
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-01 22:26_
+_@diceroll123_
 
 ## Summary
 

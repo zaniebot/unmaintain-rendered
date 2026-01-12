@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-08T17:29:45Z
 updated_at: 2023-05-09T09:40:52Z
 url: https://github.com/astral-sh/ruff/issues/4287
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TRY301 flags try - raise - finally block
 
 ---
 
-_Issue opened by @jankatins on 2023-05-08 17:29_
+_@jankatins_
 
 [TRY301](https://beta.ruff.rs/docs/rules/raise-within-try/) should flag cases like the below where the same code raises and catches an exception:
 

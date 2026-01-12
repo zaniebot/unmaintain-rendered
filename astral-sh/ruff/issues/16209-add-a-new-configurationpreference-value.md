@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-17T11:01:46Z
 updated_at: 2025-04-04T14:43:17Z
 url: https://github.com/astral-sh/ruff/issues/16209
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add a new `configurationPreference` value `filesystemOnly`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-17 11:01_
+_@dhruvmanila_
 
 ### Description
 

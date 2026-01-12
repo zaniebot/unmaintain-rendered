@@ -12,14 +12,14 @@ head: zb/python-update-shell
 created_at: 2025-07-15T14:47:33Z
 updated_at: 2025-07-15T18:47:04Z
 url: https://github.com/astral-sh/uv/pull/14627
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Add `uv python update-shell`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 14:47_
+_@zanieb_
 
 Part of #14296 
 

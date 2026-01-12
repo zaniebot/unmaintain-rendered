@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T18:07:34Z
 updated_at: 2025-10-11T11:31:49Z
 url: https://github.com/astral-sh/uv/issues/6534
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Document `uvx` and `uv tool install` Python version support
 
 ---
 
-_Issue opened by @zanieb on 2024-08-23 18:07_
+_@zanieb_
 
 e.g. using `uv tool install --python 3.11 ...` in a new `## Python versions` section of the Tools concept?
 

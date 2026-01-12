@@ -12,14 +12,14 @@ head: charlie/reorder-steps
 created_at: 2023-07-24T21:51:31Z
 updated_at: 2023-07-25T13:05:46Z
 url: https://github.com/astral-sh/ruff/pull/6045
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Perform lint rule analysis after subtree traversal
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 21:51_
+_@charliermarsh_
 
 ## Summary
 

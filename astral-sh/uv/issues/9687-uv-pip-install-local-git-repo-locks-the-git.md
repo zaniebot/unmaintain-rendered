@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T15:33:43Z
 updated_at: 2025-11-07T16:29:20Z
 url: https://github.com/astral-sh/uv/issues/9687
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # `uv pip install ./local/git/repo` locks the git repository, `pip install` does not
 
 ---
 
-_Issue opened by @Luthaf on 2024-12-06 15:33_
+_@Luthaf_
 
 I have some code in my `setup.py` which calls `git update-index --really-refresh` and `git diff-index --quiet HEAD --` to know whether the user is building an unmodified commit or has uncommitted local changes. This is then used to add a local part to the version of the package, for future reference.
 

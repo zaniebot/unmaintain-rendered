@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T22:54:03Z
 updated_at: 2025-03-06T07:19:16Z
 url: https://github.com/astral-sh/ruff/issues/16046
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # B023 rule incorrectly flags loop variables in cases where closures intentionally and correctly capture loop variables
 
 ---
 
-_Issue opened by @gweidart on 2025-02-08 22:54_
+_@gweidart_
 
 ### Description
 

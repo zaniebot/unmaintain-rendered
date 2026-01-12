@@ -13,14 +13,14 @@ head: zb/fix-main-test-commits
 created_at: 2024-04-19T21:11:56Z
 updated_at: 2024-04-19T21:20:35Z
 url: https://github.com/astral-sh/uv/pull/3145
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Bump `astral-test` commit snapshots
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-19 21:11_
+_@zanieb_
 
 I added distributions to these projects so the commit changed.
 

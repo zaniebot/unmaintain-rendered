@@ -13,14 +13,14 @@ head: charlie/guard
 created_at: 2024-05-31T20:21:53Z
 updated_at: 2024-06-03T18:47:28Z
 url: https://github.com/astral-sh/uv/pull/3947
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Don't enforce that requirements files are "files"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-31 20:21_
+_@charliermarsh_
 
 ## Summary
 

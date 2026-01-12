@@ -13,14 +13,14 @@ head: charlie/lcst2
 created_at: 2024-02-05T02:02:18Z
 updated_at: 2024-02-05T02:24:38Z
 url: https://github.com/astral-sh/ruff/pull/9821
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove CST-based fixers for `C405` and `C409`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-05 02:02_
+_@charliermarsh_
 
 _No description provided._
 

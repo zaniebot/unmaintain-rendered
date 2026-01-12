@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T15:12:00Z
 updated_at: 2025-04-04T20:44:44Z
 url: https://github.com/astral-sh/ruff/issues/13011
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] packages installed by uv fail resolving to a module
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-20 15:12_
+_@MichaReiser_
 
 I used black to test this:
 

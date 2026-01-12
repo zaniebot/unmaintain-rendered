@@ -12,14 +12,14 @@ head: enum_narrowing_eq_ne
 created_at: 2025-09-22T14:51:42Z
 updated_at: 2025-09-26T11:33:06Z
 url: https://github.com/astral-sh/ruff/pull/20516
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Enum narrowing eq ne
 
 ---
 
-_Pull request opened by @Guillaume-Fgt on 2025-09-22 14:51_
+_@Guillaume-Fgt_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

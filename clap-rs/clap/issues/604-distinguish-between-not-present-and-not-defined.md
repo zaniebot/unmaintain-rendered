@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-26T14:05:27Z
 updated_at: 2021-10-27T10:32:30Z
 url: https://github.com/clap-rs/clap/issues/604
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Distinguish between not present and not defined Args
 
 ---
 
-_Issue opened by @SuperFluffy on 2016-07-26 14:05_
+_@SuperFluffy_
 
 Right now `ArgMatches::is_present(s)` checks whether the option with name `s` is present in the list of arguments or not. What about `Arg`s that have not been defined, and which I erroneously check for? Maybe `is_present()` could return an `Option<bool>` instead, with `Some(bool)` in cases where a defined `Arg` was set/not set, and `None` in cases where the option does not appear in the list of defined `Arg`s.
 

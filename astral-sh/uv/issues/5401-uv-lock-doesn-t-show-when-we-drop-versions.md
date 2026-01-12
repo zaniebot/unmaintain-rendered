@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T10:45:03Z
 updated_at: 2024-07-24T15:33:11Z
 url: https://github.com/astral-sh/uv/issues/5401
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv lock` doesn't show when we drop versions
 
 ---
 
-_Issue opened by @konstin on 2024-07-24 10:45_
+_@konstin_
 
 See for example the "preferences-dependent-forking" packse scenario. In first call we split a version into two, in the second call we drop 2.0.0 but don't show that:
 

@@ -13,14 +13,14 @@ head: charlie/poison
 created_at: 2023-11-07T18:54:37Z
 updated_at: 2023-11-07T18:58:18Z
 url: https://github.com/astral-sh/uv/pull/362
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Avoid removing progress bars
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 18:54_
+_@charliermarsh_
 
 This was dumb of me. We pass out indexes when adding progress bars, but were then removing entries on completion, so any outstanding indexes were now _invalid_. We just shouldn't remove them. The `MultiProgress` retains a reference anyway, IIUC.
 

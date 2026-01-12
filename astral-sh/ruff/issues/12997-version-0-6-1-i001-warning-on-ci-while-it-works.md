@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T22:01:08Z
 updated_at: 2024-08-19T23:44:15Z
 url: https://github.com/astral-sh/ruff/issues/12997
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Version 0.6.1: I001 warning on CI, while it works locally on macOS
 
 ---
 
-_Issue opened by @amotl on 2024-08-19 22:01_
+_@amotl_
 
 Hi there,
 

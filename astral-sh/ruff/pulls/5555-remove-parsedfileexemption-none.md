@@ -14,14 +14,14 @@ head: charlie/exempt
 created_at: 2023-07-06T05:51:48Z
 updated_at: 2023-07-06T15:15:48Z
 url: https://github.com/astral-sh/ruff/pull/5555
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove `ParsedFileExemption::None`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 05:51_
+_@charliermarsh_
 
 ## Summary
 

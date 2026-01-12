@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-12T15:01:43Z
 updated_at: 2023-07-12T18:22:39Z
 url: https://github.com/astral-sh/ruff/issues/5713
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Implement flake8-string-format
 
 ---
 
-_Issue opened by @AngellusMortis on 2023-07-12 15:01_
+_@AngellusMortis_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

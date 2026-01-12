@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T01:55:03Z
 updated_at: 2025-11-28T15:18:04Z
 url: https://github.com/astral-sh/ty/issues/546
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support `@typing.final` on methods
 
 ---
 
-_Issue opened by @carljm on 2025-05-30 01:55_
+_@carljm_
 
 relates to #166 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T12:41:47Z
 updated_at: 2024-09-04T14:42:16Z
 url: https://github.com/astral-sh/uv/issues/7011
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv` shouldn't modify `pyproject.toml` on failed install
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-04 12:41_
+_@kdheepak_
 
 I ran the following:
 

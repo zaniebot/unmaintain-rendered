@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-29T13:14:05Z
 updated_at: 2024-12-30T04:24:30Z
 url: https://github.com/astral-sh/ruff/issues/15181
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff format generates code that has an invalid syntax in Python 3.8
 
 ---
 
-_Issue opened by @bblommers on 2024-12-29 13:14_
+_@bblommers_
 
 If you have a `with` statement with two context managers with fairly long name, running `ruff format` will put them on a separate line:
 ```

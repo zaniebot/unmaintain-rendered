@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-27T01:08:09Z
 updated_at: 2025-02-01T03:55:10Z
 url: https://github.com/astral-sh/uv/issues/10969
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Migrate `msgpack` usages to `rkyv`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-27 01:08_
+_@charliermarsh_
 
 I don't see a great reason for us to continue using `msgpack`. We've had great success with `rkyv` elsewhere.
 

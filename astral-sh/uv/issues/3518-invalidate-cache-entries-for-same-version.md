@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T21:12:01Z
 updated_at: 2025-01-07T19:21:35Z
 url: https://github.com/astral-sh/uv/issues/3518
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Invalidate cache entries for same-version packages that have newer timestamps when also found externally (via --find-links)
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-05-10 21:12_
+_@charlesnicholson_
 
 Maybe this is too far afield for `uv`, but I have an interesting case-
 

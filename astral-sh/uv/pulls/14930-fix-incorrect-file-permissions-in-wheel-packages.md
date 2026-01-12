@@ -13,14 +13,14 @@ head: fix-wheel-file-permissions
 created_at: 2025-07-28T04:22:45Z
 updated_at: 2025-08-05T16:21:49Z
 url: https://github.com/astral-sh/uv/pull/14930
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Fix incorrect file permissions in wheel packages
 
 ---
 
-_Pull request opened by @yumeminami on 2025-07-28 04:22_
+_@yumeminami_
 
 Fixes #14920
 

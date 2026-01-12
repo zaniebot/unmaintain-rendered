@@ -14,14 +14,14 @@ head: zb/system-install
 created_at: 2024-03-08T21:53:18Z
 updated_at: 2024-03-11T23:12:14Z
 url: https://github.com/astral-sh/uv/pull/2308
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Automatically run system install tests on labeled pull requests and main
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-08 21:53_
+_@zanieb_
 
 Toggles inclusion of the tests with the `test-extra` label and runs on push to `main`.
 

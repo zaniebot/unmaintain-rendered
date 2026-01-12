@@ -13,14 +13,14 @@ head: brent/future-annotations-kw-only
 created_at: 2025-10-29T14:53:04Z
 updated_at: 2025-10-30T18:14:30Z
 url: https://github.com/astral-sh/ruff/pull/21125
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`flake8-type-checking`] Fix `TC003` false positive with `future-annotations`
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-29 14:53_
+_@ntBre_
 
 Summary
 --

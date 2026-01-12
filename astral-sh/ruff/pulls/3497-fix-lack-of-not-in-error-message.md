@@ -13,14 +13,14 @@ head: fix_empty_str
 created_at: 2023-03-13T22:58:43Z
 updated_at: 2023-03-13T23:19:46Z
 url: https://github.com/astral-sh/ruff/pull/3497
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # fix lack of `not`  in error message
 
 ---
 
-_Pull request opened by @Czaki on 2023-03-13 22:58_
+_@Czaki_
 
 In the implementation of PLC1901, an improper error message is emitted. 
 

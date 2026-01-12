@@ -13,14 +13,14 @@ head: dhruv/neovim-integration
 created_at: 2023-10-31T06:49:18Z
 updated_at: 2023-10-31T12:48:09Z
 url: https://github.com/astral-sh/ruff/pull/8371
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update plugins for Neovim integration docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-31 06:49_
+_@dhruvmanila_
 
 This PR updates the editor integration section of the documentation for Neovim.
 * Removes the now archived `null-ls` plugin

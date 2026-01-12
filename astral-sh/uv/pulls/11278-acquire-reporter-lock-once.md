@@ -12,14 +12,14 @@ head: konsti/acquire-lock-once
 created_at: 2025-02-06T09:42:25Z
 updated_at: 2025-02-06T09:49:46Z
 url: https://github.com/astral-sh/uv/pull/11278
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Acquire reporter lock once
 
 ---
 
-_Pull request opened by @konstin on 2025-02-06 09:42_
+_@konstin_
 
 See https://github.com/astral-sh/uv/pull/11165#discussion_r1943853482
 

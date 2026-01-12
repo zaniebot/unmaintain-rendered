@@ -12,14 +12,14 @@ head: jtfm/upgrade-behind-preview
 created_at: 2025-06-01T20:58:03Z
 updated_at: 2025-06-10T18:22:29Z
 url: https://github.com/astral-sh/uv/pull/13762
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Move Python upgrade functionality behind `--preview` flag
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-01 20:58_
+_@jtfmumm_
 
 Because the required changes for transparent Python upgrades (#13312, #13712, and #13531) have a significant impact on how uv installs and executes managed Python executables, this PR moves these changes behind a `--preview` flag and updates the relevant docs. 
 

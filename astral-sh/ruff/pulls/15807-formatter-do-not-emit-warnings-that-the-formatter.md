@@ -13,14 +13,14 @@ head: do-not-warn-non-conflicting-rules
 created_at: 2025-01-29T09:17:38Z
 updated_at: 2025-02-03T07:59:23Z
 url: https://github.com/astral-sh/ruff/pull/15807
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`formatter`] do not emit warnings that the formatter conflicts with rule `missing-trailing-comma` if no conflicts
 
 ---
 
-_Pull request opened by @XuehaiPan on 2025-01-29 09:17_
+_@XuehaiPan_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

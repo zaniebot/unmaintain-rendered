@@ -14,14 +14,14 @@ head: ag/object-attr-uses-type-member
 created_at: 2025-07-11T14:47:30Z
 updated_at: 2025-07-14T12:24:26Z
 url: https://github.com/astral-sh/ruff/pull/19286
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Fix handling of metaclasses in `object.<CURSOR>` completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-11 14:47_
+_@BurntSushi_
 
 Basically, we weren't quite using `Type::member` in every case
 correctly. Specifically, this example from @sharkdp:

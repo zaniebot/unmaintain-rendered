@@ -13,14 +13,14 @@ head: dylan/stabilize-file-level-directives
 created_at: 2025-06-06T14:10:07Z
 updated_at: 2025-06-06T21:51:52Z
 url: https://github.com/astral-sh/ruff/pull/18497
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`ruff`] Stabilize checking for file-level directives in `unused-noqa` (`RUF100`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 14:10_
+_@dylwil3_
 
 Note that the preview behavior was not documented (shame on us!) so the documentation was not modified.
 

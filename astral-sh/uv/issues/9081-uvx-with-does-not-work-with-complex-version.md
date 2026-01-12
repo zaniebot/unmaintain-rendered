@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T08:52:40Z
 updated_at: 2024-11-13T16:20:42Z
 url: https://github.com/astral-sh/uv/issues/9081
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # `uvx --with` does not work with complex version specifiers
 
 ---
 
-_Issue opened by @jramcast on 2024-11-13 08:52_
+_@jramcast_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

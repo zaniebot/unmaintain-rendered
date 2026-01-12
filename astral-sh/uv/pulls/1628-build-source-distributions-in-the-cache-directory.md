@@ -13,14 +13,14 @@ head: zb/tempdir
 created_at: 2024-02-18T07:37:45Z
 updated_at: 2024-02-18T21:05:40Z
 url: https://github.com/astral-sh/uv/pull/1628
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Build source distributions in the cache directory instead of the global temporary directory
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-18 07:37_
+_@zanieb_
 
 Addresses report in https://github.com/astral-sh/uv/issues/1444 where a temporary directory is created outside of the cache directory or current virtual environment.
 

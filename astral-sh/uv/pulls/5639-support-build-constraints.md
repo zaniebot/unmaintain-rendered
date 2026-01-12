@@ -13,14 +13,14 @@ head: build-constraints
 created_at: 2024-07-30T22:06:10Z
 updated_at: 2024-08-02T07:59:39Z
 url: https://github.com/astral-sh/uv/pull/5639
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Support build constraints
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-30 22:06_
+_@blueraft_
 
 ## Summary
 

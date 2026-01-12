@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T16:15:49Z
 updated_at: 2024-05-09T14:43:43Z
 url: https://github.com/astral-sh/uv/issues/2162
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # `uv pip compile` does not show which dependencies are defined directly by the project
 
 ---
 
-_Issue opened by @silv-io on 2024-03-04 16:15_
+_@silv-io_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

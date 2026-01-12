@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T10:18:06Z
 updated_at: 2024-09-16T13:30:38Z
 url: https://github.com/astral-sh/ruff/issues/13367
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule Documentation UX improvement suggestions: navigation + link to source
 
 ---
 
-_Issue opened by @sbrugman on 2024-09-16 10:18_
+_@sbrugman_
 
 Hi there,
 

@@ -13,14 +13,14 @@ head: dcreager/unpack-tuple
 created_at: 2025-06-25T21:50:23Z
 updated_at: 2025-07-01T07:11:36Z
 url: https://github.com/astral-sh/ruff/pull/18948
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Support variable-length tuples in unpacking assignments
 
 ---
 
-_Pull request opened by @dcreager on 2025-06-25 21:50_
+_@dcreager_
 
 This PR updates our unpacking assignment logic to use the new tuple machinery. As a result, we can now unpack variable-length tuples correctly.
 

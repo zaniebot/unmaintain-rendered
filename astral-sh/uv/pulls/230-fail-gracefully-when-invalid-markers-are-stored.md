@@ -12,14 +12,14 @@ head: charlie/cached
 created_at: 2023-10-30T04:00:34Z
 updated_at: 2023-10-30T04:02:53Z
 url: https://github.com/astral-sh/uv/pull/230
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Fail gracefully when invalid markers are stored
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 04:00_
+_@charliermarsh_
 
 _No description provided._
 

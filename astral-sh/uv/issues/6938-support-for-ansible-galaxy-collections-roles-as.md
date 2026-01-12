@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T16:26:13Z
 updated_at: 2025-03-22T15:31:56Z
 url: https://github.com/astral-sh/uv/issues/6938
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Support for ansible-galaxy collections/roles as dependency
 
 ---
 
-_Issue opened by @sebhoss on 2024-09-02 16:26_
+_@sebhoss_
 
 I originally opened this in https://github.com/astral-sh/rye/issues/1317 but I guess uv would be a better place now?
 

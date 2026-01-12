@@ -13,14 +13,14 @@ head: charlie/l
 created_at: 2024-08-07T17:24:55Z
 updated_at: 2024-08-07T17:39:53Z
 url: https://github.com/astral-sh/uv/pull/5880
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Add `--locked` coverage to lock tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 17:24_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/5875.
 

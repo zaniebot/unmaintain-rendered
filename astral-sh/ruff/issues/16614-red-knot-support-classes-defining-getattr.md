@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T23:28:30Z
 updated_at: 2025-03-12T12:44:12Z
 url: https://github.com/astral-sh/ruff/issues/16614
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] support classes defining __getattr__
 
 ---
 
-_Issue opened by @carljm on 2025-03-10 23:28_
+_@carljm_
 
 (We can also support `__getattribute__`, `__setattr__`, `__delattr__` if it's easy, but these are much lower priority so not considering them part of this issue.)
 

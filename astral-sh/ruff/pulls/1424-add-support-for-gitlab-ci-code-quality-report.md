@@ -12,14 +12,14 @@ head: gitlab-error-output
 created_at: 2022-12-28T14:20:47Z
 updated_at: 2022-12-28T16:13:39Z
 url: https://github.com/astral-sh/ruff/pull/1424
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add Support for GitLab CI Code Quality Report Format
 
 ---
 
-_Pull request opened by @saadmk11 on 2022-12-28 14:20_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1298
 

@@ -13,14 +13,14 @@ head: enforce-double-quotes-for-all-docstrings
 created_at: 2023-12-06T06:36:22Z
 updated_at: 2023-12-07T04:41:01Z
 url: https://github.com/astral-sh/ruff/pull/9020
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Use double quotes for all docstrings, including single-quoted docstrings
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-06 06:36_
+_@MichaReiser_
 
 ## Summary
 

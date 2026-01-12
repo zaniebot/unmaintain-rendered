@@ -12,14 +12,14 @@ head: fluent_style
 created_at: 2023-07-28T13:19:20Z
 updated_at: 2023-08-08T12:36:56Z
 url: https://github.com/astral-sh/ruff/pull/6151
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Call chain formatting in fluent style
 
 ---
 
-_Pull request opened by @konstin on 2023-07-28 13:19_
+_@konstin_
 
 Implement fluent style/call chains. See the `call_chains.py` formatting for examples.
 

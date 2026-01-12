@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-18T11:51:55Z
 updated_at: 2022-05-04T20:29:45Z
 url: https://github.com/clap-rs/clap/issues/3309
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # 3 leading hyphens for options (`---long`)
 
 ---
 
-_Issue opened by @tertsdiepraam on 2022-01-18 11:51_
+_@tertsdiepraam_
 
 ### Please complete the following tasks
 

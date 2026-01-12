@@ -12,14 +12,14 @@ assignees: []
 created_at: 2015-08-31T03:12:54Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/210
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Arthimatic overflow with unified help message and no args
 
 ---
 
-_Issue opened by @kbknapp on 2015-08-31 03:12_
+_@kbknapp_
 
 To reproduce:
 

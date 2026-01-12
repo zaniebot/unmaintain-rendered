@@ -13,14 +13,14 @@ head: cjm/membercycle
 created_at: 2025-04-18T16:27:12Z
 updated_at: 2025-04-18T17:20:04Z
 url: https://github.com/astral-sh/ruff/pull/17464
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] add fixpoint iteration for Type::member_lookup_with_policy
 
 ---
 
-_Pull request opened by @carljm on 2025-04-18 16:27_
+_@carljm_
 
 ## Summary
 

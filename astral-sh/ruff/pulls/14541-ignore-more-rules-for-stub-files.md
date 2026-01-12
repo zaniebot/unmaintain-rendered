@@ -13,14 +13,14 @@ head: pyi-ignores
 created_at: 2024-11-22T21:07:47Z
 updated_at: 2024-11-23T07:43:19Z
 url: https://github.com/astral-sh/ruff/pull/14541
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Ignore more rules for stub files
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-22 21:07_
+_@dylwil3_
 
 This PR causes the following rules to ignore stub files, on the grounds that it is not under the author's control to appease these lints:
 

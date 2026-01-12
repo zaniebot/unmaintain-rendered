@@ -13,14 +13,14 @@ head: charlie/toc
 created_at: 2025-01-19T22:48:58Z
 updated_at: 2025-01-20T01:31:17Z
 url: https://github.com/astral-sh/uv/pull/10758
-synced_at: 2026-01-10T11:45:08Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Remove TOCTOU errors in Git clone
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-19 22:48_
+_@charliermarsh_
 
 ## Summary
 

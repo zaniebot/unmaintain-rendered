@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T15:11:42Z
 updated_at: 2025-12-13T19:42:02Z
 url: https://github.com/astral-sh/uv/issues/17103
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Invalid `exclude-newer` type in JSON Schema
 
 ---
 
-_Issue opened by @eggplants on 2025-12-12 15:11_
+_@eggplants_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-09T04:46:58Z
 updated_at: 2024-11-03T19:16:35Z
 url: https://github.com/astral-sh/ruff/issues/12772
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F601: Repeated int keys not detected with booleans
 
 ---
 
-_Issue opened by @addoolit on 2024-08-09 04:46_
+_@addoolit_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

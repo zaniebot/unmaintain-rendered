@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-03-14T20:52:07Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/902
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add Arg::hide_default_value()
 
 ---
 
-_Issue opened by @TimBednarzyk on 2017-03-14 20:52_
+_@TimBednarzyk_
 
 There should be a way to hide the output of `[default: x]` on an option that has a default value, just like how you can hide the output of `[values: x, y, z]` by calling `arg.hide_possible_values(true)` on an argument that has multiple possible values.
 

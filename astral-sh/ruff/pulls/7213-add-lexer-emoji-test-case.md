@@ -13,14 +13,14 @@ head: add-emoji-test-case
 created_at: 2023-09-07T09:19:31Z
 updated_at: 2023-09-07T10:09:00Z
 url: https://github.com/astral-sh/ruff/pull/7213
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add Lexer emoji test case
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 09:19_
+_@MichaReiser_
 
 
 ## Summary

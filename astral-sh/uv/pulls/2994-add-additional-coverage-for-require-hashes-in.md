@@ -13,14 +13,14 @@ head: charlie/pip-install
 created_at: 2024-04-11T15:27:23Z
 updated_at: 2024-04-11T15:43:00Z
 url: https://github.com/astral-sh/uv/pull/2994
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Add additional coverage for `--require-hashes` in `install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 15:27_
+_@charliermarsh_
 
 _No description provided._
 

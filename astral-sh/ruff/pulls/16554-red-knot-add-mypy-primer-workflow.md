@@ -14,14 +14,14 @@ head: david/mypy-primer
 created_at: 2025-03-07T14:22:43Z
 updated_at: 2025-03-10T10:14:36Z
 url: https://github.com/astral-sh/ruff/pull/16554
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add 'mypy_primer' workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-07 14:22_
+_@sharkdp_
 
 ## Summary
 

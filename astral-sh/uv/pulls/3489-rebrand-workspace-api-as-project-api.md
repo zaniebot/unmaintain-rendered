@@ -13,14 +13,14 @@ head: charlie/project-venv
 created_at: 2024-05-09T16:57:17Z
 updated_at: 2024-05-09T18:04:33Z
 url: https://github.com/astral-sh/uv/pull/3489
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Rebrand workspace API as project API
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 16:57_
+_@charliermarsh_
 
 ## Summary
 

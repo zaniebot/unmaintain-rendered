@@ -13,14 +13,14 @@ head: zb/commands
 created_at: 2025-01-23T22:35:22Z
 updated_at: 2025-01-24T15:18:24Z
 url: https://github.com/astral-sh/uv/pull/10920
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Run multiple commands in ecosystem tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 22:35_
+_@zanieb_
 
 _No description provided._
 

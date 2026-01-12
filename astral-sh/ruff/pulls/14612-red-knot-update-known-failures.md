@@ -13,14 +13,14 @@ head: david/update-known-failures
 created_at: 2024-11-26T14:48:17Z
 updated_at: 2024-11-26T14:56:44Z
 url: https://github.com/astral-sh/ruff/pull/14612
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Update KNOWN_FAILURES
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-26 14:48_
+_@sharkdp_
 
 
 ## Summary

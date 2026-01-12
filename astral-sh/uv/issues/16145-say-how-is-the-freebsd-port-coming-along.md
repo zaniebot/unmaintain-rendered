@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T02:03:41Z
 updated_at: 2025-10-07T23:04:14Z
 url: https://github.com/astral-sh/uv/issues/16145
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Say! How is the FreeBSD Port Coming Along?
 
 ---
 
-_Issue opened by @davidjayjackson on 2025-10-07 02:03_
+_@davidjayjackson_
 
 ### Summary
 

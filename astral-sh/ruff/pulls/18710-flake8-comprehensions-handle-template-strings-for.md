@@ -14,14 +14,14 @@ head: py314/c4
 created_at: 2025-06-16T14:37:27Z
 updated_at: 2025-06-19T21:23:46Z
 url: https://github.com/astral-sh/ruff/pull/18710
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [`flake8-comprehensions`] Handle template strings for comprehension fixes
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-16 14:37_
+_@dylwil3_
 
 Essentially this PR ensures that when we do fixes like this:
 

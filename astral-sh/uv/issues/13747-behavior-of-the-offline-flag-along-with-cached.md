@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T23:54:44Z
 updated_at: 2025-06-06T17:30:25Z
 url: https://github.com/astral-sh/uv/issues/13747
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Behavior of the --offline flag along with cached packages from an internal pypi index seem to not work as expected
 
 ---
 
-_Issue opened by @taranlu-houzz on 2025-05-30 23:54_
+_@taranlu-houzz_
 
 ### Summary
 

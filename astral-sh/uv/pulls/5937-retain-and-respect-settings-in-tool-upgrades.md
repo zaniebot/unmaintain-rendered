@@ -14,14 +14,14 @@ head: charlie/index-receipt
 created_at: 2024-08-08T21:32:00Z
 updated_at: 2024-08-09T18:23:59Z
 url: https://github.com/astral-sh/uv/pull/5937
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Retain and respect settings in tool upgrades
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 21:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:33:16Z
 updated_at: 2025-08-21T13:33:16Z
 url: https://github.com/astral-sh/uv/issues/15413
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # The "Dynamic metadata" cache settings should be linked from the "Configuring projects" page
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:33_
+_@zanieb_
 
 It's at `uv/concepts/cache/#dynamic-metadata` but is hard to discover from the project section.
 

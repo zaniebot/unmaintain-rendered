@@ -13,14 +13,14 @@ head: konsti/remove-old-uv-stack-size-calls
 created_at: 2025-03-04T16:45:06Z
 updated_at: 2025-03-04T16:53:35Z
 url: https://github.com/astral-sh/uv/pull/11957
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Remove unused `UV_STACK_SIZE` env vars
 
 ---
 
-_Pull request opened by @konstin on 2025-03-04 16:45_
+_@konstin_
 
 These were overlooked in #10479
 

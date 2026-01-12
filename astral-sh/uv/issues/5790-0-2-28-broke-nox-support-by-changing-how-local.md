@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-05T08:08:47Z
 updated_at: 2024-08-06T15:05:05Z
 url: https://github.com/astral-sh/uv/issues/5790
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # 0.2.28 broke Nox support by changing how local reinstallation works
 
 ---
 
-_Issue opened by @hynek on 2024-08-05 08:08_
+_@hynek_
 
 I've run into the weirdness that Nox paired with uv stopped re-installing the local package and the tests ran against old code.
 

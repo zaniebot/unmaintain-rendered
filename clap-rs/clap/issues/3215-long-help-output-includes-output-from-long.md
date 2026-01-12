@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-24T09:23:36Z
 updated_at: 2021-12-30T18:41:18Z
 url: https://github.com/clap-rs/clap/issues/3215
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # long_help() output includes output from long_version() instead of short_version()
 
 ---
 
-_Issue opened by @ducaale on 2021-12-24 09:23_
+_@ducaale_
 
 ### Please complete the following tasks
 

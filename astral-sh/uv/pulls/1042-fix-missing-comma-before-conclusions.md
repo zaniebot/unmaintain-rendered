@@ -12,14 +12,14 @@ head: zb/conclude-comma
 created_at: 2024-01-22T19:20:54Z
 updated_at: 2024-01-22T19:31:10Z
 url: https://github.com/astral-sh/uv/pull/1042
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Fix missing comma before conclusions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 19:20_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/1010
 

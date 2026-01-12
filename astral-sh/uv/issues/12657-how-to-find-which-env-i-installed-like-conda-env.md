@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T15:51:23Z
 updated_at: 2025-04-06T06:27:25Z
 url: https://github.com/astral-sh/uv/issues/12657
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # How to find which env i installed? like `conda env list` or `conda info -e`
 
 ---
 
-_Issue opened by @bode135 on 2025-04-03 15:51_
+_@bode135_
 
 ### Summary
 

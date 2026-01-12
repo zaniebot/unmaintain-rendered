@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T16:26:20Z
 updated_at: 2024-03-26T20:53:57Z
 url: https://github.com/astral-sh/ruff/issues/10618
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` editor integration is broken
 
 ---
 
-_Issue opened by @snowsignal on 2024-03-26 16:26_
+_@snowsignal_
 
 Diagnostics weren't showing up when debugging the new Ruff VS Code extension locally. While investigating this issue, I found these logs, which happen immediately following client/server initialization:
 ```

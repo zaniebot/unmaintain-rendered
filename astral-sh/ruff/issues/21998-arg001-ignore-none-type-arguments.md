@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T09:11:40Z
 updated_at: 2026-01-05T12:49:53Z
 url: https://github.com/astral-sh/ruff/issues/21998
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # ARG001 - Ignore None type arguments
 
 ---
 
-_Issue opened by @Philipp-Thiel on 2025-12-16 09:11_
+_@Philipp-Thiel_
 
 ### Summary
 

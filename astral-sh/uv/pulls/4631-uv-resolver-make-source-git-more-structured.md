@@ -11,14 +11,14 @@ head: ag/rejigger-git-source
 created_at: 2024-06-28T17:18:23Z
 updated_at: 2024-07-31T15:38:11Z
 url: https://github.com/astral-sh/uv/pull/4631
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # uv-resolver: make source=git more structured
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-28 17:18_
+_@BurntSushi_
 
 This splits out the git fields into an inline table instead of smushing
 them into a single URL.

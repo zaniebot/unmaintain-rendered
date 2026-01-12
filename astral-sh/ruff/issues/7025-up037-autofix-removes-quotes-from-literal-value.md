@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-31T15:36:50Z
 updated_at: 2023-11-03T03:15:24Z
 url: https://github.com/astral-sh/ruff/issues/7025
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # UP037: autofix removes quotes from Literal["value"] typing when not imported
 
 ---
 
-_Issue opened by @Prometheos2 on 2023-08-31 15:36_
+_@Prometheos2_
 
 UP037's autofix removes quotes from typing.Literal["value"] when Literal is not imported, but it's supposed to have str values.
 

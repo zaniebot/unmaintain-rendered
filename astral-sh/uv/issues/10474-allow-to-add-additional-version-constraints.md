@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-10T17:46:31Z
 updated_at: 2025-01-10T21:08:44Z
 url: https://github.com/astral-sh/uv/issues/10474
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Allow to add additional version constraints version based on dependency version
 
 ---
 
-_Issue opened by @Czaki on 2025-01-10 17:46_
+_@Czaki_
 
 Sometimes there is a situation where one of the package dependency does not specify properly upper version constraints for its dependency. So it may happen, that it resolves to not working environment, 
 

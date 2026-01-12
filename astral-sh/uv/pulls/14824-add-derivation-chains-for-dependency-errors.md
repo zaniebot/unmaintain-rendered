@@ -13,14 +13,14 @@ head: charlie/derive
 created_at: 2025-07-22T17:33:37Z
 updated_at: 2025-07-22T19:09:01Z
 url: https://github.com/astral-sh/uv/pull/14824
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Add derivation chains for dependency errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-22 17:33_
+_@charliermarsh_
 
 ## Summary
 

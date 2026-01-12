@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-08-31T00:05:18Z
 updated_at: 2022-09-07T12:39:26Z
 url: https://github.com/clap-rs/clap/issues/1538
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `TrailingVarArg` doesn't work without `--`
 
 ---
 
-_Issue opened by @naftulikay on 2019-08-31 00:05_
+_@naftulikay_
 
 Maintainer's notes
 - Workaround: call `Command::allow_hyphen_values(true)`

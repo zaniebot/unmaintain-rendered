@@ -13,14 +13,14 @@ head: david/eq-narrowing-none
 created_at: 2025-04-22T19:47:38Z
 updated_at: 2025-04-23T06:45:17Z
 url: https://github.com/astral-sh/ruff/pull/17562
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Eliminate `None` in equality-comparison narrowing
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-22 19:47_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

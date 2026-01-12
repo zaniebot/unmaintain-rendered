@@ -14,14 +14,14 @@ head: alex/union-literal-sets
 created_at: 2026-01-08T12:46:53Z
 updated_at: 2026-01-08T13:00:44Z
 url: https://github.com/astral-sh/ruff/pull/22456
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Rework how `Literal` elements are stored in the `UnionBuilder`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-08 12:46_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

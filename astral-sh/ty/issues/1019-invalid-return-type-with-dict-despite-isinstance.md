@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-16T05:47:31Z
 updated_at: 2025-08-16T14:54:58Z
 url: https://github.com/astral-sh/ty/issues/1019
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # invalid-return-type with dict despite isinstance checks
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-16 05:47_
+_@CharlesPerrotMinot_
 
 ### Question
 

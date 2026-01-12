@@ -13,14 +13,14 @@ head: charlie/member
 created_at: 2024-07-23T00:13:40Z
 updated_at: 2024-07-23T00:15:36Z
 url: https://github.com/astral-sh/uv/pull/5319
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Avoid redundant members update in `uv init`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-23 00:13_
+_@charliermarsh_
 
 ## Summary
 

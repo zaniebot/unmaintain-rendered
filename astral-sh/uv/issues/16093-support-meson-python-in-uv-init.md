@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T23:07:53Z
 updated_at: 2025-10-29T21:51:47Z
 url: https://github.com/astral-sh/uv/issues/16093
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Support meson-python in `uv init`
 
 ---
 
-_Issue opened by @refack on 2025-10-01 23:07_
+_@refack_
 
 ### Summary
 

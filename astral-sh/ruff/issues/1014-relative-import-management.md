@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-03T19:51:10Z
 updated_at: 2025-03-15T23:35:38Z
 url: https://github.com/astral-sh/ruff/issues/1014
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Relative import management
 
 ---
 
-_Issue opened by @noirbizarre on 2022-12-03 19:51_
+_@noirbizarre_
 
 This topic has always been a bit painful to manage with `isort` or `absolufy-imports` and given I am migrating all my project to `ruff` I would love to be able to tune the relative imports ahndling:
 - basic case (the one I use everyday): force relative imports for siblings and children only (with auto-fix support) (ie. `..` starting imports)

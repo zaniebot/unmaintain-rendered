@@ -12,14 +12,14 @@ head: fix-21342
 created_at: 2025-11-11T00:19:16Z
 updated_at: 2025-12-08T23:37:03Z
 url: https://github.com/astral-sh/ruff/pull/21371
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [`flake8-use-pathlib`] Fix false negatives when `dir_fd=None` is explicitly passed (`PTH106`, `PTH107`, `PTH108`, `PTH115`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-11 00:19_
+_@danparizher_
 
 ## Summary
 

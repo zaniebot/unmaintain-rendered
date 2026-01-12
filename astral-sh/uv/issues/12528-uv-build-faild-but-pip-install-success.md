@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T12:45:30Z
 updated_at: 2025-07-11T02:29:22Z
 url: https://github.com/astral-sh/uv/issues/12528
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv build faild but pip install success
 
 ---
 
-_Issue opened by @candowu on 2025-03-28 12:45_
+_@candowu_
 
 ### Summary
 

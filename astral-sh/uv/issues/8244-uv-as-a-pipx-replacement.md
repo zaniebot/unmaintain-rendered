@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T07:08:36Z
 updated_at: 2024-10-16T19:57:01Z
 url: https://github.com/astral-sh/uv/issues/8244
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # uv as a pipx replacement
 
 ---
 
-_Issue opened by @powercoconola on 2024-10-16 07:08_
+_@powercoconola_
 
 Hello, I have a specific usecase for `uv`. Right now I deploy many custom packages to many PCs using `pipx`. 
 

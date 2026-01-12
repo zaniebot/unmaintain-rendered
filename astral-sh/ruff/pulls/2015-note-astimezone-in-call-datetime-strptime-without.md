@@ -12,14 +12,14 @@ head: dtz007-astimezone-message
 created_at: 2023-01-20T06:42:38Z
 updated_at: 2023-01-20T16:28:56Z
 url: https://github.com/astral-sh/ruff/pull/2015
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Note `.astimezone()` in call-datetime-strptime-without-zone message
 
 ---
 
-_Pull request opened by @scop on 2023-01-20 06:42_
+_@scop_
 
 _No description provided._
 

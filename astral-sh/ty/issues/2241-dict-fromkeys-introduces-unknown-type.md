@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-27T22:43:53Z
 updated_at: 2025-12-29T19:44:12Z
 url: https://github.com/astral-sh/ty/issues/2241
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # dict.fromkeys introduces Unknown type
 
 ---
 
-_Issue opened by @TylerYep on 2025-12-27 22:43_
+_@TylerYep_
 
 ### Summary
 

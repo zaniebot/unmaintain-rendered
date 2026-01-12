@@ -13,14 +13,14 @@ head: zb/pr-scene
 created_at: 2024-02-23T15:53:56Z
 updated_at: 2024-02-24T19:03:32Z
 url: https://github.com/astral-sh/uv/pull/1919
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Add scenarios for pre-releases on specifier range boundaries
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-23 15:53_
+_@zanieb_
 
 For https://github.com/astral-sh/uv/issues/1641
 

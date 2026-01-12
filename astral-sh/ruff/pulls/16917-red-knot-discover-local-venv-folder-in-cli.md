@@ -13,14 +13,14 @@ head: discovery-of-venv-folder
 created_at: 2025-03-22T18:36:15Z
 updated_at: 2025-03-29T00:11:10Z
 url: https://github.com/astral-sh/ruff/pull/16917
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Discover local venv folder in cli
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-22 18:36_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

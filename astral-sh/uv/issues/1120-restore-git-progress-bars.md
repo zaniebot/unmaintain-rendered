@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-26T13:29:37Z
 updated_at: 2024-07-02T01:35:55Z
 url: https://github.com/astral-sh/uv/issues/1120
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Restore Git progress bars
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-26 13:29_
+_@charliermarsh_
 
 Cargo has these. I disabled them because it requires threading down our printer abstraction.
 

@@ -13,14 +13,14 @@ head: ruff-066-inefficient-membership-test
 created_at: 2025-10-28T22:43:09Z
 updated_at: 2025-10-29T19:09:49Z
 url: https://github.com/astral-sh/ruff/pull/21116
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`ruff`] Implement `inefficient-membership-test` (`RUF066`)
 
 ---
 
-_Pull request opened by @Zaczero on 2025-10-28 22:43_
+_@Zaczero_
 
 Closes https://github.com/astral-sh/ruff/issues/19933
 

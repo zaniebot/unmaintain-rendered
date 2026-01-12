@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T18:22:56Z
 updated_at: 2024-03-28T18:28:46Z
 url: https://github.com/astral-sh/uv/issues/2716
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `0.1.25` Failed to deserialize cache entry on `pip install -U`
 
 ---
 
-_Issue opened by @CoderJoshDK on 2024-03-28 18:22_
+_@CoderJoshDK_
 
 When running `uv pip install -r requirements.txt -U`, I get the following error:
 ```

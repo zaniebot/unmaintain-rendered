@@ -13,14 +13,14 @@ head: charlie/st
 created_at: 2025-08-15T22:03:33Z
 updated_at: 2025-08-15T22:16:09Z
 url: https://github.com/astral-sh/uv/pull/15319
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Move `--no-build-isolation-package` into `pyproject.toml` in tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-15 22:03_
+_@charliermarsh_
 
 _No description provided._
 

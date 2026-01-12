@@ -13,14 +13,14 @@ head: jupyter-progress
 created_at: 2024-05-28T20:49:59Z
 updated_at: 2024-05-28T21:05:12Z
 url: https://github.com/astral-sh/uv/pull/3890
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Disable concurrent progress bars in Jupyter Notebooks
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-28 20:49_
+_@ibraheemdev_
 
 ## Summary
 

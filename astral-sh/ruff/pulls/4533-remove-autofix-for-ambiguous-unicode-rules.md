@@ -12,14 +12,14 @@ head: charlie/ambiguous
 created_at: 2023-05-19T17:59:38Z
 updated_at: 2023-07-21T14:49:17Z
 url: https://github.com/astral-sh/ruff/pull/4533
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove autofix for ambiguous-unicode rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-19 17:59_
+_@charliermarsh_
 
 ## Summary
 

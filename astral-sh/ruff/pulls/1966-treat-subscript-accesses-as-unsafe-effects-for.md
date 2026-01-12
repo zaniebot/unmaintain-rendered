@@ -12,14 +12,14 @@ head: charlie/sub
 created_at: 2023-01-18T16:46:04Z
 updated_at: 2023-01-18T16:46:15Z
 url: https://github.com/astral-sh/ruff/pull/1966
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Treat subscript accesses as unsafe effects for autofix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 16:46_
+_@charliermarsh_
 
 See: #1809.
 

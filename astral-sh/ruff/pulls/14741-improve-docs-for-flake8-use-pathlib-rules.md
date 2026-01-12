@@ -13,14 +13,14 @@ head: alex/pathlib-docs
 created_at: 2024-12-02T18:59:21Z
 updated_at: 2024-12-03T07:47:33Z
 url: https://github.com/astral-sh/ruff/pull/14741
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Improve docs for flake8-use-pathlib rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-02 18:59_
+_@AlexWaygood_
 
 Flag the perf impact more clearly, add more links, clarify the rule about the glob module
 

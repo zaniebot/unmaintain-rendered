@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T15:42:47Z
 updated_at: 2025-04-03T13:50:25Z
 url: https://github.com/astral-sh/uv/issues/12202
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # `uv run` repeatedly compiles bytecode with `UV_COMPILE_BYTECODE=1`
 
 ---
 
-_Issue opened by @mwaskom on 2025-03-16 15:42_
+_@mwaskom_
 
 ### Summary
 

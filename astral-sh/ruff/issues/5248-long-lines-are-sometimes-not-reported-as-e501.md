@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T11:55:46Z
 updated_at: 2023-06-21T17:02:22Z
 url: https://github.com/astral-sh/ruff/issues/5248
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Long lines are sometimes not reported as E501 error
 
 ---
 
-_Issue opened by @tlinhart on 2023-06-21 11:55_
+_@tlinhart_
 
 Consider this code in `test.py`:
 

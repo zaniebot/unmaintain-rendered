@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T12:15:26Z
 updated_at: 2025-12-10T15:37:39Z
 url: https://github.com/astral-sh/uv/issues/17069
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Am I using `--with-executables-from` correctly?
 
 ---
 
-_Issue opened by @astrojuanlu on 2025-12-10 12:15_
+_@astrojuanlu_
 
 ### Question
 

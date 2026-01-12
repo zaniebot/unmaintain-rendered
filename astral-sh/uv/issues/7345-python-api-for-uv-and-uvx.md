@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T23:20:04Z
 updated_at: 2024-10-21T21:53:16Z
 url: https://github.com/astral-sh/uv/issues/7345
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Python API for `uv` and `uvx`
 
 ---
 
-_Issue opened by @aaronsteers on 2024-09-12 23:20_
+_@aaronsteers_
 
 I would like to bundle `uv`/`uvx` in my Python app as a replacement for the [`venv`](https://docs.python.org/3/library/venv.html) standard library and `pip`-based installation methods - specifically in order to take advantage of faster install times.
 

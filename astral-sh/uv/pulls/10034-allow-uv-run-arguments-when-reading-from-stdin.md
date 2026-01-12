@@ -13,14 +13,14 @@ head: charlie/stdin=args
 created_at: 2024-12-19T17:02:13Z
 updated_at: 2024-12-19T17:39:59Z
 url: https://github.com/astral-sh/uv/pull/10034
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Allow `uv run` arguments when reading from `stdin`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-19 17:02_
+_@charliermarsh_
 
 ## Summary
 

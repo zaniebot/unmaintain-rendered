@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-07T10:08:02Z
 updated_at: 2023-07-10T01:22:32Z
 url: https://github.com/astral-sh/ruff/issues/5590
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Feature request] - Allow ignoring line length of an entire dict/list definition instead of having to ignore each line individually
 
 ---
 
-_Issue opened by @michaeloliverx on 2023-07-07 10:08_
+_@michaeloliverx_
 
 Lets say you have a massive inline dictionary like so:
 

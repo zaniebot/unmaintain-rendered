@@ -14,14 +14,14 @@ assignees: []
 created_at: 2025-11-18T16:27:11Z
 updated_at: 2025-11-18T16:30:18Z
 url: https://github.com/clap-rs/clap/issues/6185
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `CommandAction` analogous with `ArgAction` allowing Custom "help" subcommand
 
 ---
 
-_Issue opened by @jerusdp on 2025-11-18 16:27_
+_@jerusdp_
 
 ### Please complete the following tasks
 

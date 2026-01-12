@@ -12,14 +12,14 @@ head: renovate/ureq-3.x
 created_at: 2025-01-27T01:42:36Z
 updated_at: 2025-02-02T16:13:51Z
 url: https://github.com/astral-sh/ruff/pull/15759
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Update Rust crate ureq to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-01-27 01:42_
+_@renovate_
 
 This PR contains the following updates:
 

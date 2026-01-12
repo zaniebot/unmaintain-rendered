@@ -13,14 +13,14 @@ head: charlie/no-group
 created_at: 2024-10-22T19:31:03Z
 updated_at: 2024-10-22T20:18:41Z
 url: https://github.com/astral-sh/uv/pull/8477
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Add `--no-group` support to CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 19:31_
+_@charliermarsh_
 
 ## Summary
 

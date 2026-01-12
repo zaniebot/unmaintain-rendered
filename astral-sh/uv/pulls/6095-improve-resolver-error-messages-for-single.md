@@ -14,14 +14,14 @@ head: zb/resolver-errors-projects
 created_at: 2024-08-14T22:39:26Z
 updated_at: 2024-08-15T03:08:57Z
 url: https://github.com/astral-sh/uv/pull/6095
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Improve resolver error messages for single-project workspaces
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-14 22:39_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/6092 to improve resolver error messages for workspaces that have a single member.
 

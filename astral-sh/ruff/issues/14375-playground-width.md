@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-16T03:28:24Z
 updated_at: 2024-11-16T16:40:47Z
 url: https://github.com/astral-sh/ruff/issues/14375
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # playground width
 
 ---
 
-_Issue opened by @3052 on 2024-11-16 03:28_
+_@3052_
 
 I see no way to set the tab width here
 

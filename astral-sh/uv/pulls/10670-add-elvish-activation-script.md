@@ -14,14 +14,14 @@ head: elvish
 created_at: 2025-01-16T08:59:28Z
 updated_at: 2025-06-29T19:17:38Z
 url: https://github.com/astral-sh/uv/pull/10670
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Add elvish activation script
 
 ---
 
-_Pull request opened by @balthild on 2025-01-16 08:59_
+_@balthild_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

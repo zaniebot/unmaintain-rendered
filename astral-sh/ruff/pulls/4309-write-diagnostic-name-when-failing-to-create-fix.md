@@ -12,14 +12,14 @@ head: print_diagnostic_name_when_failing_to_create_fix
 created_at: 2023-05-09T14:58:38Z
 updated_at: 2023-05-09T15:46:41Z
 url: https://github.com/astral-sh/ruff/pull/4309
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Write diagnostic name when failing to create fix
 
 ---
 
-_Pull request opened by @konstin on 2023-05-09 14:58_
+_@konstin_
 
 Tweak to debug some opaque "error: Failed to create fix: Unable to split parenthesized condition" errors i've seen.
 

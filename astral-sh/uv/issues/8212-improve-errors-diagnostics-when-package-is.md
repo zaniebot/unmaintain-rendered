@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T12:19:25Z
 updated_at: 2024-12-26T16:33:50Z
 url: https://github.com/astral-sh/uv/issues/8212
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Improve errors / diagnostics when package is missing `__init__.py`
 
 ---
 
-_Issue opened by @drmason13 on 2024-10-15 12:19_
+_@drmason13_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: alex/upgrade-salsa
 created_at: 2025-04-28T12:12:04Z
 updated_at: 2025-04-28T12:32:24Z
 url: https://github.com/astral-sh/ruff/pull/17678
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Upgrade Salsa to a more recent commit
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-28 12:12_
+_@AlexWaygood_
 
 ## Summary
 

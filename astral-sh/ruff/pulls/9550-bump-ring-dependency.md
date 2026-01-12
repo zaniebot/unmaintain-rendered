@@ -13,14 +13,14 @@ head: bump-depends
 created_at: 2024-01-16T13:19:55Z
 updated_at: 2024-01-16T14:18:09Z
 url: https://github.com/astral-sh/ruff/pull/9550
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump `ring` dependency
 
 ---
 
-_Pull request opened by @WhyNotHugo on 2024-01-16 13:19_
+_@WhyNotHugo_
 
 ## Summary
 

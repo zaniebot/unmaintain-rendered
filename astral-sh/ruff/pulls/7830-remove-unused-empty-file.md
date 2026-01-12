@@ -13,14 +13,14 @@ head: zanie/unused-defaults
 created_at: 2023-10-05T18:14:53Z
 updated_at: 2023-10-05T18:38:01Z
 url: https://github.com/astral-sh/ruff/pull/7830
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove unused empty file
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-05 18:14_
+_@zanieb_
 
 _No description provided._
 

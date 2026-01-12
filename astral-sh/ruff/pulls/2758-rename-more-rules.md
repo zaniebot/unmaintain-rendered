@@ -12,14 +12,14 @@ head: rename-rules
 created_at: 2023-02-11T06:32:41Z
 updated_at: 2023-02-11T17:05:17Z
 url: https://github.com/astral-sh/ruff/pull/2758
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Rename more rules
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-11 06:32_
+_@not-my-profile_
 
 _No description provided._
 

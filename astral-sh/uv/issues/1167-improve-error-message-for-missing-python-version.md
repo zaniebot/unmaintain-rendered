@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T11:59:28Z
 updated_at: 2024-01-30T09:52:47Z
 url: https://github.com/astral-sh/uv/issues/1167
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Improve error message for missing Python version
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-29 11:59_
+_@charliermarsh_
 
 E.g.:
 

@@ -12,14 +12,14 @@ head: simplify-markers
 created_at: 2024-06-05T19:43:47Z
 updated_at: 2024-06-07T20:14:24Z
 url: https://github.com/astral-sh/uv/pull/4066
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Simplify marker expressions in lockfile
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-05 19:43_
+_@ibraheemdev_
 
 ## Summary
 

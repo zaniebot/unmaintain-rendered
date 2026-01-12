@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-20T20:47:32Z
 updated_at: 2025-05-20T22:35:14Z
 url: https://github.com/astral-sh/ty/issues/466
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incrementally checking many small edits in a large context
 
 ---
 
-_Issue opened by @breandan on 2025-05-20 20:47_
+_@breandan_
 
 ### Question
 

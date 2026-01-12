@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-11T13:45:52Z
 updated_at: 2023-11-14T08:57:29Z
 url: https://github.com/astral-sh/ruff/issues/8616
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Include some of the checks from flake8-literal
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-11 13:45_
+_@ThiefMaster_
 
 This plugin is quite similar than `flake8-quotes`, but it contains some nice checks such as warning about unnecessary quote escapes, e.g. `'foo\"bar'` (which, in fact, are created by ruff's fixer - I've opened a separate issue about this: #8617).
 

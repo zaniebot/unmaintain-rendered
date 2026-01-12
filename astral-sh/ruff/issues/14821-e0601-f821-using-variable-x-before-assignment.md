@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-06T15:56:26Z
 updated_at: 2024-12-06T16:26:48Z
 url: https://github.com/astral-sh/ruff/issues/14821
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # E0601/F821: Using variable 'x' before assignment (used-before-assignment) not working
 
 ---
 
-_Issue opened by @FrancoisMasson1990 on 2024-12-06 15:56_
+_@FrancoisMasson1990_
 
 ruff does not seem to be able to detect unbound variables in python.
 

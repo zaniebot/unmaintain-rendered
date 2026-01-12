@@ -12,14 +12,14 @@ head: internal/4182
 created_at: 2023-05-03T01:42:17Z
 updated_at: 2023-05-08T09:57:04Z
 url: https://github.com/astral-sh/ruff/pull/4198
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Refactor `Fix` and `Edit` API
 
 ---
 
-_Pull request opened by @zanieb on 2023-05-03 01:42_
+_@zanieb_
 
 Part of https://github.com/charliermarsh/ruff/issues/4181
 Closes https://github.com/charliermarsh/ruff/issues/4182

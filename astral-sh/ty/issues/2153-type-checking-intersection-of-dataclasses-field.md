@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T10:27:40Z
 updated_at: 2025-12-22T19:18:53Z
 url: https://github.com/astral-sh/ty/issues/2153
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type checking: intersection of `dataclasses.field.{default, default_factory}` values is not detected properly
 
 ---
 
-_Issue opened by @Thibaulltt on 2025-12-22 10:27_
+_@Thibaulltt_
 
 ### Summary
 

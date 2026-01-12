@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T14:47:31Z
 updated_at: 2024-09-11T15:50:28Z
 url: https://github.com/astral-sh/uv/issues/7025
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uvx (and uv) considerably slower in windows command prompt but fine in powershell
 
 ---
 
-_Issue opened by @geophpherie on 2024-09-04 14:47_
+_@geophpherie_
 
 Running `uvx jupyter` in windows command prompt really chokes up for me, the progress bars start freezing up and progress becomes unclear. But in powershell everything runs with reasonable speed. This is using 0.4.4. 
 

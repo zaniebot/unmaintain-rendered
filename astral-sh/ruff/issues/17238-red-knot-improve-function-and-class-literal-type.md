@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T18:36:29Z
 updated_at: 2025-05-07T00:11:26Z
 url: https://github.com/astral-sh/ruff/issues/17238
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] improve function and class literal type display
 
 ---
 
-_Issue opened by @carljm on 2025-04-06 18:36_
+_@carljm_
 
 The `Literal[..]` display doesn't match the spec or other type checkers and is confusing.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-05-09T22:06:32Z
 updated_at: 2020-12-26T17:02:29Z
 url: https://github.com/clap-rs/clap/issues/952
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Implement and Derive common traits
 
 ---
 
-_Issue opened by @kbknapp on 2017-05-09 22:06_
+_@kbknapp_
 
 Eagerly derive/implement common traits for all public types. I haven't yet looked at which ones would actually be appropriate to implement. The list below is just a quick list.
 

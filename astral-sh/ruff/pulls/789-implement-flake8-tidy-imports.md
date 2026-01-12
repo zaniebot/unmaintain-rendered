@@ -12,14 +12,14 @@ head: charlie/tidy
 created_at: 2022-11-17T16:27:16Z
 updated_at: 2022-11-17T16:44:08Z
 url: https://github.com/astral-sh/ruff/pull/789
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement flake8-tidy-imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 16:27_
+_@charliermarsh_
 
 This PR implements `I252` (banned relative imports). The other rules will come in a separate PR.
 

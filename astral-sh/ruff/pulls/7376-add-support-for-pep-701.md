@@ -14,14 +14,14 @@ head: dhruv/pep-701
 created_at: 2023-09-14T02:22:57Z
 updated_at: 2023-10-02T18:00:19Z
 url: https://github.com/astral-sh/ruff/pull/7376
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add support for PEP 701
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-14 02:22_
+_@dhruvmanila_
 
 ## Summary
 

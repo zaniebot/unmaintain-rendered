@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:23:55Z
 updated_at: 2025-05-03T14:26:02Z
 url: https://github.com/astral-sh/ruff/issues/17814
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Name `...` used when possibly not defined with `NoReturn` branch
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:23_
+_@charliermarsh_
 
 `value` here is always defined because `exit` is `NoReturn`, but `ty` reports it as possibly not defined.
 

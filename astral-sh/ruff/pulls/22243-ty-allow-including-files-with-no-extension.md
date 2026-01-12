@@ -14,14 +14,14 @@ head: micha/include-files-without-extension
 created_at: 2025-12-29T14:09:16Z
 updated_at: 2026-01-07T10:38:03Z
 url: https://github.com/astral-sh/ruff/pull/22243
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Allow including files with no extension
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-29 14:09_
+_@MichaReiser_
 
 ## Summary
 

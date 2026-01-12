@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T21:57:49Z
 updated_at: 2024-07-24T20:45:00Z
 url: https://github.com/astral-sh/uv/issues/4946
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Avoid re-sync in `uv run` with dynamic metadata
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-09 21:57_
+_@charliermarsh_
 
 _No description provided._
 

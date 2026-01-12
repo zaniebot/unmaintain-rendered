@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T16:58:35Z
 updated_at: 2024-09-06T23:23:17Z
 url: https://github.com/astral-sh/uv/issues/7129
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv python`: Python installation keys must have valid Python versions
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-09-06 16:58_
+_@pythonweb2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

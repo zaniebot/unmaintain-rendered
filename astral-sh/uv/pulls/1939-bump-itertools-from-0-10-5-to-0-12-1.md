@@ -13,14 +13,14 @@ head: dependabot/cargo/itertools-0.12.1
 created_at: 2024-02-23T19:47:06Z
 updated_at: 2024-02-23T20:01:12Z
 url: https://github.com/astral-sh/uv/pull/1939
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Bump itertools from 0.10.5 to 0.12.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-23 19:47_
+_@dependabot_
 
 Bumps [itertools](https://github.com/rust-itertools/itertools) from 0.10.5 to 0.12.1.
 <details>

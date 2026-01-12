@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T14:49:42Z
 updated_at: 2023-11-03T22:58:13Z
 url: https://github.com/astral-sh/uv/issues/306
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Error if URL dependency's package name doesn't match that of the source distribution
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-03 14:49_
+_@charliermarsh_
 
 _No description provided._
 

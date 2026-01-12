@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T11:02:09Z
 updated_at: 2024-09-26T12:58:41Z
 url: https://github.com/astral-sh/uv/issues/7704
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Feature Request: Comparison Table in Documentation
 
 ---
 
-_Issue opened by @ranjithrajv on 2024-09-26 11:02_
+_@ranjithrajv_
 
 **Title:** Add Feature Comparison Table to UV Documentation
 

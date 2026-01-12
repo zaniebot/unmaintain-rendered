@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T08:00:28Z
 updated_at: 2024-08-10T03:54:55Z
 url: https://github.com/astral-sh/uv/issues/5179
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Lockfile-normalized marker representation
 
 ---
 
-_Issue opened by @konstin on 2024-07-18 08:00_
+_@konstin_
 
 We need to decide on which normalization we want for markers in the lockfile, and implement the algorithm that performs this normalization. For example, #5163 introduces:
 ```

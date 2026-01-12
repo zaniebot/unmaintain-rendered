@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-02T12:55:43Z
 updated_at: 2023-06-20T16:51:56Z
 url: https://github.com/astral-sh/ruff/issues/995
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add --log-format and --log-path
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-12-02 12:55_
+_@JonathanPlasse_
 
 I use Ruff hook in `pre-commit`.
 In CI, I want to run `pre-commit run --all-files` and I would like that it generate a log in Junit format in addition to the nice output in `stdout`.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T03:12:32Z
 updated_at: 2023-10-07T13:28:18Z
 url: https://github.com/astral-sh/ruff/issues/2319
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Tabs auto-conversion
 
 ---
 
-_Issue opened by @kattkieru on 2023-01-29 03:12_
+_@kattkieru_
 
 Thanks for doing the podcast— made me aware of this project!
 

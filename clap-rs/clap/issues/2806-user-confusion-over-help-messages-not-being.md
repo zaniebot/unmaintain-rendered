@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-04T18:37:47Z
 updated_at: 2021-10-11T15:23:30Z
 url: https://github.com/clap-rs/clap/issues/2806
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # User confusion over help messages not being colored, despite color being enabled
 
 ---
 
-_Issue opened by @epage on 2021-10-04 18:37_
+_@epage_
 
 ### Rust Version
 1.55.0

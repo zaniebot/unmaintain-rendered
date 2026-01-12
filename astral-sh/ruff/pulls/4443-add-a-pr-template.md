@@ -11,14 +11,14 @@ head: main
 created_at: 2023-05-15T17:51:34Z
 updated_at: 2023-05-17T01:11:54Z
 url: https://github.com/astral-sh/ruff/pull/4443
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add a PR template
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-15 17:51_
+_@evanrittenhouse_
 
 Seen a lot of new folks in Discord who are interested in contributing. Creating a template for our PRs may be helpful
 

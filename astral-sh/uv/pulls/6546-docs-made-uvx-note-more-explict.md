@@ -13,14 +13,14 @@ head: improve_docs
 created_at: 2024-08-23T20:48:41Z
 updated_at: 2024-08-23T22:17:38Z
 url: https://github.com/astral-sh/uv/pull/6546
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # docs: made `uvx` note more explict
 
 ---
 
-_Pull request opened by @ZeyadMoustafaKamal on 2024-08-23 20:48_
+_@ZeyadMoustafaKamal_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

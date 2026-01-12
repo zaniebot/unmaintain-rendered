@@ -14,14 +14,14 @@ head: david/ecosystem-report-release-mode
 created_at: 2025-10-01T06:54:01Z
 updated_at: 2025-10-01T07:06:26Z
 url: https://github.com/astral-sh/ruff/pull/20663
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Use release mode for ecosystem report
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-01 06:54_
+_@sharkdp_
 
 ## Summary
 

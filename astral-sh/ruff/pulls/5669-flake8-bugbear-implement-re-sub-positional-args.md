@@ -13,14 +13,14 @@ head: charlie/B034
 created_at: 2023-07-11T02:44:07Z
 updated_at: 2023-07-11T04:09:35Z
 url: https://github.com/astral-sh/ruff/pull/5669
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`flake8-bugbear`] Implement `re-sub-positional-args` (`B034`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-11 02:44_
+_@charliermarsh_
 
 ## Summary
 

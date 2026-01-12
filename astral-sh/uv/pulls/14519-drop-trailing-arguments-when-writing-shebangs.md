@@ -14,14 +14,14 @@ head: charlie/she
 created_at: 2025-07-09T14:45:11Z
 updated_at: 2025-07-09T15:51:08Z
 url: https://github.com/astral-sh/uv/pull/14519
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Drop trailing arguments when writing shebangs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-09 14:45_
+_@charliermarsh_
 
 ## Summary
 

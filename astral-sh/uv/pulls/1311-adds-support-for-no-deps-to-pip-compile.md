@@ -13,14 +13,14 @@ head: feature/compile-no-deps
 created_at: 2024-02-15T08:39:35Z
 updated_at: 2024-02-15T14:56:54Z
 url: https://github.com/astral-sh/uv/pull/1311
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Adds support for --no-deps to pip compile
 
 ---
 
-_Pull request opened by @mitsuhiko on 2024-02-15 08:39_
+_@mitsuhiko_
 
 Mostly throwing this up here as a discussion topic. Having something like this is primarily useful for enabling use cases similar to `rye add` where I want to use this currently. One can accomplish something similar with `unearth` today or by abusing regular `pip install`:
 

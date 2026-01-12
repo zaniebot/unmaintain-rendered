@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T04:19:36Z
 updated_at: 2024-07-12T08:45:47Z
 url: https://github.com/astral-sh/ruff/issues/9696
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Don't add space before new function on top of cell
 
 ---
 
-_Issue opened by @yasirroni on 2024-01-30 04:19_
+_@yasirroni_
 
 Consider `ipynb` file.
 

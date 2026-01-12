@@ -12,14 +12,14 @@ head: charlie/semicolon
 created_at: 2022-12-15T22:04:25Z
 updated_at: 2022-12-16T03:17:32Z
 url: https://github.com/astral-sh/ruff/pull/1253
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid generating invalid statements when deleting from multi-statement lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-15 22:04_
+_@charliermarsh_
 
 Resolves #1226.
 

@@ -12,14 +12,14 @@ head: renovate/pyproject-toml-0.x
 created_at: 2024-10-14T01:16:36Z
 updated_at: 2024-10-14T08:47:17Z
 url: https://github.com/astral-sh/ruff/pull/13740
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update Rust crate pyproject-toml to 0.12.0
 
 ---
 
-_Pull request opened by @renovate on 2024-10-14 01:16_
+_@renovate_
 
 This PR contains the following updates:
 

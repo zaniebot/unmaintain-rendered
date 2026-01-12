@@ -13,14 +13,14 @@ head: alex/remove-redundant-routines
 created_at: 2024-10-08T17:42:37Z
 updated_at: 2024-10-09T13:33:10Z
 url: https://github.com/astral-sh/ruff/pull/13682
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Harmonise methods for distinguishing different Python source types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-08 17:42_
+_@AlexWaygood_
 
 ## Summary
 

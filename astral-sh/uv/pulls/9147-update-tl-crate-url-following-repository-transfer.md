@@ -12,14 +12,14 @@ head: tl-url
 created_at: 2024-11-15T12:56:16Z
 updated_at: 2024-11-15T13:11:58Z
 url: https://github.com/astral-sh/uv/pull/9147
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Update "tl" crate URL following repository transfer
 
 ---
 
-_Pull request opened by @mgorny on 2024-11-15 12:56_
+_@mgorny_
 
 ## Summary
 

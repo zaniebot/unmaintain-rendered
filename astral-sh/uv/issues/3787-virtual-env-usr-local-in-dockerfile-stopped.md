@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T11:07:48Z
 updated_at: 2024-05-23T12:45:19Z
 url: https://github.com/astral-sh/uv/issues/3787
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # VIRTUAL_ENV=/usr/local in dockerfile stopped working for uv 0.2 (error: No Python interpreters found in virtual environments)
 
 ---
 
-_Issue opened by @przecze on 2024-05-23 11:07_
+_@przecze_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

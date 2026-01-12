@@ -13,14 +13,14 @@ head: micha/tune-rooster-config
 created_at: 2025-05-13T10:19:25Z
 updated_at: 2025-05-13T10:21:00Z
 url: https://github.com/astral-sh/ty/pull/353
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Setup basic grouping for changelog
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-13 10:19_
+_@MichaReiser_
 
 ## Summary
 

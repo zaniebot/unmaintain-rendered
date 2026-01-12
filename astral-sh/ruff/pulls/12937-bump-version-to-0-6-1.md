@@ -13,14 +13,14 @@ head: alex/hotfix
 created_at: 2024-08-16T15:51:14Z
 updated_at: 2024-08-16T16:48:08Z
 url: https://github.com/astral-sh/ruff/pull/12937
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Bump version to 0.6.1
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-16 15:51_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

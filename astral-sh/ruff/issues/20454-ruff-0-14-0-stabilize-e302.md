@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T17:42:11Z
 updated_at: 2025-11-26T10:13:08Z
 url: https://github.com/astral-sh/ruff/issues/20454
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [ruff 0.14.0] Stabilize `E302`
 
 ---
 
-_Issue opened by @chirizxc on 2025-09-17 17:42_
+_@chirizxc_
 
 ### Summary
 

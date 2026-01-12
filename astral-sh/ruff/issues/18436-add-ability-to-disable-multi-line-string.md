@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T05:38:56Z
 updated_at: 2025-11-19T18:14:37Z
 url: https://github.com/astral-sh/ruff/issues/18436
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add ability to disable multi-line string concatenation with ruff format
 
 ---
 
-_Issue opened by @seanbudd on 2025-06-03 05:38_
+_@seanbudd_
 
 ### Summary
 

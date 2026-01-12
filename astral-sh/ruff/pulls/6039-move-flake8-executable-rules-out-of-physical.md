@@ -13,14 +13,14 @@ head: charlie/shebang
 created_at: 2023-07-24T17:58:37Z
 updated_at: 2023-07-24T18:38:06Z
 url: https://github.com/astral-sh/ruff/pull/6039
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Move `flake8-executable` rules out of physical lines checker
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 17:58_
+_@charliermarsh_
 
 ## Summary
 

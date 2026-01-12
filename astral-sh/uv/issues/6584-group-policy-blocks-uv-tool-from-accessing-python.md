@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T14:04:34Z
 updated_at: 2024-09-06T00:23:28Z
 url: https://github.com/astral-sh/uv/issues/6584
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Group Policy Blocks UV Tool from Accessing Python Interpreter
 
 ---
 
-_Issue opened by @IliasAarab on 2024-08-24 14:04_
+_@IliasAarab_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

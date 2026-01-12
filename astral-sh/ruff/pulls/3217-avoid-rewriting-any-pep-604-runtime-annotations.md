@@ -14,14 +14,14 @@ head: charlie/runtime
 created_at: 2023-02-24T22:36:58Z
 updated_at: 2023-02-24T22:40:00Z
 url: https://github.com/astral-sh/ruff/pull/3217
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid rewriting any PEP 604 runtime annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 22:36_
+_@charliermarsh_
 
 Following `pyupgrade`, we'll just _never_ touch these.
 

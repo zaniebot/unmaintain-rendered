@@ -14,14 +14,14 @@ head: jack/scratch
 created_at: 2025-08-08T13:48:38Z
 updated_at: 2025-08-18T07:32:57Z
 url: https://github.com/astral-sh/ruff/pull/19828
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # dummy PR to re-run CodSpeed
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-08 13:48_
+_@oconnor663_
 
 This is https://github.com/astral-sh/ruff/pull/19820 with the collection of unbound free variables removed. I want to see if that affects performance metrics.
 

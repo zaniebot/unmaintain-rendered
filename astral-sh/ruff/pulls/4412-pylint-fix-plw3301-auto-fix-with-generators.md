@@ -13,14 +13,14 @@ head: fix-plw3301-auto-fix-with-generators
 created_at: 2023-05-13T13:30:16Z
 updated_at: 2023-05-13T15:25:36Z
 url: https://github.com/astral-sh/ruff/pull/4412
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`pylint`] Fix `PLW3301` auto-fix with generators
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-13 13:30_
+_@JonathanPlasse_
 
 - Close #4410
 

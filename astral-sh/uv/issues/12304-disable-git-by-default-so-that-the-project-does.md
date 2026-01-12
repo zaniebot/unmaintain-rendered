@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T00:56:28Z
 updated_at: 2025-03-19T14:21:32Z
 url: https://github.com/astral-sh/uv/issues/12304
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Disable Git by default, so that the project does not start with Git
 
 ---
 
-_Issue opened by @xteveg on 2025-03-19 00:56_
+_@xteveg_
 
 ### Summary
 

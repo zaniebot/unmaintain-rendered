@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-02T10:45:36Z
 updated_at: 2025-10-09T12:04:13Z
 url: https://github.com/astral-sh/ruff/issues/20679
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # blank lines around controls
 
 ---
 
-_Issue opened by @SmikeForYou on 2025-10-02 10:45_
+_@SmikeForYou_
 
 Hi. First of all want to thank you on such a powerfull formatting and lining tool as `ruff`. I have one suggestion for formatting improvement wich will make codestyle much readable. 
 

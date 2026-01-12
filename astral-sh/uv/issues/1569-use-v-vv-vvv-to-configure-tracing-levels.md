@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-17T04:07:20Z
 updated_at: 2025-02-28T23:49:28Z
 url: https://github.com/astral-sh/uv/issues/1569
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Use `-v`, `-vv`, `-vvv` to configure tracing levels
 
 ---
 
-_Issue opened by @zanieb on 2024-02-17 04:07_
+_@zanieb_
 
 Right now, as mentioned in #1567, we show a _lot_ of output in `-v`.
 

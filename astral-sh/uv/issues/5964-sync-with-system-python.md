@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T16:54:25Z
 updated_at: 2024-09-05T13:56:41Z
 url: https://github.com/astral-sh/uv/issues/5964
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Sync with system Python?
 
 ---
 
-_Issue opened by @b-phi on 2024-08-09 16:54_
+_@b-phi_
 
 I'm trying to use uv to synchronize environments across a cluster. This involves creating a lock file and then using it to install dependencies everywhere. As far as I can tell, `uv sync` only supports installing dependencies in a uv managed venv. Is there anyway to run sync against a target environment, the system Python in this case?
 

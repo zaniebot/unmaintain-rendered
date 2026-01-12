@@ -14,14 +14,14 @@ head: zb/release-2
 created_at: 2025-03-06T21:55:52Z
 updated_at: 2025-03-06T22:53:31Z
 url: https://github.com/astral-sh/uv/pull/12023
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Fix upload name for macOS wheels
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-06 21:55_
+_@zanieb_
 
 These were missed in the original PR and consequently not uploaded
 

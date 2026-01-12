@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T16:41:14Z
 updated_at: 2024-08-02T17:18:11Z
 url: https://github.com/astral-sh/ruff/issues/5307
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # N805: False positive with @abstractclassmethod
 
 ---
 
-_Issue opened by @mflova on 2023-06-22 16:41_
+_@mflova_
 
 Using the latest release.
 

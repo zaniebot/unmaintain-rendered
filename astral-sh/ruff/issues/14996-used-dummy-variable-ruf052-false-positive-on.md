@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-16T00:14:42Z
 updated_at: 2025-01-14T07:36:41Z
 url: https://github.com/astral-sh/ruff/issues/14996
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `used-dummy-variable` (`RUF052`) - false positive on private global variable when it has a usage in two functions
 
 ---
 
-_Issue opened by @DetachHead on 2024-12-16 00:14_
+_@DetachHead_
 
 ```py
 _bar: int

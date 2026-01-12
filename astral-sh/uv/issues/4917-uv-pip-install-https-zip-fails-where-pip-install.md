@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T07:17:30Z
 updated_at: 2024-07-09T17:30:44Z
 url: https://github.com/astral-sh/uv/issues/4917
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv pip install https://...zip` fails where `pip install` works
 
 ---
 
-_Issue opened by @bersbersbers on 2024-07-09 07:17_
+_@bersbersbers_
 
 ```
 $ uv pip install https://github.com/python/mypy/archive/refs/heads/release-1.11.zip

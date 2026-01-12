@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T01:10:32Z
 updated_at: 2024-07-12T21:33:34Z
 url: https://github.com/astral-sh/uv/issues/5001
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # flexible install version seems to conflict with uv pip install
 
 ---
 
-_Issue opened by @rbavery on 2024-07-12 01:10_
+_@rbavery_
 
 I have a package that depends on s3fs. When I try to install the package with pip, everything works. But [uv handles prereleases differently ](https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#pre-release-compatibility) and I think this conflicts with [the flexible version identifier for fsspec](https://github.com/fsspec/s3fs/blob/main/requirements.txt#L2). It looks like uv is assuming that I want to install a prerelease version of fsspec.
 

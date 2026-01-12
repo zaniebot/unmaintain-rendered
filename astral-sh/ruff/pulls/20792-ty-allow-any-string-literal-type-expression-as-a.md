@@ -13,14 +13,14 @@ head: typed-dict-key-expr
 created_at: 2025-10-09T17:52:20Z
 updated_at: 2025-10-09T21:30:31Z
 url: https://github.com/astral-sh/ruff/pull/20792
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] allow any string `Literal` type expression as a key when constructing a `TypedDict`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-09 17:52_
+_@mtshiba_
 
 ## Summary
 

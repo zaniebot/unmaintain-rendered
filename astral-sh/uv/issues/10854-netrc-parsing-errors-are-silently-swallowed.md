@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T12:43:38Z
 updated_at: 2025-01-22T15:24:45Z
 url: https://github.com/astral-sh/uv/issues/10854
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # netrc parsing errors are silently swallowed
 
 ---
 
-_Issue opened by @reuben on 2025-01-22 12:43_
+_@reuben_
 
 ### Summary
 

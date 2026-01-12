@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T17:28:09Z
 updated_at: 2025-12-31T10:33:17Z
 url: https://github.com/astral-sh/ruff/issues/2402
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement remaining `pycodestyle` rules
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-31 17:28_
+_@charliermarsh_
 
 Note: some of the checked-off rules are still gated behind the `logical_lines` feature flag. To see the list of rules enabled in the current release, refer to the [docs](https://github.com/charliermarsh/ruff#error-e).
 

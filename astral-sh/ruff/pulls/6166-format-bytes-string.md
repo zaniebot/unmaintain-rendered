@@ -12,14 +12,14 @@ head: format-bytes
 created_at: 2023-07-29T07:07:03Z
 updated_at: 2023-07-31T08:48:40Z
 url: https://github.com/astral-sh/ruff/pull/6166
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Format bytes string
 
 ---
 
-_Pull request opened by @lkh42t on 2023-07-29 07:07_
+_@lkh42t_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

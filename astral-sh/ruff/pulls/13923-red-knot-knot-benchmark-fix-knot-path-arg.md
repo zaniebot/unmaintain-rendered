@@ -14,14 +14,14 @@ head: david/knot-benchmark-fix
 created_at: 2024-10-25T09:32:41Z
 updated_at: 2024-10-25T09:43:41Z
 url: https://github.com/astral-sh/ruff/pull/13923
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] knot benchmark: fix `--knot-path` arg
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-25 09:32_
+_@sharkdp_
 
 ## Summary
 

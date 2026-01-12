@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-14T10:20:57Z
 updated_at: 2025-08-14T16:10:05Z
 url: https://github.com/astral-sh/ty/issues/983
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # False positive for inconsistent-mro
 
 ---
 
-_Issue opened by @LoicRiegel on 2025-08-14 10:20_
+_@LoicRiegel_
 
 ### Summary
 

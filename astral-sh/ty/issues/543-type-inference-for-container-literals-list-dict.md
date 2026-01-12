@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-29T23:55:42Z
 updated_at: 2025-10-17T15:31:09Z
 url: https://github.com/astral-sh/ty/issues/543
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # type inference for container literals (list, dict, set) and comprehensions
 
 ---
 
-_Issue opened by @carljm on 2025-05-29 23:55_
+_@carljm_
 
 We should start with a pretty dumb version of this (infer solely based on the types present at construction, maybe unioned with Unknown), which will be quick and easy to implement and be fine for a lot of cases.
 

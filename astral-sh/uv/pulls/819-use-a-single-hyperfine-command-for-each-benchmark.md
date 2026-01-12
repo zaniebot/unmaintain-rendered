@@ -13,14 +13,14 @@ head: charlie/hyperfine
 created_at: 2024-01-06T20:08:56Z
 updated_at: 2024-01-06T20:14:24Z
 url: https://github.com/astral-sh/uv/pull/819
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Use a single `hyperfine` command for each benchmark
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 20:08_
+_@charliermarsh_
 
 ## Summary
 

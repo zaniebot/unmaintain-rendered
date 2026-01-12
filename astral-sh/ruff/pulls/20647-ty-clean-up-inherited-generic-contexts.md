@@ -15,14 +15,14 @@ head: dcreager/non-inherited
 created_at: 2025-09-30T14:59:17Z
 updated_at: 2025-10-03T17:55:46Z
 url: https://github.com/astral-sh/ruff/pull/20647
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Clean up inherited generic contexts
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-30 14:59_
+_@dcreager_
 
 We add an `inherited_generic_context` to the constructors of a generic class. That lets us infer specializations of the class when invoking the constructor. The constructor might itself be generic, in which case we have to merge the list of typevars that we are willing to infer in the constructor call.
 

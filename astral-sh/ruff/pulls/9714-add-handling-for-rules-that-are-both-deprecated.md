@@ -11,14 +11,14 @@ head: zb/pygrep
 created_at: 2024-01-30T19:12:52Z
 updated_at: 2024-01-31T17:22:36Z
 url: https://github.com/astral-sh/ruff/pull/9714
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add handling for rules that are both deprecated and redirected
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-30 19:12_
+_@zanieb_
 
 Follow up to #9689 adds tooling for warning on rules that are deprecated because we replaced them with another rule.
 

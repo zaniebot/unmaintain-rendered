@@ -12,14 +12,14 @@ head: fix-16711
 created_at: 2025-11-14T11:57:13Z
 updated_at: 2025-11-14T21:12:35Z
 url: https://github.com/astral-sh/uv/pull/16737
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Account for `python_downloads_json_url` on Pre-release Python version warnings
 
 ---
 
-_Pull request opened by @MeitarR on 2025-11-14 11:57_
+_@MeitarR_
 
 Solves #16711
 

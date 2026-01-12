@@ -12,14 +12,14 @@ head: zb/lock-check-slash
 created_at: 2025-06-29T15:22:28Z
 updated_at: 2025-06-29T17:46:00Z
 url: https://github.com/astral-sh/uv/pull/14348
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Fix missing remote lockfile invalidation when URL has no path
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-29 15:22_
+_@zanieb_
 
 Fixes https://github.com/astral-sh/uv/issues/14344#issuecomment-3016763833
 

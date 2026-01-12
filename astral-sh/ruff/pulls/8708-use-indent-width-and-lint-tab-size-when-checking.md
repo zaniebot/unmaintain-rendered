@@ -13,14 +13,14 @@ head: logical-indent-size
 created_at: 2023-11-15T23:18:20Z
 updated_at: 2024-07-08T15:07:25Z
 url: https://github.com/astral-sh/ruff/pull/8708
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use `indent-width` and `lint.tab-size` when checking indentation in `E` rules
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-15 23:18_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/8705
 

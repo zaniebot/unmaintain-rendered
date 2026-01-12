@@ -12,14 +12,14 @@ head: charlie/find-links
 created_at: 2024-08-22T23:52:21Z
 updated_at: 2024-08-24T03:25:34Z
 url: https://github.com/astral-sh/uv/pull/6475
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Store `--find-links` as relative paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 23:52_
+_@charliermarsh_
 
 ## Summary
 

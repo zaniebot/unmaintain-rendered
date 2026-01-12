@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-15T04:02:33Z
 updated_at: 2025-08-22T11:16:54Z
 url: https://github.com/astral-sh/uv/issues/6104
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv lock is extremely slow with google artifact registry
 
 ---
 
-_Issue opened by @ewianda on 2024-08-15 04:02_
+_@ewianda_
 
 Before the merge of PR #5089, using uv lock with Google Artifact Registry was quite efficient. However, post-merge, the locking process for a project with around 200 requirements has drastically slowed down, now taking up to an hour. Additionally, the cache size has escalated to approximately 300 GB, which seems excessive.
 

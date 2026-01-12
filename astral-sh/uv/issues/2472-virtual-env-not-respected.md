@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T11:12:36Z
 updated_at: 2024-03-16T15:08:03Z
 url: https://github.com/astral-sh/uv/issues/2472
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # VIRTUAL_ENV not respected
 
 ---
 
-_Issue opened by @PrinceJunkie on 2024-03-15 11:12_
+_@PrinceJunkie_
 
 I'm using uv primarily in a devcontainer where I don't have root rights and I don't want a .venv folder in the project folder.
 Therefore I've set VIRTUAL_ENV to /home/dev/.local and everything should be installed there but right now it throws a Permission denied with a path which is not VIRTUAL_ENV.

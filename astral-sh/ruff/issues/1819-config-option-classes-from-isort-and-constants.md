@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-12T15:58:40Z
 updated_at: 2023-01-18T12:30:53Z
 url: https://github.com/astral-sh/ruff/issues/1819
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Config option `classes` from isort (and `constants` and `variables` probably)
 
 ---
 
-_Issue opened by @tmke8 on 2023-01-12 15:58_
+_@tmke8_
 
 The order in `isort` is `CONSTANTS`, `Classes`, `functions`, which is detected by the case of the letters, but sometimes classes are in all-caps, like [SVC](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) from `sklearn` or [SELU](https://pytorch.org/docs/stable/generated/torch.nn.SELU.html) from `pytorch`.
 

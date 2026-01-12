@@ -12,14 +12,14 @@ head: charlie/doc-tests
 created_at: 2023-06-27T16:52:53Z
 updated_at: 2023-06-27T17:22:57Z
 url: https://github.com/astral-sh/ruff/pull/5398
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Skip doctests in CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 16:52_
+_@charliermarsh_
 
 (This is just for benchmarking.)
 

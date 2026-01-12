@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-06T09:56:03Z
 updated_at: 2023-06-06T20:15:23Z
 url: https://github.com/astral-sh/ruff/issues/4901
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F841: unused local in 'with' statement with parethesised value does not converge
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-06 09:56_
+_@addisoncrump_
 
 This is a really specific one. The following snippet prevents Ruff from converging:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-11T22:04:15Z
 updated_at: 2023-11-29T21:27:03Z
 url: https://github.com/astral-sh/ruff/issues/1200
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # I001: Support for magic trailing commas
 
 ---
 
-_Issue opened by @Jackenmen on 2022-12-11 22:04_
+_@Jackenmen_
 
 Black auto-explodes imports, collections, function calls, etc. when they contain a trailing comma:
 https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#the-magic-trailing-comma

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-07T11:19:30Z
 updated_at: 2024-07-02T09:36:07Z
 url: https://github.com/astral-sh/uv/issues/4128
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # UV doesn't crash if there is operation timeout and error
 
 ---
 
-_Issue opened by @fervand1 on 2024-06-07 11:19_
+_@fervand1_
 
 I was trying to execute uv pip install requirements on latest version of uv. If there was a operation timeout error , uv didn't crash and instead just printed the error like below and said all is successful
 

@@ -13,14 +13,14 @@ head: charlie/html
 created_at: 2023-12-24T15:24:35Z
 updated_at: 2023-12-26T14:05:07Z
 url: https://github.com/astral-sh/uv/pull/719
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Add support for HTML indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-24 15:24_
+_@charliermarsh_
 
 ## Summary
 

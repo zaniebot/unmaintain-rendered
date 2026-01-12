@@ -12,14 +12,14 @@ head: compare-helper
 created_at: 2023-01-24T15:08:47Z
 updated_at: 2023-01-24T15:30:57Z
 url: https://github.com/astral-sh/ruff/pull/2131
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move compare to helpers file
 
 ---
 
-_Pull request opened by @ericroberts on 2023-01-24 15:08_
+_@ericroberts_
 
 From discussion on https://github.com/charliermarsh/ruff/pull/2123
 

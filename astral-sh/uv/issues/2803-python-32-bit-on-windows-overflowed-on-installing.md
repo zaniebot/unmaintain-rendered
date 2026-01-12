@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T11:47:27Z
 updated_at: 2024-05-19T21:15:44Z
 url: https://github.com/astral-sh/uv/issues/2803
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Python 32 bit on windows overflowed on installing `greenlet`.
 
 ---
 
-_Issue opened by @T-256 on 2024-04-03 11:47_
+_@T-256_
 
 ```shell
 >uv venv --python "C:\Python311x86\python.exe"

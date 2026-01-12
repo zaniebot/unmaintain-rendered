@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T04:01:02Z
 updated_at: 2024-09-05T11:19:48Z
 url: https://github.com/astral-sh/uv/issues/6926
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Guidance on project management
 
 ---
 
-_Issue opened by @DataEnggNerd on 2024-09-02 04:01_
+_@DataEnggNerd_
 
 For the people who are entering python ecosystem for first time through job, including me, are not clear in managing virtual environments.
 

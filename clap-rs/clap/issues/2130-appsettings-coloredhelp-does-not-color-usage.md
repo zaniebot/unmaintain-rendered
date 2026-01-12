@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-09-12T15:49:30Z
 updated_at: 2020-09-12T18:28:16Z
 url: https://github.com/clap-rs/clap/issues/2130
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # AppSettings::ColoredHelp does not color Usage heading.
 
 ---
 
-_Issue opened by @newAM on 2020-09-12 15:49_
+_@newAM_
 
 ### Code
 

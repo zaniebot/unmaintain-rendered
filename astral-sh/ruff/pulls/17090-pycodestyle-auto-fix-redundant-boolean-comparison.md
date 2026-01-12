@@ -13,14 +13,14 @@ head: feature/E712-autofix
 created_at: 2025-03-31T12:04:28Z
 updated_at: 2025-05-10T12:00:33Z
 url: https://github.com/astral-sh/ruff/pull/17090
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`pycodestyle`] Auto-fix redundant boolean comparison (`E712`)
 
 ---
 
-_Pull request opened by @knavdeep152002 on 2025-03-31 12:04_
+_@knavdeep152002_
 
 This pull request fixes https://github.com/astral-sh/ruff/issues/17014
 

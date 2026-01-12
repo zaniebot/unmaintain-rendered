@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-16T17:07:09Z
 updated_at: 2023-05-16T20:21:26Z
 url: https://github.com/astral-sh/ruff/issues/4455
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Infinite loop] D403 Docstring not starting with a letter
 
 ---
 
-_Issue opened by @Nodd on 2023-05-16 17:07_
+_@Nodd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

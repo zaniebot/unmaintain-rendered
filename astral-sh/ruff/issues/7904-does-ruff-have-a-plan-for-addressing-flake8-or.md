@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-11T00:07:32Z
 updated_at: 2023-10-20T23:27:13Z
 url: https://github.com/astral-sh/ruff/issues/7904
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Does ruff have a plan for addressing flake8 or pycodestyle new changes?
 
 ---
 
-_Issue opened by @mythnc on 2023-10-11 00:07_
+_@mythnc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

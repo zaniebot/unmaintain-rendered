@@ -13,14 +13,14 @@ head: dhruv/source-kind-required
 created_at: 2023-08-31T03:06:55Z
 updated_at: 2023-09-13T09:46:06Z
 url: https://github.com/astral-sh/ruff/pull/7013
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Make `SourceKind` a required parameter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-31 03:06_
+_@dhruvmanila_
 
 ## Summary
 

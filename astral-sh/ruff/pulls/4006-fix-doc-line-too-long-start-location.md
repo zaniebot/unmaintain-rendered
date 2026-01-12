@@ -13,14 +13,14 @@ head: fix-line-too-long-range
 created_at: 2023-04-18T06:30:29Z
 updated_at: 2023-04-19T06:55:27Z
 url: https://github.com/astral-sh/ruff/pull/4006
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix (doc-)line-too-long start location
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-18 06:30_
+_@MichaReiser_
 
 I noticed in the byte offset refactor that the (doc-)line-too-long start range can point past the end of the line if the line contains characters with a width greater or equal to two. This is because we set the start location's column to `limit` instead of computing the character at which the line width is exceeded.
 

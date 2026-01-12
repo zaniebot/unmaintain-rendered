@@ -13,14 +13,14 @@ head: alex/pydoclint-stabilise
 created_at: 2025-01-07T19:13:24Z
 updated_at: 2025-01-07T20:14:01Z
 url: https://github.com/astral-sh/ruff/pull/15326
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [ruff-0.9] Stabilise two `pydoclint` rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-07 19:13_
+_@AlexWaygood_
 
 ## Summary
 

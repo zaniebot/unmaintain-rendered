@@ -12,14 +12,14 @@ head: improve-spawn-error-hint-missing-interpreter
 created_at: 2025-12-24T08:25:20Z
 updated_at: 2025-12-24T08:25:25Z
 url: https://github.com/astral-sh/uv/pull/17233
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # WIP: Add hint for missing Python interpreter on spawn failure
 
 ---
 
-_Pull request opened by @mahiro72 on 2025-12-24 08:25_
+_@mahiro72_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

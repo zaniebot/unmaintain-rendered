@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T15:43:58Z
 updated_at: 2024-08-21T17:06:44Z
 url: https://github.com/astral-sh/uv/issues/6342
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Incorrect update all tools command in blog post
 
 ---
 
-_Issue opened by @denkasyanov on 2024-08-21 15:43_
+_@denkasyanov_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

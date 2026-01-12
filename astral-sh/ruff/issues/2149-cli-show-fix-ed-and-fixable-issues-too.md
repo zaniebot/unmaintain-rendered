@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T07:57:52Z
 updated_at: 2023-02-24T20:29:54Z
 url: https://github.com/astral-sh/ruff/issues/2149
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # CLI: Show `--fix`ed and fixable issues too?
 
 ---
 
-_Issue opened by @akx on 2023-01-25 07:57_
+_@akx_
 
 I think it would be useful if the CLI listed the things it `--fix`es, or can fix; right now you get something like
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T13:47:06Z
 updated_at: 2024-06-08T14:16:43Z
 url: https://github.com/astral-sh/uv/issues/4130
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add uv script to pyenv's pip-rehash
 
 ---
 
-_Issue opened by @zanieb on 2024-06-07 13:47_
+_@zanieb_
 
 See https://github.com/pyenv/pyenv/tree/master/pyenv.d/exec/pip-rehash
 

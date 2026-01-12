@@ -13,14 +13,14 @@ head: zb/docs-crates
 created_at: 2025-11-21T02:01:54Z
 updated_at: 2025-11-21T16:45:01Z
 url: https://github.com/astral-sh/uv/pull/16801
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Fix documentation links for crates
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-21 02:01_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/4392
 

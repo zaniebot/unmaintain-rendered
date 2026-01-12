@@ -13,14 +13,14 @@ head: release/0137
 created_at: 2024-04-23T14:25:15Z
 updated_at: 2024-04-23T14:38:34Z
 url: https://github.com/astral-sh/uv/pull/3208
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Bump version to 0.1.37
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-23 14:25_
+_@zanieb_
 
 _No description provided._
 

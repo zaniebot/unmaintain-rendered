@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T14:04:30Z
 updated_at: 2025-07-01T00:25:43Z
 url: https://github.com/astral-sh/uv/issues/6518
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Constraint flag for `uv add`
 
 ---
 
-_Issue opened by @yehoshuadimarsky on 2024-08-23 14:04_
+_@yehoshuadimarsky_
 
 Hi, can we instead add a new flag `-c / --constraint` to `uv add`, so that you can pass in constraint files directly? I think currently you can do this by adding a constraint to a `requirements.txt` file, then running `uv add --requirements requirements.txt`, but this would embed it directly in the command.
 

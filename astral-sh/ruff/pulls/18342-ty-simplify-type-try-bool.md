@@ -14,14 +14,14 @@ head: alex/simplify-bool
 created_at: 2025-05-27T18:26:18Z
 updated_at: 2025-05-27T18:33:44Z
 url: https://github.com/astral-sh/ruff/pull/18342
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Simplify `Type::try_bool()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-27 18:26_
+_@AlexWaygood_
 
 ## Summary
 

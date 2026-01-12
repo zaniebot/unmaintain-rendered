@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-22T19:50:43Z
 updated_at: 2025-12-22T23:40:18Z
 url: https://github.com/astral-sh/ty/issues/2171
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # emit a diagnostic on unsafe dunder method overrides on tuple subclasses
 
 ---
 
-_Issue opened by @carljm on 2025-12-22 19:50_
+_@carljm_
 
 We do (or want to do) various kinds of narrowing on tuples (see #215, #560, #2140), but the `tuple` type includes tuple subclasses, so making these narrowings sound requires assuming that tuple subclasses don't override `__len__`, `__bool__`, or `__eq__`. We should emit a diagnostic if they do.
 

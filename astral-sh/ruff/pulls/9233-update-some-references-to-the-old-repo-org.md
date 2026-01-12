@@ -13,14 +13,14 @@ head: zb/contrib-link
 created_at: 2023-12-21T18:21:16Z
 updated_at: 2023-12-24T20:02:50Z
 url: https://github.com/astral-sh/ruff/pull/9233
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Update some references to the old repo org
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-21 18:21_
+_@zanieb_
 
 Need https://github.com/pkgxdev/pantry/issues/4531 before we can update at https://github.com/astral-sh/ruff/blob/af88ffc57e8aad1135e48cebaa333a0fa88fa5e1/docs/installation.md#L30-L31
 

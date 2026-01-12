@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T21:19:21Z
 updated_at: 2025-05-09T21:36:43Z
 url: https://github.com/astral-sh/uv/issues/13369
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # System Python used despite global config specifying Python version
 
 ---
 
-_Issue opened by @liby on 2025-05-09 21:19_
+_@liby_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T18:38:57Z
 updated_at: 2023-09-03T22:36:00Z
 url: https://github.com/astral-sh/ruff/issues/7099
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules SIM222 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 18:38_
+_@qarmin_
 
 
 Ruff 0.0.287 (latest changes from main branch)

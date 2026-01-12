@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T16:00:41Z
 updated_at: 2025-03-20T22:19:58Z
 url: https://github.com/astral-sh/ruff/issues/16851
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Ban most `Type::Instance` types in type expressions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-19 16:00_
+_@AlexWaygood_
 
 If a symbol that we infer as having an instance type appears in a type expression, we should almost always emit a diagnostic saying that it's an invalid type expression. For example:
 

@@ -13,14 +13,14 @@ head: zb/torch-again-again-again
 created_at: 2025-01-28T18:50:58Z
 updated_at: 2025-01-28T19:28:55Z
 url: https://github.com/astral-sh/uv/pull/11034
-synced_at: 2026-01-10T11:45:24Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Add upper bound constraints to (more) test cases that use pytorch index
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 18:50_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11025
 

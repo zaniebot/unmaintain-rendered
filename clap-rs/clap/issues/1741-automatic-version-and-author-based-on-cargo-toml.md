@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-12T04:15:31Z
 updated_at: 2021-07-14T03:46:50Z
 url: https://github.com/clap-rs/clap/issues/1741
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Automatic version and author based on Cargo.toml values
 
 ---
 
-_Issue opened by @olalonde on 2020-03-12 04:15_
+_@olalonde_
 
 I'm not sure if this is possible with macros (Rust noob), but it would be nice if it was possible to automatically set the version and author from the value present in `Cargo.toml`.
 

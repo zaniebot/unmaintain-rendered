@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T20:51:18Z
 updated_at: 2025-05-20T14:13:13Z
 url: https://github.com/astral-sh/uv/issues/13544
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Calling venv python via exec with process name substitution fails
 
 ---
 
-_Issue opened by @mxwell-dev on 2025-05-19 20:51_
+_@mxwell-dev_
 
 ### Summary
 

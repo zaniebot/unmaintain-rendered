@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T18:59:08Z
 updated_at: 2024-12-17T08:56:17Z
 url: https://github.com/astral-sh/uv/issues/9919
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `uv publish` cannot find index when configured as `explicit=true`
 
 ---
 
-_Issue opened by @CarrotManMatt on 2024-12-15 18:59_
+_@CarrotManMatt_
 
 A `pyproject.toml` that creates this issue is as follows:
 ```toml

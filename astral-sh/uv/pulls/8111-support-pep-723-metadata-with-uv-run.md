@@ -13,14 +13,14 @@ head: stdin-pep723
 created_at: 2024-10-10T21:58:16Z
 updated_at: 2024-10-10T22:35:16Z
 url: https://github.com/astral-sh/uv/pull/8111
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Support PEP 723 metadata with `uv run -`
 
 ---
 
-_Pull request opened by @manzt on 2024-10-10 21:58_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

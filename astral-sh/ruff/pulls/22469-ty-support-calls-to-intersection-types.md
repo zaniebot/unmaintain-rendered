@@ -14,14 +14,14 @@ head: claude/fix-issue-1858-UjARA
 created_at: 2026-01-09T00:06:59Z
 updated_at: 2026-01-09T22:22:03Z
 url: https://github.com/astral-sh/ruff/pull/22469
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Support calls to intersection types
 
 ---
 
-_Pull request opened by @carljm on 2026-01-09 00:06_
+_@carljm_
 
 Implement proper handling for calling intersection types. Previously, calling an intersection type would return a `@Todo` type that suppressed errors but provided no useful type information.
 

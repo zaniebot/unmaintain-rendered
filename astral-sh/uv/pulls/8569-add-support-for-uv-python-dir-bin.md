@@ -13,14 +13,14 @@ head: zb/python-exec-bin
 created_at: 2024-10-25T16:35:21Z
 updated_at: 2024-10-29T16:18:16Z
 url: https://github.com/astral-sh/uv/pull/8569
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Add support for `uv python dir --bin`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-25 16:35_
+_@zanieb_
 
 Following #8458 we want to support showing the target directory in the CLI
 

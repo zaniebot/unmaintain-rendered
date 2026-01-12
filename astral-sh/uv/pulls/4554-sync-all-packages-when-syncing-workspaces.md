@@ -11,14 +11,14 @@ head: charlie/sync
 created_at: 2024-06-26T16:52:22Z
 updated_at: 2024-09-23T23:31:11Z
 url: https://github.com/astral-sh/uv/pull/4554
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Sync all packages when syncing workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 16:52_
+_@charliermarsh_
 
 ## Summary
 

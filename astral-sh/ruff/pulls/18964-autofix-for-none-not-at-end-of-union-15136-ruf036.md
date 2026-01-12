@@ -13,14 +13,14 @@ head: 15136_autofix_none_union
 created_at: 2025-06-26T16:23:33Z
 updated_at: 2025-11-21T08:03:35Z
 url: https://github.com/astral-sh/ruff/pull/18964
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # Autofix for `none-not-at-end-of-union` #15136 (RUF036)
 
 ---
 
-_Pull request opened by @jordyjwilliams on 2025-06-26 16:23_
+_@jordyjwilliams_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

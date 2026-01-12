@@ -13,14 +13,14 @@ head: zb/index-requirements
 created_at: 2024-05-09T14:23:39Z
 updated_at: 2024-05-09T16:33:15Z
 url: https://github.com/astral-sh/uv/pull/3485
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Add test case for authenticated index url from requirements file
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-09 14:23_
+_@zanieb_
 
 Investigating https://github.com/astral-sh/uv/issues/3471
 

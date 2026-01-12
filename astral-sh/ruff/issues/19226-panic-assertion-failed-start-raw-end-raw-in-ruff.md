@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-07-09T07:07:35Z
 updated_at: 2025-11-18T15:48:16Z
 url: https://github.com/astral-sh/ruff/issues/19226
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Panic `assertion failed: start.raw <= end.raw` in `ruff_python_formatter/src/expression/binary_like.rs`
 
 ---
 
-_Issue opened by @qarmin on 2025-07-09 07:07_
+_@qarmin_
 
 ### Summary
 

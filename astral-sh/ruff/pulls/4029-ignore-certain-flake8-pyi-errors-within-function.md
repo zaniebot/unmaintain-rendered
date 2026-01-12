@@ -12,14 +12,14 @@ head: charlie/pyi-func-body
 created_at: 2023-04-19T18:54:00Z
 updated_at: 2023-04-19T19:30:02Z
 url: https://github.com/astral-sh/ruff/pull/4029
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore certain flake8-pyi errors within function bodies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 18:54_
+_@charliermarsh_
 
 ## Summary
 

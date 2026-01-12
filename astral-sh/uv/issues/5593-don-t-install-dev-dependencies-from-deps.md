@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T10:06:36Z
 updated_at: 2024-07-31T02:32:34Z
 url: https://github.com/astral-sh/uv/issues/5593
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Don't install dev dependencies from deps
 
 ---
 
-_Issue opened by @konstin on 2024-07-30 10:06_
+_@konstin_
 
 Summary: uv install dev deps from path dependencies. We should only install dev deps that belong to the current project, and we must ignore them while locking.
 

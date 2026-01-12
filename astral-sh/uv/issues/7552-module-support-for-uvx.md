@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T14:25:11Z
 updated_at: 2025-05-07T15:31:05Z
 url: https://github.com/astral-sh/uv/issues/7552
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Module support for uvx
 
 ---
 
-_Issue opened by @nmichlo on 2024-09-19 14:25_
+_@nmichlo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: konsti/fix-tests-compile_exclude_newer_package
 created_at: 2025-08-04T09:08:28Z
 updated_at: 2025-08-04T09:21:10Z
 url: https://github.com/astral-sh/uv/pull/15054
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Fix compile_exclude_newer_package test
 
 ---
 
-_Pull request opened by @konstin on 2025-08-04 09:08_
+_@konstin_
 
 _No description provided._
 

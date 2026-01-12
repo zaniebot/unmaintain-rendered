@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T18:49:37Z
 updated_at: 2024-11-29T18:03:19Z
 url: https://github.com/astral-sh/ruff/issues/8022
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruleset suggestion: wemake-python-styleguide WPS2xx (complexity)
 
 ---
 
-_Issue opened by @strmwalker on 2023-10-17 18:49_
+_@strmwalker_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

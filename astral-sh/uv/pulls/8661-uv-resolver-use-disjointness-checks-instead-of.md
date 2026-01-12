@@ -14,14 +14,14 @@ head: ag/use-disjointness-checks
 created_at: 2024-10-29T14:38:37Z
 updated_at: 2024-10-29T15:25:21Z
 url: https://github.com/astral-sh/uv/pull/8661
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # uv-resolver: use disjointness checks instead of marker equality
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-10-29 14:38_
+_@BurntSushi_
 
 When this code was written, we didn't have "proper" disjointness checks,
 and so simple equality was used instead. Arguably disjointness checks are

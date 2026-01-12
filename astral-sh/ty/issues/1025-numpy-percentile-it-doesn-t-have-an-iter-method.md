@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-17T12:32:11Z
 updated_at: 2025-08-17T12:38:11Z
 url: https://github.com/astral-sh/ty/issues/1025
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # numpy percentile "It doesn't have an __iter__ method or a __getitem__ method info: rule not-iterable is enabled by default"
 
 ---
 
-_Issue opened by @Gabriel-p on 2025-08-17 12:32_
+_@Gabriel-p_
 
 ### Summary
 

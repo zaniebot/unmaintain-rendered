@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-02T13:45:14Z
 updated_at: 2023-01-03T00:13:26Z
 url: https://github.com/astral-sh/ruff/issues/1555
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # pydocstyle plugin should implement match and match_dir options
 
 ---
 
-_Issue opened by @marscher on 2023-01-02 13:45_
+_@marscher_
 
 Sometimes it's useful to exclude some files and or directories from this plugin, e.g. you want to allow tests to match the rigid docstyle conventions.
 Since I want other linting plugins to be run on the pydocstyle excluded files, Ruffs global exclude does not seem to be the solution.

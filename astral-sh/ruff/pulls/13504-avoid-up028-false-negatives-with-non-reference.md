@@ -13,14 +13,14 @@ head: zb/up028-shadow
 created_at: 2024-09-24T14:44:30Z
 updated_at: 2024-09-25T15:03:12Z
 url: https://github.com/astral-sh/ruff/pull/13504
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Avoid UP028 false negatives with non-reference shadowed bindings of loop variables
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 14:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13266
 

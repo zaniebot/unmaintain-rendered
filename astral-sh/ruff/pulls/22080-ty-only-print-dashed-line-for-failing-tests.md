@@ -14,14 +14,14 @@ head: micha/fix-mdtest-output
 created_at: 2025-12-19T12:56:55Z
 updated_at: 2025-12-19T13:20:06Z
 url: https://github.com/astral-sh/ruff/pull/22080
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Only print dashed line for failing tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 12:56_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-01T20:09:09Z
 updated_at: 2025-10-06T13:40:38Z
 url: https://github.com/astral-sh/ruff/issues/20674
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # I002 inserts required imports before future imports
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-01 20:09_
+_@dscorbett_
 
 ### Summary
 

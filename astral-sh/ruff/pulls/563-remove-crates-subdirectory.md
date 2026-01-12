@@ -12,14 +12,14 @@ head: charlie/crates
 created_at: 2022-11-03T03:29:02Z
 updated_at: 2022-11-03T13:19:55Z
 url: https://github.com/astral-sh/ruff/pull/563
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove crates subdirectory
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 03:29_
+_@charliermarsh_
 
 _No description provided._
 

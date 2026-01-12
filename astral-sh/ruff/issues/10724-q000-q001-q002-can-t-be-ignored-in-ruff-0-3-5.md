@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T01:19:59Z
 updated_at: 2024-04-04T08:08:53Z
 url: https://github.com/astral-sh/ruff/issues/10724
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `Q000`, `Q001`, `Q002` can't be ignored in Ruff 0.3.5
 
 ---
 
-_Issue opened by @hinohi on 2024-04-02 01:19_
+_@hinohi_
 
 In Ruff 0.3.5, if specifying to ignore one or two of the Q000, Q001, Q002 rules, they are not ignored.
 However, if specifying to ignore all three of those rules, then it works as expected.

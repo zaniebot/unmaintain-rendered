@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-14T12:54:22Z
 updated_at: 2025-12-31T17:55:12Z
 url: https://github.com/astral-sh/ruff/issues/17392
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff check src/` does not respect .gitignore for ignored files
 
 ---
 
-_Issue opened by @klim-neumann on 2025-04-14 12:54_
+_@klim-neumann_
 
 ### Summary
 

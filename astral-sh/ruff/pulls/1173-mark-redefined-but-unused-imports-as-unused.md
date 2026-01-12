@@ -12,14 +12,14 @@ head: charlie/unused-import-when-redefined
 created_at: 2022-12-10T04:17:16Z
 updated_at: 2022-12-10T04:17:34Z
 url: https://github.com/astral-sh/ruff/pull/1173
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Mark redefined-but-unused imports as unused regardless of scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-10 04:17_
+_@charliermarsh_
 
 Right now, if an import is redefined-while-unused by a variable in the same scope, we lose that binding, and thus never report it as unused. This matches the current Pyflakes behavior, but... I think it can be improved?
 

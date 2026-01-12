@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T20:43:07Z
 updated_at: 2023-01-26T21:09:36Z
 url: https://github.com/astral-sh/ruff/issues/2220
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM117 causes space-tab mix
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 20:43_
+_@spaceone_
 
 `SIM117` transforms
 ```python

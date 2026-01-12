@@ -13,14 +13,14 @@ head: pip-tree-depth
 created_at: 2024-06-21T20:52:26Z
 updated_at: 2024-06-27T00:34:38Z
 url: https://github.com/astral-sh/uv/pull/4440
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # implement `--depth`, `--prune` for `pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-06-21 20:52_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

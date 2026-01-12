@@ -13,14 +13,14 @@ head: attr-subscript-narrowing
 created_at: 2025-04-26T13:01:26Z
 updated_at: 2025-06-17T12:53:08Z
 url: https://github.com/astral-sh/ruff/pull/17643
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [ty] basic narrowing on attribute and subscript expressions
 
 ---
 
-_Pull request opened by @mtshiba on 2025-04-26 13:01_
+_@mtshiba_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dhruv/re-lexing
 created_at: 2024-06-27T04:11:20Z
 updated_at: 2024-06-27T11:42:41Z
 url: https://github.com/astral-sh/ruff/pull/12060
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `TokenSource` to find new location for re-lexing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-27 04:11_
+_@dhruvmanila_
 
 ## Summary
 

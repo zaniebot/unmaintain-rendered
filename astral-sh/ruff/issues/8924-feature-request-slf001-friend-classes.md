@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-30T13:29:01Z
 updated_at: 2023-12-07T03:12:40Z
 url: https://github.com/astral-sh/ruff/issues/8924
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [feature request] SLF001. Friend classes.
 
 ---
 
-_Issue opened by @kshpytsya on 2023-11-30 13:29_
+_@kshpytsya_
 
 I do realize that ruff's `SLF001` is modeled after `flake8-self` and a such, there may be opposition for implementing behavior diverging from the latter.
 However, I often find the situation that boils down to the following:

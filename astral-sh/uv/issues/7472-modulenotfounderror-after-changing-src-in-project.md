@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-17T16:59:58Z
 updated_at: 2024-10-21T22:20:16Z
 url: https://github.com/astral-sh/uv/issues/7472
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # ModuleNotFoundError after changing src/ in project lib template
 
 ---
 
-_Issue opened by @5183nischal on 2024-09-17 16:59_
+_@5183nischal_
 
 Hi, Thanks for uv!
 

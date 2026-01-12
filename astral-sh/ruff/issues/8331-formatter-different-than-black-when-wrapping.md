@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-30T00:55:42Z
 updated_at: 2024-02-13T11:39:00Z
 url: https://github.com/astral-sh/ruff/issues/8331
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: different than black when wrapping parentheses for `assert`
 
 ---
 
-_Issue opened by @njzjz on 2023-10-30 00:55_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

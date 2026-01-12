@@ -13,14 +13,14 @@ head: zb/redundant-let-some
 created_at: 2025-07-24T22:19:17Z
 updated_at: 2025-07-24T22:29:57Z
 url: https://github.com/astral-sh/uv/pull/14880
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Remove redundant `let Some`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 22:19_
+_@zanieb_
 
 _No description provided._
 

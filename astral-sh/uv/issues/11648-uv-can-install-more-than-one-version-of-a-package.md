@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T23:48:07Z
 updated_at: 2025-02-20T20:17:15Z
 url: https://github.com/astral-sh/uv/issues/11648
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # uv can install more than one version of a package at a time
 
 ---
 
-_Issue opened by @jbms on 2025-02-19 23:48_
+_@jbms_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T08:21:05Z
 updated_at: 2024-03-25T08:34:55Z
 url: https://github.com/astral-sh/ruff/issues/10558
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff check --fix not working
 
 ---
 
-_Issue opened by @decoded-brain on 2024-03-25 08:21_
+_@decoded-brain_
 
 Ruff doesn't fix the problems. I've tried adding the ```--unsafe-fixes``` flag and it doesn't work
 

@@ -13,14 +13,14 @@ head: charlie/conflict
 created_at: 2024-08-30T00:02:42Z
 updated_at: 2024-08-30T00:18:32Z
 url: https://github.com/astral-sh/uv/pull/6841
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Error when user-provided environments are disjoint with Python
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 00:02_
+_@charliermarsh_
 
 _No description provided._
 

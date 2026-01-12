@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T00:43:42Z
 updated_at: 2025-08-19T18:01:36Z
 url: https://github.com/astral-sh/ty/issues/1047
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # KW_ONLY should only apply to own-fields
 
 ---
 
-_Issue opened by @carljm on 2025-08-19 00:43_
+_@carljm_
 
 In [this example](https://play.ty.dev/7bcf7ebb-e27e-4104-8f94-ecf2d10d1a43):
 

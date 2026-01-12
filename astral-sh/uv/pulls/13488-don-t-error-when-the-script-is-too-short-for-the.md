@@ -13,14 +13,14 @@ head: konsti/dont-error-on-too-short-buffer
 created_at: 2025-05-16T12:37:26Z
 updated_at: 2025-05-19T06:06:19Z
 url: https://github.com/astral-sh/uv/pull/13488
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Don't error when the script is too short for the buffer
 
 ---
 
-_Pull request opened by @konstin on 2025-05-16 12:37_
+_@konstin_
 
 I hit this error case with a broken wheel.
 

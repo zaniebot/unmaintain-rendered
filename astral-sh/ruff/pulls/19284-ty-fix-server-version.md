@@ -14,14 +14,14 @@ head: micha/fix-server-version
 created_at: 2025-07-11T13:25:11Z
 updated_at: 2025-07-14T07:06:36Z
 url: https://github.com/astral-sh/ruff/pull/19284
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Fix server version
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-11 13:25_
+_@MichaReiser_
 
 ## Summary
 Closes https://github.com/astral-sh/ty/issues/814

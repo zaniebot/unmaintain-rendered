@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-05T19:03:21Z
 updated_at: 2025-03-03T03:21:53Z
 url: https://github.com/astral-sh/uv/issues/10305
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Why is `.venv` created on every `uv` command invocation despite the environment being available?
 
 ---
 
-_Issue opened by @aaqibb13 on 2025-01-05 19:03_
+_@aaqibb13_
 
 If I am creating a virtual environment using `uv` via the following: 
 ```

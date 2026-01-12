@@ -13,14 +13,14 @@ head: konsti/url-type-parameter
 created_at: 2024-04-24T20:38:04Z
 updated_at: 2024-05-07T14:45:50Z
 url: https://github.com/astral-sh/uv/pull/3253
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Make `Requirement` generic over url type
 
 ---
 
-_Pull request opened by @konstin on 2024-04-24 20:38_
+_@konstin_
 
 This change allows switching out the url type for requirements. The original idea was to allow different types for different requirement origins, so that core metadata reads can ban non-pep 508 requirements while we only allow them for requirements.txt. This didn't work out because we expect `&Requirement`s from all sources to match.
 

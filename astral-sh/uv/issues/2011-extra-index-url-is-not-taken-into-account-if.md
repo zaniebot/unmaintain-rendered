@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T12:30:56Z
 updated_at: 2024-02-27T15:47:22Z
 url: https://github.com/astral-sh/uv/issues/2011
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # extra-index-url is not taken into account if package exists in the index-url
 
 ---
 
-_Issue opened by @atti92 on 2024-02-27 12:30_
+_@atti92_
 
 If you have a package in a private repository and you add it as an extra-index-url, the resolver will throw conflict errors
 

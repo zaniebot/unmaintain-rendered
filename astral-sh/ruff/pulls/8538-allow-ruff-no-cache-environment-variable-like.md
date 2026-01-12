@@ -13,14 +13,14 @@ head: no-cache-envvar
 created_at: 2023-11-07T12:24:42Z
 updated_at: 2023-11-27T04:08:09Z
 url: https://github.com/astral-sh/ruff/pull/8538
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Allow RUFF_NO_CACHE environment variable (like RUFF_CACHE_DIR)
 
 ---
 
-_Pull request opened by @akx on 2023-11-07 12:24_
+_@akx_
 
 ## Summary
 

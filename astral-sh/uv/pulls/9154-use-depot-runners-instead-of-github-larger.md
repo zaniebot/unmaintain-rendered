@@ -13,14 +13,14 @@ head: zb/debot
 created_at: 2024-11-15T18:29:51Z
 updated_at: 2024-11-15T23:07:55Z
 url: https://github.com/astral-sh/uv/pull/9154
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Use Depot runners instead of GitHub larger runners for Unix
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-15 18:29_
+_@zanieb_
 
 _No description provided._
 

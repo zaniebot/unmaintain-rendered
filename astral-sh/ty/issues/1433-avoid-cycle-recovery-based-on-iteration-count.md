@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-24T10:53:37Z
 updated_at: 2025-11-26T16:50:29Z
 url: https://github.com/astral-sh/ty/issues/1433
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Avoid cycle recovery based on iteration count
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-24 10:53_
+_@MichaReiser_
 
 We currently rely on the iteration count for cycle recovery. There are two issues with it:
 

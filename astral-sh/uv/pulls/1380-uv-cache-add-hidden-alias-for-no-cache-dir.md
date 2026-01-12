@@ -13,14 +13,14 @@ head: mikcl/pip-install-no-cache-dir
 created_at: 2024-02-15T23:09:26Z
 updated_at: 2024-02-15T23:26:16Z
 url: https://github.com/astral-sh/uv/pull/1380
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # uv-cache: Add hidden alias for --no-cache-dir
 
 ---
 
-_Pull request opened by @Mikcl on 2024-02-15 23:09_
+_@Mikcl_
 
 This is for compatability with pip install --no-cache-dir
 

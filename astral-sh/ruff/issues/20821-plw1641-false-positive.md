@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-12T19:05:48Z
 updated_at: 2025-12-10T17:30:14Z
 url: https://github.com/astral-sh/ruff/issues/20821
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `PLW1641`: false positive
 
 ---
 
-_Issue opened by @chirizxc on 2025-10-12 19:05_
+_@chirizxc_
 
 The current [`eq-without-hash` (PLW1641)](https://docs.astral.sh/ruff/rules/eq-without-hash/) rule warns whenever a class defines `__eq__` without defining `__hash__`. However, this creates false positives for legitimate use cases.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-29T14:49:10Z
 updated_at: 2025-10-30T17:14:01Z
 url: https://github.com/astral-sh/ty/issues/1452
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Classmethods and staticmethods should not be considered instances of `types.FunctionType`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-29 14:49_
+_@AlexWaygood_
 
 ### Summary
 

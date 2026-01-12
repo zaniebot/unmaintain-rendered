@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-09T23:09:45Z
 updated_at: 2025-01-23T12:49:31Z
 url: https://github.com/astral-sh/ruff/issues/13696
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] port tests in infer.rs to mdtest
 
 ---
 
-_Issue opened by @carljm on 2024-10-09 23:09_
+_@carljm_
 
 All (or almost all?) tests currently in `crates/red_knot_python_semantic/src/types/infer.rs` should be ported to the new test framework (that is, to Markdown files in `crates/red_knot_python_semantic/resources/mdtest/` directory.)
 

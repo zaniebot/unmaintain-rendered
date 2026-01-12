@@ -13,14 +13,14 @@ head: dylan/stabilize-plc0415
 created_at: 2025-06-08T18:56:20Z
 updated_at: 2025-06-09T17:51:14Z
 url: https://github.com/astral-sh/ruff/pull/18554
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [`pylint`] Stabilize `import-outside-top-level` (`PLC0415`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 18:56_
+_@dylwil3_
 
 _No description provided._
 

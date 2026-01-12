@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T22:25:10Z
 updated_at: 2024-10-15T08:01:15Z
 url: https://github.com/astral-sh/uv/issues/8023
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # `uv publish` giving `Missing credentials for https://upload.pypi.org/legacy/`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-10-08 22:25_
+_@jamesbraza_
 
 I moved from this GitHub Actions that publishes to PyPI using:
 

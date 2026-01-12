@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T09:22:30Z
 updated_at: 2023-07-24T16:30:44Z
 url: https://github.com/astral-sh/ruff/issues/5910
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Keep `%` on same line as string for "old-style" formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-20 09:22_
+_@MichaReiser_
 
 It is preferred to keep the `%` operator on the same line as the string it formats:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-02T18:08:48Z
 updated_at: 2024-04-12T20:12:24Z
 url: https://github.com/astral-sh/uv/issues/2133
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # API usage
 
 ---
 
-_Issue opened by @ofek on 2024-03-02 18:08_
+_@ofek_
 
 Hello there! I would like to use the internal crates here in [PyApp](https://github.com/ofek/pyapp). As far as I understand, the only functionality that I require would be:
 

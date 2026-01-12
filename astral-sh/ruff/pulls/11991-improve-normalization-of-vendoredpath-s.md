@@ -11,14 +11,14 @@ head: vendored-parts-parent-part
 created_at: 2024-06-23T18:21:34Z
 updated_at: 2024-06-23T20:39:30Z
 url: https://github.com/astral-sh/ruff/pull/11991
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Improve normalization of `VendoredPath`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-23 18:21_
+_@AlexWaygood_
 
 ## Summary
 

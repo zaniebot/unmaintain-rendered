@@ -13,14 +13,14 @@ head: manzt/remote-scripts
 created_at: 2024-08-21T20:15:59Z
 updated_at: 2024-10-16T22:13:39Z
 url: https://github.com/astral-sh/uv/pull/6375
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:20Z
 ```
 
 # feat: Support remote scripts with `uv run`
 
 ---
 
-_Pull request opened by @manzt on 2024-08-21 20:15_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

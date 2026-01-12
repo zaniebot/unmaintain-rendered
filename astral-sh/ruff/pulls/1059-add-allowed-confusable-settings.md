@@ -12,14 +12,14 @@ head: allowed-confusables
 created_at: 2022-12-05T13:35:11Z
 updated_at: 2023-04-30T19:47:49Z
 url: https://github.com/astral-sh/ruff/pull/1059
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add allowed-confusable settings
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-12-05 13:35_
+_@JonathanPlasse_
 
 - Related to #1040
 

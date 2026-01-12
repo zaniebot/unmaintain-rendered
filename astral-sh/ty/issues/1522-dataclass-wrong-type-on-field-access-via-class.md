@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-11T14:55:02Z
 updated_at: 2025-11-11T19:34:52Z
 url: https://github.com/astral-sh/ty/issues/1522
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # dataclass: wrong type on field access via class
 
 ---
 
-_Issue opened by @Tinche on 2025-11-11 14:55_
+_@Tinche_
 
 ### Summary
 

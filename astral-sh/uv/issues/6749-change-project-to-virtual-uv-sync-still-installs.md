@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T13:57:41Z
 updated_at: 2024-08-28T15:11:18Z
 url: https://github.com/astral-sh/uv/issues/6749
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Change project to virtual, `uv sync` still installs it
 
 ---
 
-_Issue opened by @j178 on 2024-08-28 13:57_
+_@j178_
 
 
 ## Steps to reproduce

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T14:24:06Z
 updated_at: 2024-08-19T00:13:30Z
 url: https://github.com/astral-sh/ruff/issues/12953
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `contains_effect` should consider f-strings to have effects
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-17 14:24_
+_@dscorbett_
 
 `contains_effect` should consider f-strings to have effects because of the implicit `__str__` or `__repr__` call. This affects any rule that relies on `contains_effect`; here is an example with [RUF019](https://docs.astral.sh/ruff/rules/unnecessary-key-check/).
 ```console

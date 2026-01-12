@@ -14,14 +14,14 @@ head: UP007
 created_at: 2025-01-07T06:20:40Z
 updated_at: 2025-01-07T14:49:34Z
 url: https://github.com/astral-sh/ruff/pull/15313
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pyupgrade`] Split `UP007` to two individual rules for `Union` and `Optional` (`UP007`, `UP045`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-07 06:20_
+_@InSyncWithFoo_
 
 ## Summary
 

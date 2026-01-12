@@ -13,14 +13,14 @@ head: fix-exclude-newer-type
 created_at: 2025-12-13T09:04:32Z
 updated_at: 2025-12-16T11:52:57Z
 url: https://github.com/astral-sh/uv/pull/17121
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Change schema for exclude-newer type into optional string
 
 ---
 
-_Pull request opened by @eggplants on 2025-12-13 09:04_
+_@eggplants_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

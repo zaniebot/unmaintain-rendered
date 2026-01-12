@@ -12,14 +12,14 @@ head: gankra/dist
 created_at: 2025-05-05T18:22:11Z
 updated_at: 2025-07-08T10:39:12Z
 url: https://github.com/astral-sh/ty/pull/35
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # setup cargo-dist and build/publish workflows
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-05 18:22_
+_@Gankra_
 
 This is basically an exact copy-paste of the ruff stuff but with `ruff` => `ty` applied pretty blindly.
 

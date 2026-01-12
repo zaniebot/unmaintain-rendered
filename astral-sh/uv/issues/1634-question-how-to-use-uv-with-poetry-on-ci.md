@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T09:06:44Z
 updated_at: 2024-03-25T20:30:32Z
 url: https://github.com/astral-sh/uv/issues/1634
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Question: How to use uv with poetry on CI?
 
 ---
 
-_Issue opened by @Warchant on 2024-02-18 09:06_
+_@Warchant_
 
 Is it possible to use uv to speed-up `poetry install` on CI? 
 

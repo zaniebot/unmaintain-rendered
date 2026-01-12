@@ -13,14 +13,14 @@ head: bugfix/tc-fix-safety
 created_at: 2025-01-21T13:23:52Z
 updated_at: 2025-01-21T14:58:52Z
 url: https://github.com/astral-sh/ruff/pull/15638
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-type-checking`] Fix some safe fixes being labeled unsafe
 
 ---
 
-_Pull request opened by @Daverball on 2025-01-21 13:23_
+_@Daverball_
 
 ## Summary
 

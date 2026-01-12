@@ -12,14 +12,14 @@ head: charlie/env-vars
 created_at: 2022-12-22T01:45:05Z
 updated_at: 2022-12-22T01:46:39Z
 url: https://github.com/astral-sh/ruff/pull/1323
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Support shell expansion in `extend` paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-22 01:45_
+_@charliermarsh_
 
 This allows things like:
 

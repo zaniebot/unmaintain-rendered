@@ -13,14 +13,14 @@ head: zb/python-version-up
 created_at: 2025-03-27T19:39:43Z
 updated_at: 2025-03-27T20:16:12Z
 url: https://github.com/astral-sh/uv/pull/12515
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Bump pinned Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-27 19:39_
+_@zanieb_
 
 Moves us to the latest patch for our test Python versions.
 

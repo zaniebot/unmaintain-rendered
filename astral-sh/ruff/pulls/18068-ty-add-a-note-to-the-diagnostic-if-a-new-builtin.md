@@ -14,14 +14,14 @@ head: alex/new-builtins-note
 created_at: 2025-05-13T13:36:57Z
 updated_at: 2025-05-13T14:15:02Z
 url: https://github.com/astral-sh/ruff/pull/18068
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Add a note to the diagnostic if a new builtin is used on an old Python version
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-13 13:36_
+_@AlexWaygood_
 
 ## Summary
 

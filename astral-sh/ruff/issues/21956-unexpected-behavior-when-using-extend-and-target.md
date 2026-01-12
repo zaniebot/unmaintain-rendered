@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-12T20:02:35Z
 updated_at: 2025-12-14T19:45:49Z
 url: https://github.com/astral-sh/ruff/issues/21956
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Unexpected behavior when using extend and target-version
 
 ---
 
-_Issue opened by @jbarnoud on 2025-12-12 20:02_
+_@jbarnoud_
 
 ### Summary
 

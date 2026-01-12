@@ -13,14 +13,14 @@ head: micha/fix-css-formatting
 created_at: 2025-02-17T08:34:39Z
 updated_at: 2025-02-17T08:38:27Z
 url: https://github.com/astral-sh/ruff/pull/16207
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Format `index.css`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-17 08:34_
+_@MichaReiser_
 
 ## Summary
 

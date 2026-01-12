@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-07T17:30:48Z
 updated_at: 2024-01-07T21:49:15Z
 url: https://github.com/astral-sh/ruff/issues/9424
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F841 - False positive when using with isinstance()
 
 ---
 
-_Issue opened by @MamadouSDiallo on 2024-01-07 17:30_
+_@MamadouSDiallo_
 
 In Python, it is common to use `isinstance()` to check for type or class. If we do not do anything with the class or type name then it is flagged as F841 (unused variable) which is a false positive.  
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T04:41:37Z
 updated_at: 2024-04-04T04:04:43Z
 url: https://github.com/astral-sh/uv/issues/189
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Avoid fetching package metadata if a version is already pinned in the lockfile
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 04:41_
+_@charliermarsh_
 
 Right now, we still fetch the package metadata (and the version metadata for the selected version). We should be able to skip this, which would mean no-op resolutions don't require any network requests.
 

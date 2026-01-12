@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T12:12:27Z
 updated_at: 2024-08-26T18:05:00Z
 url: https://github.com/astral-sh/uv/issues/6580
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `uv sync --no-build-isolation` doesn't remove extra dependencies
 
 ---
 
-_Issue opened by @kabouzeid on 2024-08-24 12:12_
+_@kabouzeid_
 
 Whenever `uv sync` is called with `--no-build-isolation`, any extra packages that shouldn't be there aren't automatically removed.
 

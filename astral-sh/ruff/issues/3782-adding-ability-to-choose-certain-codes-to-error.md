@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T18:49:41Z
 updated_at: 2023-04-13T03:39:01Z
 url: https://github.com/astral-sh/ruff/issues/3782
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Adding ability to choose certain codes to error on (instead of disabling all using `--exit-zero`) or not error on
 
 ---
 
-_Issue opened by @JSpenced on 2023-03-28 18:49_
+_@JSpenced_
 
 This is more a feature request or maybe I missed something in the docs to enable it.
 

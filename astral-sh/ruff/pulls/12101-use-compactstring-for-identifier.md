@@ -13,14 +13,14 @@ head: identifier-compact_str
 created_at: 2024-06-29T09:55:02Z
 updated_at: 2024-07-01T08:07:02Z
 url: https://github.com/astral-sh/ruff/pull/12101
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `CompactString` for `Identifier`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-29 09:55_
+_@MichaReiser_
 
 This PR introduces a small string create for `ExprName` and `Identifier` to reduce the number of allocations. 
 

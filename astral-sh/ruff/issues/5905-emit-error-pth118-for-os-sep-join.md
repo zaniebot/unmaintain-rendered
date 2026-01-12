@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T06:29:11Z
 updated_at: 2023-07-21T01:36:04Z
 url: https://github.com/astral-sh/ruff/issues/5905
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Emit error PTH118 for `os.sep.join()`
 
 ---
 
-_Issue opened by @dosisod on 2023-07-20 06:29_
+_@dosisod_
 
 The following shows 2 similar snippets of code, but only one is picked up by Ruff currently:
 

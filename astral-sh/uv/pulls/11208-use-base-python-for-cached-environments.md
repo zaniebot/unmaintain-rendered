@@ -13,14 +13,14 @@ head: charlie/base
 created_at: 2025-02-04T01:21:16Z
 updated_at: 2025-02-04T22:23:09Z
 url: https://github.com/astral-sh/uv/pull/11208
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Use base Python for cached environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-04 01:21_
+_@charliermarsh_
 
 ## Summary
 

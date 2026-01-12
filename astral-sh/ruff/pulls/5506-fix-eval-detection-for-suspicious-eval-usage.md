@@ -13,14 +13,14 @@ head: charlie/eval
 created_at: 2023-07-04T17:53:41Z
 updated_at: 2023-07-04T18:31:05Z
 url: https://github.com/astral-sh/ruff/pull/5506
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix eval detection for suspicious-eval-usage
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 17:53_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5505.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-05-13T16:03:53Z
 updated_at: 2021-12-10T18:04:03Z
 url: https://github.com/clap-rs/clap/issues/1469
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # optionally wrap help lines at less than terminal width
 
 ---
 
-_Issue opened by @wookietreiber on 2019-05-13 16:03_
+_@wookietreiber_
 
 Maintainer's notes:
 

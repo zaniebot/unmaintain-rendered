@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-08-20T19:22:02Z
 updated_at: 2020-04-12T10:09:28Z
 url: https://github.com/clap-rs/clap/issues/618
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Multi level help subcommand has misleading usage string
 
 ---
 
-_Issue opened by @kbknapp on 2016-08-20 19:22_
+_@kbknapp_
 
 See https://github.com/rust-lang-nursery/rustup.rs/issues/632
 

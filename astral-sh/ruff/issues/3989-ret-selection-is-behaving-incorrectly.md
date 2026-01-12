@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-16T23:15:05Z
 updated_at: 2023-04-18T02:52:28Z
 url: https://github.com/astral-sh/ruff/issues/3989
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `RET` selection is behaving incorrectly
 
 ---
 
-_Issue opened by @charliermarsh on 2023-04-16 23:15_
+_@charliermarsh_
 
 Given:
 

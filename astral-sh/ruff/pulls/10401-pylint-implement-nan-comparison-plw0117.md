@@ -14,14 +14,14 @@ head: nan-comparison
 created_at: 2024-03-14T01:36:52Z
 updated_at: 2024-03-21T00:41:33Z
 url: https://github.com/astral-sh/ruff/pull/10401
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Implement `nan-comparison` (`PLW0117`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-14 01:36_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

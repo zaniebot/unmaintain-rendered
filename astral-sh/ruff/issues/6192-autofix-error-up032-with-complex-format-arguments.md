@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T10:45:02Z
 updated_at: 2023-07-31T13:12:40Z
 url: https://github.com/astral-sh/ruff/issues/6192
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Autofix error] UP032 with complex format arguments
 
 ---
 
-_Issue opened by @tsx on 2023-07-31 10:45_
+_@tsx_
 
 Reproduction:
 

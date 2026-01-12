@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T20:00:35Z
 updated_at: 2025-06-13T22:16:50Z
 url: https://github.com/astral-sh/uv/issues/13138
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # `uv pip install --group` fails where `pip install --group` succeeds
 
 ---
 
-_Issue opened by @leodevian on 2025-04-27 20:00_
+_@leodevian_
 
 ### Summary
 

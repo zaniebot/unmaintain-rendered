@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-21T20:08:34Z
 updated_at: 2025-05-30T21:16:48Z
 url: https://github.com/astral-sh/uv/issues/13024
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # `uv publish` test flakes on `test.pypi.org` during re-upload check
 
 ---
 
-_Issue opened by @zanieb on 2025-04-21 20:08_
+_@zanieb_
 
 ```
 === 3. Publishing astral-test-token 0.1.6663 again with index ===

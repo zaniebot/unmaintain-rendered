@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T13:20:06Z
 updated_at: 2024-12-30T20:13:40Z
 url: https://github.com/astral-sh/uv/issues/10239
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Override dependencies does not work for editable installs?
 
 ---
 
-_Issue opened by @phiweger on 2024-12-30 13:20_
+_@phiweger_
 
 Hi,
 

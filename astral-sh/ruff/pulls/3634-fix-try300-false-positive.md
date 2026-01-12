@@ -12,14 +12,14 @@ head: fix-try300-false-positive
 created_at: 2023-03-20T20:20:31Z
 updated_at: 2023-03-20T22:24:58Z
 url: https://github.com/astral-sh/ruff/pull/3634
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix TRY300 false positive
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-20 20:20_
+_@JonathanPlasse_
 
 - Close #3632
 

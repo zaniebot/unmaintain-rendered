@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T12:41:54Z
 updated_at: 2025-05-27T19:27:07Z
 url: https://github.com/astral-sh/uv/issues/12835
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # 'uv add' fails while 'uv pip install' works for dlt[postgres]
 
 ---
 
-_Issue opened by @trin94 on 2025-04-11 12:41_
+_@trin94_
 
 ### Summary
 

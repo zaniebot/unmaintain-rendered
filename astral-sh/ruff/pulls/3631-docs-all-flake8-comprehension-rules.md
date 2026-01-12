@@ -12,14 +12,14 @@ head: docs/flake8-comprehension
 created_at: 2023-03-20T16:49:56Z
 updated_at: 2023-03-22T03:11:20Z
 url: https://github.com/astral-sh/ruff/pull/3631
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # docs: all `flake8-comprehension` rules
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-20 16:49_
+_@dhruvmanila_
 
 Created an initial draft for this, will go over them once more and make it ready to review.
 

@@ -13,14 +13,14 @@ head: fix-docs
 created_at: 2025-06-20T19:29:23Z
 updated_at: 2025-06-20T20:17:30Z
 url: https://github.com/astral-sh/uv/pull/14168
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Replace cuda124 with cuda128
 
 ---
 
-_Pull request opened by @lvvittor on 2025-06-20 19:29_
+_@lvvittor_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

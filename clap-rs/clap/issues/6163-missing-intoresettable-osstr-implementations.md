@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-27T23:31:13Z
 updated_at: 2025-10-28T17:24:11Z
 url: https://github.com/clap-rs/clap/issues/6163
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Missing IntoResettable<OsStr> implementations
 
 ---
 
-_Issue opened by @philjb on 2025-10-27 23:31_
+_@philjb_
 
 `Arg::default_value*` and friends use `impl IntoResettable<OsStr>` for the type of defaults for an argument. Runtime arguments arrive as OsString (or OsStr) this makes sense that a default value needs to convert to the same type as if it had been presented on the runtime execution call.
 

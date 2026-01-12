@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T15:57:10Z
 updated_at: 2024-09-10T17:44:00Z
 url: https://github.com/astral-sh/uv/issues/7259
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # error: Expected a dependency at index 6
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-10 15:57_
+_@kdheepak_
 
 I created a fresh project and ran the following:
 

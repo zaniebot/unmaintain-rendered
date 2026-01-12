@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-07T09:48:27Z
 updated_at: 2023-07-17T09:44:19Z
 url: https://github.com/astral-sh/ruff/issues/5588
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [pandas-vet] Constant column check with nunique
 
 ---
 
-_Issue opened by @sbrugman on 2023-07-07 09:48_
+_@sbrugman_
 
 Newly proposed upstream rule: constant column check with nunique
 

@@ -14,14 +14,14 @@ head: C419
 created_at: 2024-11-04T19:14:48Z
 updated_at: 2024-11-04T20:38:39Z
 url: https://github.com/astral-sh/ruff/pull/14097
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Also remove trailing comma while fixing C409 and C419
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-04 19:14_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-06T22:03:37Z
 updated_at: 2025-12-12T23:48:57Z
 url: https://github.com/astral-sh/ty/issues/95
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # typevar identity should not matter for generic function subtyping/assignability
 
 ---
 
-_Issue opened by @carljm on 2025-05-06 22:03_
+_@carljm_
 
 When we do subtype/assignability checks within a generic scope, we don't consider two different typevars to be equivalent, even if they have the same bounds/constraints, because they could specialize to two different types.
 

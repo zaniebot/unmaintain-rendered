@@ -11,14 +11,14 @@ head: fix_contains_effect_subscript
 created_at: 2023-06-06T22:12:49Z
 updated_at: 2023-06-08T07:37:46Z
 url: https://github.com/astral-sh/ruff/pull/4910
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove subscript expressions from python_ast contains_effect helper
 
 ---
 
-_Pull request opened by @Sacrimento on 2023-06-06 22:12_
+_@Sacrimento_
 
 ## Summary
 

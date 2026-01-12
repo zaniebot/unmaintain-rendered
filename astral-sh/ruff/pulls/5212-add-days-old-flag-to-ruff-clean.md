@@ -12,14 +12,14 @@ head: thomas/clean_days-old_flag
 created_at: 2023-06-20T15:45:11Z
 updated_at: 2025-02-20T08:59:43Z
 url: https://github.com/astral-sh/ruff/pull/5212
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add days-old flag to ruff clean
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-20 15:45_
+_@Thomasdezeeuw_
 
 ## Summary
 

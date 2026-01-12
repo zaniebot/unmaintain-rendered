@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T10:09:39Z
 updated_at: 2024-10-30T11:24:09Z
 url: https://github.com/astral-sh/ruff/issues/13977
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # IPython mode: load cell magics from configuration
 
 ---
 
-_Issue opened by @minrk on 2024-10-29 10:09_
+_@minrk_
 
 - Searched for: cell magics, Jupyter, IPython, configuration, pyproject.toml
 - ruff version: 0.7.1

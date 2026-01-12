@@ -14,14 +14,14 @@ head: zb/fix-main-anchors
 created_at: 2024-08-15T00:36:30Z
 updated_at: 2024-08-15T00:37:43Z
 url: https://github.com/astral-sh/uv/pull/6099
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Move anchors validation to only the public mkdocs config
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 00:36_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/6096#issuecomment-2290151150
 

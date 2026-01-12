@@ -14,14 +14,14 @@ head: RUF054
 created_at: 2025-03-01T16:54:36Z
 updated_at: 2025-12-10T17:39:59Z
 url: https://github.com/astral-sh/ruff/pull/16452
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [Ruff] Fix RUF054
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-01 16:54_
+_@VascoSch92_
 
 _No description provided._
 

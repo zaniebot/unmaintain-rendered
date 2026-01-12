@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T13:28:17Z
 updated_at: 2024-05-07T19:10:43Z
 url: https://github.com/astral-sh/ruff/issues/11280
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # 0.4.3: build fails on linking when LTO is used
 
 ---
 
-_Issue opened by @wuch-g2v on 2024-05-04 13:28_
+_@wuch-g2v_
 
 Looks like `ruff` is not LTO ready.
 ```console

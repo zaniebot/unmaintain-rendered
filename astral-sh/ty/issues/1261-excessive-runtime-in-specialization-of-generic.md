@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-26T09:59:34Z
 updated_at: 2025-09-29T11:52:56Z
 url: https://github.com/astral-sh/ty/issues/1261
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Excessive runtime in specialization of generic method with union of functions
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-26 09:59_
+_@sharkdp_
 
 The following snippet (distilled from an [ecosystem example on pandera](https://github.com/unionai-oss/pandera/blob/660095b7c985e45173f48b02a96655779158357a/tests/test_inspection_utils.py#L97), modified to make it self-contained and failing on `main`) causes an excessively large runtime which scales badly with both the number of `.merge` calls and the number of union elements:
 

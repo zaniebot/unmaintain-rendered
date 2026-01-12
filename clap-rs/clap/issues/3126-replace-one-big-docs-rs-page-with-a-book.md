@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:17:24Z
 updated_at: 2021-12-09T16:40:50Z
 url: https://github.com/clap-rs/clap/issues/3126
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Replace one big docs.rs page with a book
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:17_
+_@epage_
 
 <a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [CreepySkeleton](https://github.com/CreepySkeleton)**
 _Tuesday Dec 31, 2019 at 04:05 GMT_

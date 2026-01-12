@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T10:33:45Z
 updated_at: 2024-07-30T17:43:45Z
 url: https://github.com/astral-sh/uv/issues/4922
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Tracking issue: Make sure universal resolution has great error messages
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 10:33_
+_@konstin_
 
 Explaining a resolution error for a failed universal resolution is more complex than for regular resolution: A error may now be constraint to a specific fork, and the derivations may only happen due to the markers and requires-python bound of this fork. We need to check, fix and add tests for conflicts in universal resolution.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T14:19:04Z
 updated_at: 2024-09-20T02:52:13Z
 url: https://github.com/astral-sh/uv/issues/7551
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Wrong package resolution in `uv sync` compared to `uv pip compile`
 
 ---
 
-_Issue opened by @TheRealBecks on 2024-09-19 14:19_
+_@TheRealBecks_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

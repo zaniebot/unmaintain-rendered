@@ -14,14 +14,14 @@ head: ibraheem/declared-container-type
 created_at: 2025-10-16T18:39:22Z
 updated_at: 2025-10-16T20:11:30Z
 url: https://github.com/astral-sh/ruff/pull/20927
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Prefer declared type for invariant collection literals
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-16 18:39_
+_@ibraheemdev_
 
 ## Summary
 

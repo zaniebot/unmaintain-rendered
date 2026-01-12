@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-01-20T22:38:59Z
 updated_at: 2025-01-20T22:57:01Z
 url: https://github.com/astral-sh/uv/pull/10792
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Add a test for recursive extras with dynamic metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 22:38_
+_@charliermarsh_
 
 ## Summary
 

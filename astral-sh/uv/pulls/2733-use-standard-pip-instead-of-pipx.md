@@ -13,14 +13,14 @@ head: zb/pipx-macos
 created_at: 2024-03-30T14:01:54Z
 updated_at: 2024-03-30T14:12:18Z
 url: https://github.com/astral-sh/uv/pull/2733
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Use standard pip instead of pipx
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-30 14:01_
+_@zanieb_
 
 An attempt to solve macOS CI failures e.g. https://github.com/astral-sh/uv/actions/runs/8488022849/job/23256538175
 

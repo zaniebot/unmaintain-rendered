@@ -14,14 +14,14 @@ head: david/is-disjoint-from-tests
 created_at: 2025-01-20T08:29:36Z
 updated_at: 2025-01-20T08:48:38Z
 url: https://github.com/astral-sh/ruff/pull/15606
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] More exhaustive disjointness tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-20 08:29_
+_@sharkdp_
 
 ## Summary
 

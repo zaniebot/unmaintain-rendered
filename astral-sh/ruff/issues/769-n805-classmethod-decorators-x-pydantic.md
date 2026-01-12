@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T15:52:30Z
 updated_at: 2022-11-16T19:15:04Z
 url: https://github.com/astral-sh/ruff/issues/769
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N805 classmethod-decorators x Pydantic
 
 ---
 
-_Issue opened by @g-as on 2022-11-16 15:52_
+_@g-as_
 
 Hi,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-20T21:28:49Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/864
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # LeakSanitizer: 24 byte(s) leaked in 1 allocation(s)
 
 ---
 
-_Issue opened by @bbigras on 2017-02-20 21:28_
+_@bbigras_
 
 Please use the following template to assist with creating an issue, and getting a speedy resolution. If an area is not aplicable, feel free to delete the area, or mark with `N/A`
 

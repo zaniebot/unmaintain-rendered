@@ -13,14 +13,14 @@ head: brent/fix-14675
 created_at: 2024-11-29T18:34:38Z
 updated_at: 2024-12-04T11:20:51Z
 url: https://github.com/astral-sh/ruff/pull/14683
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pep8-naming`] Avoid false positive for `class Bar(type(foo))` (`N804`)
 
 ---
 
-_Pull request opened by @ntBre on 2024-11-29 18:34_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

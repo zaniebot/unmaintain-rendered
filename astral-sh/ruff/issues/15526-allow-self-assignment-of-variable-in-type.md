@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T08:21:08Z
 updated_at: 2025-01-30T11:05:22Z
 url: https://github.com/astral-sh/ruff/issues/15526
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Allow Self-Assignment of variable in TYPE_CHECKING block
 
 ---
 
-_Issue opened by @spacemanspiff2007 on 2025-01-16 08:21_
+_@spacemanspiff2007_
 
 I have subclasses which implement different behavior or restrict the data types of the base class.
 Additionally I have a docstring on the class which describes the behavior and the instance variables.

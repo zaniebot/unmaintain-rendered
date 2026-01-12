@@ -13,14 +13,14 @@ head: brent/async116
 created_at: 2025-09-04T17:55:15Z
 updated_at: 2025-09-04T20:18:41Z
 url: https://github.com/astral-sh/ruff/pull/20244
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `long-sleep-not-forever` (`ASYNC116`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 17:55_
+_@ntBre_
 
 Tests and docs look good
 

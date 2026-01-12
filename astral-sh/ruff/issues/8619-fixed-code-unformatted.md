@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-11T19:17:49Z
 updated_at: 2023-11-11T20:16:12Z
 url: https://github.com/astral-sh/ruff/issues/8619
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Fixed code unformatted
 
 ---
 
-_Issue opened by @ofek on 2023-11-11 19:17_
+_@ofek_
 
 Feel free to close if this is expected currently but the following change introduced three consecutive new lines which breaks formatting:
 

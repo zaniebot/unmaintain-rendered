@@ -12,14 +12,14 @@ head: charlie/depth
 created_at: 2023-08-07T16:11:25Z
 updated_at: 2023-08-14T21:01:02Z
 url: https://github.com/astral-sh/ruff/pull/6396
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `Statements#depth`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 16:11_
+_@charliermarsh_
 
 ## Summary
 

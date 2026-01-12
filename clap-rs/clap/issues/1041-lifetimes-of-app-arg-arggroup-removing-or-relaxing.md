@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-09-07T13:32:18Z
 updated_at: 2022-08-22T21:48:16Z
 url: https://github.com/clap-rs/clap/issues/1041
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Lifetimes of App, Arg, ArgGroup: removing or relaxing
 
 ---
 
-_Issue opened by @Rupsbant on 2017-09-07 13:32_
+_@Rupsbant_
 
 ### Affected Version of clap
 All 2.x. Breaking API change

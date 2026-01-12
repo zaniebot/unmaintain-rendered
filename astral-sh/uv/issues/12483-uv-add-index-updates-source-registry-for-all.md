@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T11:10:23Z
 updated_at: 2025-05-06T11:47:55Z
 url: https://github.com/astral-sh/uv/issues/12483
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # uv add --index updates source registry for all dependencies
 
 ---
 
-_Issue opened by @aranvir on 2025-03-26 11:10_
+_@aranvir_
 
 ### Question
 

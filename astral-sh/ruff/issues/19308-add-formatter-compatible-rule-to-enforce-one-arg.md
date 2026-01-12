@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-13T12:51:41Z
 updated_at: 2025-07-14T09:20:39Z
 url: https://github.com/astral-sh/ruff/issues/19308
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add formatter-compatible rule to enforce one-arg-per-line + trailing comma when line-length exceeded
 
 ---
 
-_Issue opened by @zerlok on 2025-07-13 12:51_
+_@zerlok_
 
 ### Summary
 

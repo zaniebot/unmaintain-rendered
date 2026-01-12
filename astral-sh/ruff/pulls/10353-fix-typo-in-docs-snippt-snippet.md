@@ -13,14 +13,14 @@ head: snippt-typo
 created_at: 2024-03-12T02:27:16Z
 updated_at: 2024-03-12T02:40:23Z
 url: https://github.com/astral-sh/ruff/pull/10353
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix typo in docs snippt -> snippet
 
 ---
 
-_Pull request opened by @anuraaga on 2024-03-12 02:27_
+_@anuraaga_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T00:50:33Z
 updated_at: 2025-11-10T20:56:13Z
 url: https://github.com/astral-sh/uv/issues/16640
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # uv fails to find workspace root for nested packages
 
 ---
 
-_Issue opened by @stewartadam on 2025-11-08 00:50_
+_@stewartadam_
 
 ### Summary
 

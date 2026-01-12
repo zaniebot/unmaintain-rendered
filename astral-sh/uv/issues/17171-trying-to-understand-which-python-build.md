@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T11:02:23Z
 updated_at: 2025-12-26T19:46:19Z
 url: https://github.com/astral-sh/uv/issues/17171
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Trying to understand which python-build-standalone to mirror
 
 ---
 
-_Issue opened by @keestux on 2025-12-18 11:02_
+_@keestux_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T18:54:24Z
 updated_at: 2024-09-03T22:41:16Z
 url: https://github.com/astral-sh/uv/issues/6269
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv pip compile --universal gives contradictory versions of same packages
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-08-20 18:54_
+_@notatallshaw-gts_
 
 Affected versions: uv 0.2.30 to uv 0.3.0+
 

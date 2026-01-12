@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T10:13:12Z
 updated_at: 2025-03-06T18:43:35Z
 url: https://github.com/astral-sh/uv/issues/11998
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Won't resolve source distribution locally if dynamic version is set in Cargo.toml with maturin
 
 ---
 
-_Issue opened by @idealseal on 2025-03-06 10:13_
+_@idealseal_
 
 ### Summary
 

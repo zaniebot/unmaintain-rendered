@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-06T11:01:28Z
 updated_at: 2022-11-06T21:37:07Z
 url: https://github.com/astral-sh/ruff/issues/620
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N805 First argument of a method should be named self -- false positive for __new__
 
 ---
 
-_Issue opened by @LefterisJP on 2022-11-06 11:01_
+_@LefterisJP_
 
 In python `__new__` is a special method and its signature does not need to start with an argument named `self`. It most commonly looks like this:
 

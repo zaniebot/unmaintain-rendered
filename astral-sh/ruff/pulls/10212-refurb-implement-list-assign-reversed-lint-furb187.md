@@ -13,14 +13,14 @@ head: latyshev/furb-187
 created_at: 2024-03-03T18:04:18Z
 updated_at: 2024-03-22T11:03:03Z
 url: https://github.com/astral-sh/ruff/pull/10212
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`refurb`] Implement `list_assign_reversed` lint (FURB187)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-03-03 18:04_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

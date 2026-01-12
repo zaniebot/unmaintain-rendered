@@ -13,14 +13,14 @@ head: david/typeddict-todos
 created_at: 2025-08-06T08:02:47Z
 updated_at: 2025-08-06T13:58:37Z
 url: https://github.com/astral-sh/ruff/pull/19777
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Disallow `typing.TypedDict` in type expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-06 08:02_
+_@sharkdp_
 
 ## Summary
 

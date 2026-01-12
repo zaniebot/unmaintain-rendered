@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-25T21:52:30Z
 updated_at: 2024-01-31T15:42:33Z
 url: https://github.com/astral-sh/uv/issues/1109
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Document virtualenv discovery
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-25 21:52_
+_@charliermarsh_
 
 In the README. We should also mention that you can use Puffin with a virtualenv outside of wherever it's installed by setting `VIRTUAL_ENV`.
 

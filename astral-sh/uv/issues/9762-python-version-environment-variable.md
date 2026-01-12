@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-10T03:57:59Z
 updated_at: 2024-12-10T09:26:51Z
 url: https://github.com/astral-sh/uv/issues/9762
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Python version environment variable
 
 ---
 
-_Issue opened by @NellyWhads on 2024-12-10 03:57_
+_@NellyWhads_
 
 Here lies a feature request for a environment variable to configure the python version used by `uv`.
 

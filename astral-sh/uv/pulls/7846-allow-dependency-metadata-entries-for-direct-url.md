@@ -13,14 +13,14 @@ head: charlie/dep-meta
 created_at: 2024-10-01T15:35:14Z
 updated_at: 2024-10-23T02:18:51Z
 url: https://github.com/astral-sh/uv/pull/7846
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Allow dependency metadata entries for direct URL requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 15:35_
+_@charliermarsh_
 
 ## Summary
 

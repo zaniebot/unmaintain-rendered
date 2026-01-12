@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T02:45:51Z
 updated_at: 2025-04-21T16:44:23Z
 url: https://github.com/astral-sh/ruff/issues/17518
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Triple quoted strings are not formatted
 
 ---
 
-_Issue opened by @R1kaB3rN on 2025-04-21 02:45_
+_@R1kaB3rN_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: remove-deprecated-top-level-lint-settings
 created_at: 2024-06-24T08:17:19Z
 updated_at: 2024-08-12T07:54:41Z
 url: https://github.com/astral-sh/ruff/pull/12009
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove deprecated top-level lint settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 08:17_
+_@MichaReiser_
 
 ## Summary
 

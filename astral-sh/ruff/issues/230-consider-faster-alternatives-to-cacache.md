@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-20T13:08:45Z
 updated_at: 2022-11-20T18:36:34Z
 url: https://github.com/astral-sh/ruff/issues/230
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Consider faster alternatives to cacache
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-20 13:08_
+_@charliermarsh_
 
 _No description provided._
 

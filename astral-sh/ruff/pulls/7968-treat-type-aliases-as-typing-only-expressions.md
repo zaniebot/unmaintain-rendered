@@ -13,14 +13,14 @@ head: charlie/tch-pep
 created_at: 2023-10-16T00:00:43Z
 updated_at: 2023-10-16T00:17:10Z
 url: https://github.com/astral-sh/ruff/pull/7968
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Treat type aliases as typing-only expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 00:00_
+_@charliermarsh_
 
 ## Summary
 

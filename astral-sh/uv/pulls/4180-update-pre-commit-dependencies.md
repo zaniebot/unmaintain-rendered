@@ -13,14 +13,14 @@ head: renovate/pre-commit-dependencies
 created_at: 2024-06-10T00:04:24Z
 updated_at: 2024-06-10T00:33:26Z
 url: https://github.com/astral-sh/uv/pull/4180
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Update pre-commit dependencies
 
 ---
 
-_Pull request opened by @renovate on 2024-06-10 00:04_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

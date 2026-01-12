@@ -14,14 +14,14 @@ head: micha/stabilizie-with-items-bug-fix
 created_at: 2025-03-10T14:37:45Z
 updated_at: 2025-03-10T18:31:37Z
 url: https://github.com/astral-sh/ruff/pull/16603
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [formatter] Stabilize fix for single-with-item formatting with trailing comment
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-10 14:37_
+_@MichaReiser_
 
 ## Summary
 

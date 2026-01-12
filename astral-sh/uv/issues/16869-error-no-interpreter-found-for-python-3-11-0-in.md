@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T09:06:15Z
 updated_at: 2025-11-28T05:40:51Z
 url: https://github.com/astral-sh/uv/issues/16869
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # error: No interpreter found for Python 3.11.0 in managed installations or search path
 
 ---
 
-_Issue opened by @kishaningithub on 2025-11-27 09:06_
+_@kishaningithub_
 
 ### Summary
 

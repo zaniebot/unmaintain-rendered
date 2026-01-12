@@ -15,14 +15,14 @@ head: micha/error-links
 created_at: 2025-11-17T18:41:57Z
 updated_at: 2025-11-18T15:37:01Z
 url: https://github.com/astral-sh/ruff/pull/21502
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add hyperlinks to rule codes in CLI
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-17 18:41_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-19T22:12:52Z
 updated_at: 2025-10-24T20:54:11Z
 url: https://github.com/astral-sh/ruff/issues/20973
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DOC502 false positive on `raise e`
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-19 22:12_
+_@dscorbett_
 
 ### Summary
 

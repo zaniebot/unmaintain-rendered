@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-05T11:48:11Z
 updated_at: 2026-01-07T17:25:28Z
 url: https://github.com/astral-sh/ty/issues/2340
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Many keystrokes are required before a `Literal` auto-import completion suggestion is offered
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-05 11:48_
+_@AlexWaygood_
 
 ### Summary
 

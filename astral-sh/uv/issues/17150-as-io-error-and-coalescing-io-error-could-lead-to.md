@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-16T15:48:32Z
 updated_at: 2025-12-16T16:31:24Z
 url: https://github.com/astral-sh/uv/issues/17150
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `as_io_error` and coalescing `io::Error` could lead to confusing behaviour/bugs
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-16 15:48_
+_@EliteTK_
 
 ### Issue
 

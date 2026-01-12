@@ -13,14 +13,14 @@ head: charlie/docs-redirect
 created_at: 2023-09-15T20:40:11Z
 updated_at: 2023-09-16T02:49:43Z
 url: https://github.com/astral-sh/ruff/pull/7419
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Move documentation to docs.astral.sh/ruff
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-15 20:40_
+_@charliermarsh_
 
 ## Summary
 

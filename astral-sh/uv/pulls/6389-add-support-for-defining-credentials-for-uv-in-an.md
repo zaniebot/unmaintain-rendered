@@ -13,14 +13,14 @@ head: zb/auth-urls
 created_at: 2024-08-21T23:24:51Z
 updated_at: 2024-09-24T16:58:11Z
 url: https://github.com/astral-sh/uv/pull/6389
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Add support for defining credentials for uv in an environment variable
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 23:24_
+_@zanieb_
 
 Adds `UV_AUTH_URLS` which defines credentials that should be used for URLs if we make a request there.
 

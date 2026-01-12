@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-18T00:29:45Z
 updated_at: 2021-12-08T21:01:30Z
 url: https://github.com/clap-rs/clap/issues/1752
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add some sort of Guide in addition to docs.rs and examples
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-03-18 00:29_
+_@CreepySkeleton_
 
 ### What's wrong
 

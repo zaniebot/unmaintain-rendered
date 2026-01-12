@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-25T19:11:19Z
 updated_at: 2024-10-16T20:46:31Z
 url: https://github.com/astral-sh/ruff/issues/13514
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] don't include Unknown in the type for a conditionally-defined import
 
 ---
 
-_Issue opened by @carljm on 2024-09-25 19:11_
+_@carljm_
 
 If `lib.py` has:
 ```

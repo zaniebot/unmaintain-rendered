@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-01-30T21:00:09Z
 updated_at: 2020-04-17T08:21:47Z
 url: https://github.com/clap-rs/clap/issues/836
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Refactor color support (+Add Windows Support)
 
 ---
 
-_Issue opened by @kbknapp on 2017-01-30 21:00_
+_@kbknapp_
 
 The formatting really needs some love, and adding Windows support would be a dream.
 

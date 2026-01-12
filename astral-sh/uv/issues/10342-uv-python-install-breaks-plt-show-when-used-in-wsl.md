@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T09:14:31Z
 updated_at: 2025-08-08T22:11:10Z
 url: https://github.com/astral-sh/uv/issues/10342
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Uv Python install breaks plt.show() when used in wsl
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-01-07 09:14_
+_@Matt-Ord_
 
 
 Working in a dev container, I had previously relied on the python feature to install python

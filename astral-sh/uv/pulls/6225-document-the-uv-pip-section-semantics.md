@@ -14,14 +14,14 @@ head: zb/config-uv-pip
 created_at: 2024-08-19T19:14:05Z
 updated_at: 2024-08-19T21:26:10Z
 url: https://github.com/astral-sh/uv/pull/6225
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Document the `uv.pip` section semantics
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 19:14_
+_@zanieb_
 
 Explains semantics for `[uv.pip]` settings.
 

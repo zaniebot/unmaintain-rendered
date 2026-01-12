@@ -14,14 +14,14 @@ head: bugfix/22221-f401-infinite-loop
 created_at: 2026-01-03T16:31:17Z
 updated_at: 2026-01-09T08:06:48Z
 url: https://github.com/astral-sh/ruff/pull/22359
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # pyflakes: fix F401 infinite loop via improved submodule re-export logic
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-03 16:31_
+_@Jkhall81_
 
 ## Summary
 

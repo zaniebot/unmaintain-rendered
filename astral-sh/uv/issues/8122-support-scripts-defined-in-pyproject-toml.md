@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-11T05:09:28Z
 updated_at: 2024-10-11T06:04:50Z
 url: https://github.com/astral-sh/uv/issues/8122
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # support scripts defined in `pyproject.toml`
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-11 05:09_
+_@DetachHead_
 
 pdm supports a `scripts` section in `pyproject.toml` where you can define scripts specific top your project that can be called from the command line [or from vscode](https://marketplace.visualstudio.com/items?itemName=GabDug.pdm). npm has the same thing in `package.json`.
 

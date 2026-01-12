@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T08:06:57Z
 updated_at: 2024-10-30T06:55:25Z
 url: https://github.com/astral-sh/uv/issues/8654
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # uv run and SIGINT propagation
 
 ---
 
-_Issue opened by @hynek on 2024-10-29 08:06_
+_@hynek_
 
 Signal handling is weird and one of the most confusing parts is the handling of SIGINT / KeyboardInterrupt / Ctrl-C. Because for non-0-PID processes, a manual Ctrl-C is usually propagated to its children (overly simplifying here) – a SIGINT is not despite being the same signal.
 

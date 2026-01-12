@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T23:25:57Z
 updated_at: 2025-04-26T15:13:49Z
 url: https://github.com/astral-sh/ruff/issues/17455
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F401 false positive for forward references in TypeAliases
 
 ---
 
-_Issue opened by @ktbarrett on 2025-04-17 23:25_
+_@ktbarrett_
 
 ### Summary
 

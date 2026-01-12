@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-15T13:29:04Z
 updated_at: 2023-07-31T15:26:44Z
 url: https://github.com/astral-sh/ruff/issues/5777
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Generator always parenthesizes element in list comprehension
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-15 13:29_
+_@dhruvmanila_
 
 Yeah, this seems like a bug:
 

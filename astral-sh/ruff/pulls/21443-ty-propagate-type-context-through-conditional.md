@@ -14,14 +14,14 @@ head: ibraheem/conditional-expr-tcx
 created_at: 2025-11-14T02:12:29Z
 updated_at: 2025-11-14T20:19:10Z
 url: https://github.com/astral-sh/ruff/pull/21443
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Propagate type context through conditional expressions
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-14 02:12_
+_@ibraheemdev_
 
 ## Summary
 

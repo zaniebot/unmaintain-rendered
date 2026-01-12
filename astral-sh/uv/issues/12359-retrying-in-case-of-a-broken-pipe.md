@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T09:23:36Z
 updated_at: 2025-05-21T17:23:59Z
 url: https://github.com/astral-sh/uv/issues/12359
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Retrying in case of a broken pipe
 
 ---
 
-_Issue opened by @potiuk on 2025-03-21 09:23_
+_@potiuk_
 
 ### Summary
 

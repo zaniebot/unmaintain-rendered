@@ -14,14 +14,14 @@ head: charlie/cache-mounts
 created_at: 2024-08-12T19:53:23Z
 updated_at: 2024-08-12T20:15:32Z
 url: https://github.com/astral-sh/uv/pull/6043
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Colocate Python install cache with destination directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 19:53_
+_@charliermarsh_
 
 ## Summary
 

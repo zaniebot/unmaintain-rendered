@@ -13,14 +13,14 @@ head: charlie/concurr
 created_at: 2025-01-09T14:59:06Z
 updated_at: 2025-01-10T10:13:41Z
 url: https://github.com/astral-sh/uv/pull/10432
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Fetch concurrently for non-first-match index strategies
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 14:59_
+_@charliermarsh_
 
 ## Summary
 

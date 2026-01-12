@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T14:19:51Z
 updated_at: 2025-01-14T08:58:04Z
 url: https://github.com/astral-sh/uv/issues/2777
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # No wheels found with matching Python ABI error message does not show ABI
 
 ---
 
-_Issue opened by @zanieb on 2024-04-02 14:19_
+_@zanieb_
 
 e.g.  in
 

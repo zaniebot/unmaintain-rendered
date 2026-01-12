@@ -13,14 +13,14 @@ head: add-climd
 created_at: 2025-05-08T19:28:36Z
 updated_at: 2025-05-09T12:24:18Z
 url: https://github.com/astral-sh/ty/pull/284
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add CLI documentation and update README
 
 ---
 
-_Pull request opened by @paul-nameless on 2025-05-08 19:28_
+_@paul-nameless_
 
 Fixes #14 
 

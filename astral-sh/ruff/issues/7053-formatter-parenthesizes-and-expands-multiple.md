@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-01T20:32:26Z
 updated_at: 2023-09-13T07:40:22Z
 url: https://github.com/astral-sh/ruff/issues/7053
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter parenthesizes and expands multiple-assigment values
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-01 20:32_
+_@cnpryer_
 
 I actually really like this result. Reporting anyway. I thought this was reported already, I but couldn't find any issues.
 

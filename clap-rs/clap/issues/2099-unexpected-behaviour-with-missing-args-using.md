@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-08-22T20:22:19Z
 updated_at: 2021-12-25T23:31:11Z
 url: https://github.com/clap-rs/clap/issues/2099
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Unexpected behaviour with missing args using required_unless
 
 ---
 
-_Issue opened by @rehanzo on 2020-08-22 20:22_
+_@rehanzo_
 
 ### Make sure you completed the following tasks
 

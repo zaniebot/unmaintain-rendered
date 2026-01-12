@@ -13,14 +13,14 @@ head: PLW3201-add-prepare-to-known-dunder-method
 created_at: 2024-01-15T14:31:26Z
 updated_at: 2024-01-15T14:45:04Z
 url: https://github.com/astral-sh/ruff/pull/9529
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # add the "__prepare__" method to the list of recognized dunder method
 
 ---
 
-_Pull request opened by @takaya0 on 2024-01-15 14:31_
+_@takaya0_
 
 ## Summary
 Closes #9508 .

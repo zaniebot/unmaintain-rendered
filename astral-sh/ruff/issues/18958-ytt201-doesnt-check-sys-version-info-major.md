@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T13:01:44Z
 updated_at: 2025-06-26T15:54:49Z
 url: https://github.com/astral-sh/ruff/issues/18958
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # YTT201 doesn’t check `sys.version_info.major`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-26 13:01_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/import-resolver
 created_at: 2023-06-27T19:22:49Z
 updated_at: 2023-06-27T19:54:43Z
 url: https://github.com/astral-sh/ruff/pull/5401
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Misc. clean-up for import resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 19:22_
+_@charliermarsh_
 
 ## Summary
 

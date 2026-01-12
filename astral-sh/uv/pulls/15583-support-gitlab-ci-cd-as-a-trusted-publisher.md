@@ -13,14 +13,14 @@ head: gitlab
 created_at: 2025-08-29T17:08:05Z
 updated_at: 2025-09-12T16:41:47Z
 url: https://github.com/astral-sh/uv/pull/15583
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Support Gitlab CI/CD as a trusted publisher
 
 ---
 
-_Pull request opened by @harsh-ps-2003 on 2025-08-29 17:08_
+_@harsh-ps-2003_
 
 `uv publish` now supports GitLab CI as a Trusted Publishing provider.
 

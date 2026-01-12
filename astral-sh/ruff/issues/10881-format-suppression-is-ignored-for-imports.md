@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-11T14:55:35Z
 updated_at: 2024-04-11T16:40:19Z
 url: https://github.com/astral-sh/ruff/issues/10881
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Format suppression is ignored for imports
 
 ---
 
-_Issue opened by @b-phi on 2024-04-11 14:55_
+_@b-phi_
 
 I have a long import line that I'd like to custom format to avoid exceeding the configured line length. Neither `# fmt: skip` or `# fmt: off` seem to prevent ruff from reformatting the line. I confirmed that format suppression does work for other statements in the file.
 

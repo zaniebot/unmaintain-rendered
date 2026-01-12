@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-06T19:20:10Z
 updated_at: 2024-07-08T13:13:38Z
 url: https://github.com/astral-sh/ruff/issues/12220
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Conflict between check and format with D203
 
 ---
 
-_Issue opened by @arylix on 2024-07-06 19:20_
+_@arylix_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

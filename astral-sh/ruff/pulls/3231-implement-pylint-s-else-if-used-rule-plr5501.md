@@ -13,14 +13,14 @@ head: PLR5501
 created_at: 2023-02-26T02:47:49Z
 updated_at: 2023-02-26T22:43:23Z
 url: https://github.com/astral-sh/ruff/pull/3231
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement pylint's `else-if-used` rule (`PLR5501`)
 
 ---
 
-_Pull request opened by @chanman3388 on 2023-02-26 02:47_
+_@chanman3388_
 
 Attempt to implement else-if-used
 https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/else-if-used.html

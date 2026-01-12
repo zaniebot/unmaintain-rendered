@@ -13,14 +13,14 @@ head: a005-docs
 created_at: 2025-01-14T00:54:31Z
 updated_at: 2025-01-14T09:14:16Z
 url: https://github.com/astral-sh/ruff/pull/15466
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-builtins`] Improve A005 documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2025-01-14 00:54_
+_@tjkuson_
 
 ## Summary
 

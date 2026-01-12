@@ -13,14 +13,14 @@ head: renovate/fs-err-3.x
 created_at: 2024-10-28T01:03:31Z
 updated_at: 2024-11-19T15:09:01Z
 url: https://github.com/astral-sh/uv/pull/8625
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Update Rust crate fs-err to v3
 
 ---
 
-_Pull request opened by @renovate on 2024-10-28 01:03_
+_@renovate_
 
 This PR contains the following updates:
 

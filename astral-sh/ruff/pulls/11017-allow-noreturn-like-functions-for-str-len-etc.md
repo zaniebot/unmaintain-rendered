@@ -13,14 +13,14 @@ head: charlie/raise
 created_at: 2024-04-18T21:21:40Z
 updated_at: 2024-04-18T23:00:24Z
 url: https://github.com/astral-sh/ruff/pull/11017
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Allow `NoReturn`-like functions for `__str__`, `__len__`, etc.
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 21:21_
+_@charliermarsh_
 
 ## Summary
 

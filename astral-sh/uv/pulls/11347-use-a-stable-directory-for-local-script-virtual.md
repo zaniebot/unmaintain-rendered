@@ -13,14 +13,14 @@ head: charlie/stable-dir
 created_at: 2025-02-09T02:47:29Z
 updated_at: 2025-02-12T00:45:28Z
 url: https://github.com/astral-sh/uv/pull/11347
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Use a stable directory for (local) script virtual environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-09 02:47_
+_@charliermarsh_
 
 ## Summary
 

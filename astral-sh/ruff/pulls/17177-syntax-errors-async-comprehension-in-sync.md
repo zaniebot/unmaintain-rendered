@@ -14,14 +14,14 @@ head: brent/syn-async-comprehensions
 created_at: 2025-04-03T14:21:21Z
 updated_at: 2025-04-08T16:50:53Z
 url: https://github.com/astral-sh/ruff/pull/17177
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Async comprehension in sync comprehension
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-03 14:21_
+_@ntBre_
 
 Summary
 --

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T10:05:38Z
 updated_at: 2025-09-18T15:37:40Z
 url: https://github.com/astral-sh/ruff/issues/20362
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `RUF022` does not follow `lint.isort.classes` option
 
 ---
 
-_Issue opened by @velsinki on 2025-09-12 10:05_
+_@velsinki_
 
 ### Summary
 

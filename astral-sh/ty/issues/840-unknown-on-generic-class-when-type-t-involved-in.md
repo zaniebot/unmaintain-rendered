@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T13:02:01Z
 updated_at: 2025-07-18T19:17:45Z
 url: https://github.com/astral-sh/ty/issues/840
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Unknown on Generic class when type[T] involved in signature
 
 ---
 
-_Issue opened by @y2kbugger on 2025-07-17 13:02_
+_@y2kbugger_
 
 ### Summary
 

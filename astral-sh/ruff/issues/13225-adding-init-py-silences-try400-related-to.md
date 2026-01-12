@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T08:44:53Z
 updated_at: 2024-09-05T07:07:23Z
 url: https://github.com/astral-sh/ruff/issues/13225
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Adding `__init__.py` silences `TRY400` (related to relative import)
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2024-09-03 08:44_
+_@DimitriPapadopoulos_
 
 Consider the following directory:
 ```

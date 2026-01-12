@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-11T12:24:19Z
 updated_at: 2025-08-12T17:05:49Z
 url: https://github.com/astral-sh/uv/issues/15219
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Invoking nbconvert with uv run and `--with` results in missing templates
 
 ---
 
-_Issue opened by @jenshnielsen on 2025-08-11 12:24_
+_@jenshnielsen_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: transmute-between-token-and-token-kind
 created_at: 2024-01-15T19:53:48Z
 updated_at: 2024-02-29T13:19:00Z
 url: https://github.com/astral-sh/ruff/pull/9537
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Use pointer casting and transmute for fast `Tok` to `TokenKind` conversion
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-15 19:53_
+_@MichaReiser_
 
 ## Summary
 

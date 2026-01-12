@@ -14,14 +14,14 @@ head: alex/fix-dunder-new-lookup
 created_at: 2025-10-30T16:54:25Z
 updated_at: 2025-10-30T17:42:48Z
 url: https://github.com/astral-sh/ruff/pull/21147
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Fix lookup of `__new__` on instances
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-30 16:54_
+_@AlexWaygood_
 
 ## Summary
 

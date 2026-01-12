@@ -14,14 +14,14 @@ head: dhruv/formatter-fstring-quote
 created_at: 2023-09-22T13:07:52Z
 updated_at: 2023-09-28T03:58:59Z
 url: https://github.com/astral-sh/ruff/pull/7597
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ignore quote escapes in expression part of f-string
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-22 13:07_
+_@dhruvmanila_
 
 ## Summary
 

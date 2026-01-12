@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-24T20:41:09Z
 updated_at: 2025-02-16T13:59:29Z
 url: https://github.com/astral-sh/uv/issues/10946
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # uv's cache blocks setuptools from updating strict-mode editable install sandbox symlinks
 
 ---
 
-_Issue opened by @charlesnicholson on 2025-01-24 20:41_
+_@charlesnicholson_
 
 ### Summary
 

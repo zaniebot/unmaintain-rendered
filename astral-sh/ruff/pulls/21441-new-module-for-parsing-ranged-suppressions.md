@@ -13,14 +13,14 @@ head: suppression-parsing
 created_at: 2025-11-14T00:54:56Z
 updated_at: 2025-12-02T23:44:04Z
 url: https://github.com/astral-sh/ruff/pull/21441
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # new module for parsing ranged suppressions
 
 ---
 
-_Pull request opened by @amyreese on 2025-11-14 00:54_
+_@amyreese_
 
 ## Summary
 

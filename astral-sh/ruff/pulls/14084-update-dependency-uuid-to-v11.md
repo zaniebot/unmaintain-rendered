@@ -13,14 +13,14 @@ head: renovate/uuid-11.x
 created_at: 2024-11-04T02:18:34Z
 updated_at: 2024-11-04T07:09:20Z
 url: https://github.com/astral-sh/ruff/pull/14084
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Update dependency uuid to v11
 
 ---
 
-_Pull request opened by @renovate on 2024-11-04 02:18_
+_@renovate_
 
 This PR contains the following updates:
 

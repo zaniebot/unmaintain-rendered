@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-29T11:46:24Z
 updated_at: 2024-11-29T12:42:15Z
 url: https://github.com/astral-sh/uv/issues/9520
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # uv run --package <package_name> <executable> only works when inside the directory of package (Workspaces)
 
 ---
 
-_Issue opened by @christopher-wittlinger on 2024-11-29 11:46_
+_@christopher-wittlinger_
 
 As stated in the title, when running `uv run --package <package_name> <executable>`  it will only works if I `cd` into the package directory beforehand. Is there a way to specify, that I want to run something within a workspaces package?
 

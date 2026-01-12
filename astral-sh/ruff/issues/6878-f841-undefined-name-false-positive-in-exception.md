@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-25T17:09:03Z
 updated_at: 2025-03-07T18:26:28Z
 url: https://github.com/astral-sh/ruff/issues/6878
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # F841 "Undefined name" false positive in exception-nested-closure
 
 ---
 
-_Issue opened by @ndevenish on 2023-08-25 17:09_
+_@ndevenish_
 
 ruff 0.0.285.
 

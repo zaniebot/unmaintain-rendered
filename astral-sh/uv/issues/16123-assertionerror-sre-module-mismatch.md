@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-04T11:13:51Z
 updated_at: 2025-10-06T08:51:46Z
 url: https://github.com/astral-sh/uv/issues/16123
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # AssertionError: SRE module mismatch
 
 ---
 
-_Issue opened by @adaaaaaa on 2025-10-04 11:13_
+_@adaaaaaa_
 
 ### Summary
 

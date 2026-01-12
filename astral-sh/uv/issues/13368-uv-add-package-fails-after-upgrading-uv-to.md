@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T19:41:53Z
 updated_at: 2025-05-13T03:04:26Z
 url: https://github.com/astral-sh/uv/issues/13368
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # uv add package fails after upgrading uv to version 0.7.3
 
 ---
 
-_Issue opened by @jenriquehdez on 2025-05-09 19:41_
+_@jenriquehdez_
 
 ### Summary
 

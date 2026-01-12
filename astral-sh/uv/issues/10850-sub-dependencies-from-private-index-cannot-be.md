@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T10:37:22Z
 updated_at: 2025-01-22T14:15:54Z
 url: https://github.com/astral-sh/uv/issues/10850
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Sub-dependencies from private index cannot be resolved when explicit is true
 
 ---
 
-_Issue opened by @olafdeleeuw on 2025-01-22 10:37_
+_@olafdeleeuw_
 
 ### Summary
 

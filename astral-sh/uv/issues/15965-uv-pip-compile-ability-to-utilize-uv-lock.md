@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T17:46:40Z
 updated_at: 2025-09-20T18:06:13Z
 url: https://github.com/astral-sh/uv/issues/15965
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv pip compile` ability to utilize `uv.lock`
 
 ---
 
-_Issue opened by @jamesbraza on 2025-09-20 17:46_
+_@jamesbraza_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T11:40:20Z
 updated_at: 2024-02-22T05:00:56Z
 url: https://github.com/astral-sh/uv/issues/1747
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Uv doesn't support index-url fallback as pip
 
 ---
 
-_Issue opened by @kkpattern on 2024-02-20 11:40_
+_@kkpattern_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

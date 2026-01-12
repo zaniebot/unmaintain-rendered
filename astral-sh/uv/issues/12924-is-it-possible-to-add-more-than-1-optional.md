@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T18:48:33Z
 updated_at: 2025-04-17T13:33:51Z
 url: https://github.com/astral-sh/uv/issues/12924
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Is it possible to add more than 1 optional dependency group when using dynamic python versions?
 
 ---
 
-_Issue opened by @dan-b-at-osh on 2025-04-16 18:48_
+_@dan-b-at-osh_
 
 ### Question
 

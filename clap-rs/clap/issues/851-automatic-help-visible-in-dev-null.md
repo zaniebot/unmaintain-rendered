@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-02-15T04:59:32Z
 updated_at: 2018-08-02T03:30:01Z
 url: https://github.com/clap-rs/clap/issues/851
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # "Automatic" help visible in `> /dev/null`
 
 ---
 
-_Issue opened by @hgrecco on 2017-02-15 04:59_
+_@hgrecco_
 
 ### Rust Version
 

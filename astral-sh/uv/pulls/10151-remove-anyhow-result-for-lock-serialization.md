@@ -13,14 +13,14 @@ head: charlie/ser
 created_at: 2024-12-25T01:12:33Z
 updated_at: 2024-12-25T01:24:28Z
 url: https://github.com/astral-sh/uv/pull/10151
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Remove `anyhow::Result` for lock serialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-25 01:12_
+_@charliermarsh_
 
 _No description provided._
 

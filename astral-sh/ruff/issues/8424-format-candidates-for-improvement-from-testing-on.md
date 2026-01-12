@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T21:59:44Z
 updated_at: 2023-11-06T14:10:47Z
 url: https://github.com/astral-sh/ruff/issues/8424
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [format] Candidates for improvement from testing on a large code repository
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-11-01 21:59_
+_@saippuakauppias_
 
 A few examples that could be improved. We ran `ruff==0.1.3` on a large codebase, I noticed some issues during the review, I don't want to describe each one separately, so I'll put it all together here. If you need - please, please, saw it into subtasks (I can't do it, because MR with changes is big and I'm already tired of looking into it).
 

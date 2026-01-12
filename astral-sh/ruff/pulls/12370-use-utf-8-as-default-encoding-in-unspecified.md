@@ -14,14 +14,14 @@ head: charlie/utf-8
 created_at: 2024-07-17T16:47:21Z
 updated_at: 2024-07-17T17:01:37Z
 url: https://github.com/astral-sh/ruff/pull/12370
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use UTF-8 as default encoding in `unspecified-encoding` fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 16:47_
+_@charliermarsh_
 
 ## Summary
 

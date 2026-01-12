@@ -13,14 +13,14 @@ head: charlie/typing
 created_at: 2023-08-19T21:39:37Z
 updated_at: 2023-08-19T22:45:26Z
 url: https://github.com/astral-sh/ruff/pull/6696
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use `typing_extensions.TypeAlias` for PYI026 fixes on pre-3.10
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-19 21:39_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6695.
 

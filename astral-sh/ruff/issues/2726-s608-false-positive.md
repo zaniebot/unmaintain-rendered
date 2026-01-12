@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-10T18:19:59Z
 updated_at: 2023-02-10T18:48:34Z
 url: https://github.com/astral-sh/ruff/issues/2726
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # S608: false positive
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 18:19_
+_@spaceone_
 
 ```python
         print(dedent(

@@ -13,14 +13,14 @@ head: brent/a005-docs
 created_at: 2025-02-11T13:53:08Z
 updated_at: 2025-02-12T17:50:16Z
 url: https://github.com/astral-sh/ruff/pull/16097
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-builtins`] Update documentation (`A005`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-11 13:53_
+_@ntBre_
 
 Follow-up to https://github.com/astral-sh/ruff/pull/15951 to update
 * the options links in A005 to reference `lint.flake8-builtins.builtins-strict-checking`

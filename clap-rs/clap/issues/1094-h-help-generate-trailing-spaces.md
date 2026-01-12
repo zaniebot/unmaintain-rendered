@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-11-06T04:10:49Z
 updated_at: 2020-08-20T18:21:28Z
 url: https://github.com/clap-rs/clap/issues/1094
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # -h, --help generate trailing spaces
 
 ---
 
-_Issue opened by @jakwings on 2017-11-06 04:10_
+_@jakwings_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%2410%20Rewarded-%237E24E3.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1094)

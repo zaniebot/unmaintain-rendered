@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T09:51:37Z
 updated_at: 2023-08-23T00:44:36Z
 url: https://github.com/astral-sh/ruff/issues/6645
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Format `PatternMatchSequence`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-17 09:51_
+_@MichaReiser_
 
 Implement formatting of `[a, b]` match sequences. 
 

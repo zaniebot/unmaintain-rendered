@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-09T10:54:26Z
 updated_at: 2025-10-28T18:24:36Z
 url: https://github.com/astral-sh/ruff/issues/20784
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # clear_diagnostics sends a publishDiagnostics notification without checking the client capabilities
 
 ---
 
-_Issue opened by @pyscripter on 2025-10-09 10:54_
+_@pyscripter_
 
 ### Summary
 

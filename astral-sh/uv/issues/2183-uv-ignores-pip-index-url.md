@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T22:26:41Z
 updated_at: 2024-03-04T22:28:22Z
 url: https://github.com/astral-sh/uv/issues/2183
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # UV ignores PIP_INDEX_URL?
 
 ---
 
-_Issue opened by @david-waterworth on 2024-03-04 22:26_
+_@david-waterworth_
 
 We use AWS code-artifact as a private PyPi repository. Different tools (poetry/pip etc) have different mechanisms for controlling where to install from, i.e. for pip you need to set  
 

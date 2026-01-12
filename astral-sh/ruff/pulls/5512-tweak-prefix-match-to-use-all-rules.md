@@ -12,14 +12,14 @@ head: charlie/prefix
 created_at: 2023-07-04T19:56:23Z
 updated_at: 2023-07-04T20:23:48Z
 url: https://github.com/astral-sh/ruff/pull/5512
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Tweak prefix match to use .all_rules()
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 19:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/indent
 created_at: 2023-01-26T21:23:58Z
 updated_at: 2023-01-26T21:24:23Z
 url: https://github.com/astral-sh/ruff/pull/2226
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid erroneous class autofixes in indented blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-26 21:23_
+_@charliermarsh_
 
 Closes #2224.
 

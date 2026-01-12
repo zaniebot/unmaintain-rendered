@@ -11,14 +11,14 @@ head: no-carriage-return-support
 created_at: 2023-01-06T20:43:16Z
 updated_at: 2023-01-29T18:30:41Z
 url: https://github.com/astral-sh/ruff/pull/1698
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Don't process files with CR line endings
 
 ---
 
-_Pull request opened by @squiddy on 2023-01-06 20:43_
+_@squiddy_
 
 Returning an error in `check_path` is currently mapped to an IOError, which doesn't seem fitting. Open to suggestions.
 

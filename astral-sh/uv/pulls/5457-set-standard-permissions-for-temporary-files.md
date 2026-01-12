@@ -13,14 +13,14 @@ head: charlie/temp-perms
 created_at: 2024-07-25T18:24:39Z
 updated_at: 2024-07-25T20:50:31Z
 url: https://github.com/astral-sh/uv/pull/5457
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Set standard permissions for temporary files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-25 18:24_
+_@charliermarsh_
 
 ## Summary
 

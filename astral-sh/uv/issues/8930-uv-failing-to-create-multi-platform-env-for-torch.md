@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T10:27:40Z
 updated_at: 2024-11-25T23:34:51Z
 url: https://github.com/astral-sh/uv/issues/8930
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # uv failing to create multi-platform env for torch
 
 ---
 
-_Issue opened by @sharmuz on 2024-11-08 10:27_
+_@sharmuz_
 
 **uv version:** ~~0.5.0~~ 0.4.28
 **OS/platform:** macOS Sonoma 14.7.1 (on a MBP 2020 Intel)

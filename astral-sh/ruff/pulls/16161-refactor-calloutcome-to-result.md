@@ -13,14 +13,14 @@ head: micha/refactor-call-outcome
 created_at: 2025-02-14T12:59:07Z
 updated_at: 2025-02-26T00:50:02Z
 url: https://github.com/astral-sh/ruff/pull/16161
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Refactor `CallOutcome` to `Result`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-14 12:59_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T06:18:04Z
 updated_at: 2024-08-30T23:39:01Z
 url: https://github.com/astral-sh/ruff/issues/12879
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Applying `UP015` to `aiofiles`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-08-14 06:18_
+_@jamesbraza_
 
 With `ruff==0.5.7`, [UP015](https://docs.astral.sh/ruff/rules/redundant-open-modes/) applies to the built-in `open` function:
 

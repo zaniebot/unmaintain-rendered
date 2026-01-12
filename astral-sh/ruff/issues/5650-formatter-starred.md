@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-10T14:22:16Z
 updated_at: 2023-07-11T06:08:10Z
 url: https://github.com/astral-sh/ruff/issues/5650
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `Starred`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-10 14:22_
+_@MichaReiser_
 
 _No description provided._
 

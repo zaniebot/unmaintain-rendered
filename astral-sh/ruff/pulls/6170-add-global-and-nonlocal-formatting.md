@@ -13,14 +13,14 @@ head: charlie/global-nonlocal
 created_at: 2023-07-29T12:19:48Z
 updated_at: 2023-08-16T07:10:00Z
 url: https://github.com/astral-sh/ruff/pull/6170
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add `global` and `nonlocal` formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-29 12:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/speedup-pre-commit
 created_at: 2024-12-19T12:31:11Z
 updated_at: 2024-12-19T12:49:33Z
 url: https://github.com/astral-sh/ruff/pull/15061
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Disable actionlint hook by default when running pre-commit locally
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-19 12:31_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/legacy-setup
 created_at: 2024-01-09T01:23:52Z
 updated_at: 2024-01-11T14:23:46Z
 url: https://github.com/astral-sh/uv/pull/843
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Default to PEP 517-based builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-09 01:23_
+_@charliermarsh_
 
 ## Summary
 

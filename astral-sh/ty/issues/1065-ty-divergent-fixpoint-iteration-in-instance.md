@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T16:28:12Z
 updated_at: 2025-08-20T18:01:10Z
 url: https://github.com/astral-sh/ty/issues/1065
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [ty] Divergent fixpoint iteration in instance attribute inference
 
 ---
 
-_Issue opened by @sharkdp on 2025-08-20 16:28_
+_@sharkdp_
 
 Another example where divergent fixpoint iteration leads to a panic:
 ```py

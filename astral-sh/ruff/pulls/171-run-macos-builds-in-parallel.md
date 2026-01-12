@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-09-12T19:48:30Z
 updated_at: 2022-09-12T20:29:52Z
 url: https://github.com/astral-sh/ruff/pull/171
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Run MacOS builds in parallel
 
 ---
 
-_Pull request opened by @adriangb on 2022-09-12 19:48_
+_@adriangb_
 
 Closes #59
 

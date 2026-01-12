@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-29T10:02:41Z
 updated_at: 2025-05-01T08:18:13Z
 url: https://github.com/astral-sh/ruff/issues/17701
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Subclasses of Any should be assignable to `Callable`
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-29 10:02_
+_@sharkdp_
 
 Subclasses of `Any` should be assignable to `Callable`. This should not be an error:
 

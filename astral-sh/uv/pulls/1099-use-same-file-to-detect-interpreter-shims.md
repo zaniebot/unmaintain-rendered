@@ -13,14 +13,14 @@ head: charlie/same-file
 created_at: 2024-01-25T16:43:42Z
 updated_at: 2024-01-25T17:27:50Z
 url: https://github.com/astral-sh/uv/pull/1099
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Use `same-file` to detect interpreter shims
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 16:43_
+_@charliermarsh_
 
 Our existing detection doesn't work on Windows, because we canoncalize the interpreter path but not `info.sys_executable`, so the former includes the UNC prefix, etc. This is cross-platform and gets at the intent of the check.
 

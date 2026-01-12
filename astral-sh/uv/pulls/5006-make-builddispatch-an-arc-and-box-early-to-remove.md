@@ -12,14 +12,14 @@ head: konsti/mark-everything-send-sync
 created_at: 2024-07-12T12:14:11Z
 updated_at: 2024-09-24T10:33:22Z
 url: https://github.com/astral-sh/uv/pull/5006
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Make `BuildDispatch` an `Arc` and box early to remove `UV_STACK_SIZE` hack
 
 ---
 
-_Pull request opened by @konstin on 2024-07-12 12:14_
+_@konstin_
 
 When looking into the stack size problems with debug mode windows, i saw two things:
 * Our stack grows deep (>200 frames) when recursively resolving and installing requirements.

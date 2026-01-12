@@ -15,14 +15,14 @@ head: charlie/lock-script
 created_at: 2024-12-23T18:40:55Z
 updated_at: 2024-12-25T19:18:55Z
 url: https://github.com/astral-sh/uv/pull/10123
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Enable lockfiles for PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-23 18:40_
+_@charliermarsh_
 
 ## Summary
 

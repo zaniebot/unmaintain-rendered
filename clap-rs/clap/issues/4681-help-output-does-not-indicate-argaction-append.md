@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-27T22:43:53Z
 updated_at: 2023-01-31T13:50:20Z
 url: https://github.com/clap-rs/clap/issues/4681
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Help output does not indicate `ArgAction::Append`
 
 ---
 
-_Issue opened by @cd-work on 2023-01-27 22:43_
+_@cd-work_
 
 Maintainer's note: any proposed syntax should include a mockup of `cargo check -h` ([details](https://github.com/clap-rs/clap/issues/4681#issuecomment-1410392153))
 

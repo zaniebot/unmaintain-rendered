@@ -14,14 +14,14 @@ head: alex/more-snapshot-updates
 created_at: 2026-01-06T19:57:39Z
 updated_at: 2026-01-06T20:01:43Z
 url: https://github.com/astral-sh/ruff/pull/22424
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Convert more ty snapshots to the new format
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-06 19:57_
+_@AlexWaygood_
 
 ## Summary
 

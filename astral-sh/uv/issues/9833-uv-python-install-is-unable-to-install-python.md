@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T08:47:43Z
 updated_at: 2024-12-13T07:33:54Z
 url: https://github.com/astral-sh/uv/issues/9833
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # `uv python install` is unable to install python older than 3.7
 
 ---
 
-_Issue opened by @jumper047 on 2024-12-12 08:47_
+_@jumper047_
 
 I used `pyenv` before `uv` to manage python interpreters, and `pyenv` was able to install any existing version. Minimal version `uv` can install is 3.7. Is there any technical reason for that (like, don't know, it is not possible to have prebuilt 3.5 in repos), or this was made intentionally to, for example, encourage usage of the actual python versions?
 

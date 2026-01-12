@@ -13,14 +13,14 @@ head: renovate/miette-7.x-lockfile
 created_at: 2024-12-02T00:12:59Z
 updated_at: 2025-02-01T04:06:16Z
 url: https://github.com/astral-sh/uv/pull/9568
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Update Rust crate miette to v7.5.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 00:12_
+_@renovate_
 
 This PR contains the following updates:
 

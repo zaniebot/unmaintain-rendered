@@ -13,14 +13,14 @@ head: document-ecosystem_all_check.sh-inputs
 created_at: 2023-08-23T19:58:22Z
 updated_at: 2023-08-23T20:13:18Z
 url: https://github.com/astral-sh/ruff/pull/6824
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Document ecosystem_all_check.sh input json
 
 ---
 
-_Pull request opened by @konstin on 2023-08-23 19:58_
+_@konstin_
 
 Document the origin of `github_search.jsonl` in `ecosystem_all_check.sh`
 

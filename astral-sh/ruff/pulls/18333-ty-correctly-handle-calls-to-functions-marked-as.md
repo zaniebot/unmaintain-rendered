@@ -13,14 +13,14 @@ head: never
 created_at: 2025-05-27T14:50:59Z
 updated_at: 2025-07-05T06:26:15Z
 url: https://github.com/astral-sh/ruff/pull/18333
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Correctly handle calls to functions marked as returning `Never` / `NoReturn`
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-05-27 14:50_
+_@abhijeetbodas2001_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zb/config-requires
 created_at: 2024-11-21T00:37:56Z
 updated_at: 2024-11-21T00:38:48Z
 url: https://github.com/astral-sh/uv/pull/9299
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Add required fields to Python version example
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-21 00:37_
+_@zanieb_
 
 _No description provided._
 

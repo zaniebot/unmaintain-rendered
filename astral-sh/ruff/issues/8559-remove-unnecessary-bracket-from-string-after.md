@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T13:55:08Z
 updated_at: 2023-11-09T02:14:28Z
 url: https://github.com/astral-sh/ruff/issues/8559
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # remove unnecessary bracket from string after ISC001 
 
 ---
 
-_Issue opened by @spaceone on 2023-11-08 13:55_
+_@spaceone_
 
 `ruff format --diff --isolated --line-length 140 foo.py` turns:
 ```python

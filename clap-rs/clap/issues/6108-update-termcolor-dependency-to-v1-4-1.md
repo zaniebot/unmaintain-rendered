@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T21:10:07Z
 updated_at: 2025-08-19T22:10:16Z
 url: https://github.com/clap-rs/clap/issues/6108
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Update `termcolor` dependency to `v1.4.1`
 
 ---
 
-_Issue opened by @eirnym on 2025-08-19 21:10_
+_@eirnym_
 
 ### Please complete the following tasks
 

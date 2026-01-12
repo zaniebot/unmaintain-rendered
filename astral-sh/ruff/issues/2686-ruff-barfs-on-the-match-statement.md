@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-09T13:58:50Z
 updated_at: 2023-02-22T00:04:47Z
 url: https://github.com/astral-sh/ruff/issues/2686
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff barfs on the `match` statement
 
 ---
 
-_Issue opened by @sfermigier on 2023-02-09 13:58_
+_@sfermigier_
 
 Starting with version 0.0.241, ruff rejects code containing `match` statements like:
 

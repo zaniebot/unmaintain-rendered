@@ -15,14 +15,14 @@ head: david/rename-type-api-test
 created_at: 2025-07-24T08:18:58Z
 updated_at: 2025-07-24T08:24:27Z
 url: https://github.com/astral-sh/ruff/pull/19523
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Rename type_api => ty_extensions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-24 08:18_
+_@sharkdp_
 
 _No description provided._
 

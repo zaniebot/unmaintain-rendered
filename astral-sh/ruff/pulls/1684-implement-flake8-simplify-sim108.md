@@ -12,14 +12,14 @@ head: sim108
 created_at: 2023-01-06T06:36:57Z
 updated_at: 2023-01-06T13:31:55Z
 url: https://github.com/astral-sh/ruff/pull/1684
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement flake8-simplify SIM108
 
 ---
 
-_Pull request opened by @messense on 2023-01-06 06:36_
+_@messense_
 
 Ref #998 
 

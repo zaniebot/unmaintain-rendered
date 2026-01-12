@@ -13,14 +13,14 @@ head: hoel/add_repos_to_gitignore
 created_at: 2024-03-17T12:20:33Z
 updated_at: 2024-03-17T14:18:30Z
 url: https://github.com/astral-sh/ruff/pull/10435
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add `repos/` to the gitignore
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-17 12:20_
+_@hoel-bagard_
 
 ## Summary
 

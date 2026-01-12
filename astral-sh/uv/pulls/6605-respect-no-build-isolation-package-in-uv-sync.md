@@ -13,14 +13,14 @@ head: charlie/pkg
 created_at: 2024-08-25T13:59:29Z
 updated_at: 2024-08-26T17:48:42Z
 url: https://github.com/astral-sh/uv/pull/6605
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Respect `--no-build-isolation-package` in `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-25 13:59_
+_@charliermarsh_
 
 ## Summary
 

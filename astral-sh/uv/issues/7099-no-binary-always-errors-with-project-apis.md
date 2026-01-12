@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T21:10:55Z
 updated_at: 2024-09-05T21:45:43Z
 url: https://github.com/astral-sh/uv/issues/7099
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `--no-binary` always errors with project APIs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-05 21:10_
+_@charliermarsh_
 
 _No description provided._
 

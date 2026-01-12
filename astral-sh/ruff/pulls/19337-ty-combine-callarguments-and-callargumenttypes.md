@@ -14,14 +14,14 @@ head: dcreager/merge-arguments
 created_at: 2025-07-14T18:51:05Z
 updated_at: 2025-07-15T14:21:00Z
 url: https://github.com/astral-sh/ruff/pull/19337
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Combine CallArguments and CallArgumentTypes
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-14 18:51_
+_@dcreager_
 
 We previously had separate `CallArguments` and `CallArgumentTypes` types in support of our two-phase call binding logic. `CallArguments` would store only the arity/kind of each argument (positional, keyword, variadic, etc). We then performed parameter matching using only this arity/kind information, and then infered the type of each argument, placing the result of this second phase into a new `CallArgumentTypes`.
 

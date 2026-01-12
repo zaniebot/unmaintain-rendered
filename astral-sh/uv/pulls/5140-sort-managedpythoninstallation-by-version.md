@@ -14,14 +14,14 @@ head: py-version
 created_at: 2024-07-17T03:55:34Z
 updated_at: 2024-07-18T05:38:54Z
 url: https://github.com/astral-sh/uv/pull/5140
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Sort `ManagedPythonInstallation` by version
 
 ---
 
-_Pull request opened by @j178 on 2024-07-17 03:55_
+_@j178_
 
 ## Summary
 Resolves #5139

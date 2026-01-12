@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-29T19:01:00Z
 updated_at: 2024-05-24T14:57:47Z
 url: https://github.com/astral-sh/ruff/issues/11207
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff server not closing with neovim instances
 
 ---
 
-_Issue opened by @akthe-at on 2024-04-29 19:01_
+_@akthe-at_
 
 Ruff: 0.4.2
 OS: Windows 10

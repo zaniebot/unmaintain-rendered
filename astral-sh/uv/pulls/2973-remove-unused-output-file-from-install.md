@@ -12,14 +12,14 @@ head: charlie/o
 created_at: 2024-04-10T18:22:55Z
 updated_at: 2024-04-10T18:58:53Z
 url: https://github.com/astral-sh/uv/pull/2973
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Remove unused `--output-file` from `install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-10 18:22_
+_@charliermarsh_
 
 ## Summary
 

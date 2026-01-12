@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T20:13:57Z
 updated_at: 2025-08-30T19:14:51Z
 url: https://github.com/astral-sh/uv/issues/15432
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Enabling `--isolated` \ `UV_ISOLATED` as the default option for `uv run`, when testing different Python versions
 
 ---
 
-_Issue opened by @pygarap on 2025-08-21 20:13_
+_@pygarap_
 
 ### Summary
 

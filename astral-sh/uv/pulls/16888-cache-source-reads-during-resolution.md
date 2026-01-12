@@ -12,14 +12,14 @@ head: charlie/source-cache
 created_at: 2025-11-28T22:32:40Z
 updated_at: 2025-12-02T09:38:58Z
 url: https://github.com/astral-sh/uv/pull/16888
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Cache source reads during resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 22:32_
+_@charliermarsh_
 
 ## Summary
 

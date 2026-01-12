@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-19T08:41:29Z
 updated_at: 2023-10-26T19:24:46Z
 url: https://github.com/astral-sh/ruff/pull/8060
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add title attribute to icons
 
 ---
 
-_Pull request opened by @jaap3 on 2023-10-19 08:41_
+_@jaap3_
 
 ## Summary
 

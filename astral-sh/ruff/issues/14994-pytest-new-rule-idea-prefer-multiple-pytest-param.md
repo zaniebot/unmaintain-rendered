@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T22:27:04Z
 updated_at: 2025-11-03T15:38:14Z
 url: https://github.com/astral-sh/ruff/issues/14994
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [pytest] New rule idea- Prefer multiple `pytest.param(..., id=...)` over `pytest.mark.parametrize(..., ids=...)`
 
 ---
 
-_Issue opened by @UnknownPlatypus on 2024-12-15 22:27_
+_@UnknownPlatypus_
 
 Hi ! 
 

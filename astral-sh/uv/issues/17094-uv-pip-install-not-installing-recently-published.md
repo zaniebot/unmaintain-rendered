@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T00:41:11Z
 updated_at: 2025-12-12T00:45:29Z
 url: https://github.com/astral-sh/uv/issues/17094
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # `uv pip install` not installing recently published package
 
 ---
 
-_Issue opened by @fubuloubu on 2025-12-12 00:41_
+_@fubuloubu_
 
 ### Summary
 

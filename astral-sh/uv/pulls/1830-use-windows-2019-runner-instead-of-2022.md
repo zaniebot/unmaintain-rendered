@@ -14,14 +14,14 @@ head: zb/win2019
 created_at: 2024-02-21T21:01:58Z
 updated_at: 2024-02-21T21:33:33Z
 url: https://github.com/astral-sh/uv/pull/1830
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Use Windows 2019 runner instead of 2022
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-21 21:01_
+_@zanieb_
 
 Testing, per:
 

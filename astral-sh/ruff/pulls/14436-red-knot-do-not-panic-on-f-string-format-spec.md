@@ -13,14 +13,14 @@ head: david/f-string-format-spec-no-panic
 created_at: 2024-11-18T15:28:02Z
 updated_at: 2024-11-19T09:04:56Z
 url: https://github.com/astral-sh/ruff/pull/14436
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Do not panic on f-string format spec expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-18 15:28_
+_@sharkdp_
 
 ## Summary
 

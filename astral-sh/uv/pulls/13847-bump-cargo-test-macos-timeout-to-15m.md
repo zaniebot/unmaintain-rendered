@@ -13,14 +13,14 @@ head: zb/macos
 created_at: 2025-06-04T18:14:07Z
 updated_at: 2025-06-04T18:24:41Z
 url: https://github.com/astral-sh/uv/pull/13847
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Bump `cargo-test-macos` timeout to 15m
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-04 18:14_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13846
 

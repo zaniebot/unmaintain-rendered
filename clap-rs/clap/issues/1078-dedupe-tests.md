@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-10-24T19:46:29Z
 updated_at: 2021-12-08T20:05:25Z
 url: https://github.com/clap-rs/clap/issues/1078
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Dedupe Tests
 
 ---
 
-_Issue opened by @kbknapp on 2017-10-24 19:46_
+_@kbknapp_
 
 The test suite could use some massive amounts of de-duping. This could include everything from simply creating some common functions (per file) so calls to build `App`s are not duplicated, to simply removing some tests which all test the exact same functionality.
 

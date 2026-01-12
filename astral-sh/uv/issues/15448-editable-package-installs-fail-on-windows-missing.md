@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T10:21:19Z
 updated_at: 2025-09-10T08:20:40Z
 url: https://github.com/astral-sh/uv/issues/15448
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Editable package installs fail on Windows - missing src directory in sys.path
 
 ---
 
-_Issue opened by @jswetzen on 2025-08-22 10:21_
+_@jswetzen_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T05:31:24Z
 updated_at: 2025-12-29T01:10:50Z
 url: https://github.com/astral-sh/uv/issues/13512
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # UV seems to identify the wrong platform for torch
 
 ---
 
-_Issue opened by @snowblink14 on 2025-05-18 05:31_
+_@snowblink14_
 
 ### Summary
 

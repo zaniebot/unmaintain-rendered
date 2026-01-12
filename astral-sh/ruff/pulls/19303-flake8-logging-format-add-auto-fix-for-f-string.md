@@ -14,14 +14,14 @@ head: feat/add-auto-fix-for-f-string-logging-statements-g004
 created_at: 2025-07-12T22:46:34Z
 updated_at: 2025-08-27T22:58:00Z
 url: https://github.com/astral-sh/ruff/pull/19303
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`flake8-logging-format`] Add auto-fix for f-string logging calls (`G004`)
 
 ---
 
-_Pull request opened by @hamirmahal on 2025-07-12 22:46_
+_@hamirmahal_
 
 Closes #19302
 

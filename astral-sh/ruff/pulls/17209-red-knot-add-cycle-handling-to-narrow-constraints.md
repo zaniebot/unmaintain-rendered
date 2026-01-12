@@ -13,14 +13,14 @@ head: cake/fix-cycle-on-narrowing-functions
 created_at: 2025-04-04T16:07:11Z
 updated_at: 2025-04-15T11:52:08Z
 url: https://github.com/astral-sh/ruff/pull/17209
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add cycle handling to narrow constraints queries
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-04-04 16:07_
+_@cake-monotone_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: docker-alpine-bump
 created_at: 2025-03-02T03:24:37Z
 updated_at: 2025-10-30T17:36:47Z
 url: https://github.com/astral-sh/ruff/pull/16456
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Bump alpine default tag to 3.21
 
 ---
 
-_Pull request opened by @samypr100 on 2025-03-02 03:24_
+_@samypr100_
 
 ## Summary
 

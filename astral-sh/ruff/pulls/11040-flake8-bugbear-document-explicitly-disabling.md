@@ -13,14 +13,14 @@ head: B905_clarification
 created_at: 2024-04-19T13:27:46Z
 updated_at: 2024-04-19T13:55:25Z
 url: https://github.com/astral-sh/ruff/pull/11040
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [flake8-bugbear] Document explicitly disabling strict zip (`B905`)
 
 ---
 
-_Pull request opened by @jfrost-mo on 2024-04-19 13:27_
+_@jfrost-mo_
 
 Occasionally you intentionally have iterables of differing lengths. The rule permits this by explicitly adding `strict=False`, but this was not documented.
 

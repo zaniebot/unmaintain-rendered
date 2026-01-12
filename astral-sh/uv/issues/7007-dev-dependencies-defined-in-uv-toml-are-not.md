@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T11:37:59Z
 updated_at: 2025-03-24T06:43:05Z
 url: https://github.com/astral-sh/uv/issues/7007
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `dev-dependencies` defined in `uv.toml` are not handled
 
 ---
 
-_Issue opened by @mkniewallner on 2024-09-04 11:37_
+_@mkniewallner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

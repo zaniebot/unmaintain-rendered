@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-12T07:56:45Z
 updated_at: 2023-10-12T12:53:25Z
 url: https://github.com/clap-rs/clap/issues/5171
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # bug(clap_complete):  shell.generate  function always panic
 
 ---
 
-_Issue opened by @ahaoboy on 2023-10-12 07:56_
+_@ahaoboy_
 
 ### Please complete the following tasks
 

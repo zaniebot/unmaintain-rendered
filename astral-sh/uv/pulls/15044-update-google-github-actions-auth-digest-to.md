@@ -13,14 +13,14 @@ head: renovate/google-github-actions-auth-digest
 created_at: 2025-08-04T00:51:10Z
 updated_at: 2025-08-04T10:26:15Z
 url: https://github.com/astral-sh/uv/pull/15044
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Update google-github-actions/auth digest to b7593ed
 
 ---
 
-_Pull request opened by @renovate on 2025-08-04 00:51_
+_@renovate_
 
 This PR contains the following updates:
 

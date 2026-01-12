@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T13:37:10Z
 updated_at: 2025-07-31T08:09:10Z
 url: https://github.com/astral-sh/ruff/issues/17951
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW2901 should be more configurable
 
 ---
 
-_Issue opened by @siegfriedpammer on 2025-05-08 13:37_
+_@siegfriedpammer_
 
 ### Summary
 

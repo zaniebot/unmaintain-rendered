@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-28T20:29:24Z
 updated_at: 2022-11-30T00:01:41Z
 url: https://github.com/astral-sh/ruff/issues/946
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F401 column number is imprecise
 
 ---
 
-_Issue opened by @relsunkaev on 2022-11-28 20:29_
+_@relsunkaev_
 
 When some of the `from` statement's imports are unused, ruff highlights the entire statement. For large, multi-line imports this creates a lot of noise when using an extension to highlight errors in the editor and it may be better for the error to point to the exact imports that are unused instead.
 

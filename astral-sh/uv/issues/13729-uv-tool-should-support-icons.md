@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T10:28:36Z
 updated_at: 2025-09-25T19:34:35Z
 url: https://github.com/astral-sh/uv/issues/13729
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # `uv tool` should support icons
 
 ---
 
-_Issue opened by @callegar on 2025-05-30 10:28_
+_@callegar_
 
 ### Summary
 

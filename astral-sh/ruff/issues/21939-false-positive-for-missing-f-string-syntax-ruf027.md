@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-12T09:46:32Z
 updated_at: 2025-12-12T20:46:36Z
 url: https://github.com/astral-sh/ruff/issues/21939
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # False positive for missing-f-string-syntax (RUF027)
 
 ---
 
-_Issue opened by @ashrub-holvi on 2025-12-12 09:46_
+_@ashrub-holvi_
 
 ### Summary
 

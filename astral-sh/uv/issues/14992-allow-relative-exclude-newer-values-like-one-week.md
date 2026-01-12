@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T13:14:40Z
 updated_at: 2026-01-12T10:55:45Z
 url: https://github.com/astral-sh/uv/issues/14992
-synced_at: 2026-01-12T11:55:20Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Allow relative `exclude-newer` values like "one week ago"
 
 ---
 
-_Issue opened by @GeoVizNow on 2025-07-31 13:14_
+_@GeoVizNow_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T03:27:42Z
 updated_at: 2024-09-04T02:49:21Z
 url: https://github.com/astral-sh/uv/issues/6852
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv fails to compile proper `--universal` txt file with `openai-whisper`
 
 ---
 
-_Issue opened by @stasbel on 2024-08-30 03:27_
+_@stasbel_
 
 **platform: macos**
 **version: 0.4.0**

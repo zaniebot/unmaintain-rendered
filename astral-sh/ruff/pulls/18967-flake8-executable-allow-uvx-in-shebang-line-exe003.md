@@ -13,14 +13,14 @@ head: codeman/18902
 created_at: 2025-06-26T17:59:11Z
 updated_at: 2025-06-30T13:38:18Z
 url: https://github.com/astral-sh/ruff/pull/18967
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`flake8-executable`] Allow `uvx` in shebang line (`EXE003`)
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-06-26 17:59_
+_@CodeMan62_
 
 ## Summary
 closes #18902 

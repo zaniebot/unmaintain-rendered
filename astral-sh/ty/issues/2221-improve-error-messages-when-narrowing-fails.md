@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T16:48:53Z
 updated_at: 2026-01-09T03:32:58Z
 url: https://github.com/astral-sh/ty/issues/2221
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve error messages when narrowing fails
 
 ---
 
-_Issue opened by @mtshiba on 2025-12-25 16:48_
+_@mtshiba_
 
 When strictly maintaining soundness, narrowing tends to produce results that are quite different from user intuition.
 Users may not realize that this is due to the specifications of ty (or Python type system), and may consider it an incompleteness or a bug (e.g. https://github.com/astral-sh/ty/issues/2215).

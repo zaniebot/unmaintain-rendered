@@ -13,14 +13,14 @@ head: packageroot
 created_at: 2024-06-15T00:17:44Z
 updated_at: 2024-06-15T01:36:39Z
 url: https://github.com/astral-sh/uv/pull/4336
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # find uv binary relative to package root
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2024-06-15 00:17_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

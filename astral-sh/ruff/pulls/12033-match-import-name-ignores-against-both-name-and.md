@@ -13,14 +13,14 @@ head: charlie/ignore
 created_at: 2024-06-25T21:18:43Z
 updated_at: 2024-06-25T22:47:20Z
 url: https://github.com/astral-sh/ruff/pull/12033
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Match import name ignores against both name and alias
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 21:18_
+_@charliermarsh_
 
 ## Summary
 

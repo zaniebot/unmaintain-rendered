@@ -12,14 +12,14 @@ head: charlie/ascii-d403
 created_at: 2023-05-08T19:34:43Z
 updated_at: 2023-05-08T20:08:18Z
 url: https://github.com/astral-sh/ruff/pull/4290
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Explicitly support ASCII-only for capitalization checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-08 19:34_
+_@charliermarsh_
 
 Apparently (like pydocstyle), the capitalization rule only runs on pure-ASCII words. This PR documents that limitation, and removes some guardrails that only apply to non-ASCII cases.
 

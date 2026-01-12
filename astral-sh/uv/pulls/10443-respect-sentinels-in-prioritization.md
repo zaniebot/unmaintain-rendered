@@ -13,14 +13,14 @@ head: charlie/sentinel
 created_at: 2025-01-09T20:43:37Z
 updated_at: 2025-01-09T21:28:00Z
 url: https://github.com/astral-sh/uv/pull/10443
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Respect sentinels in prioritization
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 20:43_
+_@charliermarsh_
 
 ## Summary
 

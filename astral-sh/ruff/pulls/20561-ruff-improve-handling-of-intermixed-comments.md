@@ -15,14 +15,14 @@ head: amy/import-dangling-comments
 created_at: 2025-09-24T20:51:15Z
 updated_at: 2025-10-07T16:35:55Z
 url: https://github.com/astral-sh/ruff/pull/20561
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`ruff`] improve handling of intermixed comments inside from-imports
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-24 20:51_
+_@amyreese_
 
 Resolves the crash when attempting to format code like:
 

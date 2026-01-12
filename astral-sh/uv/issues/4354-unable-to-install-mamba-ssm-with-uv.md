@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T02:42:12Z
 updated_at: 2024-06-18T07:29:23Z
 url: https://github.com/astral-sh/uv/issues/4354
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Unable to install `mamba-ssm` with uv
 
 ---
 
-_Issue opened by @kszlim on 2024-06-17 02:42_
+_@kszlim_
 
 ```shell
 # in an environment with all mamba-ssm requirements installed, cuda, torch, etc.

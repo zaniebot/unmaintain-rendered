@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-09T16:33:01Z
 updated_at: 2024-04-09T16:41:10Z
 url: https://github.com/astral-sh/uv/issues/2937
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv pip compile removes --find-links, --extra-index-url etc from requirements.txt, by design?
 
 ---
 
-_Issue opened by @artemisart on 2024-04-09 16:33_
+_@artemisart_
 
 `pip compile` from pip-tools keeps the --find-links and (extra) index-urls from its inputs (both command-line and source files) and saves them to the output file, but `uv pip compile` removes them, is this by design ? Is there an option to enable it ? Thanks!
 

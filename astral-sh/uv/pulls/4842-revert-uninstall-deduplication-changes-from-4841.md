@@ -13,14 +13,14 @@ head: revert-uninstall-dedeup
 created_at: 2024-07-06T05:22:15Z
 updated_at: 2024-07-07T02:28:39Z
 url: https://github.com/astral-sh/uv/pull/4842
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Revert `uninstall` deduplication changes from #4841
 
 ---
 
-_Pull request opened by @j178 on 2024-07-06 05:22_
+_@j178_
 
 `matching_installations` is BTreeSet already, no need to deduplicate it.
 

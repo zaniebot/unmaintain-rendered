@@ -13,14 +13,14 @@ head: fix/method-red-not-found-release-build
 created_at: 2023-03-10T08:48:27Z
 updated_at: 2023-03-10T09:17:36Z
 url: https://github.com/astral-sh/ruff/pull/3434
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # fix: method `red` not found in release builds
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-10 08:48_
+_@MichaReiser_
 
 Release builds are currently failing with
 

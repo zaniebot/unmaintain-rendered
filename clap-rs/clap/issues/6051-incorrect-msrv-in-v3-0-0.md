@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-28T19:32:33Z
 updated_at: 2025-06-30T13:56:44Z
 url: https://github.com/clap-rs/clap/issues/6051
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Incorrect MSRV in v3.0.0
 
 ---
 
-_Issue opened by @synalice on 2025-06-28 19:32_
+_@synalice_
 
 CHANGELOG.md [states](https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#minimum-required-rust) that for v3.0.0 MSRV is 1.54.0, but I get the following error.
 

@@ -13,14 +13,14 @@ head: string-priority
 created_at: 2023-08-28T12:13:05Z
 updated_at: 2023-08-28T12:20:30Z
 url: https://github.com/astral-sh/ruff/pull/6940
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Handle implicit strings in `can_omit_parentheses
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-28 12:13_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

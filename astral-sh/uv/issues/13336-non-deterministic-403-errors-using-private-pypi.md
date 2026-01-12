@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T18:49:10Z
 updated_at: 2025-05-16T15:57:41Z
 url: https://github.com/astral-sh/uv/issues/13336
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Non-deterministic 403 errors using private pypi server with `uv pip install -r requirements.txt`
 
 ---
 
-_Issue opened by @crestonbunch on 2025-05-07 18:49_
+_@crestonbunch_
 
 ### Summary
 

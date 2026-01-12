@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T11:10:36Z
 updated_at: 2024-11-01T18:39:23Z
 url: https://github.com/astral-sh/uv/issues/8748
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # uv run behaves differently on windows vs linux
 
 ---
 
-_Issue opened by @linde12 on 2024-11-01 11:10_
+_@linde12_
 
 I'm trying to run `func start` (Azure Functions Emulator) with uv, and in Linux this works fine: `uv run func start` runs `func start` with the .venv as expected. However, on Windows it is unable to run `func` as it can't spawn the process.
 

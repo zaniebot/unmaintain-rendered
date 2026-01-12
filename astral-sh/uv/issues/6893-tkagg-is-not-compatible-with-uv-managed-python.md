@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-31T16:46:53Z
 updated_at: 2025-08-08T21:09:57Z
 url: https://github.com/astral-sh/uv/issues/6893
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # tkagg is not compatible with uv-managed Python installs
 
 ---
 
-_Issue opened by @bluthej on 2024-08-31 16:46_
+_@bluthej_
 
 From the [matplot lib issue tracker (comment)](https://github.com/matplotlib/matplotlib/issues/25944#issuecomment-1557105621), apparently:
 

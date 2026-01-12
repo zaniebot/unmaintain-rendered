@@ -13,14 +13,14 @@ head: charlie/sys
 created_at: 2024-03-02T15:00:06Z
 updated_at: 2024-03-02T15:07:58Z
 url: https://github.com/astral-sh/uv/pull/2131
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Add caveats on `--system` support to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-02 15:00_
+_@charliermarsh_
 
 ## Summary
 

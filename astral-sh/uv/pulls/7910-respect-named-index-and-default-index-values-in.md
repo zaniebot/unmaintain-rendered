@@ -13,14 +13,14 @@ head: charlie/index-api-cli
 created_at: 2024-10-03T22:21:38Z
 updated_at: 2024-10-15T23:56:25Z
 url: https://github.com/astral-sh/uv/pull/7910
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Respect named `--index` and `--default-index` values in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-03 22:21_
+_@charliermarsh_
 
 ## Summary
 

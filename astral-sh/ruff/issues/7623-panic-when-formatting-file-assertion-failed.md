@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-23T19:33:02Z
 updated_at: 2023-09-24T02:08:46Z
 url: https://github.com/astral-sh/ruff/issues/7623
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Panic when formatting file `assertion failed: matches!(paren.kind(), SimpleTokenKind :: LParen | SimpleTokenKind :: LBrace |\n    SimpleTokenKind :: LBracket)',`
 
 ---
 
-_Issue opened by @qarmin on 2023-09-23 19:33_
+_@qarmin_
 
 Ruff 0.0.291 (latest changes from main branch)
 ```

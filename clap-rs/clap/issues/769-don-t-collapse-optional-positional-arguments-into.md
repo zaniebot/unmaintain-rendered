@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-07T14:11:25Z
 updated_at: 2016-12-31T06:15:13Z
 url: https://github.com/clap-rs/clap/issues/769
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Don't collapse optional positional arguments into `[ARGS]` in the usage string
 
 ---
 
-_Issue opened by @dotdash on 2016-12-07 14:11_
+_@dotdash_
 
 ### Rust Version
 

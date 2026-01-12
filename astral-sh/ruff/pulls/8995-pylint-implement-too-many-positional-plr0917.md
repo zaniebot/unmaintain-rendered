@@ -14,14 +14,14 @@ head: add-too-many-positional
 created_at: 2023-12-04T10:53:46Z
 updated_at: 2023-12-05T08:03:57Z
 url: https://github.com/astral-sh/ruff/pull/8995
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pylint`] Implement `too-many-positional` (`PLR0917`)
 
 ---
 
-_Pull request opened by @flying-sheep on 2023-12-04 10:53_
+_@flying-sheep_
 
 ## Summary
 

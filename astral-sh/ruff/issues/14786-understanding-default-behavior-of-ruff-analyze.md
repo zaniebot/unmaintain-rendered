@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-05T10:05:11Z
 updated_at: 2025-05-16T01:00:57Z
 url: https://github.com/astral-sh/ruff/issues/14786
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Understanding default behavior of `ruff analyze graph` with different layouts
 
 ---
 
-_Issue opened by @purajit on 2024-12-05 10:05_
+_@purajit_
 
 I'm working on a pretty anarchic codebase that I'm slowly wrestling into shape, but for now, the minimized structure is
 ```

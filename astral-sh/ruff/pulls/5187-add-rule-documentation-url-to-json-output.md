@@ -13,14 +13,14 @@ head: charlie/code_description
 created_at: 2023-06-19T16:35:52Z
 updated_at: 2023-06-19T21:09:17Z
 url: https://github.com/astral-sh/ruff/pull/5187
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add rule documentation URL to JSON output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 16:35_
+_@charliermarsh_
 
 ## Summary
 

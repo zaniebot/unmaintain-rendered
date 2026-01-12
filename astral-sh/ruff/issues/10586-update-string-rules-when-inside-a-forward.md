@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-25T18:33:01Z
 updated_at: 2024-08-05T10:54:19Z
 url: https://github.com/astral-sh/ruff/issues/10586
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Update string rules when inside a forward reference
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-25 18:33_
+_@dhruvmanila_
 
 This is happening because the checker is analyzing the string _inside_ the annotation (three strings inside `Literal`). The ranges aren't correct in that case. We need to find a holistic solution to this because it's happening to _all_ rules working on strings.
 

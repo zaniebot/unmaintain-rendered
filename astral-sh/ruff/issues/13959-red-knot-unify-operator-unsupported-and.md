@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-28T08:19:49Z
 updated_at: 2024-10-29T01:34:13Z
 url: https://github.com/astral-sh/ruff/issues/13959
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot]: Unify `operator-unsupported` and `unsupported-operator` diagnostic codes
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-28 08:19_
+_@MichaReiser_
 
 We should either unify the two diagnostic codes into a single diagnostic code or use more specific names to make it clear why they're separate.
 

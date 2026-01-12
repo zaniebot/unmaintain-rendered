@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T15:53:17Z
 updated_at: 2025-08-16T17:11:14Z
 url: https://github.com/astral-sh/ruff/issues/16401
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ignore specific comments when formatting
 
 ---
 
-_Issue opened by @toewen on 2025-02-26 15:53_
+_@toewen_
 
 ### Summary
 

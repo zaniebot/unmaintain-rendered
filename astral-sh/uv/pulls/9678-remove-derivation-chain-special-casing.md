@@ -13,14 +13,14 @@ head: konsti/remove-derivation-chain-special-casing
 created_at: 2024-12-06T12:34:44Z
 updated_at: 2024-12-06T13:05:05Z
 url: https://github.com/astral-sh/uv/pull/9678
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Remove derivation chain special casing
 
 ---
 
-_Pull request opened by @konstin on 2024-12-06 12:34_
+_@konstin_
 
 Instead of modifying the error to replace a dummy derivation chain from construction with the real one, build the error with the real derivation chain directly.
 

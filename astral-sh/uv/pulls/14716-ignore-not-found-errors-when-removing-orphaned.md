@@ -13,14 +13,14 @@ head: zb/not-found
 created_at: 2025-07-18T12:19:26Z
 updated_at: 2025-07-18T12:35:35Z
 url: https://github.com/astral-sh/uv/pull/14716
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Ignore "not found" errors when removing orphaned registry keys
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-18 12:19_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14714
 

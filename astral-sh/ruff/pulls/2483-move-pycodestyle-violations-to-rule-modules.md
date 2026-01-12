@@ -12,14 +12,14 @@ head: move-pycodestyle-violations
 created_at: 2023-02-02T17:16:46Z
 updated_at: 2023-02-02T19:29:24Z
 url: https://github.com/astral-sh/ruff/pull/2483
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move pycodestyle violations to rule modules
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 17:16_
+_@akx_
 
 This doesn't change where `IOError`s come from though, that felt unintuitive.
 

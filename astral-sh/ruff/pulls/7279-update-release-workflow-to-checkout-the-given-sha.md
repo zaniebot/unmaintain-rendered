@@ -14,14 +14,14 @@ head: zanie/release-ref
 created_at: 2023-09-11T18:27:57Z
 updated_at: 2023-09-13T19:59:42Z
 url: https://github.com/astral-sh/ruff/pull/7279
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update release workflow to checkout the given sha
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-11 18:27_
+_@zanieb_
 
 As far as I can tell, the release workflow would just run on the latest commit from `main` then crash and burn if that did not match the given SHA? It seems much clearer to actually checkout the given SHA so we can publish a release after making additional commits to `main`.
 

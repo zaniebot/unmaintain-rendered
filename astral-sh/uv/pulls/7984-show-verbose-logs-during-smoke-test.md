@@ -14,14 +14,14 @@ head: zb/verbose-smoke
 created_at: 2024-10-07T18:17:10Z
 updated_at: 2024-10-07T18:28:56Z
 url: https://github.com/astral-sh/uv/pull/7984
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Show verbose logs during smoke test
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 18:17_
+_@zanieb_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: best-fitting-reduce-allocations
 created_at: 2023-09-15T16:25:45Z
 updated_at: 2023-09-18T19:50:56Z
 url: https://github.com/astral-sh/ruff/pull/7411
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # perf: Reduce best fitting allocations
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-15 16:25_
+_@MichaReiser_
 
 Let's try this again, now that we have more best fitting elements.
 

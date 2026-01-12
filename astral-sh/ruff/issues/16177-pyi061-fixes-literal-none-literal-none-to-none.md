@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-15T15:59:39Z
 updated_at: 2025-04-28T11:23:30Z
 url: https://github.com/astral-sh/ruff/issues/16177
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PYI061 fixes `Literal[None,] | Literal[None,]` to `None | None`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-15 15:59_
+_@dscorbett_
 
 ### Description
 

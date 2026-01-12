@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T12:46:23Z
 updated_at: 2024-06-12T13:45:33Z
 url: https://github.com/clap-rs/clap/issues/5526
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `num_args = 2..` does not error with 0 args and error has incorrect wording with 1 arg
 
 ---
 
-_Issue opened by @qtfkwk on 2024-06-10 12:46_
+_@qtfkwk_
 
 ### Please complete the following tasks
 

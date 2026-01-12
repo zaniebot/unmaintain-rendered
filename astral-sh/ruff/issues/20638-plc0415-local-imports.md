@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T21:08:12Z
 updated_at: 2025-11-17T07:20:29Z
 url: https://github.com/astral-sh/ruff/issues/20638
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLC0415: local imports
 
 ---
 
-_Issue opened by @smurfix on 2025-09-29 21:08_
+_@smurfix_
 
 ### Summary
 

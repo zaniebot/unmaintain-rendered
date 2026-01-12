@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-10T21:48:45Z
 updated_at: 2023-02-10T22:27:42Z
 url: https://github.com/astral-sh/ruff/issues/2745
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `--show-source` should respect `NO_COLOR` flags
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-10 21:48_
+_@charliermarsh_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

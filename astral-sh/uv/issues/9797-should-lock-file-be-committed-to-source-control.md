@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T01:29:48Z
 updated_at: 2025-09-10T08:30:29Z
 url: https://github.com/astral-sh/uv/issues/9797
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Should lock file be committed to source control?
 
 ---
 
-_Issue opened by @ngaloppo on 2024-12-11 01:29_
+_@ngaloppo_
 
 Seems like a basic question, but can't find this information in the documentation. 
 

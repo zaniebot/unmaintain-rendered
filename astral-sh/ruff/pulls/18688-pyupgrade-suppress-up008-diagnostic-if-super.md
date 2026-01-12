@@ -14,14 +14,14 @@ head: fix-UP008
 created_at: 2025-06-15T21:01:44Z
 updated_at: 2025-06-16T19:09:31Z
 url: https://github.com/astral-sh/ruff/pull/18688
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pyupgrade`] Suppress `UP008` diagnostic if `super` symbol is not builtin
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-15 21:01_
+_@LaBatata101_
 
 
 

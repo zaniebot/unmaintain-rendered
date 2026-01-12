@@ -13,14 +13,14 @@ head: zb/parent-system-interpreter
 created_at: 2024-09-16T20:21:59Z
 updated_at: 2024-09-17T03:51:51Z
 url: https://github.com/astral-sh/uv/pull/7440
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Include the parent interpreter in Python discovery when `--system` is used
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-16 20:21_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7417
 

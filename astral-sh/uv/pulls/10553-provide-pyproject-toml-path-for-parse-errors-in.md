@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2025-01-13T02:58:54Z
 updated_at: 2025-01-13T19:06:33Z
 url: https://github.com/astral-sh/uv/pull/10553
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Provide `pyproject.toml` path for parse errors in `uv venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-13 02:58_
+_@charliermarsh_
 
 ## Summary
 

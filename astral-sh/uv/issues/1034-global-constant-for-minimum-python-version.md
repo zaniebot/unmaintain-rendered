@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-22T08:40:58Z
 updated_at: 2024-06-27T11:26:16Z
 url: https://github.com/astral-sh/uv/issues/1034
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Global constant for minimum python version
 
 ---
 
-_Issue opened by @konstin on 2024-01-22 08:40_
+_@konstin_
 
 Multiple places across the codebase rely on knowing the minimum supported python version, we should introduce a global constant that's shared across crates. This will ensure the minimum is enforced consistently and will ease bumping the version later.
 

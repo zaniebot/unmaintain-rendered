@@ -14,14 +14,14 @@ head: charlie/r
 created_at: 2024-09-19T20:42:24Z
 updated_at: 2024-09-19T20:48:21Z
 url: https://github.com/astral-sh/uv/pull/7561
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Make `uv cache prune` robust to unreadable rkyv entries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-19 20:42_
+_@charliermarsh_
 
 ## Summary
 

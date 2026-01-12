@@ -13,14 +13,14 @@ head: dhruv/fstring-element
 created_at: 2023-11-24T23:39:34Z
 updated_at: 2023-12-07T16:28:08Z
 url: https://github.com/astral-sh/ruff/pull/8835
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # New AST nodes for f-string elements
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-24 23:39_
+_@dhruvmanila_
 
 Rebase of #6365 authored by @davidszotten.
 

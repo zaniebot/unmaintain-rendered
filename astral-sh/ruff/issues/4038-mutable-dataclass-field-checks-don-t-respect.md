@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T03:30:33Z
 updated_at: 2023-04-20T20:02:14Z
 url: https://github.com/astral-sh/ruff/issues/4038
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Mutable dataclass field checks don't respect immutable annotations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-04-20 03:30_
+_@charliermarsh_
 
 _Originally posted by @andersk in https://github.com/charliermarsh/ruff/issues/3877#issuecomment-1515536738_
             

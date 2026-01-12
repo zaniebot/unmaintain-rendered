@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T14:46:25Z
 updated_at: 2025-07-30T17:41:04Z
 url: https://github.com/astral-sh/uv/issues/14975
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # uv build in workspaces setup builds subpackage in root
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-07-30 14:46_
+_@ion-elgreco_
 
 ### Question
 

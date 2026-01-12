@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-23T14:21:43Z
 updated_at: 2025-12-31T15:35:52Z
 url: https://github.com/astral-sh/ty/issues/1612
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Design: Rule settings
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-23 14:21_
+_@MichaReiser_
 
 https://github.com/astral-sh/ty/issues/1354, https://github.com/astral-sh/ty/issues/1422, and https://github.com/astral-sh/ty/issues/278 are in themselves trivial, but they're all blocked on a decision on where to put rule-related settings/type checker settings other than environment.
 

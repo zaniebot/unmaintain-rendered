@@ -12,14 +12,14 @@ head: charlie/msrv
 created_at: 2025-09-18T17:34:59Z
 updated_at: 2025-09-18T18:00:41Z
 url: https://github.com/astral-sh/uv/pull/15935
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Bump MSRV to 1.88
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-18 17:34_
+_@charliermarsh_
 
 And bump the `rust-toolchain.toml` to `1.90`. Per our versioning policy.
 

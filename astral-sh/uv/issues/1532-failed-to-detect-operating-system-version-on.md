@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T19:29:50Z
 updated_at: 2024-02-16T19:48:55Z
 url: https://github.com/astral-sh/uv/issues/1532
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Failed to detect operating system version on amazonlinux:2023 and rocky 8/9
 
 ---
 
-_Issue opened by @altendky on 2024-02-16 19:29_
+_@altendky_
 
 https://github.com/Chia-Network/chia-blockchain/actions/runs/7933582391/job/21662665237?pr=17572#step:11:45
 ```

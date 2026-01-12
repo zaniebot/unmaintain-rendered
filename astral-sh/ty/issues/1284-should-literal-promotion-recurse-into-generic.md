@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T14:12:08Z
 updated_at: 2025-10-31T16:48:35Z
 url: https://github.com/astral-sh/ty/issues/1284
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Should literal promotion recurse into generic types?
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-30 14:12_
+_@sharkdp_
 
 Literal promotion currently recurses down into types to also promote nested types. When doing type inference for generic container literals, this makes sense for unions:
 ```py

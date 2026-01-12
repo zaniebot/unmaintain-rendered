@@ -12,14 +12,14 @@ head: konsti/flat-indexes-1-pip-compile
 created_at: 2024-01-14T15:40:02Z
 updated_at: 2024-01-15T02:04:11Z
 url: https://github.com/astral-sh/uv/pull/912
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Implement `--find-links` as flat indexes (directories in pip-compile)
 
 ---
 
-_Pull request opened by @konstin on 2024-01-14 15:40_
+_@konstin_
 
 Add directory `--find-links` support for local paths to pip-compile.
 

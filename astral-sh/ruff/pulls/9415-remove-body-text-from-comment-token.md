@@ -12,14 +12,14 @@ head: charlie/comment
 created_at: 2024-01-06T21:05:55Z
 updated_at: 2024-01-08T14:43:59Z
 url: https://github.com/astral-sh/ruff/pull/9415
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove body text from comment token
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 21:05_
+_@charliermarsh_
 
 ## Summary
 

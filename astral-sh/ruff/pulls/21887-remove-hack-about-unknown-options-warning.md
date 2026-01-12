@@ -14,14 +14,14 @@ head: dhruv/remove-hack
 created_at: 2025-12-10T06:36:31Z
 updated_at: 2025-12-11T08:46:50Z
 url: https://github.com/astral-sh/ruff/pull/21887
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Remove hack about unknown options warning
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-10 06:36_
+_@dhruvmanila_
 
 This hack was introduced to reduce the amount of warnings that users would get while transitioning to the new settings format (https://github.com/astral-sh/ruff/pull/19787) but now that we're near the beta release, it would be good to remove this.
 

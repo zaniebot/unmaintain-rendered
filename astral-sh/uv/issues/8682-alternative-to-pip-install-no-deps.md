@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T19:44:58Z
 updated_at: 2025-07-19T10:54:08Z
 url: https://github.com/astral-sh/uv/issues/8682
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Alternative to pip install --no deps
 
 ---
 
-_Issue opened by @tauferp on 2024-10-29 19:44_
+_@tauferp_
 
 Is there a way to mark some dependencies to install without their dependencies with uv? This is similar to https://github.com/pypa/pip/pull/10837 .
 

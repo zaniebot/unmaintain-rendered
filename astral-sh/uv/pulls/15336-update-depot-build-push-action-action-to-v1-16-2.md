@@ -13,14 +13,14 @@ head: renovate/depot-build-push-action-1.x
 created_at: 2025-08-18T02:42:06Z
 updated_at: 2025-08-18T14:25:04Z
 url: https://github.com/astral-sh/uv/pull/15336
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Update depot/build-push-action action to v1.16.2
 
 ---
 
-_Pull request opened by @renovate on 2025-08-18 02:42_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-19T12:23:09Z
 updated_at: 2024-10-20T15:07:54Z
 url: https://github.com/astral-sh/uv/issues/8358
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Fail to install pytorch (cpu) on MacOS intel chip
 
 ---
 
-_Issue opened by @fzyzcjy on 2024-10-19 12:23_
+_@fzyzcjy_
 
 Hi thanks for the tool! However I cannot do it and here are my attempts:
 

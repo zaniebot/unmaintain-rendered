@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-29T07:23:06Z
 updated_at: 2025-03-24T12:16:37Z
 url: https://github.com/astral-sh/ruff/issues/15805
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff adds import aliases on unused import with F401 rule and the preview option
 
 ---
 
-_Issue opened by @skshetry on 2025-01-29 07:23_
+_@skshetry_
 
 ### Description
 

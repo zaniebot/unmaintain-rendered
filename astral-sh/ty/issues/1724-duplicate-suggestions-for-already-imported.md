@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T16:33:09Z
 updated_at: 2026-01-09T15:24:30Z
 url: https://github.com/astral-sh/ty/issues/1724
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Duplicate suggestions for already imported "unimported" completions
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-12-02 16:33_
+_@MatthewMckee4_
 
 ### Summary
 

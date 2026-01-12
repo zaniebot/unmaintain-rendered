@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T14:59:01Z
 updated_at: 2025-05-14T14:11:39Z
 url: https://github.com/astral-sh/ruff/issues/18070
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `TRY400` False Positive - Flags other logger calls after log.exception
 
 ---
 
-_Issue opened by @Skylion007 on 2025-05-13 14:59_
+_@Skylion007_
 
 ### Summary
 

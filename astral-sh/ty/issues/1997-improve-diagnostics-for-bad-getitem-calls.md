@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T10:35:56Z
 updated_at: 2025-12-17T10:35:56Z
 url: https://github.com/astral-sh/ty/issues/1997
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve diagnostics for bad `__getitem__` calls
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-17 10:35_
+_@AlexWaygood_
 
 ### Summary
 

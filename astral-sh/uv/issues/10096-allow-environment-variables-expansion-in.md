@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-22T15:58:22Z
 updated_at: 2025-11-12T12:52:27Z
 url: https://github.com/astral-sh/uv/issues/10096
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Allow environment variables expansion in `pyproject.toml`
 
 ---
 
-_Issue opened by @ShaiAvr on 2024-12-22 15:58_
+_@ShaiAvr_
 
 A feature I'd really like to see implemented is the ability to expand environment variables in the `pyproject.toml` file. My use-case is as follows: I am working on a library to simplify my work on other projects. In the future, I'd like to publish the library to PyPi. When I work on my projects, however, I want to use my library as a local editable dependency so I can quickly make changes and see them applied. So I have an example project with the following `pyproject.toml`:
 ```toml

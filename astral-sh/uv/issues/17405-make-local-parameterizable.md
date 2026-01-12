@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-11T15:12:07Z
 updated_at: 2026-01-12T10:34:24Z
 url: https://github.com/astral-sh/uv/issues/17405
-synced_at: 2026-01-12T11:01:24Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # Make .local Parameterizable
 
 ---
 
-_Issue opened by @muellert on 2026-01-11 15:12_
+_@muellert_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/pre-error
 created_at: 2024-10-15T00:46:38Z
 updated_at: 2024-10-15T01:06:46Z
 url: https://github.com/astral-sh/uv/pull/8192
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Don't recommend `--prerelease=allow` during build requirement resolution errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-15 00:46_
+_@charliermarsh_
 
 ## Summary
 

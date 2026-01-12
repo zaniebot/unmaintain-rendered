@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T21:42:34Z
 updated_at: 2024-11-20T00:11:10Z
 url: https://github.com/astral-sh/uv/issues/9252
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Does uv build respect the lock file?
 
 ---
 
-_Issue opened by @idan-rahamim-lendbuzz on 2024-11-19 21:42_
+_@idan-rahamim-lendbuzz_
 
 Is it possible to build packages with pinned dependencies from the lock file.
 In poetry it's not supported

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T18:05:29Z
 updated_at: 2025-12-04T23:32:17Z
 url: https://github.com/astral-sh/uv/issues/16984
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # How to exclude alpha Python versions from uv run
 
 ---
 
-_Issue opened by @jdumas on 2025-12-04 18:05_
+_@jdumas_
 
 ### Question
 

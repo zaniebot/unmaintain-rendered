@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T09:54:17Z
 updated_at: 2025-12-09T15:35:13Z
 url: https://github.com/astral-sh/uv/issues/17026
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Django uv docker setup
 
 ---
 
-_Issue opened by @blossomsg on 2025-12-08 09:54_
+_@blossomsg_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-09T19:36:34Z
 updated_at: 2023-10-10T03:04:09Z
 url: https://github.com/astral-sh/ruff/issues/7877
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Restore minimum and maximum line-length enforcement in JSON schema
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-09 19:36_
+_@charliermarsh_
 
 According to the struct, the `line-length` property only supports values in (0, 320). We tried to enforce this range in the JSON schema, but ran into issues with validation and had to revert. See: https://github.com/astral-sh/ruff/pull/7875.
 

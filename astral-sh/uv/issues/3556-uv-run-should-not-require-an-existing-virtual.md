@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T17:37:29Z
 updated_at: 2024-05-13T19:04:26Z
 url: https://github.com/astral-sh/uv/issues/3556
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # `uv run` should not require an existing virtual environment
 
 ---
 
-_Issue opened by @zanieb on 2024-05-13 17:37_
+_@zanieb_
 
 Currently `uv run` fails if a virtual environment is not present
 

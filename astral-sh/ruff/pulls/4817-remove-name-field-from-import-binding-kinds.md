@@ -12,14 +12,14 @@ head: charlie/name
 created_at: 2023-06-02T19:08:20Z
 updated_at: 2023-06-03T03:22:45Z
 url: https://github.com/astral-sh/ruff/pull/4817
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove `name` field from import binding kinds
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-02 19:08_
+_@charliermarsh_
 
 ## Summary
 

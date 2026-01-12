@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T18:43:24Z
 updated_at: 2024-12-30T10:41:35Z
 url: https://github.com/astral-sh/ruff/issues/14761
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # SIM300 fix swaps operands with side effects
 
 ---
 
-_Issue opened by @dscorbett on 2024-12-03 18:43_
+_@dscorbett_
 
 The fix for [`yoda-conditions` (SIM300)](https://docs.astral.sh/ruff/rules/yoda-conditions/) changes the program’s behavior in Ruff 0.8.1 when the two operands have side effects. The fix should be suppressed or marked unsafe when that happens.
 

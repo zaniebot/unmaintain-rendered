@@ -13,14 +13,14 @@ head: feat/add-flake8-bandit-S507
 created_at: 2023-09-19T23:47:43Z
 updated_at: 2023-09-20T01:03:45Z
 url: https://github.com/astral-sh/ruff/pull/7528
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # feat(rules): implement `flake8-bandit` `S507` (`ssh_no_host_key_verification`)
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-09-19 23:47_
+_@mkniewallner_
 
 Part of #1646.
 

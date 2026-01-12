@@ -14,14 +14,14 @@ head: charlie/err
 created_at: 2024-07-17T23:40:14Z
 updated_at: 2024-07-18T00:47:57Z
 url: https://github.com/astral-sh/uv/pull/5171
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Use specialized error message for invalid Python install / uninstall requests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 23:40_
+_@charliermarsh_
 
 ## Summary
 

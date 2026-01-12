@@ -13,14 +13,14 @@ head: ubaid/pr/filter_date_for_python_install_no_cache
 created_at: 2025-08-10T17:02:35Z
 updated_at: 2025-08-12T05:31:41Z
 url: https://github.com/astral-sh/uv/pull/15204
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 #  Filter date in GitHub release URLs for `python_install_no_cache` test
 
 ---
 
-_Pull request opened by @ubaidsk on 2025-08-10 17:02_
+_@ubaidsk_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/import-resolver
 created_at: 2023-07-21T19:49:20Z
 updated_at: 2023-07-27T13:22:17Z
 url: https://github.com/astral-sh/ruff/pull/5954
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use Ruff's import resolver to power import sorting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-21 19:49_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T22:40:16Z
 updated_at: 2024-02-16T12:08:17Z
 url: https://github.com/astral-sh/uv/issues/1375
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Make it available as a library
 
 ---
 
-_Issue opened by @pomponchik on 2024-02-15 22:40_
+_@pomponchik_
 
 Hi!
 

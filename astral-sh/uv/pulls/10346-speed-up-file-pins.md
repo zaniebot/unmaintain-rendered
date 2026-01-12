@@ -13,14 +13,14 @@ head: konsti/faster-file-pins
 created_at: 2025-01-07T09:31:48Z
 updated_at: 2025-01-07T13:51:16Z
 url: https://github.com/astral-sh/uv/pull/10346
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Speed up file pins
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 09:31_
+_@konstin_
 
 Ref https://github.com/astral-sh/uv/issues/10344
 

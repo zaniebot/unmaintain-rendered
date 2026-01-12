@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-05T14:41:17Z
 updated_at: 2025-06-12T14:44:43Z
 url: https://github.com/astral-sh/ty/issues/238
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support del statement and deletion of except handler names
 
 ---
 
-_Issue opened by @carljm on 2024-10-05 14:41_
+_@carljm_
 
 At runtime, names bound in an except handler are `del` ed at the end of the except handler block. We should model this as if there were a `del` statement for the name at the end of the block. And we should also support real `del` statements.
 

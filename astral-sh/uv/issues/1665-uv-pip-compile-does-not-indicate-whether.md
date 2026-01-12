@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T20:00:29Z
 updated_at: 2024-05-09T14:43:59Z
 url: https://github.com/astral-sh/uv/issues/1665
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv pip compile does not indicate whether dependencies originate from the main package or from additional extras
 
 ---
 
-_Issue opened by @neumann-nico on 2024-02-18 20:00_
+_@neumann-nico_
 
 Extras are actually generated correctly but not indicated where they come from in the output file. You don't know if a dependency is part of the main package or if it is generated from an extra. This is an incompatibility with pip-compile.
 

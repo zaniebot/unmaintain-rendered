@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-03T16:18:52Z
 updated_at: 2024-08-07T09:41:04Z
 url: https://github.com/astral-sh/ruff/issues/12653
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Fix for RUF023 should be unsafe because slot order can matter
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-03 16:18_
+_@dscorbett_
 
 The fix for [RUF023](https://docs.astral.sh/ruff/rules/unsorted-dunder-slots/) should be marked unsafe because the order of slots can be intentionally relied on, and changing it can change behavior. The fix is still safe if `__slots__` is declared as a set.
 

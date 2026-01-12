@@ -13,14 +13,14 @@ head: zb/pip-compatible-specifier
 created_at: 2024-02-08T20:31:38Z
 updated_at: 2024-02-12T01:31:42Z
 url: https://github.com/astral-sh/uv/pull/1268
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Implement pip compatible `--no-binary` and `--only-binary` options
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-08 20:31_
+_@zanieb_
 
 Updates our `--no-binary` option and adds a `--only-binary` option for compatibility with `pip` which uses `:all:`, `:none:` and `<name>` for specifying packages.
 

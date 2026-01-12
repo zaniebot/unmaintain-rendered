@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T07:05:48Z
 updated_at: 2025-07-01T01:26:17Z
 url: https://github.com/astral-sh/uv/issues/7805
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # no error on `uv sync --upgrade-package` when specifying a package that isn't included in the project's dependencies
 
 ---
 
-_Issue opened by @DetachHead on 2024-09-30 07:05_
+_@DetachHead_
 
 when running `uv sync --upgrade-package` with a package that is not present in the project's dependencies (or a transient dependency in the lockfile), uv should report an error
 ```

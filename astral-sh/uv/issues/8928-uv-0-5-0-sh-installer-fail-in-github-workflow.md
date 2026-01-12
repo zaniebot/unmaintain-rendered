@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T09:25:42Z
 updated_at: 2024-11-08T15:07:10Z
 url: https://github.com/astral-sh/uv/issues/8928
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # uv 0.5.0 sh installer fail in github workflow
 
 ---
 
-_Issue opened by @andgineer on 2024-11-08 09:25_
+_@andgineer_
 
 0.5.0 version fails to install in github workflow
 

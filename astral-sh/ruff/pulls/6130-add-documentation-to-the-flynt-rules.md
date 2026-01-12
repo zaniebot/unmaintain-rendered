@@ -13,14 +13,14 @@ head: flynt-docs
 created_at: 2023-07-27T16:08:32Z
 updated_at: 2023-07-28T09:14:28Z
 url: https://github.com/astral-sh/ruff/pull/6130
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add documentation to the `flynt` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-27 16:08_
+_@tjkuson_
 
 ## Summary
 
@@ -29,6 +29,10 @@ Completes the documentation for the one and only (current) rule in the `flynt` r
 ## Test Plan
 
 `python scripts/test_docs_formatted.py`
+
+---
+
+_Renamed from "Add more documentation to the `flynt` rules" to "Add documentation to the `flynt` rules" by @tjkuson on 2023-07-27 16:10_
 
 ---
 
@@ -75,5 +79,21 @@ linter/default-rules/numpy/globals.py      1.02   211.5±12.41µs    13.9 MB/sec
 linter/default-rules/pydantic/types.py     1.00      4.1±0.14ms     6.2 MB/sec    1.01      4.2±0.18ms     6.1 MB/sec
 ```
 <!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-27 18:32_
+
+---
+
+_Merged by @charliermarsh on 2023-07-27 18:32_
+
+---
+
+_Closed by @charliermarsh on 2023-07-27 18:32_
+
+---
+
+_Branch deleted on 2023-07-28 09:14_
 
 ---

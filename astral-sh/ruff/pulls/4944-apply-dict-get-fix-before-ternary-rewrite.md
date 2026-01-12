@@ -13,14 +13,14 @@ head: charlie/order
 created_at: 2023-06-07T22:26:09Z
 updated_at: 2023-06-07T23:00:26Z
 url: https://github.com/astral-sh/ruff/pull/4944
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Apply `dict.get` fix before ternary rewrite
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-07 22:26_
+_@charliermarsh_
 
 Closes #4932.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-09T16:22:23Z
 updated_at: 2025-02-10T11:21:41Z
 url: https://github.com/astral-sh/uv/issues/9741
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # uv add with multiple (extra-)index-urls fails
 
 ---
 
-_Issue opened by @legout on 2024-12-09 16:22_
+_@legout_
 
 Hi guys,
 

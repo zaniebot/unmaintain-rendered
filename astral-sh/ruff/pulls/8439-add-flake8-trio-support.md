@@ -13,14 +13,14 @@ head: add-flake8-trio
 created_at: 2023-11-02T05:48:23Z
 updated_at: 2023-11-03T01:12:22Z
 url: https://github.com/astral-sh/ruff/pull/8439
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add flake8-trio support
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-11-02 05:48_
+_@karpetrosyan_
 
 ## Summary
 

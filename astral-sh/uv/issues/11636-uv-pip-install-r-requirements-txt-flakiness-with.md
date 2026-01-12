@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T20:01:16Z
 updated_at: 2025-09-11T23:01:42Z
 url: https://github.com/astral-sh/uv/issues/11636
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # `uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-19 20:01_
+_@chrisrodrigue_
 
 ### Summary
 

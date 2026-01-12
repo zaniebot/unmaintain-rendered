@@ -14,14 +14,14 @@ head: brent/syn-pos-only
 created_at: 2025-03-03T19:40:12Z
 updated_at: 2025-03-05T13:52:07Z
 url: https://github.com/astral-sh/ruff/pull/16481
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Positional-only parameters before Python 3.8
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 19:40_
+_@ntBre_
 
 Summary
 --

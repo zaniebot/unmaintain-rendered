@@ -13,14 +13,14 @@ head: alex/more-type-contructors
 created_at: 2024-11-09T16:51:00Z
 updated_at: 2024-11-09T17:04:42Z
 url: https://github.com/astral-sh/ruff/pull/14227
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] More `Type` constructors
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-09 16:51_
+_@AlexWaygood_
 
 ## Summary
 

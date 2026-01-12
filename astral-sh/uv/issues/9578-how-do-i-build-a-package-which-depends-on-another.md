@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-02T14:44:45Z
 updated_at: 2025-04-28T08:10:14Z
 url: https://github.com/astral-sh/uv/issues/9578
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # How do I build a package which depends on another local package, for later use in a Docker container?
 
 ---
 
-_Issue opened by @NicholasPini on 2024-12-02 14:44_
+_@NicholasPini_
 
 I have a bunch of parallel projects: each of these is it's own uv project. These project can depend on one another. Ultimately, I want to build a wheel file from a project, and use it in a Dockerfile to build the environment. Here is the problem: if project A depends on project B, this will be reflected in the wheel file, but then when I do
 ```docker

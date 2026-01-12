@@ -13,14 +13,14 @@ head: zb/dup
 created_at: 2024-06-22T14:45:14Z
 updated_at: 2024-06-22T14:53:02Z
 url: https://github.com/astral-sh/uv/pull/4448
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Adjust deduplicated message in `pip tree`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-22 14:45_
+_@zanieb_
 
 _No description provided._
 

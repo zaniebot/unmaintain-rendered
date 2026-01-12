@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-04-07T22:27:19Z
 updated_at: 2024-04-09T16:16:58Z
 url: https://github.com/astral-sh/uv/pull/2864
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Add install instruction with Cave/Paludis package manager in README.md
 
 ---
 
-_Pull request opened by @davlgd on 2024-04-07 22:27_
+_@davlgd_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

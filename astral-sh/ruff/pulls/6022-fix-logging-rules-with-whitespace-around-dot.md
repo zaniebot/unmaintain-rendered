@@ -13,14 +13,14 @@ head: charlie/logging-call
 created_at: 2023-07-24T04:53:10Z
 updated_at: 2023-07-24T05:34:06Z
 url: https://github.com/astral-sh/ruff/pull/6022
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix logging rules with whitespace around dot
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 04:53_
+_@charliermarsh_
 
 ## Summary
 

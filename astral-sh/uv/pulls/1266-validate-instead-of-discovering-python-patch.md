@@ -12,14 +12,14 @@ head: konsti/patch-versions-validate-only
 created_at: 2024-02-08T20:25:35Z
 updated_at: 2024-02-08T21:38:01Z
 url: https://github.com/astral-sh/uv/pull/1266
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Validate instead of discovering python patch version
 
 ---
 
-_Pull request opened by @konstin on 2024-02-08 20:25_
+_@konstin_
 
 Contrary to our prior assumption, we can't reliably select a specific patch version. With the deadsnakes PPA for example, `python3.12` is installed into `PATH`, but `python3.12.1` isn't. Based on the assumption (or rather, observation) that users have a single python patch version per python minor version installed, generally the latest, we only check if the installed patch version matches the selected patch version, if any, instead of search for one.
 

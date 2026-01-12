@@ -14,14 +14,14 @@ head: charlie/data
 created_at: 2024-07-01T13:40:17Z
 updated_at: 2024-07-01T16:22:39Z
 url: https://github.com/astral-sh/uv/pull/4693
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Respect data scripts in `uv tool install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 13:40_
+_@charliermarsh_
 
 ## Summary
 

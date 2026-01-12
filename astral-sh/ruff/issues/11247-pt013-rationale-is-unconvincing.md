@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-02T16:39:12Z
 updated_at: 2024-08-29T07:25:46Z
 url: https://github.com/astral-sh/ruff/issues/11247
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [PT013] Rationale is unconvincing.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-05-02 16:39_
+_@randolf-scholz_
 
 [Rule PT013](https://docs.astral.sh/ruff/rules/pytest-incorrect-pytest-import/) seems arbitrary. The rationale states:
 

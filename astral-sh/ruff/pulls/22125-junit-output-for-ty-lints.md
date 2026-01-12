@@ -13,14 +13,14 @@ head: cetanu/junit_for_ty
 created_at: 2025-12-21T04:49:52Z
 updated_at: 2026-01-12T08:27:17Z
 url: https://github.com/astral-sh/ruff/pull/22125
-synced_at: 2026-01-12T08:52:59Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # JUnit output for `ty` lints
 
 ---
 
-_Pull request opened by @cetanu on 2025-12-21 04:49_
+_@cetanu_
 
 ## Summary
 

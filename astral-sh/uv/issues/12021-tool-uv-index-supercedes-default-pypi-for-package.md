@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T21:18:40Z
 updated_at: 2025-03-14T12:29:53Z
 url: https://github.com/astral-sh/uv/issues/12021
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `tool.uv.index` supercedes default PyPI for package resolution
 
 ---
 
-_Issue opened by @daviles-gcs on 2025-03-06 21:18_
+_@daviles-gcs_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-27T03:01:48Z
 updated_at: 2024-04-03T23:29:53Z
 url: https://github.com/astral-sh/uv/issues/2683
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Can't install e.g. new `packaging` and CUDA version of torch simultaneously
 
 ---
 
-_Issue opened by @adzenith on 2024-03-27 03:01_
+_@adzenith_
 
 This is related to the "[Packages that exist on multiple indexes](https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes)" in the README, to [this closed ticket](https://github.com/astral-sh/uv/issues/2542), and to the idea of [pinning packages to repositories](https://github.com/astral-sh/uv/issues/171).
 

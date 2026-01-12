@@ -13,14 +13,14 @@ head: zb/netrc
 created_at: 2024-04-16T17:47:12Z
 updated_at: 2024-04-17T19:05:25Z
 url: https://github.com/astral-sh/uv/pull/3068
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Add integration test coverage for netrc authentication
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 17:47_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2465
 

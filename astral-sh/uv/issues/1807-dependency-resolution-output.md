@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T13:48:07Z
 updated_at: 2024-02-22T13:10:44Z
 url: https://github.com/astral-sh/uv/issues/1807
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Dependency resolution output
 
 ---
 
-_Issue opened by @heliocastro on 2024-02-21 13:48_
+_@heliocastro_
 
 Hello guys
 This is a possible questioning/enhancement issue.

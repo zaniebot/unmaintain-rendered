@@ -11,14 +11,14 @@ head: uv-tool-add-python-list-option
 created_at: 2025-08-15T15:52:53Z
 updated_at: 2025-10-10T17:43:23Z
 url: https://github.com/astral-sh/uv/pull/15312
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Add `uv tool list --show-python` to show python version
 
 ---
 
-_Pull request opened by @pythonweb2 on 2025-08-15 15:52_
+_@pythonweb2_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

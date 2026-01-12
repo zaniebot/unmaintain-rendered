@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T15:21:28Z
 updated_at: 2024-11-10T15:30:28Z
 url: https://github.com/astral-sh/ruff/issues/14226
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature Request: Allow re-including directories that were excluded in parent config
 
 ---
 
-_Issue opened by @nuncaeslupus on 2024-11-09 15:21_
+_@nuncaeslupus_
 
 Searched keywords: "include", "exclude", "extend-include", "extend-exclude"
 Ruff version: 0.3.0

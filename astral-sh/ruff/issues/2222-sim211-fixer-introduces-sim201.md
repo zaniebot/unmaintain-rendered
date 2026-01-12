@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T20:53:29Z
 updated_at: 2023-01-26T23:23:49Z
 url: https://github.com/astral-sh/ruff/issues/2222
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM211 fixer introduces SIM201
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 20:53_
+_@spaceone_
 
 
 

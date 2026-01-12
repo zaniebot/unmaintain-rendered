@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-21T04:02:10Z
 updated_at: 2024-05-22T04:31:04Z
 url: https://github.com/astral-sh/ruff/issues/11063
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff format with quote-style = "preserve" should not show ICS001 and flake8-quotes.multiline-quotes warnings
 
 ---
 
-_Issue opened by @57an on 2024-04-21 04:02_
+_@57an_
 
 While running ruff format with quote-style = "preserve" option I get such warnings
 

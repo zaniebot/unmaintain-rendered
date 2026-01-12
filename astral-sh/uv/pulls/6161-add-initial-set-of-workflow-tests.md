@@ -12,14 +12,14 @@ head: ag/test-workflow
 created_at: 2024-08-16T18:17:44Z
 updated_at: 2024-08-19T13:11:41Z
 url: https://github.com/astral-sh/uv/pull/6161
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # add initial set of "workflow" tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-16 18:17_
+_@BurntSushi_
 
 This PR adds a new initial set of workflow tests. A "workflow" test is a test that performs multiple actions with `uv` and then asserts something about the final state. In the current set of tests, we are only interested in changes (or absence of changes) to the lock file.
 

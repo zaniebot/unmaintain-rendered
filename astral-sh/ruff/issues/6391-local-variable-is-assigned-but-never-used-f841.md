@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-07T14:48:20Z
 updated_at: 2024-12-04T23:20:35Z
 url: https://github.com/astral-sh/ruff/issues/6391
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Local variable is assigned but never used (F841) cannot be ignored with dummy-variable-rgx in except block
 
 ---
 
-_Issue opened by @phillipuniverse on 2023-08-07 14:48_
+_@phillipuniverse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

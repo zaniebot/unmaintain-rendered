@@ -13,14 +13,14 @@ head: rule-docs-links
 created_at: 2025-02-03T06:08:12Z
 updated_at: 2025-02-03T14:54:36Z
 url: https://github.com/astral-sh/ruff/pull/15904
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Convert `.md` links in rule documentation to full URLs
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-03 06:08_
+_@InSyncWithFoo_
 
 ## Summary
 

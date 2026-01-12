@@ -13,14 +13,14 @@ head: pylint-duplicate-bases
 created_at: 2023-05-13T12:51:28Z
 updated_at: 2023-05-18T21:20:41Z
 url: https://github.com/astral-sh/ruff/pull/4411
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`pylint`] Add `duplicate-bases` rule
 
 ---
 
-_Pull request opened by @alonme on 2023-05-13 12:51_
+_@alonme_
 
 This is part of https://github.com/charliermarsh/ruff/issues/970
 

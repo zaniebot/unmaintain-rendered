@@ -12,14 +12,14 @@ head: pylint-binary-op-exception
 created_at: 2023-03-21T02:03:04Z
 updated_at: 2023-03-21T15:05:09Z
 url: https://github.com/astral-sh/ruff/pull/3639
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # `pylint`: Implement `binary-op-exception` (`PLW0711`)
 
 ---
 
-_Pull request opened by @latonis on 2023-03-21 02:03_
+_@latonis_
 
 Rule Reference: https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/binary-op-exception.html
 

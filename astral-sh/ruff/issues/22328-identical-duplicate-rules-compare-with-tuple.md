@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-01T14:36:34Z
 updated_at: 2026-01-01T15:07:21Z
 url: https://github.com/astral-sh/ruff/issues/22328
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Identical/duplicate rules: compare-with-tuple (SIM109) and repeated-equality-comparison (PLR1714)
 
 ---
 
-_Issue opened by @GideonBear on 2026-01-01 14:36_
+_@GideonBear_
 
 ### Summary
 

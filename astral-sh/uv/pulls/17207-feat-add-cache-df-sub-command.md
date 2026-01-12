@@ -11,14 +11,14 @@ head: issue-12854
 created_at: 2025-12-21T13:39:46Z
 updated_at: 2025-12-22T00:46:17Z
 url: https://github.com/astral-sh/uv/pull/17207
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # feat: add cache df sub command
 
 ---
 
-_Pull request opened by @fatelei on 2025-12-21 13:39_
+_@fatelei_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

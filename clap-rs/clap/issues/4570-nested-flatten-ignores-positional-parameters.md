@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-22T04:25:16Z
 updated_at: 2023-02-10T15:25:35Z
 url: https://github.com/clap-rs/clap/issues/4570
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Nested flatten ignores positional parameters
 
 ---
 
-_Issue opened by @nyurik on 2022-12-22 04:25_
+_@nyurik_
 
 ### Please complete the following tasks
 

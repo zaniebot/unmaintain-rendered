@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-08-08T04:44:48Z
 updated_at: 2019-03-26T08:59:00Z
 url: https://github.com/clap-rs/clap/issues/1329
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Rust 2018 support
 
 ---
 
-_Issue opened by @royaldark on 2018-08-08 04:44_
+_@royaldark_
 
 Hey all! I've been using the Rust 2018 preview in recent projects. It isn't out officially for another couple months, but soon it will supplant Rust 2015.
 

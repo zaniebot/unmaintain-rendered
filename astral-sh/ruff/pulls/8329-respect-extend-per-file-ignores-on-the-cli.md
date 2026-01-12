@@ -14,14 +14,14 @@ head: charlie/extends
 created_at: 2023-10-29T22:48:30Z
 updated_at: 2023-10-30T01:14:10Z
 url: https://github.com/astral-sh/ruff/pull/8329
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Respect --extend-per-file-ignores on the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 22:48_
+_@charliermarsh_
 
 ## Summary
 

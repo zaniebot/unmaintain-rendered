@@ -12,14 +12,14 @@ head: flake8-pyi-pyi006-bad-version-info-comparison
 created_at: 2023-03-01T11:18:28Z
 updated_at: 2023-03-01T17:59:01Z
 url: https://github.com/astral-sh/ruff/pull/3291
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # flake8-pyi PYI006 bad version info comparison
 
 ---
 
-_Pull request opened by @konstin on 2023-03-01 11:18_
+_@konstin_
 
 This implements [flake8-pyi](https://github.com/PyCQA/flake8-pyi) Y006 as PYI006 to catch bad comparisons with `sys.version_info`. I've also snuck in a change to `generate_mkdocs.py`.
 

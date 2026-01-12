@@ -13,14 +13,14 @@ head: cjm/use-def-docs
 created_at: 2024-07-17T06:42:12Z
 updated_at: 2024-07-18T00:51:00Z
 url: https://github.com/astral-sh/ruff/pull/12357
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] better docs for use-def maps
 
 ---
 
-_Pull request opened by @carljm on 2024-07-17 06:42_
+_@carljm_
 
 Add better doc comments and comments, as well as one debug assertion, to use-def map building.
 

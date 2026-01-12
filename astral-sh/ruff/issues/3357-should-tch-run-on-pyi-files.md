@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-06T07:49:14Z
 updated_at: 2023-03-06T20:19:27Z
 url: https://github.com/astral-sh/ruff/issues/3357
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Should TCH run on pyi files?
 
 ---
 
-_Issue opened by @MarcoGorelli on 2023-03-06 07:49_
+_@MarcoGorelli_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

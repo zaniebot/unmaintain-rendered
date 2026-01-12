@@ -13,14 +13,14 @@ head: zb/warning-top
 created_at: 2025-05-12T19:06:48Z
 updated_at: 2025-05-12T19:27:50Z
 url: https://github.com/astral-sh/ty/pull/334
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update top-level warning
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 19:06_
+_@zanieb_
 
 _No description provided._
 

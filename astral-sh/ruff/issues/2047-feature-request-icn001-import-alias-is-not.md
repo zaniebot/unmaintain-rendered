@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-21T03:17:31Z
 updated_at: 2023-01-21T20:43:53Z
 url: https://github.com/astral-sh/ruff/issues/2047
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Feature Request: ICN001 import-alias-is-not-conventional checking `from package import module as alias` imports
 
 ---
 
-_Issue opened by @Zeddicus414 on 2023-01-21 03:17_
+_@Zeddicus414_
 
 It appears that ICN001 can be configured via this
 ```toml

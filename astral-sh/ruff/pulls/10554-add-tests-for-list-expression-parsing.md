@@ -14,14 +14,14 @@ head: dhruv/test-list-parsing
 created_at: 2024-03-25T03:16:23Z
 updated_at: 2024-03-29T08:19:01Z
 url: https://github.com/astral-sh/ruff/pull/10554
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add tests for list expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-25 03:16_
+_@dhruvmanila_
 
 ## Summary
 

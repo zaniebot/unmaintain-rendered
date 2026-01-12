@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T22:45:13Z
 updated_at: 2023-02-22T23:23:27Z
 url: https://github.com/astral-sh/ruff/issues/3147
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff incorrectly shows UP013 violations for functional TypedDicts that cannot be converted to class syntax
 
 ---
 
-_Issue opened by @sjdemartini on 2023-02-22 22:45_
+_@sjdemartini_
 
 Ruff currently shows a violation for the pyupgrade rule UP013 "UP013 Convert X from TypedDict functional to class syntax", even if the TypedDict `X` cannot be converted to class syntax since it has keys that aren't valid identifiers.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T22:45:49Z
 updated_at: 2026-01-12T10:13:28Z
 url: https://github.com/astral-sh/uv/issues/15119
-synced_at: 2026-01-12T11:01:24Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Unexpected behavior when reusing executables via --with-executables-from
 
 ---
 
-_Issue opened by @chuckn246 on 2025-08-06 22:45_
+_@chuckn246_
 
 ### Summary
 

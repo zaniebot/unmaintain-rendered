@@ -14,14 +14,14 @@ head: simpler-suite-formatting
 created_at: 2023-08-21T09:42:50Z
 updated_at: 2023-08-21T19:01:53Z
 url: https://github.com/astral-sh/ruff/pull/6722
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Simplify suite formatting
 
 ---
 
-_Pull request opened by @konstin on 2023-08-21 09:42_
+_@konstin_
 
 Avoid the nesting in a macro by using the new `WithNodeLevel` to `PyFormatter` deref. No changes otherwise.
 

@@ -13,14 +13,14 @@ head: version-warning
 created_at: 2024-05-06T08:25:03Z
 updated_at: 2024-05-08T09:56:28Z
 url: https://github.com/astral-sh/uv/pull/3398
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Better error for unsupported Python version
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-05-06 08:25_
+_@hauntsaninja_
 
 Fixes #3371
 

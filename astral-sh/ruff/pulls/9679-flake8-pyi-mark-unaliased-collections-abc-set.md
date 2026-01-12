@@ -14,14 +14,14 @@ head: charlie/PYI025
 created_at: 2024-01-29T17:30:35Z
 updated_at: 2024-01-29T17:56:19Z
 url: https://github.com/astral-sh/ruff/pull/9679
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-pyi`] Mark `unaliased-collections-abc-set-import` fix as safe
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 17:30_
+_@charliermarsh_
 
 ## Summary
 

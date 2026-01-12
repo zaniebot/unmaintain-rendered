@@ -12,14 +12,14 @@ head: move-fua-violations
 created_at: 2023-02-03T13:14:04Z
 updated_at: 2023-02-03T13:19:19Z
 url: https://github.com/astral-sh/ruff/pull/2533
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-unused-arguments violations
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 13:14_
+_@akx_
 
 _No description provided._
 

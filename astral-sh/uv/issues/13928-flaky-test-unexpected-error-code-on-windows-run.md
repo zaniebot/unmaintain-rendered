@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T17:11:54Z
 updated_at: 2025-06-09T17:20:25Z
 url: https://github.com/astral-sh/uv/issues/13928
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Flaky test: Unexpected error code on Windows run of `lock_invalid_hash`
 
 ---
 
-_Issue opened by @jtfmumm on 2025-06-09 17:11_
+_@jtfmumm_
 
 See https://github.com/astral-sh/uv/actions/runs/15539150456/job/43745497711?pr=13917. This happened once but succeeded on subsequent runs.
 

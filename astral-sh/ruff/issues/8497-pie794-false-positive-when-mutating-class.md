@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-05T16:13:12Z
 updated_at: 2023-11-12T20:40:35Z
 url: https://github.com/astral-sh/ruff/issues/8497
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PIE794 false positive when mutating class variable. Also leads to a bad fix.
 
 ---
 
-_Issue opened by @Skylion007 on 2023-11-05 16:13_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

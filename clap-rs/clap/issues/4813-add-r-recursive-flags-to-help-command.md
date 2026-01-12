@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-30T22:49:56Z
 updated_at: 2023-11-09T22:32:30Z
 url: https://github.com/clap-rs/clap/issues/4813
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add `-r, --recursive` flags to help command
 
 ---
 
-_Issue opened by @SUPERCILEX on 2023-03-30 22:49_
+_@SUPERCILEX_
 
 ### Please complete the following tasks
 

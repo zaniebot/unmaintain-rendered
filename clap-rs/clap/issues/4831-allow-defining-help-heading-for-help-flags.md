@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-12T10:58:06Z
 updated_at: 2023-04-12T17:48:55Z
 url: https://github.com/clap-rs/clap/issues/4831
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow defining help heading for help flags
 
 ---
 
-_Issue opened by @paradigm on 2023-04-12 10:58_
+_@paradigm_
 
 ### Please complete the following tasks
 

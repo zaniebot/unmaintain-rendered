@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T01:24:23Z
 updated_at: 2024-06-19T00:35:15Z
 url: https://github.com/astral-sh/uv/issues/1674
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # ui-consistency:  should subcommands  with no argument show help by default?
 
 ---
 
-_Issue opened by @woutervh on 2024-02-19 01:24_
+_@woutervh_
 
 Was it a deliberate decicsion to make `uv venv`  directly execute?
 This is rather unexpected behaviour.

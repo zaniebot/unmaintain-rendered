@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-13T20:31:24Z
 updated_at: 2023-12-03T19:39:35Z
 url: https://github.com/astral-sh/ruff/issues/2868
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # N805 False Positive
 
 ---
 
-_Issue opened by @sharyar on 2023-02-13 20:31_
+_@sharyar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

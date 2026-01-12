@@ -13,14 +13,14 @@ head: charlie/pip-install
 created_at: 2023-12-15T18:37:32Z
 updated_at: 2023-12-15T18:43:25Z
 url: https://github.com/astral-sh/uv/pull/665
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Show resolution error once on pip-install failure
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 18:37_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/664.
 

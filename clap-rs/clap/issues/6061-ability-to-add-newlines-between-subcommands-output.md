@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T09:54:32Z
 updated_at: 2025-08-07T22:19:55Z
 url: https://github.com/clap-rs/clap/issues/6061
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ability to add newlines between subcommands output
 
 ---
 
-_Issue opened by @s1neet on 2025-07-04 09:54_
+_@s1neet_
 
 Hi Clap team
 

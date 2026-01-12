@@ -14,14 +14,14 @@ head: charlie/target
 created_at: 2024-09-20T19:26:40Z
 updated_at: 2024-09-20T19:49:00Z
 url: https://github.com/astral-sh/ruff/pull/13426
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add Python version support to ruff analyze CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 19:26_
+_@charliermarsh_
 
 _No description provided._
 

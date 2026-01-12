@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T14:43:57Z
 updated_at: 2025-06-12T14:59:47Z
 url: https://github.com/astral-sh/uv/issues/13999
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Use fast path in noop with `pip install --group`
 
 ---
 
-_Issue opened by @konstin on 2025-06-12 14:43_
+_@konstin_
 
 Using the `--group` option currently disables the fast path for noop installs, which shouldn't be necessary. See https://github.com/astral-sh/uv/pull/13742#discussion_r2142929807
 

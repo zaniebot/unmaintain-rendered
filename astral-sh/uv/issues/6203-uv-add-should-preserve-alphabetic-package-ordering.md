@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T13:14:18Z
 updated_at: 2024-08-29T14:55:05Z
 url: https://github.com/astral-sh/uv/issues/6203
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv add` should preserve alphabetic package ordering
 
 ---
 
-_Issue opened by @konstin on 2024-08-19 13:14_
+_@konstin_
 
 Currently, `uv add` always adds new entries last. It should instead preserve a lexicographic order if one is used.
 

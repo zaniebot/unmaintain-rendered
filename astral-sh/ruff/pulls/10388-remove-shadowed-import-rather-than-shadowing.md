@@ -11,14 +11,14 @@ head: charlie/f
 created_at: 2024-03-13T15:53:03Z
 updated_at: 2024-03-13T16:06:42Z
 url: https://github.com/astral-sh/ruff/pull/10388
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove shadowed import, rather than shadowing import, in F811
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 15:53_
+_@charliermarsh_
 
 ## Summary
 

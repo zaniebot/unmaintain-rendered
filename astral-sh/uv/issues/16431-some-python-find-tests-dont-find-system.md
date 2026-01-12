@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-24T06:11:15Z
 updated_at: 2026-01-04T23:17:44Z
 url: https://github.com/astral-sh/uv/issues/16431
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Some python_find:: tests don’t find system interpreters, require network
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-10-24 06:11_
+_@musicinmybrain_
 
 ### Summary
 

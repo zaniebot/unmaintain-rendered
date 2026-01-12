@@ -13,14 +13,14 @@ head: rk-typing-aliases
 created_at: 2024-12-16T00:20:19Z
 updated_at: 2024-12-17T09:38:31Z
 url: https://github.com/astral-sh/ruff/pull/14998
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Understand other legacy `typing` aliases
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-16 00:20_
+_@InSyncWithFoo_
 
 ## Summary
 

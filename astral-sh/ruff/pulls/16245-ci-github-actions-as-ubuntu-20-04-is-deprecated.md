@@ -12,14 +12,14 @@ head: upgrade-ubuntue-20-04-to-latest
 created_at: 2025-02-19T06:19:43Z
 updated_at: 2025-02-19T07:59:45Z
 url: https://github.com/astral-sh/ruff/pull/16245
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # ci(github-actions): as ubuntu 20.04 is deprecated and will not be supported, this PR update ubuntu from 20.04 to 24.04
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-19 06:19_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T17:25:38Z
 updated_at: 2025-07-16T16:14:16Z
 url: https://github.com/astral-sh/uv/issues/14630
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # support to ensure lockfile dev release matches pyproject.toml's
 
 ---
 
-_Issue opened by @thehesiod on 2025-07-15 17:25_
+_@thehesiod_
 
 **Summary**
 

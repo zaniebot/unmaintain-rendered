@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T22:55:36Z
 updated_at: 2024-03-15T00:45:48Z
 url: https://github.com/astral-sh/ruff/issues/10397
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PyLint false positive PLW0602 when `del` a global
 
 ---
 
-_Issue opened by @ilius on 2024-03-13 22:55_
+_@ilius_
 
 Sample code:
 ```

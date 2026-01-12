@@ -12,14 +12,14 @@ head: pgo-script
 created_at: 2025-04-12T20:11:54Z
 updated_at: 2025-09-15T09:08:23Z
 url: https://github.com/astral-sh/ruff/pull/17369
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Adds profile guided optimization script.
 
 ---
 
-_Pull request opened by @FilipAndersson245 on 2025-04-12 20:11_
+_@FilipAndersson245_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

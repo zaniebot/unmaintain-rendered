@@ -12,14 +12,14 @@ head: overrides-no-toml
 created_at: 2022-12-14T02:48:59Z
 updated_at: 2022-12-14T15:13:33Z
 url: https://github.com/astral-sh/ruff/pull/1232
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Apply CLI options even when no pyproject.toml is found
 
 ---
 
-_Pull request opened by @cdbrendel on 2022-12-14 02:48_
+_@cdbrendel_
 
 Thanks for all your fantastic work on this remarkable tool! 
 

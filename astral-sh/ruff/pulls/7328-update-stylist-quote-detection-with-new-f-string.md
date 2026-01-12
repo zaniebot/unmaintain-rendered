@@ -14,14 +14,14 @@ head: dhruv/issue-7293
 created_at: 2023-09-13T04:57:55Z
 updated_at: 2023-09-28T03:58:52Z
 url: https://github.com/astral-sh/ruff/pull/7328
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update `Stylist` quote detection with new f-string token
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-13 04:57_
+_@dhruvmanila_
 
 ## Summary
 

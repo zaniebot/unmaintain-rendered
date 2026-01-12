@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-20T22:06:20Z
 updated_at: 2023-06-20T23:01:22Z
 url: https://github.com/astral-sh/ruff/issues/5225
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Panic] in pre-commit with v0.0.273
 
 ---
 
-_Issue opened by @stumpylog on 2023-06-20 22:06_
+_@stumpylog_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

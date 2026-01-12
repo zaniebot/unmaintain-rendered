@@ -13,14 +13,14 @@ head: ibraheem/declared-type-context
 created_at: 2025-10-10T04:29:01Z
 updated_at: 2025-10-16T19:40:40Z
 url: https://github.com/astral-sh/ruff/pull/20796
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Use declared variable types as bidirectional type context
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-10 04:29_
+_@ibraheemdev_
 
 ## Summary
 

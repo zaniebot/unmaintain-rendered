@@ -13,14 +13,14 @@ head: zb/venv-path
 created_at: 2024-08-29T22:20:59Z
 updated_at: 2024-09-03T21:32:52Z
 url: https://github.com/astral-sh/uv/pull/6834
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Allow customizing the project environment path with `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-29 22:20_
+_@zanieb_
 
 Allows configuration of the (currently hard-coded) path to the virtual environment in projects using the `UV_PROJECT_ENVIRONMENT` environment variable.
 

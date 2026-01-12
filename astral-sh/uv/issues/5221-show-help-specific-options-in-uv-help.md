@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T14:32:34Z
 updated_at: 2024-07-31T17:10:58Z
 url: https://github.com/astral-sh/uv/issues/5221
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Show `help` specific options in `uv help`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-19 14:32_
+_@zanieb_
 
 e.g.
 

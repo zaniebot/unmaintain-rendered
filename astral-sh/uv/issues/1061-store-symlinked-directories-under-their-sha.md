@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T14:31:14Z
 updated_at: 2024-04-04T04:00:53Z
 url: https://github.com/astral-sh/uv/issues/1061
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Store symlinked directories under their SHA
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 14:31_
+_@charliermarsh_
 
 Make the archive bucket content-addressed for artifacts that have them.
 

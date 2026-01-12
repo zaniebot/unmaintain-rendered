@@ -13,14 +13,14 @@ head: zb/preference-source
 created_at: 2025-07-07T22:02:17Z
 updated_at: 2025-07-08T01:10:37Z
 url: https://github.com/astral-sh/uv/pull/14498
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Fix handling of pre-releases in preferences
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-07 22:02_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14485
 

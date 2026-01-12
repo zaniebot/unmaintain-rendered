@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-17T09:17:36Z
 updated_at: 2024-09-17T14:42:55Z
 url: https://github.com/astral-sh/ruff/issues/13376
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Docs: Rules table icon column and icons are inaccessible
 
 ---
 
-_Issue opened by @MHLut on 2024-09-17 09:17_
+_@MHLut_
 
 The last column of the [rules table](https://docs.astral.sh/ruff/rules/) produced by [crates/ruff_dev/src/generate_rules_table.rs](https://github.com/astral-sh/ruff/blob/main/crates/ruff_dev/src/generate_rules_table.rs) is inaccessible:
 

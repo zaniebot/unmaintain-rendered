@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-19T14:30:44Z
 updated_at: 2023-09-25T07:45:56Z
 url: https://github.com/astral-sh/ruff/issues/7517
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `FormatStringContinuation` to use the new f-string tokens
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-19 14:30_
+_@dhruvmanila_
 
 The `FormatStringContinuation` implementation uses the full lexer for comment handling. It expects only a limited set of tokens (`String`, `Newline`, `NonLogicalNewline`, `Comment`, `Indent`, `Dedent`) which is expected given that the lexing is performed only on the string literals.
 

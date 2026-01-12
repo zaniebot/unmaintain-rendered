@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T02:29:58Z
 updated_at: 2025-03-01T17:50:12Z
 url: https://github.com/astral-sh/uv/issues/11817
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # [Windows] Processes spawned by uv are not killed when uv is killed
 
 ---
 
-_Issue opened by @gau-nernst on 2025-02-27 02:29_
+_@gau-nernst_
 
 ### Summary
 

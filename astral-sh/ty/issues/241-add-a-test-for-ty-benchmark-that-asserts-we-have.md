@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T13:43:29Z
 updated_at: 2025-11-25T07:58:35Z
 url: https://github.com/astral-sh/ty/issues/241
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # add a test for `ty_benchmark` that asserts we have roughly the number of expected errors
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-09-03 13:43_
+_@AlexWaygood_
 
 It seems like uv had some change in 0.4 that meant our red-knot benchmark silently stopped working, in that the dependencies for our benchmark projects weren't being installed into the right virtual environment: https://github.com/astral-sh/ruff/pull/13228#issuecomment-2326322306. (Probably a skill issue in our usage of uv rather than a breaking change from uv.)
 

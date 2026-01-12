@@ -14,14 +14,14 @@ head: fix-19568
 created_at: 2025-07-26T18:16:57Z
 updated_at: 2025-09-19T13:36:57Z
 url: https://github.com/astral-sh/ruff/pull/19571
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [`flake8-comprehensions`] Preserve trailing commas for single-element lists (`C409`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-26 18:16_
+_@danparizher_
 
 ## Summary
 

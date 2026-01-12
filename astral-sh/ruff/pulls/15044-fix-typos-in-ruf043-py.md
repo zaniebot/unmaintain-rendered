@@ -13,14 +13,14 @@ head: RUF043
 created_at: 2024-12-18T15:35:19Z
 updated_at: 2024-12-18T15:48:46Z
 url: https://github.com/astral-sh/ruff/pull/15044
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix typos in `RUF043.py`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-18 15:35_
+_@InSyncWithFoo_
 
 (Accidentally introduced in #14966.)
 

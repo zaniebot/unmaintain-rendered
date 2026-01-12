@@ -12,14 +12,14 @@ head: zb/retries
 created_at: 2023-12-19T22:23:07Z
 updated_at: 2023-12-20T10:51:25Z
 url: https://github.com/astral-sh/uv/pull/710
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Perform 3 retries by default instead of 0 on failed index requests
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-19 22:23_
+_@zanieb_
 
 As a user, I'd expect retries to occur by default.
 

@@ -14,14 +14,14 @@ head: amy/unused-suppressions
 created_at: 2025-12-04T02:21:05Z
 updated_at: 2025-12-09T16:43:56Z
 url: https://github.com/astral-sh/ruff/pull/21783
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # New diagnostics for unused range suppressions
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-04 02:21_
+_@amyreese_
 
 Adds new diagnostics for reporting unused range suppressions.
 

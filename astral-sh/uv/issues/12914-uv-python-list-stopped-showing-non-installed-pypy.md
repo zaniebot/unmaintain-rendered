@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T07:45:22Z
 updated_at: 2025-04-17T16:59:14Z
 url: https://github.com/astral-sh/uv/issues/12914
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # `uv python list` stopped showing non-installed PyPy exactly after 0.6.10
 
 ---
 
-_Issue opened by @alexprengere on 2025-04-16 07:45_
+_@alexprengere_
 
 ### Summary
 

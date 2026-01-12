@@ -13,14 +13,14 @@ head: micha/rule-selection
 created_at: 2024-12-09T14:37:17Z
 updated_at: 2024-12-11T12:25:21Z
 url: https://github.com/astral-sh/ruff/pull/14874
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Lint registry and rule selection
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-09 14:37_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/parenthsized-with
 created_at: 2022-12-13T15:07:51Z
 updated_at: 2022-12-15T13:18:48Z
 url: https://github.com/astral-sh/ruff/pull/1228
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Upgrade RustPython to support parenthesized context managers
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-13 15:07_
+_@charliermarsh_
 
 Thanks to @andersk for the fix upstream. We also get much-improved end-locations for functions and classes and other compound statements based on @harupy's work.
 

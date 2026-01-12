@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-14T15:04:50Z
 updated_at: 2024-02-14T18:07:17Z
 url: https://github.com/astral-sh/ruff/issues/9986
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Allow TODO Link for TD003 to be included in same line
 
 ---
 
-_Issue opened by @severus-sn4pe on 2024-02-14 15:04_
+_@severus-sn4pe_
 
 TD003 checks that a TODO comment is associated with a link to a relevant issue or ticket.
 It requires the link or issue code to be on the line **after** the comment:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T20:29:47Z
 updated_at: 2024-08-14T22:51:10Z
 url: https://github.com/astral-sh/uv/issues/6093
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Unable to install subdirectory using `uv pip install` with a git tag
 
 ---
 
-_Issue opened by @thomasjpfan on 2024-08-14 20:29_
+_@thomasjpfan_
 
 Similar to #5942, but with a git tag:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T20:58:23Z
 updated_at: 2024-06-03T21:04:56Z
 url: https://github.com/astral-sh/uv/issues/3997
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Unable to install pytorch dev release build (uv pip fails, regular pip succeeds)
 
 ---
 
-_Issue opened by @fynnsu on 2024-06-03 20:58_
+_@fynnsu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

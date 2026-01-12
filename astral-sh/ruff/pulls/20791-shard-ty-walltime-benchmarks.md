@@ -14,14 +14,14 @@ head: shard-ty-walltime-benchmark
 created_at: 2025-10-09T16:15:17Z
 updated_at: 2025-10-10T05:55:52Z
 url: https://github.com/astral-sh/ruff/pull/20791
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # Shard ty walltime benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-09 16:15_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T21:33:45Z
 updated_at: 2025-12-03T21:37:36Z
 url: https://github.com/astral-sh/ty/issues/1749
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # fix priority of namespace vs non-namespace packages
 
 ---
 
-_Issue opened by @carljm on 2025-12-03 21:33_
+_@carljm_
 
 Consider a directory structure like this:
 

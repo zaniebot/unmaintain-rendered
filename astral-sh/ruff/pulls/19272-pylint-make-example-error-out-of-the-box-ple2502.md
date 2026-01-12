@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-10T23:56:35Z
 updated_at: 2025-07-14T19:07:04Z
 url: https://github.com/astral-sh/ruff/pull/19272
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [`pylint`] Make example error out-of-the-box (`PLE2502`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-10 23:56_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
@@ -84,11 +84,23 @@ _@dscorbett reviewed on 2025-07-11 12:21_
 
 ---
 
+_Review comment by @dscorbett on `crates/ruff_linter/src/rules/pylint/rules/bidirectional_unicode.rs`:50 on 2025-07-11 12:21_
+
+The link text should be updated to match the new target’s section name.
+
+---
+
 _Label `documentation` added by @ntBre on 2025-07-11 13:09_
 
 ---
 
 _@MeGaGiGaGon reviewed on 2025-07-11 15:00_
+
+---
+
+_Review comment by @MeGaGiGaGon on `crates/ruff_linter/src/rules/pylint/rules/bidirectional_unicode.rs`:50 on 2025-07-11 15:00_
+
+Updated
 
 ---
 

@@ -13,14 +13,14 @@ head: alex/ruf052-nits
 created_at: 2024-12-03T12:24:30Z
 updated_at: 2025-08-03T11:16:02Z
 url: https://github.com/astral-sh/ruff/pull/14755
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Minor followups to RUF052
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-03 12:24_
+_@AlexWaygood_
 
 ## Summary
 

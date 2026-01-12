@@ -13,14 +13,14 @@ head: comprehension-attribute-assignment
 created_at: 2025-04-14T17:05:47Z
 updated_at: 2025-05-07T15:21:37Z
 url: https://github.com/astral-sh/ruff/pull/17396
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] infer attribute assignments bound in comprehensions
 
 ---
 
-_Pull request opened by @mtshiba on 2025-04-14 17:05_
+_@mtshiba_
 
 ## Summary
 

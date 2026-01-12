@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T22:17:08Z
 updated_at: 2025-12-20T01:31:03Z
 url: https://github.com/astral-sh/uv/issues/7143
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Remove `{ workspace = true }` requirement for sources
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-06 22:17_
+_@charliermarsh_
 
 We error if a package is in the workspace but isn't marked as `{ workspace = true }`. Should we just infer this? As-is, you need to specify the members up to three times (once in members, once in dependencies, and once in sources).
 

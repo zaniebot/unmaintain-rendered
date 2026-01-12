@@ -14,14 +14,14 @@ head: charlie/install-err
 created_at: 2024-07-18T01:47:35Z
 updated_at: 2024-07-18T02:05:18Z
 url: https://github.com/astral-sh/uv/pull/5173
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Use display representation for download error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-18 01:47_
+_@charliermarsh_
 
 ## Summary
 

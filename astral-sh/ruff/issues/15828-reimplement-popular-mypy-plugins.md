@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-30T13:15:38Z
 updated_at: 2025-05-09T13:30:35Z
 url: https://github.com/astral-sh/ruff/issues/15828
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Reimplement popular Mypy plugins
 
 ---
 
-_Issue opened by @johnthagen on 2025-01-30 13:15_
+_@johnthagen_
 
 ### Description
 

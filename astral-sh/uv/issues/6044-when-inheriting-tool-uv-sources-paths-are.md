@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T20:55:02Z
 updated_at: 2024-08-12T21:14:14Z
 url: https://github.com/astral-sh/uv/issues/6044
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # When inheriting `tool.uv.sources`, paths are resolved relative to members
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-12 20:55_
+_@charliermarsh_
 
 _No description provided._
 

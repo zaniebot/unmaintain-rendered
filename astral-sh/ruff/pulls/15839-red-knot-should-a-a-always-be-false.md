@@ -14,14 +14,14 @@ head: dcreager/visconand
 created_at: 2025-01-30T22:49:55Z
 updated_at: 2025-02-03T14:17:39Z
 url: https://github.com/astral-sh/ruff/pull/15839
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Should A ∧ !A always be false?
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-30 22:49_
+_@dcreager_
 
 This mimics a simplification we have on the OR side, where we simplify `A ∨ !A` to true.  This requires changes to how we add `while` statements to the semantic index, since we now need distinct `VisibilityConstraint`s if we need to model evaluating a `Constraint` multiple times at different points in the execution of the program.
 

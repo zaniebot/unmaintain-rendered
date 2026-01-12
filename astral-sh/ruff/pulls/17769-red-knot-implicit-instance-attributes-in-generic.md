@@ -13,14 +13,14 @@ head: david/fix-16928
 created_at: 2025-05-01T15:28:54Z
 updated_at: 2025-05-02T15:57:36Z
 url: https://github.com/astral-sh/ruff/pull/17769
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Implicit instance attributes in generic methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-01 15:28_
+_@sharkdp_
 
 ## Summary
 

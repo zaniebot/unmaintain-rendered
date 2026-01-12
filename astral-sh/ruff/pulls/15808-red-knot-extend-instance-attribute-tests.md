@@ -13,14 +13,14 @@ head: david/extend-instance-attribute-tests
 created_at: 2025-01-29T11:42:59Z
 updated_at: 2025-01-30T09:38:33Z
 url: https://github.com/astral-sh/ruff/pull/15808
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Extend instance-attribute tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-29 11:42_
+_@sharkdp_
 
 ## Summary
 

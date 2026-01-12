@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T09:35:52Z
 updated_at: 2025-11-18T16:10:40Z
 url: https://github.com/astral-sh/ty/issues/1431
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider enabling goto definition for augmented-assignment operators
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-24 09:35_
+_@AlexWaygood_
 
 Previously discussed in https://github.com/astral-sh/ty/issues/1151#issuecomment-3430803296
 

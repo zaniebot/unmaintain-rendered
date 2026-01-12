@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T01:27:01Z
 updated_at: 2024-11-11T00:14:52Z
 url: https://github.com/astral-sh/uv/issues/8977
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # `uv add --no-sync somepackage` creates a directory called .venv
 
 ---
 
-_Issue opened by @rdaysky on 2024-11-10 01:27_
+_@rdaysky_
 
 Expected behavior: nothing other than pyproject.toml and uv.lock is affected
 

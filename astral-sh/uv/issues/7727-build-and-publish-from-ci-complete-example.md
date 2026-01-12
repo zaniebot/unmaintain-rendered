@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T20:19:33Z
 updated_at: 2025-09-25T19:04:06Z
 url: https://github.com/astral-sh/uv/issues/7727
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Build and publish from CI complete example
 
 ---
 
-_Issue opened by @davidlrobinson on 2024-09-26 20:19_
+_@davidlrobinson_
 
 First off, thank you for your work on uv. I read in #7475 that one of the intended uses of `uv build` is the following:
 

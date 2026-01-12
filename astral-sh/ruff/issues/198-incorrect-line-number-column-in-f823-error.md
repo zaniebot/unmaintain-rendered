@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-15T02:21:09Z
 updated_at: 2022-09-15T02:51:08Z
 url: https://github.com/astral-sh/ruff/issues/198
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Incorrect line number/column in F823 error
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-15 02:21_
+_@Jackenmen_
 
 For code:
 ```py

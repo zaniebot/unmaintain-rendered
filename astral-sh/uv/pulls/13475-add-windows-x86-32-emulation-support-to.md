@@ -13,14 +13,14 @@ head: zb/windows-86
 created_at: 2025-05-15T17:43:54Z
 updated_at: 2025-10-30T14:50:29Z
 url: https://github.com/astral-sh/uv/pull/13475
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Add Windows x86-32 emulation support to interpreter architecture checks
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-15 17:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13471
 

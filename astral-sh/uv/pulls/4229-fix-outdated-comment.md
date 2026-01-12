@@ -12,14 +12,14 @@ head: typo
 created_at: 2024-06-11T13:32:56Z
 updated_at: 2024-06-11T14:06:48Z
 url: https://github.com/astral-sh/uv/pull/4229
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Fix outdated comment
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-11 13:32_
+_@ibraheemdev_
 
 ## Summary
 

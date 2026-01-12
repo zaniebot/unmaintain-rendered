@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-25T01:23:58Z
 updated_at: 2025-12-02T02:06:37Z
 url: https://github.com/astral-sh/ty/issues/1628
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `Literal` `str`s do not work with `Sequence[T]` generic function argument narrowing
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-25 01:23_
+_@MeGaGiGaGon_
 
 ### Summary
 

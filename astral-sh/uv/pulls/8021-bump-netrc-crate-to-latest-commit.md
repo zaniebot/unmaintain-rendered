@@ -14,14 +14,14 @@ head: zb/netc
 created_at: 2024-10-08T21:16:19Z
 updated_at: 2024-10-08T22:15:41Z
 url: https://github.com/astral-sh/uv/pull/8021
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Bump netrc crate to latest commit
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-08 21:16_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8003
 Closes https://github.com/astral-sh/uv/issues/6809

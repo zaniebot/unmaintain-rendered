@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-17T17:47:17Z
 updated_at: 2025-01-17T19:21:42Z
 url: https://github.com/astral-sh/uv/issues/10718
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # uv using default pypi when pytorch nightly index is specified
 
 ---
 
-_Issue opened by @rbavery on 2025-01-17 17:47_
+_@rbavery_
 
 I have the following toml where torch has a lower bound and is pinned to use the nightly index. From this previous issue, this index gets used if I don't specify a lower bound: https://github.com/astral-sh/uv/issues/10702#issue-2794300371
 

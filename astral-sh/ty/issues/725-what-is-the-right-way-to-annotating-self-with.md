@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-29T08:02:17Z
 updated_at: 2025-06-30T03:59:27Z
 url: https://github.com/astral-sh/ty/issues/725
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # What is the right way to annotating `self` with other types without losing its original type?
 
 ---
 
-_Issue opened by @observerw on 2025-06-29 08:02_
+_@observerw_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T09:45:05Z
 updated_at: 2024-12-26T16:53:07Z
 url: https://github.com/astral-sh/uv/issues/6503
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv lock` and platform-specific resolution
 
 ---
 
-_Issue opened by @SamyAB on 2024-08-23 09:45_
+_@SamyAB_
 
 The documentation says:
 

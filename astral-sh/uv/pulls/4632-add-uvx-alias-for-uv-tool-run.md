@@ -14,14 +14,14 @@ head: zb/uvx
 created_at: 2024-06-28T17:59:31Z
 updated_at: 2024-07-02T01:42:04Z
 url: https://github.com/astral-sh/uv/pull/4632
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Add `uvx` alias for `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 17:59_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4476
 

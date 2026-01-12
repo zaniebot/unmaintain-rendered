@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T15:57:36Z
 updated_at: 2025-08-14T15:55:27Z
 url: https://github.com/astral-sh/uv/issues/12067
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Proposal: remove default-groups option
 
 ---
 
-_Issue opened by @rsyring on 2025-03-08 15:57_
+_@rsyring_
 
 refs: https://github.com/astral-sh/uv/issues/11691
 refs: https://github.com/astral-sh/uv/issues/10934

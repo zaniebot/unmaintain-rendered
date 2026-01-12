@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T05:46:50Z
 updated_at: 2023-11-30T19:15:20Z
 url: https://github.com/astral-sh/ruff/issues/8900
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Fails to parse type aliases in same line body
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 05:46_
+_@MichaReiser_
 
 Ruff fails to parse type aliases in same line bodies
 

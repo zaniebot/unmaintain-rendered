@@ -13,14 +13,14 @@ head: main
 created_at: 2024-02-15T10:48:18Z
 updated_at: 2024-02-16T03:40:01Z
 url: https://github.com/astral-sh/ruff/pull/9996
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix SIM113 false positive with async for loops
 
 ---
 
-_Pull request opened by @adrienball on 2024-02-15 10:48_
+_@adrienball_
 
 ## Summary
 Ignore `async for` loops when checking the SIM113 rule.

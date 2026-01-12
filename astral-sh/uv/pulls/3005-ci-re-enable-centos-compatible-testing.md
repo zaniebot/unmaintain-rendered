@@ -13,14 +13,14 @@ head: rocky
 created_at: 2024-04-12T02:15:02Z
 updated_at: 2024-04-12T03:56:26Z
 url: https://github.com/astral-sh/uv/pull/3005
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # ci: re-enable centos compatible testing
 
 ---
 
-_Pull request opened by @samypr100 on 2024-04-12 02:15_
+_@samypr100_
 
 ## Summary
 

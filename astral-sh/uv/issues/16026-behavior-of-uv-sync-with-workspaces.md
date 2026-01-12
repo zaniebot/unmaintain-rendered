@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T15:02:20Z
 updated_at: 2025-11-01T20:03:12Z
 url: https://github.com/astral-sh/uv/issues/16026
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Behavior of "uv sync" with workspaces
 
 ---
 
-_Issue opened by @maxime-tremblay-hq on 2025-09-25 15:02_
+_@maxime-tremblay-hq_
 
 ### Question
 

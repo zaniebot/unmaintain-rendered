@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-09T18:39:36Z
 updated_at: 2023-05-18T14:33:36Z
 url: https://github.com/astral-sh/ruff/issues/4321
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] FLY002 fails with `f"{', '.join([])}"`
 
 ---
 
-_Issue opened by @konstin on 2023-05-09 18:39_
+_@konstin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

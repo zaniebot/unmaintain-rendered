@@ -13,14 +13,14 @@ head: doc_minimum_windows_server_version
 created_at: 2024-10-06T06:37:57Z
 updated_at: 2024-10-06T14:35:22Z
 url: https://github.com/astral-sh/uv/pull/7946
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Clearly specify the minimum supported Windows Server version in the document
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-10-06 06:37_
+_@FishAlchemist_
 
 ## Summary
 https://doc.rust-lang.org/1.81.0/rustc/platform-support.html

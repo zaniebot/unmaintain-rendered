@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T23:07:11Z
 updated_at: 2025-12-25T10:26:46Z
 url: https://github.com/astral-sh/ty/issues/2212
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error message improvement: spell out MRO and other TLAs
 
 ---
 
-_Issue opened by @pjonsson on 2025-12-24 23:07_
+_@pjonsson_
 
 ### Summary
 

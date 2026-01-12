@@ -13,14 +13,14 @@ head: charlie/period
 created_at: 2023-11-03T16:17:06Z
 updated_at: 2023-11-03T16:38:30Z
 url: https://github.com/astral-sh/ruff/pull/8475
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove trailing periods from NumPy 2.0 code actions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 16:17_
+_@charliermarsh_
 
 Very minor consistency thing with other rules. For code actions, we tend to say `Replace with {X}` rathern than `Use {X} instead.`
 

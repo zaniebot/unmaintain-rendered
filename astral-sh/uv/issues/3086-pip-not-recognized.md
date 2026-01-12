@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-17T03:40:33Z
 updated_at: 2024-12-30T05:25:54Z
 url: https://github.com/astral-sh/uv/issues/3086
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # pip not recognized
 
 ---
 
-_Issue opened by @dlasusa on 2024-04-17 03:40_
+_@dlasusa_
 
 Not sure if this is a bug or expected behavior.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:30:27Z
 updated_at: 2025-11-13T17:51:31Z
 url: https://github.com/astral-sh/ty/issues/80
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Provide basic intelli-sense and diagnostics for non-project files
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:30_
+_@MichaReiser_
 
 LSP clients can open a file that doesn't belong to the current project. Red Knot should still provide basic intelli sense support and diagnostics.
 

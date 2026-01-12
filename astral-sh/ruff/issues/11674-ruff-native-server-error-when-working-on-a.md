@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T05:18:03Z
 updated_at: 2024-06-13T06:09:37Z
 url: https://github.com/astral-sh/ruff/issues/11674
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff native server error when working on a untitled buffer with VsCode
 
 ---
 
-_Issue opened by @rainzee on 2024-06-01 05:18_
+_@rainzee_
 
 ### Abstract
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T12:13:08Z
 updated_at: 2025-09-15T09:07:33Z
 url: https://github.com/astral-sh/ruff/issues/20226
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter: literal collection arguments lead to awful looking GNU-style indents
 
 ---
 
-_Issue opened by @xmo-odoo on 2025-09-04 12:13_
+_@xmo-odoo_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-04T04:54:40Z
 updated_at: 2025-02-04T13:41:08Z
 url: https://github.com/astral-sh/ruff/issues/7799
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Code generator doesn't preserve individual string quote style
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-10-04 04:54_
+_@dhruvmanila_
 
 This is related to the `Generator` struct.
 

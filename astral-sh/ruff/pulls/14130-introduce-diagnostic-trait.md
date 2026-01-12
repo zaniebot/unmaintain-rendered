@@ -13,14 +13,14 @@ head: micha/structured-diagnostics
 created_at: 2024-11-06T11:34:26Z
 updated_at: 2024-11-07T12:26:21Z
 url: https://github.com/astral-sh/ruff/pull/14130
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Introduce `Diagnostic` trait
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-06 11:34_
+_@MichaReiser_
 
 ## Summary
 

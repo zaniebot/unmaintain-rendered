@@ -14,14 +14,14 @@ head: main
 created_at: 2024-09-11T16:27:36Z
 updated_at: 2024-09-11T18:13:56Z
 url: https://github.com/astral-sh/uv/pull/7298
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Fix PPC64 page size in binary builds.
 
 ---
 
-_Pull request opened by @tom-miller1 on 2024-09-11 16:27_
+_@tom-miller1_
 
 ## Summary
 

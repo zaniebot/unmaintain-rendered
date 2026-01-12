@@ -13,14 +13,14 @@ head: amy/t201-basicconfig
 created_at: 2025-12-19T23:49:48Z
 updated_at: 2026-01-05T19:42:49Z
 url: https://github.com/astral-sh/ruff/pull/22101
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [`flake8_print`] better suggestion for basicConfig in `T201` docs
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-19 23:49_
+_@amyreese_
 
 
 <!--

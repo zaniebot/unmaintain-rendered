@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T12:40:26Z
 updated_at: 2024-12-30T15:29:54Z
 url: https://github.com/astral-sh/uv/issues/10237
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # error   of    uv add torch
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-12-30 12:40_
+_@Super1Windcloud_
 
 ## I  use win11  and python 3.12
 

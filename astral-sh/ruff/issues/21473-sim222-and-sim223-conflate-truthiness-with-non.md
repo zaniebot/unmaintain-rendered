@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-15T16:53:18Z
 updated_at: 2025-12-01T21:57:52Z
 url: https://github.com/astral-sh/ruff/issues/21473
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM222 and SIM223 conflate truthiness with non-emptiness
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-15 16:53_
+_@dscorbett_
 
 ### Summary
 

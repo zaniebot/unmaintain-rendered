@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T17:08:52Z
 updated_at: 2025-05-09T10:34:26Z
 url: https://github.com/astral-sh/ruff/issues/2446
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Feature request: Ignore specific rule on per file basis via in-file comment
 
 ---
 
-_Issue opened by @mmarras on 2023-02-01 17:08_
+_@mmarras_
 
 I know we can ignore specific files per toml (`per-file-ignores`) and we can also ignore the whole file by putting `# ruff: noqa`  at the top of the file. Also I can do `--extend-ignore=<rule>`.
 

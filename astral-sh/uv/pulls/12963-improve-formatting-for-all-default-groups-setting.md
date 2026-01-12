@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-04-18T11:46:14Z
 updated_at: 2025-04-18T16:44:59Z
 url: https://github.com/astral-sh/uv/pull/12963
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Improve formatting for `"all"` `default-groups` setting documentation
 
 ---
 
-_Pull request opened by @johnthagen on 2025-04-18 11:46_
+_@johnthagen_
 
 ## Summary
 

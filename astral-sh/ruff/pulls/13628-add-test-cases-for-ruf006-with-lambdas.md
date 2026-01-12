@@ -13,14 +13,14 @@ head: zb/ruf006-lambda-test
 created_at: 2024-10-04T15:31:43Z
 updated_at: 2024-10-04T19:09:46Z
 url: https://github.com/astral-sh/ruff/pull/13628
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Add test cases for `RUF006` with lambdas
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 15:31_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/ruff/issues/13619
 

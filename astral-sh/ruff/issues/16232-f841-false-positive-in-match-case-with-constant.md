@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T15:28:25Z
 updated_at: 2025-02-18T22:19:44Z
 url: https://github.com/astral-sh/ruff/issues/16232
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F841 false positive in match case with constant
 
 ---
 
-_Issue opened by @ember91 on 2025-02-18 15:28_
+_@ember91_
 
 ### Description
 

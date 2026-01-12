@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T14:48:21Z
 updated_at: 2024-08-30T14:56:39Z
 url: https://github.com/astral-sh/uv/issues/6876
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Running `uv pip compile` with `--find-links` pointing towards a local wheel does not produce the expected output
 
 ---
 
-_Issue opened by @williamglasse on 2024-08-30 14:48_
+_@williamglasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

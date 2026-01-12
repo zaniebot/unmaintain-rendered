@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T12:31:20Z
 updated_at: 2025-10-15T15:06:04Z
 url: https://github.com/astral-sh/ruff/issues/20265
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PYI061 fix can change operator precedence
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-05 12:31_
+_@dscorbett_
 
 ### Summary
 

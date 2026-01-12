@@ -13,14 +13,14 @@ head: cjm/docslink
 created_at: 2025-05-13T01:00:02Z
 updated_at: 2025-05-13T04:30:37Z
 url: https://github.com/astral-sh/ty/pull/341
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # fix link to CLI docs
 
 ---
 
-_Pull request opened by @carljm on 2025-05-13 01:00_
+_@carljm_
 
 ## Summary
 

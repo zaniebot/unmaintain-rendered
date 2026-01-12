@@ -13,14 +13,14 @@ head: fix-async-for-perf401
 created_at: 2024-11-23T02:52:58Z
 updated_at: 2025-01-15T10:50:16Z
 url: https://github.com/astral-sh/ruff/pull/14551
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`perflint`] - Fix `manual-list-comprehension` for async generators (`PERF401`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-23 02:52_
+_@diceroll123_
 
 ## Summary
 

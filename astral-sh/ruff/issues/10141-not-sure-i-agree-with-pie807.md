@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T20:57:10Z
 updated_at: 2024-03-11T17:41:06Z
 url: https://github.com/astral-sh/ruff/issues/10141
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Not sure I agree with PIE807
 
 ---
 
-_Issue opened by @ezyang on 2024-02-26 20:57_
+_@ezyang_
 
 When I say `lambda: {}`, it is clear that this callable takes no arguments, and I will raise an error if you pass me arguments. When you transform this into `dict`, now I could potentially take arguments, and I can only rely on an appropriate type signature to prevent people from inappropriately feeding arguments into this lambda.
 

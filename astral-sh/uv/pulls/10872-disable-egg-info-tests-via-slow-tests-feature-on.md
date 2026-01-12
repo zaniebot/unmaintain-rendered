@@ -13,14 +13,14 @@ head: charlie/egg-info
 created_at: 2025-01-22T19:35:35Z
 updated_at: 2025-01-22T21:39:05Z
 url: https://github.com/astral-sh/uv/pull/10872
-synced_at: 2026-01-10T11:45:15Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Disable `.egg-info` tests via `slow-tests` feature on Windows and macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 19:35_
+_@charliermarsh_
 
 ## Summary
 

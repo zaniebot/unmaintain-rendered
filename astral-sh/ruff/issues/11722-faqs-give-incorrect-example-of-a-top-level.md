@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T14:05:36Z
 updated_at: 2024-06-10T20:33:15Z
 url: https://github.com/astral-sh/ruff/issues/11722
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FAQs give incorrect example of a top-level settings 
 
 ---
 
-_Issue opened by @keikoro on 2024-06-03 14:05_
+_@keikoro_
 
 The FAQ section ["How does Ruff's import sorting compare to isort"](https://docs.astral.sh/ruff/faq/#how-does-ruffs-import-sorting-compare-to-isort) contains a `pyproject.toml` example config to demonstrate the `known-first-party` setting.
 

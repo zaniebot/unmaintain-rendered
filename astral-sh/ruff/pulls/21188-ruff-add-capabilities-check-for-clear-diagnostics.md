@@ -11,14 +11,14 @@ head: add-capabilities-check-for-clear_diagnostics_for_document
 created_at: 2025-11-01T19:16:07Z
 updated_at: 2025-11-03T14:50:50Z
 url: https://github.com/astral-sh/ruff/pull/21188
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`ruff`] Add capabilities check for `clear_diagnostics_for_document`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-11-01 19:16_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

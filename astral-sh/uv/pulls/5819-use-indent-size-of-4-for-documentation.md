@@ -13,14 +13,14 @@ head: zb/indent-4
 created_at: 2024-08-06T16:53:07Z
 updated_at: 2024-08-15T19:35:50Z
 url: https://github.com/astral-sh/uv/pull/5819
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Use indent size of 4 for documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 16:53_
+_@zanieb_
 
 This is required for proper sub-bullet rendering in mkdocs
 

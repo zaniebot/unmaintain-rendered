@@ -13,14 +13,14 @@ head: charlie/F401
 created_at: 2023-09-10T16:21:32Z
 updated_at: 2023-09-10T16:40:34Z
 url: https://github.com/astral-sh/ruff/pull/7260
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid F401 panic with noqa import name
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-10 16:21_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7244.
 

@@ -13,14 +13,14 @@ head: refactor-fetch
 created_at: 2024-07-07T07:10:35Z
 updated_at: 2024-07-23T12:37:25Z
 url: https://github.com/astral-sh/uv/pull/4853
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Refactor `fetch-download-metadata.py` script
 
 ---
 
-_Pull request opened by @j178 on 2024-07-07 07:10_
+_@j178_
 
 ## Summary
 

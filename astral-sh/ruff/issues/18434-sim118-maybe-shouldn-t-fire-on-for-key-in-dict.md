@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-02T20:08:26Z
 updated_at: 2025-06-03T13:10:54Z
 url: https://github.com/astral-sh/ruff/issues/18434
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM118 maybe shouldn't fire on `for key in dict.keys()`
 
 ---
 
-_Issue opened by @zackw on 2025-06-02 20:08_
+_@zackw_
 
 ### Summary
 

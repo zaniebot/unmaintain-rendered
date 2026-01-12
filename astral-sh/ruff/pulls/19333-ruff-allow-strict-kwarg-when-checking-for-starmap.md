@@ -15,14 +15,14 @@ head: starmarp-py314
 created_at: 2025-07-14T16:15:26Z
 updated_at: 2025-07-15T12:04:23Z
 url: https://github.com/astral-sh/ruff/pull/19333
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [`ruff`] Allow `strict` kwarg when checking for `starmap-zip` (`RUF058`) in Python 3.14+
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-14 16:15_
+_@dylwil3_
 
 In Python 3.14 the keyword-argument `strict` was [added to `map`](https://docs.python.org/3.14/library/functions.html#map). This PR adds support for this when replacing a starmap-zip call with map in [starmap-zip (RUF058)](https://docs.astral.sh/ruff/rules/starmap-zip/#starmap-zip-ruf058).
 

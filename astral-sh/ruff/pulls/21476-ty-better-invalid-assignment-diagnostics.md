@@ -15,14 +15,14 @@ head: david/fix-1556
 created_at: 2025-11-15T21:41:29Z
 updated_at: 2025-11-18T14:08:02Z
 url: https://github.com/astral-sh/ruff/pull/21476
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Better invalid-assignment diagnostics
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-15 21:41_
+_@sharkdp_
 
 ## Summary
 

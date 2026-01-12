@@ -13,14 +13,14 @@ head: e211
 created_at: 2023-03-02T21:58:48Z
 updated_at: 2023-10-31T14:30:45Z
 url: https://github.com/astral-sh/ruff/pull/3313
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(E211): add rule + autofix
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-03-02 21:58_
+_@carlosmiei_
 
 - https://www.flake8rules.com/rules/E211.html
 

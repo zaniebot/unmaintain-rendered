@@ -13,14 +13,14 @@ head: micha/shared-components
 created_at: 2025-03-17T18:38:03Z
 updated_at: 2025-03-18T07:43:49Z
 url: https://github.com/astral-sh/ruff/pull/16819
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [playground] Extract shared components
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 18:38_
+_@MichaReiser_
 
 ## Summary
 Extract components that can be shared with the Red Knot playground.

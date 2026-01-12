@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T13:59:01Z
 updated_at: 2024-04-29T20:33:19Z
 url: https://github.com/astral-sh/uv/issues/1490
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # activate.nu error
 
 ---
 
-_Issue opened by @Arengard on 2024-02-16 13:59_
+_@Arengard_
 
 Scripts\activate.nu:95:1]
  95 │ export alias pydoc = python -m pydoc

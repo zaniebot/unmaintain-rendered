@@ -13,14 +13,14 @@ head: ppc-page-size
 created_at: 2024-02-22T13:35:42Z
 updated_at: 2024-02-23T07:32:22Z
 url: https://github.com/astral-sh/ruff/pull/10080
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Set PowerPC Page Size to 64KB
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-22 13:35_
+_@MichaReiser_
 
 ## Summary
 

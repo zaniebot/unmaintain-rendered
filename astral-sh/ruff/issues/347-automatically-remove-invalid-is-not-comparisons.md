@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-07T20:05:20Z
 updated_at: 2022-11-07T20:18:05Z
 url: https://github.com/astral-sh/ruff/issues/347
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically remove invalid `is not` comparisons
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 20:05_
+_@charliermarsh_
 
 From `pyupgrade` (which has so much good stuff):
 

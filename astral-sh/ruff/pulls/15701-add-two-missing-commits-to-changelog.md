@@ -13,14 +13,14 @@ head: changelog
 created_at: 2025-01-23T21:28:12Z
 updated_at: 2025-01-24T05:31:48Z
 url: https://github.com/astral-sh/ruff/pull/15701
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add two missing commits to changelog
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-23 21:28_
+_@dylwil3_
 
 Some commits appeared between the creation and merging of the "bump to v0.9.3" branch. 
 

@@ -11,14 +11,14 @@ head: tfsingh/patch
 created_at: 2024-09-25T05:21:50Z
 updated_at: 2024-12-02T05:32:01Z
 url: https://github.com/astral-sh/uv/pull/7678
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Add command to bump .python-version(s) files to latest patch version
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-25 05:21_
+_@tfsingh_
 
 This PR adds a command (```uv python patch```) which bumps the distributions listed in .python-versions(s) files to the latest patch version available.
 

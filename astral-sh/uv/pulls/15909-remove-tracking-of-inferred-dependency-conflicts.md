@@ -13,14 +13,14 @@ head: zb/no-inferred-conflict
 created_at: 2025-09-17T12:58:39Z
 updated_at: 2025-10-01T15:03:44Z
 url: https://github.com/astral-sh/uv/pull/15909
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Remove tracking of inferred dependency conflicts
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-17 12:58_
+_@zanieb_
 
 Alternative to #15884 (see commentary there)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T21:34:59Z
 updated_at: 2024-06-05T15:36:31Z
 url: https://github.com/astral-sh/uv/issues/3968
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Should installed distributions use canonical or specified path?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-02 21:34_
+_@charliermarsh_
 
 Right now, if you create a symlink, and `uv pip install` the symlink, then `uv pip freeze`, we list the canonical path (with symlinks resolved). Is this preferred? Or should we use the user-provided path? The latter is more complex as we still need to normalize it.
 

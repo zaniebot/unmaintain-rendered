@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-30T18:57:29Z
 updated_at: 2025-07-04T02:07:10Z
 url: https://github.com/astral-sh/uv/issues/14375
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # "uv pip install" fails from Artifactory index
 
 ---
 
-_Issue opened by @geokarak on 2025-06-30 18:57_
+_@geokarak_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: use-owned-ast-and-tokens-in-bench
 created_at: 2024-05-29T11:07:47Z
 updated_at: 2024-05-29T16:10:33Z
 url: https://github.com/astral-sh/ruff/pull/11598
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # use owned ast and tokens in bench
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-29 11:07_
+_@MichaReiser_
 
 ## Summary
 

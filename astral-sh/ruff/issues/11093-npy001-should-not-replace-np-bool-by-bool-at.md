@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T20:32:03Z
 updated_at: 2024-06-06T06:31:11Z
 url: https://github.com/astral-sh/ruff/issues/11093
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # NPY001 should not replace `np.bool` by `bool` (at least in type hints)
 
 ---
 
-_Issue opened by @bersbersbers on 2024-04-22 20:32_
+_@bersbersbers_
 
 `bug.py`
 ```python

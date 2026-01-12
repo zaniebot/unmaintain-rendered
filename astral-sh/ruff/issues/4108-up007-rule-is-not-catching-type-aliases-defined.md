@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T00:32:36Z
 updated_at: 2023-04-26T17:14:01Z
 url: https://github.com/astral-sh/ruff/issues/4108
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP007 rule is not catching type aliases defined without the `TypeAlias` annotation
 
 ---
 
-_Issue opened by @ericbn on 2023-04-26 00:32_
+_@ericbn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

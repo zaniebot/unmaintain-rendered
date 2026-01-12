@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-10T20:01:41Z
 updated_at: 2025-03-11T14:58:58Z
 url: https://github.com/astral-sh/ruff/issues/14899
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] (Gradual) intersection types are not handled in assignability
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-10 20:01_
+_@sharkdp_
 
 The `is_assignable_to`-is-reflexive property test, which makes sure that we can assign any type to itself, is currently failing with counter-examples like `Any & T`, where `T` is an arbitrary type (that doesn't let the intersection collapse).
 

@@ -13,14 +13,14 @@ head: sim911-guard-non-empty-args
 created_at: 2025-10-04T07:41:01Z
 updated_at: 2025-10-21T20:58:49Z
 url: https://github.com/astral-sh/ruff/pull/20697
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`flake8-simplify`] Skip `SIM911` when unknown arguments are present
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-04 07:41_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

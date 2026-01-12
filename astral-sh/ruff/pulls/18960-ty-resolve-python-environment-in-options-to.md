@@ -14,14 +14,14 @@ head: micha/remove-python-environment-path
 created_at: 2025-06-26T14:41:14Z
 updated_at: 2025-06-26T16:02:27Z
 url: https://github.com/astral-sh/ruff/pull/18960
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Resolve python environment in `Options::to_program_settings`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-26 14:41_
+_@MichaReiser_
 
 ## Summary
 

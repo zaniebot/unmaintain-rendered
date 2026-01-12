@@ -12,14 +12,14 @@ head: charlie/msg
 created_at: 2022-12-05T17:04:40Z
 updated_at: 2022-12-05T17:04:51Z
 url: https://github.com/astral-sh/ruff/pull/1068
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Include pyproject.toml path in error message
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-05 17:04_
+_@charliermarsh_
 
 ![Screen Shot 2022-12-05 at 12 03 10 PM](https://user-images.githubusercontent.com/1309177/205698031-1853988c-d940-4366-874f-6b4424737676.png)
 

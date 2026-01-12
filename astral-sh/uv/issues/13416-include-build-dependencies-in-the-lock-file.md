@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T21:00:48Z
 updated_at: 2025-05-13T02:56:52Z
 url: https://github.com/astral-sh/uv/issues/13416
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Include Build Dependencies in the Lock File
 
 ---
 
-_Issue opened by @pythonweb2 on 2025-05-12 21:00_
+_@pythonweb2_
 
 ### Summary
 

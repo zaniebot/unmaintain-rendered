@@ -12,14 +12,14 @@ head: rust-based-lsp
 created_at: 2023-09-10T18:08:47Z
 updated_at: 2024-05-08T12:41:47Z
 url: https://github.com/astral-sh/ruff/pull/7262
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # POC: Rust LSP
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-10 18:08_
+_@MichaReiser_
 
 # Rust LSP 
 

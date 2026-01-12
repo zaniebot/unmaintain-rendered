@@ -12,14 +12,14 @@ head: pylint-ple0604-ple0605
 created_at: 2023-01-26T23:54:30Z
 updated_at: 2023-01-27T16:29:03Z
 url: https://github.com/astral-sh/ruff/pull/2241
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: pylint `PLE0604` and `PLE0605`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-26 23:54_
+_@sbrugman_
 
 Tracking issue: https://github.com/charliermarsh/ruff/issues/970
 

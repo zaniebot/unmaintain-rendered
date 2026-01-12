@@ -13,14 +13,14 @@ head: charlie/static
 created_at: 2024-01-12T18:20:26Z
 updated_at: 2024-01-12T19:33:46Z
 url: https://github.com/astral-sh/ruff/pull/9494
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`ruff`] Avoid treating named expressions as static keys (`RUF011`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 18:20_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9487.
 

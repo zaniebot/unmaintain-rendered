@@ -11,14 +11,14 @@ head: feat/warn-on-tilde-eq
 created_at: 2024-10-17T10:29:13Z
 updated_at: 2025-05-27T16:16:21Z
 url: https://github.com/astral-sh/uv/pull/8284
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Warn users on "~=" python-version
 
 ---
 
-_Pull request opened by @ianpaul10 on 2024-10-17 10:29_
+_@ianpaul10_
 
 ## Summary
 

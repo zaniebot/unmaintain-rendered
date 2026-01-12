@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-29T20:58:42Z
 updated_at: 2025-06-16T15:24:41Z
 url: https://github.com/astral-sh/uv/issues/2096
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Support PyPy
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-29 20:58_
+_@charliermarsh_
 
 Right now, `uv` does not officially support PyPy. It might work, and we've done a few things to enable it, like:
 

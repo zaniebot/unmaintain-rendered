@@ -13,14 +13,14 @@ head: charlie/13
 created_at: 2025-03-27T21:49:34Z
 updated_at: 2025-03-28T11:49:47Z
 url: https://github.com/astral-sh/uv/pull/12518
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Bump least-recent non-EOL macOS version to 13.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-27 21:49_
+_@charliermarsh_
 
 ## Summary
 

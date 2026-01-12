@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-11-07T20:42:15Z
 updated_at: 2018-08-02T03:30:14Z
 url: https://github.com/clap-rs/clap/issues/1097
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support trailing comma for arg_enum!()
 
 ---
 
-_Issue opened by @behnam on 2017-11-07 20:42_
+_@behnam_
 
 Would be great to support trailing comma for `arg_enum!()` macro, as Rust itself does and this error got me spend a few minutes trying to figure out if I got something (else) wrong in my definition.
 

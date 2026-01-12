@@ -13,14 +13,14 @@ head: charlie/report
 created_at: 2023-12-04T20:53:15Z
 updated_at: 2023-12-04T20:56:57Z
 url: https://github.com/astral-sh/uv/pull/549
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Show build progress for path source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 20:53_
+_@charliermarsh_
 
 _No description provided._
 

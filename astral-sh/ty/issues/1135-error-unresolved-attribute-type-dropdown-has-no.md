@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-05T14:29:42Z
 updated_at: 2026-01-09T02:39:02Z
 url: https://github.com/astral-sh/ty/issues/1135
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # error[unresolved-attribute] Type `Dropdown` has no attribute `id`
 
 ---
 
-_Issue opened by @janosh on 2025-09-05 14:29_
+_@janosh_
 
 ### Summary
 

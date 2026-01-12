@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T19:36:10Z
 updated_at: 2025-05-21T20:36:34Z
 url: https://github.com/astral-sh/ty/issues/476
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `disallow_untyped_defs` similar behavior
 
 ---
 
-_Issue opened by @pmareke on 2025-05-21 19:36_
+_@pmareke_
 
 ### Question
 

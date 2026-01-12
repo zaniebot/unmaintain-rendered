@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T21:07:27Z
 updated_at: 2025-07-22T21:28:11Z
 url: https://github.com/astral-sh/uv/issues/14833
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # How do I change the default Python version used for `uv init`?
 
 ---
 
-_Issue opened by @mzhu22 on 2025-07-22 21:07_
+_@mzhu22_
 
 ### Question
 

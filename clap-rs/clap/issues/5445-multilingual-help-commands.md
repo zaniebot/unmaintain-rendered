@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-04-07T21:13:46Z
 updated_at: 2024-04-09T15:53:28Z
 url: https://github.com/clap-rs/clap/issues/5445
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Multilingual Help Commands
 
 ---
 
-_Issue opened by @Pi-Cla on 2024-04-07 21:13_
+_@Pi-Cla_
 
 ### Please complete the following tasks
 

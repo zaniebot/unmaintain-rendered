@@ -12,14 +12,14 @@ head: stringized-annotations
 created_at: 2024-04-02T21:04:30Z
 updated_at: 2024-09-08T20:05:13Z
 url: https://github.com/astral-sh/ruff/pull/10742
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # parse stringized annotation
 
 ---
 
-_Pull request opened by @Glyphack on 2024-04-02 21:04_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

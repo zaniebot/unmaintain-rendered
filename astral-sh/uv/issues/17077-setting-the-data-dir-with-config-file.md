@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T18:02:51Z
 updated_at: 2025-12-10T18:02:51Z
 url: https://github.com/astral-sh/uv/issues/17077
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Setting the data dir with config file
 
 ---
 
-_Issue opened by @andersmmg on 2025-12-10 18:02_
+_@andersmmg_
 
 ### Question
 

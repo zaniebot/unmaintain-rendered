@@ -14,14 +14,14 @@ head: charlie/env-var
 created_at: 2025-07-08T14:49:25Z
 updated_at: 2025-07-08T15:34:52Z
 url: https://github.com/astral-sh/ty/pull/782
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Sync env.md script in release pipeline
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-08 14:49_
+_@charliermarsh_
 
 ## Summary
 

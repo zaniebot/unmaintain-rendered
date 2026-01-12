@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-08-22T15:13:02Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/185
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Redesign internal get_matches_with method
 
 ---
 
-_Issue opened by @Vinatorul on 2015-08-22 15:13_
+_@Vinatorul_
 
 I think we need some refactorings here. For now this method is huge (about 500 lines), hard to understand and work with.
 Also it will be much more easier to fix bugs like #184.

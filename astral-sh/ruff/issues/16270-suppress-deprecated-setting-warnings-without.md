@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T12:20:17Z
 updated_at: 2025-02-20T14:48:23Z
 url: https://github.com/astral-sh/ruff/issues/16270
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Suppress deprecated setting warnings without removing other useful info
 
 ---
 
-_Issue opened by @smackesey on 2025-02-20 12:20_
+_@smackesey_
 
 ### Description
 

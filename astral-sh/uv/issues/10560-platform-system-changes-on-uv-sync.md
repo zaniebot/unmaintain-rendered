@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T10:06:06Z
 updated_at: 2025-01-15T13:32:21Z
 url: https://github.com/astral-sh/uv/issues/10560
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # platform_system changes on uv sync
 
 ---
 
-_Issue opened by @bheemaguli on 2025-01-13 10:06_
+_@bheemaguli_
 
 On running `uv sync`, the `platform_system` gets changed between `win32` and `Windows` when run on different linux systems. Our devlopment team uses few different flavours of linux but all are on linux systems. What can be the reason for this issue?
 

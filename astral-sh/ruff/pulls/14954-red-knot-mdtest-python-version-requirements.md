@@ -13,14 +13,14 @@ head: david/mdtest-python-version
 created_at: 2024-12-13T09:32:30Z
 updated_at: 2024-12-13T09:40:40Z
 url: https://github.com/astral-sh/ruff/pull/14954
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] mdtest: python version requirements
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-13 09:32_
+_@sharkdp_
 
 ## Summary
 

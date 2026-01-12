@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T12:28:40Z
 updated_at: 2025-03-20T22:00:36Z
 url: https://github.com/astral-sh/uv/issues/7359
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Unintended install of public pypi.org packages when trying to install private packages from gitlabs pypi registry
 
 ---
 
-_Issue opened by @alexatothermo on 2024-09-13 12:28_
+_@alexatothermo_
 
 - Command: `uv pip install --extra-index-url|--index-url pypi.private.com/... private_package==1.0.0`
 - Platform: `Linux scrappy 6.6.50 #1-NixOS SMP PREEMPT_DYNAMIC Sun Sep  8 05:54:49 UTC 2024 x86_64 GNU/Linux`

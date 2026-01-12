@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T19:12:27Z
 updated_at: 2023-02-06T15:49:46Z
 url: https://github.com/clap-rs/clap/issues/4679
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Ranged values for Vec<usize> or any number Vec type like 1-10 or 1..10
 
 ---
 
-_Issue opened by @Atreyagaurav on 2023-01-27 19:12_
+_@Atreyagaurav_
 
 ### Please complete the following tasks
 

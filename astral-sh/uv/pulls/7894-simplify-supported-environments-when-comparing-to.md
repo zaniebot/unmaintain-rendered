@@ -13,14 +13,14 @@ head: charlie/supported
 created_at: 2024-10-03T12:51:32Z
 updated_at: 2024-10-03T13:15:10Z
 url: https://github.com/astral-sh/uv/pull/7894
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Simplify supported environments when comparing to lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-03 12:51_
+_@charliermarsh_
 
 ## Summary
 

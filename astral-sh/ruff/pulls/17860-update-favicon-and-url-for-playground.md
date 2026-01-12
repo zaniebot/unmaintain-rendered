@@ -14,14 +14,14 @@ head: micha/playground-branding
 created_at: 2025-05-05T13:53:53Z
 updated_at: 2025-05-06T08:51:47Z
 url: https://github.com/astral-sh/ruff/pull/17860
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Update favicon and URL for playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 13:53_
+_@MichaReiser_
 
 _No description provided._
 

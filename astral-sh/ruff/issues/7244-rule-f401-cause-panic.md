@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T13:37:46Z
 updated_at: 2023-09-10T16:31:27Z
 url: https://github.com/astral-sh/ruff/issues/7244
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule F401 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2023-09-08 13:37_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 ```

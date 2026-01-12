@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-28T07:23:21Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/788
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Cant use hyphens within arguments
 
 ---
 
-_Issue opened by @patrickisgreene on 2016-12-28 07:23_
+_@patrickisgreene_
 
 First, Thank you so much for saving me many hours of writing boilerplate :)
 

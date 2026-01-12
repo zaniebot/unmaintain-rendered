@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-19T05:16:31Z
 updated_at: 2025-10-03T06:14:46Z
 url: https://github.com/astral-sh/uv/issues/15941
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Strange issue with multltasking library on ubuntu
 
 ---
 
-_Issue opened by @quantitative-technologies on 2025-09-19 05:16_
+_@quantitative-technologies_
 
 ### Summary
 

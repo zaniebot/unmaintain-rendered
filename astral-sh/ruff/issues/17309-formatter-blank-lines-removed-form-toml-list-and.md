@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T10:43:36Z
 updated_at: 2025-04-09T13:51:30Z
 url: https://github.com/astral-sh/ruff/issues/17309
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Formatter - Blank lines removed form toml list, and could not tur it off
 
 ---
 
-_Issue opened by @GeorgeFischhof on 2025-04-09 10:43_
+_@GeorgeFischhof_
 
 ### Summary
 

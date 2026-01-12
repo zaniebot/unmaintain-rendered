@@ -14,14 +14,14 @@ head: charlie/union
 created_at: 2023-12-20T18:35:25Z
 updated_at: 2023-12-21T21:03:38Z
 url: https://github.com/astral-sh/ruff/pull/9217
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`ruff`] Add `never-union` rule to detect redundant `typing.NoReturn` and `typing.Never`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 18:35_
+_@charliermarsh_
 
 ## Summary
 

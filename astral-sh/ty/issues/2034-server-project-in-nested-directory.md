@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T20:40:20Z
 updated_at: 2026-01-12T13:01:33Z
 url: https://github.com/astral-sh/ty/issues/2034
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Server: Project in nested directory
 
 ---
 
-_Issue opened by @ColemanDunn on 2025-12-17 20:40_
+_@ColemanDunn_
 
 ### Summary
 

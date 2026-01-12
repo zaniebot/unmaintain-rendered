@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T03:30:58Z
 updated_at: 2024-07-09T14:56:07Z
 url: https://github.com/astral-sh/uv/issues/3031
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Failure with source installations 
 
 ---
 
-_Issue opened by @sayakpaul on 2024-04-15 03:30_
+_@sayakpaul_
 
 I am on my Apple M2 and uv-0.1.31.
 

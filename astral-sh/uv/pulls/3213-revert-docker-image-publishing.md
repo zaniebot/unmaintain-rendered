@@ -12,14 +12,14 @@ head: zb/revert-docker
 created_at: 2024-04-23T15:12:08Z
 updated_at: 2024-04-23T15:43:09Z
 url: https://github.com/astral-sh/uv/pull/3213
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Revert Docker image publishing
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-23 15:12_
+_@zanieb_
 
 This reverts commit 1bf9d879ab2a3302b1b30d8387633157f884d27d from #3155 and ccf4a85f89b9eacbc2a5261bb32059a377349703 from #3195.
 

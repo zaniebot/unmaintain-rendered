@@ -13,14 +13,14 @@ head: black_options_in_format_dev
 created_at: 2023-07-17T09:11:01Z
 updated_at: 2023-07-17T13:52:54Z
 url: https://github.com/astral-sh/ruff/pull/5827
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Read black options in format_dev script
 
 ---
 
-_Pull request opened by @konstin on 2023-07-17 09:11_
+_@konstin_
 
 ## Summary
 

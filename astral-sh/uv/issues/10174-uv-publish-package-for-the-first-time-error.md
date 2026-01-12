@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T16:59:05Z
 updated_at: 2025-01-02T12:13:10Z
 url: https://github.com/astral-sh/uv/issues/10174
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # `uv publish` package for the first time, "error: failed to query check URL"
 
 ---
 
-_Issue opened by @nbrinks on 2024-12-26 16:59_
+_@nbrinks_
 
 I am trying to use `uv publish` to publish a new python package to a private registry.
 

@@ -13,14 +13,14 @@ head: konsti/typos
 created_at: 2024-11-12T13:36:48Z
 updated_at: 2024-11-12T13:45:24Z
 url: https://github.com/astral-sh/uv/pull/9057
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Typo fixes
 
 ---
 
-_Pull request opened by @konstin on 2024-11-12 13:36_
+_@konstin_
 
 _No description provided._
 

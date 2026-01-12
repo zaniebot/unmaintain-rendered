@@ -12,14 +12,14 @@ head: charlie/pep508
 created_at: 2023-10-06T23:32:36Z
 updated_at: 2023-10-07T00:12:21Z
 url: https://github.com/astral-sh/uv/pull/31
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Copy over `pep508-rs` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 23:32_
+_@charliermarsh_
 
 This PR copies over the `pep440-rs` crate at commit `82aa5d4dcbe676b121dc931b0afa09a82de8e3d7` with no modifications.
 

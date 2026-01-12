@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-11-19T11:42:35Z
 updated_at: 2024-11-19T11:43:42Z
 url: https://github.com/astral-sh/uv/pull/9220
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # remove duplicated `PyTorch` entry
 
 ---
 
-_Pull request opened by @YoniChechik on 2024-11-19 11:42_
+_@YoniChechik_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

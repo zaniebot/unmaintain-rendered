@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T14:36:50Z
 updated_at: 2024-10-22T06:50:08Z
 url: https://github.com/astral-sh/ruff/issues/13821
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # dict-index-missing-items (PLC0206) should allow assignment by key
 
 ---
 
-_Issue opened by @oprypin on 2024-10-19 14:36_
+_@oprypin_
 
 Background:
 

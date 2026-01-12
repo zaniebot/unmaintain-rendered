@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-19T06:38:12Z
 updated_at: 2022-03-21T09:53:32Z
 url: https://github.com/clap-rs/clap/issues/3564
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Underscore derive options converted to hyphen?
 
 ---
 
-_Issue opened by @ristillu on 2022-03-19 06:38_
+_@ristillu_
 
 ### Please complete the following tasks
 

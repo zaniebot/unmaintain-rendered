@@ -12,14 +12,14 @@ head: pyi002-Complex-if-Test-in-Stub
 created_at: 2023-06-30T12:56:41Z
 updated_at: 2023-07-04T00:06:26Z
 url: https://github.com/astral-sh/ruff/pull/5453
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add PYI002 Rule
 
 ---
 
-_Pull request opened by @USER-5 on 2023-06-30 12:56_
+_@USER-5_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/cast-todos
 created_at: 2025-04-01T13:04:09Z
 updated_at: 2025-04-01T18:03:49Z
 url: https://github.com/astral-sh/ruff/pull/17119
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix more `redundant-cast` false positives
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-01 13:04_
+_@AlexWaygood_
 
 ## Summary
 

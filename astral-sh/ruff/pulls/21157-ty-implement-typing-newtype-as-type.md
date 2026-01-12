@@ -14,14 +14,14 @@ head: jack/newtype4
 created_at: 2025-10-31T02:26:19Z
 updated_at: 2025-11-11T15:49:41Z
 url: https://github.com/astral-sh/ruff/pull/21157
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] implement `typing.NewType` as `Type::NewTypeInstance`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-10-31 02:26_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/ty/issues/742. This PR rewrites and supersedes my previous `NewType` PR, https://github.com/astral-sh/ruff/pull/20126. The high-level changes:
 

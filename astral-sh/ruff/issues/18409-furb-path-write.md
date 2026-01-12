@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-01T07:22:38Z
 updated_at: 2025-12-17T14:18:15Z
 url: https://github.com/astral-sh/ruff/issues/18409
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [FURB] Path write
 
 ---
 
-_Issue opened by @gbaian10 on 2025-06-01 07:22_
+_@gbaian10_
 
 ### Summary
 

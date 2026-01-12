@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-01T10:32:36Z
 updated_at: 2024-10-25T12:47:02Z
 url: https://github.com/astral-sh/ruff/issues/8946
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add rule “too many positional arguments in function definition”
 
 ---
 
-_Issue opened by @flying-sheep on 2023-12-01 10:32_
+_@flying-sheep_
 
 Since https://github.com/astral-sh/ruff/pull/4329, PLR0913 is useless to us. We need a rule that doesn’t restrict the number of total arguments, but the number of non-keyword-only arguments. See also https://github.com/pylint-dev/pylint/issues/9099
 

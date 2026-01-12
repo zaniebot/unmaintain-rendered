@@ -13,14 +13,14 @@ head: feature/PYI019
 created_at: 2023-07-31T17:18:37Z
 updated_at: 2023-08-03T11:20:32Z
 url: https://github.com/astral-sh/ruff/pull/6204
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-pyi`] Implement `custom_type_var_return_type` (`PYI019`)
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-07-31 17:18_
+_@qdegraaf_
 
 ## Summary
 

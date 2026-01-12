@@ -13,14 +13,14 @@ head: zb/dockerhub
 created_at: 2025-06-16T19:37:28Z
 updated_at: 2025-06-18T16:30:39Z
 url: https://github.com/astral-sh/uv/pull/14088
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Publish to DockerHub
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-16 19:37_
+_@zanieb_
 
 The primary motivation here is to avoid confusion with non-official repositories, e.g., https://github.com/astral-sh/uv/issues/13958 which could lead to attacks against our users.
 

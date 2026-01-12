@@ -13,14 +13,14 @@ head: dependabot/cargo/path-absolutize-3.1.1
 created_at: 2023-09-13T15:57:06Z
 updated_at: 2023-09-13T16:53:57Z
 url: https://github.com/astral-sh/ruff/pull/7345
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump path-absolutize from 3.1.0 to 3.1.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-13 15:57_
+_@dependabot_
 
 Bumps [path-absolutize](https://github.com/magiclen/path-absolutize) from 3.1.0 to 3.1.1.
 <details>

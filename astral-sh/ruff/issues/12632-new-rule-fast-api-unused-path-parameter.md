@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T14:35:31Z
 updated_at: 2025-01-07T14:52:04Z
 url: https://github.com/astral-sh/ruff/issues/12632
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # New rule: fast-api-unused-path-parameter
 
 ---
 
-_Issue opened by @Matthieu-LAURENT39 on 2024-08-02 14:35_
+_@Matthieu-LAURENT39_
 
 Keywords: fastapi, path parameters
 

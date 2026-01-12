@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T19:30:19Z
 updated_at: 2025-07-17T20:52:56Z
 url: https://github.com/astral-sh/uv/issues/14688
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Comfirm with hint in `uv venv` glitches
 
 ---
 
-_Issue opened by @konstin on 2025-07-17 19:30_
+_@konstin_
 
 ### Summary
 

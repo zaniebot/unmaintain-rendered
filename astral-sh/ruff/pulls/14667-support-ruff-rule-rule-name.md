@@ -13,14 +13,14 @@ head: cli-rule
 created_at: 2024-11-29T05:18:38Z
 updated_at: 2024-11-29T12:19:54Z
 url: https://github.com/astral-sh/ruff/pull/14667
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Support `ruff rule rule-name`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-29 05:18_
+_@InSyncWithFoo_
 
 ## Summary
 

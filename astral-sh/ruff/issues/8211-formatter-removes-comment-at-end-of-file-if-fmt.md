@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T11:42:27Z
 updated_at: 2023-10-26T01:03:36Z
 url: https://github.com/astral-sh/ruff/issues/8211
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter removes comment at end of file if `fmt: off` is never closed
 
 ---
 
-_Issue opened by @tmke8 on 2023-10-25 11:42_
+_@tmke8_
 
 ```python
 # fmt: off

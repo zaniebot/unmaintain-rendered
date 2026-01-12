@@ -14,14 +14,14 @@ head: charlie/save-settings
 created_at: 2024-07-21T20:16:02Z
 updated_at: 2024-07-22T12:28:24Z
 url: https://github.com/astral-sh/uv/pull/5264
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # Store resolution options in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-21 20:16_
+_@charliermarsh_
 
 ## Summary
 

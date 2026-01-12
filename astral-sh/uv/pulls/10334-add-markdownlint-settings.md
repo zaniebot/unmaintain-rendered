@@ -12,14 +12,14 @@ head: add-markdownlint-settings
 created_at: 2025-01-06T19:06:46Z
 updated_at: 2025-04-28T00:47:42Z
 url: https://github.com/astral-sh/uv/pull/10334
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Add markdownlint settings
 
 ---
 
-_Pull request opened by @o-l-a-v on 2025-01-06 19:06_
+_@o-l-a-v_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T16:00:45Z
 updated_at: 2026-01-06T17:32:24Z
 url: https://github.com/astral-sh/ty/issues/2077
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # NewTypes with base float do not inherit operators correctly
 
 ---
 
-_Issue opened by @ncollins-vs on 2025-12-18 16:00_
+_@ncollins-vs_
 
 ### Summary
 

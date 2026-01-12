@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T19:14:20Z
 updated_at: 2024-11-04T19:37:14Z
 url: https://github.com/astral-sh/uv/issues/8474
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Option to disable linehaul
 
 ---
 
-_Issue opened by @eaubin on 2024-10-22 19:14_
+_@eaubin_
 
 https://github.com/astral-sh/uv/pull/2493 added linehaul metadata to the uv user-agent string. For example,
 

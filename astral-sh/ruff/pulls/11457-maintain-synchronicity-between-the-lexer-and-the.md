@@ -14,14 +14,14 @@ head: dhruv/parser-phase-2
 created_at: 2024-05-17T09:39:50Z
 updated_at: 2024-06-05T14:42:33Z
 url: https://github.com/astral-sh/ruff/pull/11457
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Maintain synchronicity between the lexer and the parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-17 09:39_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-16T14:50:31Z
 updated_at: 2025-01-30T17:53:59Z
 url: https://github.com/astral-sh/uv/issues/7430
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Support `uvx python` and `uvx python@<version>`
 
 ---
 
-_Issue opened by @zanieb on 2024-09-16 14:50_
+_@zanieb_
 
 To improve the experience of spawning an interactive REPL
 

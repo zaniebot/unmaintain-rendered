@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-22T08:52:46Z
 updated_at: 2024-03-23T20:24:34Z
 url: https://github.com/astral-sh/ruff/issues/10521
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # adding pystrict3 feature: checking docstrings
 
 ---
 
-_Issue opened by @JohannesBuchner on 2024-03-22 08:52_
+_@JohannesBuchner_
 
 Hi,
 

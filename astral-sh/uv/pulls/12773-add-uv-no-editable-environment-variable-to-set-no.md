@@ -14,14 +14,14 @@ head: no-editable
 created_at: 2025-04-09T07:15:25Z
 updated_at: 2025-04-10T19:56:48Z
 url: https://github.com/astral-sh/uv/pull/12773
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Add `UV_NO_EDITABLE` environment variable to set `--no-editable` on all invocations
 
 ---
 
-_Pull request opened by @haarisr on 2025-04-09 07:15_
+_@haarisr_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

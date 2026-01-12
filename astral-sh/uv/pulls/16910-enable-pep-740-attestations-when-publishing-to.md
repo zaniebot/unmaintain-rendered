@@ -12,14 +12,14 @@ head: ww/uv-publish-attestations
 created_at: 2025-12-01T16:48:16Z
 updated_at: 2025-12-01T18:01:34Z
 url: https://github.com/astral-sh/uv/pull/16910
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Enable PEP 740 attestations when publishing to PyPI
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-01 16:48_
+_@woodruffw_
 
 ## Summary
 

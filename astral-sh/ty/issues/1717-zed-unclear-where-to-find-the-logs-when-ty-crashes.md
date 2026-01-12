@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T10:29:38Z
 updated_at: 2026-01-12T09:32:49Z
 url: https://github.com/astral-sh/ty/issues/1717
-synced_at: 2026-01-12T09:56:37Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Zed: Unclear where to find the logs when ty crashes
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-02 10:29_
+_@MichaReiser_
 
 <img width="493" height="68" alt="Image" src="https://github.com/user-attachments/assets/72b314e1-ec03-4a1b-b2bf-ef6c4884a946" />
 

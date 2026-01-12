@@ -13,14 +13,14 @@ head: zb/init-backend
 created_at: 2025-07-22T16:35:45Z
 updated_at: 2025-07-22T19:10:10Z
 url: https://github.com/astral-sh/uv/pull/14821
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Add `UV_INIT_BUILD_BACKEND`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 16:35_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14820
 

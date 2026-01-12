@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-29T20:21:10Z
 updated_at: 2023-05-29T23:01:21Z
 url: https://github.com/astral-sh/ruff/issues/4708
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `pep8-naming.ignore-names`: add support for patterns (wildcard)
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-29 20:21_
+_@saippuakauppias_
 
 I think it would be useful to add pattern support to this option, so that you can set:
 ```

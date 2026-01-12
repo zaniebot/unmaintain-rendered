@@ -13,14 +13,14 @@ head: konsti/miette-7
 created_at: 2024-03-22T10:31:06Z
 updated_at: 2024-03-22T10:42:50Z
 url: https://github.com/astral-sh/uv/pull/2610
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Update miette v7, pubgrub and small Cargo.toml cleanup
 
 ---
 
-_Pull request opened by @konstin on 2024-03-22 10:31_
+_@konstin_
 
 I was going through the output of `cargo tree --duplicate -p uv`, not much success except these small cleanups.
 

@@ -15,14 +15,14 @@ head: alex/dedupe-pydoclint
 created_at: 2024-08-02T19:02:34Z
 updated_at: 2024-08-02T22:17:09Z
 url: https://github.com/astral-sh/ruff/pull/12642
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Deduplicate collected exceptions after traversing function bodies
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-02 19:02_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-18T16:37:51Z
 updated_at: 2025-04-23T15:28:48Z
 url: https://github.com/astral-sh/ruff/issues/9189
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Unexpected token '>>' when linting Jupyter notebook with doctest/interpreter snippet
 
 ---
 
-_Issue opened by @mattharrison on 2023-12-18 16:37_
+_@mattharrison_
 
 I'm trying to lint notebooks that have interactive snippets in the cells.
 

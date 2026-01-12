@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T01:55:06Z
 updated_at: 2024-03-13T04:33:11Z
 url: https://github.com/astral-sh/uv/issues/2400
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Respect `SSL_CERT_FILE` regardless of `--native-tls` flag
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-13 01:55_
+_@charliermarsh_
 
 _No description provided._
 

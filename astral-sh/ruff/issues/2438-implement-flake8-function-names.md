@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-01T12:24:12Z
 updated_at: 2023-07-10T01:26:05Z
 url: https://github.com/astral-sh/ruff/issues/2438
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-function-names`
 
 ---
 
-_Issue opened by @sbrugman on 2023-02-01 12:24_
+_@sbrugman_
 
 https://pypi.org/project/flake8-functions-names/
 

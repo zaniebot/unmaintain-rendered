@@ -14,14 +14,14 @@ head: brent/pyfilesource
 created_at: 2025-02-17T22:25:43Z
 updated_at: 2025-02-19T15:52:25Z
 url: https://github.com/astral-sh/ruff/pull/16220
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Pass `ParserOptions` to the parser
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-17 22:25_
+_@ntBre_
 
 ## Summary
 

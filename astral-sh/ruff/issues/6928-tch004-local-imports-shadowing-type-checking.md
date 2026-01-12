@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T00:43:05Z
 updated_at: 2023-08-28T13:04:45Z
 url: https://github.com/astral-sh/ruff/issues/6928
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # TCH004: local imports shadowing TYPE_CHECKING imports lead to false positives
 
 ---
 
-_Issue opened by @twoertwein on 2023-08-28 00:43_
+_@twoertwein_
 
 A simplified version of what happened in https://github.com/pandas-dev/pandas/pull/54786
 

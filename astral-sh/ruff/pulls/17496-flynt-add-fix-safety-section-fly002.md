@@ -13,14 +13,14 @@ head: document-fix-safety-static_join_to_fstring
 created_at: 2025-04-20T12:51:12Z
 updated_at: 2025-04-26T16:04:04Z
 url: https://github.com/astral-sh/ruff/pull/17496
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`flynt`] add fix safety section (`FLY002`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-20 12:51_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `FLY002` (#15584 )
 

@@ -12,14 +12,14 @@ head: charlie/relative-banned-api
 created_at: 2023-04-19T16:55:06Z
 updated_at: 2023-04-19T17:35:07Z
 url: https://github.com/astral-sh/ruff/pull/4024
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore relative imports in `banned-api` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 16:55_
+_@charliermarsh_
 
 Temporary fix for #4013 while I work on supporting relative imports. The current behavior is just wrong. Ignoring relative imports is less wrong.
 

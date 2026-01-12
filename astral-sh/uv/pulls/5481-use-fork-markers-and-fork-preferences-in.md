@@ -13,14 +13,14 @@ head: konsti/merge-identical-resolutions
 created_at: 2024-07-26T13:18:32Z
 updated_at: 2024-07-31T15:18:59Z
 url: https://github.com/astral-sh/uv/pull/5481
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Use fork markers and fork preferences in resolution with lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-07-26 13:18_
+_@konstin_
 
 By resolving for each fork from the lockfile individually and by adding using preferences for the current fork, we solve the instability #5180. I've tested the locally and will add the packse test scenarios upstack.
 

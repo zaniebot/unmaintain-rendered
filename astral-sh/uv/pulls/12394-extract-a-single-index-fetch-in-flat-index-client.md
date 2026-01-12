@@ -12,14 +12,14 @@ head: charlie/si
 created_at: 2025-03-22T18:35:13Z
 updated_at: 2025-03-23T13:07:21Z
 url: https://github.com/astral-sh/uv/pull/12394
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Extract a single-index fetch in flat index client
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-22 18:35_
+_@charliermarsh_
 
 _No description provided._
 

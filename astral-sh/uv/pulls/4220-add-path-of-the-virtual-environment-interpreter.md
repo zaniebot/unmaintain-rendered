@@ -13,14 +13,14 @@ head: zb/context-interp
 created_at: 2024-06-10T21:33:30Z
 updated_at: 2024-06-10T21:35:00Z
 url: https://github.com/astral-sh/uv/pull/4220
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Add path of the virtual environment interpreter to standard test filters
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 21:33_
+_@zanieb_
 
 I'm not sure if this is needed. Posting so I can hunt down the commit later. Cherry-picked from https://github.com/astral-sh/uv/pull/4214
 

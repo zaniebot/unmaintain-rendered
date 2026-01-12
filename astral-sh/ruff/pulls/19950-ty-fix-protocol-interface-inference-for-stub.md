@@ -14,14 +14,14 @@ head: alex/subproto
 created_at: 2025-08-17T17:10:41Z
 updated_at: 2025-08-19T15:13:53Z
 url: https://github.com/astral-sh/ruff/pull/19950
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Fix protocol interface inference for stub protocols and subprotocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-17 17:10_
+_@AlexWaygood_
 
 ## Summary
 

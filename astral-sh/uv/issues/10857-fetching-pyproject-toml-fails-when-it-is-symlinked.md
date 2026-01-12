@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T14:17:25Z
 updated_at: 2025-01-23T09:48:09Z
 url: https://github.com/astral-sh/uv/issues/10857
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Fetching pyproject.toml fails when it is symlinked
 
 ---
 
-_Issue opened by @quis on 2025-01-22 14:17_
+_@quis_
 
 ### Summary
 

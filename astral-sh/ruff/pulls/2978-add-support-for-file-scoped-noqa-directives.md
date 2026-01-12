@@ -12,14 +12,14 @@ head: charlie/noqa
 created_at: 2023-02-17T01:09:22Z
 updated_at: 2023-02-17T01:59:02Z
 url: https://github.com/astral-sh/ruff/pull/2978
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add support for file-scoped `noqa` directives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 01:09_
+_@charliermarsh_
 
 # Summary
 

@@ -12,14 +12,14 @@ head: charlie/opt
 created_at: 2025-10-29T00:04:33Z
 updated_at: 2025-11-09T14:59:49Z
 url: https://github.com/astral-sh/uv/pull/16489
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Ignore markers on requirements.txt options
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-29 00:04_
+_@charliermarsh_
 
 ## Summary
 

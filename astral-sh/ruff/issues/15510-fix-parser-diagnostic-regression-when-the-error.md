@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T16:56:18Z
 updated_at: 2025-08-08T15:13:54Z
 url: https://github.com/astral-sh/ruff/issues/15510
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # fix parser diagnostic regression when the error points to an empty span immediately after a line terminator
 
 ---
 
-_Issue opened by @BurntSushi on 2025-01-15 16:56_
+_@BurntSushi_
 
 While #15359 fixed a ton of bugs with our diagnostic rendering, it did introduce one regression related to parser diagnostics. Specifically, prior to #15359, we would get the following diagnostic in one case of a syntax error:
 

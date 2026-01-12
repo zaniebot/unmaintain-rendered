@@ -12,14 +12,14 @@ head: merge-editor-states
 created_at: 2023-07-17T12:34:36Z
 updated_at: 2023-07-18T13:28:19Z
 url: https://github.com/astral-sh/ruff/pull/5831
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # playground: Merge `Editor` state variables
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-17 12:34_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

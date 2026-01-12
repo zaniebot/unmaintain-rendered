@@ -12,14 +12,14 @@ head: resolve-many-improvements
 created_at: 2023-11-07T14:36:46Z
 updated_at: 2023-11-07T14:56:36Z
 url: https://github.com/astral-sh/uv/pull/357
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # puffin-dev resolve many improvements
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 14:36_
+_@konstin_
 
 Print the current step, the time for and also respect the cache dir arg.
 

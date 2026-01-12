@@ -13,14 +13,14 @@ head: cjm/better-tracing
 created_at: 2024-07-19T01:26:04Z
 updated_at: 2024-07-19T14:13:54Z
 url: https://github.com/astral-sh/ruff/pull/12401
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] trace file when inferring types
 
 ---
 
-_Pull request opened by @carljm on 2024-07-19 01:26_
+_@carljm_
 
 When poring over traces, the ones that just include a definition or symbol or expression ID aren't very useful, because you don't know which file it comes from. This adds that information to the trace.
 

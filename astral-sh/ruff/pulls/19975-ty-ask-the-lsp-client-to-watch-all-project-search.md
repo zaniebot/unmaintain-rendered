@@ -14,14 +14,14 @@ head: ag/watch-search-paths
 created_at: 2025-08-18T18:32:09Z
 updated_at: 2025-08-19T14:57:09Z
 url: https://github.com/astral-sh/ruff/pull/19975
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Ask the LSP client to watch all project search paths
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-18 18:32_
+_@BurntSushi_
 
 This change rejiggers how we register globs for file watching with the
 LSP client. Previously, we registered a few globs like `**/*.py`,

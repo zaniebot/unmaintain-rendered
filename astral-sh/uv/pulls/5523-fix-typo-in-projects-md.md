@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-07-28T19:48:38Z
 updated_at: 2024-07-29T07:26:07Z
 url: https://github.com/astral-sh/uv/pull/5523
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Fix typo in projects.md
 
 ---
 
-_Pull request opened by @hallmark on 2024-07-28 19:48_
+_@hallmark_
 
 Fixes typo: `.venv/bin/active` -> `.venv/bin/activate`
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-22T09:36:05Z
 updated_at: 2024-07-22T14:00:31Z
 url: https://github.com/astral-sh/uv/issues/5281
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # unable install ConcurrentLogHandler==0.9.1
 
 ---
 
-_Issue opened by @Funnor on 2024-07-22 09:36_
+_@Funnor_
 
 UV version: uv 0.2.27 
 Operating System: Ubuntu 20.04.3

@@ -13,14 +13,14 @@ head: dependabot/github_actions/tj-actions/changed-files-39
 created_at: 2023-09-11T08:22:36Z
 updated_at: 2023-09-11T09:12:25Z
 url: https://github.com/astral-sh/ruff/pull/7267
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump tj-actions/changed-files from 38 to 39
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-11 08:22_
+_@dependabot_
 
 Bumps [tj-actions/changed-files](https://github.com/tj-actions/changed-files) from 38 to 39.
 <details>

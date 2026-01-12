@@ -13,14 +13,14 @@ head: zb/docs-epic
 created_at: 2024-07-20T02:41:10Z
 updated_at: 2024-07-22T17:15:12Z
 url: https://github.com/astral-sh/uv/pull/5239
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # A bundle of documentation changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-20 02:41_
+_@zanieb_
 
 I just need to iterate on everything and we're not doing a lot of reviews anyway.
 

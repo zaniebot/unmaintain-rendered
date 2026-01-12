@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T14:33:59Z
 updated_at: 2025-06-22T02:26:16Z
 url: https://github.com/astral-sh/uv/issues/11554
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # uv does not seem to install so files of coremltools
 
 ---
 
-_Issue opened by @twoertwein on 2025-02-16 14:33_
+_@twoertwein_
 
 ### Summary
 

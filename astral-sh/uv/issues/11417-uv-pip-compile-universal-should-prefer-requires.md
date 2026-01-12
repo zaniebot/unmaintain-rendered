@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T11:11:06Z
 updated_at: 2025-02-11T20:35:56Z
 url: https://github.com/astral-sh/uv/issues/11417
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # uv pip compile --universal: should prefer `requires-python` as lower bound, rather than current Python
 
 ---
 
-_Issue opened by @paveldikov on 2025-02-11 11:11_
+_@paveldikov_
 
 ### Summary
 

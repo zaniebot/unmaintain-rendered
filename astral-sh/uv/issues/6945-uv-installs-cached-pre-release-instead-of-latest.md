@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T20:59:29Z
 updated_at: 2024-09-15T23:31:18Z
 url: https://github.com/astral-sh/uv/issues/6945
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Uv installs cached (?) pre-release instead of latest from index
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2024-09-02 20:59_
+_@NiklasRosenstein_
 
 Hi 👋 
 

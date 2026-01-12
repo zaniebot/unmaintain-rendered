@@ -12,14 +12,14 @@ head: revert-6045-cleanup-docsrs
 created_at: 2025-06-26T14:29:28Z
 updated_at: 2025-06-26T14:29:43Z
 url: https://github.com/clap-rs/clap/pull/6047
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Revert "Cleanup docs.rs related issues"
 
 ---
 
-_Pull request opened by @epage on 2025-06-26 14:29_
+_@epage_
 
 Reverts clap-rs/clap#6045
 

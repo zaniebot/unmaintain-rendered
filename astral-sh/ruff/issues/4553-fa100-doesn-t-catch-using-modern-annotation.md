@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-20T21:45:45Z
 updated_at: 2023-05-21T19:42:06Z
 url: https://github.com/astral-sh/ruff/issues/4553
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # FA100 doesn't catch using modern annotation syntax when target version is 3.9
 
 ---
 
-_Issue opened by @akx on 2023-05-20 21:45_
+_@akx_
 
 As I'm reading it, FA100 should add a `from __future__ import annotations` import when a file already uses modern annotation syntax and the configuration targets Python 3.9, but it doesn't:
 

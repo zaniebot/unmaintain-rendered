@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T09:52:03Z
 updated_at: 2025-03-20T20:18:10Z
 url: https://github.com/astral-sh/ruff/issues/16865
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # B909 misses dict.keys() deletion
 
 ---
 
-_Issue opened by @skairunner on 2025-03-20 09:52_
+_@skairunner_
 
 ### Summary
 

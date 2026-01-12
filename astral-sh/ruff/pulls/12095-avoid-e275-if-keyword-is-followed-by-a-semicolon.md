@@ -13,14 +13,14 @@ head: dhruv/autofix-bug
 created_at: 2024-06-28T15:05:06Z
 updated_at: 2024-06-28T15:21:37Z
 url: https://github.com/astral-sh/ruff/pull/12095
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Avoid `E275` if keyword is followed by a semicolon
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-28 15:05_
+_@dhruvmanila_
 
 fixes: #12094 
 

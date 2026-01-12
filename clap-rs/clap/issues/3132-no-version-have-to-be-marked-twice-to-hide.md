@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:34:14Z
 updated_at: 2021-12-09T16:40:41Z
 url: https://github.com/clap-rs/clap/issues/3132
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `no_version` have to be marked twice to hide version info of subcommand
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:34_
+_@epage_
 
 <a href="https://github.com/loichyan"><img src="https://avatars.githubusercontent.com/u/73006950?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [loichyan](https://github.com/loichyan)**
 _Friday Feb 12, 2021 at 10:36 GMT_

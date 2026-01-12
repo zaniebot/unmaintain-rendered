@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T11:08:19Z
 updated_at: 2023-08-01T15:31:03Z
 url: https://github.com/astral-sh/ruff/issues/6066
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Preserve leading empty lines of indented classes and functions
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 11:08_
+_@konstin_
 
 While the behavior for empty lines before top level classes and functions looks correct, indented classes and function can gain or lose their leading newlines
 

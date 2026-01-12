@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-21T09:55:24Z
 updated_at: 2025-01-23T03:27:36Z
 url: https://github.com/astral-sh/ruff/issues/9596
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # new rule: enforce consistent capitalisation of `noqa` statements
 
 ---
 
-_Issue opened by @danieleades on 2024-01-21 09:55_
+_@danieleades_
 
 - enforce consistent capitalisation of `noqa` statements
 - default to `noqa`, but allow configuring to `NOQA` or `NoQA`

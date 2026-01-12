@@ -13,14 +13,14 @@ head: xp001
 created_at: 2023-11-29T17:04:50Z
 updated_at: 2024-03-28T17:12:45Z
 url: https://github.com/astral-sh/ruff/pull/8910
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # New rule category `XP`, implement `not-array-agnostic-numpy` (`XP001`)
 
 ---
 
-_Pull request opened by @lucascolley on 2023-11-29 17:04_
+_@lucascolley_
 
 ## Summary
 

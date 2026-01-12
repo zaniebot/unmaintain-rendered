@@ -14,14 +14,14 @@ head: konsti/update-pyo3
 created_at: 2024-07-30T08:50:09Z
 updated_at: 2024-11-05T14:12:48Z
 url: https://github.com/astral-sh/uv/pull/5590
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Update pyo3
 
 ---
 
-_Pull request opened by @konstin on 2024-07-30 08:50_
+_@konstin_
 
 Downstream port of a contribution.
 

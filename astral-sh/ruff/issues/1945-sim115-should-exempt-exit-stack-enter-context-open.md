@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T03:02:02Z
 updated_at: 2023-01-18T03:39:56Z
 url: https://github.com/astral-sh/ruff/issues/1945
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM115 should exempt `exit_stack.enter_context(open(…))`
 
 ---
 
-_Issue opened by @andersk on 2023-01-18 03:02_
+_@andersk_
 
 [`contextlib.ExitStack.enter_context`](https://docs.python.org/3/library/contextlib.html#contextlib.ExitStack.enter_context) uses the context manager, so it should not trip `SIM115 Use context handler for opening files`:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-11T21:00:10Z
 updated_at: 2026-01-12T13:37:14Z
 url: https://github.com/astral-sh/ty/issues/2451
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # [panic] internal error: entered unreachable code: Two equal, normalized intersections should share the same Salsa ID
 
 ---
 
-_Issue opened by @yilei on 2026-01-11 21:00_
+_@yilei_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-03T15:56:25Z
 updated_at: 2023-11-16T02:30:43Z
 url: https://github.com/astral-sh/ruff/issues/7784
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Invalid fix for `UP025` when implicitly concatenated with f-string
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-10-03 15:56_
+_@dhruvmanila_
 
 Note that this is unrelated to the new f-string changes.
 

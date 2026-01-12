@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T12:48:49Z
 updated_at: 2025-11-28T15:52:18Z
 url: https://github.com/astral-sh/ty/issues/1345
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Allow an attribute declared in a superclass's class body to be overridden by an attribute redeclared in a subclass's `__init__` method
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-13 12:48_
+_@AlexWaygood_
 
 ### Summary
 

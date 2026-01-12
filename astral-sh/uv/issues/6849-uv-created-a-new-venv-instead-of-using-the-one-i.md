@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T02:56:26Z
 updated_at: 2024-09-08T18:19:35Z
 url: https://github.com/astral-sh/uv/issues/6849
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv created a new venv instead of using the one I was already in
 
 ---
 
-_Issue opened by @antonysouthworth-halter on 2024-08-30 02:56_
+_@antonysouthworth-halter_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

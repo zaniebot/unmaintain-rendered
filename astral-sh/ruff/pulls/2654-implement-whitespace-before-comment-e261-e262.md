@@ -12,14 +12,14 @@ head: charlie/pycodestyle
 created_at: 2023-02-08T04:40:06Z
 updated_at: 2023-02-08T04:41:59Z
 url: https://github.com/astral-sh/ruff/pull/2654
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Implement whitespace-before-comment (E261, E262, E265, E266)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 04:40_
+_@charliermarsh_
 
 See: #2402.
 

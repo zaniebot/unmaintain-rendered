@@ -12,14 +12,14 @@ head: stdin-filename-config
 created_at: 2022-12-18T20:09:33Z
 updated_at: 2022-12-18T22:54:28Z
 url: https://github.com/astral-sh/ruff/pull/1281
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Use `--stdin-filename` when resolving configuration files
 
 ---
 
-_Pull request opened by @cdbrendel on 2022-12-18 20:09_
+_@cdbrendel_
 
 Currently, when `ruff` is called with  `--stdin-filename`, it does not use this value when searching for a configuration file:
 

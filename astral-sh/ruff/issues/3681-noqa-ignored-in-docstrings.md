@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-23T09:20:27Z
 updated_at: 2023-03-23T13:59:15Z
 url: https://github.com/astral-sh/ruff/issues/3681
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # # noqa ignored in docstrings
 
 ---
 
-_Issue opened by @staticf0x on 2023-03-23 09:20_
+_@staticf0x_
 
 The `# noqa` seems to be ignored in docstrings, e.g.:
 

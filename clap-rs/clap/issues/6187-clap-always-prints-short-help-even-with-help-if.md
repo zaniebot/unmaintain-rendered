@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-24T15:58:34Z
 updated_at: 2025-11-24T16:07:00Z
 url: https://github.com/clap-rs/clap/issues/6187
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap always prints short help (even with `--help`) if all help messages set with #[arg(help = "...")]
 
 ---
 
-_Issue opened by @Sk7Str1p3 on 2025-11-24 15:58_
+_@Sk7Str1p3_
 
 ### Please complete the following tasks
 

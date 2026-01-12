@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T10:05:28Z
 updated_at: 2024-05-24T06:53:14Z
 url: https://github.com/astral-sh/uv/issues/1469
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # No module named pip / No module named 'pybind11'
 
 ---
 
-_Issue opened by @starenka on 2024-02-16 10:05_
+_@starenka_
 
 ```
 starenka /tmp % uv venv tmp                     

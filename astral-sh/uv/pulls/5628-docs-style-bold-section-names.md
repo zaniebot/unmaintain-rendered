@@ -13,14 +13,14 @@ head: doc-bold-section-names
 created_at: 2024-07-30T18:55:12Z
 updated_at: 2024-08-19T23:53:20Z
 url: https://github.com/astral-sh/uv/pull/5628
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # docs(style): Bold section names
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-30 18:55_
+_@eth3lbert_
 
 ## Summary
 

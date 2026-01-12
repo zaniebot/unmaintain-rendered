@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-13T08:55:27Z
 updated_at: 2025-10-09T14:24:20Z
 url: https://github.com/astral-sh/uv/issues/9863
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # uv workspace doesn't install development dependencies for packages
 
 ---
 
-_Issue opened by @imrehg on 2024-12-13 08:55_
+_@imrehg_
 
 I have a uv workspace, following a very similar layout to the `albatros` one in the [docs](https://docs.astral.sh/uv/concepts/projects/workspaces/#workspace-layouts). The when `bird-feeder` (a workspace package) have development dependencies that are in addition to the root packages dependencies, they don't get installed.
 

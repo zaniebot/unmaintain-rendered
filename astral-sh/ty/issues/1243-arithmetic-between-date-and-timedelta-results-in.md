@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-23T19:51:09Z
 updated_at: 2025-09-23T19:57:02Z
 url: https://github.com/astral-sh/ty/issues/1243
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Arithmetic between `date` and `timedelta` results in `Unknown`, not `date`
 
 ---
 
-_Issue opened by @udbhav1 on 2025-09-23 19:51_
+_@udbhav1_
 
 ### Summary
 

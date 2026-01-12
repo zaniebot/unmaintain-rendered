@@ -15,14 +15,14 @@ head: micha/add-ignore
 created_at: 2025-11-29T17:37:21Z
 updated_at: 2026-01-07T10:17:07Z
 url: https://github.com/astral-sh/ruff/pull/21696
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Add `--add-ignore` CLI option
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-29 17:37_
+_@MichaReiser_
 
 ## Summary
 

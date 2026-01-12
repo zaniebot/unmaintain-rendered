@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-07T17:16:00Z
 updated_at: 2024-02-28T00:22:14Z
 url: https://github.com/astral-sh/ruff/issues/1716
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Allow Ruff's format to be overridden by an environment variable
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-07 17:16_
+_@charliermarsh_
 
 See: #1697.
 

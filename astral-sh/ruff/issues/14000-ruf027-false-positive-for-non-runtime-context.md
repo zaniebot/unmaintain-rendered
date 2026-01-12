@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T14:52:33Z
 updated_at: 2024-12-18T07:50:50Z
 url: https://github.com/astral-sh/ruff/issues/14000
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF027 False positive for non-runtime context binding
 
 ---
 
-_Issue opened by @Daverball on 2024-10-30 14:52_
+_@Daverball_
 
 This might be incredibly easy to fix depending on how this check is implemented. Currently RUF027 can be triggered by something like:
 

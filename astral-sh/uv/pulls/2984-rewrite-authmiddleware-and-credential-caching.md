@@ -13,14 +13,14 @@ head: zb/test-middleware
 created_at: 2024-04-11T00:09:34Z
 updated_at: 2024-04-15T19:54:43Z
 url: https://github.com/astral-sh/uv/pull/2984
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Rewrite `AuthMiddleware` and credential caching
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-11 00:09_
+_@zanieb_
 
 Further work based on #2976 with a focus on improving the correctness of our `AuthMiddleware`.
 

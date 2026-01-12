@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T06:07:27Z
 updated_at: 2025-12-09T05:52:03Z
 url: https://github.com/astral-sh/uv/issues/3370
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Publish binaries for FreeBSD
 
 ---
 
-_Issue opened by @zanieb on 2024-05-04 06:07_
+_@zanieb_
 
 e.g. the installer currently fails with
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-06-11T10:32:44Z
 updated_at: 2024-07-18T06:18:50Z
 url: https://github.com/clap-rs/clap/issues/527
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Normal method for embedding git commit in the version?
 
 ---
 
-_Issue opened by @lilith on 2016-06-11 10:32_
+_@lilith_
 
 I want to be able to track down what version of the software a user is using, based on git commit ID.
 

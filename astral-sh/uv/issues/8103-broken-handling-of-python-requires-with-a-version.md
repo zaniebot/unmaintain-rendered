@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T18:27:28Z
 updated_at: 2024-10-10T19:03:28Z
 url: https://github.com/astral-sh/uv/issues/8103
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Broken handling of `python-requires` with a `!=` version specification
 
 ---
 
-_Issue opened by @scolby33 on 2024-10-10 18:27_
+_@scolby33_
 
 If you create a directory containing only the following `pyproject.toml`:
 ```toml

@@ -13,14 +13,14 @@ head: codex/locate-typo-in-documentation
 created_at: 2025-07-20T21:34:11Z
 updated_at: 2025-07-20T21:38:26Z
 url: https://github.com/astral-sh/uv/pull/14763
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Add missing `the` in concept link
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 21:34_
+_@charliermarsh_
 
 _No description provided._
 

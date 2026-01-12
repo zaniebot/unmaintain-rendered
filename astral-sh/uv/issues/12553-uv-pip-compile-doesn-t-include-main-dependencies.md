@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T07:59:55Z
 updated_at: 2025-08-04T18:21:04Z
 url: https://github.com/astral-sh/uv/issues/12553
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # UV pip compile doesn't include main dependencies when using group
 
 ---
 
-_Issue opened by @Lyranile on 2025-03-30 07:59_
+_@Lyranile_
 
 ### Summary
 

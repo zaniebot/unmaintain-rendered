@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-12T16:25:37Z
 updated_at: 2024-07-15T19:27:11Z
 url: https://github.com/astral-sh/uv/issues/5017
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uvx` should warn or error when an executable outside of `--from` is used
 
 ---
 
-_Issue opened by @zanieb on 2024-07-12 16:25_
+_@zanieb_
 
 As mentioned at https://github.com/astral-sh/uv/pull/4997#discussion_r1675091857
 

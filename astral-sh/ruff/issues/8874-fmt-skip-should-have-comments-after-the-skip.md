@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-28T19:00:50Z
 updated_at: 2023-12-13T09:53:41Z
 url: https://github.com/astral-sh/ruff/issues/8874
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `# fmt: skip` should have comments after the `skip` keyword
 
 ---
 
-_Issue opened by @georgettica on 2023-11-28 19:00_
+_@georgettica_
 
 `# fmt: skip` should have a comment section to allow developers to explain why they don't want to format
 

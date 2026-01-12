@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T15:36:32Z
 updated_at: 2024-10-04T17:50:42Z
 url: https://github.com/astral-sh/ruff/issues/13506
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Conda installation of Ruff not running on aarch64
 
 ---
 
-_Issue opened by @bcaddy on 2024-09-24 15:36_
+_@bcaddy_
 
 I'm trying to run Ruff on an NVIDIA Grace (i.e. ARM Neoverse v2) CPU and getting the following error:
 

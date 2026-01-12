@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-30T18:22:58Z
 updated_at: 2025-05-30T18:42:52Z
 url: https://github.com/astral-sh/ty/issues/554
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support detecting `Never` for exhausted union of literals
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-30 18:22_
+_@Andrej730_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-05-10T05:29:53Z
 updated_at: 2025-05-10T12:57:11Z
 url: https://github.com/astral-sh/ruff/pull/18000
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # docs(readme): added a Twitter icon and link
 
 ---
 
-_Pull request opened by @Radovenchyk on 2025-05-10 05:29_
+_@Radovenchyk_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

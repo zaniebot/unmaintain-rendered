@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T16:18:55Z
 updated_at: 2025-03-07T20:02:25Z
 url: https://github.com/astral-sh/uv/issues/12050
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # How to properly publish to TestPyPI?
 
 ---
 
-_Issue opened by @willigott on 2025-03-07 16:18_
+_@willigott_
 
 ### Question
 

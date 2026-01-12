@@ -13,14 +13,14 @@ head: zb/win-copy-test
 created_at: 2024-10-18T23:35:55Z
 updated_at: 2024-10-20T18:37:43Z
 url: https://github.com/astral-sh/uv/pull/8350
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Set `UV_LINK_MODE=copy` for Windows test runs
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 23:35_
+_@zanieb_
 
 Cherry-picked from #8347 
 

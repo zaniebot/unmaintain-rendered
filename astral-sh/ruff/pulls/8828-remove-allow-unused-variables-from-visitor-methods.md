@@ -13,14 +13,14 @@ head: dhruv/remove-allow
 created_at: 2023-11-23T14:55:35Z
 updated_at: 2023-12-05T20:33:49Z
 url: https://github.com/astral-sh/ruff/pull/8828
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Remove `#[allow(unused_variables)]` from visitor methods
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-23 14:55_
+_@dhruvmanila_
 
 Small follow-up to remove `#[allow(unused_variables)]` from visitor methods and use underscore prefix for unused variables instead.
 

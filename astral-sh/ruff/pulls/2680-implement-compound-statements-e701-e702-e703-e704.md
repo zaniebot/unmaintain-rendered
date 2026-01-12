@@ -12,14 +12,14 @@ head: charlie/multiple-statements
 created_at: 2023-02-09T03:28:31Z
 updated_at: 2023-02-09T03:57:40Z
 url: https://github.com/astral-sh/ruff/pull/2680
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Implement compound-statements (E701, E702, E703, E704)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 03:28_
+_@charliermarsh_
 
 See: #2402.
 

@@ -12,14 +12,14 @@ head: git-cli
 created_at: 2024-05-24T21:48:10Z
 updated_at: 2024-05-30T19:28:48Z
 url: https://github.com/astral-sh/uv/pull/3833
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Port all git functionality to use git CLI
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-24 21:48_
+_@ibraheemdev_
 
 ## Summary
 

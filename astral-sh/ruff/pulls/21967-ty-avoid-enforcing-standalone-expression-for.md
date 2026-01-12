@@ -15,14 +15,14 @@ head: charlie/f
 created_at: 2025-12-13T19:59:10Z
 updated_at: 2025-12-16T03:31:05Z
 url: https://github.com/astral-sh/ruff/pull/21967
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Avoid enforcing standalone expression for tests in f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 19:59_
+_@charliermarsh_
 
 ## Summary
 

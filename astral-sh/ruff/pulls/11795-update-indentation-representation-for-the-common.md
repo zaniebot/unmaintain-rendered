@@ -11,14 +11,14 @@ head: dhruv/indentations
 created_at: 2024-06-07T13:26:32Z
 updated_at: 2024-06-14T06:25:37Z
 url: https://github.com/astral-sh/ruff/pull/11795
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Update indentation representation for the common case
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-07 13:26_
+_@dhruvmanila_
 
 ## Summary
 

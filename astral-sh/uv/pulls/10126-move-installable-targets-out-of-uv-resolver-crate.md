@@ -15,14 +15,14 @@ head: charlie/installable
 created_at: 2024-12-23T19:26:59Z
 updated_at: 2024-12-25T00:01:52Z
 url: https://github.com/astral-sh/uv/pull/10126
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # Move installable targets out of `uv-resolver` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-23 19:26_
+_@charliermarsh_
 
 ## Summary
 

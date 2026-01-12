@@ -12,14 +12,14 @@ head: cjm/tvassign
 created_at: 2025-05-06T23:39:07Z
 updated_at: 2025-05-07T14:03:39Z
 url: https://github.com/astral-sh/ruff/pull/17901
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] fix assigning a typevar to a union with itself
 
 ---
 
-_Pull request opened by @carljm on 2025-05-06 23:39_
+_@carljm_
 
 ## Summary
 

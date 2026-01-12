@@ -14,14 +14,14 @@ head: micha/mdtest-invalid-syntax
 created_at: 2024-11-06T09:45:55Z
 updated_at: 2024-11-06T11:25:54Z
 url: https://github.com/astral-sh/ruff/pull/14126
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add mdtest support for files with invalid syntax
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-06 09:45_
+_@MichaReiser_
 
 
 ## Summary

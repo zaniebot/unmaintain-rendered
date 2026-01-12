@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-26T05:58:53Z
 updated_at: 2020-10-09T17:21:37Z
 url: https://github.com/clap-rs/clap/issues/1943
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Placing `--` before a subcommand fails with a confusing error
 
 ---
 
-_Issue opened by @Demi-Marie on 2020-05-26 05:58_
+_@Demi-Marie_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

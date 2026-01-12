@@ -13,14 +13,14 @@ head: charlie/group
 created_at: 2024-12-01T01:38:47Z
 updated_at: 2024-12-04T00:55:52Z
 url: https://github.com/astral-sh/uv/pull/9545
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Model groups as a property of requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-01 01:38_
+_@charliermarsh_
 
 ## Summary
 

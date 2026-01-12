@@ -14,14 +14,14 @@ head: micha/fix-stale-diagnostics
 created_at: 2025-04-07T16:25:35Z
 updated_at: 2025-04-07T16:39:23Z
 url: https://github.com/astral-sh/ruff/pull/17280
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Fix stale syntax errors in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-07 16:25_
+_@MichaReiser_
 
 ## Summary
 

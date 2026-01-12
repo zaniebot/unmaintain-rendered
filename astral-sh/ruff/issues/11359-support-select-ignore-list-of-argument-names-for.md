@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T08:57:57Z
 updated_at: 2024-05-20T00:56:03Z
 url: https://github.com/astral-sh/ruff/issues/11359
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Support select/ignore list of argument names for `ARG` rules
 
 ---
 
-_Issue opened by @mal on 2024-05-10 08:57_
+_@mal_
 
 Keywords: `ARG`, `ARG001`, `unused arguments`
 

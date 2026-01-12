@@ -14,14 +14,14 @@ head: zb/tool-install-test
 created_at: 2024-06-25T05:01:26Z
 updated_at: 2024-06-26T19:51:34Z
 url: https://github.com/astral-sh/uv/pull/4509
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Add test cases for `uv tool install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 05:01_
+_@zanieb_
 
 Adds test cases for functionality in #4492.
 

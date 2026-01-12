@@ -14,14 +14,14 @@ head: charlie/wheel-validation
 created_at: 2025-08-24T15:42:53Z
 updated_at: 2025-08-26T07:14:00Z
 url: https://github.com/astral-sh/uv/pull/15484
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Reject already-installed wheels that don't match the target platform
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 15:42_
+_@charliermarsh_
 
 ## Summary
 

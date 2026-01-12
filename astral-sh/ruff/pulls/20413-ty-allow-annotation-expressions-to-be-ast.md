@@ -13,14 +13,14 @@ head: alex/classvar-attr
 created_at: 2025-09-15T10:52:08Z
 updated_at: 2025-09-15T11:06:50Z
 url: https://github.com/astral-sh/ruff/pull/20413
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Allow annotation expressions to be `ast::Attribute` nodes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-15 10:52_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1187
 

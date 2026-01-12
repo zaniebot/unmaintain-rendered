@@ -1,0 +1,147 @@
+```yaml
+number: 1313
+title: cargo install ripgrep is failing
+type: issue
+state: closed
+author: fowles
+labels:
+  - invalid
+assignees: []
+created_at: 2019-06-27T21:07:00Z
+updated_at: 2019-06-27T23:27:25Z
+url: https://github.com/BurntSushi/ripgrep/issues/1313
+synced_at: 2026-01-12T16:13:23Z
+```
+
+# cargo install ripgrep is failing
+
+---
+
+_@fowles_
+
+#### What version of ripgrep are you using?
+
+Attempting to install 11.0.1 (according to cargo)
+cargo 1.31.0
+
+#### How did you install ripgrep?
+
+cargo install ripgrep
+
+
+
+
+```
+    Updating crates.io index
+  Installing ripgrep v11.0.1
+   Compiling proc-macro2 v0.4.30
+   Compiling memchr v2.2.0
+   Compiling byteorder v1.3.2
+   Compiling encoding_rs v0.8.17
+   Compiling libc v0.2.58
+   Compiling unicode-xid v0.1.0
+   Compiling lazy_static v1.3.0
+   Compiling serde v1.0.94
+   Compiling ryu v0.2.8
+   Compiling regex v1.1.7
+   Compiling bitflags v1.1.0
+   Compiling cfg-if v0.1.9
+   Compiling ucd-util v0.1.3
+   Compiling syn v0.15.39
+   Compiling utf8-ranges v1.0.3
+   Compiling unicode-width v0.1.5
+   Compiling fnv v1.0.6
+   Compiling itoa v0.4.4
+   Compiling strsim v0.8.0
+   Compiling bytecount v0.5.1
+   Compiling termcolor v1.0.5
+   Compiling same-file v1.0.4
+   Compiling smallvec v0.6.10
+   Compiling log v0.4.6
+   Compiling textwrap v0.11.0
+   Compiling thread_local v0.3.6
+   Compiling crossbeam-utils v0.6.5
+   Compiling walkdir v2.2.8
+   Compiling regex-syntax v0.6.7
+   Compiling clap v2.33.0
+   Compiling crossbeam-channel v0.3.8
+   Compiling regex-automata v0.1.7
+   Compiling base64 v0.10.1
+   Compiling aho-corasick v0.7.3
+   Compiling grep-matcher v0.1.2
+   Compiling memmap v0.7.0
+   Compiling atty v0.2.11
+   Compiling num_cpus v1.10.1
+   Compiling bstr v0.2.1
+   Compiling bstr v0.1.4
+   Compiling quote v0.6.12
+   Compiling encoding_rs_io v0.1.6
+   Compiling grep-searcher v0.1.5
+   Compiling serde_json v1.0.39
+   Compiling ripgrep v11.0.1
+error[E0658]: imports can only refer to extern crate names passed with `--extern` on stable channel (see issue #53130)
+  --> /usr/local/google/home/kfm/.cargo/registry/src/github.com-1ecc6299db9ec823/ripgrep-11.0.1/build.rs:9:5
+   |
+9  | use app::{RGArg, RGArgKind};
+   |     ^^^
+...
+13 | mod app;
+   | -------- not an extern crate passed with `--extern`
+   |
+note: this import refers to the module defined here
+  --> /usr/local/google/home/kfm/.cargo/registry/src/github.com-1ecc6299db9ec823/ripgrep-11.0.1/build.rs:13:1
+   |
+13 | mod app;
+   | ^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0658`.
+error: Could not compile `ripgrep`.
+warning: build failed, waiting for other jobs to finish...
+error: failed to compile `ripgrep v11.0.1`, intermediate artifacts can be found at `/tmp/cargo-installqdsRP7`
+
+Caused by:
+  build failed
+```
+
+
+---
+
+_Comment by @lespea on 2019-06-27 23:04_
+
+I think the minimum supported version of rust is 1.34.0
+
+https://github.com/BurntSushi/ripgrep/blob/master/.travis.yml#L63
+
+---
+
+_Comment by @fowles on 2019-06-27 23:13_
+
+Is there an older version I can install that has a lower dependency?
+
+---
+
+_Comment by @BurntSushi on 2019-06-27 23:27_
+
+As the README says, right next to the `cargo install` instructions:
+
+> Note that the minimum supported version of Rust for ripgrep is 1.34.0, although ripgrep may work with older versions.
+
+So the error you're getting is expected. Please upgrade your version of Rust.
+
+> Is there an older version I can install that has a lower dependency?
+
+Why can't you upgrade Rust?
+
+To answer your question, you'll need to look at historical versions of the README file, which document the MSRV.
+
+---
+
+_Closed by @BurntSushi on 2019-06-27 23:27_
+
+---
+
+_Label `invalid` added by @BurntSushi on 2019-06-27 23:27_
+
+---

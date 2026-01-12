@@ -12,14 +12,14 @@ head: charlie/install
 created_at: 2023-11-06T17:15:40Z
 updated_at: 2023-11-06T18:32:47Z
 url: https://github.com/astral-sh/uv/pull/339
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Remove `virtualenv` setup from gourgeist
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 17:15_
+_@charliermarsh_
 
 We now only support building bare environments.
 

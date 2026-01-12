@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-17T15:41:45Z
 updated_at: 2025-04-18T19:05:43Z
 url: https://github.com/clap-rs/clap/issues/5973
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support clearing args matches
 
 ---
 
-_Issue opened by @kryvashek on 2025-04-17 15:41_
+_@kryvashek_
 
 ### Please complete the following tasks
 

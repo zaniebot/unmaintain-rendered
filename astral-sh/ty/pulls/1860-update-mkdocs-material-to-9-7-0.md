@@ -14,14 +14,14 @@ head: update-mkdocs-material
 created_at: 2025-12-12T00:14:12Z
 updated_at: 2025-12-12T05:03:55Z
 url: https://github.com/astral-sh/ty/pull/1860
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update mkdocs-material to 9.7.0
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-12 00:14_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

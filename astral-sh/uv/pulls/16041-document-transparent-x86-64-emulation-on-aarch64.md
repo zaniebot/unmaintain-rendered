@@ -13,14 +13,14 @@ head: konsti/Transparent-x86_64-emulation-on-aarch64
 created_at: 2025-09-26T13:25:36Z
 updated_at: 2025-10-02T16:31:40Z
 url: https://github.com/astral-sh/uv/pull/16041
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Document transparent x86_64 emulation on aarch64
 
 ---
 
-_Pull request opened by @konstin on 2025-09-26 13:25_
+_@konstin_
 
 _No description provided._
 

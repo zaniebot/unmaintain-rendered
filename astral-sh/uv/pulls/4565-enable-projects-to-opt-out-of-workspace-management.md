@@ -13,14 +13,14 @@ head: charlie/workspace-opt-out
 created_at: 2024-06-26T20:08:43Z
 updated_at: 2024-07-01T20:17:44Z
 url: https://github.com/astral-sh/uv/pull/4565
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Enable projects to opt-out of workspace management
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 20:08_
+_@charliermarsh_
 
 ## Summary
 

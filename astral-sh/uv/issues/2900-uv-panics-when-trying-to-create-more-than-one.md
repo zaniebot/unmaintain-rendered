@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T12:06:55Z
 updated_at: 2024-04-08T17:18:55Z
 url: https://github.com/astral-sh/uv/issues/2900
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv panics when trying to create more than one RequirementsSource from a file without `-r`
 
 ---
 
-_Issue opened by @slafs on 2024-04-08 12:06_
+_@slafs_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

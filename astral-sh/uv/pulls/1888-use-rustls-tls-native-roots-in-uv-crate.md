@@ -13,14 +13,14 @@ head: zb/native-tls
 created_at: 2024-02-22T22:44:26Z
 updated_at: 2025-09-10T12:56:45Z
 url: https://github.com/astral-sh/uv/pull/1888
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Use `rustls-tls-native-roots` in `uv` crate
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 22:44_
+_@zanieb_
 
 I'm confused that we have this separate specification of `reqwests`? I'm not sure this has any effect, but it seems like it should be done for correctness.
 

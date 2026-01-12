@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T17:37:39Z
 updated_at: 2024-12-13T17:41:38Z
 url: https://github.com/astral-sh/ruff/issues/14922
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Understand `Annotated`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-12-11 17:37_
+_@InSyncWithFoo_
 
 Subtask of #14172.
 

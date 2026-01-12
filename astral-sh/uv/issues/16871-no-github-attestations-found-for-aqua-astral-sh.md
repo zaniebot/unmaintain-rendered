@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T10:16:47Z
 updated_at: 2025-11-30T15:12:18Z
 url: https://github.com/astral-sh/uv/issues/16871
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # No GitHub attestations found for aqua:astral-sh/uv@0.9.11 when installing UV through mise
 
 ---
 
-_Issue opened by @GuilhermePSC on 2025-11-27 10:16_
+_@GuilhermePSC_
 
 ### Summary
 

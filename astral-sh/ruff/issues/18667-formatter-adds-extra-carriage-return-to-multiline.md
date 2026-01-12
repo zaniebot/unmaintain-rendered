@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T19:22:49Z
 updated_at: 2025-06-15T05:53:07Z
 url: https://github.com/astral-sh/ruff/issues/18667
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatter adds extra carriage return to multiline f-string debug replacements
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-13 19:22_
+_@MeGaGiGaGon_
 
 ### Summary
 

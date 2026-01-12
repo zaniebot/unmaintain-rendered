@@ -14,14 +14,14 @@ head: format-attribute-expression
 created_at: 2023-06-21T16:45:27Z
 updated_at: 2023-06-21T21:54:01Z
 url: https://github.com/astral-sh/ruff/pull/5259
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format Attribute Expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-21 16:45_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

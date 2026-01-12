@@ -13,14 +13,14 @@ head: renovate/notify-8.x
 created_at: 2025-01-11T16:15:22Z
 updated_at: 2025-01-20T09:41:20Z
 url: https://github.com/astral-sh/ruff/pull/15435
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Update Rust crate notify to v8
 
 ---
 
-_Pull request opened by @renovate on 2025-01-11 16:15_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: charlie/log
 created_at: 2024-04-26T23:17:23Z
 updated_at: 2024-04-26T23:31:20Z
 url: https://github.com/astral-sh/uv/pull/3282
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Add debug logging for `--target`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-26 23:17_
+_@charliermarsh_
 
 _No description provided._
 

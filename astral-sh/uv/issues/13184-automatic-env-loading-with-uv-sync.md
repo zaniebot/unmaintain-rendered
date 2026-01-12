@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T18:58:25Z
 updated_at: 2025-04-28T19:03:57Z
 url: https://github.com/astral-sh/uv/issues/13184
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Automatic .env Loading with uv sync
 
 ---
 
-_Issue opened by @Kaiden0001 on 2025-04-28 18:58_
+_@Kaiden0001_
 
 ### Question
 

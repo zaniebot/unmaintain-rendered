@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-12-28T21:08:52Z
 updated_at: 2024-12-29T08:30:22Z
 url: https://github.com/astral-sh/ruff/pull/15170
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix typo in `NameImport.qualified_name` docstring
 
 ---
 
-_Pull request opened by @Viicos on 2024-12-28 21:08_
+_@Viicos_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T00:35:58Z
 updated_at: 2025-10-07T01:03:23Z
 url: https://github.com/astral-sh/uv/issues/16144
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # `uv add` silently ignores version constraint that can't be resolved
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-07 00:35_
+_@DetachHead_
 
 ### Summary
 

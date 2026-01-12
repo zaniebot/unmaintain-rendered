@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-08T13:11:56Z
 updated_at: 2024-06-11T02:14:05Z
 url: https://github.com/astral-sh/ruff/issues/11337
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Invalid `DebugText` for source with leading whitespace
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-08 13:11_
+_@dhruvmanila_
 
 Given:
 

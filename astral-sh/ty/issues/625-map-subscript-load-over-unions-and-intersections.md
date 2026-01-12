@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T15:41:39Z
 updated_at: 2025-06-23T16:38:03Z
 url: https://github.com/astral-sh/ty/issues/625
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # map subscript load over unions and intersections
 
 ---
 
-_Issue opened by @carljm on 2025-06-10 15:41_
+_@carljm_
 
 > An example I got from reviewing https://github.com/astral-sh/ruff/pull/17643, which may or may not be related to this issue. I find it strange that we infer `Unknown` here, and not some `@Todo` type?
 > 

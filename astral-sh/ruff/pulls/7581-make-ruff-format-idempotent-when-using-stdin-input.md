@@ -13,14 +13,14 @@ head: fix-format-stdin
 created_at: 2023-09-21T20:02:52Z
 updated_at: 2023-09-21T20:50:24Z
 url: https://github.com/astral-sh/ruff/pull/7581
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Make ruff format idempotent when using stdin input
 
 ---
 
-_Pull request opened by @leiserfg on 2023-09-21 20:02_
+_@leiserfg_
 
 ## Summary
 Currently, this happens

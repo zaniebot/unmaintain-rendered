@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T13:36:34Z
 updated_at: 2024-06-18T14:53:01Z
 url: https://github.com/astral-sh/uv/issues/4380
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv toolchain list` throws error and fails to display list because Python 2 is on the PATH
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-06-18 13:36_
+_@notatallshaw-gts_
 
 ```
 $ uv -V

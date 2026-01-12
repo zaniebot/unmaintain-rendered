@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-11T19:02:44Z
 updated_at: 2024-10-20T13:47:24Z
 url: https://github.com/astral-sh/uv/issues/8129
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Unable to use `uv` with Cookiecutter templates
 
 ---
 
-_Issue opened by @yakimka on 2024-10-11 19:02_
+_@yakimka_
 
 I have a Cookiecutter project template that I am trying to migrate from using Poetry to `uv`. However, I encountered an issue with the strict `uv` validation of `pyproject.toml`.
 

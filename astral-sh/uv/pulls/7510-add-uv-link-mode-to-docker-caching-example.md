@@ -13,14 +13,14 @@ head: zb/docker-link
 created_at: 2024-09-18T17:03:19Z
 updated_at: 2024-09-19T10:55:56Z
 url: https://github.com/astral-sh/uv/pull/7510
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Add `UV_LINK_MODE` to Docker caching example
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 17:03_
+_@zanieb_
 
 As mentioned in https://github.com/astral-sh/uv/issues/7509
 

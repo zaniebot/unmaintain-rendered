@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T09:35:20Z
 updated_at: 2026-01-11T14:23:45Z
 url: https://github.com/astral-sh/uv/issues/12036
-synced_at: 2026-01-11T15:05:52Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Build intermittently fails when uv cache is on NFS mount
 
 ---
 
-_Issue opened by @tekumara on 2025-03-07 09:35_
+_@tekumara_
 
 ### Summary
 

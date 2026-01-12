@@ -14,14 +14,14 @@ head: dhruv/fix-main
 created_at: 2025-11-06T16:51:51Z
 updated_at: 2025-11-06T20:10:46Z
 url: https://github.com/astral-sh/ruff/pull/21299
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Fix main by using `infer_expression`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-06 16:51_
+_@dhruvmanila_
 
 _No description provided._
 

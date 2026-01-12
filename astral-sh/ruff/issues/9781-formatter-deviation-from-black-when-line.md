@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-02T10:43:18Z
 updated_at: 2024-02-02T11:22:31Z
 url: https://github.com/astral-sh/ruff/issues/9781
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter: deviation from Black when line splitting subscript assignment
 
 ---
 
-_Issue opened by @rhynix on 2024-02-02 10:43_
+_@rhynix_
 
 Ruff splits lines differently when the line length exceeds the configured line length, and the line contains assignment using subscript notation. For instance, when assigning to a dict.
 

@@ -14,14 +14,14 @@ head: gankra/distup
 created_at: 2025-04-17T19:48:02Z
 updated_at: 2025-04-22T14:05:17Z
 url: https://github.com/astral-sh/ruff/pull/17453
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Update cargo-dist and apply config improvements
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-17 19:48_
+_@Gankra_
 
 _No description provided._
 

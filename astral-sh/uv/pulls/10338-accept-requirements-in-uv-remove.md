@@ -13,14 +13,14 @@ head: charlie/rem
 created_at: 2025-01-06T23:33:03Z
 updated_at: 2025-01-07T13:47:07Z
 url: https://github.com/astral-sh/uv/pull/10338
-synced_at: 2026-01-10T11:44:43Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Accept requirements in `uv remove`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-06 23:33_
+_@charliermarsh_
 
 ## Summary
 

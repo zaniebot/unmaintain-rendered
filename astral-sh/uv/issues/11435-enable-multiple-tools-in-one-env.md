@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T04:49:47Z
 updated_at: 2025-04-26T15:02:06Z
 url: https://github.com/astral-sh/uv/issues/11435
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Enable multiple tools in one env
 
 ---
 
-_Issue opened by @nixjdm on 2025-02-12 04:49_
+_@nixjdm_
 
 `uv tool install glances` and `uv tool install ipython` make those tools generally available in my shell, and they are isolated from each other.
 

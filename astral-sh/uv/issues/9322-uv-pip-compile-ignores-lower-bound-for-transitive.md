@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T14:37:18Z
 updated_at: 2024-11-21T15:14:10Z
 url: https://github.com/astral-sh/uv/issues/9322
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # `uv pip compile` Ignores Lower Bound for Transitive Dependency
 
 ---
 
-_Issue opened by @vladislavlh on 2024-11-21 14:37_
+_@vladislavlh_
 
 Hello `uv` team! 👋
 

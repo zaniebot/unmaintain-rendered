@@ -13,14 +13,14 @@ head: charlie/groups
 created_at: 2024-10-31T20:05:11Z
 updated_at: 2024-10-31T20:11:23Z
 url: https://github.com/astral-sh/uv/pull/8734
-synced_at: 2026-01-10T12:08:45Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Avoid error for `--group` defined in non-root workspace member
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-31 20:05_
+_@charliermarsh_
 
 ## Summary
 

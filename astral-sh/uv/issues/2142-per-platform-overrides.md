@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-03T21:02:39Z
 updated_at: 2024-06-19T00:43:26Z
 url: https://github.com/astral-sh/uv/issues/2142
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Per-platform overrides
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-03-03 21:02_
+_@mjclarke94_
 
 Generally speaking, version resolution is platform independent for the majority of dependencies, with only a subset (torch...and others...mostly torch) needing a nudge in the right direction.  Cross-platform support is probably the main thing preventing us from adopting uv/rye at the moment, as we build on MacOS but deploy on Linux. There's already an open issue for cross platform support (#2079), but I imagine implementing that is a fairly involved process.
 

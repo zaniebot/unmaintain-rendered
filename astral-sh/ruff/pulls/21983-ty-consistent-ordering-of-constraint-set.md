@@ -14,14 +14,14 @@ head: dcreager/source-order-constraints
 created_at: 2025-12-15T03:04:22Z
 updated_at: 2025-12-15T19:24:10Z
 url: https://github.com/astral-sh/ruff/pull/21983
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Consistent ordering of constraint set specializations, take 2
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-15 03:04_
+_@dcreager_
 
 In https://github.com/astral-sh/ruff/pull/21957, we tried to use `union_or_intersection_elements_ordering` to provide a stable ordering of the union and intersection elements that are created when determining which type a typevar should specialize to. @AlexWaygood [pointed out](https://github.com/astral-sh/ruff/pull/21551#discussion_r2616543762) that this won't work, since that provides a consistent ordering within a single process run, but does not provide a stable ordering across runs.
 

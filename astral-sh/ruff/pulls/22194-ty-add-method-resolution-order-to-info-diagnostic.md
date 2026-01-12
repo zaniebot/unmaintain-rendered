@@ -14,14 +14,14 @@ head: add-mro
 created_at: 2025-12-25T10:15:10Z
 updated_at: 2025-12-25T10:26:45Z
 url: https://github.com/astral-sh/ruff/pull/22194
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add method resolution order to info diagnostic `unsupported-base`
 
 ---
 
-_Pull request opened by @silamon on 2025-12-25 10:15_
+_@silamon_
 
 ## Summary
 

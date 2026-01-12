@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-19T15:54:33Z
 updated_at: 2024-04-20T01:52:26Z
 url: https://github.com/astral-sh/ruff/issues/11046
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Incorrect space inserted between colon and value during slice operation
 
 ---
 
-_Issue opened by @puffincircle on 2024-04-19 15:54_
+_@puffincircle_
 
 ruff inserts a space between colon and value when slicing into a list.
 

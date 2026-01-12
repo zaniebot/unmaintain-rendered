@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T12:42:04Z
 updated_at: 2025-04-18T16:49:03Z
 url: https://github.com/astral-sh/ruff/issues/17311
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLR1730 "safe" fix may delete comments
 
 ---
 
-_Issue opened by @JimMajor on 2025-04-09 12:42_
+_@JimMajor_
 
 ### Summary
 

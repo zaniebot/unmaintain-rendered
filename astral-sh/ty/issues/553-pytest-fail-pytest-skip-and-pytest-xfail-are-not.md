@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T16:54:17Z
 updated_at: 2025-07-02T16:03:58Z
 url: https://github.com/astral-sh/ty/issues/553
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `pytest.fail()`, `pytest.skip()` and `pytest.xfail()` are not considered callable (`call-not-callable` diagnostic emitted)
 
 ---
 
-_Issue opened by @johnniemorrow on 2025-05-30 16:54_
+_@johnniemorrow_
 
 ### Summary
 

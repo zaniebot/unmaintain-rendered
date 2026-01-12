@@ -13,14 +13,14 @@ head: charlie/template
 created_at: 2025-01-12T01:25:46Z
 updated_at: 2025-01-12T01:37:58Z
 url: https://github.com/astral-sh/uv/pull/10531
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Update packse to include `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-12 01:25_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-13T08:35:24Z
 updated_at: 2024-06-13T13:04:55Z
 url: https://github.com/astral-sh/ruff/issues/11853
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New Rule: Consider decorating method with @staticmethod PYL-R0201
 
 ---
 
-_Issue opened by @Zerotask on 2024-06-13 08:35_
+_@Zerotask_
 
 Pycharm and Deepsource warns you, when you use an instance method which does not use `self` and therefore can be marked with `@staticmethod`.
 

@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-04-05T19:24:54Z
 updated_at: 2024-04-06T14:44:04Z
 url: https://github.com/astral-sh/ruff/pull/10793
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Use within-scope shadowed bindings in `asyncio-dangling-task`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 19:24_
+_@charliermarsh_
 
 ## Summary
 

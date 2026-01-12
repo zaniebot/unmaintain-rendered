@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-14T22:02:14Z
 updated_at: 2024-06-17T22:43:36Z
 url: https://github.com/astral-sh/uv/issues/4333
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # uv fails to resolve 'jsonschema' and 'reana-client' environment only on Python 3.12 while pip succeeds
 
 ---
 
-_Issue opened by @matthewfeickert on 2024-06-14 22:02_
+_@matthewfeickert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

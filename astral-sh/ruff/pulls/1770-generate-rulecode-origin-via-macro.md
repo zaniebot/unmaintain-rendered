@@ -12,14 +12,14 @@ head: generate-rulecode-origin-mapping
 created_at: 2023-01-10T13:22:45Z
 updated_at: 2023-01-10T18:58:36Z
 url: https://github.com/astral-sh/ruff/pull/1770
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Generate RuleCode::origin() via macro
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-10 13:22_
+_@not-my-profile_
 
 _No description provided._
 

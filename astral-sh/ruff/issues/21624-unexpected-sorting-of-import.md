@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T06:21:47Z
 updated_at: 2025-12-10T03:56:54Z
 url: https://github.com/astral-sh/ruff/issues/21624
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unexpected sorting of import
 
 ---
 
-_Issue opened by @spacemanspiff2007 on 2025-11-25 06:21_
+_@spacemanspiff2007_
 
 ### Summary
 

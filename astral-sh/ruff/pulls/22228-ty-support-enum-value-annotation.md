@@ -12,14 +12,14 @@ head: enum_value_annotation
 created_at: 2025-12-27T19:17:26Z
 updated_at: 2025-12-29T09:18:50Z
 url: https://github.com/astral-sh/ruff/pull/22228
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] support enum `_value_` annotation
 
 ---
 
-_Pull request opened by @silamon on 2025-12-27 19:17_
+_@silamon_
 
 ## Summary
 

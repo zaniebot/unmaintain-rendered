@@ -13,14 +13,14 @@ head: zanie/ple-char
 created_at: 2023-11-01T16:13:08Z
 updated_at: 2023-11-02T04:45:29Z
 url: https://github.com/astral-sh/ruff/pull/8407
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix bug where `PLE1307` was raised when formatting `%c` with characters
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 16:13_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/8406
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T02:44:21Z
 updated_at: 2025-06-20T12:37:07Z
 url: https://github.com/astral-sh/ruff/issues/18810
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PIE796 Check StrEnum
 
 ---
 
-_Issue opened by @stephencsnow on 2025-06-20 02:44_
+_@stephencsnow_
 
 ### Summary
 

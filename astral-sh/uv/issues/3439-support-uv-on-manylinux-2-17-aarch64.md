@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T21:41:02Z
 updated_at: 2024-05-17T08:54:45Z
 url: https://github.com/astral-sh/uv/issues/3439
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # support uv on manylinux_2_17_aarch64
 
 ---
 
-_Issue opened by @njzjz on 2024-05-07 21:41_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

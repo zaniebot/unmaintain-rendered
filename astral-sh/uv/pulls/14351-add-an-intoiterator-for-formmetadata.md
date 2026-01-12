@@ -13,14 +13,14 @@ head: charlie/iter
 created_at: 2025-06-29T18:49:33Z
 updated_at: 2025-06-29T19:07:09Z
 url: https://github.com/astral-sh/uv/pull/14351
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Add an `IntoIterator` for `FormMetadata`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-29 18:49_
+_@charliermarsh_
 
 ## Summary
 

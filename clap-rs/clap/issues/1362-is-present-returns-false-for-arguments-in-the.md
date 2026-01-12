@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-17T10:59:10Z
 updated_at: 2020-02-01T19:00:53Z
 url: https://github.com/clap-rs/clap/issues/1362
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # is_present returns false for arguments in the environment that do not take a value
 
 ---
 
-_Issue opened by @Gisleburt on 2018-10-17 10:59_
+_@Gisleburt_
 
 ### Rust Version
 

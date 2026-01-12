@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T11:03:07Z
 updated_at: 2025-06-17T13:28:53Z
 url: https://github.com/astral-sh/uv/issues/14104
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Respect *_PROXY
 
 ---
 
-_Issue opened by @tamis-laan on 2025-06-17 11:03_
+_@tamis-laan_
 
 ### Summary
 

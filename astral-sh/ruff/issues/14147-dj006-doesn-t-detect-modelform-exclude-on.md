@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T07:13:08Z
 updated_at: 2024-12-19T09:01:19Z
 url: https://github.com/astral-sh/ruff/issues/14147
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DJ006 doesn't detect ModelForm.exclude on inherited forms
 
 ---
 
-_Issue opened by @GitRon on 2024-11-07 07:13_
+_@GitRon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

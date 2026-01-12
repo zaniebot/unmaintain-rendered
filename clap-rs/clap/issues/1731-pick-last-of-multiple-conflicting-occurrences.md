@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-08T12:26:28Z
 updated_at: 2020-03-11T13:38:07Z
 url: https://github.com/clap-rs/clap/issues/1731
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # pick last of multiple, conflicting occurrences
 
 ---
 
-_Issue opened by @wookietreiber on 2020-03-08 12:26_
+_@wookietreiber_
 
 ### Describe your use case
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T02:42:24Z
 updated_at: 2024-08-11T16:26:05Z
 url: https://github.com/astral-sh/uv/issues/6000
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Project manager frontend
 
 ---
 
-_Issue opened by @orion160 on 2024-08-11 02:42_
+_@orion160_
 
 I see that uv is incorporating functionality to interact with the new pyproject.toml project layout #5903.
 

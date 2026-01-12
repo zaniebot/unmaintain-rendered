@@ -13,14 +13,14 @@ head: charlie/bench
 created_at: 2024-01-05T21:19:57Z
 updated_at: 2024-01-05T21:24:46Z
 url: https://github.com/astral-sh/uv/pull/802
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Fix context managers in `bench.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-05 21:19_
+_@charliermarsh_
 
 I'm sloppy and didn't test this last change prior to merging.
 

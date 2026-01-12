@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-07-16T03:17:42Z
 updated_at: 2020-04-09T08:06:21Z
 url: https://github.com/clap-rs/clap/issues/1519
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Question/Idea: Parse config file via clap-rs?
 
 ---
 
-_Issue opened by @michael-smythe on 2019-07-16 03:17_
+_@michael-smythe_
 
 I have a program which looks like this:
 

@@ -13,14 +13,14 @@ head: renovate/github-artifact-actions
 created_at: 2025-12-29T16:16:58Z
 updated_at: 2025-12-29T17:07:24Z
 url: https://github.com/astral-sh/ruff/pull/22280
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update GitHub Artifact Actions
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:16_
+_@renovate_
 
 This PR contains the following updates:
 

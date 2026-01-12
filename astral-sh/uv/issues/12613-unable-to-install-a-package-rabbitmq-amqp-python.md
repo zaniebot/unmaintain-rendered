@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T23:19:03Z
 updated_at: 2025-08-06T02:44:17Z
 url: https://github.com/astral-sh/uv/issues/12613
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Unable to install a package - rabbitmq-amqp-python-client
 
 ---
 
-_Issue opened by @akshaybabloo on 2025-04-01 23:19_
+_@akshaybabloo_
 
 ### Summary
 

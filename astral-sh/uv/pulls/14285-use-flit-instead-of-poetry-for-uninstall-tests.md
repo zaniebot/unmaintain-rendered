@@ -13,14 +13,14 @@ head: zb/uninstall-edit
 created_at: 2025-06-26T16:54:26Z
 updated_at: 2025-06-26T18:10:56Z
 url: https://github.com/astral-sh/uv/pull/14285
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Use Flit instead of Poetry for uninstall tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 16:54_
+_@zanieb_
 
 Investigating https://github.com/astral-sh/uv/issues/14158
 

@@ -14,14 +14,14 @@ head: RUF054
 created_at: 2025-02-09T00:39:38Z
 updated_at: 2025-02-10T12:26:49Z
 url: https://github.com/astral-sh/ruff/pull/16049
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Indented form feeds (`RUF054`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-09 00:39_
+_@InSyncWithFoo_
 
 ## Summary
 

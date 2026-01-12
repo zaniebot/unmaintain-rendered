@@ -14,14 +14,14 @@ head: extra-none
 created_at: 2025-02-08T21:20:46Z
 updated_at: 2025-02-09T15:58:53Z
 url: https://github.com/astral-sh/ruff/pull/16044
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pyi`] Extend fix to Python <= 3.9 for `redundant-none-literal` (`PYI061`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-08 21:20_
+_@dylwil3_
 
 This PR extends the fix offered for [redundant-none-literal (PYI061)](https://docs.astral.sh/ruff/rules/redundant-none-literal/#redundant-none-literal-pyi061) to include Python versions <= 3.9 by using `typing.Optional` instead of the operator `|`. We also offer the fix with `|` for any target version on stub files.
 

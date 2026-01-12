@@ -13,14 +13,14 @@ head: extend-conventional-imports
 created_at: 2023-01-30T13:12:17Z
 updated_at: 2023-01-30T16:04:27Z
 url: https://github.com/astral-sh/ruff/pull/2353
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Extend conventional imports defaults to include TensorFlow et al
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 13:12_
+_@sbrugman_
 
 Based on configuration from Visual Studio for Python (https://code.visualstudio.com/docs/python/editing#_quick-fixes) and suggestion by @edgarrmondragon.
 

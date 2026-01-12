@@ -13,14 +13,14 @@ head: dhruv/e402-ipy-stmt-fix
 created_at: 2024-03-24T10:02:12Z
 updated_at: 2024-03-24T10:50:01Z
 url: https://github.com/astral-sh/ruff/pull/10545
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`E402`] Allow cell magics before an import
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-24 10:02_
+_@dhruvmanila_
 
 ## Summary
 

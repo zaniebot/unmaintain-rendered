@@ -13,14 +13,14 @@ head: exempt-attributes-from-sim223-auto-fix
 created_at: 2023-03-25T15:19:13Z
 updated_at: 2023-04-30T19:46:59Z
 url: https://github.com/astral-sh/ruff/pull/3732
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Ignore `collapsible-if` violations for `if False:` and `if True:`
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-25 15:19_
+_@JonathanPlasse_
 
 - Close #2919
 

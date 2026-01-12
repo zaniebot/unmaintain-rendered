@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T08:36:19Z
 updated_at: 2025-02-12T14:59:17Z
 url: https://github.com/astral-sh/uv/issues/11438
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Improve error message for package name parsing when paths are accepted
 
 ---
 
-_Issue opened by @dimaqq on 2025-02-12 08:36_
+_@dimaqq_
 
 ```sh
 > uv pip install -e [tracing,testing] -U

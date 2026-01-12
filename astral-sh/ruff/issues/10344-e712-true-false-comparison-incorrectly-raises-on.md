@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T18:03:04Z
 updated_at: 2024-03-11T18:04:29Z
 url: https://github.com/astral-sh/ruff/issues/10344
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E712 "true-false-comparison" incorrectly raises on array like
 
 ---
 
-_Issue opened by @tigerhawkvok on 2024-03-11 18:03_
+_@tigerhawkvok_
 
 Consider
 

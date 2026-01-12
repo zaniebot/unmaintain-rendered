@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T09:51:58Z
 updated_at: 2025-09-14T13:28:46Z
 url: https://github.com/astral-sh/uv/issues/15784
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Do not update cache ctime
 
 ---
 
-_Issue opened by @elazarl on 2025-09-11 09:51_
+_@elazarl_
 
 ### Summary
 

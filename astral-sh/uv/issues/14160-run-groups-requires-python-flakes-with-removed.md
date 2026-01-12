@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T15:36:03Z
 updated_at: 2025-06-30T15:39:48Z
 url: https://github.com/astral-sh/uv/issues/14160
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `run_groups_requires_python` flakes with `Removed virtual environment at ...`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-20 15:36_
+_@zanieb_
 
 ```
     running 1 test

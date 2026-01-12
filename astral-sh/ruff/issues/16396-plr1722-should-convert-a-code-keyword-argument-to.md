@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-26T14:19:12Z
 updated_at: 2025-03-03T14:20:59Z
 url: https://github.com/astral-sh/ruff/issues/16396
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLR1722 should convert a `code` keyword argument to a positional argument
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-26 14:19_
+_@dscorbett_
 
 ### Summary
 

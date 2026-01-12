@@ -14,14 +14,14 @@ head: brent/syn-type-param-default
 created_at: 2025-02-28T23:02:31Z
 updated_at: 2025-03-04T16:59:04Z
 url: https://github.com/astral-sh/ruff/pull/16447
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Type parameter defaults before Python 3.13
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-28 23:02_
+_@ntBre_
 
 Summary
 --

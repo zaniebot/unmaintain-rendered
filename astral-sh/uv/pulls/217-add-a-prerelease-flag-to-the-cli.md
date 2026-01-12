@@ -13,14 +13,14 @@ head: charlie/flag
 created_at: 2023-10-29T18:36:26Z
 updated_at: 2023-10-29T18:39:31Z
 url: https://github.com/astral-sh/uv/pull/217
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Add a `--prerelease` flag to the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 18:36_
+_@charliermarsh_
 
 _No description provided._
 

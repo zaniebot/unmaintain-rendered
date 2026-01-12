@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-02T15:02:05Z
 updated_at: 2025-11-12T01:27:57Z
 url: https://github.com/astral-sh/ty/issues/1465
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty incorrectly infers tensor arithmetic expression as `int | float` instead of `Tensor`
 
 ---
 
-_Issue opened by @anmorgunov on 2025-11-02 15:02_
+_@anmorgunov_
 
 ### Summary
 

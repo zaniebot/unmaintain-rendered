@@ -13,14 +13,14 @@ head: zb/python-discover-err
 created_at: 2024-10-04T16:08:19Z
 updated_at: 2024-10-07T17:57:20Z
 url: https://github.com/astral-sh/uv/pull/7928
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Show interpreter source during Python discovery query errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 16:08_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4154
 

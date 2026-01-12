@@ -13,14 +13,14 @@ head: charlie/format-err
 created_at: 2023-09-14T02:26:35Z
 updated_at: 2023-09-14T15:44:37Z
 url: https://github.com/astral-sh/ruff/pull/7377
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Catch panics in formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 02:26_
+_@charliermarsh_
 
 ## Summary
 

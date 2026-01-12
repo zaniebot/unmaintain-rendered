@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-21T13:34:54Z
 updated_at: 2026-01-09T03:29:54Z
 url: https://github.com/astral-sh/ty/issues/1608
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Parsed Docstring Dreams
 
 ---
 
-_Issue opened by @Gankra on 2025-11-21 13:34_
+_@Gankra_
 
 I don't want to file a bunch of granular issues about this right now so here's some pie-in-the-sky ideas about docstrings. All of this would require treating them like sub-ASTs (like string annotations):
 

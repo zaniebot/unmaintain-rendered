@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-18T09:49:35Z
 updated_at: 2023-11-12T20:09:24Z
 url: https://github.com/astral-sh/ruff/issues/7487
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # FBT001 Boolean trap surprising false negative with `bool | None`
 
 ---
 
-_Issue opened by @leddy231 on 2023-09-18 09:49_
+_@leddy231_
 
 `FBT001` should catch boolean positional arguments in function definitions, but to my surprise it does not care about  `bool | None`, which I would expect it to do. Thinking about it, I would expect it to catch any union type where `bool` is one of the options.
 

@@ -12,14 +12,14 @@ head: xaskii/no-install-local
 created_at: 2025-08-17T04:45:43Z
 updated_at: 2025-08-22T20:59:57Z
 url: https://github.com/astral-sh/uv/pull/15328
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Add `--no-install-local` option to `uv sync`, `uv add` and `uv export` 
 
 ---
 
-_Pull request opened by @xaskii on 2025-08-17 04:45_
+_@xaskii_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

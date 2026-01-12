@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T04:30:05Z
 updated_at: 2025-01-07T18:37:03Z
 url: https://github.com/astral-sh/uv/issues/10339
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # [Feature Request] uv add but not include version in pyproject.toml
 
 ---
 
-_Issue opened by @ayclqt on 2025-01-07 04:30_
+_@ayclqt_
 
 Can you add argument where uv add can install the latest version of package and add the pakage into pyproject.toml without version
 For example:

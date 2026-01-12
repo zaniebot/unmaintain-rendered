@@ -13,14 +13,14 @@ head: zb/managed-ignore
 created_at: 2024-12-10T20:07:44Z
 updated_at: 2024-12-10T20:24:51Z
 url: https://github.com/astral-sh/uv/pull/9786
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Ignore `.` prefixed directories during managed Python installation discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 20:07_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/pull/9756#discussion_r1878722112
 

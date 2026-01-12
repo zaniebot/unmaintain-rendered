@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-26T16:55:07Z
 updated_at: 2024-01-26T21:54:03Z
 url: https://github.com/astral-sh/uv/issues/1127
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Add `--allow-unsafe`, `--resolver=backtracking`, and other "default" `pip-compile` arguments
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-26 16:55_
+_@charliermarsh_
 
 We should hide these from the CLI, and accept them if they're provided (perhaps warn?).
 

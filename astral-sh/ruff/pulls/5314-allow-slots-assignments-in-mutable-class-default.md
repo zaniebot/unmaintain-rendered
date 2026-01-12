@@ -13,14 +13,14 @@ head: charlie/slots
 created_at: 2023-06-22T19:32:56Z
 updated_at: 2023-06-22T20:05:04Z
 url: https://github.com/astral-sh/ruff/pull/5314
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Allow `__slots__` assignments in `mutable-class-default`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 19:32_
+_@charliermarsh_
 
 Closes #5309.
 

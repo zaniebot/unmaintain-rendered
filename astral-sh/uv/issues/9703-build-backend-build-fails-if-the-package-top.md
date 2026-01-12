@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-07T10:36:02Z
 updated_at: 2025-10-30T08:28:48Z
 url: https://github.com/astral-sh/uv/issues/9703
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # build-backend: build fails if the package (top-level module) name is different than the project name
 
 ---
 
-_Issue opened by @pantheraleo-7 on 2024-12-07 10:36_
+_@pantheraleo-7_
 
 Since the build-backend is in preview, I was trying it out. if the project name is defined as "xyz" in the `pyproject.toml`, uv expects the directory `src/xyz/` to be present, but that may not always be the case (most popular example would be `scikit-learn` and `sklearn`).
 

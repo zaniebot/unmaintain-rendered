@@ -15,14 +15,14 @@ head: zb/typo-0
 created_at: 2025-03-07T16:45:13Z
 updated_at: 2025-03-07T17:10:25Z
 url: https://github.com/astral-sh/uv/pull/12051
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Fix `PyPI` typo in publish workflow
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-07 16:45_
+_@zanieb_
 
 _No description provided._
 

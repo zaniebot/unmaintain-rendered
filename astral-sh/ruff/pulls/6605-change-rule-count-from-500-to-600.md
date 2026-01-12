@@ -12,14 +12,14 @@ head: update-missing-count
 created_at: 2023-08-16T00:08:50Z
 updated_at: 2023-08-16T00:17:52Z
 url: https://github.com/astral-sh/ruff/pull/6605
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Change rule count from 500 to 600
 
 ---
 
-_Pull request opened by @Teraskull on 2023-08-16 00:08_
+_@Teraskull_
 
 Fixes missing change from PR #6579.
 

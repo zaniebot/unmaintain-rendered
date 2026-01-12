@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-05-07T18:06:23Z
 updated_at: 2024-05-07T18:16:29Z
 url: https://github.com/astral-sh/uv/pull/3434
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Move PyO3 derive down
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-07 18:06_
+_@charliermarsh_
 
 ## Summary
 

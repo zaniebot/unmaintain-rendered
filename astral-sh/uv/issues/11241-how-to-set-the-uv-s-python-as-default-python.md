@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T12:17:57Z
 updated_at: 2025-02-08T19:41:55Z
 url: https://github.com/astral-sh/uv/issues/11241
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # How to set the UV's python as default python binary?
 
 ---
 
-_Issue opened by @gphg on 2025-02-05 12:17_
+_@gphg_
 
 ### Question
 

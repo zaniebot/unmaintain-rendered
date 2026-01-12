@@ -11,14 +11,14 @@ head: konsti/charlie/local
 created_at: 2024-11-05T08:03:01Z
 updated_at: 2024-11-06T09:27:44Z
 url: https://github.com/astral-sh/uv/pull/8825
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Use `Ranges::from_iter` over `Ranges::iter_mut`
 
 ---
 
-_Pull request opened by @konstin on 2024-11-05 08:03_
+_@konstin_
 
 Use https://github.com/astral-sh/pubgrub/pull/34 (https://github.com/pubgrub-rs/pubgrub/pull/273) for safer ranges modification that can't break pubgrub invariants.
 

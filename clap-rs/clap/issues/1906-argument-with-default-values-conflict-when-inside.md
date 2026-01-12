@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-05-05T19:03:43Z
 updated_at: 2021-10-27T21:31:06Z
 url: https://github.com/clap-rs/clap/issues/1906
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Argument with default_values conflict when inside groups
 
 ---
 
-_Issue opened by @pksunkara on 2020-05-05 19:03_
+_@pksunkara_
 
 ### Make sure you completed the following tasks
 

@@ -13,14 +13,14 @@ head: alex/md-nits
 created_at: 2025-02-06T15:00:52Z
 updated_at: 2025-02-06T15:04:29Z
 url: https://github.com/astral-sh/ruff/pull/15996
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Fixup a couple of nits in the `red_knot_test` README
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-06 15:00_
+_@AlexWaygood_
 
 ## Summary
 

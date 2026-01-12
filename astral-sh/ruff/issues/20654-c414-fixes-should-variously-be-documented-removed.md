@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T21:48:05Z
 updated_at: 2025-10-01T01:31:37Z
 url: https://github.com/astral-sh/ruff/issues/20654
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # C414 fixes should variously be documented, removed, and marked as safe
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-30 21:48_
+_@dscorbett_
 
 ### Summary
 

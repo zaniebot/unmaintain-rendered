@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T15:26:41Z
 updated_at: 2025-02-27T18:28:01Z
 url: https://github.com/astral-sh/uv/issues/11834
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Python install tests time out locally
 
 ---
 
-_Issue opened by @konstin on 2025-02-27 15:26_
+_@konstin_
 
 When running the full test suite locally with nextest, I usually get timeouts in the `python_install` tests, e.g.
 

@@ -12,14 +12,14 @@ head: renovate/stable-1.x
 created_at: 2025-12-11T16:34:05Z
 updated_at: 2025-12-11T16:41:43Z
 url: https://github.com/clap-rs/clap/pull/6194
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # chore(deps): Update Rust Stable to v1.92
 
 ---
 
-_Pull request opened by @renovate on 2025-12-11 16:34_
+_@renovate_
 
 This PR contains the following updates:
 

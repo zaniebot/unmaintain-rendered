@@ -13,14 +13,14 @@ head: frozen-non-frozen-diagnostics
 created_at: 2025-12-13T16:52:37Z
 updated_at: 2025-12-13T20:59:27Z
 url: https://github.com/astral-sh/ruff/pull/21962
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Emit a diagnostic when frozen dataclass inherits a non-frozen dataclass and the other way around
 
 ---
 
-_Pull request opened by @silamon on 2025-12-13 16:52_
+_@silamon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

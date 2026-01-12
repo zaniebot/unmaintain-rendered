@@ -12,14 +12,14 @@ head: charlie/clap
 created_at: 2022-12-30T20:29:38Z
 updated_at: 2022-12-30T20:29:42Z
 url: https://github.com/astral-sh/ruff/pull/1485
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Move some argument validation into Clap
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 20:29_
+_@charliermarsh_
 
 These should really be _actual_ subcommands, but for now, it's better to leverage Clap.
 

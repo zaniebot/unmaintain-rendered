@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T22:36:09Z
 updated_at: 2025-09-04T18:50:23Z
 url: https://github.com/astral-sh/uv/issues/15586
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Caching for managed python installations
 
 ---
 
-_Issue opened by @aokellermann on 2025-08-29 22:36_
+_@aokellermann_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T18:28:55Z
 updated_at: 2026-01-09T19:22:10Z
 url: https://github.com/astral-sh/ty/issues/921
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # No call signature checking for implicit calls to `__eq__` or `__ne__` methods
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-07-31 18:28_
+_@MatthewMckee4_
 
 Currently, we don't emit any diagnostics here.
 

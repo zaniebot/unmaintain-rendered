@@ -14,14 +14,14 @@ head: david/ignore-slow-seeds-for-now
 created_at: 2025-10-14T17:28:15Z
 updated_at: 2025-10-14T18:02:22Z
 url: https://github.com/astral-sh/ruff/pull/20870
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Ignore slow seeds as a temporary measure
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-14 17:28_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2024-02-17T04:39:02Z
 updated_at: 2024-02-17T14:37:07Z
 url: https://github.com/astral-sh/uv/pull/1574
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Add graceful fallback for Artifactory indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 04:39_
+_@charliermarsh_
 
 ## Summary
 

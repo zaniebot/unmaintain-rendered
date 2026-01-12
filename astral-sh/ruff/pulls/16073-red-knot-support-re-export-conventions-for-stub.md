@@ -13,14 +13,14 @@ head: dhruv/re-export-2
 created_at: 2025-02-10T12:00:04Z
 updated_at: 2025-02-14T09:50:02Z
 url: https://github.com/astral-sh/ruff/pull/16073
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Support re-export conventions for stub files
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-10 12:00_
+_@dhruvmanila_
 
 This is an alternative implementation to #15848.
 

@@ -14,14 +14,14 @@ head: konsti/upload-all-metadata
 created_at: 2024-11-26T14:37:28Z
 updated_at: 2024-11-26T23:25:10Z
 url: https://github.com/astral-sh/uv/pull/9442
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Upload: All metadata incl. PEP 639
 
 ---
 
-_Pull request opened by @konstin on 2024-11-26 14:37_
+_@konstin_
 
 We were previously not uploading all metadata in the formdata of an upload request in the legacy api. Notably, we were missing the PEP 639 license-files field.
 

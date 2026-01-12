@@ -12,14 +12,14 @@ head: next_line_help
 created_at: 2025-08-07T22:16:46Z
 updated_at: 2025-08-07T22:21:33Z
 url: https://github.com/clap-rs/clap/pull/6095
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # test(help): Show next_line_help behavior
 
 ---
 
-_Pull request opened by @epage on 2025-08-07 22:16_
+_@epage_
 
 Inspired by #6061
 

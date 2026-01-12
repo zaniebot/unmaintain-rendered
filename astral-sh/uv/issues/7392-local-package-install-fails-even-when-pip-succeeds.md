@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T14:25:59Z
 updated_at: 2024-09-14T21:39:32Z
 url: https://github.com/astral-sh/uv/issues/7392
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # local package install fails, even when pip succeeds.
 
 ---
 
-_Issue opened by @manbango on 2024-09-14 14:25_
+_@manbango_
 
 * A minimal code snippet that reproduces the bug.
 ```

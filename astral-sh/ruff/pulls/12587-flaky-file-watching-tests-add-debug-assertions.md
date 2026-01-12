@@ -13,14 +13,14 @@ head: flaky-fs-test-debug
 created_at: 2024-07-30T18:05:16Z
 updated_at: 2024-08-02T15:09:16Z
 url: https://github.com/astral-sh/ruff/pull/12587
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Flaky file watching tests, add debug assertions
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-30 18:05_
+_@MichaReiser_
 
 ## Summary
 

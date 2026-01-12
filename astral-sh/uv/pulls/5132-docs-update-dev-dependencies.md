@@ -13,14 +13,14 @@ head: docs/update-dev-dependencies
 created_at: 2024-07-16T21:14:28Z
 updated_at: 2024-07-16T21:22:15Z
 url: https://github.com/astral-sh/uv/pull/5132
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # docs: update dev dependencies
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-16 21:14_
+_@mkniewallner_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

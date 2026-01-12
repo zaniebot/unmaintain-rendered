@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-26T16:18:27Z
 updated_at: 2024-04-17T12:35:00Z
 url: https://github.com/clap-rs/clap/issues/5430
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Clap-generated shell completion failing on macOS /bin/bash with: conditional binary operator expected: syntax error near `IFS'
 
 ---
 
-_Issue opened by @gibfahn on 2024-03-26 16:18_
+_@gibfahn_
 
 ### Please complete the following tasks
 

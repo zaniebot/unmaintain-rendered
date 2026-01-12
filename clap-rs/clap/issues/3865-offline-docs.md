@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-24T15:18:03Z
 updated_at: 2022-06-30T16:32:57Z
 url: https://github.com/clap-rs/clap/issues/3865
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Offline docs
 
 ---
 
-_Issue opened by @pickfire on 2022-06-24 15:18_
+_@pickfire_
 
 ### Please complete the following tasks
 

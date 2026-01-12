@@ -13,14 +13,14 @@ head: zb/discover-pypy
 created_at: 2024-05-21T17:12:47Z
 updated_at: 2024-05-21T21:48:44Z
 url: https://github.com/astral-sh/uv/pull/3706
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Add support for requesting `pypy` interpreters by implementation name
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 17:12_
+_@zanieb_
 
 Updates our executable name searches to support implementation names i.e. `cpython` and `pypy` and adds support for PyPy.
 

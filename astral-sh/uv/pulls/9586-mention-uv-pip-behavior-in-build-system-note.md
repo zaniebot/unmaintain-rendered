@@ -13,14 +13,14 @@ head: zb/uv-pip
 created_at: 2024-12-02T22:25:32Z
 updated_at: 2024-12-02T22:56:48Z
 url: https://github.com/astral-sh/uv/pull/9586
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Mention `uv pip` behavior in build system note
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-02 22:25_
+_@zanieb_
 
 xref https://github.com/astral-sh/uv/issues/9518
 

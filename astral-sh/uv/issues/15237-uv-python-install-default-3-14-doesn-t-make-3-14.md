@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T12:43:36Z
 updated_at: 2025-08-12T15:10:11Z
 url: https://github.com/astral-sh/uv/issues/15237
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # `uv python install --default 3.14` doesn't make 3.14 my global python
 
 ---
 
-_Issue opened by @tdhopper on 2025-08-12 12:43_
+_@tdhopper_
 
 ### Summary
 

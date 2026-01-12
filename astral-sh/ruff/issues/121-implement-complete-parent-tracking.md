@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-07T14:16:30Z
 updated_at: 2022-09-20T03:06:57Z
 url: https://github.com/astral-sh/ruff/issues/121
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement "complete" parent tracking
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-07 14:16_
+_@charliermarsh_
 
 PyFlakes has a variety of checks that require being able to traverse up the "parent" tree for any node.
 

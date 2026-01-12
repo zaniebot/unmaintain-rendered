@@ -13,14 +13,14 @@ head: rename-document-module
 created_at: 2024-05-27T16:25:28Z
 updated_at: 2024-05-27T16:39:15Z
 url: https://github.com/astral-sh/ruff/pull/11571
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Rename document module to text_document
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-27 16:25_
+_@MichaReiser_
 
 ## Summary
 

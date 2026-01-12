@@ -12,14 +12,14 @@ head: david/bump-0-0-1a11
 created_at: 2025-06-17T19:48:55Z
 updated_at: 2025-06-17T20:28:09Z
 url: https://github.com/astral-sh/ty/pull/672
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1a11
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-17 19:48_
+_@sharkdp_
 
 _No description provided._
 

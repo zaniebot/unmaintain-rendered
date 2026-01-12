@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-22T01:30:13Z
 updated_at: 2022-12-22T02:04:27Z
 url: https://github.com/astral-sh/ruff/issues/1322
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Keep error summary together at bottom of error list
 
 ---
 
-_Issue opened by @smackesey on 2022-12-22 01:30_
+_@smackesey_
 
 When I run `ruff` with a subset of fixable errors, I get output like this:
 

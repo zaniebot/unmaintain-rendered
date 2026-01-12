@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-07T04:17:35Z
 updated_at: 2023-03-07T19:35:24Z
 url: https://github.com/clap-rs/clap/issues/4748
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # when using any string that looks like an argument as a value to an argument, it will not parse the value, and instead attempt to load the non existent arg
 
 ---
 
-_Issue opened by @lever1209 on 2023-03-07 04:17_
+_@lever1209_
 
 ### Please complete the following tasks
 

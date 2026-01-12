@@ -14,14 +14,14 @@ head: micha-server-version
 created_at: 2025-08-18T07:13:18Z
 updated_at: 2025-08-18T07:16:54Z
 url: https://github.com/astral-sh/ruff/pull/19961
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Log server version at info level
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-18 07:13_
+_@MichaReiser_
 
 ## Summary
 

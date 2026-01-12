@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T04:39:28Z
 updated_at: 2024-02-28T19:36:21Z
 url: https://github.com/astral-sh/uv/issues/2035
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Respect environment variables in index URLs provided via `requirements.txt`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-28 04:39_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/1502#issuecomment-1950252326.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T13:43:09Z
 updated_at: 2024-10-25T20:46:50Z
 url: https://github.com/astral-sh/uv/issues/8090
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Support for PEP 735: Dependency Groups in `pyproject.toml`
 
 ---
 
-_Issue opened by @zanieb on 2024-10-10 13:43_
+_@zanieb_
 
 This PEP was [just accepted](https://discuss.python.org/t/pep-735-dependency-groups-in-pyproject-toml/39233/312) — we plan to support it. We'll track it here.
 

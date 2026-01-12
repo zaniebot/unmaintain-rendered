@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-27T17:27:16Z
 updated_at: 2025-07-28T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/14920
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Missing read file permissions in wheel for license files and record with `uv_build` backend
 
 ---
 
-_Issue opened by @kieran-ryan on 2025-07-27 17:27_
+_@kieran-ryan_
 
 ### Summary
 

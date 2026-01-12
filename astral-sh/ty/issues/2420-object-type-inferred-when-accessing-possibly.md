@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T17:36:24Z
 updated_at: 2026-01-09T21:20:39Z
 url: https://github.com/astral-sh/ty/issues/2420
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `object` type inferred when accessing possibly missing field with union type
 
 ---
 
-_Issue opened by @marcofrasvda on 2026-01-09 17:36_
+_@marcofrasvda_
 
 ### Summary
 

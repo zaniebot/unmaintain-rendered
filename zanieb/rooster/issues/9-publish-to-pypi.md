@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-08T17:40:14Z
 updated_at: 2024-02-22T20:47:33Z
 url: https://github.com/zanieb/rooster/issues/9
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Publish to PyPI
 
 ---
 
-_Issue opened by @zanieb on 2023-11-08 17:40_
+_@zanieb_
 
 The name "Rooster" is taken unfortunately but the project looks stale
 

@@ -12,14 +12,14 @@ head: applicability_quotes
 created_at: 2023-06-15T19:46:04Z
 updated_at: 2023-06-15T21:08:51Z
 url: https://github.com/astral-sh/ruff/pull/5130
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to flake8_quotes fixes
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 19:46_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

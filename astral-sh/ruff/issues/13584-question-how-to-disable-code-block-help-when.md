@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T09:32:04Z
 updated_at: 2024-10-03T15:11:23Z
 url: https://github.com/astral-sh/ruff/issues/13584
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Question: How to disable code block help when failing `check`
 
 ---
 
-_Issue opened by @tomhamiltonstubber on 2024-10-01 09:32_
+_@tomhamiltonstubber_
 
 Hi folks,
 

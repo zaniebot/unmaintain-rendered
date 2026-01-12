@@ -12,14 +12,14 @@ head: charlie/hash
 created_at: 2022-08-20T17:12:37Z
 updated_at: 2022-08-20T17:37:22Z
 url: https://github.com/astral-sh/ruff/pull/20
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add settings hash to cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-20 17:12_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T10:53:48Z
 updated_at: 2025-03-20T10:09:16Z
 url: https://github.com/astral-sh/ruff/issues/16841
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Organize imports not working due to version-specific syntax errors
 
 ---
 
-_Issue opened by @dikesh on 2025-03-19 10:53_
+_@dikesh_
 
 ### Summary
 

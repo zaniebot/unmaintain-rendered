@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T20:45:09Z
 updated_at: 2025-04-16T03:09:31Z
 url: https://github.com/astral-sh/uv/issues/12730
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # `uv add` fails with multiple errors
 
 ---
 
-_Issue opened by @sreekarchigurupati on 2025-04-07 20:45_
+_@sreekarchigurupati_
 
 ### Summary
 

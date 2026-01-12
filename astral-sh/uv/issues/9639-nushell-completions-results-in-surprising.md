@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T13:42:17Z
 updated_at: 2024-12-06T00:29:49Z
 url: https://github.com/astral-sh/uv/issues/9639
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Nushell: Completions results in surprising expansions of arguments passed to subcommands via `uv run`
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-12-04 13:42_
+_@jenshnielsen_
 
 I was trying to run a command such as 
 

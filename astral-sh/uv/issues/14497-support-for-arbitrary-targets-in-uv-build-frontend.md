@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T21:41:43Z
 updated_at: 2025-07-07T22:20:27Z
 url: https://github.com/astral-sh/uv/issues/14497
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Support for arbitrary targets in uv build frontend
 
 ---
 
-_Issue opened by @Panacea729 on 2025-07-07 21:41_
+_@Panacea729_
 
 ### Summary
 

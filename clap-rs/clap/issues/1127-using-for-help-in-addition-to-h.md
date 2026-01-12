@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-12-12T10:45:07Z
 updated_at: 2023-02-10T15:30:31Z
 url: https://github.com/clap-rs/clap/issues/1127
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Using -? for help in addition to -h
 
 ---
 
-_Issue opened by @kkayal on 2017-12-12 10:45_
+_@kkayal_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

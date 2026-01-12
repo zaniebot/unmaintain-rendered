@@ -12,14 +12,14 @@ head: konsti/fix-infinite-recursion-by-sniffing-the-shebang
 created_at: 2024-08-27T18:10:45Z
 updated_at: 2024-10-17T09:46:30Z
 url: https://github.com/astral-sh/uv/pull/6711
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Fix infinite recursion by sniffing the shebang
 
 ---
 
-_Pull request opened by @konstin on 2024-08-27 18:10_
+_@konstin_
 
 When we see `#!/usr/bin/env -S uv run"`, treat the input as a python file to avoid infinite recursion.
 

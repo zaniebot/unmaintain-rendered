@@ -13,14 +13,14 @@ head: dhruv/format-match-stmt
 created_at: 2023-08-02T20:04:40Z
 updated_at: 2023-08-08T13:18:50Z
 url: https://github.com/astral-sh/ruff/pull/6286
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add formatting for `StmtMatch`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-02 20:04_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T06:05:07Z
 updated_at: 2025-06-09T16:43:12Z
 url: https://github.com/astral-sh/ruff/issues/18528
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New rule: Avoid `try-except StopIteration` where `next(..., default)` can be used
 
 ---
 
-_Issue opened by @spaceone on 2025-06-07 06:05_
+_@spaceone_
 
 ### Summary
 

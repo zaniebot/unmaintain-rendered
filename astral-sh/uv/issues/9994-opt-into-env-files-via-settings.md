@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T11:36:40Z
 updated_at: 2025-12-11T21:22:33Z
 url: https://github.com/astral-sh/uv/issues/9994
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Opt into .env files via settings
 
 ---
 
-_Issue opened by @butterlyn on 2024-12-18 11:36_
+_@butterlyn_
 
 Feature request to have a option in settings (i.e., `pyproject.toml` or `uv.toml`) for setting a value equivalent to `UV_ENV_FILE` for a given project.
 

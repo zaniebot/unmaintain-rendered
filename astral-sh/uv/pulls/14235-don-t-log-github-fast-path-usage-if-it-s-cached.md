@@ -13,14 +13,14 @@ head: konsti/fast-path-logging
 created_at: 2025-06-24T10:31:08Z
 updated_at: 2025-06-24T15:53:11Z
 url: https://github.com/astral-sh/uv/pull/14235
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Don't log GitHub fast path usage if it's cached
 
 ---
 
-_Pull request opened by @konstin on 2025-06-24 10:31_
+_@konstin_
 
 Don't log that we resolved a reference through the GitHub fast path if we didn't use GitHub at all but used the cached revision. This avoids stating that the fast path works when it's blocked due to unrelated reasons (e.g. rate limits).
 

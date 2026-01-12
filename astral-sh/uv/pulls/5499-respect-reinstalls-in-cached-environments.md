@@ -14,14 +14,14 @@ head: charlie/rein
 created_at: 2024-07-27T00:09:25Z
 updated_at: 2024-07-27T01:36:59Z
 url: https://github.com/astral-sh/uv/pull/5499
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Respect reinstalls in cached environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-27 00:09_
+_@charliermarsh_
 
 ## Summary
 

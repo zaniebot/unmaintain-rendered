@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T14:00:10Z
 updated_at: 2024-10-09T07:41:05Z
 url: https://github.com/astral-sh/uv/issues/7842
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # uv lock insists on compiling source packages
 
 ---
 
-_Issue opened by @msw-kialo on 2024-10-01 14:00_
+_@msw-kialo_
 
 I am trying to generate/refresh the `uv.lock` for a project depending on `pyicu` (native extension but no wheels published):
 

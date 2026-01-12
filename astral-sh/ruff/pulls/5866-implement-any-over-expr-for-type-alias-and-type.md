@@ -12,14 +12,14 @@ head: zanie/695-any-expr
 created_at: 2023-07-18T16:20:58Z
 updated_at: 2023-07-19T21:17:08Z
 url: https://github.com/astral-sh/ruff/pull/5866
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Implement `any_over_expr` for type alias and type params
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-18 16:20_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ruff/issues/5062
 

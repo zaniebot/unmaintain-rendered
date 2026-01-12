@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T08:31:55Z
 updated_at: 2024-09-13T20:15:26Z
 url: https://github.com/astral-sh/uv/issues/7159
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Harmonize `uv export` and `uv pip compile` comment / output
 
 ---
 
-_Issue opened by @apollo13 on 2024-09-07 08:31_
+_@apollo13_
 
 Given that `uv export` and `uv pip compile` are somewhat able to generate the same output it would be same if their comments and features would match where sensible.
 

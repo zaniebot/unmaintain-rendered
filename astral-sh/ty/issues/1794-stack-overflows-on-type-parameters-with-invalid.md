@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-12-07T15:28:08Z
 updated_at: 2025-12-12T23:49:22Z
 url: https://github.com/astral-sh/ty/issues/1794
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Stack overflows on type parameters with invalid recursive bounds
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-07 15:28_
+_@AlexWaygood_
 
 ### Summary
 

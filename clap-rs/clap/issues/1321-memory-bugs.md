@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-07-18T13:54:20Z
 updated_at: 2020-10-25T20:00:59Z
 url: https://github.com/clap-rs/clap/issues/1321
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # memory bugs?
 
 ---
 
-_Issue opened by @matthiaskrgr on 2018-07-18 13:54_
+_@matthiaskrgr_
 
 I was initially trying to build alacritty (branch: scollback /  commit b05ad74 ) https://github.com/jwilm/alacritty/ with memory sanitizer enabled
 ````

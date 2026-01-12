@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-29T23:14:32Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/549
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Please factor terminal dimensions code into a crate
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-29 23:14_
+_@joshtriplett_
 
 clap's `src/term.rs` provides functions to detect the terminal size on either Windows or POSIX systems.  I'd love to have a crate providing those functions, for use in applications other than clap.
 

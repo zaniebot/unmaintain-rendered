@@ -13,14 +13,14 @@ head: konsti/portable-glob-parsing-struct
 created_at: 2025-05-06T10:37:58Z
 updated_at: 2025-05-06T12:18:28Z
 url: https://github.com/astral-sh/uv/pull/13311
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Move portable glob parsing to struct
 
 ---
 
-_Pull request opened by @konstin on 2025-05-06 10:37_
+_@konstin_
 
 Refactoring to make fixing #13280 easier.
 

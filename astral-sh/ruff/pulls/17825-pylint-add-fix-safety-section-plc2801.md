@@ -13,14 +13,14 @@ head: docs/fix-safety-unnecessary-dunder-call
 created_at: 2025-05-04T03:12:52Z
 updated_at: 2025-05-07T22:05:22Z
 url: https://github.com/astral-sh/ruff/pull/17825
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [`pylint`] add fix safety section (`PLC2801`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-04 03:12_
+_@yunchipang_
 
 parent: #15584 
 fix was introduced at: #9587 

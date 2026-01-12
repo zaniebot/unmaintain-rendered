@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T00:16:49Z
 updated_at: 2025-03-04T14:36:37Z
 url: https://github.com/astral-sh/ruff/issues/16486
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Is the license really MIT when Alliance™ font family by Degarism Studio is a used font in the css
 
 ---
 
-_Issue opened by @madelavar12 on 2025-03-04 00:16_
+_@madelavar12_
 
 ### Question
 

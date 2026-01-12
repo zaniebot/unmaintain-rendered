@@ -12,14 +12,14 @@ head: zb/bootstrap-ci
 created_at: 2024-01-23T21:23:02Z
 updated_at: 2024-01-25T20:22:20Z
 url: https://github.com/astral-sh/uv/pull/1070
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Use bootstrapped Python versions in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-23 21:23_
+_@zanieb_
 
 Uses Python versions from #1068 instead of whatever GitHub chooses.
 

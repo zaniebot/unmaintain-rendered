@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-26T21:03:26Z
 updated_at: 2022-07-27T21:58:32Z
 url: https://github.com/clap-rs/clap/issues/3994
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add an option to show aliases to `--help`
 
 ---
 
-_Issue opened by @poma on 2022-07-26 21:03_
+_@poma_
 
 ### Please complete the following tasks
 

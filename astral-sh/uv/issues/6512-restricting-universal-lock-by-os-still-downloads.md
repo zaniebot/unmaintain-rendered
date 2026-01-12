@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-23T13:04:29Z
 updated_at: 2024-10-15T07:13:52Z
 url: https://github.com/astral-sh/uv/issues/6512
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Restricting universal lock by OS still downloads wheels from all OSes
 
 ---
 
-_Issue opened by @tmct on 2024-08-23 13:04_
+_@tmct_
 
 Hi - I'm very glad to see uv's recent universal locking features, and engagement with the lockfile standard - but I've found one behaviour that seems a little odd.
 

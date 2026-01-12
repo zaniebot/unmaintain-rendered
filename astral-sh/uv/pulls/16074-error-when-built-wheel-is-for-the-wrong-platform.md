@@ -13,14 +13,14 @@ head: konsti/check-built-wheel-tags
 created_at: 2025-09-30T12:44:19Z
 updated_at: 2025-12-10T07:27:08Z
 url: https://github.com/astral-sh/uv/pull/16074
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Error when built wheel is for the wrong platform
 
 ---
 
-_Pull request opened by @konstin on 2025-09-30 12:44_
+_@konstin_
 
 Error when a built wheel is for the wrong platform. This can happen especially when using `--python-platform` or `--python-version` with `uv pip install`.
 

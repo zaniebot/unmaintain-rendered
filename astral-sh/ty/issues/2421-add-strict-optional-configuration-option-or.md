@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T18:39:16Z
 updated_at: 2026-01-09T21:32:01Z
 url: https://github.com/astral-sh/ty/issues/2421
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add strict-optional configuration option (or separate rule) for T | None argument mismatches
 
 ---
 
-_Issue opened by @FroguelYipit on 2026-01-09 18:39_
+_@FroguelYipit_
 
 ### Summary
 

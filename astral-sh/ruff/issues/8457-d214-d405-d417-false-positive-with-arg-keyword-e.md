@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-03T02:57:54Z
 updated_at: 2024-01-08T14:59:29Z
 url: https://github.com/astral-sh/ruff/issues/8457
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [D214, D405, D417] False positive with arg keyword (e.g., `raises`)
 
 ---
 
-_Issue opened by @JP-Ellis on 2023-11-03 02:57_
+_@JP-Ellis_
 
 ## Summary
 

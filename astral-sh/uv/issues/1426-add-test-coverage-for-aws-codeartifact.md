@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T04:31:45Z
 updated_at: 2025-06-26T07:18:02Z
 url: https://github.com/astral-sh/uv/issues/1426
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add test coverage for AWS CodeArtifact
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 04:31_
+_@zanieb_
 
 Perhaps using something like https://github.com/sktan/aws-codeartifact-proxy to avoid requiring credentials
 

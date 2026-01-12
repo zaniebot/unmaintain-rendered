@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T18:55:08Z
 updated_at: 2025-01-27T23:10:29Z
 url: https://github.com/astral-sh/uv/issues/10999
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # When using `--no-sources` it seems that uv still reads some metadata from workspace packages
 
 ---
 
-_Issue opened by @potiuk on 2025-01-27 18:55_
+_@potiuk_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T23:51:44Z
 updated_at: 2024-01-05T23:49:41Z
 url: https://github.com/astral-sh/ruff/issues/2098
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # feature request: report module missing `__all__`
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-22 23:51_
+_@sbrugman_
 
 ### Background
 For python packages it would be helpful to notify when a non-empty module lacks `__all__`. Having [`__all__`](https://docs.python.org/3/tutorial/modules.html#importing-from-a-package) present forces module developers to continuously decide on sub-modules that should be imported. In practice is prevents errors such as unused imports.

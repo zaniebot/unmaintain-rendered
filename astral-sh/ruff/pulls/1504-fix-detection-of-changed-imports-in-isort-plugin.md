@@ -12,14 +12,14 @@ head: fix-converge-issues-with-isort-and-line-endings
 created_at: 2022-12-31T08:16:15Z
 updated_at: 2022-12-31T12:43:07Z
 url: https://github.com/astral-sh/ruff/pull/1504
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix detection of changed imports in isort plugin
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-31 08:16_
+_@squiddy_
 
 With the correct handling of line endings recently introduced, the isort plugin got into an endless loop because the check whether something was changed made incorrect assumptions.
 

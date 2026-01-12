@@ -13,14 +13,14 @@ head: konsti/refactor-build-binaries
 created_at: 2025-02-13T12:55:56Z
 updated_at: 2025-02-18T17:36:30Z
 url: https://github.com/astral-sh/uv/pull/11478
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # More consistent `build-binaries.yml`
 
 ---
 
-_Pull request opened by @konstin on 2025-02-13 12:55_
+_@konstin_
 
 For uv-build, we need to duplicate a lot of the `build-binaries.yml` logic to build another source distribution and wheel. In preparation for that I tried to make the invocations more consistent, to make it easier to review the changes when adding the `uv-build` builds on top.
 

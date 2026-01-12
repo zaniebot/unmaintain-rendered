@@ -14,14 +14,14 @@ head: charlie/underline
 created_at: 2023-11-30T19:07:49Z
 updated_at: 2023-11-30T19:27:05Z
 url: https://github.com/astral-sh/ruff/pull/8929
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Ignore underlines when determining docstring logical lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-30 19:07_
+_@charliermarsh_
 
 _No description provided._
 

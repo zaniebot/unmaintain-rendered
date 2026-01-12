@@ -12,14 +12,14 @@ head: check-unsupported-files
 created_at: 2022-12-31T11:29:09Z
 updated_at: 2023-01-01T23:40:58Z
 url: https://github.com/astral-sh/ruff/pull/1509
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Check for Unsupported Files and Display Errors and Warnings
 
 ---
 
-_Pull request opened by @saadmk11 on 2022-12-31 11:29_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1473
 

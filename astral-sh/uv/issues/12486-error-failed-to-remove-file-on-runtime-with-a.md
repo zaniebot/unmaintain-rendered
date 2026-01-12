@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T14:15:04Z
 updated_at: 2025-04-18T12:15:53Z
 url: https://github.com/astral-sh/uv/issues/12486
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # error: failed to remove file on runtime with a read-only filesystem
 
 ---
 
-_Issue opened by @spk on 2025-03-26 14:15_
+_@spk_
 
 ### Summary
 

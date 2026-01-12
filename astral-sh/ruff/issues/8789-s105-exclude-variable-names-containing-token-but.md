@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T16:02:47Z
 updated_at: 2024-11-07T14:23:55Z
 url: https://github.com/astral-sh/ruff/issues/8789
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # S105: Exclude variable names containing `token` but also `suffix` or `prefix`
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-20 16:02_
+_@ThiefMaster_
 
 https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_bandit/helpers.rs
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T15:37:45Z
 updated_at: 2025-11-14T20:32:12Z
 url: https://github.com/astral-sh/uv/issues/16591
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Publish `rs-async-zip`
 
 ---
 
-_Issue opened by @baszalmstra on 2025-11-04 15:37_
+_@baszalmstra_
 
 The astral maintained fork of `rs-async-zip` contains a large number of great improvements. Would it be possible to publish `rs-async-zip` to crates.io? Perhaps as `astral-async-zip`, similar to `astral-tokio-tar`?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T19:49:14Z
 updated_at: 2024-08-03T07:14:38Z
 url: https://github.com/astral-sh/ruff/issues/12644
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # It would be nice if using `--respect-gitignore` outside of a git repo spat out an error
 
 ---
 
-_Issue opened by @jfly on 2024-08-02 19:49_
+_@jfly_
 
 keywords: respect-gitignore
 

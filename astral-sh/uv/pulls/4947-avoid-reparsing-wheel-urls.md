@@ -13,14 +13,14 @@ head: ibraheem/fast-lock
 created_at: 2024-07-09T22:07:18Z
 updated_at: 2024-07-10T09:16:32Z
 url: https://github.com/astral-sh/uv/pull/4947
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Avoid reparsing wheel URLs
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-09 22:07_
+_@ibraheemdev_
 
 ## Summary
 

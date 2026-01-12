@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-12-20T21:26:11Z
 updated_at: 2020-07-15T13:11:23Z
 url: https://github.com/clap-rs/clap/issues/1133
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Subcommands impossible to use with required arguments with ArgsNegateSubcommands
 
 ---
 
-_Issue opened by @ghost on 2017-12-20 21:26_
+_@ghost_
 
 ### Rust Version
 

@@ -14,14 +14,14 @@ head: parens_for_long_if_clauses_in_case_block
 created_at: 2024-04-16T07:12:00Z
 updated_at: 2024-09-25T15:39:06Z
 url: https://github.com/astral-sh/ruff/pull/10969
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # parens_for_long_if_clauses_in_case_block preview style
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-16 07:12_
+_@MichaReiser_
 
 ## Summary
 

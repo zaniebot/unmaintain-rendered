@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T05:00:14Z
 updated_at: 2024-09-18T17:20:09Z
 url: https://github.com/astral-sh/uv/issues/7484
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Please add socks5 support via the `reqwest` rust package
 
 ---
 
-_Issue opened by @rh314 on 2024-09-18 05:00_
+_@rh314_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

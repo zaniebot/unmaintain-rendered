@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-30T12:30:09Z
 updated_at: 2025-10-30T13:29:08Z
 url: https://github.com/astral-sh/ruff/issues/21137
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add a "ruff init" command?
 
 ---
 
-_Issue opened by @LoicRiegel on 2025-10-30 12:30_
+_@LoicRiegel_
 
 Hi everyone,
 I was wondering if you have already considered (or would consider) adding a "ruff init" command, similar to [cz init](https://commitizen-tools.github.io/commitizen/commands/init/#interactive-configuration) or [eslint](https://eslint.org/docs/latest/use/getting-started#configuration)  for instance.

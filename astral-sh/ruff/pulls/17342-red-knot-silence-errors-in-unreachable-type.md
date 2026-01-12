@@ -13,14 +13,14 @@ head: david/unreachable-type-annotations
 created_at: 2025-04-10T19:50:41Z
 updated_at: 2025-05-07T15:19:46Z
 url: https://github.com/astral-sh/ruff/pull/17342
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Silence errors in unreachable type annotations / class bases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-10 19:50_
+_@sharkdp_
 
 ## Summary
 

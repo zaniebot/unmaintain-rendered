@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T13:19:52Z
 updated_at: 2025-08-22T14:09:23Z
 url: https://github.com/astral-sh/ty/issues/1061
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Call signature completion highlights last argument after `)`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-20 13:19_
+_@MichaReiser_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-23T09:28:22Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/591
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # subcommand help does not show in color.
 
 ---
 
-_Issue opened by @laishulu on 2016-07-23 09:28_
+_@laishulu_
 
 I have a subcommand `foo`, I run `myapp help foo`, I still can't see any color, even I have the following codes.
 

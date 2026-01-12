@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T19:56:56Z
 updated_at: 2025-10-24T12:45:46Z
 url: https://github.com/astral-sh/uv/issues/16079
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Missing libssh.h headers cause silent hang
 
 ---
 
-_Issue opened by @nedbat on 2025-09-30 19:56_
+_@nedbat_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: david/test-mypy_primer-panic
 created_at: 2025-04-14T11:53:53Z
 updated_at: 2025-04-14T11:57:24Z
 url: https://github.com/astral-sh/ruff/pull/17390
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Do not merge: mypy_primer panic test
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-14 11:53_
+_@sharkdp_
 
 ## Summary
 

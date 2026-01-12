@@ -13,14 +13,14 @@ head: pyi-target-version-note
 created_at: 2024-08-26T15:32:41Z
 updated_at: 2024-08-27T17:37:44Z
 url: https://github.com/astral-sh/ruff/pull/13111
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add note about how Ruff handles PYI files wrt target version
 
 ---
 
-_Pull request opened by @calumy on 2024-08-26 15:32_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

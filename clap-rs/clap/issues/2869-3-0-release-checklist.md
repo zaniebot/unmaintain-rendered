@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-13T11:24:03Z
 updated_at: 2022-01-01T19:41:01Z
 url: https://github.com/clap-rs/clap/issues/2869
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # 3.0 Release Checklist
 
 ---
 
-_Issue opened by @epage on 2021-10-13 11:24_
+_@epage_
 
 - [ ] 1 month of release candidate feedback
 - [x] Double check all docs

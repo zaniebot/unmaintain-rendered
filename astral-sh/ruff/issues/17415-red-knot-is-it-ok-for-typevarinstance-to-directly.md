@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T21:27:42Z
 updated_at: 2025-04-23T18:24:54Z
 url: https://github.com/astral-sh/ruff/issues/17415
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] is it OK for `TypeVarInstance` to directly hold its `Definition`?
 
 ---
 
-_Issue opened by @carljm on 2025-04-15 21:27_
+_@carljm_
 
 Or does this lead to AST dependence and over-invalidation if a typevar is imported and the source module has unrelated changes?
 

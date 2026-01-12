@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T12:29:02Z
 updated_at: 2024-10-20T20:09:20Z
 url: https://github.com/astral-sh/uv/issues/8381
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # panic when sync with a related local editable package 
 
 ---
 
-_Issue opened by @idertator on 2024-10-20 12:29_
+_@idertator_
 
 To give some context i have two projects (which are not in a workspace) with the following layout:
 

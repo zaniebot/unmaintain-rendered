@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T09:19:13Z
 updated_at: 2024-08-23T05:48:33Z
 url: https://github.com/astral-sh/ruff/issues/13027
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `ruff check --show-files` does not consider `lint.exclude` config
 
 ---
 
-_Issue opened by @Enayaaa on 2024-08-21 09:19_
+_@Enayaaa_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

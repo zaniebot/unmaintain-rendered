@@ -12,14 +12,14 @@ head: pkgconfig-relocatable
 created_at: 2025-02-06T19:49:58Z
 updated_at: 2025-02-07T23:03:55Z
 url: https://github.com/astral-sh/uv/pull/11291
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Patch pkg-config files to be relocatable
 
 ---
 
-_Pull request opened by @geofft on 2025-02-06 19:49_
+_@geofft_
 
 Previously, we patched pkg-config .pc files to have the absolute path to the directory where we unpack a python-build-standalone release.  As discussed in #11028, we can use ${pcfiledir} in a .pc file to indicate paths relative to the location of the file itself.
 

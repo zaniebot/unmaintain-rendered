@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-12T04:40:53Z
 updated_at: 2024-10-12T09:52:15Z
 url: https://github.com/astral-sh/uv/issues/8141
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # brew install exceeds expectations
 
 ---
 
-_Issue opened by @wu-clan on 2024-10-12 04:40_
+_@wu-clan_
 
 I ran `brew install uv` on an intel Macbook Pro and the build took hours, unbelievable!
 

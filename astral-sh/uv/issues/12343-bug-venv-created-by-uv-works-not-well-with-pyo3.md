@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T16:34:26Z
 updated_at: 2025-04-02T14:29:12Z
 url: https://github.com/astral-sh/uv/issues/12343
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # [Bug] venv created by uv works not well with pyo3
 
 ---
 
-_Issue opened by @clouds56 on 2025-03-20 16:34_
+_@clouds56_
 
 ### Summary
 

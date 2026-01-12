@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-09T10:10:14Z
 updated_at: 2025-04-30T17:38:56Z
 url: https://github.com/astral-sh/uv/issues/11351
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Package dependency is not installed from local checkout
 
 ---
 
-_Issue opened by @Dronakurl on 2025-02-09 10:10_
+_@Dronakurl_
 
 # Issue summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-12T15:06:17Z
 updated_at: 2024-04-16T17:32:30Z
 url: https://github.com/astral-sh/ruff/issues/9951
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Detecting unneeded `async` keywords on functions
 
 ---
 
-_Issue opened by @Greesb on 2024-02-12 15:06_
+_@Greesb_
 
 Hello,
 

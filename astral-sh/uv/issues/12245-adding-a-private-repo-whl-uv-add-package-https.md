@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T18:40:12Z
 updated_at: 2025-09-17T23:47:22Z
 url: https://github.com/astral-sh/uv/issues/12245
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # adding a private repo whl `uv add package @ https://github.com/ORG/PRIVATE-REPO/releases/download/...whl`
 
 ---
 
-_Issue opened by @rllin on 2025-03-17 18:40_
+_@rllin_
 
 ### Question
 

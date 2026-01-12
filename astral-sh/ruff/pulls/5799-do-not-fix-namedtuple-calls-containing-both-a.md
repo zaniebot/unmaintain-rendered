@@ -12,14 +12,14 @@ head: do-not-fix-incorrect-NamedTuple
 created_at: 2023-07-16T05:35:02Z
 updated_at: 2023-07-17T01:54:26Z
 url: https://github.com/astral-sh/ruff/pull/5799
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Do not fix `NamedTuple` calls containing both a list of fields and keywords
 
 ---
 
-_Pull request opened by @harupy on 2023-07-16 05:35_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: charlie/space
 created_at: 2023-06-01T04:05:09Z
 updated_at: 2023-06-01T21:53:26Z
 url: https://github.com/astral-sh/ruff/pull/4776
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Avoid extra newline between diagnostics in grouped mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 04:05_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

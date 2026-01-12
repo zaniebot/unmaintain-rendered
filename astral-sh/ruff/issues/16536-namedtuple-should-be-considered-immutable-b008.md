@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T14:56:00Z
 updated_at: 2025-03-06T16:50:36Z
 url: https://github.com/astral-sh/ruff/issues/16536
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # NamedTuple should be considered immutable (B008)
 
 ---
 
-_Issue opened by @s-banach on 2025-03-06 14:56_
+_@s-banach_
 
 ### Summary
 

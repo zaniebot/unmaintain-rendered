@@ -13,14 +13,14 @@ head: ibraheem/type-of-subtyping
 created_at: 2025-12-01T21:06:21Z
 updated_at: 2025-12-01T23:20:32Z
 url: https://github.com/astral-sh/ruff/pull/21740
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix subtyping with `type[T]` and unions
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-01 21:06_
+_@ibraheemdev_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-13T06:21:18Z
 updated_at: 2024-03-29T19:58:22Z
 url: https://github.com/astral-sh/ruff/issues/10378
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Unable to upload ruff==0.3.2 to Azure Artifacts because it doesn't support Metadata-Version=2.3
 
 ---
 
-_Issue opened by @olivierlefloch on 2024-03-13 06:21_
+_@olivierlefloch_
 
 When attempting to upload `ruff==0.3.2` to Azure Artifacts, I get the following error:
 

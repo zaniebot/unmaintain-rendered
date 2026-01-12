@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-06-23T07:53:23Z
 updated_at: 2021-11-04T16:12:34Z
 url: https://github.com/clap-rs/clap/issues/1506
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Premium typed arguments support
 
 ---
 
-_Issue opened by @ColinPitrat on 2019-06-23 07:53_
+_@ColinPitrat_
 
 One of the main features I'd expect from clap is to be able to specify the type of an argument, typically int, and have it provide an helpful error message is the argument cannot be parsed properly.
 

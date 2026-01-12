@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T20:50:12Z
 updated_at: 2025-04-03T13:10:59Z
 url: https://github.com/astral-sh/uv/issues/6067
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # How to install Python 
 
 ---
 
-_Issue opened by @FCamborda on 2024-08-13 20:50_
+_@FCamborda_
 
 First and foremost thank you so much for the development of uv (and all other rust-based tools).
 I did not find a  "discussion", hence why I'm creating an issue instead.

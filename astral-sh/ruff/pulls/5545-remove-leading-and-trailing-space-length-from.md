@@ -12,14 +12,14 @@ head: charlie/noqa-range
 created_at: 2023-07-05T22:51:14Z
 updated_at: 2023-07-05T23:29:32Z
 url: https://github.com/astral-sh/ruff/pull/5545
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove leading and trailing space length from `Directive`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 22:51_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T15:23:38Z
 updated_at: 2025-07-18T13:16:41Z
 url: https://github.com/astral-sh/uv/issues/14158
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `test pip_uninstall::uninstall*` times out on Windows (has been running for over 60 seconds)
 
 ---
 
-_Issue opened by @Gankra on 2025-06-20 15:23_
+_@Gankra_
 
 * https://github.com/astral-sh/uv/actions/runs/15781861061/job/44489244834?pr=14156
 

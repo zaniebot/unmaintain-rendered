@@ -12,14 +12,14 @@ head: main
 created_at: 2023-01-02T23:30:24Z
 updated_at: 2023-01-03T01:33:46Z
 url: https://github.com/astral-sh/ruff/pull/1573
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove need for vendored format/cformat code
 
 ---
 
-_Pull request opened by @olliemath on 2023-01-02 23:30_
+_@olliemath_
 
 Thanks to @youknowone we can now remove this vendored code and use the `rustpython_common` version. See also https://github.com/charliermarsh/ruff/issues/1115
 

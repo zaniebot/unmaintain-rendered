@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-01T12:05:19Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/293
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # README documentation/examples aren't discoverable from rustdoc docs
 
 ---
 
-_Issue opened by @huonw on 2015-10-01 12:05_
+_@huonw_
 
 Looking at http://kbknapp.github.io/clap-rs/clap/index.html, there's no indication that I can see that the wonderful README and in-tree examples exist. It'd be great if the crate at least had a brief header with a link, or even if most of docs in the README were moved to be in the rustdoc docs (especially the examples, like for the `clap_app!` macro).
 

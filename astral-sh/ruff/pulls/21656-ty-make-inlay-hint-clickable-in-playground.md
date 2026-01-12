@@ -14,14 +14,14 @@ head: micha/inlay-hint-clickable-playground
 created_at: 2025-11-27T09:28:10Z
 updated_at: 2025-11-27T12:29:12Z
 url: https://github.com/astral-sh/ruff/pull/21656
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Make inlay hint clickable in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-27 09:28_
+_@MichaReiser_
 
 ## Summary
 

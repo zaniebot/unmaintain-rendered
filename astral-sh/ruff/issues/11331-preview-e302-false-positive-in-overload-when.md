@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-08T07:19:07Z
 updated_at: 2024-05-08T15:19:28Z
 url: https://github.com/astral-sh/ruff/issues/11331
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [preview][E302] False positive in overload when comment added
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-05-08 07:19_
+_@randolf-scholz_
 
 ```python
 @overload

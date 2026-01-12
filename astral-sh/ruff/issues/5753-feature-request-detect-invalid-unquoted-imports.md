@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-14T01:22:40Z
 updated_at: 2023-07-14T03:01:33Z
 url: https://github.com/astral-sh/ruff/issues/5753
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [feature-request] Detect invalid unquoted imports
 
 ---
 
-_Issue opened by @smackesey on 2023-07-14 01:22_
+_@smackesey_
 
 The following code crashes at runtime:
 

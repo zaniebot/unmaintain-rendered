@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T11:07:17Z
 updated_at: 2025-03-06T14:01:05Z
 url: https://github.com/astral-sh/uv/issues/11999
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # install ssl error
 
 ---
 
-_Issue opened by @dlgktjr on 2025-03-06 11:07_
+_@dlgktjr_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-05T15:54:51Z
 updated_at: 2022-10-05T15:59:25Z
 url: https://github.com/astral-sh/ruff/issues/330
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Unknown check code: T201
 
 ---
 
-_Issue opened by @YangtseSu on 2022-10-05 15:54_
+_@YangtseSu_
 
 ```
 ruff --select T201 ./T201.py

@@ -12,14 +12,14 @@ head: charlie/cst-import-autofix
 created_at: 2022-10-02T04:48:01Z
 updated_at: 2022-10-03T18:08:17Z
 url: https://github.com/astral-sh/ruff/pull/298
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Automatically remove unused imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-02 04:48_
+_@charliermarsh_
 
 Resolves #247.
 

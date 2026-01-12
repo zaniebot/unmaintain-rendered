@@ -13,14 +13,14 @@ head: dependabot/cargo/assert_cmd-2.0.14
 created_at: 2024-02-26T21:31:13Z
 updated_at: 2024-02-26T23:01:23Z
 url: https://github.com/astral-sh/uv/pull/1995
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Bump assert_cmd from 2.0.13 to 2.0.14
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-26 21:31_
+_@dependabot_
 
 Bumps [assert_cmd](https://github.com/assert-rs/assert_cmd) from 2.0.13 to 2.0.14.
 <details>

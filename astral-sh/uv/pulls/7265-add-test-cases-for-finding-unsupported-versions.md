@@ -13,14 +13,14 @@ head: zb/test-find-invalid-verison
 created_at: 2024-09-10T18:23:27Z
 updated_at: 2024-09-10T18:49:31Z
 url: https://github.com/astral-sh/uv/pull/7265
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Add test cases for finding unsupported versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 18:23_
+_@zanieb_
 
 Loosely testing for regressions in https://github.com/astral-sh/uv/pull/7265
 

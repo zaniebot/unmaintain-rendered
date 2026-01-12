@@ -13,14 +13,14 @@ head: typeparam
 created_at: 2024-12-13T23:54:04Z
 updated_at: 2024-12-15T22:27:15Z
 url: https://github.com/astral-sh/ruff/pull/14964
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [ruff_python_ast] Add name and default functions to TypeParam.
 
 ---
 
-_Pull request opened by @rchen152 on 2024-12-13 23:54_
+_@rchen152_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

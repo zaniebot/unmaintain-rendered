@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-27T11:56:03Z
 updated_at: 2025-12-27T15:48:51Z
 url: https://github.com/astral-sh/ruff/issues/22223
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # TC002 conflicts with TC004
 
 ---
 
-_Issue opened by @Samoed on 2025-12-27 11:56_
+_@Samoed_
 
 ### Summary
 

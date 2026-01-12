@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T17:59:13Z
 updated_at: 2024-01-05T16:57:34Z
 url: https://github.com/astral-sh/uv/issues/396
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # lots of time is spent in allocation in `puffin-dev resolve-many` for the top PyPI packages
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-10 17:59_
+_@BurntSushi_
 
 One thing i'm seeing is that we are spending a lot of time in allocation, around 16% for `malloc` and 11.5% for `free` of total runtime for the top 1K pypi packages:
 

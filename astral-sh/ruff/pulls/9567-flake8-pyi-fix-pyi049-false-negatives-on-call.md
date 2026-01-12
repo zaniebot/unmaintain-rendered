@@ -13,14 +13,14 @@ head: y049-functional
 created_at: 2024-01-17T17:14:56Z
 updated_at: 2024-01-18T10:08:46Z
 url: https://github.com/astral-sh/ruff/pull/9567
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [flake8-pyi] Fix PYI049 false negatives on call-based TypedDicts
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-17 17:14_
+_@AlexWaygood_
 
 ## Summary
 

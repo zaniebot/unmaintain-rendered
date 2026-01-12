@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T16:53:37Z
 updated_at: 2024-07-27T02:38:53Z
 url: https://github.com/astral-sh/ruff/issues/12514
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Neovim - issue with configuration/configurationPreference
 
 ---
 
-_Issue opened by @steakhutzeee on 2024-07-25 16:53_
+_@steakhutzeee_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

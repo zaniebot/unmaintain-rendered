@@ -13,14 +13,14 @@ head: dhruv/docs-bot
 created_at: 2024-07-25T15:15:36Z
 updated_at: 2024-07-25T17:54:24Z
 url: https://github.com/astral-sh/ruff/pull/12511
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use docs bot email for docs publish
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-25 15:15_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/uv/pull/5369
 

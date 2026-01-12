@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-11T13:50:44Z
 updated_at: 2025-01-16T06:08:17Z
 url: https://github.com/astral-sh/ruff/issues/9467
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Quoted annotations should be parsed as if parenthesized
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-11 13:50_
+_@charliermarsh_
 
 It was recently agreed that quoted annotations should be parsed as if they were implicitly wrapped in parentheses. So, e.g., they can contain otherwise-invalid indentation, newlines within binary operators, etc.
 

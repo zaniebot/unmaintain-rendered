@@ -13,14 +13,14 @@ head: renovate/ignore-0.x-lockfile
 created_at: 2025-10-20T01:15:45Z
 updated_at: 2025-10-28T17:54:11Z
 url: https://github.com/astral-sh/ruff/pull/20979
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Update Rust crate ignore to v0.4.24
 
 ---
 
-_Pull request opened by @renovate on 2025-10-20 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

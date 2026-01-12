@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T01:50:18Z
 updated_at: 2024-07-29T02:39:49Z
 url: https://github.com/astral-sh/uv/issues/5543
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv 0.2.30 breaks editable projects when installed a second or more times due to caching
 
 ---
 
-_Issue opened by @bulletmark on 2024-07-29 01:50_
+_@bulletmark_
 
 uv 0.2.30 breaks editable projects due to something relating to the cache. This problem does not occur with uv 0.2.29 and earlier versions. The annotated command steps below best demonstrate the issue:
 

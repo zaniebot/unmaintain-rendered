@@ -13,14 +13,14 @@ head: bug/8116-duplicate-extra-index-url
 created_at: 2024-10-15T18:14:06Z
 updated_at: 2024-10-16T12:55:15Z
 url: https://github.com/astral-sh/uv/pull/8226
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Avoid writing duplicate index URLs with `--emit-index-url`
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-15 18:14_
+_@Aditya-PS-05_
 
 closes #8116 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T04:38:18Z
 updated_at: 2025-07-23T06:56:59Z
 url: https://github.com/astral-sh/ty/issues/88
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add test infrastructure for the language server
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-28 04:38_
+_@dhruvmanila_
 
 Currently, there are very limited tests for both the language server and the VS Code extension (E2E tests).
 

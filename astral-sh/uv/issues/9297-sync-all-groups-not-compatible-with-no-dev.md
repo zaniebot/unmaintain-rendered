@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T23:52:09Z
 updated_at: 2024-11-21T01:06:07Z
 url: https://github.com/astral-sh/uv/issues/9297
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # sync --all-groups not compatible with --no-dev
 
 ---
 
-_Issue opened by @hcoohb on 2024-11-20 23:52_
+_@hcoohb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

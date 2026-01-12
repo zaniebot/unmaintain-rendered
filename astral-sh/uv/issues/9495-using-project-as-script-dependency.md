@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T10:47:04Z
 updated_at: 2025-01-07T19:29:55Z
 url: https://github.com/astral-sh/uv/issues/9495
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Using project as script dependency
 
 ---
 
-_Issue opened by @areleu on 2024-11-28 10:47_
+_@areleu_
 
 Hello,
 

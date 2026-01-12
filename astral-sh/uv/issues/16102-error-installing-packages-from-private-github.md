@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T11:23:46Z
 updated_at: 2025-10-03T08:12:49Z
 url: https://github.com/astral-sh/uv/issues/16102
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Error installing packages from private github repos when running in a git post-receive hook
 
 ---
 
-_Issue opened by @BradleyKirton on 2025-10-02 11:23_
+_@BradleyKirton_
 
 ### Summary
 

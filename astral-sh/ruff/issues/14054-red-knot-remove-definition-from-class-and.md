@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T17:18:43Z
 updated_at: 2024-11-05T08:02:39Z
 url: https://github.com/astral-sh/ruff/issues/14054
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Remove `Definition` from `Class` and `FunctionType`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-02 17:18_
+_@MichaReiser_
 
 The `ClassType` and `FunctionType` both store a back reference to their origin definition, and the definition holds on to the AST node. This is problematic because `Type`s are visible cross-module:
 

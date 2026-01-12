@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-30T16:28:29Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/834
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Website tries to load resources over plain HTTP
 
 ---
 
-_Issue opened by @moosingin3space on 2017-01-30 16:28_
+_@moosingin3space_
 
 On Chrome 55, I get mixed content warnings when browsing clap.rs, with the following URL being marked as insecure: http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic.
 

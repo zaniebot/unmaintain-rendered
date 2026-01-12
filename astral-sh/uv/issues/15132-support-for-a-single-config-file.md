@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T12:15:33Z
 updated_at: 2025-08-09T13:50:16Z
 url: https://github.com/astral-sh/uv/issues/15132
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Support for a single config file
 
 ---
 
-_Issue opened by @Stefanhg on 2025-08-07 12:15_
+_@Stefanhg_
 
 ### Summary
 

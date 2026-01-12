@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-07T21:40:08Z
 updated_at: 2022-11-07T21:56:59Z
 url: https://github.com/astral-sh/ruff/issues/651
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Precommit hook not catching the latest version
 
 ---
 
-_Issue opened by @jiwidi on 2022-11-07 21:40_
+_@jiwidi_
 
 Hi!
 

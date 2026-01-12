@@ -12,14 +12,14 @@ head: cake/introduce-arbitrary-rule-for-property-tests
 created_at: 2025-03-20T06:57:07Z
 updated_at: 2025-03-29T22:19:20Z
 url: https://github.com/astral-sh/ruff/pull/16862
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Introduce `TypeBound` for property tests
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-03-20 06:57_
+_@cake-monotone_
 
 ## Summary
 

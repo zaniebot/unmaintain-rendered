@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T15:12:21Z
 updated_at: 2025-01-20T03:55:50Z
 url: https://github.com/astral-sh/uv/issues/10683
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # `uv lock` fails to update outdated lockfile if project is in cache
 
 ---
 
-_Issue opened by @rg936672 on 2025-01-16 15:12_
+_@rg936672_
 
 We've just ran into an issue with uv on our repo [coreax](https://github.com/gchq/coreax) where uv was complaining the lockfile needed to be updated, but running `uv lock` did nothing.
 

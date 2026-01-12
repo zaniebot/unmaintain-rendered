@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-20T00:33:07Z
 updated_at: 2025-09-10T14:12:43Z
 url: https://github.com/astral-sh/uv/issues/11650
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Automatically detect dependencies from project imports (similar to pipreqs)
 
 ---
 
-_Issue opened by @Sixtails1 on 2025-02-20 00:33_
+_@Sixtails1_
 
 ### Summary
 

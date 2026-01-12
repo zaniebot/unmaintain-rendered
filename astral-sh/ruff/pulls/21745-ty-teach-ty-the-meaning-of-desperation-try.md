@@ -14,14 +14,14 @@ head: gankra/workup
 created_at: 2025-12-02T01:31:23Z
 updated_at: 2025-12-03T20:42:58Z
 url: https://github.com/astral-sh/ruff/pull/21745
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Teach `ty` the meaning of desperation (try ancestor `pyproject.toml`s as search-paths if module resolution fails)
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-02 01:31_
+_@Gankra_
 
 ## Summary
 

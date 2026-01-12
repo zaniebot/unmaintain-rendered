@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-09T17:15:07Z
 updated_at: 2025-06-10T12:15:22Z
 url: https://github.com/astral-sh/ruff/issues/18595
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # No one-line functions
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-06-09 17:15_
+_@tylerlaprade_
 
 ### Summary
 

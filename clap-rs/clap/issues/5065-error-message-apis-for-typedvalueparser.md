@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-03T22:50:40Z
 updated_at: 2025-08-28T08:53:05Z
 url: https://github.com/clap-rs/clap/issues/5065
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Error message APIs for `TypedValueParser`
 
 ---
 
-_Issue opened by @9999years on 2023-08-03 22:50_
+_@9999years_
 
 ## Clap Version
 

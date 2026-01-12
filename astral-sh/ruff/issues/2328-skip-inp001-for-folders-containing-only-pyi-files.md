@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T22:33:22Z
 updated_at: 2023-01-31T22:35:32Z
 url: https://github.com/astral-sh/ruff/issues/2328
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Skip INP001 for folders containing only *.pyi files
 
 ---
 
-_Issue opened by @twoertwein on 2023-01-29 22:33_
+_@twoertwein_
 
 Folders containing only type stubs should not need `__init__.py` (not sure: but they might need an `__init__.pyi` )
 

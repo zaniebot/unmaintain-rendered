@@ -13,14 +13,14 @@ head: zb/lock-check
 created_at: 2024-12-05T15:30:26Z
 updated_at: 2024-12-08T16:02:02Z
 url: https://github.com/astral-sh/uv/pull/9662
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Reframe `--locked` and `--frozen` as `--check` operations for `uv lock`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-05 15:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7639
 

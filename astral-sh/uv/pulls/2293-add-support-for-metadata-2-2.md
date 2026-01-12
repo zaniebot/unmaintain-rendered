@@ -13,14 +13,14 @@ head: charlie/metadata-2.2
 created_at: 2024-03-08T02:51:03Z
 updated_at: 2024-03-08T16:02:33Z
 url: https://github.com/astral-sh/uv/pull/2293
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Add support for Metadata 2.2
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 02:51_
+_@charliermarsh_
 
 ## Summary
 

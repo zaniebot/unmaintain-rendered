@@ -15,14 +15,14 @@ head: charlie/satisfies
 created_at: 2024-08-15T16:13:32Z
 updated_at: 2024-08-15T17:19:41Z
 url: https://github.com/astral-sh/uv/pull/6119
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Return a structured result from `Lock::satisfies`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-15 16:13_
+_@charliermarsh_
 
 ## Summary
 

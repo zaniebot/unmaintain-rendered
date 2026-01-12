@@ -13,14 +13,14 @@ head: dhruv/debug-info-command
 created_at: 2025-02-17T15:42:56Z
 updated_at: 2025-02-18T10:08:56Z
 url: https://github.com/astral-sh/ruff/pull/16215
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Include document specific debug info
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-17 15:42_
+_@dhruvmanila_
 
 ## Summary
 

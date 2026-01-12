@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T07:41:46Z
 updated_at: 2024-10-03T23:31:07Z
 url: https://github.com/astral-sh/uv/issues/7886
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # uv pip compile does not preserve CRLF line endings in requirements.txt
 
 ---
 
-_Issue opened by @petermbauer on 2024-10-03 07:41_
+_@petermbauer_
 
 It seems that `uv pip compile` does not preserve the line endings in the `requirements.txt` and i found no setting to use native line endings either.
 `pip-compile` offers the `--newline` setting to cover this:

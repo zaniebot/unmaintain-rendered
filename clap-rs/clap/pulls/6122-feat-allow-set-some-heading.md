@@ -12,14 +12,14 @@ head: allow-set-some-heading
 created_at: 2025-09-06T17:31:49Z
 updated_at: 2025-09-06T17:31:57Z
 url: https://github.com/clap-rs/clap/pull/6122
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: allow set some heading
 
 ---
 
-_Pull request opened by @eatradish on 2025-09-06 17:31_
+_@eatradish_
 
 Like:
 

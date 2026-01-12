@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T17:10:50Z
 updated_at: 2025-06-24T14:50:18Z
 url: https://github.com/astral-sh/uv/issues/14146
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Ignoring invalid `SSL_CLIENT_CERT`: failed to open file `/Library/Application\ Support/path/to/client-cert.pem'
 
 ---
 
-_Issue opened by @joewwt on 2025-06-19 17:10_
+_@joewwt_
 
 ### Summary
 

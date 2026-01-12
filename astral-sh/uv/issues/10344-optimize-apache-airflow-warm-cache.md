@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T09:24:34Z
 updated_at: 2025-01-07T20:31:54Z
 url: https://github.com/astral-sh/uv/issues/10344
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Optimize apache-airflow (warm cache)
 
 ---
 
-_Issue opened by @konstin on 2025-01-07 09:24_
+_@konstin_
 
 I've implemented a series of optimizations for the apache-airflow resolver case, focussed on the resolver thread. Each step targets something that showed up as slow during profiling. Since the benchmarks are path dependent (the speedup of commit B looks different depending on whether a commit A was applied before or not. You need to speed up the slowest item to really see the effect on optimizing the next smaller one), I'm sharing the benchmark numbers here and keep the PRs focused on explaining the code change.
 

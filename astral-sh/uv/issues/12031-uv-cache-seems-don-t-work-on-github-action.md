@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T04:31:20Z
 updated_at: 2025-09-30T14:56:31Z
 url: https://github.com/astral-sh/uv/issues/12031
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # uv cache seems don't work on github action
 
 ---
 
-_Issue opened by @shenxiangzhuang on 2025-03-07 04:31_
+_@shenxiangzhuang_
 
 ### Question
 

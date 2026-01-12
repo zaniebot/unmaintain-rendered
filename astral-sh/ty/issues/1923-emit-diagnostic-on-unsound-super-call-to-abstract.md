@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T12:47:25Z
 updated_at: 2025-12-16T16:16:33Z
 url: https://github.com/astral-sh/ty/issues/1923
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostic on unsound `super()` call to abstract method with trivial body
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-16 12:47_
+_@AlexWaygood_
 
 [Mypy](https://mypy-play.net/?mypy=latest&python=3.12&gist=2cc45538a0bb162f1f4ecd996515d985), [pyright](https://pyright-play.net/?pyrightVersion=1.1.405&pythonVersion=3.13&reportUnreachable=true&code=GYJw9gtgBAhgRgYygSwgBzCALrOBnLEGBLCAUywAswATAKDoQBsY88oAxALjqj6gAC8AkRLkqtXvxplgUcdRoAKPGSbAAlFAC0APhQA7LFygA6cw2at2AcSUcNPflBlyFtFWs079yI0%2Bd%2BEAoAVxADKDwQtDIQJQ1Td2UNOiA) and [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEq2AxnRDcbpQC4PZxeVUTLjRhcAFrkwAddLKZRUcOHQBiiWXS10AAo36DhoiVM3bMMMHWOTMACjgwoYAJR0AtAD5W6LojqEgbLyisp0AOJ2qi4a6Np0FlY2Ug5Orh7eEL6x8fGUYgCulHFwBcQwlHYuhMn2LiAANCAFXNBwJOSIIADEdACqrVAQXKR0YAXowhC46HDBWJZjnDSoXAD66AU02BV2%2BP5ZXG5edAY52vlcRXFg0iAAcls7lP7A%2BAC%2Bd7KNIGT5YFBSIQuLQoBRegAFUj-QGnDA4Ah0JgzSAAcyKq2m6EIsl6AGUYDA6OIuFxiHBEAB6Sl-SyAwicVGUmDoSmYXBMOCU5HoNEY1ozSlLSgMABuqGgjFgSJREHRggFcVwxEV7VkZBM6HcooqcCxdAAvHQ7gBmQgARgATF90CB3k0hK0dapoDAKGgsHgiGQ7UA) all detect the unsoundness here. We should too:
 

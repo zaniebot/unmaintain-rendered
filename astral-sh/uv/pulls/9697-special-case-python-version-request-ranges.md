@@ -12,14 +12,14 @@ head: zb/special-case-eq
 created_at: 2024-12-06T22:54:55Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9697
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Special-case `==` Python version request ranges
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-06 22:54_
+_@zanieb_
 
 Related to https://github.com/astral-sh/uv/issues/9695
 

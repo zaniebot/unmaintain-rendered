@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-11T05:31:27Z
 updated_at: 2023-10-11T13:40:27Z
 url: https://github.com/astral-sh/ruff/issues/7909
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # --unfixable is ignored for ISC001
 
 ---
 
-_Issue opened by @moshelooks on 2023-10-11 05:31_
+_@moshelooks_
 
 * A minimal code snippet that reproduces the bug.
 ```

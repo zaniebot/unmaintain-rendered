@@ -12,14 +12,14 @@ head: modules-remove-by-dir-resolution
 created_at: 2024-04-26T09:14:20Z
 updated_at: 2024-04-27T07:08:36Z
 url: https://github.com/astral-sh/ruff/pull/11162
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # [red-knot] Remove support for resolving modules by package directory path
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-26 09:14_
+_@MichaReiser_
 
 ## Summary
 

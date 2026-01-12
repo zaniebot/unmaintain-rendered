@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T18:41:27Z
 updated_at: 2026-01-06T15:09:57Z
 url: https://github.com/astral-sh/ruff/issues/22406
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Adjacent compound statements with `fmt: skip` add extraneous empty lines
 
 ---
 
-_Issue opened by @dylwil3 on 2026-01-05 18:41_
+_@dylwil3_
 
 ### Summary
 

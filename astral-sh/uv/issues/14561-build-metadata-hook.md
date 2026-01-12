@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-11T10:00:16Z
 updated_at: 2025-11-14T17:00:35Z
 url: https://github.com/astral-sh/uv/issues/14561
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Build/Metadata Hook
 
 ---
 
-_Issue opened by @ninoseki on 2025-07-11 10:00_
+_@ninoseki_
 
 ### Summary
 

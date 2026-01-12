@@ -13,14 +13,14 @@ head: alex/builtin-bound-methods
 created_at: 2025-09-09T16:26:18Z
 updated_at: 2025-09-10T11:15:22Z
 url: https://github.com/astral-sh/ruff/pull/20317
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] `"foo".startswith` is not an instance of `types.MethodWrapperType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-09 16:26_
+_@AlexWaygood_
 
 ## Summary
 

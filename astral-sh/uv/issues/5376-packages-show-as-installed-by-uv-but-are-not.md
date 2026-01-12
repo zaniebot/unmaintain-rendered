@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-23T21:15:21Z
 updated_at: 2024-07-23T22:20:01Z
 url: https://github.com/astral-sh/uv/issues/5376
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Packages show as installed by uv but are not actually installed
 
 ---
 
-_Issue opened by @jfmcdowell on 2024-07-23 21:15_
+_@jfmcdowell_
 
 When I install packages using `uv`, it appears that they are not actually installed. If I install my packages with `pip` they work as expected.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-18T07:20:05Z
 updated_at: 2022-09-18T16:45:53Z
 url: https://github.com/astral-sh/ruff/issues/223
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Line length should be calculated by number of chars in UTF-32 (E501)
 
 ---
 
-_Issue opened by @sgryjp on 2022-09-18 07:20_
+_@sgryjp_
 
 As of v0.0.40, ruff uses [number of bytes in UTF-8](https://github.com/charliermarsh/ruff/blob/v0.0.40/src/check_lines.rs#L38) as line length but flake8 (actually pycodestyle) uses [number of characters in UTF-32](https://github.com/PyCQA/pycodestyle/blob/2.9.1/pycodestyle.py#L279). Because of this difference, ruff may report E501 for lines containing characters which requires multiple bytes.
 

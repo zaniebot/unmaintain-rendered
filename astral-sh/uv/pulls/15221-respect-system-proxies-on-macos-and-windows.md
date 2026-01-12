@@ -13,14 +13,14 @@ head: zb/system-proxy
 created_at: 2025-08-11T14:43:47Z
 updated_at: 2025-08-11T15:39:42Z
 url: https://github.com/astral-sh/uv/pull/15221
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Respect system proxies on macOS and Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-11 14:43_
+_@zanieb_
 
 Adds the `system-proxy` feature to `reqwest`
 

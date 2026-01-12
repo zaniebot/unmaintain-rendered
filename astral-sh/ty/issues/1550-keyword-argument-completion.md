@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T09:36:30Z
 updated_at: 2025-12-08T19:19:46Z
 url: https://github.com/astral-sh/ty/issues/1550
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # keyword argument completion
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 09:36_
+_@MichaReiser_
 
 Complete keyword arguments in function calls. 
 

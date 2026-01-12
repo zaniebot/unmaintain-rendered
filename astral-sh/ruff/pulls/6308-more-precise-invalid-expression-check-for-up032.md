@@ -12,14 +12,14 @@ head: more-precise-invalid-check-UP032
 created_at: 2023-08-03T15:35:54Z
 updated_at: 2023-08-03T16:22:17Z
 url: https://github.com/astral-sh/ruff/pull/6308
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # More precise invalid expression check for `UP032`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-03 15:35_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

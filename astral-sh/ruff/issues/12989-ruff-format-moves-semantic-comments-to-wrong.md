@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T15:11:47Z
 updated_at: 2024-08-20T06:34:46Z
 url: https://github.com/astral-sh/ruff/issues/12989
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff format moves semantic comments to wrong places
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2024-08-19 15:11_
+_@NiklasRosenstein_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

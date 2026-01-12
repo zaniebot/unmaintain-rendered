@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T15:28:21Z
 updated_at: 2025-03-03T14:46:02Z
 url: https://github.com/astral-sh/uv/issues/11217
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # uv not detecting system installed Python installations of other architecture on Windows
 
 ---
 
-_Issue opened by @schlamar on 2025-02-04 15:28_
+_@schlamar_
 
 ### Summary
 

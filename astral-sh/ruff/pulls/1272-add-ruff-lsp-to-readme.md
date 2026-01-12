@@ -12,14 +12,14 @@ head: charlie/ruff-lsp
 created_at: 2022-12-18T02:30:25Z
 updated_at: 2022-12-18T02:37:12Z
 url: https://github.com/astral-sh/ruff/pull/1272
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add `ruff-lsp` to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-18 02:30_
+_@charliermarsh_
 
 _No description provided._
 

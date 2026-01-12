@@ -13,14 +13,14 @@ head: updateGithubActionsExampleToRemoveExtraInstall
 created_at: 2025-01-07T12:03:09Z
 updated_at: 2025-01-07T13:49:32Z
 url: https://github.com/astral-sh/uv/pull/10356
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # docs: github actions example: remove unneeded install step
 
 ---
 
-_Pull request opened by @clintonsteiner on 2025-01-07 12:03_
+_@clintonsteiner_
 
 * Previously had uv python install, then uv sync --all-extras --dev
 * If we are going to use sync for dev dependencies, then the install step is unneccessary

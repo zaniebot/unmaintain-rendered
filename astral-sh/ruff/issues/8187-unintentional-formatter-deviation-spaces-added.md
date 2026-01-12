@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T22:04:46Z
 updated_at: 2023-10-25T06:24:08Z
 url: https://github.com/astral-sh/ruff/issues/8187
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Unintentional formatter deviation: spaces added around power operator (`**`)
 
 ---
 
-_Issue opened by @stinodego on 2023-10-24 22:04_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

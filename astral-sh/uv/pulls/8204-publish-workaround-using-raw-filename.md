@@ -14,14 +14,14 @@ head: konsti/raw-filename
 created_at: 2024-10-15T09:02:02Z
 updated_at: 2024-10-15T12:22:54Z
 url: https://github.com/astral-sh/uv/pull/8204
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Publish: Workaround using raw filename
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 09:02_
+_@konstin_
 
 Since setuptools violates the wheel filenames spec (https://github.com/pypa/setuptools/issues/3777), we have to use the raw filename when publishing to get through https://github.com/pypi/warehouse/blob/50a58f3081e693a3772c0283050a275e350004bf/warehouse/forklift/legacy.py#L1133-L1155.
 

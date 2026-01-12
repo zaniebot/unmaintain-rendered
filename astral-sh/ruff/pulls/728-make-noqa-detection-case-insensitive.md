@@ -12,14 +12,14 @@ head: charlie/i-noqa
 created_at: 2022-11-13T21:09:17Z
 updated_at: 2022-11-13T21:09:44Z
 url: https://github.com/astral-sh/ruff/pull/728
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Make # noqa detection case-insensitive
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-13 21:09_
+_@charliermarsh_
 
 Resolves #726.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T10:27:43Z
 updated_at: 2024-03-12T23:56:07Z
 url: https://github.com/astral-sh/uv/issues/1313
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Allow `pip compile` to work with stdin
 
 ---
 
-_Issue opened by @mitsuhiko on 2024-02-15 10:27_
+_@mitsuhiko_
 
 Currently you cannot compile a requirements.txt file from stdin. Only `/dev/stdin` works, but that's not portable. It would be nice if `-` could be used to imply stdin to match behavior with `pip-tools`.
 

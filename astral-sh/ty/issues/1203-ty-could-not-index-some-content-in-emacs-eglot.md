@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T14:46:55Z
 updated_at: 2025-09-22T11:12:33Z
 url: https://github.com/astral-sh/ty/issues/1203
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Ty could not index some content in emacs (eglot)
 
 ---
 
-_Issue opened by @ileixe on 2025-09-18 14:46_
+_@ileixe_
 
 ### Question
 

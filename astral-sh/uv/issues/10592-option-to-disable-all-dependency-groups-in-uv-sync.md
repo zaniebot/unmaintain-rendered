@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T12:32:48Z
 updated_at: 2025-01-21T23:03:18Z
 url: https://github.com/astral-sh/uv/issues/10592
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Option to disable all dependency groups in `uv sync`
 
 ---
 
-_Issue opened by @mkniewallner on 2025-01-14 12:32_
+_@mkniewallner_
 
 Let's consider this `pyproject.toml`:
 

@@ -12,14 +12,14 @@ head: noqa
 created_at: 2024-01-30T19:00:39Z
 updated_at: 2024-03-28T17:44:33Z
 url: https://github.com/astral-sh/ruff/pull/9713
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # new rule: enforce consistent capitalisation of noqa statements
 
 ---
 
-_Pull request opened by @danieleades on 2024-01-30 19:00_
+_@danieleades_
 
 closes #9596
 

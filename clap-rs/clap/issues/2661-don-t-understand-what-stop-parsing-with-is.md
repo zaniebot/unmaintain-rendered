@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-03T05:20:54Z
 updated_at: 2021-08-03T16:32:59Z
 url: https://github.com/clap-rs/clap/issues/2661
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Don't understand what `stop_parsing_with_--` is supposed to do from just the code
 
 ---
 
-_Issue opened by @hoijui on 2021-08-03 05:20_
+_@hoijui_
 
 ### Please complete the following tasks
 

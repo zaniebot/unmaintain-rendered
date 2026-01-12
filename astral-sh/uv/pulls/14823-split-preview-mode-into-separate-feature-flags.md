@@ -14,14 +14,14 @@ head: zb/preview-flags
 created_at: 2025-07-22T17:15:37Z
 updated_at: 2025-07-25T16:01:59Z
 url: https://github.com/astral-sh/uv/pull/14823
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Split preview mode into separate feature flags
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 17:15_
+_@zanieb_
 
 I think this would give us better hygiene than a global flag. It makes it easier for users to opt-in to overlapping features, such as Python upgrades and Python bin installations and to disable warnings for preview mode without opting in to a bunch of other features. In general, I want to reduce the burden for putting something under preview.
 

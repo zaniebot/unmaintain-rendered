@@ -14,14 +14,14 @@ head: konsti/pep-514
 created_at: 2025-01-15T13:29:30Z
 updated_at: 2025-01-23T14:13:43Z
 url: https://github.com/astral-sh/uv/pull/10634
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Install and remove managed Python to and from the Windows Registry (PEP 514)
 
 ---
 
-_Pull request opened by @konstin on 2025-01-15 13:29_
+_@konstin_
 
 ## Summary
 

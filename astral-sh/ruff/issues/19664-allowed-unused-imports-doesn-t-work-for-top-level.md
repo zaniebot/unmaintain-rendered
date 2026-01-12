@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T17:39:41Z
 updated_at: 2025-08-28T13:02:52Z
 url: https://github.com/astral-sh/ruff/issues/19664
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `allowed-unused-imports` doesn't work for top-level modules
 
 ---
 
-_Issue opened by @zeevro on 2025-07-31 17:39_
+_@zeevro_
 
 ### Summary
 

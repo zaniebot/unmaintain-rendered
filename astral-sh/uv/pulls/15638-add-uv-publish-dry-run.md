@@ -13,14 +13,14 @@ head: charlie/pyx-publish
 created_at: 2025-09-02T18:59:41Z
 updated_at: 2025-09-03T01:24:33Z
 url: https://github.com/astral-sh/uv/pull/15638
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Add `uv publish --dry-run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-02 18:59_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T15:00:22Z
 updated_at: 2024-02-22T19:39:38Z
 url: https://github.com/astral-sh/uv/issues/1697
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Report uv version in pyvenv.cfg
 
 ---
 
-_Issue opened by @henryiii on 2024-02-19 15:00_
+_@henryiii_
 
 Since virutalenv 20, it's included a `virtualenv=` field in `pyvenv.cfg` to indicate the version of virtualenv that created the venv. It would be nice to provide a similar `uv=` (suggested) field to report the version of uv used to create the virtualenv. This would also help nox detect which tool created the virtual environment to handle switching more elegantly.
 

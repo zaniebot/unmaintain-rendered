@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-11-16T09:29:13Z
 updated_at: 2024-11-16T09:29:36Z
 url: https://github.com/astral-sh/uv/pull/9163
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Update .python-version
 
 ---
 
-_Pull request opened by @AGK-1 on 2024-11-16 09:29_
+_@AGK-1_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

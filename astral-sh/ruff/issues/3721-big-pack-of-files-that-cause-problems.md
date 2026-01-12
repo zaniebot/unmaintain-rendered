@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T19:36:44Z
 updated_at: 2023-08-28T20:36:31Z
 url: https://github.com/astral-sh/ruff/issues/3721
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Big pack of files that cause problems
 
 ---
 
-_Issue opened by @qarmin on 2023-03-24 19:36_
+_@qarmin_
 
 Here I will public packs of broken files(mostly autofix bugs), that I found when fuzzing project.
 I know that such issues should be created in separate issues, but I don't really have time to do this(there is ~700 broken files, which most probably have same source of problems), so feel free to do report it if you want.

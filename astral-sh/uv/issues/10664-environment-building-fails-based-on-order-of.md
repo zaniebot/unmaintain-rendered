@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T02:12:58Z
 updated_at: 2025-01-16T15:07:29Z
 url: https://github.com/astral-sh/uv/issues/10664
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Environment building fails based on order of libraries
 
 ---
 
-_Issue opened by @thedch on 2025-01-16 02:12_
+_@thedch_
 
 I'm not sure if this is an appropriate bug to file here, or if this is just an artifact of various libraries specifying their requirements poorly / python versioning being difficult -- resolving a dependency matrix is hard! Feel free to close if this isn't in the scope of what `uv` can fix, but I wanted to flag in case it was interesting.
 

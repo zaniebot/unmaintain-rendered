@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T21:57:59Z
 updated_at: 2025-03-17T18:13:48Z
 url: https://github.com/astral-sh/uv/issues/11461
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # `ModuleNotFoundError` when attempting to use certain `tool.uv.build-backend` settings
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-12 21:57_
+_@chrisrodrigue_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/config-settings
 created_at: 2024-09-06T21:42:27Z
 updated_at: 2024-09-10T01:49:17Z
 url: https://github.com/astral-sh/uv/pull/7139
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Invalidate cache when `--config-settings` change
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-06 21:42_
+_@charliermarsh_
 
 ## Summary
 

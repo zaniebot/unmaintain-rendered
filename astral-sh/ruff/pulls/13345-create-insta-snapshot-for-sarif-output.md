@@ -13,14 +13,14 @@ head: dhruv/sarif-snapshot
 created_at: 2024-09-13T14:04:25Z
 updated_at: 2024-09-13T14:50:10Z
 url: https://github.com/astral-sh/ruff/pull/13345
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Create insta snapshot for SARIF output
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-13 14:04_
+_@dhruvmanila_
 
 ## Summary
 

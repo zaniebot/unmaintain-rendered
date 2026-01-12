@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-16T15:25:32Z
 updated_at: 2025-12-18T14:28:29Z
 url: https://github.com/clap-rs/clap/issues/6196
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `unstable-dynamic` completion for fish shell invalid when binary path has a space
 
 ---
 
-_Issue opened by @devjgm on 2025-12-16 15:25_
+_@devjgm_
 
 ### Please complete the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-03T00:17:49Z
 updated_at: 2023-01-03T00:54:56Z
 url: https://github.com/astral-sh/ruff/issues/1575
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # fix failed to converge within 100 iterations, ruff-0.0.206
 
 ---
 
-_Issue opened by @marscher on 2023-01-03 00:17_
+_@marscher_
 
 command: `ruff --fix $file  # code posted below`
 

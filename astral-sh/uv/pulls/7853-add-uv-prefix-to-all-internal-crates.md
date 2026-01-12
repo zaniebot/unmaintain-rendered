@@ -13,14 +13,14 @@ head: charlie/rename
 created_at: 2024-10-01T23:46:37Z
 updated_at: 2024-10-02T07:12:14Z
 url: https://github.com/astral-sh/uv/pull/7853
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Add `uv-` prefix to all internal crates
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 23:46_
+_@charliermarsh_
 
 ## Summary
 

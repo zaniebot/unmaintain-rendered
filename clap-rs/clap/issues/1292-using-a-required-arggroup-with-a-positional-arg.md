@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-06-10T19:03:54Z
 updated_at: 2021-08-13T18:40:47Z
 url: https://github.com/clap-rs/clap/issues/1292
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Using a required ArgGroup with a positional arg, prints that arg twice in Usage String
 
 ---
 
-_Issue opened by @kbknapp on 2018-06-10 19:03_
+_@kbknapp_
 
 ### Rust Version
 

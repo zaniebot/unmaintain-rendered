@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-24T11:36:36Z
 updated_at: 2025-06-25T04:29:16Z
 url: https://github.com/astral-sh/ruff/issues/18912
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider adding `ruff.lint.run` to the native server
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-24 11:36_
+_@dhruvmanila_
 
 We didn't add this setting when implementing the native server but there are couple of request for this:
 

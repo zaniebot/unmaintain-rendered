@@ -13,14 +13,14 @@ head: konsti/3.13-ci
 created_at: 2024-07-03T09:17:05Z
 updated_at: 2024-07-03T09:28:47Z
 url: https://github.com/astral-sh/uv/pull/4761
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Reactivate python 3.13 in CI
 
 ---
 
-_Pull request opened by @konstin on 2024-07-03 09:17_
+_@konstin_
 
 https://github.com/actions/setup-python/issues/888#issuecomment-2205466950
 

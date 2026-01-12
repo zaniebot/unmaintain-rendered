@@ -12,14 +12,14 @@ head: upgrade-tool
 created_at: 2024-07-18T18:58:04Z
 updated_at: 2024-08-08T20:48:15Z
 url: https://github.com/astral-sh/uv/pull/5197
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Add `uv tool upgrade` command
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-18 18:58_
+_@blueraft_
 
 ## Summary
 

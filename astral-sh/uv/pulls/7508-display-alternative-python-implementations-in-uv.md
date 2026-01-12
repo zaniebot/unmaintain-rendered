@@ -12,14 +12,14 @@ head: zb/pypy-fix
 created_at: 2024-09-18T16:38:07Z
 updated_at: 2024-09-23T22:37:17Z
 url: https://github.com/astral-sh/uv/pull/7508
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Display alternative Python implementations in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 16:38_
+_@zanieb_
 
 Closes #7286
 

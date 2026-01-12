@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T19:13:05Z
 updated_at: 2024-03-25T21:08:42Z
 url: https://github.com/astral-sh/uv/issues/2656
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # successful  `uv pip install x` operation outputs stream is  `stderr` not `stdout`
 
 ---
 
-_Issue opened by @dmatos2012 on 2024-03-25 19:13_
+_@dmatos2012_
 
 Hello everyone, 
 

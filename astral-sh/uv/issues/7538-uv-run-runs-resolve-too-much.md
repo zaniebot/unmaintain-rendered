@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T09:07:02Z
 updated_at: 2024-12-06T16:13:04Z
 url: https://github.com/astral-sh/uv/issues/7538
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # "uv run" runs resolve too much
 
 ---
 
-_Issue opened by @PetterS on 2024-09-19 09:07_
+_@PetterS_
 
 I have a script that starts with
 ```

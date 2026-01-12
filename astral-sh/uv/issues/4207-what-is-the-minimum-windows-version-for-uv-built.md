@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-10T17:53:59Z
 updated_at: 2024-06-10T18:50:22Z
 url: https://github.com/astral-sh/uv/issues/4207
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # What is the minimum Windows version for UV built with Rust 1.78?
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-06-10 17:53_
+_@FishAlchemist_
 
 The README only mentions that Windows is supported.
 I checked the Github Action logs and it looks like uv is built with Rust 1.78. So the minimum supported version is Windows 10, right?

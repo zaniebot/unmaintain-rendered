@@ -12,14 +12,14 @@ head: isort-no-lines-before
 created_at: 2023-01-18T13:42:49Z
 updated_at: 2023-01-18T16:25:24Z
 url: https://github.com/astral-sh/ruff/pull/1955
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`isort`] Add `no-lines-before` Option
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-18 13:42_
+_@saadmk11_
 
 Closes https://github.com/charliermarsh/ruff/issues/1916.
 

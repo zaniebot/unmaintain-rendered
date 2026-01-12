@@ -13,14 +13,14 @@ head: main
 created_at: 2025-06-25T07:50:46Z
 updated_at: 2025-06-30T13:58:56Z
 url: https://github.com/astral-sh/uv/pull/14253
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Docs: add instructions for publishing to JFrog's Artifactory
 
 ---
 
-_Pull request opened by @ondrej-profant-dtml on 2025-06-25 07:50_
+_@ondrej-profant-dtml_
 
 ## Summary
 

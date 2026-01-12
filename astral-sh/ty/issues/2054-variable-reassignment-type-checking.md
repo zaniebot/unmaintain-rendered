@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T08:00:05Z
 updated_at: 2025-12-18T09:38:47Z
 url: https://github.com/astral-sh/ty/issues/2054
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Variable reassignment type checking
 
 ---
 
-_Issue opened by @staciax on 2025-12-18 08:00_
+_@staciax_
 
 ### Question
 

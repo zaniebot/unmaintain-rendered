@@ -14,14 +14,14 @@ head: zb/fix-version-priotiy
 created_at: 2024-08-21T22:03:04Z
 updated_at: 2024-08-21T22:17:15Z
 url: https://github.com/astral-sh/uv/pull/6382
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Fix priority for `.python-versions` files in `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-21 22:03_
+_@zanieb_
 
 In https://github.com/astral-sh/uv/pull/6359, I accidentally made `uv python install` prefer `.python-version` files over `.python-versions` files -.-, kind of niche but it's a regression.
 

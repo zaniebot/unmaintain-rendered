@@ -13,14 +13,14 @@ head: zb/win-tag
 created_at: 2025-01-21T23:26:45Z
 updated_at: 2025-01-21T23:45:14Z
 url: https://github.com/astral-sh/ruff/pull/15661
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Use new-style Windows runner tag and 2025 preview
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 23:26_
+_@zanieb_
 
 I changed these org-wide to make it more obvious what runner it maps to; did not update here as I did in uv
 

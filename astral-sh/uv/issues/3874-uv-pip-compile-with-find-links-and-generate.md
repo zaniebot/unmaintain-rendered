@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-28T08:46:37Z
 updated_at: 2024-07-29T08:49:40Z
 url: https://github.com/astral-sh/uv/issues/3874
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv pip compile with --find-links and --generate-hashes does not generate hashes for wheels (.whl)
 
 ---
 
-_Issue opened by @mescanne on 2024-05-28 08:46_
+_@mescanne_
 
 Working with uv and pip-compile I've noticed that pip-compile will generate a hash from the .whl file (found using -f), while uv pip compile will not include the hash from whl.
 

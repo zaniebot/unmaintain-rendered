@@ -13,14 +13,14 @@ head: claude/document-user-executable-dir-dv7Mq
 created_at: 2026-01-08T21:11:12Z
 updated_at: 2026-01-08T21:22:42Z
 url: https://github.com/astral-sh/uv/pull/17365
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Document why `parse_xdg_path` requires absolute paths
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 21:11_
+_@zanieb_
 
 Related to #17364
 

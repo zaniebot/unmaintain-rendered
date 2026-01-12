@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-04T19:57:51Z
 updated_at: 2023-02-21T18:42:23Z
 url: https://github.com/astral-sh/ruff/issues/2571
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Probably false-positive for E999 in Python 3.11.1
 
 ---
 
-_Issue opened by @divaltor on 2023-02-04 19:57_
+_@divaltor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

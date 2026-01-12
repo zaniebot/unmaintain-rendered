@@ -13,14 +13,14 @@ head: konsti/fix-main-hash
 created_at: 2024-10-08T15:00:55Z
 updated_at: 2024-10-08T15:16:10Z
 url: https://github.com/astral-sh/uv/pull/8005
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Fix merge problem with main
 
 ---
 
-_Pull request opened by @konstin on 2024-10-08 15:00_
+_@konstin_
 
 There was a merge order problem causing main CI to fail, which this commit fixes. I've also redacted the uv version as in the other unit test.
 

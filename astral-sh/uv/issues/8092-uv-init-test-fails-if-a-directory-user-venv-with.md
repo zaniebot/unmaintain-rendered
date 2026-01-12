@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T13:56:42Z
 updated_at: 2024-11-13T03:53:58Z
 url: https://github.com/astral-sh/uv/issues/8092
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv init test fails if a directory ~<user>/.venv with no pyvenv.cfg is found
 
 ---
 
-_Issue opened by @pelamlio on 2024-10-10 13:56_
+_@pelamlio_
 
 uv version 0.4.20
 Linux Ubuntu 24.04.1 LTS 

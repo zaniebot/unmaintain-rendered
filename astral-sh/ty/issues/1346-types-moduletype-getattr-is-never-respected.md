@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T13:32:46Z
 updated_at: 2025-11-14T12:59:16Z
 url: https://github.com/astral-sh/ty/issues/1346
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `types.ModuleType.__getattr__` is never respected
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-13 13:32_
+_@AlexWaygood_
 
 ### Summary
 

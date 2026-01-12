@@ -13,14 +13,14 @@ head: zb/project-config
 created_at: 2024-11-19T19:06:32Z
 updated_at: 2024-11-21T00:31:04Z
 url: https://github.com/astral-sh/uv/pull/9235
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Improve content on project configuration
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 19:06_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T13:06:27Z
 updated_at: 2024-08-20T13:06:27Z
 url: https://github.com/astral-sh/ruff/issues/13008
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F401 autofix should only add a first-party import to `__all__` if the import is from the *same package*
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-08-20 13:06_
+_@AlexWaygood_
 
 Consider the following directory structure:
 

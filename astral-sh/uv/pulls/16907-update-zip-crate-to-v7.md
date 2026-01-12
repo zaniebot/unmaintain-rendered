@@ -14,14 +14,14 @@ head: konsti/update-zip-6
 created_at: 2025-12-01T10:05:22Z
 updated_at: 2026-01-05T14:43:26Z
 url: https://github.com/astral-sh/uv/pull/16907
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Update zip crate to v7
 
 ---
 
-_Pull request opened by @konstin on 2025-12-01 10:05_
+_@konstin_
 
 We're showing a bad error message in https://github.com/astral-sh/uv/issues/16906 where we say duplicate filename but don't show the filename, upgrading the zip crate shows the filename in the error message.
 

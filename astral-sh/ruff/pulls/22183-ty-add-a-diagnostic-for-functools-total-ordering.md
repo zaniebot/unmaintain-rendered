@@ -13,14 +13,14 @@ head: charlie/functools-diagnostic
 created_at: 2025-12-24T19:47:38Z
 updated_at: 2026-01-06T04:14:07Z
 url: https://github.com/astral-sh/ruff/pull/22183
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add a diagnostic for `@functools.total_ordering` without a defined comparison method
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-24 19:47_
+_@charliermarsh_
 
 ## Summary
 

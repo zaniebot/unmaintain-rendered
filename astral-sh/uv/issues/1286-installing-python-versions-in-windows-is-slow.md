@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-12T18:51:26Z
 updated_at: 2024-06-29T16:33:26Z
 url: https://github.com/astral-sh/uv/issues/1286
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Installing Python versions in Windows is slow
 
 ---
 
-_Issue opened by @zanieb on 2024-02-12 18:51_
+_@zanieb_
 
 Bootstrapping Python versions takes 1m longer in Windows than Linux (https://github.com/astral-sh/puffin/actions/runs/7876443402/job/21490474470) ~4x slower.
 

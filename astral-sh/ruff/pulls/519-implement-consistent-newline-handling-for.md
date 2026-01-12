@@ -12,14 +12,14 @@ head: charlie/newline
 created_at: 2022-10-30T17:11:04Z
 updated_at: 2022-10-30T17:11:09Z
 url: https://github.com/astral-sh/ruff/pull/519
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement consistent newline handling for SourceCodeLocator
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-30 17:11_
+_@charliermarsh_
 
 _No description provided._
 

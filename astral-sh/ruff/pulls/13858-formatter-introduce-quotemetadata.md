@@ -14,14 +14,14 @@ head: micha/refactor-normalize
 created_at: 2024-10-21T12:11:41Z
 updated_at: 2024-10-21T19:23:51Z
 url: https://github.com/astral-sh/ruff/pull/13858
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # formatter: Introduce `QuoteMetadata`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-21 12:11_
+_@MichaReiser_
 
 ## Summary
 

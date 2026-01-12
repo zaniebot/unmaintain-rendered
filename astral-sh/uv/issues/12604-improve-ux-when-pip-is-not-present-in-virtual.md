@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T17:54:11Z
 updated_at: 2025-12-10T21:24:16Z
 url: https://github.com/astral-sh/uv/issues/12604
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Improve ux when `pip` is not present in virtual environments
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 17:54_
+_@zanieb_
 
 There are various previous issues discussing this topic:
  

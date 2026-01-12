@@ -13,14 +13,14 @@ head: charlie/names
 created_at: 2023-02-07T02:11:02Z
 updated_at: 2023-02-07T02:14:56Z
 url: https://github.com/astral-sh/ruff/pull/2617
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Support `ignore-names` for all relevant pep8-naming rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 02:11_
+_@charliermarsh_
 
 Closes #2612.
 

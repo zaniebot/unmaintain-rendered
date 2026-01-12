@@ -13,14 +13,14 @@ head: zb/list-request
 created_at: 2025-03-21T17:55:17Z
 updated_at: 2025-03-23T03:13:59Z
 url: https://github.com/astral-sh/uv/pull/12375
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Add support for Python version requests in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 17:55_
+_@zanieb_
 
 Allows `uv python list <request>` to filter the installed list. I often want this and it's not hard to add.
 

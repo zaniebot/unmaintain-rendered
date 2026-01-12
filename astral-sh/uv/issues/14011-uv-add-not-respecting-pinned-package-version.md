@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T22:51:42Z
 updated_at: 2025-06-13T17:14:42Z
 url: https://github.com/astral-sh/uv/issues/14011
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # `uv add` not respecting pinned package version
 
 ---
 
-_Issue opened by @seh-dev on 2025-06-12 22:51_
+_@seh-dev_
 
 ### Summary
 

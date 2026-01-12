@@ -14,14 +14,14 @@ head: charlie/write
 created_at: 2024-02-23T01:21:45Z
 updated_at: 2024-02-23T03:29:15Z
 url: https://github.com/astral-sh/uv/pull/1892
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Write to stdout when `--output-file` is present
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 01:21_
+_@charliermarsh_
 
 ## Summary
 

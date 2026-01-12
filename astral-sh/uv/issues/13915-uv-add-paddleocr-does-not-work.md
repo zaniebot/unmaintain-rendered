@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T08:42:49Z
 updated_at: 2025-10-22T06:54:31Z
 url: https://github.com/astral-sh/uv/issues/13915
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # uv add paddleocr does not work
 
 ---
 
-_Issue opened by @big-yellow-duck on 2025-06-09 08:42_
+_@big-yellow-duck_
 
 ### Summary
 

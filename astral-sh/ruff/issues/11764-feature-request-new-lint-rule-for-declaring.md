@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T22:06:36Z
 updated_at: 2024-06-08T19:54:54Z
 url: https://github.com/astral-sh/ruff/issues/11764
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Feature Request] new lint rule for declaring variables to have #declare or #var comment
 
 ---
 
-_Issue opened by @EdSaleh on 2024-06-05 22:06_
+_@EdSaleh_
 
 create a new lint rule for variable when they are first declared to be followed by #var or #declare or word configured by project developers.
 

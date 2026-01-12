@@ -12,14 +12,14 @@ head: charlie/globals
 created_at: 2023-06-16T02:59:01Z
 updated_at: 2023-06-16T15:19:53Z
 url: https://github.com/astral-sh/ruff/pull/5136
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Avoid propagating `BindingKind::Global` and `BindingKind::Nonlocal`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 02:59_
+_@charliermarsh_
 
 ## Summary
 

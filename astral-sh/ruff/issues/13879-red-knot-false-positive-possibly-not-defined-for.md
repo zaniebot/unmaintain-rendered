@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T13:16:16Z
 updated_at: 2025-01-09T17:51:28Z
 url: https://github.com/astral-sh/ruff/issues/13879
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] false positive "possibly not defined" for symbol used in generator expression inside `for` loop
 
 ---
 
-_Issue opened by @alex on 2024-10-22 13:16_
+_@alex_
 
 (I'm aware that red-knot is not yet stable).
 

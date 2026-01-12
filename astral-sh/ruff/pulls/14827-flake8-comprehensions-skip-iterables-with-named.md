@@ -13,14 +13,14 @@ head: walrus-compr
 created_at: 2024-12-06T23:21:39Z
 updated_at: 2024-12-07T03:06:00Z
 url: https://github.com/astral-sh/ruff/pull/14827
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-comprehensions`] Skip iterables with named expressions in `unnecessary-map` (`C417`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-06 23:21_
+_@dylwil3_
 
 This PR modifies [unnecessary-map (C417)](https://docs.astral.sh/ruff/rules/unnecessary-map/#unnecessary-map-c417) to skip `map` expressions if the iterable contains a named expression, since those cannot appear in comprehensions.
 

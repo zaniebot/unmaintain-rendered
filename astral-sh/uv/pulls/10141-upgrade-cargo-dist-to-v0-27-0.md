@@ -13,14 +13,14 @@ head: charlie/dist-up
 created_at: 2024-12-24T13:09:49Z
 updated_at: 2024-12-24T13:24:16Z
 url: https://github.com/astral-sh/uv/pull/10141
-synced_at: 2026-01-10T11:44:36Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Upgrade cargo-dist to v0.27.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 13:09_
+_@charliermarsh_
 
 ## Summary
 

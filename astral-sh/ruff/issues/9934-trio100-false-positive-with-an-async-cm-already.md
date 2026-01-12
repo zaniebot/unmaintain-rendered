@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T19:37:13Z
 updated_at: 2024-02-12T00:36:02Z
 url: https://github.com/astral-sh/ruff/issues/9934
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # TRIO100 false positive with an async CM (already fixed in `flake8-trio` - ruff is out of date)
 
 ---
 
-_Issue opened by @mikenerone on 2024-02-11 19:37_
+_@mikenerone_
 
 Ruff 0.2.1
 

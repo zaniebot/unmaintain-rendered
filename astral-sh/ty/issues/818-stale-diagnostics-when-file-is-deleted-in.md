@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-12T03:35:39Z
 updated_at: 2025-08-04T10:26:40Z
 url: https://github.com/astral-sh/ty/issues/818
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Stale diagnostics when file is deleted in workspace diagnostic mode
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-12 03:35_
+_@dhruvmanila_
 
 ### Summary
 

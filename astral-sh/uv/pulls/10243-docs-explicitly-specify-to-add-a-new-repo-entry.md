@@ -13,14 +13,14 @@ head: pre-commit-docs
 created_at: 2024-12-30T19:15:11Z
 updated_at: 2025-05-27T16:25:23Z
 url: https://github.com/astral-sh/uv/pull/10243
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # docs: Explicitly specify to add a new repo entry to the repos list item in the `.pre-commit-config.yaml`
 
 ---
 
-_Pull request opened by @eva-mueller-coremedia on 2024-12-30 19:15_
+_@eva-mueller-coremedia_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

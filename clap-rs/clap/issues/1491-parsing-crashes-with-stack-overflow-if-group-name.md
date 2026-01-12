@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-06-13T22:50:30Z
 updated_at: 2020-04-10T02:00:15Z
 url: https://github.com/clap-rs/clap/issues/1491
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Parsing crashes with stack overflow if group name matches item name
 
 ---
 
-_Issue opened by @Dentosal on 2019-06-13 22:50_
+_@Dentosal_
 
 ### Rust Version
 

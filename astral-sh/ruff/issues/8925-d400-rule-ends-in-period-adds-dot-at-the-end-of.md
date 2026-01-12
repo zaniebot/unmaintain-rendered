@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-30T15:12:39Z
 updated_at: 2023-11-30T19:27:22Z
 url: https://github.com/astral-sh/ruff/issues/8925
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # D400 rule ("ends-in-period") adds dot at the end of RST headings which break sphinx builds
 
 ---
 
-_Issue opened by @AKuederle on 2023-11-30 15:12_
+_@AKuederle_
 
 When using `sphinx-gallery` you regularly write example files that need to start with a RST-style heading in the module docstring.
 

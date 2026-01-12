@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-04T03:46:33Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/993
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # help takes project name instead of command when printing help for sub command
 
 ---
 
-_Issue opened by @sagiegurari on 2017-07-04 03:46_
+_@sagiegurari_
 
 ### Rust Version
 

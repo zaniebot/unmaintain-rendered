@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-14T02:18:28Z
 updated_at: 2023-08-15T02:24:09Z
 url: https://github.com/astral-sh/ruff/issues/6543
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # rule to detect unnecessary `is True`/`is False`
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-14 02:18_
+_@DetachHead_
 
 ```py
 def foo(value: bool):

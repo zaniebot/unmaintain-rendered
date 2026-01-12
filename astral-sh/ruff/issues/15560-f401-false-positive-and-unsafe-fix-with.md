@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-17T22:17:07Z
 updated_at: 2025-01-17T22:17:48Z
 url: https://github.com/astral-sh/ruff/issues/15560
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F401 false positive and unsafe fix with subclassing generics
 
 ---
 
-_Issue opened by @cibere on 2025-01-17 22:17_
+_@cibere_
 
 I'm encountering a scenario where the F401 rule triggers a false positive when subclassing and providing a generic, with ruff also applying a fix that breaks the typing of the class.
 

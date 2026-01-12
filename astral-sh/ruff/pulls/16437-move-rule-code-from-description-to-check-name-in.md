@@ -13,14 +13,14 @@ head: um
 created_at: 2025-02-28T11:23:07Z
 updated_at: 2025-02-28T14:37:10Z
 url: https://github.com/astral-sh/ruff/pull/16437
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Move rule code from `description` to `check_name` in GitLab output serializer
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-28 11:23_
+_@InSyncWithFoo_
 
 ## Summary
 

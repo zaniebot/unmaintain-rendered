@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T20:31:27Z
 updated_at: 2025-08-01T21:31:33Z
 url: https://github.com/astral-sh/uv/issues/15020
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # uv pip install don't change pyproject.toml and uv.lock. How can i sync this
 
 ---
 
-_Issue opened by @zeronerorgb on 2025-08-01 20:31_
+_@zeronerorgb_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-07-28T13:02:47Z
 updated_at: 2023-07-28T13:38:15Z
 url: https://github.com/astral-sh/ruff/pull/6150
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid refactoring `x[:1]`-like slices in RUF015
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-28 13:02_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: add-link-to-ci-badge
 created_at: 2024-03-22T15:53:19Z
 updated_at: 2024-03-22T18:01:12Z
 url: https://github.com/astral-sh/uv/pull/2616
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # :sparkles: return the link to the CI badge
 
 ---
 
-_Pull request opened by @AucaCoyan on 2024-03-22 15:53_
+_@AucaCoyan_
 
 ## Summary
 

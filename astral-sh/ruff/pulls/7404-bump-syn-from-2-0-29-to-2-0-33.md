@@ -13,14 +13,14 @@ head: dependabot/cargo/syn-2.0.33
 created_at: 2023-09-15T08:34:16Z
 updated_at: 2023-09-15T09:07:46Z
 url: https://github.com/astral-sh/ruff/pull/7404
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump syn from 2.0.29 to 2.0.33
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-15 08:34_
+_@dependabot_
 
 Bumps [syn](https://github.com/dtolnay/syn) from 2.0.29 to 2.0.33.
 <details>

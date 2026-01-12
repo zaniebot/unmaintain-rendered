@@ -14,14 +14,14 @@ head: alex/function-attr-diagnostic
 created_at: 2025-12-24T19:24:43Z
 updated_at: 2025-12-24T20:47:14Z
 url: https://github.com/astral-sh/ruff/pull/22182
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Improve diagnostic when a user tries to access a function attribute on a `Callable` type
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-24 19:24_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/reenable-cloudsmith
 created_at: 2025-02-18T08:48:26Z
 updated_at: 2025-02-18T09:00:12Z
 url: https://github.com/astral-sh/uv/pull/11590
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Revert "Temporarily disable cloudsmith test"
 
 ---
 
-_Pull request opened by @konstin on 2025-02-18 08:48_
+_@konstin_
 
 Cloudsmith increased our limit, we can test on cloudsmith again.
 

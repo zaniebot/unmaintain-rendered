@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T05:28:58Z
 updated_at: 2024-10-29T21:33:34Z
 url: https://github.com/clap-rs/clap/issues/5792
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Value delimiter and num_args should work together
 
 ---
 
-_Issue opened by @eserilev on 2024-10-29 05:28_
+_@eserilev_
 
 ### Please complete the following tasks
 

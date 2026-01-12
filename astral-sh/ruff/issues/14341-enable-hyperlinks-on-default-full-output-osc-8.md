@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T17:25:15Z
 updated_at: 2025-11-19T08:29:05Z
 url: https://github.com/astral-sh/ruff/issues/14341
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Enable hyperlinks on default full output (OSC 8)
 
 ---
 
-_Issue opened by @ssbarnea on 2024-11-14 17:25_
+_@ssbarnea_
 
 Current terminal output (full) does provide nice ANSI colored output but without making the rule labels clickable.
 

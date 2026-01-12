@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T16:24:37Z
 updated_at: 2024-02-09T20:38:35Z
 url: https://github.com/astral-sh/ruff/issues/9913
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Cannot compile ruff from master branch - due yanking pyproject-toml 0.8.2 - https://crates.io/crates/pyproject-toml/versions 
 
 ---
 
-_Issue opened by @qarmin on 2024-02-09 16:24_
+_@qarmin_
 
 https://github.com/astral-sh/ruff/commit/52ebfc971825021a903622fab7e41e3e7c22e903
 

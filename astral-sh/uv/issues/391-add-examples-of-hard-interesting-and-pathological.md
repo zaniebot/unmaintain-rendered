@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-10T15:53:44Z
 updated_at: 2024-01-03T23:22:58Z
 url: https://github.com/astral-sh/uv/issues/391
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Add examples of hard, interesting, and pathological requirement sets
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-10 15:53_
+_@charliermarsh_
 
 _No description provided._
 

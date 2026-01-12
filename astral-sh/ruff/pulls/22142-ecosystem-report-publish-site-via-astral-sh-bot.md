@@ -14,14 +14,14 @@ head: ww/ty-ecosystem-report-bot
 created_at: 2025-12-22T15:59:41Z
 updated_at: 2025-12-22T17:57:51Z
 url: https://github.com/astral-sh/ruff/pull/22142
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # Ecosystem report: publish site via astral-sh-bot
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-22 15:59_
+_@woodruffw_
 
 ## Summary
 

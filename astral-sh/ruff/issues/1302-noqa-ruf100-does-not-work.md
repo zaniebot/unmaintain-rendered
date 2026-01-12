@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-20T20:31:24Z
 updated_at: 2022-12-20T22:40:11Z
 url: https://github.com/astral-sh/ruff/issues/1302
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `# noqa: RUF100` does not work
 
 ---
 
-_Issue opened by @actionless on 2022-12-20 20:31_
+_@actionless_
 
 ```
 RUF100 Unused `noqa` directive for: RUF100

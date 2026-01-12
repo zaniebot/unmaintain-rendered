@@ -13,14 +13,14 @@ head: konsti/compile-html-no-musl
 created_at: 2024-02-20T14:53:58Z
 updated_at: 2024-02-20T16:36:04Z
 url: https://github.com/astral-sh/uv/pull/1756
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Skip compile_html test on musl
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 14:53_
+_@konstin_
 
 The torch index has no musllinux wheel, so we need to skip the test on alpine.
 

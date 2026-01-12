@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T22:09:23Z
 updated_at: 2023-06-03T20:35:07Z
 url: https://github.com/astral-sh/ruff/issues/4769
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # FLY002: incorrect behavior of automatic fixer on strings
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-31 22:09_
+_@saippuakauppias_
 
 Example:
 ```python

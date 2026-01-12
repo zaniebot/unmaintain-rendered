@@ -13,14 +13,14 @@ head: cjm/callbindpanic
 created_at: 2025-01-08T22:32:17Z
 updated_at: 2025-01-09T08:36:51Z
 url: https://github.com/astral-sh/ruff/pull/15362
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] handle synthetic 'self' argument in call-binding diagnostics
 
 ---
 
-_Pull request opened by @carljm on 2025-01-08 22:32_
+_@carljm_
 
 ## Summary
 

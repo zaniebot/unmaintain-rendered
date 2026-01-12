@@ -13,14 +13,14 @@ head: ruf100-duplicate-codes
 created_at: 2024-04-09T23:00:04Z
 updated_at: 2024-04-27T17:10:02Z
 url: https://github.com/astral-sh/ruff/pull/10850
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`ruff`] Detect duplicate codes as part of `unused-noqa` (`RUF100`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-09 23:00_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

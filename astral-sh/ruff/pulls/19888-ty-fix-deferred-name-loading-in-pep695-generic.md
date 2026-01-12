@@ -13,14 +13,14 @@ head: cjm/fix-pep695
 created_at: 2025-08-13T01:16:51Z
 updated_at: 2025-08-13T22:52:01Z
 url: https://github.com/astral-sh/ruff/pull/19888
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] fix deferred name loading in PEP695 generic classes/functions
 
 ---
 
-_Pull request opened by @carljm on 2025-08-13 01:16_
+_@carljm_
 
 ## Summary
 

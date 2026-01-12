@@ -13,14 +13,14 @@ head: charlie/platlib
 created_at: 2024-03-18T23:38:44Z
 updated_at: 2024-03-19T02:22:26Z
 url: https://github.com/astral-sh/uv/pull/2531
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Add a system install test for Fedora
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-18 23:38_
+_@charliermarsh_
 
 _No description provided._
 

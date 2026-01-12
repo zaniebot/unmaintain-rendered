@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T06:22:14Z
 updated_at: 2025-09-16T15:00:08Z
 url: https://github.com/astral-sh/ruff/issues/19752
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E301 is inconsistent with `flake8`
 
 ---
 
-_Issue opened by @whitequark on 2025-08-05 06:22_
+_@whitequark_
 
 ### Summary
 

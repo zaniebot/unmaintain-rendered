@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T10:58:38Z
 updated_at: 2025-01-21T09:18:37Z
 url: https://github.com/astral-sh/uv/issues/10752
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # `uv (sync|run) --only-group` doesn't include project
 
 ---
 
-_Issue opened by @cjw296 on 2025-01-19 10:58_
+_@cjw296_
 
 I'm attempting to build the docs for a new project on [Read the Docs](https://readthedocs.org/).
 

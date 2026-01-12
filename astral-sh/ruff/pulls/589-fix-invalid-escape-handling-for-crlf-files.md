@@ -12,14 +12,14 @@ head: charlie/windows
 created_at: 2022-11-04T18:25:56Z
 updated_at: 2022-11-04T18:26:40Z
 url: https://github.com/astral-sh/ruff/pull/589
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix invalid escape handling for CRLF files
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-04 18:25_
+_@charliermarsh_
 
 This PR reimplements `invalid_escape_sequence` to properly handle files with CRLF newlines (as on Windows). The implementation is a bit slower but overall simpler.
 

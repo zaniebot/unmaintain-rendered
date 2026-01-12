@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-17T10:05:41Z
 updated_at: 2024-08-09T21:57:17Z
 url: https://github.com/astral-sh/uv/issues/4355
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support relative path wheel dependencies
 
 ---
 
-_Issue opened by @konstin on 2024-06-17 10:05_
+_@konstin_
 
 Currently, we only support locking relative path for directory and source dist dependencies. We need to also support relative paths for wheels. To implement this, we need to add the install path vs. lock path split to `PathBuiltDist`, just as we do with `PathSourceDist`.
 

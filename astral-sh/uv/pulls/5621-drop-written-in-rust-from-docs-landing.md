@@ -13,14 +13,14 @@ head: zb/docs-rust
 created_at: 2024-07-30T17:47:57Z
 updated_at: 2024-08-06T18:20:35Z
 url: https://github.com/astral-sh/uv/pull/5621
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Drop "written in Rust" from docs landing
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 17:47_
+_@zanieb_
 
 _No description provided._
 

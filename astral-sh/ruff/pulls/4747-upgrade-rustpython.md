@@ -13,14 +13,14 @@ head: upgrade-rust-python
 created_at: 2023-05-31T08:11:36Z
 updated_at: 2023-05-31T08:45:48Z
 url: https://github.com/astral-sh/ruff/pull/4747
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Upgrade RustPython
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-31 08:11_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

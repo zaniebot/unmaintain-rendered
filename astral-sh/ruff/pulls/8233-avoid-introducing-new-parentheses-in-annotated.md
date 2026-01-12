@@ -13,14 +13,14 @@ head: charlie/ann-assign
 created_at: 2023-10-25T22:10:03Z
 updated_at: 2023-10-26T02:51:51Z
 url: https://github.com/astral-sh/ruff/pull/8233
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid introducing new parentheses in annotated assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-25 22:10_
+_@charliermarsh_
 
 ## Summary
 

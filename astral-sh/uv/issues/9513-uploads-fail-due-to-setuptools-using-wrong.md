@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T18:47:10Z
 updated_at: 2025-11-27T15:24:25Z
 url: https://github.com/astral-sh/uv/issues/9513
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Uploads fail due to setuptools using wrong metadata version for license-file
 
 ---
 
-_Issue opened by @franzhaas on 2024-11-28 18:47_
+_@franzhaas_
 
 Dear all,
 

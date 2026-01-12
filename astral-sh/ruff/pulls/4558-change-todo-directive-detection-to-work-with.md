@@ -12,14 +12,14 @@ head: 4549_flake8_todo_falseneg
 created_at: 2023-05-21T03:59:04Z
 updated_at: 2023-05-25T17:12:11Z
 url: https://github.com/astral-sh/ruff/pull/4558
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Change TODO directive detection to work with multiple pound signs on the same line
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-21 03:59_
+_@evanrittenhouse_
 
 Should fix #4549. 
 

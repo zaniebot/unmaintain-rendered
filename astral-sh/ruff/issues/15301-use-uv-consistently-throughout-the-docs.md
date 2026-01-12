@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T15:21:56Z
 updated_at: 2025-01-07T14:43:27Z
 url: https://github.com/astral-sh/ruff/issues/15301
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Use uv consistently throughout the docs
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-06 15:21_
+_@charliermarsh_
 
 _No description provided._
 

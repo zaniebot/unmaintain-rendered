@@ -15,14 +15,14 @@ head: david/fix-1067
 created_at: 2025-10-08T12:40:23Z
 updated_at: 2025-10-13T07:34:13Z
 url: https://github.com/astral-sh/ruff/pull/20764
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Prefer declared base class attribute over inferred attribute on subclass
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-08 12:40_
+_@sharkdp_
 
 ## Summary
 

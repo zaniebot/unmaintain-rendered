@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-29T22:47:33Z
 updated_at: 2024-09-17T16:09:30Z
 url: https://github.com/astral-sh/uv/pull/6839
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # docs `installation.md`: describe how to pass options to the installer on Linux
 
 ---
 
-_Pull request opened by @ilyagr on 2024-08-29 22:47_
+_@ilyagr_
 
 (This is a suggestion that was easy for me to make a PR for; if other approaches are considered better, feel free to consider this as a FR for those instead)
 

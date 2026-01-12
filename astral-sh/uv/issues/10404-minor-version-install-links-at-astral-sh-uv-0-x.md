@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-08T18:34:15Z
 updated_at: 2025-01-08T18:38:58Z
 url: https://github.com/astral-sh/uv/issues/10404
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Minor version install links at astral.sh/uv/0.x/install.sh
 
 ---
 
-_Issue opened by @befelix on 2025-01-08 18:34_
+_@befelix_
 
 Locally (and potentially also for CI/CD) it would be if there was a way to install a specific minor (and in future major) version of `uv` using the command line, while also getting the latest micro release. Specifically, it would be convenient if astral.sh links to the relevant Github install scripts could also work for minor versions without specifing a micro version. For example, https://astral.sh/uv/0.5/install.sh would install the latest `0.5.x` release.
 

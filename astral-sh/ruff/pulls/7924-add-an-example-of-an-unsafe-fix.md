@@ -13,14 +13,14 @@ head: zanie/example-unsafe
 created_at: 2023-10-11T20:53:43Z
 updated_at: 2023-10-12T07:55:21Z
 url: https://github.com/astral-sh/ruff/pull/7924
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add an example of an unsafe fix
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-11 20:53_
+_@zanieb_
 
 Per review in #7901 adds an example of an unsafe fix.
 

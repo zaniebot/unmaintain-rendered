@@ -13,14 +13,14 @@ head: micha/full-salsa-backtrace
 created_at: 2025-04-30T11:00:40Z
 updated_at: 2025-04-30T11:04:07Z
 url: https://github.com/astral-sh/ruff/pull/17735
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Use 'full' salsa backtrace output that includes durability and revisions
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-30 11:00_
+_@MichaReiser_
 
 _No description provided._
 

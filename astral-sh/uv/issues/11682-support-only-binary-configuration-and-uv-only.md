@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T02:41:40Z
 updated_at: 2025-04-01T20:33:23Z
 url: https://github.com/astral-sh/uv/issues/11682
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Support "only-binary"configuration and UV_ONLY_PROJECT environment variable at project level
 
 ---
 
-_Issue opened by @jdputschadi on 2025-02-21 02:41_
+_@jdputschadi_
 
 ### Summary
 

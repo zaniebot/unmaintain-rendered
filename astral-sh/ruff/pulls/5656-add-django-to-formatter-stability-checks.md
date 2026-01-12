@@ -13,14 +13,14 @@ head: add_django_to_stability_checks
 created_at: 2023-07-10T15:54:12Z
 updated_at: 2023-08-24T12:39:07Z
 url: https://github.com/astral-sh/ruff/pull/5656
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add django to formatter stability checks
 
 ---
 
-_Pull request opened by @konstin on 2023-07-10 15:54_
+_@konstin_
 
 I've successfully used django stability to catch a bug before making a PR, so we should add it to CI
 

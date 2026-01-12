@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T17:08:40Z
 updated_at: 2023-01-27T23:19:46Z
 url: https://github.com/astral-sh/ruff/issues/2267
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Exempt `typing` from TCH by default?
 
 ---
 
-_Issue opened by @scop on 2023-01-27 17:08_
+_@scop_
 
 ruff 0.0.236
 

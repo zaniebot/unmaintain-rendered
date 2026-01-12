@@ -13,14 +13,14 @@ head: package-sync-install-summary
 created_at: 2025-11-10T04:50:07Z
 updated_at: 2025-12-09T01:22:08Z
 url: https://github.com/astral-sh/uv/pull/16660
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Add package change summaries to `uv sync` json output
 
 ---
 
-_Pull request opened by @terror on 2025-11-10 04:50_
+_@terror_
 
 Initial work for https://github.com/astral-sh/uv/issues/16653
 

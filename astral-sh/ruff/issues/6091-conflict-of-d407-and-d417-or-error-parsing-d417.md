@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T10:13:15Z
 updated_at: 2023-07-26T13:17:46Z
 url: https://github.com/astral-sh/ruff/issues/6091
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Conflict of D407 and D417 or error parsing D417
 
 ---
 
-_Issue opened by @Veritogen on 2023-07-26 10:13_
+_@Veritogen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: david/fix-1155
 created_at: 2025-09-10T07:41:17Z
 updated_at: 2025-09-10T13:54:09Z
 url: https://github.com/astral-sh/ruff/pull/20324
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Simplify unions of enum literals and subtypes thereof
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 07:41_
+_@sharkdp_
 
 ## Summary
 

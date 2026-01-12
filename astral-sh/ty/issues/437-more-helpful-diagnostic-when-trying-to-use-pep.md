@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T03:41:09Z
 updated_at: 2025-05-19T17:47:32Z
 url: https://github.com/astral-sh/ty/issues/437
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # More helpful diagnostic when trying to use PEP 604 union types before 3.10
 
 ---
 
-_Issue opened by @metaist on 2025-05-18 03:41_
+_@metaist_
 
 ### Summary
 

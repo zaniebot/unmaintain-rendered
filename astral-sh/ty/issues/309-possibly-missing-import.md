@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T16:33:11Z
 updated_at: 2025-12-18T20:06:36Z
 url: https://github.com/astral-sh/ty/issues/309
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Possibly missing import
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 16:33_
+_@ion-elgreco_
 
 ### Summary
 

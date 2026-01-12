@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-05T18:58:51Z
 updated_at: 2024-11-05T19:25:47Z
 url: https://github.com/astral-sh/ruff/issues/14115
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics on (some) starred expressions in annotations
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-05 18:58_
+_@sharkdp_
 
 Red knot currently panics on some instances of starred expressions (at the outermost layer) of type annotations. An actual example where something like this would occur is in variadic generics (the `*Ts`):
 ```py

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-24T17:05:22Z
 updated_at: 2024-04-24T17:22:37Z
 url: https://github.com/astral-sh/ruff/issues/11133
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Allow empty first line after code block with ruff format
 
 ---
 
-_Issue opened by @alechouse97 on 2024-04-24 17:05_
+_@alechouse97_
 
 I've seen some discussion on here about allowing/not allowing an empty first line after a new code block with `ruff format`. [This was updated to be allowed by black 24+](https://black.readthedocs.io/en/stable/change_log.html#id16). It also seems that black's removing of the empty new line [was only a feature in black 23](https://github.com/psf/black/issues/4193#issuecomment-1915008471); previous versions of black did not enforce this.
 

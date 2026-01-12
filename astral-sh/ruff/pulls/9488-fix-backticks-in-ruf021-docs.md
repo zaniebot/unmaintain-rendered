@@ -13,14 +13,14 @@ head: AlexWaygood-patch-1
 created_at: 2024-01-12T08:46:00Z
 updated_at: 2024-01-12T09:00:45Z
 url: https://github.com/astral-sh/ruff/pull/9488
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Fix backticks in RUF021 docs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-12 08:46_
+_@AlexWaygood_
 
 The docs for this rule aren't generating properly: https://docs.astral.sh/ruff/rules/parenthesize-chained-operators/#why-is-this-bad. I assume this is the reason why!
 

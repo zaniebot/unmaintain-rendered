@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T10:17:05Z
 updated_at: 2025-07-24T12:48:09Z
 url: https://github.com/astral-sh/ruff/issues/19525
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # G004 or other rule also check .format in logging
 
 ---
 
-_Issue opened by @asukaminato0721 on 2025-07-24 10:17_
+_@asukaminato0721_
 
 ### Summary
 

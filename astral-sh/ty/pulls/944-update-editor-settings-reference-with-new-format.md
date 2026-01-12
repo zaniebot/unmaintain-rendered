@@ -13,14 +13,14 @@ head: dhruv/editor-settings
 created_at: 2025-08-06T08:17:49Z
 updated_at: 2025-08-07T05:01:24Z
 url: https://github.com/astral-sh/ty/pull/944
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update editor settings reference with new format
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-06 08:17_
+_@dhruvmanila_
 
 ## Summary
 

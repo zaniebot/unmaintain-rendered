@@ -13,14 +13,14 @@ head: charlie/dry
 created_at: 2024-04-08T14:35:59Z
 updated_at: 2024-04-08T14:45:27Z
 url: https://github.com/astral-sh/uv/pull/2902
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # DRY up HTTP request builder in source database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 14:35_
+_@charliermarsh_
 
 _No description provided._
 

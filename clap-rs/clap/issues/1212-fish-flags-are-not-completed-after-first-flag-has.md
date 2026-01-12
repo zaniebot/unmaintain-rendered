@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-18T12:58:39Z
 updated_at: 2018-08-02T03:30:20Z
 url: https://github.com/clap-rs/clap/issues/1212
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [fish] Flags are not completed after first flag has been completed
 
 ---
 
-_Issue opened by @zx8 on 2018-03-18 12:58_
+_@zx8_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

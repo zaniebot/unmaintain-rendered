@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T07:57:28Z
 updated_at: 2024-02-18T14:58:13Z
 url: https://github.com/astral-sh/uv/issues/1631
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # `uv pip sync` uninstalls uv itself when installed into the virtual env
 
 ---
 
-_Issue opened by @Tonius on 2024-02-18 07:57_
+_@Tonius_
 
 ## Issue description
 

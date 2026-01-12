@@ -13,14 +13,14 @@ head: charlie/filename-package
 created_at: 2024-09-13T15:38:42Z
 updated_at: 2024-09-13T16:01:26Z
 url: https://github.com/astral-sh/uv/pull/7364
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Always treat archive-like requirements as local files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-13 15:38_
+_@charliermarsh_
 
 ## Summary
 

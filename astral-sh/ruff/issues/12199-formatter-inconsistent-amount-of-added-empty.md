@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-05T08:14:20Z
 updated_at: 2024-07-20T10:09:57Z
 url: https://github.com/astral-sh/ruff/issues/12199
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter: inconsistent amount of added empty lines around an inner function
 
 ---
 
-_Issue opened by @flying-sheep on 2024-07-05 08:14_
+_@flying-sheep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

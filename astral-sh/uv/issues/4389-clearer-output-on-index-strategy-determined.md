@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T17:05:42Z
 updated_at: 2024-06-21T09:53:46Z
 url: https://github.com/astral-sh/uv/issues/4389
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Clearer output on index strategy, determined source index and indexes being queried for uv pip install <package>
 
 ---
 
-_Issue opened by @danny-todd-oxb on 2024-06-18 17:05_
+_@danny-todd-oxb_
 
 ### Platform
 ```sh

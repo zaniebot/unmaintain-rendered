@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:34:15Z
 updated_at: 2022-12-15T13:19:43Z
 url: https://github.com/clap-rs/clap/issues/3133
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Duplicate short option (and other misconfigurations) gives runtime error, wouldn't it be cool, if it was compile time error
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:34_
+_@epage_
 
 <a href="https://github.com/typetetris"><img src="https://avatars.githubusercontent.com/u/1983821?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [typetetris](https://github.com/typetetris)**
 _Tuesday Oct 05, 2021 at 13:32 GMT_

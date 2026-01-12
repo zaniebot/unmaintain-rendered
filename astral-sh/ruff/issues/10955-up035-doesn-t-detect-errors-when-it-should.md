@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T14:22:19Z
 updated_at: 2025-11-10T12:25:37Z
 url: https://github.com/astral-sh/ruff/issues/10955
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP035: doesn't detect errors when it should
 
 ---
 
-_Issue opened by @morotti on 2024-04-15 14:22_
+_@morotti_
 
 Hello, 
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-07T22:16:20Z
 updated_at: 2022-10-17T12:32:35Z
 url: https://github.com/clap-rs/clap/issues/3077
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # conflicts_with overriding required isn't two way
 
 ---
 
-_Issue opened by @epage on 2021-12-07 22:16_
+_@epage_
 
 When testing the previous examples, I found I had to revert some changes.  We need to dig into this more. See https://github.com/clap-rs/clap/commit/93948cc7248926a6d2678ad3a065cabada8658a1
 

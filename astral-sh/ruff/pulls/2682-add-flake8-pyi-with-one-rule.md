@@ -13,14 +13,14 @@ head: steve-flake8-pyi-init
 created_at: 2023-02-09T03:53:04Z
 updated_at: 2023-02-10T00:03:12Z
 url: https://github.com/astral-sh/ruff/pull/2682
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add flake8-pyi with one rule
 
 ---
 
-_Pull request opened by @sbdchd on 2023-02-09 03:53_
+_@sbdchd_
 
 Add basic scaffold for [flake8-pyi](https://github.com/PyCQA/flake8-pyi) and the first rule, Y001
 

@@ -14,14 +14,14 @@ head: alex/tuplespec-union
 created_at: 2025-09-14T16:46:21Z
 updated_at: 2025-10-15T18:30:05Z
 url: https://github.com/astral-sh/ruff/pull/20377
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] Heterogeneous unpacking support for unions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-14 16:46_
+_@AlexWaygood_
 
 ## Summary
 

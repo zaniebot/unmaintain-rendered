@@ -13,14 +13,14 @@ head: dependabot/cargo/strum_macros-0.25.3
 created_at: 2023-10-23T08:53:28Z
 updated_at: 2023-10-23T09:10:00Z
 url: https://github.com/astral-sh/ruff/pull/8129
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump strum_macros from 0.25.2 to 0.25.3
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-23 08:53_
+_@dependabot_
 
 [//]: # (dependabot-start)
 ⚠️  **Dependabot is rebasing this PR** ⚠️ 

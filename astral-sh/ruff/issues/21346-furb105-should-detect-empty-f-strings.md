@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-09T16:49:06Z
 updated_at: 2025-11-10T17:41:46Z
 url: https://github.com/astral-sh/ruff/issues/21346
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB105 should detect empty f-strings
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-09 16:49_
+_@dscorbett_
 
 ### Summary
 

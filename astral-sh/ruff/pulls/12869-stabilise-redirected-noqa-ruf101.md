@@ -13,14 +13,14 @@ head: ruff-stabilisations
 created_at: 2024-08-13T17:58:50Z
 updated_at: 2024-08-14T08:55:10Z
 url: https://github.com/astral-sh/ruff/pull/12869
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Stabilise `redirected-noqa` (`RUF101`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-13 17:58_
+_@AlexWaygood_
 
 ## Summary
 

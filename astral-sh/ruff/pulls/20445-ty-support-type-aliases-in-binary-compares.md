@@ -13,14 +13,14 @@ head: cjm/aliasbinop
 created_at: 2025-09-17T01:26:40Z
 updated_at: 2025-09-17T07:33:28Z
 url: https://github.com/astral-sh/ruff/pull/20445
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] support type aliases in binary compares
 
 ---
 
-_Pull request opened by @carljm on 2025-09-17 01:26_
+_@carljm_
 
 ## Summary
 

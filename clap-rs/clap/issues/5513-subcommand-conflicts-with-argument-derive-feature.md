@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-01T01:09:41Z
 updated_at: 2024-06-13T07:34:28Z
 url: https://github.com/clap-rs/clap/issues/5513
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Subcommand Conflicts with Argument (`derive` feature)
 
 ---
 
-_Issue opened by @lkurcak on 2024-06-01 01:09_
+_@lkurcak_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T19:46:56Z
 updated_at: 2025-10-21T09:03:21Z
 url: https://github.com/astral-sh/uv/issues/14090
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Using extra's as markers
 
 ---
 
-_Issue opened by @scarere on 2025-06-16 19:46_
+_@scarere_
 
 ### Question
 

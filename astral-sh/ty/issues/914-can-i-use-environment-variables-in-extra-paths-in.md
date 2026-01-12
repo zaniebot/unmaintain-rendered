@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T01:28:51Z
 updated_at: 2025-11-18T16:10:34Z
 url: https://github.com/astral-sh/ty/issues/914
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Can I use environment variables in `extra-paths` in `pyproject.toml`?
 
 ---
 
-_Issue opened by @Social-Mean on 2025-07-30 01:28_
+_@Social-Mean_
 
 ### Question
 

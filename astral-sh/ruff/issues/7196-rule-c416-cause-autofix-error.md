@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-06T15:29:11Z
 updated_at: 2023-09-06T16:25:03Z
 url: https://github.com/astral-sh/ruff/issues/7196
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule C416 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-06 15:29_
+_@qarmin_
 
 
 Ruff 0.0.287 (latest changes from main branch)

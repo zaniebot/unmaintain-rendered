@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-05-30T01:07:52Z
 updated_at: 2024-05-30T01:16:54Z
 url: https://github.com/astral-sh/uv/pull/3919
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Move preference behavior out of resolve
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 01:07_
+_@charliermarsh_
 
 ## Summary
 

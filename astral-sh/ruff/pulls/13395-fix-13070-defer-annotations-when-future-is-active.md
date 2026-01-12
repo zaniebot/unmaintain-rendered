@@ -13,14 +13,14 @@ head: fix/#13070-defer-annotations-when-future-is-active
 created_at: 2024-09-18T16:05:41Z
 updated_at: 2024-09-19T08:16:03Z
 url: https://github.com/astral-sh/ruff/pull/13395
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix/#13070 defer annotations when future is active
 
 ---
 
-_Pull request opened by @Slyces on 2024-09-18 16:05_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

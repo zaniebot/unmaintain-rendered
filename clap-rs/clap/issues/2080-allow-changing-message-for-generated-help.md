@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-08-17T08:17:35Z
 updated_at: 2021-02-07T18:05:50Z
 url: https://github.com/clap-rs/clap/issues/2080
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Allow changing message for generated help subcommand
 
 ---
 
-_Issue opened by @casey on 2020-08-17 08:17_
+_@casey_
 
 It would be nice if it were possible to change the help message for the Clap-provided `help` subcommand. For reference, the current text is "Prints this message or the help of the given subcommand(s)".
 

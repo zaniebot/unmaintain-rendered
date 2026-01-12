@@ -12,14 +12,14 @@ head: use-pipreqs-build-error-hints
 created_at: 2025-08-13T16:00:39Z
 updated_at: 2025-08-14T17:00:58Z
 url: https://github.com/astral-sh/uv/pull/15252
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Add `extra-build-dependencies` hint for any missing module on build failure
 
 ---
 
-_Pull request opened by @blueraft on 2025-08-13 16:00_
+_@blueraft_
 
 Alternative to https://github.com/astral-sh/uv/pull/15251.
 

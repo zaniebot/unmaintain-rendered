@@ -13,14 +13,14 @@ head: feat/add-flake8-bandit-S201
 created_at: 2023-09-19T00:03:00Z
 updated_at: 2023-09-19T00:53:43Z
 url: https://github.com/astral-sh/ruff/pull/7503
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # feat(rules): implement `flake8-bandit` `S201` (`flask_debug_true`)
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-09-19 00:03_
+_@mkniewallner_
 
 Part of #1646.
 

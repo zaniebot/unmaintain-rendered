@@ -13,14 +13,14 @@ head: fix-19610
 created_at: 2025-08-01T23:28:54Z
 updated_at: 2025-10-24T04:16:58Z
 url: https://github.com/astral-sh/ruff/pull/19702
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [`flake8-simplify`] Fix `SIM905` to avoid syntax errors with r-string unescapable characters
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-01 23:28_
+_@danparizher_
 
 ## Summary
 

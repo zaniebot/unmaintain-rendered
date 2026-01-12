@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T15:23:13Z
 updated_at: 2025-03-27T12:14:50Z
 url: https://github.com/astral-sh/ruff/issues/16629
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ignore-one-line-docstrings` is not respected for `D401`
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-03-11 15:23_
+_@tylerlaprade_
 
 ### Summary
 

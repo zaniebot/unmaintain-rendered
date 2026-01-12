@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T21:07:20Z
 updated_at: 2025-12-16T07:45:16Z
 url: https://github.com/astral-sh/ty/issues/1634
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Refactoring support
 
 ---
 
-_Issue opened by @pyscripter on 2025-11-25 21:07_
+_@pyscripter_
 
 This is a feature request.
 

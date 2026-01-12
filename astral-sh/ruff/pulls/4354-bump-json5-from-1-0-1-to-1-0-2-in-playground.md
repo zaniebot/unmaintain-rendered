@@ -13,14 +13,14 @@ head: dependabot/npm_and_yarn/playground/json5-1.0.2
 created_at: 2023-05-10T16:28:56Z
 updated_at: 2023-05-10T17:00:28Z
 url: https://github.com/astral-sh/ruff/pull/4354
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Bump json5 from 1.0.1 to 1.0.2 in /playground
 
 ---
 
-_Pull request opened by @dependabot on 2023-05-10 16:28_
+_@dependabot_
 
 Bumps [json5](https://github.com/json5/json5) from 1.0.1 to 1.0.2.
 <details>

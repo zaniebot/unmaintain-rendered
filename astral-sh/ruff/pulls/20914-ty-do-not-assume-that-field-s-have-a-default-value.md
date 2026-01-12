@@ -14,14 +14,14 @@ head: david/fix-1366
 created_at: 2025-10-16T09:39:10Z
 updated_at: 2025-10-16T10:50:43Z
 url: https://github.com/astral-sh/ruff/pull/20914
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Do not assume that `field`s have a default value
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-16 09:39_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T21:39:05Z
 updated_at: 2025-07-17T22:15:50Z
 url: https://github.com/astral-sh/uv/issues/14694
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Support for --no-sources-package when resolving
 
 ---
 
-_Issue opened by @Panacea729 on 2025-07-17 21:39_
+_@Panacea729_
 
 ### Question
 

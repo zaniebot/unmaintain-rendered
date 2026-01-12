@@ -13,14 +13,14 @@ head: konsti/setup-wsl-reference
 created_at: 2025-10-08T06:45:35Z
 updated_at: 2025-10-08T06:56:04Z
 url: https://github.com/astral-sh/uv/pull/16177
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Use correct tag comment for Vampire/setup-wsl v6.0.0
 
 ---
 
-_Pull request opened by @konstin on 2025-10-08 06:45_
+_@konstin_
 
 Renovate complained that it was the wrong tag.
 

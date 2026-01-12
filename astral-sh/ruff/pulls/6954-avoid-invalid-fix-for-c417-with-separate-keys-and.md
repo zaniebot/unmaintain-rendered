@@ -13,14 +13,14 @@ head: charlie/C417
 created_at: 2023-08-28T20:14:36Z
 updated_at: 2023-08-28T20:49:42Z
 url: https://github.com/astral-sh/ruff/pull/6954
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Avoid invalid fix for C417 with separate keys and values
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 20:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6951.
 

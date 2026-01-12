@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-10-10T14:46:35Z
 updated_at: 2025-10-15T14:07:11Z
 url: https://github.com/astral-sh/uv/pull/16230
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Add technique for offline generation of autocompletion files to docs
 
 ---
 
-_Pull request opened by @morags on 2025-10-10 14:46_
+_@morags_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-10T00:43:46Z
 updated_at: 2024-12-10T19:59:15Z
 url: https://github.com/astral-sh/uv/issues/9758
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # uv add deletes 'root' comments from within the dependency-group section of pyproject.toml
 
 ---
 
-_Issue opened by @dean-tate on 2024-12-10 00:43_
+_@dean-tate_
 
 uv version: 0.5.7
 

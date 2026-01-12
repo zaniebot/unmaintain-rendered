@@ -14,14 +14,14 @@ head: david/sqlalchemy-test-coverage
 created_at: 2025-12-08T12:38:58Z
 updated_at: 2025-12-08T13:36:15Z
 url: https://github.com/astral-sh/ruff/pull/21843
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Increase SQLAlchemy test coverage
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-08 12:38_
+_@sharkdp_
 
 ## Summary
 

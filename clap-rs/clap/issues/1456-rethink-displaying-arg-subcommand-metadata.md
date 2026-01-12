@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-04-22T19:29:25Z
 updated_at: 2021-12-09T19:56:40Z
 url: https://github.com/clap-rs/clap/issues/1456
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Rethink displaying arg & subcommand metadata normally and colorfully both 
 
 ---
 
-_Issue opened by @HarrisonTotty on 2019-04-22 19:29_
+_@HarrisonTotty_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

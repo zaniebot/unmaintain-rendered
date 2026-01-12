@@ -13,14 +13,14 @@ head: pylint-docs
 created_at: 2023-05-19T14:24:36Z
 updated_at: 2023-07-10T09:55:34Z
 url: https://github.com/astral-sh/ruff/pull/4530
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add Pylint docs
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-19 14:24_
+_@tjkuson_
 
 Add documentation to the Pylint Refactor (PLR) rules and PLE0241. Complete the Pylint ruleset.
 

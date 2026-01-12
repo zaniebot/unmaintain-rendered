@@ -12,14 +12,14 @@ head: applicability
 created_at: 2023-06-15T19:40:29Z
 updated_at: 2023-06-15T21:08:42Z
 url: https://github.com/astral-sh/ruff/pull/5127
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to flake8_comma fixes
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 19:40_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

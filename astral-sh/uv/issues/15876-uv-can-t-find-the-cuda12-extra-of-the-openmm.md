@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T16:12:53Z
 updated_at: 2025-09-16T10:00:49Z
 url: https://github.com/astral-sh/uv/issues/15876
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # UV can't find the cuda12 extra of the openmm package
 
 ---
 
-_Issue opened by @ahmedselim2017 on 2025-09-15 16:12_
+_@ahmedselim2017_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T00:02:10Z
 updated_at: 2023-12-06T00:21:32Z
 url: https://github.com/astral-sh/ruff/issues/9001
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff can not fix indent error and more whitespaces on function parameters (but black works well)
 
 ---
 
-_Issue opened by @lgf4591 on 2023-12-05 00:02_
+_@lgf4591_
 
 
 # Code

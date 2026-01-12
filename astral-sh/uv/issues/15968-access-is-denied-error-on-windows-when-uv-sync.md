@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-21T09:15:00Z
 updated_at: 2025-11-21T14:22:10Z
 url: https://github.com/astral-sh/uv/issues/15968
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `Access is denied` error on windows when `uv sync`
 
 ---
 
-_Issue opened by @petesmc on 2025-09-21 09:15_
+_@petesmc_
 
 ### Summary
 

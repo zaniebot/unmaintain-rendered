@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-11T21:35:12Z
 updated_at: 2025-05-14T13:33:43Z
 url: https://github.com/astral-sh/ty/issues/322
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # NamedTuple constructor not properly detected
 
 ---
 
-_Issue opened by @eruvanos on 2025-05-11 21:35_
+_@eruvanos_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T12:10:47Z
 updated_at: 2025-04-12T20:57:07Z
 url: https://github.com/astral-sh/uv/issues/12834
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv-pep440 `VersionSpecifiers::contains` incorrect with prereleases
 
 ---
 
-_Issue opened by @baszalmstra on 2025-04-11 12:10_
+_@baszalmstra_
 
 ### Summary
 

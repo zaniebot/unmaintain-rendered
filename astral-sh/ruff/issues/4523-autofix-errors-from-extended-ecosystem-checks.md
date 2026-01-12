@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-19T09:14:20Z
 updated_at: 2023-09-04T18:09:44Z
 url: https://github.com/astral-sh/ruff/issues/4523
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Autofix errors from extended ecosystem checks
 
 ---
 
-_Issue opened by @konstin on 2023-05-19 09:14_
+_@konstin_
 
 I wrote a script that tries to `--select ALL --fix` against a large number of repositories (#4326). Currently, it's ~3k repositories, even though a good fraction of those is forks.
 

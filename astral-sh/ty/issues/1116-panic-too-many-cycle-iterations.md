@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-02T12:40:46Z
 updated_at: 2025-10-23T14:49:16Z
 url: https://github.com/astral-sh/ty/issues/1116
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] too many cycle iterations
 
 ---
 
-_Issue opened by @C0rn3j on 2025-09-02 12:40_
+_@C0rn3j_
 
 [AUR/ty-git](https://aur.archlinux.org/packages/ty-git) (latest master as of time of posting) on Arch Linux against [Tauon's codebase](https://github.com/Taiko2k/Tauon):
 

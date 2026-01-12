@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T20:03:14Z
 updated_at: 2024-02-27T17:03:03Z
 url: https://github.com/astral-sh/uv/issues/1828
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Specify editable files in pyproject.toml
 
 ---
 
-_Issue opened by @Andrew-Chen-Wang on 2024-02-21 20:03_
+_@Andrew-Chen-Wang_
 
 I have a pip compiled requirements file specifying a few local packages:
 

@@ -14,14 +14,14 @@ head: alex/uniontypeinstance
 created_at: 2025-12-27T11:36:18Z
 updated_at: 2025-12-27T11:59:53Z
 url: https://github.com/astral-sh/ruff/pull/22222
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Use a length-2 array for `UnionTypeInstance::_value_expr_types`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-27 11:36_
+_@AlexWaygood_
 
 ## Summary
 

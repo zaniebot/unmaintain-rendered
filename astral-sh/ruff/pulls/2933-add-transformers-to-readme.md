@@ -12,14 +12,14 @@ head: charlie/hug
 created_at: 2023-02-15T17:06:46Z
 updated_at: 2023-02-15T17:09:53Z
 url: https://github.com/astral-sh/ruff/pull/2933
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add Transformers to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 17:06_
+_@charliermarsh_
 
 _No description provided._
 

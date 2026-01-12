@@ -13,14 +13,14 @@ head: docs/DTZ005-DTZ006
 created_at: 2023-08-13T00:36:38Z
 updated_at: 2023-08-13T01:29:37Z
 url: https://github.com/astral-sh/ruff/pull/6529
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add docs for `DTZ005` and `DTZ006`
 
 ---
 
-_Pull request opened by @klistwan on 2023-08-13 00:36_
+_@klistwan_
 
 Changes:
 - Adds docs for `DTZ005`

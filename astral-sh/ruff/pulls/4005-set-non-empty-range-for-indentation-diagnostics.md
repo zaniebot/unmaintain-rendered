@@ -12,14 +12,14 @@ head: Non-empty_range_for_indention_rules
 created_at: 2023-04-18T06:19:01Z
 updated_at: 2023-04-18T14:26:15Z
 url: https://github.com/astral-sh/ruff/pull/4005
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Set non-empty range for indentation diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-18 06:19_
+_@MichaReiser_
 
 I noticed in the byte offsets refactor that we set an empty range for all logical-lines indentation diagnostics. 
 The downside of an empty range is that the `TextEmitter` can't draw a carret pointing to the violating code, 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T17:01:29Z
 updated_at: 2025-04-23T15:49:21Z
 url: https://github.com/astral-sh/ruff/issues/17014
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # E712: auto-fix disagrees with suggested fix in output for equality comparisons to bools
 
 ---
 
-_Issue opened by @The-Compiler on 2025-03-27 17:01_
+_@The-Compiler_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T11:32:50Z
 updated_at: 2025-11-23T15:51:59Z
 url: https://github.com/astral-sh/ty/issues/1611
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: `assertion failed: start.raw <= end.raw` with unclosed forward reference
 
 ---
 
-_Issue opened by @correctmost on 2025-11-23 11:32_
+_@correctmost_
 
 ### Summary
 

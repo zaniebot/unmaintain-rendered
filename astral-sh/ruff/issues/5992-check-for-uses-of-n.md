@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T23:25:12Z
 updated_at: 2023-07-23T01:40:51Z
 url: https://github.com/astral-sh/ruff/issues/5992
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Check for uses of `--n`
 
 ---
 
-_Issue opened by @tjkuson on 2023-07-22 23:25_
+_@tjkuson_
 
 `unary-prefix-increment` (`B002`) warns users about
 

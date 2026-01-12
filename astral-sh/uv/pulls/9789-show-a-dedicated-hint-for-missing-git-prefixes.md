@@ -13,14 +13,14 @@ head: charlie/hint-github
 created_at: 2024-12-10T21:17:51Z
 updated_at: 2024-12-10T21:29:38Z
 url: https://github.com/astral-sh/uv/pull/9789
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Show a dedicated hint for missing `git+` prefixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-10 21:17_
+_@charliermarsh_
 
 ## Summary
 

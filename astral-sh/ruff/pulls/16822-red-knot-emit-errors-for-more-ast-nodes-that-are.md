@@ -13,14 +13,14 @@ head: emit-errors-for-invalid-type-expressions
 created_at: 2025-03-17T21:33:18Z
 updated_at: 2025-03-18T17:21:49Z
 url: https://github.com/astral-sh/ruff/pull/16822
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-17 21:33_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

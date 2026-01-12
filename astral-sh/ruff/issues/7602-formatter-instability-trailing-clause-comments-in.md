@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T16:10:49Z
 updated_at: 2023-09-22T22:12:33Z
 url: https://github.com/astral-sh/ruff/issues/7602
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: trailing clause comments in `if` statement
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-22 16:10_
+_@charliermarsh_
 
 Given:
 

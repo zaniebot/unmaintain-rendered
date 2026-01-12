@@ -13,14 +13,14 @@ head: charlie/pyg
 created_at: 2025-09-17T14:05:35Z
 updated_at: 2025-09-17T14:18:31Z
 url: https://github.com/astral-sh/uv/pull/15911
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Add PyG packages to torch backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-17 14:05_
+_@charliermarsh_
 
 ## Summary
 

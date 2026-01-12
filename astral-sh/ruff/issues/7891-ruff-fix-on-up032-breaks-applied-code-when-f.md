@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T12:34:35Z
 updated_at: 2023-10-10T16:31:11Z
 url: https://github.com/astral-sh/ruff/issues/7891
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # ruff fix on UP032 breaks applied code when f-string is too long
 
 ---
 
-_Issue opened by @Grosskopf on 2023-10-10 12:34_
+_@Grosskopf_
 
 Hi, I'm not sure where I should post this error but I have a weird chain reaction of errors that result in ruff breaking my code.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T20:40:18Z
 updated_at: 2025-11-25T23:11:49Z
 url: https://github.com/astral-sh/uv/issues/5633
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Document how to resolve `uv.lock` merge conflicts
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 20:40_
+_@zanieb_
 
 I don't know what best practice is here.
 

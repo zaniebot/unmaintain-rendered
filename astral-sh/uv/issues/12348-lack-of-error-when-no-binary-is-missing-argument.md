@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T20:39:32Z
 updated_at: 2025-03-20T23:25:29Z
 url: https://github.com/astral-sh/uv/issues/12348
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Lack of error when `--no-binary` is missing argument in `requirements.txt`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-20 20:39_
+_@charliermarsh_
 
 E.g., given this `requirements.txt`:
 

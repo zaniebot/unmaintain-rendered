@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-11T15:47:55Z
 updated_at: 2025-11-11T15:53:37Z
 url: https://github.com/astral-sh/ty/issues/1523
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # All completions should be suppressed after `import <NAME> as t<CURSOR>`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-11 15:47_
+_@AlexWaygood_
 
 Cc. @BurntSushi -- this is another one that is quite annoying 😄
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T03:50:10Z
 updated_at: 2024-11-18T04:10:42Z
 url: https://github.com/astral-sh/ruff/issues/14423
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Wrong fix for PLC2801
 
 ---
 
-_Issue opened by @bebound on 2024-11-18 03:50_
+_@bebound_
 
 `ruff check kk.py --select PLC2801 --fix --preview --unsafe-fixes --isolated` change the code from
 ``` python

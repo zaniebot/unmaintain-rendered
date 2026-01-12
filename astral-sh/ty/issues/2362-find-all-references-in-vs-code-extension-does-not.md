@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T10:46:07Z
 updated_at: 2026-01-08T13:10:42Z
 url: https://github.com/astral-sh/ty/issues/2362
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Find all references in VS Code extension does not find call sites
 
 ---
 
-_Issue opened by @AdemFr on 2026-01-06 10:46_
+_@AdemFr_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-23T17:43:32Z
 updated_at: 2025-05-23T17:43:32Z
 url: https://github.com/astral-sh/uv/issues/13621
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Doc improvement: add section to Docker integration that demonstrates system level install
 
 ---
 
-_Issue opened by @rsyring on 2025-05-23 17:43_
+_@rsyring_
 
 Figuring this out took me way longer than it should have even though the hint was right there in the docs.  I just didn't grok it and repeatedly struck out with both ChatGPT and Claude 4.0.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T21:04:18Z
 updated_at: 2025-12-24T13:04:42Z
 url: https://github.com/astral-sh/ty/issues/2193
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # support externally patching methods on instances
 
 ---
 
-_Issue opened by @carljm on 2025-12-23 21:04_
+_@carljm_
 
 Initially reported at https://github.com/astral-sh/ty/issues/2134
 

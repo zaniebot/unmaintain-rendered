@@ -13,14 +13,14 @@ head: narrowing-in-tuples
 created_at: 2025-03-29T23:54:17Z
 updated_at: 2025-04-01T23:50:20Z
 url: https://github.com/astral-sh/ruff/pull/17059
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Narrowing on `in tuple[...]` and `in str`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-29 23:54_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

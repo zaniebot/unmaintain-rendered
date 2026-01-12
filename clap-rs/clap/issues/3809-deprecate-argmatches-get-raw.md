@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-09T14:04:49Z
 updated_at: 2022-06-09T14:04:49Z
 url: https://github.com/clap-rs/clap/issues/3809
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Deprecate `ArgMatches::get_raw`
 
 ---
 
-_Issue opened by @epage on 2022-06-09 14:04_
+_@epage_
 
 Blocked on #3807 and #3808
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T06:21:46Z
 updated_at: 2025-12-23T05:17:35Z
 url: https://github.com/astral-sh/ty/issues/2052
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False-positive `inconsistent-mro` when subclassing `Generic` and a "protocol-like ABC"
 
 ---
 
-_Issue opened by @gschaffner on 2025-12-18 06:21_
+_@gschaffner_
 
 ### Summary
 

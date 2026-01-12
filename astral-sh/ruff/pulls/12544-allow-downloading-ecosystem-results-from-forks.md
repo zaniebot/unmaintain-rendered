@@ -13,14 +13,14 @@ head: ecosystem-allow-forks
 created_at: 2024-07-27T16:27:46Z
 updated_at: 2024-07-27T17:57:21Z
 url: https://github.com/astral-sh/ruff/pull/12544
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Allow downloading ecosystem results from forks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-27 16:27_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T13:04:28Z
 updated_at: 2025-05-20T13:08:49Z
 url: https://github.com/astral-sh/uv/issues/13554
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Should `uv venv` install uv inside the virtual environment it creates (when uv is not installed globally)?
 
 ---
 
-_Issue opened by @chirizxc on 2025-05-20 13:04_
+_@chirizxc_
 
 ### Question
 

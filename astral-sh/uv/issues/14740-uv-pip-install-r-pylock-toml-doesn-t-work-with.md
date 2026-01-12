@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T19:58:26Z
 updated_at: 2025-07-21T12:48:48Z
 url: https://github.com/astral-sh/uv/issues/14740
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # `uv pip install -r pylock.toml` doesn't work with dependency_groups groups
 
 ---
 
-_Issue opened by @RaczeQ on 2025-07-18 19:58_
+_@RaczeQ_
 
 ### Summary
 

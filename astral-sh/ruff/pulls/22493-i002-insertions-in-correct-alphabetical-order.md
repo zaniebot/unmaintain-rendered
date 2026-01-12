@@ -11,14 +11,14 @@ head: I002
 created_at: 2026-01-10T13:59:53Z
 updated_at: 2026-01-10T14:17:31Z
 url: https://github.com/astral-sh/ruff/pull/22493
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # I002 insertions in correct alphabetical order
 
 ---
 
-_Pull request opened by @11happy on 2026-01-10 13:59_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

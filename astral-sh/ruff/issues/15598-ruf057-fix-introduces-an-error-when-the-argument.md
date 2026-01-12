@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-20T02:33:48Z
 updated_at: 2025-01-24T10:34:58Z
 url: https://github.com/astral-sh/ruff/issues/15598
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF057 fix introduces an error when the argument contains a newline
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-20 02:33_
+_@dscorbett_
 
 The fix for [`unnecessary-round` (RUF057)](https://docs.astral.sh/ruff/rules/unnecessary-round/)  in Ruff 0.9.2 can introduce a syntax error or change behavior when the argument to `round` contains a newline.
 

@@ -12,14 +12,14 @@ head: applicability_isort
 created_at: 2023-06-17T15:53:34Z
 updated_at: 2023-06-17T19:29:11Z
 url: https://github.com/astral-sh/ruff/pull/5161
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to isort
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-17 15:53_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

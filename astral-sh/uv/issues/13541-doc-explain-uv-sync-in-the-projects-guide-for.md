@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T18:52:39Z
 updated_at: 2025-05-21T16:16:12Z
 url: https://github.com/astral-sh/uv/issues/13541
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # [DOC] Explain `uv sync` in the projects guide for working on existing projects
 
 ---
 
-_Issue opened by @turbotimon on 2025-05-19 18:52_
+_@turbotimon_
 
 ### Summary
 

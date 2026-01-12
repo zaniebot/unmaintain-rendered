@@ -13,14 +13,14 @@ head: charlie/caching-docs
 created_at: 2024-08-10T03:53:55Z
 updated_at: 2024-08-16T21:01:13Z
 url: https://github.com/astral-sh/uv/pull/5993
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Document dynamic metadata behavior for cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-10 03:53_
+_@charliermarsh_
 
 ## Summary
 

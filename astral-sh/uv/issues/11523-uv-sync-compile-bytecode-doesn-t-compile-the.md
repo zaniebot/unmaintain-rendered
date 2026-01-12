@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T20:38:05Z
 updated_at: 2025-02-14T20:51:50Z
 url: https://github.com/astral-sh/uv/issues/11523
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv sync --compile-bytecode doesn't compile the bytecode
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-14 20:38_
+_@gaborbernat_
 
 ### Summary
 

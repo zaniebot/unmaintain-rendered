@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-09-06T08:09:09Z
 updated_at: 2024-09-18T16:06:50Z
 url: https://github.com/astral-sh/ruff/issues/13263
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # FAST003 does not recognize parameter alias
 
 ---
 
-_Issue opened by @spreeni on 2024-09-06 08:09_
+_@spreeni_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

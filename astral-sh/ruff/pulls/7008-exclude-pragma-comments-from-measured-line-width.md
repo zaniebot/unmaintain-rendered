@@ -13,14 +13,14 @@ head: exclude-pragmas
 created_at: 2023-08-30T12:02:06Z
 updated_at: 2023-09-01T16:32:32Z
 url: https://github.com/astral-sh/ruff/pull/7008
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Exclude pragma comments from measured line width
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-30 12:02_
+_@cnpryer_
 
 Closes #6772
 

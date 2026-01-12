@@ -12,14 +12,14 @@ head: fix(19552)/watch-does-not-show-output-format-warning-message
 created_at: 2025-08-04T08:56:17Z
 updated_at: 2025-11-22T14:23:45Z
 url: https://github.com/astral-sh/ruff/pull/19734
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # watch does not show output format warning message
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-04 08:56_
+_@mikeleppane_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

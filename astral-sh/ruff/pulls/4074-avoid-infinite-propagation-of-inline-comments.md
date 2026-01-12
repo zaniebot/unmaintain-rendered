@@ -14,14 +14,14 @@ head: charlie/force-single
 created_at: 2023-04-24T04:20:47Z
 updated_at: 2023-04-24T04:59:48Z
 url: https://github.com/astral-sh/ruff/pull/4074
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Avoid infinite-propagation of inline comments when force-splitting imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-24 04:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/version
 created_at: 2025-05-05T18:01:36Z
 updated_at: 2025-05-06T12:14:33Z
 url: https://github.com/astral-sh/ruff/pull/17866
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Update `ty version` to use parent Git repository information
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 18:01_
+_@zanieb_
 
 Currently, `ty version` pulls its information from the Ruff repository — but we want this to pull from the repository in the directory _above_ when Ruff is a submodule.
 

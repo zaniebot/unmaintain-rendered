@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-10-05T10:38:25Z
 updated_at: 2020-10-14T06:06:23Z
 url: https://github.com/clap-rs/clap/issues/2151
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Provide access to the original error for `ValueValidation` errors
 
 ---
 
-_Issue opened by @Nemo157 on 2020-10-05 10:38_
+_@Nemo157_
 
 ### Describe your use case
 

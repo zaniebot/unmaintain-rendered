@@ -12,14 +12,14 @@ head: cfg
 created_at: 2024-06-01T00:06:41Z
 updated_at: 2024-06-01T01:57:35Z
 url: https://github.com/astral-sh/ruff/pull/11667
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] infer_symbol_public_type infers union of all definitions
 
 ---
 
-_Pull request opened by @carljm on 2024-06-01 00:06_
+_@carljm_
 
 ## Summary
 

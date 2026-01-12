@@ -12,14 +12,14 @@ head: python-list-symlink
 created_at: 2024-07-23T16:13:15Z
 updated_at: 2024-07-23T16:51:43Z
 url: https://github.com/astral-sh/uv/pull/5343
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # Show symbolic links in `uv python list`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-23 16:13_
+_@eth3lbert_
 
 ## Summary
 

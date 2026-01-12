@@ -12,14 +12,14 @@ head: duplicate-underline
 created_at: 2023-02-18T22:16:01Z
 updated_at: 2023-02-19T00:48:19Z
 url: https://github.com/astral-sh/ruff/pull/3021
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove duplicate underline in B007 autofix message
 
 ---
 
-_Pull request opened by @SigureMo on 2023-02-18 22:16_
+_@SigureMo_
 
 fixes #3020
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T10:04:49Z
 updated_at: 2023-08-01T06:26:32Z
 url: https://github.com/astral-sh/ruff/issues/5913
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: F-Strings (`FormattedValue` and `JoinedStr`)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-20 10:04_
+_@MichaReiser_
 
 Format fstring expressions. 
 

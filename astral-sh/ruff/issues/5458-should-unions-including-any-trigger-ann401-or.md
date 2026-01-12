@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-01T20:10:01Z
 updated_at: 2023-07-13T12:49:28Z
 url: https://github.com/astral-sh/ruff/issues/5458
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Should unions including `Any` trigger `ANN401` (or some other rule)?
 
 ---
 
-_Issue opened by @bersbersbers on 2023-07-01 20:10_
+_@bersbersbers_
 
 ```python
 from typing import Any

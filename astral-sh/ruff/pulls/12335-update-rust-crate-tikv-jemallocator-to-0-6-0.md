@@ -13,14 +13,14 @@ head: renovate/tikv-jemallocator-0.x
 created_at: 2024-07-15T00:56:08Z
 updated_at: 2024-07-15T06:01:45Z
 url: https://github.com/astral-sh/ruff/pull/12335
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update Rust crate tikv-jemallocator to 0.6.0
 
 ---
 
-_Pull request opened by @renovate on 2024-07-15 00:56_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -11,14 +11,14 @@ head: fix-E721
 created_at: 2023-10-15T20:26:22Z
 updated_at: 2023-10-29T16:24:58Z
 url: https://github.com/astral-sh/ruff/pull/7965
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add autofix for `E721`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-15 20:26_
+_@diceroll123_
 
 ## Summary
 

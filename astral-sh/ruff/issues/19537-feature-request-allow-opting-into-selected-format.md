@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-24T19:01:49Z
 updated_at: 2025-07-25T09:52:24Z
 url: https://github.com/astral-sh/ruff/issues/19537
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Feature request: Allow opting into selected format preview styles
 
 ---
 
-_Issue opened by @codethief on 2025-07-24 19:01_
+_@codethief_
 
 Right now, `tool.ruff.format.preview = true` [opts into all preview styles and preview styles can change even in patch releases](https://github.com/astral-sh/ruff/discussions/13013#discussioncomment-10403574).
 

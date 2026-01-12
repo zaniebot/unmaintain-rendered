@@ -13,14 +13,14 @@ head: zb/fix-debug-flake
 created_at: 2025-09-17T02:41:40Z
 updated_at: 2025-09-17T02:54:13Z
 url: https://github.com/astral-sh/uv/pull/15902
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Fix verbose logging configuration for flake
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-17 02:41_
+_@zanieb_
 
 Alas in https://github.com/astral-sh/uv/actions/runs/17784455913/job/50549326728?pr=15900 we caught the flake with the assert but the `-vv` flags were not in the right position!
 

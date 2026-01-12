@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-28T22:43:13Z
 updated_at: 2022-07-15T16:19:18Z
 url: https://github.com/clap-rs/clap/issues/3881
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # modify existing subcommands in `Command` struct
 
 ---
 
-_Issue opened by @emersonford on 2022-06-28 22:43_
+_@emersonford_
 
 ### Please complete the following tasks
 

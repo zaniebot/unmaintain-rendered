@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-06T13:43:12Z
 updated_at: 2023-06-07T04:18:58Z
 url: https://github.com/astral-sh/ruff/issues/4902
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Omitted target_version when using ruff.toml
 
 ---
 
-_Issue opened by @HealthyPear on 2023-06-06 13:43_
+_@HealthyPear_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

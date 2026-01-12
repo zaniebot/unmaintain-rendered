@@ -14,14 +14,14 @@ head: run
 created_at: 2024-07-29T17:41:33Z
 updated_at: 2024-07-29T20:01:18Z
 url: https://github.com/astral-sh/uv/pull/5566
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Implement `uv run --directory`
 
 ---
 
-_Pull request opened by @bluss on 2024-07-29 17:41_
+_@bluss_
 
 ## Summary
 

@@ -9,16 +9,16 @@ labels:
   - wish
 assignees: []
 created_at: 2025-04-30T08:33:11Z
-updated_at: 2026-01-12T12:49:23Z
+updated_at: 2026-01-12T15:56:45Z
 url: https://github.com/astral-sh/uv/issues/13217
-synced_at: 2026-01-12T13:00:04Z
+synced_at: 2026-01-12T16:13:58Z
 ```
 
 # Retain history of package versions through updates
 
 ---
 
-_Issue opened by @juhaszp95 on 2025-04-30 08:33_
+_@juhaszp95_
 
 ### Summary
 
@@ -131,5 +131,15 @@ In this case please close both issues as not planned.
 _Comment by @juhaszp95 on 2026-01-12 12:49_
 
 Thanks for this! Just a comment to say that although tracking this via git would be an obvious choice, I could also imagine a local, ever-increasing file (something like `uv.hist`, which has a history of states of this repo), which could serve as the base for both tracking state, as well as restoring state. It could be then left to the user to commit this to git if they wanted. I could even imagine this new file to be optional, i.e. when creating a new venv, one could specify the optional `--track-state` to track state.
+
+---
+
+_Comment by @notatallshaw-gts on 2026-01-12 15:56_
+
+> That seems better suited in a service such as dependabot or renovate, which do this though a PR workflow that also runs CI, displays changelogs, etc. uv currently doesn't make any git commits, and doing so is a big increase in scope.
+
+This is unworkable for a non-developer running code locally, often experimenting or prototyping models, that's the main selling point of this feature, otherwise this would already be solved with lock files. Think data scientist, financial analysist, etc.
+
+FYI, I'm not particularly advocating for this feature, I'm not sure it's as required with a clean distinction between requirements and lock files, but I have known many non-developer conda users use this.
 
 ---

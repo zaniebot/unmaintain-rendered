@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T09:24:33Z
 updated_at: 2023-01-11T02:23:49Z
 url: https://github.com/astral-sh/ruff/issues/1686
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # B023 False positives
 
 ---
 
-_Issue opened by @TomFryers on 2023-01-06 09:24_
+_@TomFryers_
 
 False positive B023 errors are quite common with `filter`, `reduce`, `key=`, `return` and `map`. For instance, this code
 ```python

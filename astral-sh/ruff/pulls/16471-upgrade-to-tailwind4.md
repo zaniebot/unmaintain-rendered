@@ -14,14 +14,14 @@ head: micha/tailwind4
 created_at: 2025-03-03T09:01:03Z
 updated_at: 2025-03-03T09:09:11Z
 url: https://github.com/astral-sh/ruff/pull/16471
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Upgrade to Tailwind4
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-03 09:01_
+_@MichaReiser_
 
 ## Test Plan
 

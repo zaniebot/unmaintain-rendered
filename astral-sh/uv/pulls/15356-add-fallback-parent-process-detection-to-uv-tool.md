@@ -13,14 +13,14 @@ head: ed/shell
 created_at: 2025-08-18T16:33:42Z
 updated_at: 2025-08-18T18:48:34Z
 url: https://github.com/astral-sh/uv/pull/15356
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Add fallback parent process detection to `uv tool update-shell`
 
 ---
 
-_Pull request opened by @edrogers on 2025-08-18 16:33_
+_@edrogers_
 
 ## Summary
 

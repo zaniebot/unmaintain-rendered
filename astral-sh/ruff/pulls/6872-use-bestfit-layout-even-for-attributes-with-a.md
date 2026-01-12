@@ -13,14 +13,14 @@ head: best-fit-attributes
 created_at: 2023-08-25T12:55:49Z
 updated_at: 2023-08-25T15:47:04Z
 url: https://github.com/astral-sh/ruff/pull/6872
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use `BestFit` layout even for attributes with a short name
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-25 12:55_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

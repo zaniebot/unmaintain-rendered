@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-02T12:08:20Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/839
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Help message is shown if not requested
 
 ---
 
-_Issue opened by @weiznich on 2017-02-02 12:08_
+_@weiznich_
 
 Building diesel_cli agains clap 2.20.1 will result in a build that shows only the help messages for each subcommand is shown. See the corresponding [diesel issue](https://github.com/diesel-rs/diesel/issues/602) for more informations.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T07:20:48Z
 updated_at: 2023-11-03T04:29:38Z
 url: https://github.com/astral-sh/ruff/issues/8442
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # playground - popover is cut off when at the top of the file
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-02 07:20_
+_@DetachHead_
 
 ![image](https://github.com/astral-sh/ruff/assets/57028336/375ae386-b6f4-45bd-92b6-410da597408c)
 https://play.ruff.rs/e10d4570-4368-4d83-af88-57b221fe899f

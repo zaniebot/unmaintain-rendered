@@ -12,14 +12,14 @@ head: brent/release-0.9.8
 created_at: 2025-02-27T13:40:04Z
 updated_at: 2025-02-27T13:56:13Z
 url: https://github.com/astral-sh/ruff/pull/16414
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Bump version to 0.9.8
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-27 13:40_
+_@ntBre_
 
 _No description provided._
 

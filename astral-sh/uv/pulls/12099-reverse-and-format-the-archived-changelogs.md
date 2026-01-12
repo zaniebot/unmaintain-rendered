@@ -13,14 +13,14 @@ head: zb/changelogs
 created_at: 2025-03-10T16:57:22Z
 updated_at: 2025-03-12T16:58:53Z
 url: https://github.com/astral-sh/uv/pull/12099
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Reverse and format the archived changelogs
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-10 16:57_
+_@zanieb_
 
 I think it's important for the breaking changes to be at the _top_ of the file instead of the bottom.
 

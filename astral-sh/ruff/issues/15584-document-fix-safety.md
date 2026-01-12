@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T17:38:21Z
 updated_at: 2025-09-11T13:53:23Z
 url: https://github.com/astral-sh/ruff/issues/15584
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Document fix safety
 
 ---
 
-_Issue opened by @dylwil3 on 2025-01-19 17:38_
+_@dylwil3_
 
 The rules found in the locations listed below need to have a `## Fix safety` section added to their doc comment to explain whether and why their fix is sometimes or always unsafe.
 

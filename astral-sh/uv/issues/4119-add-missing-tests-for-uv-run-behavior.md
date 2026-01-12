@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T23:50:13Z
 updated_at: 2024-08-12T19:21:24Z
 url: https://github.com/astral-sh/uv/issues/4119
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add missing tests for `uv run` behavior
 
 ---
 
-_Issue opened by @zanieb on 2024-06-06 23:50_
+_@zanieb_
 
 Similar to #3943, we added `uv run` but don't have test coverage for it yet.
 

@@ -12,14 +12,14 @@ head: charlie/workspace
 created_at: 2023-10-06T19:45:14Z
 updated_at: 2023-10-06T19:49:43Z
 url: https://github.com/astral-sh/uv/pull/25
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Move to workspace dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 19:45_
+_@charliermarsh_
 
 _No description provided._
 

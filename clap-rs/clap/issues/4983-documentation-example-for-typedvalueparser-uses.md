@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T14:20:31Z
 updated_at: 2023-06-22T15:17:08Z
 url: https://github.com/clap-rs/clap/issues/4983
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Documentation example for `TypedValueParser` uses non-public method call
 
 ---
 
-_Issue opened by @stmcginnis on 2023-06-22 14:20_
+_@stmcginnis_
 
 ### Please complete the following tasks
 

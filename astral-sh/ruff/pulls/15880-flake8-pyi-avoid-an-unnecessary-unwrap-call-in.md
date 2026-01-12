@@ -13,14 +13,14 @@ head: alex/pyi019-unwrap
 created_at: 2025-02-02T18:57:51Z
 updated_at: 2025-02-02T19:05:53Z
 url: https://github.com/astral-sh/ruff/pull/15880
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pyi`] Avoid an unnecessary `.unwrap()` call in `PYI019` autofix
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-02 18:57_
+_@AlexWaygood_
 
 ## Summary
 

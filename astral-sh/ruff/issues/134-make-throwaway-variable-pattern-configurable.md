@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-08T15:29:31Z
 updated_at: 2022-09-24T14:43:40Z
 url: https://github.com/astral-sh/ruff/issues/134
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Make throwaway variable (`_`) pattern configurable
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-08 15:29_
+_@Jackenmen_
 
 There are cases where `_` cannot be used to mark a throwaway variable and it would be great if ruff allowed configuring it. This is common in projects that use `gettext` for example, as `_` is used for translating strings there. One of the ways unused variables are marked in such projects is using `__` (double underscore) but it probably would be a good idea to just make it configurable with a sane default to appeal to more uses.
 

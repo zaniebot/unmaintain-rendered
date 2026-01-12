@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-12T19:03:55Z
 updated_at: 2025-06-10T11:05:42Z
 url: https://github.com/astral-sh/uv/issues/12142
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # `uv self update` may leave uv unusable if interrupted
 
 ---
 
-_Issue opened by @qin-tain on 2025-03-12 19:03_
+_@qin-tain_
 
 ### Description:
 

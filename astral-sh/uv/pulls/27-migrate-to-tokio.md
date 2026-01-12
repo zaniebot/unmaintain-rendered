@@ -12,14 +12,14 @@ head: charlie/tokio
 created_at: 2023-10-06T20:21:59Z
 updated_at: 2023-10-06T20:31:05Z
 url: https://github.com/astral-sh/uv/pull/27
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Migrate to `tokio`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 20:21_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/26.
 

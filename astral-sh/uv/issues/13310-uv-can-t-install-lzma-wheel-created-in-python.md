@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T08:33:34Z
 updated_at: 2025-05-06T08:35:01Z
 url: https://github.com/astral-sh/uv/issues/13310
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv can't install lzma wheel created in Python
 
 ---
 
-_Issue opened by @konstin on 2025-05-06 08:33_
+_@konstin_
 
 > I made a wheel using LZMA compression format with this script. pip can install it, but unfortunately, I’m getting an error from uv saying “stream/file format not recognized.”
 > 

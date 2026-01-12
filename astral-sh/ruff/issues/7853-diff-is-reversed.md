@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T21:07:42Z
 updated_at: 2023-10-09T07:28:15Z
 url: https://github.com/astral-sh/ruff/issues/7853
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Diff is reversed
 
 ---
 
-_Issue opened by @bluthej on 2023-10-08 21:07_
+_@bluthej_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

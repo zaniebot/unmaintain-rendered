@@ -13,14 +13,14 @@ head: feat/pydocstyle-ignore-decorators
 created_at: 2023-02-25T23:35:14Z
 updated_at: 2023-02-26T23:02:33Z
 url: https://github.com/astral-sh/ruff/pull/3229
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [pydocstyle]: Implement `ignore-decorators`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-02-25 23:35_
+_@edgarrmondragon_
 
 Related to https://github.com/charliermarsh/ruff/issues/2205
 

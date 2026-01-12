@@ -13,14 +13,14 @@ head: playground-noqa-multiline
 created_at: 2025-09-16T20:12:36Z
 updated_at: 2025-09-17T07:30:10Z
 url: https://github.com/astral-sh/ruff/pull/20442
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [`playground`] Enable inline noqa for multiline strings in playground
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-16 20:12_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

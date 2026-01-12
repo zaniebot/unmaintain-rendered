@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T00:40:22Z
 updated_at: 2025-07-21T12:12:07Z
 url: https://github.com/astral-sh/uv/issues/12061
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # `uv add` hangs on `setuptools.build_meta:__legacy__.get_requires_for_build_wheel`
 
 ---
 
-_Issue opened by @rllin on 2025-03-08 00:40_
+_@rllin_
 
 ### Summary
 

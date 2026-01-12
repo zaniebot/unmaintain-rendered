@@ -14,14 +14,14 @@ head: micha/diagnostic-related-information
 created_at: 2025-04-11T17:04:36Z
 updated_at: 2025-05-19T16:52:14Z
 url: https://github.com/astral-sh/ruff/pull/17359
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [ty] Show related information in diagnostic
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-11 17:04_
+_@MichaReiser_
 
 ## Summary
 

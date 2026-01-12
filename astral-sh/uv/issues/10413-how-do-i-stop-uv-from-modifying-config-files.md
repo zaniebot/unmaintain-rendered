@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T22:17:37Z
 updated_at: 2025-01-08T22:29:56Z
 url: https://github.com/astral-sh/uv/issues/10413
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # How do I stop uv from modifying config files
 
 ---
 
-_Issue opened by @Pilgrim1379 on 2025-01-08 22:17_
+_@Pilgrim1379_
 
 Every time UV updates, it modifies my `bashrc` and `zshrc files with `$HOME/.local/share/../bin/env`. 
 

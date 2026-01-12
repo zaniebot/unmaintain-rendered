@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T07:45:51Z
 updated_at: 2024-07-11T07:01:57Z
 url: https://github.com/astral-sh/uv/issues/4956
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Support more platforms in --python-platforms
 
 ---
 
-_Issue opened by @cwiede on 2024-07-10 07:45_
+_@cwiede_
 
 I'd like to use uv pip compile to create requirements.txt files for multiple combinations of python versions and platforms. I noticed that the platforms supported by uv are limited to (uv version 0.2.23):
 

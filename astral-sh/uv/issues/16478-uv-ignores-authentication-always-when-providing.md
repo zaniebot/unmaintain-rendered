@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-28T10:41:42Z
 updated_at: 2025-11-03T12:27:01Z
 url: https://github.com/astral-sh/uv/issues/16478
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # uv ignores `authentication = always` when providing PIP_INDEX_URL or PIP_EXTRA_INDEX_URL
 
 ---
 
-_Issue opened by @schulluk on 2025-10-28 10:41_
+_@schulluk_
 
 ### Summary
 

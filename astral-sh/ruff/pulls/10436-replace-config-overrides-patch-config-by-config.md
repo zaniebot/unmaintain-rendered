@@ -12,14 +12,14 @@ head: hoel/use_config_in_ecosystem_checks
 created_at: 2024-03-17T12:22:46Z
 updated_at: 2024-12-30T09:07:34Z
 url: https://github.com/astral-sh/ruff/pull/10436
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # replace config_overrides.patch_config by config_overrides.to_ruff_args
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-17 12:22_
+_@hoel-bagard_
 
 ## Summary
 

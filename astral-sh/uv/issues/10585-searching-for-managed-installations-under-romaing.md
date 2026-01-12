@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T04:00:05Z
 updated_at: 2025-03-20T22:50:23Z
 url: https://github.com/astral-sh/uv/issues/10585
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Searching for managed installations under \Romaing\uv\python is not exist
 
 ---
 
-_Issue opened by @an2416 on 2025-01-14 04:00_
+_@an2416_
 
 Hi
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T19:05:51Z
 updated_at: 2025-02-16T22:06:58Z
 url: https://github.com/astral-sh/uv/issues/11561
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Installing local packages
 
 ---
 
-_Issue opened by @Spacerulerwill on 2025-02-16 19:05_
+_@Spacerulerwill_
 
 ### Question
 

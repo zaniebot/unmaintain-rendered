@@ -14,14 +14,14 @@ head: david/american-english
 created_at: 2025-07-22T13:50:47Z
 updated_at: 2025-07-22T14:10:40Z
 url: https://github.com/astral-sh/ruff/pull/19488
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Consistent use of American english (in rules)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 13:50_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/arg
 created_at: 2025-03-20T22:49:42Z
 updated_at: 2025-03-20T23:25:29Z
 url: https://github.com/astral-sh/uv/pull/12354
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Error on missing argument in `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-20 22:49_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/12348.
 

@@ -15,14 +15,14 @@ head: cast-int
 created_at: 2025-01-05T21:04:44Z
 updated_at: 2025-01-07T21:45:23Z
 url: https://github.com/astral-sh/ruff/pull/15277
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Parenthesize arguments to `int` when removing `int` would change semantics in `unnecessary-cast-to-int` (`RUF046`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-05 21:04_
+_@dylwil3_
 
 When removing `int` in calls like `int(expr)` we may need to keep parentheses around `expr` even when it is a function call or subscript, since there may be newlines in between the function/value name and the opening parentheses/bracket of the argument.
 

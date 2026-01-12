@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-06T19:53:37Z
 updated_at: 2024-09-06T22:03:53Z
 url: https://github.com/astral-sh/uv/issues/7135
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv python pin 3.12` making `.python-version` with trailing whitespace
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-06 19:53_
+_@jamesbraza_
 
 With `uv==0.4.6`, running `uv python pin 3.12`, the made `.python-version` file does not have trailing whitespace.
 

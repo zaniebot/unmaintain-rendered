@@ -13,14 +13,14 @@ head: david/setattr-support
 created_at: 2025-03-14T14:04:35Z
 updated_at: 2025-04-09T06:04:13Z
 url: https://github.com/astral-sh/ruff/pull/16748
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Add custom `__setattr__` support
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-14 14:04_
+_@sharkdp_
 
 ## Summary
 

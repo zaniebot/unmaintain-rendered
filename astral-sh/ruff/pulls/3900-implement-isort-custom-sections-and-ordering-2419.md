@@ -12,14 +12,14 @@ head: isort-custom-sections
 created_at: 2023-04-06T13:06:13Z
 updated_at: 2023-04-13T21:39:10Z
 url: https://github.com/astral-sh/ruff/pull/3900
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement isort custom sections and ordering (#2419)
 
 ---
 
-_Pull request opened by @hackedd on 2023-04-06 13:06_
+_@hackedd_
 
 Similar to some other people in #2419 I'm currently converting a Django project from flake8 + isort to use ruff. The isort settings currently contain (among other things):
 

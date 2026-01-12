@@ -12,14 +12,14 @@ head: ag/sdist-wheel-propgation
 created_at: 2024-05-15T16:29:27Z
 updated_at: 2024-05-15T19:16:01Z
 url: https://github.com/astral-sh/uv/pull/3610
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # distribution-types: allow RegistrySourceDist to have wheels attached to it
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-15 16:29_
+_@BurntSushi_
 
 Following from #3595, we'd like wheels to make their way into the lock
 file even if the current environment selects an sdist. With #3595, this

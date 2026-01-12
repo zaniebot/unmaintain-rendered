@@ -13,14 +13,14 @@ head: micha/disable-jemalloc-android
 created_at: 2025-05-12T07:19:56Z
 updated_at: 2025-05-12T12:52:29Z
 url: https://github.com/astral-sh/ruff/pull/18033
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # disable jemalloc on android
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-12 07:19_
+_@MichaReiser_
 
 ## Summary
 

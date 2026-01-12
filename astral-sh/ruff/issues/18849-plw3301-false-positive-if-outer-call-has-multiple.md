@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-21T14:22:33Z
 updated_at: 2025-06-27T14:29:11Z
 url: https://github.com/astral-sh/ruff/issues/18849
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW3301 false positive if outer call has multiple arguments and inner call has one argument
 
 ---
 
-_Issue opened by @zackw on 2025-06-21 14:22_
+_@zackw_
 
 ### Summary
 

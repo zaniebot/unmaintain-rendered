@@ -12,14 +12,14 @@ head: charlie/w
 created_at: 2024-08-23T22:27:01Z
 updated_at: 2024-08-23T23:04:40Z
 url: https://github.com/astral-sh/uv/pull/6554
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Ignore errors in workspace discovery with `--no-project`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-23 22:27_
+_@charliermarsh_
 
 ## Summary
 

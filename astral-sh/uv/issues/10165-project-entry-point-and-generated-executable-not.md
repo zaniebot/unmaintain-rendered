@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T04:42:03Z
 updated_at: 2024-12-27T11:06:11Z
 url: https://github.com/astral-sh/uv/issues/10165
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Project entry point and generated executable not working using Python version 3.7
 
 ---
 
-_Issue opened by @kevintuwsp on 2024-12-26 04:42_
+_@kevintuwsp_
 
 When initialising a project on Windows using the below commands, the resulting project executable does not run correctly.
 

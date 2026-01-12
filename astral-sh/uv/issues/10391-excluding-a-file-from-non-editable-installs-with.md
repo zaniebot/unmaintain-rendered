@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T12:56:18Z
 updated_at: 2025-01-30T00:28:20Z
 url: https://github.com/astral-sh/uv/issues/10391
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Excluding a file from non-editable installs with uv sync --no-editable
 
 ---
 
-_Issue opened by @mjpieters on 2025-01-08 12:56_
+_@mjpieters_
 
 I have a packaged app project with a docker image, built with `uv`:
 

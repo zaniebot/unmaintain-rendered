@@ -13,14 +13,14 @@ head: charlie/or-else
 created_at: 2023-08-03T21:22:26Z
 updated_at: 2023-08-04T12:50:39Z
 url: https://github.com/astral-sh/ruff/pull/6319
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add API to chain comment placement operations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 21:22_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T15:14:40Z
 updated_at: 2024-07-22T14:29:50Z
 url: https://github.com/astral-sh/uv/issues/1595
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # `uv pip compile` does not include extras in output
 
 ---
 
-_Issue opened by @palfrey on 2024-02-17 15:14_
+_@palfrey_
 
 If for example you run `echo "celery[redis]" | uv pip compile -` then the `redis` extra is correctly picked up and the extra requirements added to the output. However, the output will contain something like `celery==5.3.6`, not `celery[redis]==5.3.6` and pip-compile does the latter.
 

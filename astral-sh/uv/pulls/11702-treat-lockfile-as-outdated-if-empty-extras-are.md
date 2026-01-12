@@ -13,14 +13,14 @@ head: charlie/p-7
 created_at: 2025-02-22T00:42:18Z
 updated_at: 2025-02-22T04:51:06Z
 url: https://github.com/astral-sh/uv/pull/11702
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:57Z
 ```
 
 # Treat lockfile as outdated if (empty) extras are added
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 00:42_
+_@charliermarsh_
 
 ## Summary
 

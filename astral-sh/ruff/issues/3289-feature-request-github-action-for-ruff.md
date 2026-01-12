@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-01T05:59:27Z
 updated_at: 2023-04-03T23:43:08Z
 url: https://github.com/astral-sh/ruff/issues/3289
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature Request:  GitHub Action for Ruff
 
 ---
 
-_Issue opened by @brucearctor on 2023-03-01 05:59_
+_@brucearctor_
 
 Would love an official GitHub Action for Ruff 
 

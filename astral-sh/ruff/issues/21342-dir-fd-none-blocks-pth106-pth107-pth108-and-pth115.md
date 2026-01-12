@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-08T17:51:21Z
 updated_at: 2025-11-10T14:32:47Z
 url: https://github.com/astral-sh/ruff/issues/21342
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `dir_fd=None` blocks PTH106, PTH107, PTH108, and PTH115
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-08 17:51_
+_@dscorbett_
 
 ### Summary
 

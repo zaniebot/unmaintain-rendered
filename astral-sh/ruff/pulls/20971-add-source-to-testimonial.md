@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-19T20:16:27Z
 updated_at: 2025-10-21T18:44:11Z
 url: https://github.com/astral-sh/ruff/pull/20971
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Add source to testimonial
 
 ---
 
-_Pull request opened by @ShalokShalom on 2025-10-19 20:16_
+_@ShalokShalom_
 
 The testimonial quotes two different sources. 
 This PR adds the second source, which was missing.  (One under Tim, the second via Abbott)

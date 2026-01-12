@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T10:19:40Z
 updated_at: 2024-07-17T10:58:05Z
 url: https://github.com/astral-sh/uv/issues/5143
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # BUG: resolution failure in `uv pip` where `python -m pip` suceeds
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-07-17 10:19_
+_@neutrinoceros_
 
 Right now, trying to install `matplotlib` nightlies as follows
 ```shell

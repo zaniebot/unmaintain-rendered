@@ -12,14 +12,14 @@ head: zb/93-secret
 created_at: 2025-10-15T13:35:49Z
 updated_at: 2025-10-15T13:45:08Z
 url: https://github.com/astral-sh/uv/pull/16315
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Update changelog to escape GitHub bad behavior
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-15 13:35_
+_@zanieb_
 
 _No description provided._
 

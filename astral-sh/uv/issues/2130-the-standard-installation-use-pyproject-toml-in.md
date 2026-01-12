@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-02T14:38:30Z
 updated_at: 2024-03-25T22:26:52Z
 url: https://github.com/astral-sh/uv/issues/2130
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # The "standard" installation use `pyproject.toml` in UV rather than dynamic dependencies via build hooks (comparing to PIP)
 
 ---
 
-_Issue opened by @potiuk on 2024-03-02 14:38_
+_@potiuk_
 
 When you install packages using remote url and specify extras, the `--editable` version of extras are used, rather than the dependencies used in wheel. While I don't think it's very well specified which dependencies should be used 
 

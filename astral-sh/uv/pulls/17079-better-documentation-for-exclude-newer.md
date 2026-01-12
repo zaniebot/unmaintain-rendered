@@ -13,14 +13,14 @@ head: docs/update-exclude-newer-settings
 created_at: 2025-12-10T21:22:38Z
 updated_at: 2025-12-16T11:52:33Z
 url: https://github.com/astral-sh/uv/pull/17079
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Better documentation for `exclude-newer*`
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-12-10 21:22_
+_@mkniewallner_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

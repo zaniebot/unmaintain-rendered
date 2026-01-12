@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-13T14:06:52Z
 updated_at: 2023-04-13T17:25:23Z
 url: https://github.com/astral-sh/ruff/issues/3957
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add ability to disable D102 only for methods with an @property decorator
 
 ---
 
-_Issue opened by @Matt-Ord on 2023-04-13 14:06_
+_@Matt-Ord_
 
 I'm not sure if it is possible to disable D102 for property getters without also disabling the warning for non property methods
 

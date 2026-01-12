@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-05T15:03:27Z
 updated_at: 2025-11-10T23:59:49Z
 url: https://github.com/astral-sh/ty/issues/1482
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Submodule imports: "first from first serve" analysis is too coarse
 
 ---
 
-_Issue opened by @Gankra on 2025-11-05 15:03_
+_@Gankra_
 
 This is a followup to https://github.com/astral-sh/ruff/pull/21173 and pertains to behaviours described in [imports/nonstandard_conventions.md](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md)
 

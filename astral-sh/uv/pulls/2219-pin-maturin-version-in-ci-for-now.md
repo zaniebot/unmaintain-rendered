@@ -12,14 +12,14 @@ head: charlie/maturin
 created_at: 2024-03-05T20:39:00Z
 updated_at: 2024-03-07T23:52:08Z
 url: https://github.com/astral-sh/uv/pull/2219
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Pin maturin version in CI for now
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 20:39_
+_@charliermarsh_
 
 ## Summary
 

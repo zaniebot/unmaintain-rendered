@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-23T13:23:30Z
 updated_at: 2025-07-24T09:55:16Z
 url: https://github.com/astral-sh/uv/issues/14845
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Typos in documentation on data includes for the uv-build backend
 
 ---
 
-_Issue opened by @ReubenVandezande on 2025-07-23 13:23_
+_@ReubenVandezande_
 
 ### Summary
 

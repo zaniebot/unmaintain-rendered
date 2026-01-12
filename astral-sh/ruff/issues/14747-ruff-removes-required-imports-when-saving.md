@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T02:07:16Z
 updated_at: 2025-01-15T07:42:44Z
 url: https://github.com/astral-sh/ruff/issues/14747
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff removes required imports when saving
 
 ---
 
-_Issue opened by @vgoklani on 2024-12-03 02:07_
+_@vgoklani_
 
 Hey there,
 

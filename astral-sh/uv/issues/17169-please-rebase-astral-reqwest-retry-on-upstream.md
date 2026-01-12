@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T10:19:06Z
 updated_at: 2025-12-18T14:14:28Z
 url: https://github.com/astral-sh/uv/issues/17169
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Please rebase astral-reqwest-retry on upstream version 0.8.0
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-12-18 10:19_
+_@musicinmybrain_
 
 ### Summary
 

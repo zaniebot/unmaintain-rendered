@@ -15,14 +15,14 @@ head: pyi025-incorrect-fix
 created_at: 2024-03-22T17:54:47Z
 updated_at: 2024-03-22T20:11:18Z
 url: https://github.com/astral-sh/ruff/pull/10527
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Correctly handle references in `__all__` definitions when  renaming symbols in autofixes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-22 17:54_
+_@AlexWaygood_
 
 ## Summary
 

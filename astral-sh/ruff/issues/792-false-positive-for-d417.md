@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T17:25:57Z
 updated_at: 2022-12-12T20:12:29Z
 url: https://github.com/astral-sh/ruff/issues/792
-synced_at: 2026-01-10T12:06:14Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # False positive for D417
 
 ---
 
-_Issue opened by @PhilReinhold on 2022-11-17 17:25_
+_@PhilReinhold_
 
 Running ruff v0.0.124, python 3.10.6, on OSX 12.6.1
 

@@ -14,14 +14,14 @@ head: dcreager/mdtest-panic
 created_at: 2025-01-03T16:39:25Z
 updated_at: 2025-01-07T14:20:09Z
 url: https://github.com/astral-sh/ruff/pull/15241
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Attribute panics to the mdtests that cause them
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-03 16:39_
+_@dcreager_
 
 This updates the mdtest harness to catch any panics that occur during type checking, and to display the panic message as an mdtest failure.  (We don't know which specific line causes the failure, so we attribute panics to the first line of the test case.)
 

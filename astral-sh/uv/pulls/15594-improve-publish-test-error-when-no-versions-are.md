@@ -13,14 +13,14 @@ head: zb/no-versions
 created_at: 2025-08-30T15:18:27Z
 updated_at: 2025-08-30T15:35:55Z
 url: https://github.com/astral-sh/uv/pull/15594
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Improve publish test error when no versions are found
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 15:18_
+_@zanieb_
 
 _No description provided._
 

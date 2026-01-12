@@ -12,14 +12,14 @@ head: zb/735-read-include
 created_at: 2024-10-16T18:27:28Z
 updated_at: 2024-10-17T00:11:07Z
 url: https://github.com/astral-sh/uv/pull/8266
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Add support for reading and resolving `include-group` in dependency groups
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 18:27_
+_@zanieb_
 
 Part of #8090 
 

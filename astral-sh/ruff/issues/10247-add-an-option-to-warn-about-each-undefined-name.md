@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-06T14:50:05Z
 updated_at: 2024-03-11T17:14:30Z
 url: https://github.com/astral-sh/ruff/issues/10247
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add an option to warn about each undefined name only once
 
 ---
 
-_Issue opened by @Beliavsky on 2024-03-06 14:50_
+_@Beliavsky_
 
 Sometimes I refactor by copying some lines from a source file to a function in a new source file and then
 use ruff to find undefined names, which should either be function arguments or module imports. If variable

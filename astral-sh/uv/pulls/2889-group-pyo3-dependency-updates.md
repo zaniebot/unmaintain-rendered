@@ -13,14 +13,14 @@ head: zb/pyo3
 created_at: 2024-04-08T03:50:43Z
 updated_at: 2024-04-08T21:06:56Z
 url: https://github.com/astral-sh/uv/pull/2889
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Group `pyo3` dependency updates
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 03:50_
+_@zanieb_
 
 Seems needed for https://github.com/astral-sh/uv/pull/2879
 

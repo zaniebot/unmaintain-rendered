@@ -13,14 +13,14 @@ head: zb/ecosystem-plasmapy
 created_at: 2024-03-22T20:07:27Z
 updated_at: 2024-03-22T20:28:14Z
 url: https://github.com/astral-sh/ruff/pull/10530
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add `PlasmaPy` to ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-22 20:07_
+_@zanieb_
 
 ref https://github.com/astral-sh/ruff/issues/10528#issuecomment-2015805710
 

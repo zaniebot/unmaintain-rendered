@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-04T00:12:29Z
 updated_at: 2024-08-05T07:22:55Z
 url: https://github.com/astral-sh/ruff/issues/12656
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # macOS test failure for resolver::tests::symlink
 
 ---
 
-_Issue opened by @dylwil3 on 2024-08-04 00:12_
+_@dylwil3_
 
 With apologies in advance to @MichaReiser - it looks like `resolver::tests::symlink` fails locally for me (on macOS).
 

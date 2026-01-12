@@ -13,14 +13,14 @@ head: gankra/pin-maturin-version
 created_at: 2026-01-07T23:06:19Z
 updated_at: 2026-01-07T23:28:37Z
 url: https://github.com/astral-sh/ty/pull/2387
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # pin maturin version to the same one uv uses
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-07 23:06_
+_@Gankra_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-17T02:03:54Z
 updated_at: 2024-08-18T21:04:07Z
 url: https://github.com/astral-sh/uv/issues/6167
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Intermittent 401 in test cases with authentication
 
 ---
 
-_Issue opened by @zanieb on 2024-08-17 02:03_
+_@zanieb_
 
 We're seeing intermittent HTTP 401 Unauthorized errors in our test suite. 
 

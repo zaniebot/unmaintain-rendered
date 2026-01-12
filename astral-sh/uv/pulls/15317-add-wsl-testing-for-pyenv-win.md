@@ -13,14 +13,14 @@ head: zb/wsl-test
 created_at: 2025-08-15T20:45:05Z
 updated_at: 2025-08-18T16:21:46Z
 url: https://github.com/astral-sh/uv/pull/15317
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Add WSL testing for pyenv-win
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-15 20:45_
+_@zanieb_
 
 Adds test coverage for https://github.com/astral-sh/uv/pull/15315
 

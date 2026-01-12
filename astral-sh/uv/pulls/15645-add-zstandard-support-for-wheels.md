@@ -13,14 +13,14 @@ head: charlie/pyx-zstd
 created_at: 2025-09-02T22:05:15Z
 updated_at: 2025-09-03T08:01:08Z
 url: https://github.com/astral-sh/uv/pull/15645
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Add zstandard support for wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-02 22:05_
+_@charliermarsh_
 
 ## Summary
 

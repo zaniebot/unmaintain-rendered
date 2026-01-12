@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-09T13:40:33Z
 updated_at: 2025-03-12T13:37:42Z
 url: https://github.com/astral-sh/uv/issues/12075
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Can I use `uv` to install only the dependencies of a package?
 
 ---
 
-_Issue opened by @mkleinbort-wl on 2025-03-09 13:40_
+_@mkleinbort-wl_
 
 ### Question
 

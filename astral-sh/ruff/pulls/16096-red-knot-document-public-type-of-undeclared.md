@@ -13,14 +13,14 @@ head: david/public-type-undeclared
 created_at: 2025-02-11T11:27:17Z
 updated_at: 2025-02-12T07:52:13Z
 url: https://github.com/astral-sh/ruff/pull/16096
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Document 'public type of undeclared symbols' behavior
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-11 11:27_
+_@sharkdp_
 
 ## Summary
 

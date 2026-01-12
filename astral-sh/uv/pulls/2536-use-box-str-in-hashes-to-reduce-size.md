@@ -13,14 +13,14 @@ head: charlie/hashes
 created_at: 2024-03-19T02:36:56Z
 updated_at: 2024-03-19T02:51:47Z
 url: https://github.com/astral-sh/uv/pull/2536
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Use `Box<str>` in Hashes to reduce size
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 02:36_
+_@charliermarsh_
 
 _No description provided._
 

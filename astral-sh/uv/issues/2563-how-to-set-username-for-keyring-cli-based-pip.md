@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T13:20:33Z
 updated_at: 2024-04-16T16:49:15Z
 url: https://github.com/astral-sh/uv/issues/2563
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # How to set username for keyring cli based pip authorization (Azure artifacts) 
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-03-20 13:20_
+_@jenshnielsen_
 
 For keyring authorization to work with Azure artifacts and the keyring CLI I have to supply a default username that must be 
 `VssSessionToken`

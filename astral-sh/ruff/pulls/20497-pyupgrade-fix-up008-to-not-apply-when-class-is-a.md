@@ -13,14 +13,14 @@ head: fix-20491
 created_at: 2025-09-21T23:17:42Z
 updated_at: 2025-09-23T15:03:09Z
 url: https://github.com/astral-sh/ruff/pull/20497
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`pyupgrade`] Fix `UP008` to not apply when `__class__` is a local variable (`UP008`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-21 23:17_
+_@danparizher_
 
 ## Summary
 

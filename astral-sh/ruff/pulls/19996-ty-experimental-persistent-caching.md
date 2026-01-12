@@ -12,14 +12,14 @@ head: ibraheem/persistent-caching
 created_at: 2025-08-19T21:57:46Z
 updated_at: 2025-08-22T23:41:18Z
 url: https://github.com/astral-sh/ruff/pull/19996
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Experimental persistent caching
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-08-19 21:57_
+_@ibraheemdev_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/furb118
 created_at: 2024-11-27T17:52:14Z
 updated_at: 2024-11-28T12:59:57Z
 url: https://github.com/astral-sh/ruff/pull/14639
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix bug where methods defined using lambdas were flagged by FURB118
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-27 17:52_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-01T14:52:47Z
 updated_at: 2022-10-05T13:22:20Z
 url: https://github.com/clap-rs/clap/issues/4327
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # [docs] No mention how to skip enum variants on the `ValueEnum` derive macro
 
 ---
 
-_Issue opened by @dnaka91 on 2022-10-01 14:52_
+_@dnaka91_
 
 ### Please complete the following tasks
 

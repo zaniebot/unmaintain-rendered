@@ -12,14 +12,14 @@ head: charlie/ppc
 created_at: 2024-12-11T13:57:04Z
 updated_at: 2024-12-11T14:30:53Z
 url: https://github.com/astral-sh/uv/pull/9810
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Remove `powerpc64le-unknown-linux-musl` target
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-11 13:57_
+_@charliermarsh_
 
 ## Summary
 

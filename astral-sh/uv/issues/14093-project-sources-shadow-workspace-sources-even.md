@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T23:58:20Z
 updated_at: 2025-06-18T22:31:24Z
 url: https://github.com/astral-sh/uv/issues/14093
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # project sources shadow workspace sources, even when disabled by markers
 
 ---
 
-_Issue opened by @oconnor663 on 2025-06-16 23:58_
+_@oconnor663_
 
 ### Summary
 

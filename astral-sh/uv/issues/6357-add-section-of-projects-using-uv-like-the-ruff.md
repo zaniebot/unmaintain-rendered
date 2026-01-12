@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T16:57:36Z
 updated_at: 2024-08-21T16:57:36Z
 url: https://github.com/astral-sh/uv/issues/6357
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Add section of projects using uv (like the ruff README)
 
 ---
 
-_Issue opened by @dsully on 2024-08-21 16:57_
+_@dsully_
 
 It'd be great to have a section in the `uv` README / documentation for projects that are using it / have switched from another system.
 

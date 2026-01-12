@@ -12,14 +12,14 @@ head: ruff.__all__
 created_at: 2024-05-06T19:16:09Z
 updated_at: 2024-05-15T00:02:34Z
 url: https://github.com/astral-sh/ruff/pull/11314
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # F401 - Recommend adding unused import bindings to `__all__`
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-06 19:16_
+_@plredmond_
 
 Followup on #11168 and resolve #10391
 

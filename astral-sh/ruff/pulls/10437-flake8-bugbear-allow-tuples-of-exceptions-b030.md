@@ -13,14 +13,14 @@ head: thartman/B030-tuples
 created_at: 2024-03-17T15:02:58Z
 updated_at: 2024-03-18T00:37:27Z
 url: https://github.com/astral-sh/ruff/pull/10437
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8-bugbear`] Allow tuples of exceptions (`B030`)
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-03-17 15:02_
+_@ottaviohartman_
 
 Fixes #10426 
 

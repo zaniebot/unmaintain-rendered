@@ -13,14 +13,14 @@ head: modernise-build-scripts
 created_at: 2024-10-20T21:29:47Z
 updated_at: 2024-10-20T21:43:25Z
 url: https://github.com/astral-sh/ruff/pull/13837
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Modernize build scripts
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-20 21:29_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T00:11:20Z
 updated_at: 2024-08-23T12:53:36Z
 url: https://github.com/astral-sh/uv/issues/6477
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Consider top level command for installing tools
 
 ---
 
-_Issue opened by @daviewales on 2024-08-23 00:11_
+_@daviewales_
 
 Currently with `pipx`, I can run:
 

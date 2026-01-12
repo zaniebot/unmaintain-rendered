@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-11-13T14:39:03Z
 updated_at: 2018-08-02T03:30:14Z
 url: https://github.com/clap-rs/clap/issues/1106
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Link to examples on crates.io is incorrect
 
 ---
 
-_Issue opened by @focusaurus on 2017-11-13 14:39_
+_@focusaurus_
 
 ### Affected Version of clap
 * 2.27.1

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T07:59:14Z
 updated_at: 2025-12-18T17:14:20Z
 url: https://github.com/astral-sh/uv/issues/16904
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Question on migrating a uv-synced environment to an offline machine
 
 ---
 
-_Issue opened by @mytk2012 on 2025-12-01 07:59_
+_@mytk2012_
 
 ## We need to migrate the environment to an offline machine using uv sync, as the current development environment is offline. </br></br>
 ### We have attempted three methods (1-3), all of which failed:</br></br>

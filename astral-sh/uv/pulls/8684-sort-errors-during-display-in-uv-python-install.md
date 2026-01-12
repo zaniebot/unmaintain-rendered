@@ -13,14 +13,14 @@ head: zb/sort-err
 created_at: 2024-10-29T20:26:56Z
 updated_at: 2024-10-29T22:40:40Z
 url: https://github.com/astral-sh/uv/pull/8684
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Sort errors during display in `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-29 20:26_
+_@zanieb_
 
 This is important for determinism
 

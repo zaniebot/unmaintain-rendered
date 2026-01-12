@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-31T13:09:27Z
 updated_at: 2026-01-09T01:24:29Z
 url: https://github.com/astral-sh/ruff/issues/22316
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Enforce consistent prefixes across implicitly concatenated strings
 
 ---
 
-_Issue opened by @GideonBear on 2025-12-31 13:09_
+_@GideonBear_
 
 ### Summary
 

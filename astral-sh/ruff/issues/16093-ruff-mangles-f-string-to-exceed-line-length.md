@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-11T06:39:43Z
 updated_at: 2025-02-11T09:48:43Z
 url: https://github.com/astral-sh/ruff/issues/16093
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff mangles f-string to exceed line length (format & check, E501)
 
 ---
 
-_Issue opened by @vytas7 on 2025-02-11 06:39_
+_@vytas7_
 
 ### Description
 

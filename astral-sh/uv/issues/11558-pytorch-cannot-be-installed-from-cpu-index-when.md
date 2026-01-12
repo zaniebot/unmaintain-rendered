@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T16:39:56Z
 updated_at: 2025-02-16T17:05:40Z
 url: https://github.com/astral-sh/uv/issues/11558
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # pytorch cannot be installed from cpu index when opencv is also a dependency
 
 ---
 
-_Issue opened by @Dronakurl on 2025-02-16 16:39_
+_@Dronakurl_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-04T20:38:56Z
 updated_at: 2024-02-04T20:59:06Z
 url: https://github.com/astral-sh/ruff/issues/9816
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Please replace mypy
 
 ---
 
-_Issue opened by @pythops on 2024-02-04 20:38_
+_@pythops_
 
 ruff started as a linter, then it added support for formatting, so why not add support for type checking :) 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-11-13T23:56:57Z
 updated_at: 2025-03-16T22:20:10Z
 url: https://github.com/clap-rs/clap/issues/748
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow adding "external argv"s to be parsed alongside/before command line
 
 ---
 
-_Issue opened by @casey on 2016-11-13 23:56_
+_@casey_
 
 Maintainer's notes
 - This is related to https://github.com/clap-rs/clap/issues/3113, https://github.com/clap-rs/clap/discussions/2763

@@ -14,14 +14,14 @@ head: ibraheem/subclass-of-typevar
 created_at: 2025-11-26T23:55:04Z
 updated_at: 2025-11-28T08:20:26Z
 url: https://github.com/astral-sh/ruff/pull/21650
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Support `type[T]` with type variables
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-26 23:55_
+_@ibraheemdev_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: feat/add_comma_separated_support_for_extra_and_group_flags
 created_at: 2025-08-18T08:01:35Z
 updated_at: 2025-08-19T18:15:20Z
 url: https://github.com/astral-sh/uv/pull/15343
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Add comma-separated support for --extra and --group flags
 
 ---
 
-_Pull request opened by @yumeminami on 2025-08-18 08:01_
+_@yumeminami_
 
 
 

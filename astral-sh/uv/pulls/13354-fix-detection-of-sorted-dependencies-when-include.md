@@ -12,14 +12,14 @@ head: feature/uv-add-sorted-with-include-group
 created_at: 2025-05-08T19:44:01Z
 updated_at: 2025-05-10T18:00:28Z
 url: https://github.com/astral-sh/uv/pull/13354
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Fix detection of sorted dependencies when include-group is used
 
 ---
 
-_Pull request opened by @RazerM on 2025-05-08 19:44_
+_@RazerM_
 
 This follows on from #13334 to fix another case.
 

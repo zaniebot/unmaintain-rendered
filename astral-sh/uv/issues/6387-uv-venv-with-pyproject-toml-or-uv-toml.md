@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T22:59:30Z
 updated_at: 2024-08-21T23:12:41Z
 url: https://github.com/astral-sh/uv/issues/6387
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # `uv venv` with `pyproject.toml` or `uv.toml`
 
 ---
 
-_Issue opened by @jonzamora on 2024-08-21 22:59_
+_@jonzamora_
 
 Hello,
 

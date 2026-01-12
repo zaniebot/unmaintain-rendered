@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-03T18:55:58Z
 updated_at: 2025-06-16T18:59:38Z
 url: https://github.com/astral-sh/ruff/issues/3868
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Function level linting
 
 ---
 
-_Issue opened by @eronning on 2023-04-03 18:55_
+_@eronning_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

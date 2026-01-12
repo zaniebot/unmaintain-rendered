@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T02:25:31Z
 updated_at: 2025-01-21T06:34:19Z
 url: https://github.com/astral-sh/uv/issues/7993
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Provide option to partially sync dependencies with `uv run` and `uv sync` with specific packages
 
 ---
 
-_Issue opened by @uptickmetachu on 2024-10-08 02:25_
+_@uptickmetachu_
 
 Hi thanks for the amazing work and velocity with UV!
 

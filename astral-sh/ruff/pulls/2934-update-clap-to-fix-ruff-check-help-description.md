@@ -12,14 +12,14 @@ head: bump-clap
 created_at: 2023-02-15T18:26:44Z
 updated_at: 2023-02-15T18:30:07Z
 url: https://github.com/astral-sh/ruff/pull/2934
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Update clap to fix `ruff check --help` description
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-15 18:26_
+_@not-my-profile_
 
 My two clap bug fixes[1][2] have been merged and released (see the change in README.md).
 

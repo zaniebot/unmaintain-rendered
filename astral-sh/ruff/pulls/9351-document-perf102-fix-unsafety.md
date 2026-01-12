@@ -13,14 +13,14 @@ head: perf102-safety
 created_at: 2024-01-02T00:39:38Z
 updated_at: 2024-01-02T03:07:27Z
 url: https://github.com/astral-sh/ruff/pull/9351
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Document PERF102 fix unsafety
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-01-02 00:39_
+_@hauntsaninja_
 
 Relates to #8482
 

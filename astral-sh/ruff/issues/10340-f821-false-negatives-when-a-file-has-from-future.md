@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T14:10:30Z
 updated_at: 2024-03-22T18:11:18Z
 url: https://github.com/astral-sh/ruff/issues/10340
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F821: false negatives when a file has `from __future__ import annotations`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-11 14:10_
+_@AlexWaygood_
 
 Ruff currently emits no F821 errors on this `.py` file, but the lines marked with `XXX` all fail at runtime due to undefined names:
 

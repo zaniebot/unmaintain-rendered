@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:13:33Z
 updated_at: 2022-01-11T18:25:41Z
 url: https://github.com/clap-rs/clap/issues/3119
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Parse different arguments to the same field from &ArgMatches
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:13_
+_@epage_
 
 <a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [I60R](https://github.com/I60R)**
 _Sunday Jul 22, 2018 at 06:15 GMT_

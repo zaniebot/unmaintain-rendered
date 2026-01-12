@@ -14,14 +14,14 @@ head: alex/tuple-to-instance
 created_at: 2025-10-22T10:49:04Z
 updated_at: 2025-10-22T11:07:02Z
 url: https://github.com/astral-sh/ruff/pull/21027
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Add assertions to ensure that we never call `KnownClass::Tuple.to_instance()` or similar
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-22 10:49_
+_@AlexWaygood_
 
 ## Summary
 

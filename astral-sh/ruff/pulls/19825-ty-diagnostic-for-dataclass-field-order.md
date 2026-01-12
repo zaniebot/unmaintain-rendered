@@ -12,14 +12,14 @@ head: dataclass-field-order
 created_at: 2025-08-08T11:46:51Z
 updated_at: 2025-08-21T17:46:17Z
 url: https://github.com/astral-sh/ruff/pull/19825
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] diagnostic for dataclass field order
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-08 11:46_
+_@PrettyWood_
 
 ## Summary
 Emit diagnostic when defining a field without a default after a field with a default, see [existing TODO](https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L120)

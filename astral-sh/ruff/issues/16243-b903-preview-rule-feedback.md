@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T01:44:48Z
 updated_at: 2025-02-19T05:36:00Z
 url: https://github.com/astral-sh/ruff/issues/16243
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [B903] Preview rule feedback
 
 ---
 
-_Issue opened by @mikeshardmind on 2025-02-19 01:44_
+_@mikeshardmind_
 
 ### Description
 

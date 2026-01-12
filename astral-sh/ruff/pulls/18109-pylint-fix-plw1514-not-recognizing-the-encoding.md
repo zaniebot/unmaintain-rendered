@@ -14,14 +14,14 @@ head: fix-PLW1514
 created_at: 2025-05-14T21:42:03Z
 updated_at: 2025-05-15T23:55:53Z
 url: https://github.com/astral-sh/ruff/pull/18109
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [`pylint`] Fix `PLW1514` not recognizing the `encoding` positional argument of `codecs.open`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-14 21:42_
+_@LaBatata101_
 
 
 

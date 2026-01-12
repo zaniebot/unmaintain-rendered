@@ -13,14 +13,14 @@ head: zb/marker-inequal
 created_at: 2025-12-10T18:46:09Z
 updated_at: 2025-12-13T19:21:51Z
 url: https://github.com/astral-sh/uv/pull/17078
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Fix handling of `extra != ...` markers
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-10 18:46_
+_@zanieb_
 
 This fix by Claude feels extremely dubious but it fixed a trivial example.
 

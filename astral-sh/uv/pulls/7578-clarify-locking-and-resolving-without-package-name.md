@@ -13,14 +13,14 @@ head: ups/lock-comment
 created_at: 2024-09-20T10:21:43Z
 updated_at: 2024-10-02T13:35:14Z
 url: https://github.com/astral-sh/uv/pull/7578
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Clarify locking and resolving without package name
 
 ---
 
-_Pull request opened by @lucab on 2024-09-20 10:21_
+_@lucab_
 
 This adds a guiding comment around an hardcoded no-value in the lock-and-resolve flow.
 

@@ -14,14 +14,14 @@ head: ag/module-resolver-touchups
 created_at: 2025-07-29T17:26:10Z
 updated_at: 2025-07-30T13:57:07Z
 url: https://github.com/astral-sh/ruff/pull/19620
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Add a flow diagram for Python's import resolution algorithm
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-29 17:26_
+_@BurntSushi_
 
 This PR includes a few other touch-ups that I split out into separate
 commits. While the changes are pretty small, it probably makes sense

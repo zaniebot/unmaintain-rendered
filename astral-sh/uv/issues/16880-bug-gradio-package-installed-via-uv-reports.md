@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T13:59:50Z
 updated_at: 2025-11-28T15:00:12Z
 url: https://github.com/astral-sh/uv/issues/16880
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # [Bug] Gradio package installed via uv reports correct version (6.0.1) but shows runtime behavior of older version
 
 ---
 
-_Issue opened by @coffeedrunkpanda on 2025-11-28 13:59_
+_@coffeedrunkpanda_
 
 ### Summary
 

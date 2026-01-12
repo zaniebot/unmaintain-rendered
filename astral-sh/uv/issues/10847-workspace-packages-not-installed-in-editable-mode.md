@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T10:15:49Z
 updated_at: 2025-01-22T13:15:35Z
 url: https://github.com/astral-sh/uv/issues/10847
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Workspace packages not installed in editable mode
 
 ---
 
-_Issue opened by @jeroenvdhoven on 2025-01-22 10:15_
+_@jeroenvdhoven_
 
 ### Summary
 

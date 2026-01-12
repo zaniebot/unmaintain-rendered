@@ -13,14 +13,14 @@ head: zb/generate-dev
 created_at: 2025-07-30T13:46:50Z
 updated_at: 2025-07-31T15:49:43Z
 url: https://github.com/astral-sh/uv/pull/14972
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Skip`cargo dev generate-all` test case in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-30 13:46_
+_@zanieb_
 
 This means that CI tests fail in a way that is redundant with the dedicated CI job which can obscure signal on whether actual tests are failing
 

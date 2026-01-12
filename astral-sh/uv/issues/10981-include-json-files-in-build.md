@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T10:40:28Z
 updated_at: 2025-01-27T14:52:51Z
 url: https://github.com/astral-sh/uv/issues/10981
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Include .json files in build
 
 ---
 
-_Issue opened by @ghost on 2025-01-27 10:40_
+_@ghost_
 
 ### Question
 

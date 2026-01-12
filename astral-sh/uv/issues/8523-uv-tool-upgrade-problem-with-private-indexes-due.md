@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-24T11:02:46Z
 updated_at: 2025-07-01T07:45:40Z
 url: https://github.com/astral-sh/uv/issues/8523
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # uv tool upgrade - problem with private indexes due to short living credentials
 
 ---
 
-_Issue opened by @delicb on 2024-10-24 11:02_
+_@delicb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ head: ag/enable-lock-conflict-tests
 created_at: 2024-12-02T19:51:00Z
 updated_at: 2024-12-02T20:39:40Z
 url: https://github.com/astral-sh/uv/pull/9582
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # re-enable conflicting extra/group tests and fix regression from #9540
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-12-02 19:51_
+_@BurntSushi_
 
 It turns out that #9540 _did_ regress some existing tests, but it went
 unnoticed because of a gaffe by myself: #9474 moved the conflicting

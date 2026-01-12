@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-03T17:27:13Z
 updated_at: 2024-03-21T14:38:17Z
 url: https://github.com/clap-rs/clap/issues/5243
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # completions for subcommand aliases
 
 ---
 
-_Issue opened by @dfgordon on 2023-12-03 17:27_
+_@dfgordon_
 
 ### Please complete the following tasks
 

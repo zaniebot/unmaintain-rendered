@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-22T08:33:20Z
 updated_at: 2024-08-28T07:27:30Z
 url: https://github.com/astral-sh/ruff/pull/13047
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add some basic Issue templates for easier triage
 
 ---
 
-_Pull request opened by @jvacek on 2024-08-22 08:33_
+_@jvacek_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

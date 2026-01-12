@@ -12,14 +12,14 @@ head: 14899-gradual-type-assignability
 created_at: 2025-03-11T18:16:50Z
 updated_at: 2025-03-24T14:32:23Z
 url: https://github.com/astral-sh/ruff/pull/16641
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Stabilize `all_type_pairs_can_be_assigned_from_their_intersection`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-11 18:16_
+_@mtshiba_
 
 ## Summary
 

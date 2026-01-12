@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-26T18:28:03Z
 updated_at: 2024-04-06T16:39:25Z
 url: https://github.com/astral-sh/ruff/issues/5377
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [rule] simpify `x if x else y` to `x or y`
 
 ---
 
-_Issue opened by @dorschw on 2023-06-26 18:28_
+_@dorschw_
 
 I wanted to suggest it to `flake8-simplify` but there hasn't been much activity there in a while, and `flake8-pie` says they're deprecated and link to ruff. 
 

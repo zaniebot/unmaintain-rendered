@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-03-26T08:29:23Z
 updated_at: 2024-03-28T01:00:49Z
 url: https://github.com/astral-sh/ruff/pull/10602
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update warning message for rule S305 to address insecure block cipher mode use
 
 ---
 
-_Pull request opened by @mnixry on 2024-03-26 08:29_
+_@mnixry_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/interp-io
 created_at: 2024-06-10T21:29:51Z
 updated_at: 2024-06-10T22:26:35Z
 url: https://github.com/astral-sh/uv/pull/4218
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Improve handling of missing interpreters during discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 21:29_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/uv/pull/4214
 

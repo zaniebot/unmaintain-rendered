@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T19:45:46Z
 updated_at: 2025-12-16T21:08:34Z
 url: https://github.com/astral-sh/ty/issues/1858
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # support calls to intersection types
 
 ---
 
-_Issue opened by @carljm on 2025-12-11 19:45_
+_@carljm_
 
 Right now we infer a todo type, which suppresses false positives. But intersections arise reasonably frequently in narrowing, and often don't simplify (especially with negative or dynamic elements). So this can lead to a lot of false negatives.
 

@@ -14,14 +14,14 @@ head: dcreager/break-the-cycle
 created_at: 2025-12-05T14:41:44Z
 updated_at: 2025-12-11T20:01:07Z
 url: https://github.com/astral-sh/ruff/pull/21813
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Break mandatory salsa cycle when inferring function definitions
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-05 14:41_
+_@dcreager_
 
 This is a first stab at fixing astral-sh/ty#1729. Pushing it up in draft form to get a linkable PR number for it.
 

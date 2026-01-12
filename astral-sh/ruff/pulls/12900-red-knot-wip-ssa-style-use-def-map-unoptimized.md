@@ -13,14 +13,14 @@ head: cjm/phis
 created_at: 2024-08-15T02:12:41Z
 updated_at: 2024-10-18T18:12:32Z
 url: https://github.com/astral-sh/ruff/pull/12900
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] [WIP] SSA-style use-def map (unoptimized)
 
 ---
 
-_Pull request opened by @carljm on 2024-08-15 02:12_
+_@carljm_
 
 This uses the algorithm in https://c9x.me/compile/bib/braun13cc.pdf to do our use-def map in an SSA style, where there's always only one visible definition for a symbol, and we use Phi definitions at control-flow merge points to merge the visible definitions from each path.
 

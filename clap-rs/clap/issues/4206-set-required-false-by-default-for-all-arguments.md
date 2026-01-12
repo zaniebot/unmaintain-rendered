@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-12T21:55:31Z
 updated_at: 2022-09-13T00:48:00Z
 url: https://github.com/clap-rs/clap/issues/4206
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Set required(false) by default for all arguments
 
 ---
 
-_Issue opened by @epage on 2022-09-12 21:55_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/4203
 

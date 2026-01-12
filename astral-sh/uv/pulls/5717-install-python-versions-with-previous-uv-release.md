@@ -13,14 +13,14 @@ head: zb/ci-python-install
 created_at: 2024-08-01T23:38:18Z
 updated_at: 2024-08-01T23:59:30Z
 url: https://github.com/astral-sh/uv/pull/5717
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Install Python versions with previous uv release
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 23:38_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/5713
 

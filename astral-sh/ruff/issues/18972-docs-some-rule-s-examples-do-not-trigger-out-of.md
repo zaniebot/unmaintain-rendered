@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T00:38:35Z
 updated_at: 2025-09-09T22:06:35Z
 url: https://github.com/astral-sh/ruff/issues/18972
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`docs`] Some rule's examples do not trigger out-of-the-box
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-27 00:38_
+_@MeGaGiGaGon_
 
 While going through the rules hunting for issues, I noticed a fair number have an example that doesn't give an error when copy/pasted verbatim. This is both inconvenient and misleading, so I wrote a script to try and find all of these cases. This issue is intended to serve as a tracking place for the progress on fixing them all.
 

@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2024-11-08T03:35:13Z
 updated_at: 2024-11-08T03:54:29Z
 url: https://github.com/astral-sh/ruff/pull/14188
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Add a fix for `duplicate-literal-member`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 03:35_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T10:26:34Z
 updated_at: 2025-10-21T02:47:14Z
 url: https://github.com/astral-sh/ruff/issues/20800
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST002 fix is invalid with `...`
 
 ---
 
-_Issue opened by @CoderJoshDK on 2025-10-10 10:26_
+_@CoderJoshDK_
 
 ### Summary
 

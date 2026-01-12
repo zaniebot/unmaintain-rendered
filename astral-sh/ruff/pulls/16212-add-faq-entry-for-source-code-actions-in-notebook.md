@@ -13,14 +13,14 @@ head: dhruv/faq-source-code-actions
 created_at: 2025-02-17T12:54:01Z
 updated_at: 2025-02-17T14:34:37Z
 url: https://github.com/astral-sh/ruff/pull/16212
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add FAQ entry for `source.*` code actions in Notebook
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-17 12:54_
+_@dhruvmanila_
 
 ## Summary
 

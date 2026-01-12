@@ -13,14 +13,14 @@ head: zanie/applicability
 created_at: 2023-10-02T22:26:57Z
 updated_at: 2023-10-06T03:53:47Z
 url: https://github.com/astral-sh/ruff/pull/7769
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update CLI to respect fix applicability
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-02 22:26_
+_@zanieb_
 
 Rebase of https://github.com/astral-sh/ruff/pull/5119 authored by @evanrittenhouse with additional refinements.
 

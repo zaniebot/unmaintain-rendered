@@ -14,14 +14,14 @@ head: alex/bad-dunder-gets
 created_at: 2025-11-13T11:38:06Z
 updated_at: 2025-11-13T12:05:12Z
 url: https://github.com/astral-sh/ruff/pull/21424
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Use the return type of `__get__` for descriptor lookups even when `__get__` is called with incorrect arguments
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-13 11:38_
+_@AlexWaygood_
 
 ## Summary
 

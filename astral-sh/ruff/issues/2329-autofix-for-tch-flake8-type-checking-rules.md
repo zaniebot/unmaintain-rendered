@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T23:39:43Z
 updated_at: 2023-05-31T17:53:37Z
 url: https://github.com/astral-sh/ruff/issues/2329
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # autofix for TCH (flake8-type-checking) rules
 
 ---
 
-_Issue opened by @LefterisJP on 2023-01-29 23:39_
+_@LefterisJP_
 
 I enabled the TCH rules to see what it suggests and finds in rotki's codebase. I got about ~700 hits.
 

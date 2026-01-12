@@ -13,14 +13,14 @@ head: dhruv/multiline-fstring-with-format-spec
 created_at: 2023-10-03T17:12:47Z
 updated_at: 2023-10-05T17:42:10Z
 url: https://github.com/astral-sh/ruff/pull/7787
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix lexing single-quoted f-string with multi-line format spec
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-03 17:12_
+_@dhruvmanila_
 
 ## Summary
 

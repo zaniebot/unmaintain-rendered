@@ -15,14 +15,14 @@ head: freeze-exclude-editable
 created_at: 2024-03-31T08:18:00Z
 updated_at: 2024-03-31T18:01:59Z
 url: https://github.com/astral-sh/uv/pull/2740
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Add `--exclude-editable` support to `pip-freeze`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-03-31 08:18_
+_@eth3lbert_
 
 ## Summary
 

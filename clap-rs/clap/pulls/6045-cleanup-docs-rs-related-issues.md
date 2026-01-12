@@ -12,14 +12,14 @@ head: cleanup-docsrs
 created_at: 2025-06-25T14:30:37Z
 updated_at: 2025-06-26T14:35:10Z
 url: https://github.com/clap-rs/clap/pull/6045
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Cleanup docs.rs related issues
 
 ---
 
-_Pull request opened by @GuillaumeGomez on 2025-06-25 14:30_
+_@GuillaumeGomez_
 
 This PR fixes an intra-doc link warning and remove unneeded `--cfg=docsrs` set in `Cargo.toml` files.
 

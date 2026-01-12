@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T11:25:21Z
 updated_at: 2025-05-22T15:18:16Z
 url: https://github.com/astral-sh/uv/issues/13592
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # unexpected behaviour of uv pip install -e/-r with cython extensions
 
 ---
 
-_Issue opened by @schenker on 2025-05-22 11:25_
+_@schenker_
 
 ### Question
 

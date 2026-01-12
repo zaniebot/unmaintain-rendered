@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T16:54:04Z
 updated_at: 2024-08-28T01:13:24Z
 url: https://github.com/astral-sh/uv/issues/6701
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # --require-hashes option does not work as with pip
 
 ---
 
-_Issue opened by @thierryba on 2024-08-27 16:54_
+_@thierryba_
 
 so I was trying to install my requirements.txt with uv pip install --require-hashes requirements.txt
 

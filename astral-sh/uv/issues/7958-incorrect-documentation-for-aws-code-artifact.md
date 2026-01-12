@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T04:10:12Z
 updated_at: 2024-10-15T16:08:20Z
 url: https://github.com/astral-sh/uv/issues/7958
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Incorrect documentation for aws code-artifact publication
 
 ---
 
-_Issue opened by @david-waterworth on 2024-10-07 04:10_
+_@david-waterworth_
 
 Following the documentation (https://docs.astral.sh/uv/guides/integration/alternative-indexes/#aws-codeartifact) for `uv publish` to aws code-artifact fails with
 

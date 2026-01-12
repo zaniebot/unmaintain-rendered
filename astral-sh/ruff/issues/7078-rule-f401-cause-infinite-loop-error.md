@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T10:06:00Z
 updated_at: 2023-09-03T14:52:12Z
 url: https://github.com/astral-sh/ruff/issues/7078
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule F401 cause infinite loop error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 10:06_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T18:02:36Z
 updated_at: 2025-01-08T00:58:40Z
 url: https://github.com/astral-sh/ruff/issues/14988
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] fully consolidate display of heterogenous unions of literals
 
 ---
 
-_Issue opened by @carljm on 2024-12-15 18:02_
+_@carljm_
 
 We currently display `Literal[1, 2] | Literal["foo"]`, but the spec (and other type checkers) prefer `Literal[1, 2, "foo"]`. We allow the latter in an annotation, but we don't display it that way.
 

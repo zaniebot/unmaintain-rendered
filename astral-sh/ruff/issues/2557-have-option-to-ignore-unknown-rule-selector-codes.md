@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T21:57:30Z
 updated_at: 2024-12-25T14:42:08Z
 url: https://github.com/astral-sh/ruff/issues/2557
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Have option to ignore unknown rule selector codes
 
 ---
 
-_Issue opened by @mhvk on 2023-02-03 21:57_
+_@mhvk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

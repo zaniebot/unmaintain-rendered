@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-25T10:49:22Z
 updated_at: 2025-09-22T16:18:37Z
 url: https://github.com/astral-sh/uv/issues/14889
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Support for PEP 725 - external (runtime) dependencies with user defineable helper
 
 ---
 
-_Issue opened by @CarliJoy on 2025-07-25 10:49_
+_@CarliJoy_
 
 ### Summary
 

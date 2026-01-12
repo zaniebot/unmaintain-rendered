@@ -14,14 +14,14 @@ head: extend-air-302-removed-names
 created_at: 2024-12-06T04:30:45Z
 updated_at: 2024-12-18T00:07:18Z
 url: https://github.com/astral-sh/ruff/pull/14804
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [airflow]: extend removed names (AIR302)
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-06 04:30_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

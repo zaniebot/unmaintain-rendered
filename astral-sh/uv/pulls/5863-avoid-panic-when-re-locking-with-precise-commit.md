@@ -14,14 +14,14 @@ head: charlie/lock-git
 created_at: 2024-08-07T14:38:58Z
 updated_at: 2024-08-07T14:56:16Z
 url: https://github.com/astral-sh/uv/pull/5863
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Avoid panic when re-locking with precise commit
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 14:38_
+_@charliermarsh_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: charlie/winreg
 created_at: 2024-07-13T01:29:12Z
 updated_at: 2024-07-13T01:55:06Z
 url: https://github.com/astral-sh/uv/pull/5029
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Add Windows path updates for `uv tool`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 01:29_
+_@charliermarsh_
 
 ## Summary
 

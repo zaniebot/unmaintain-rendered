@@ -13,14 +13,14 @@ head: zb/editable-no-build
 created_at: 2024-03-12T20:57:10Z
 updated_at: 2024-03-12T23:21:42Z
 url: https://github.com/astral-sh/uv/pull/2393
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Fix bug where `--no-binary :all:` prevented build of editable packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 20:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2343
 

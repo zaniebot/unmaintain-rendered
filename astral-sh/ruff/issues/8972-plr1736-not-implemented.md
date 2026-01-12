@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T21:47:05Z
 updated_at: 2023-12-02T22:04:59Z
 url: https://github.com/astral-sh/ruff/issues/8972
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PLR1736 not implemented?
 
 ---
 
-_Issue opened by @Ryang20718 on 2023-12-02 21:47_
+_@Ryang20718_
 
 Error:
 

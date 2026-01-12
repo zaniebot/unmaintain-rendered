@@ -13,14 +13,14 @@ head: fix_for_PTH_208
 created_at: 2025-04-29T15:59:51Z
 updated_at: 2025-04-30T14:40:03Z
 url: https://github.com/astral-sh/ruff/pull/17715
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`flake8-use-pathlib`] Avoid suggesting `Path.iterdir()` for `os.listdir` with file descriptor (`PTH208`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-29 15:59_
+_@Kalmaegi_
 
 
 ## Summary

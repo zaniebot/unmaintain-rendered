@@ -13,14 +13,14 @@ head: ww/zizmor-ci
 created_at: 2025-08-07T20:14:10Z
 updated_at: 2025-08-07T20:30:20Z
 url: https://github.com/astral-sh/uv/pull/15148
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # chore(ci): add zizmor workflow
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-07 20:14_
+_@woodruffw_
 
 ## Summary
 

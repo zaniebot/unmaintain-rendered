@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-09T10:24:18Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/684
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # App::with_defaults() use clap-rs' version and authors not those of the Cargo file
 
 ---
 
-_Issue opened by @RoPP on 2016-10-09 10:24_
+_@RoPP_
 
 Cargo.toml : 
 

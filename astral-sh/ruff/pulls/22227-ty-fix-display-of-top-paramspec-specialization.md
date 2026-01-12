@@ -15,14 +15,14 @@ head: cjm/top-paramspec-display
 created_at: 2025-12-27T19:04:41Z
 updated_at: 2025-12-27T19:14:24Z
 url: https://github.com/astral-sh/ruff/pull/22227
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] fix display of top ParamSpec specialization
 
 ---
 
-_Pull request opened by @carljm on 2025-12-27 19:04_
+_@carljm_
 
 ## Summary
 

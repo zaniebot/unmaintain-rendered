@@ -12,14 +12,14 @@ head: zb/auth-test-registries
 created_at: 2025-08-30T14:33:51Z
 updated_at: 2025-08-30T20:12:57Z
 url: https://github.com/astral-sh/uv/pull/15593
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add case for `uv auth login` in registry integration tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 14:33_
+_@zanieb_
 
 Adds an alternative third-party registry test mode that uses `uv auth login` instead of the environment variables to provide secrets. 
 

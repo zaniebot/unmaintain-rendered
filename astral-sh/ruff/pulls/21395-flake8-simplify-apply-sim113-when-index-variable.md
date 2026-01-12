@@ -14,14 +14,14 @@ head: SIM113-apply-all-int
 created_at: 2025-11-12T03:57:39Z
 updated_at: 2025-11-12T17:54:39Z
 url: https://github.com/astral-sh/ruff/pull/21395
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [`flake8-simplify`] Apply `SIM113` when index variable is of type `int`
 
 ---
 
-_Pull request opened by @njhearp on 2025-11-12 03:57_
+_@njhearp_
 
 ## Summary
 

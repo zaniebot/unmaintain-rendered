@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-01T05:29:25Z
 updated_at: 2025-11-02T18:27:15Z
 url: https://github.com/astral-sh/uv/issues/16545
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Update UV's JSON Schema on JSON Schema Store
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-11-01 05:29_
+_@FishAlchemist_
 
 ### Summary
 

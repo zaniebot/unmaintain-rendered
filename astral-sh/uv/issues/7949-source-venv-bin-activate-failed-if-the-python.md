@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-06T22:08:03Z
 updated_at: 2024-10-06T22:20:11Z
 url: https://github.com/astral-sh/uv/issues/7949
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # source .venv/bin/activate failed if the python version is not already installed by pyenv
 
 ---
 
-_Issue opened by @songron on 2024-10-06 22:08_
+_@songron_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

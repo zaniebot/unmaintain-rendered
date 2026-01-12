@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-10T13:59:48Z
 updated_at: 2023-07-10T14:49:18Z
 url: https://github.com/astral-sh/ruff/issues/5649
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ignore flake8-future-annotations rules in `.pyi` files
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-10 13:59_
+_@charliermarsh_
 
 `__future__` annotations are always enabled in `.pyi` files, so no need to check these at all.
 

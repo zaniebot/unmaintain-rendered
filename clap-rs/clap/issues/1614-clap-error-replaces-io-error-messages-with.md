@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-12-29T01:31:34Z
 updated_at: 2020-07-07T15:05:13Z
 url: https://github.com/clap-rs/clap/issues/1614
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap::Error replaces io::Error messages with "description() is deprecated"
 
 ---
 
-_Issue opened by @keturn on 2019-12-29 01:31_
+_@keturn_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

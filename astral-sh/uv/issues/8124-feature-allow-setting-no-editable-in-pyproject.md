@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-11T05:57:34Z
 updated_at: 2025-05-04T18:19:44Z
 url: https://github.com/astral-sh/uv/issues/8124
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # [Feature] Allow setting no-editable in `pyproject.toml`
 
 ---
 
-_Issue opened by @b0o on 2024-10-11 05:57_
+_@b0o_
 
 My project includes multiple native C modules with a rather complicated build setup. Editable installs of my package don't work as expected:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-21T19:57:27Z
 updated_at: 2024-10-21T20:03:10Z
 url: https://github.com/astral-sh/uv/issues/8425
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Docs: UV package index credentials are named incorrectly
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-10-21 19:57_
+_@pythonweb2_
 
 Had to review the PR (#7741) to find this, it should be:
 

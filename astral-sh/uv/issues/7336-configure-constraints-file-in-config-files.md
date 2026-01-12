@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T16:43:31Z
 updated_at: 2024-11-20T00:39:25Z
 url: https://github.com/astral-sh/uv/issues/7336
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Configure constraints file in config files
 
 ---
 
-_Issue opened by @robertschweizer on 2024-09-12 16:43_
+_@robertschweizer_
 
 Thanks a lot for this great project!
 

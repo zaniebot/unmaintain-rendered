@@ -13,14 +13,14 @@ head: david/fix-14307-patch
 created_at: 2024-11-13T09:45:29Z
 updated_at: 2024-11-13T15:01:18Z
 url: https://github.com/astral-sh/ruff/pull/14312
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Avoid panic for generic type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-13 09:45_
+_@sharkdp_
 
 ## Summary
 

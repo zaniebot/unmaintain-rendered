@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-30T00:02:39Z
 updated_at: 2024-05-30T17:59:55Z
 url: https://github.com/astral-sh/uv/issues/3918
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv lock` should respect preferences from existing lockfile
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-30 00:02_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T10:42:46Z
 updated_at: 2023-01-06T00:30:55Z
 url: https://github.com/astral-sh/ruff/issues/1659
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PD013 UseOfDotStack triggered by np.stack
 
 ---
 
-_Issue opened by @ManonMarchand on 2023-01-05 10:42_
+_@ManonMarchand_
 
 Hi, 
 

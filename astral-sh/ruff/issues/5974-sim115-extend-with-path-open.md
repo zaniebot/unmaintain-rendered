@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T11:45:15Z
 updated_at: 2023-07-27T18:20:53Z
 url: https://github.com/astral-sh/ruff/issues/5974
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `SIM115` extend with `Path.open`
 
 ---
 
-_Issue opened by @sbrugman on 2023-07-22 11:45_
+_@sbrugman_
 
 The `SIM115` rule covers the builtin `open` function, and should also pick up on `Path.open`, which is used for the same purpose.
 

@@ -11,14 +11,14 @@ head: main
 created_at: 2023-01-04T05:16:44Z
 updated_at: 2023-01-04T20:45:30Z
 url: https://github.com/astral-sh/ruff/pull/1626
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add rst backticks rule to pygrep-hooks
 
 ---
 
-_Pull request opened by @martinabeleda on 2023-01-04 05:16_
+_@martinabeleda_
 
 Implements RST Backticks rule from #980 
 

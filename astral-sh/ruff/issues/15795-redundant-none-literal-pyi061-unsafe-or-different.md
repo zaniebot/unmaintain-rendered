@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T21:26:01Z
 updated_at: 2025-02-09T15:58:54Z
 url: https://github.com/astral-sh/ruff/issues/15795
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `redundant-none-literal (PYI061)`: Unsafe or different autofix for Python 3.9
 
 ---
 
-_Issue opened by @Avasam on 2025-01-28 21:26_
+_@Avasam_
 
 ### Description
 

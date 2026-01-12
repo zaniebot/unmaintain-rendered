@@ -13,14 +13,14 @@ head: charlie/p-6
 created_at: 2025-02-25T06:26:02Z
 updated_at: 2025-02-25T07:06:02Z
 url: https://github.com/astral-sh/uv/pull/11769
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Remove stale comment on `MarkerEnvironment`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-25 06:26_
+_@charliermarsh_
 
 _No description provided._
 

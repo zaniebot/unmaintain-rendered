@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T14:49:12Z
 updated_at: 2024-12-11T22:24:20Z
 url: https://github.com/astral-sh/uv/issues/9812
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Build backend rejects underscores in entrypoint names
 
 ---
 
-_Issue opened by @blueraft on 2024-12-11 14:49_
+_@blueraft_
 
 MRE:
 

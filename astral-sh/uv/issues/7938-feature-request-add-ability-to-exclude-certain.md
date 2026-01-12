@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-05T06:18:01Z
 updated_at: 2025-09-07T21:41:31Z
 url: https://github.com/astral-sh/uv/issues/7938
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Feature request: Add ability to exclude certain file/directory patterns from `uv build` output
 
 ---
 
-_Issue opened by @pirate on 2024-10-05 06:18_
+_@pirate_
 
 Currently it seems `uv build` includes everything found in the root directory, but it would be great to be able to exclude certain files/directories.
 

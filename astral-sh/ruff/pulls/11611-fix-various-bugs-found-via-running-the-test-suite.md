@@ -13,14 +13,14 @@ head: dhruv/bugfixes
 created_at: 2024-05-30T06:36:04Z
 updated_at: 2024-05-30T10:52:11Z
 url: https://github.com/astral-sh/ruff/pull/11611
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix various bugs found via running the test suite
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-30 06:36_
+_@dhruvmanila_
 
 ## Summary
 

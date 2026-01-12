@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T04:52:57Z
 updated_at: 2024-06-25T20:56:00Z
 url: https://github.com/astral-sh/uv/issues/1429
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # `uv pip compile` Does not retain PEP-508 environment markers in output
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-02-16 04:52_
+_@CoolCat467_
 
 `uv pip compile` does not respect [PEP-508 Environment Markers](https://peps.python.org/pep-0508/#environment-markers) (such as `; implementation_name ==`).
 

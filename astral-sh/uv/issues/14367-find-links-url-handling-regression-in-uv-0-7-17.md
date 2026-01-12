@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-30T05:24:09Z
 updated_at: 2025-07-10T02:43:28Z
 url: https://github.com/astral-sh/uv/issues/14367
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # `--find-links` URL Handling Regression in uv 0.7.17
 
 ---
 
-_Issue opened by @c892836a on 2025-06-30 05:24_
+_@c892836a_
 
 ### Summary
 

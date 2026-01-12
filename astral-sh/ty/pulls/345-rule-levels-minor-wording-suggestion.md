@@ -13,14 +13,14 @@ head: david/warn-wording
 created_at: 2025-05-13T07:28:00Z
 updated_at: 2025-05-13T07:33:27Z
 url: https://github.com/astral-sh/ty/pull/345
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Rule levels: minor wording suggestion
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-13 07:28_
+_@sharkdp_
 
 ## Summary
 

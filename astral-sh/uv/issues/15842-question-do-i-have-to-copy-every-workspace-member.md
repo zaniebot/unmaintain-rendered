@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-14T16:55:23Z
 updated_at: 2025-09-25T02:45:27Z
 url: https://github.com/astral-sh/uv/issues/15842
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # [Question] Do I have to copy every workspace member in my Dockerfile?
 
 ---
 
-_Issue opened by @vaibhavmano on 2025-09-14 16:55_
+_@vaibhavmano_
 
 ### Question
 

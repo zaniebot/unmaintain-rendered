@@ -12,14 +12,14 @@ head: charlie/headers
 created_at: 2023-02-17T13:17:29Z
 updated_at: 2023-02-17T13:19:57Z
 url: https://github.com/astral-sh/ruff/pull/2985
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Adjust header depth in docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 13:17_
+_@charliermarsh_
 
 _No description provided._
 

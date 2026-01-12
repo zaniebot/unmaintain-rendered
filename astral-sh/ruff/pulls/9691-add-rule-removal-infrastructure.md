@@ -12,14 +12,14 @@ head: zb/removed
 created_at: 2024-01-29T22:13:22Z
 updated_at: 2024-01-30T17:52:21Z
 url: https://github.com/astral-sh/ruff/pull/9691
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add rule removal infrastructure
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-29 22:13_
+_@zanieb_
 
 Similar to https://github.com/astral-sh/ruff/pull/9689 — retains removed rules for better error messages and documentation but removed rules _cannot_ be used in any context.
 

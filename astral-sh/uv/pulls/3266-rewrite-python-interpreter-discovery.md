@@ -12,14 +12,14 @@ head: zb/interp-request-ii
 created_at: 2024-04-25T18:01:13Z
 updated_at: 2024-05-21T19:37:25Z
 url: https://github.com/astral-sh/uv/pull/3266
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Rewrite Python interpreter discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-25 18:01_
+_@zanieb_
 
 Updates our Python interpreter discovery to conform to the rules described in #2386, please see that issue for a full description of the behavior. Briefly, we now will search for interpreters that satisfy a requested version without stopping at the first Python executable. Additionally, if retrieving information about an interpreter fails we will continue to search for a working interpreter. We also add the plumbing necessary to request Python implementations other than CPython, though we do not add support for other implementations at this time.
 

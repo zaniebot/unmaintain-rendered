@@ -14,14 +14,14 @@ head: micha/promote-good-projects
 created_at: 2025-05-29T13:12:00Z
 updated_at: 2025-06-02T11:09:31Z
 url: https://github.com/astral-sh/ruff/pull/18370
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Promote projects to good that now no longer hang
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-29 13:12_
+_@MichaReiser_
 
 _No description provided._
 

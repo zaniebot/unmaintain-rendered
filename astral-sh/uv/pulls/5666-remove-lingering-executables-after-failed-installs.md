@@ -13,14 +13,14 @@ head: charlie/linger
 created_at: 2024-07-31T18:57:28Z
 updated_at: 2024-07-31T19:27:26Z
 url: https://github.com/astral-sh/uv/pull/5666
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Remove lingering executables after failed installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 18:57_
+_@charliermarsh_
 
 ## Summary
 

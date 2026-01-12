@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T02:40:24Z
 updated_at: 2026-01-09T02:56:39Z
 url: https://github.com/astral-sh/ty/issues/1235
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `__getattr__` causes unsafety on subclass declarations
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-22 02:40_
+_@KotlinIsland_
 
 ### Summary
 

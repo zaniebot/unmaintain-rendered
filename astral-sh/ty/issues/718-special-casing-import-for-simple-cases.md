@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T18:49:01Z
 updated_at: 2025-06-29T10:49:24Z
 url: https://github.com/astral-sh/ty/issues/718
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Special-casing `__import__()` for simple cases
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-06-27 18:49_
+_@InSyncWithFoo_
 
 [More often than not](https://github.com/search?q=lang%3APython%20%2F__import__%5C(%5B%27%22%5D%5Cw%2B%5B%27%22%5D%5C)%2F&type=code), [`__import__()`](https://docs.python.org/3/library/functions.html#import__) is called with a single literal string value. For example:
 

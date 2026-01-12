@@ -12,14 +12,14 @@ head: improve-rule-resolution
 created_at: 2023-01-28T20:29:50Z
 updated_at: 2023-01-30T21:27:00Z
 url: https://github.com/astral-sh/ruff/pull/2312
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Improve rule config resolution
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-28 20:29_
+_@not-my-profile_
 
 Ruff allows rules to be enabled with `select` and disabled with
 `ignore`, where the more specific rule selector takes precedence,

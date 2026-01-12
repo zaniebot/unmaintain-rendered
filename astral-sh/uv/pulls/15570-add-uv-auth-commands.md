@@ -14,14 +14,14 @@ head: feature/auth
 created_at: 2025-08-28T14:13:04Z
 updated_at: 2025-09-03T01:52:07Z
 url: https://github.com/astral-sh/uv/pull/15570
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Add `uv auth` commands
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-28 14:13_
+_@zanieb_
 
 Includes
 

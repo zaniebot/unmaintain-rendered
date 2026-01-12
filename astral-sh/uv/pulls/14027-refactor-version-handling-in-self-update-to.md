@@ -11,14 +11,14 @@ head: dryrun
 created_at: 2025-06-13T14:18:22Z
 updated_at: 2025-06-13T21:20:42Z
 url: https://github.com/astral-sh/uv/pull/14027
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Refactor version handling in self_update to report upgradable version
 
 ---
 
-_Pull request opened by @miried on 2025-06-13 14:18_
+_@miried_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

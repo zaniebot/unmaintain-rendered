@@ -12,14 +12,14 @@ head: add-pre-committ-install
 created_at: 2023-07-28T14:08:21Z
 updated_at: 2023-08-01T14:28:51Z
 url: https://github.com/astral-sh/ruff/pull/6153
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add `pre-commit install` in `CONTRIBUTING.md`
 
 ---
 
-_Pull request opened by @harupy on 2023-07-28 14:08_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

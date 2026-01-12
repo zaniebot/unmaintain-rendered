@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T12:02:40Z
 updated_at: 2025-11-06T13:15:01Z
 url: https://github.com/astral-sh/uv/issues/16612
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Persist credentials as common environment variables during uv add
 
 ---
 
-_Issue opened by @HenriqueAJNB on 2025-11-06 12:02_
+_@HenriqueAJNB_
 
 ### Summary
 

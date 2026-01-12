@@ -13,14 +13,14 @@ head: charlie/pycodestyle
 created_at: 2023-02-08T03:24:34Z
 updated_at: 2023-02-08T03:31:15Z
 url: https://github.com/astral-sh/ruff/pull/2653
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Implement whitespace-around-keywords (E271, E272, E273, E274)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 03:24_
+_@charliermarsh_
 
 See: #2402.
 

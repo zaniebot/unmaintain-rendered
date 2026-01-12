@@ -13,14 +13,14 @@ head: charlie/pep723
 created_at: 2024-06-29T23:57:26Z
 updated_at: 2024-07-01T12:20:27Z
 url: https://github.com/astral-sh/uv/pull/4656
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Add PEP 723 support to uv run
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-29 23:57_
+_@charliermarsh_
 
 Closes #3096 
 

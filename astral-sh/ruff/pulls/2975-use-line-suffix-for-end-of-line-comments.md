@@ -13,14 +13,14 @@ head: charlie/fmt-test
 created_at: 2023-02-16T23:29:15Z
 updated_at: 2023-02-16T23:37:41Z
 url: https://github.com/astral-sh/ruff/pull/2975
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use `line_suffix` for end-of-line comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 23:29_
+_@charliermarsh_
 
 This also gets `simple_cases/power_op_spacing.py` passing.
 

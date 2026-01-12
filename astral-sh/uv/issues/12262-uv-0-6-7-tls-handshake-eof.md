@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T08:34:58Z
 updated_at: 2025-03-18T17:54:24Z
 url: https://github.com/astral-sh/uv/issues/12262
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # uv 0.6.7 tls handshake eof
 
 ---
 
-_Issue opened by @leon1995 on 2025-03-18 08:34_
+_@leon1995_
 
 ### Question
 

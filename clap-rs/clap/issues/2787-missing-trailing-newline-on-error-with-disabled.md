@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-09-24T16:14:18Z
 updated_at: 2021-12-13T20:15:25Z
 url: https://github.com/clap-rs/clap/issues/2787
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Missing trailing newline on error with disabled help flag and subcommand
 
 ---
 
-_Issue opened by @jonathanmorley on 2021-09-24 16:14_
+_@jonathanmorley_
 
 ### Please complete the following tasks
 

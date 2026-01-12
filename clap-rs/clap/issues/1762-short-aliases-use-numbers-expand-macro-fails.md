@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-26T08:16:11Z
 updated_at: 2020-04-12T22:28:26Z
 url: https://github.com/clap-rs/clap/issues/1762
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Short aliases use numbers, expand macro fails
 
 ---
 
-_Issue opened by @Stzx on 2020-03-26 08:16_
+_@Stzx_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

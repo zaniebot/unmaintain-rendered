@@ -13,14 +13,14 @@ head: renovate/zeroize-1.x-lockfile
 created_at: 2025-11-03T02:31:34Z
 updated_at: 2025-11-03T15:45:30Z
 url: https://github.com/astral-sh/uv/pull/16572
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Update Rust crate zeroize to v1.8.2
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 02:31_
+_@renovate_
 
 This PR contains the following updates:
 

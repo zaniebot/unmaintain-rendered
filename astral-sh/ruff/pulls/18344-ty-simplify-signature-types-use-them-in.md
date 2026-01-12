@@ -14,14 +14,14 @@ head: dcreager/dunder-call
 created_at: 2025-05-27T19:50:01Z
 updated_at: 2025-05-28T17:11:47Z
 url: https://github.com/astral-sh/ruff/pull/18344
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Simplify signature types, use them in `CallableType`
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-27 19:50_
+_@dcreager_
 
 
 There were many fields in `Signature` and friends that really had more to do with how a signature was being _used_ — how it was looked up, details about an individual call site, etc. Those fields more properly belong in `Bindings` and friends.

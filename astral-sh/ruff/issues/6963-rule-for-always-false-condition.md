@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T02:57:52Z
 updated_at: 2023-09-13T18:25:42Z
 url: https://github.com/astral-sh/ruff/issues/6963
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # rule for always false condition
 
 ---
 
-_Issue opened by @tooptoop4 on 2023-08-29 02:57_
+_@tooptoop4_
 
 new_header is an int type
 below condition can never be satisfied, any rule to highlight this?

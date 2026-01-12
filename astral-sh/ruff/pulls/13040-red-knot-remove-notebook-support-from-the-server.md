@@ -13,14 +13,14 @@ head: dhruv/remove-notebook-sync
 created_at: 2024-08-22T06:56:05Z
 updated_at: 2024-08-22T09:25:48Z
 url: https://github.com/astral-sh/ruff/pull/13040
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Remove notebook support from the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-22 06:56_
+_@dhruvmanila_
 
 ## Summary
 

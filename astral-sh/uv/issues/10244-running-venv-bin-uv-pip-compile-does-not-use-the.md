@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T21:14:35Z
 updated_at: 2024-12-31T14:48:37Z
 url: https://github.com/astral-sh/uv/issues/10244
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Running `venv/bin/uv pip compile` does not use the Python in`venv/bin` (if that venv was not activated)
 
 ---
 
-_Issue opened by @thecityofguanyu on 2024-12-30 21:14_
+_@thecityofguanyu_
 
 Given the following:
 

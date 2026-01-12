@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T22:06:21Z
 updated_at: 2024-12-27T12:15:14Z
 url: https://github.com/astral-sh/ruff/issues/15154
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `SyntaxError` in example replacement snippet in `nonlocal-without-binding` (`PLE0117`)
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-26 22:06_
+_@AlexWaygood_
 
 The docs for [`nonlocal-without-binding`](https://docs.astral.sh/ruff/rules/nonlocal-without-binding/) have this snippet under the heading `## Use instead`:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T09:26:57Z
 updated_at: 2025-04-16T08:14:17Z
 url: https://github.com/astral-sh/ruff/issues/12488
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # How to disable rules for ruff format?
 
 ---
 
-_Issue opened by @AntiSol on 2024-07-24 09:26_
+_@AntiSol_
 
 Hello, I'm trying to have `ruff format` not "fix" W293 (empty lines with whitespace). I've tried various searches and options but nothing seems to make it do what I want.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T14:46:18Z
 updated_at: 2025-05-13T03:08:14Z
 url: https://github.com/astral-sh/uv/issues/13091
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # When adding optional dependency for a non-existing group, a new emtpy dependency group should be created
 
 ---
 
-_Issue opened by @alelom on 2025-04-24 14:46_
+_@alelom_
 
 ### Summary
 

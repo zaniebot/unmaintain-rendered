@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T23:31:27Z
 updated_at: 2025-09-01T08:16:29Z
 url: https://github.com/astral-sh/ty/issues/1106
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty treats cls of __init_subclass__ as self.
 
 ---
 
-_Issue opened by @danielknell on 2025-08-29 23:31_
+_@danielknell_
 
 ### Summary
 

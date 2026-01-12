@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-06T11:50:23Z
 updated_at: 2024-02-08T15:00:22Z
 url: https://github.com/astral-sh/ruff/issues/9857
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF027 false negative on method calls
 
 ---
 
-_Issue opened by @ocaballeror on 2024-02-06 11:50_
+_@ocaballeror_
 
 From what I read in [the original PR](https://github.com/astral-sh/ruff/pull/9728), the rule is meant to ignore string literals that have an immediate method call on them to avoid false positives, but from what I'm seeing, every line with a method call is completely ignored, even if the method is not invoked on the string itself. Is this intended behavior?
 

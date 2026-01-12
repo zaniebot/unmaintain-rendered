@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T04:50:46Z
 updated_at: 2025-10-21T06:57:30Z
 url: https://github.com/astral-sh/ruff/issues/11916
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Improve error recovery for strings and f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-18 04:50_
+_@dhruvmanila_
 
 Currently, the parser drops all unterminated strings or more precisely the lexer doesn't emit the string token for unterminated strings. This is for both normal and formatted string literals.
 

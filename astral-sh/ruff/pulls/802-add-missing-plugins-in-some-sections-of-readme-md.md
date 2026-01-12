@@ -12,14 +12,14 @@ head: add-mccabe-toc
 created_at: 2022-11-18T09:38:01Z
 updated_at: 2022-12-01T17:15:28Z
 url: https://github.com/astral-sh/ruff/pull/802
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add missing plugins in some sections of README.md
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-18 09:38_
+_@JonathanPlasse_
 
 _No description provided._
 

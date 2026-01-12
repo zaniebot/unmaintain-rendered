@@ -12,14 +12,14 @@ head: zanie/new-incompat-urls
 created_at: 2023-11-14T22:22:15Z
 updated_at: 2023-11-17T14:28:13Z
 url: https://github.com/astral-sh/uv/pull/425
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Use `UnusableDependencies` for URL dependency conflicts
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-14 22:22_
+_@zanieb_
 
 Extends #424 with support for URL dependency incompatibilities.
 

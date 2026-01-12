@@ -12,14 +12,14 @@ head: cache-responses
 created_at: 2023-11-08T20:58:20Z
 updated_at: 2023-11-10T11:03:42Z
 url: https://github.com/astral-sh/uv/pull/368
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Add proper caching for pypi metadata fetching kinds
 
 ---
 
-_Pull request opened by @konstin on 2023-11-08 20:58_
+_@konstin_
 
 I intend this to become the main form of caching for puffin: You can make http requests, you tranform the data to what you really need, you have control over the cache key, and the cache is always json (or anything else much faster we want to replace it with as long as it's serde!)
 

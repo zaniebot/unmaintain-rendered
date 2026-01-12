@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T18:29:01Z
 updated_at: 2025-06-16T20:01:27Z
 url: https://github.com/clap-rs/clap/issues/6036
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Conformation Argument
 
 ---
 
-_Issue opened by @snowfoxsh on 2025-06-16 18:29_
+_@snowfoxsh_
 
 ### Please complete the following tasks
 

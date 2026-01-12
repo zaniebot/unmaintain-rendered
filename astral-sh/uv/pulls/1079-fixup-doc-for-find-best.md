@@ -12,14 +12,14 @@ head: zb/fixup
 created_at: 2024-01-24T17:34:45Z
 updated_at: 2024-01-24T18:55:02Z
 url: https://github.com/astral-sh/uv/pull/1079
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Fixup doc for `find_best`
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-24 17:34_
+_@zanieb_
 
 _No description provided._
 

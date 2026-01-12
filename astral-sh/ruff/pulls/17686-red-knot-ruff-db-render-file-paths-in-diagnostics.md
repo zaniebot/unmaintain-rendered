@@ -14,14 +14,14 @@ head: ag/diagnostic-relative-path
 created_at: 2025-04-28T17:05:32Z
 updated_at: 2025-04-28T18:32:36Z
 url: https://github.com/astral-sh/ruff/pull/17686
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] ruff_db: render file paths in diagnostics as relative paths if possible
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-28 17:05_
+_@BurntSushi_
 
 This is done in what appears to be the same way as Ruff: we get the CWD,
 strip the prefix from the path if possible, and use that. If stripping

@@ -13,14 +13,14 @@ head: pyi-ownership
 created_at: 2024-02-26T09:58:11Z
 updated_at: 2024-02-26T10:25:48Z
 url: https://github.com/astral-sh/ruff/pull/10129
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add Alex Waygood as a CODEOWNER for flake8-pyi
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-02-26 09:58_
+_@AlexWaygood_
 
 ## Summary
 

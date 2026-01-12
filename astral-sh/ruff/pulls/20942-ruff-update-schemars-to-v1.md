@@ -13,14 +13,14 @@ head: schemars-v1-upgrade
 created_at: 2025-10-17T15:41:56Z
 updated_at: 2025-10-20T07:05:38Z
 url: https://github.com/astral-sh/ruff/pull/20942
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [`ruff`] Update schemars to v1
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-17 15:41_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

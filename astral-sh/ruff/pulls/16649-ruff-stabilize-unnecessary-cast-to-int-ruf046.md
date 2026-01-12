@@ -13,14 +13,14 @@ head: brent/ruf046-0.10
 created_at: 2025-03-11T21:56:41Z
 updated_at: 2025-03-12T12:14:11Z
 url: https://github.com/astral-sh/ruff/pull/16649
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `unnecessary-cast-to-int` (`RUF046`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 21:56_
+_@ntBre_
 
 Summary
 --

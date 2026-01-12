@@ -13,14 +13,14 @@ head: charlie/tl
 created_at: 2025-11-28T19:36:09Z
 updated_at: 2025-11-28T20:02:45Z
 url: https://github.com/astral-sh/uv/pull/16887
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Bump `astral-tl` to v0.7.10
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 19:36_
+_@charliermarsh_
 
 ## Summary
 

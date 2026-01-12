@@ -14,14 +14,14 @@ head: fix/windows-py-stderr
 created_at: 2024-02-22T22:18:00Z
 updated_at: 2024-02-23T22:36:34Z
 url: https://github.com/astral-sh/uv/pull/1885
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Fix windows py spurious stderr failure
 
 ---
 
-_Pull request opened by @jnnnnn on 2024-02-22 22:18_
+_@jnnnnn_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

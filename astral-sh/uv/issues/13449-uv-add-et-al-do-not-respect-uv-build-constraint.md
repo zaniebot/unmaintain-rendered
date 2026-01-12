@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T11:00:39Z
 updated_at: 2025-06-28T13:26:31Z
 url: https://github.com/astral-sh/uv/issues/13449
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # `uv add` et al do not respect UV_BUILD_CONSTRAINT
 
 ---
 
-_Issue opened by @tmct on 2025-05-14 11:00_
+_@tmct_
 
 ### Summary
 

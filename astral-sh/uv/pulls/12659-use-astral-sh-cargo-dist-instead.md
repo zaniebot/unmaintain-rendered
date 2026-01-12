@@ -13,14 +13,14 @@ head: gankra/dist-astral
 created_at: 2025-04-03T20:46:16Z
 updated_at: 2025-04-03T21:25:20Z
 url: https://github.com/astral-sh/uv/pull/12659
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # use astral-sh/cargo-dist instead
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-03 20:46_
+_@Gankra_
 
 _No description provided._
 

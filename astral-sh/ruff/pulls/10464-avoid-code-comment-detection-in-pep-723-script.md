@@ -13,14 +13,14 @@ head: charlie/script
 created_at: 2024-03-18T21:33:15Z
 updated_at: 2024-03-18T21:48:52Z
 url: https://github.com/astral-sh/ruff/pull/10464
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Avoid code comment detection in PEP 723 script tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-18 21:33_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/10455.
 

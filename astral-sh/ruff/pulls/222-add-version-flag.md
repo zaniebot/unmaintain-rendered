@@ -12,14 +12,14 @@ head: add-version
 created_at: 2022-09-18T05:07:07Z
 updated_at: 2022-09-18T15:15:16Z
 url: https://github.com/astral-sh/ruff/pull/222
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add `--version` flag
 
 ---
 
-_Pull request opened by @harupy on 2022-09-18 05:07_
+_@harupy_
 
 ```
 > ruff -V

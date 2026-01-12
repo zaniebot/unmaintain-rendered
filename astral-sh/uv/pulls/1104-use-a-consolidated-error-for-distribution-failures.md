@@ -13,14 +13,14 @@ head: charlie/src
 created_at: 2024-01-25T19:46:37Z
 updated_at: 2024-01-25T19:49:12Z
 url: https://github.com/astral-sh/uv/pull/1104
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Use a consolidated error for distribution failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 19:46_
+_@charliermarsh_
 
 ## Summary
 

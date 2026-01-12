@@ -13,14 +13,14 @@ head: dhruv/tokenkind-display
 created_at: 2024-03-31T03:09:17Z
 updated_at: 2024-04-10T16:48:21Z
 url: https://github.com/astral-sh/ruff/pull/10678
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Implement `Display` for `TokenKind`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-31 03:09_
+_@dhruvmanila_
 
 ## Summary
 

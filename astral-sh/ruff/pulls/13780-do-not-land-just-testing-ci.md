@@ -12,14 +12,14 @@ head: cjm/test-ci
 created_at: 2024-10-16T18:18:29Z
 updated_at: 2024-10-16T20:41:51Z
 url: https://github.com/astral-sh/ruff/pull/13780
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [DO NOT LAND] just testing CI
 
 ---
 
-_Pull request opened by @carljm on 2024-10-16 18:18_
+_@carljm_
 
 _No description provided._
 

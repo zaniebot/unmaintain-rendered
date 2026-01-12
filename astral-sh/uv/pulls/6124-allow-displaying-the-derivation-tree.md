@@ -14,14 +14,14 @@ head: zb/show-tree
 created_at: 2024-08-15T17:38:22Z
 updated_at: 2024-08-16T14:25:27Z
 url: https://github.com/astral-sh/uv/pull/6124
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Allow displaying the derivation tree
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 17:38_
+_@zanieb_
 
 I need this for debugging error messages.
 

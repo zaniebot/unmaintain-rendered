@@ -12,14 +12,14 @@ head: skip-.pytype_directory
 created_at: 2023-02-16T19:06:04Z
 updated_at: 2023-02-16T19:38:14Z
 url: https://github.com/astral-sh/ruff/pull/2966
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Skip .pytype directory by default.
 
 ---
 
-_Pull request opened by @manueljacob on 2023-02-16 19:06_
+_@manueljacob_
 
 Pytype stores .pyi files in .pytype that ruff shouldn’t check or touch.
 

@@ -14,14 +14,14 @@ head: david/builtin-shadowing-tests
 created_at: 2025-06-23T10:23:42Z
 updated_at: 2025-06-23T10:32:52Z
 url: https://github.com/astral-sh/ruff/pull/18889
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Minor change to builtins.md test
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-23 10:23_
+_@sharkdp_
 
 ## Summary
 

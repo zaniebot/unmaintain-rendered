@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T17:22:59Z
 updated_at: 2025-02-05T12:44:21Z
 url: https://github.com/astral-sh/ruff/issues/15857
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF012 , not detecting the use of ClassVar
 
 ---
 
-_Issue opened by @Sxderp on 2025-01-31 17:22_
+_@Sxderp_
 
 ### Description
 

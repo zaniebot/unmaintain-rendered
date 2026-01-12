@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-19T11:51:14Z
 updated_at: 2023-07-19T13:50:25Z
 url: https://github.com/clap-rs/clap/issues/5019
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `derive(Parser)` fails when using type alias
 
 ---
 
-_Issue opened by @mamekoro on 2023-07-19 11:51_
+_@mamekoro_
 
 ### Please complete the following tasks
 

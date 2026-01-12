@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-08T06:46:16Z
 updated_at: 2022-05-09T14:30:21Z
 url: https://github.com/clap-rs/clap/issues/3704
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # use &str instead of char as type of `short`
 
 ---
 
-_Issue opened by @franklucky001 on 2022-05-08 06:46_
+_@franklucky001_
 
 ### Please complete the following tasks
 

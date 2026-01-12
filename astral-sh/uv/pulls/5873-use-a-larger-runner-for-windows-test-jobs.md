@@ -13,14 +13,14 @@ head: zb/windows-larger-runner
 created_at: 2024-08-07T16:20:53Z
 updated_at: 2024-08-07T17:32:02Z
 url: https://github.com/astral-sh/uv/pull/5873
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Use a larger runner for Windows test jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 16:20_
+_@zanieb_
 
 From 8 to 16 cores, 32 to 64 GB ram. Testing on Windows first because it's the bottleneck.
 

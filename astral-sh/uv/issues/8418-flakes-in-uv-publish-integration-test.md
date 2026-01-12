@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T16:38:37Z
 updated_at: 2024-11-03T20:56:21Z
 url: https://github.com/astral-sh/uv/issues/8418
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Flakes in `uv publish` integration test
 
 ---
 
-_Issue opened by @zanieb on 2024-10-21 16:38_
+_@zanieb_
 
 ```
 Run ./uv run -p 3.12 scripts/publish/test_publish.py --uv ./uv all

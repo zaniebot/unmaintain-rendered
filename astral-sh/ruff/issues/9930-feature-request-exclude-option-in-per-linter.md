@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T13:45:45Z
 updated_at: 2024-02-25T11:39:56Z
 url: https://github.com/astral-sh/ruff/issues/9930
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Feature Request] Exclude option in per-linter configuration
 
 ---
 
-_Issue opened by @AAraKKe on 2024-02-11 13:45_
+_@AAraKKe_
 
 ## Description
 Hi team! I started with Ruff a couple of days ago for a side project, and I love it. Not only because of how fast it is but also because it removes the need to maintain several configuration files since now everything can live in the `pyproject.toml` file of the project (I am looking to you, flake8...).

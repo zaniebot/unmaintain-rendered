@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-18T10:12:28Z
 updated_at: 2024-10-24T14:33:08Z
 url: https://github.com/astral-sh/ruff/issues/12962
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `__all__` related rules
 
 ---
 
-_Issue opened by @Goldziher on 2024-08-18 10:12_
+_@Goldziher_
 
 1. I would like to ask for a rule that requires an `__all__` list to be declared in each file where there are non-private members, and all the non-private members are listed in it. 
 2. Another helpful rule is to detect declarations in `__all__` that are unused

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-24T19:40:32Z
 updated_at: 2023-01-31T22:04:58Z
 url: https://github.com/clap-rs/clap/issues/4670
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Semi-complex arg! macro invocation causes stack overflow and huge slowdown with build, check, or clippy
 
 ---
 
-_Issue opened by @TED-996 on 2023-01-24 19:40_
+_@TED-996_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-08T13:29:54Z
 updated_at: 2025-10-08T17:47:28Z
 url: https://github.com/astral-sh/ruff/issues/20766
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rules for Undocumented Public Variable / Constant and Class Member (attribute docstrings)
 
 ---
 
-_Issue opened by @phiresky on 2025-10-08 13:29_
+_@phiresky_
 
 ### Summary
 

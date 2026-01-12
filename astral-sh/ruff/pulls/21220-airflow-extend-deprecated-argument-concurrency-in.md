@@ -13,14 +13,14 @@ head: extend-AIR301
 created_at: 2025-11-03T01:46:45Z
 updated_at: 2025-11-03T20:20:21Z
 url: https://github.com/astral-sh/ruff/pull/21220
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [`airflow`] extend deprecated argument `concurrency` in `airflow..DAG` (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-11-03 01:46_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

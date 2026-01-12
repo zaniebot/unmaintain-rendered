@@ -11,14 +11,14 @@ head: cargo_fuzz_install
 created_at: 2023-06-07T15:34:28Z
 updated_at: 2023-06-07T16:04:54Z
 url: https://github.com/astral-sh/ruff/pull/4931
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Drop libafl to fix the cargo-fuzz CI
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-07 15:34_
+_@addisoncrump_
 
 See https://github.com/charliermarsh/ruff/pull/4928#issuecomment-1581065120.
 

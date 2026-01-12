@@ -14,14 +14,14 @@ head: zanie/format-ll
 created_at: 2023-10-30T17:59:12Z
 updated_at: 2023-11-03T12:01:04Z
 url: https://github.com/astral-sh/ruff/pull/8363
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add `--line-length` option to `format` command
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-30 17:59_
+_@zanieb_
 
 Restores the `--line-length` option removed in https://github.com/astral-sh/ruff/pull/8131
 

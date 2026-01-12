@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T21:27:54Z
 updated_at: 2024-03-22T18:43:25Z
 url: https://github.com/astral-sh/ruff/issues/9477
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Default copyright pattern doesn't allow commas
 
 ---
 
-_Issue opened by @dopplershift on 2024-01-11 21:27_
+_@dopplershift_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

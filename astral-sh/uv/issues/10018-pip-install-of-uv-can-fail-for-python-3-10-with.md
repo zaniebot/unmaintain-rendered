@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T02:46:42Z
 updated_at: 2024-12-19T16:37:54Z
 url: https://github.com/astral-sh/uv/issues/10018
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # pip install of uv can fail for Python < 3.10 with certain Debian Python distributions
 
 ---
 
-_Issue opened by @mason3k on 2024-12-19 02:46_
+_@mason3k_
 
 I love the project and am grateful for all the work!
 

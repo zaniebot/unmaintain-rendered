@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-01T16:45:31Z
 updated_at: 2023-09-15T01:15:53Z
 url: https://github.com/astral-sh/ruff/issues/4789
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement `perflint`
 
 ---
 
-_Issue opened by @93578237 on 2023-06-01 16:45_
+_@93578237_
 
 https://github.com/tonybaloney/perflint - Python Linter for performance anti patterns.
 

@@ -13,14 +13,14 @@ head: cjm/disclaimer
 created_at: 2025-05-07T19:28:28Z
 updated_at: 2025-05-07T19:47:13Z
 url: https://github.com/astral-sh/ty/pull/254
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # add stronger disclaimer to README
 
 ---
 
-_Pull request opened by @carljm on 2025-05-07 19:28_
+_@carljm_
 
 More README updates will be coming, just want to get this in there ASAP since we're on the front page of HN now.
 

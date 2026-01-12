@@ -13,14 +13,14 @@ head: zb/sync-invalid
 created_at: 2024-09-19T11:51:02Z
 updated_at: 2024-09-19T17:50:45Z
 url: https://github.com/astral-sh/uv/pull/7544
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Improve invalid environment warning messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 11:51_
+_@zanieb_
 
 Adds display of the target path of the link (since the link filename itself is basically static) and distinguishes between broken links and missing files.
 

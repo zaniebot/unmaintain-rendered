@@ -13,14 +13,14 @@ head: remove-empty-sources
 created_at: 2024-10-19T14:00:48Z
 updated_at: 2024-10-19T15:21:32Z
 url: https://github.com/astral-sh/uv/pull/8365
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Remove `tool.uv.sources` table if it is empty
 
 ---
 
-_Pull request opened by @j178 on 2024-10-19 14:00_
+_@j178_
 
 ## Summary
 

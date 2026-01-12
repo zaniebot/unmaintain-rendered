@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-18T13:07:29Z
 updated_at: 2023-01-19T13:01:29Z
 url: https://github.com/astral-sh/ruff/issues/1953
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support for pylint format
 
 ---
 
-_Issue opened by @damienallen on 2023-01-18 13:07_
+_@damienallen_
 
 I like that ruff, for the most part, is drop-in replacement for flake8. In terms of local development, I have found this to be true and usability is fantastic.
 

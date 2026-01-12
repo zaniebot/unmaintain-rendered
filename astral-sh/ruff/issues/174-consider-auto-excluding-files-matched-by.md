@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-13T00:59:27Z
 updated_at: 2022-12-14T21:56:26Z
 url: https://github.com/astral-sh/ruff/issues/174
-synced_at: 2026-01-10T12:06:12Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Consider auto-excluding files matched by gitignore files
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-13 00:59_
+_@Jackenmen_
 
 Patterns would need to be read from:
 - `.gitignore` file in the same directory as the path, or in any parent directory (the latter allows tools to put a `.gitignore` file with `*` in the directory they create to auto-exclude themselves)

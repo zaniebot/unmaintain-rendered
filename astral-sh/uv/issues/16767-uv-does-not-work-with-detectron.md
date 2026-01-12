@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T09:59:26Z
 updated_at: 2025-12-03T05:55:39Z
 url: https://github.com/astral-sh/uv/issues/16767
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # UV does not work with detectron
 
 ---
 
-_Issue opened by @1uck13ss on 2025-11-18 09:59_
+_@1uck13ss_
 
 ### Summary
 

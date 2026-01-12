@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T11:07:03Z
 updated_at: 2025-12-10T13:29:54Z
 url: https://github.com/astral-sh/uv/issues/17066
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Block pip install when venv is activated
 
 ---
 
-_Issue opened by @Stefanhg on 2025-12-10 11:07_
+_@Stefanhg_
 
 ### Summary
 

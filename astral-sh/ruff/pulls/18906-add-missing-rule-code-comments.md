@@ -13,14 +13,14 @@ head: add-rule-code-comments
 created_at: 2025-06-24T00:48:05Z
 updated_at: 2025-06-25T01:42:36Z
 url: https://github.com/astral-sh/ruff/pull/18906
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Add missing rule code comments
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-24 00:48_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

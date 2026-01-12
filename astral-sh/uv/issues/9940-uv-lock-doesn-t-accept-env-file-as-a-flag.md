@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T16:46:14Z
 updated_at: 2024-12-16T22:08:16Z
 url: https://github.com/astral-sh/uv/issues/9940
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `uv lock` doesn't accept `--env-file` as a flag
 
 ---
 
-_Issue opened by @hdrwilkinson on 2024-12-16 16:46_
+_@hdrwilkinson_
 
 I'm wanting to install a github private repo as part of a `uv sync` however, in the `uv lock` stage there is an error because ` > [lock 5/5] RUN --mount=type=secret,id=_env     bash -c 'uv lock --env-file /run/secrets/_env':
 #0 0.070 error: unexpected argument '--env-file' found`

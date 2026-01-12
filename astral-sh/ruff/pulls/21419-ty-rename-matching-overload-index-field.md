@@ -14,14 +14,14 @@ head: dhruv/rename-matching-overload-field
 created_at: 2025-11-13T06:07:46Z
 updated_at: 2025-11-13T08:37:00Z
 url: https://github.com/astral-sh/ruff/pull/21419
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Rename matching overload index field
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-13 06:07_
+_@dhruvmanila_
 
 ## Summary
 

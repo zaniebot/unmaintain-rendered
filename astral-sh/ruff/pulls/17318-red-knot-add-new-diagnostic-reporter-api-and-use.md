@@ -14,14 +14,14 @@ head: ag/red-knot-new-diagnostic-data-model
 created_at: 2025-04-09T15:45:08Z
 updated_at: 2025-04-10T17:21:02Z
 url: https://github.com/astral-sh/ruff/pull/17318
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] add new diagnostic reporter API and use it in some places
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-09 15:45_
+_@BurntSushi_
 
 I got to a decent checkpoint in my diagnostic refactor of Red Knot
 and wanted to get it up in a PR to make sure reviews are reasonably

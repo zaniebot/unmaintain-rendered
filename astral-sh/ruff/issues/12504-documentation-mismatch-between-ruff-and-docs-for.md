@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T08:26:11Z
 updated_at: 2024-07-25T14:24:18Z
 url: https://github.com/astral-sh/ruff/issues/12504
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Documentation mismatch between `ruff` and `docs` for `f-string-in-exception`
 
 ---
 
-_Issue opened by @UriyaHarpeness on 2024-07-25 08:26_
+_@UriyaHarpeness_
 
 This is a documentation issue, not related to the logic.
 This issue is relevant for the current version: 0.5.4.

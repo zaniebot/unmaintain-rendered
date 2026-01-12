@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-05T21:52:15Z
 updated_at: 2024-11-05T22:14:08Z
 url: https://github.com/astral-sh/uv/pull/8845
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # docs: fix `uv python install` docs to use an exisigin pypy version
 
 ---
 
-_Pull request opened by @nonZero on 2024-11-05 21:52_
+_@nonZero_
 
 The current docs call to install pypy@3.12 that does not exist yet. Change it to install pypy@3.10
 

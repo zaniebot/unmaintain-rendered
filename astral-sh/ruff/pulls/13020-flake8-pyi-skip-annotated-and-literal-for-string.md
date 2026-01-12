@@ -12,14 +12,14 @@ head: pyi053-redux
 created_at: 2024-08-21T03:56:09Z
 updated_at: 2024-12-05T21:23:43Z
 url: https://github.com/astral-sh/ruff/pull/13020
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [flake8-pyi] Skip Annotated and Literal for `string-or-bytes-too-long (PYI053)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-21 03:56_
+_@dylwil3_
 
 PYI053 now skips strings which appear inside `Literal[...]` or `Annotated[...]`.
 

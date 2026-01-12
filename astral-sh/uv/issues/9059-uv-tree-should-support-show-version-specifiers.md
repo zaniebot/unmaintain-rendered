@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T14:37:35Z
 updated_at: 2025-12-19T10:03:19Z
 url: https://github.com/astral-sh/uv/issues/9059
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # `uv tree` should support `--show-version-specifiers` like `uv pip tree`
 
 ---
 
-_Issue opened by @zanieb on 2024-11-12 14:37_
+_@zanieb_
 
 I was surprised to find this is not supported.
 

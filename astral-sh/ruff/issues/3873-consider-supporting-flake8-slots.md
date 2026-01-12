@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-04T02:58:30Z
 updated_at: 2023-06-09T04:14:17Z
 url: https://github.com/astral-sh/ruff/issues/3873
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Consider supporting flake8-slots
 
 ---
 
-_Issue opened by @nth10sd on 2023-04-04 02:58_
+_@nth10sd_
 
 Please consider supporting [flake8-slots](https://github.com/python-formate/flake8-slots).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-26T07:10:39Z
 updated_at: 2023-12-27T14:45:39Z
 url: https://github.com/astral-sh/ruff/issues/9281
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # FURB152 should look at additional digits to reduce false positives
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-12-26 07:10_
+_@hauntsaninja_
 
 For example, it'll trigger on the following program
 ```

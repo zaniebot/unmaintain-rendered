@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-11T19:23:51Z
 updated_at: 2024-12-26T15:31:50Z
 url: https://github.com/astral-sh/uv/issues/8130
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Allow setting environment variable into cache-keys
 
 ---
 
-_Issue opened by @gaborbernat on 2024-10-11 19:23_
+_@gaborbernat_
 
 So `uv sync` is governed by https://docs.astral.sh/uv/reference/settings/#cache-keys. Occasionally, you want to customize the build package based on environment variables (e.g., for a type checker no need to build a NPM distribution static files, but for the tests you might need).  Accordingly, we should allow including environment variables into the cache key.
 

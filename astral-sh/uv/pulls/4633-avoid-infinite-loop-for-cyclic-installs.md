@@ -14,14 +14,14 @@ head: charlie/c
 created_at: 2024-06-28T18:53:55Z
 updated_at: 2024-06-28T20:15:29Z
 url: https://github.com/astral-sh/uv/pull/4633
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Avoid infinite loop for cyclic installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-28 18:53_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: internal/remove-fmt
 created_at: 2023-08-16T17:22:07Z
 updated_at: 2023-08-16T17:54:34Z
 url: https://github.com/astral-sh/ruff/pull/6624
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove unused runtime string formatting logic
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-16 17:22_
+_@zanieb_
 
 In https://github.com/astral-sh/ruff/pull/6616 we are adding support for nested replacements in format specifiers which makes actually formatting strings infeasible without a great deal of complexity. Since we're not using these functions (they just exist for runtime use in RustPython), we can just remove them.
 

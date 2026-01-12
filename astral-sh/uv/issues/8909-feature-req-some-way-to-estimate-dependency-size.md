@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T00:36:49Z
 updated_at: 2024-11-09T11:16:33Z
 url: https://github.com/astral-sh/uv/issues/8909
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Feature req: some way to estimate dependency size
 
 ---
 
-_Issue opened by @dimaqq on 2024-11-08 00:36_
+_@dimaqq_
 
 uv 0.4.30 (Homebrew 2024-11-05)
 

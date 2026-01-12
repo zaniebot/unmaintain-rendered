@@ -13,14 +13,14 @@ head: brent/fix-semicolon
 created_at: 2025-04-03T22:07:34Z
 updated_at: 2025-04-03T22:17:01Z
 url: https://github.com/astral-sh/ruff/pull/17188
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [minor] Fix extra semicolon for clippy
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-03 22:07_
+_@ntBre_
 
 _No description provided._
 

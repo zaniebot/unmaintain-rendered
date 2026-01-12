@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T03:03:16Z
 updated_at: 2025-05-11T07:10:08Z
 url: https://github.com/astral-sh/ruff/issues/18013
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Duplicate match case
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-11 03:03_
+_@JelleZijlstra_
 
 ### Summary
 

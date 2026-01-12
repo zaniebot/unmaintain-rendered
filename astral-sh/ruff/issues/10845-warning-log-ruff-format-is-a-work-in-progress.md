@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-09T10:55:12Z
 updated_at: 2024-04-09T12:42:34Z
 url: https://github.com/astral-sh/ruff/issues/10845
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Warning log: `ruff format` is a work-in-progress, subject to change at any time, and intended only for experimentation.
 
 ---
 
-_Issue opened by @ancalita on 2024-04-09 10:55_
+_@ancalita_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

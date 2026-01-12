@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-30T19:10:33Z
 updated_at: 2022-09-30T19:19:30Z
 url: https://github.com/clap-rs/clap/issues/4311
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Implicit help short replacement no longer works in v4
 
 ---
 
-_Issue opened by @TitanNano on 2022-09-30 19:10_
+_@TitanNano_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T13:23:53Z
 updated_at: 2025-02-18T14:08:38Z
 url: https://github.com/astral-sh/uv/issues/7016
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Automatic Git Repository Initialization for `uv init` Command
 
 ---
 
-_Issue opened by @akmalsoliev on 2024-09-04 13:23_
+_@akmalsoliev_
 
 Implement a feature that automatically initializes a Git repository and generates a `.gitignore` file when the `uv init` command is executed. This functionality should mirror the behavior of `cargo new` or `cargo init --vcs` in the Cargo package manager for Rust.
 

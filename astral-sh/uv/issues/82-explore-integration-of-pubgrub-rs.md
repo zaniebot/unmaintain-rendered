@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-10T03:26:26Z
 updated_at: 2023-10-16T02:09:25Z
 url: https://github.com/astral-sh/uv/issues/82
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Explore integration of `pubgrub-rs`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-10 03:26_
+_@charliermarsh_
 
 _No description provided._
 

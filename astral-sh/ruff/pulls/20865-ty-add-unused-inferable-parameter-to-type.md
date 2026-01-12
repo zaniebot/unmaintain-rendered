@@ -15,14 +15,14 @@ head: dcreager/non-inferable-api
 created_at: 2025-10-14T14:08:45Z
 updated_at: 2025-10-15T13:05:18Z
 url: https://github.com/astral-sh/ruff/pull/20865
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Add (unused) `inferable` parameter to type property methods
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-14 14:08_
+_@dcreager_
 
 A large part of the diff on #20677 just involves threading a new `inferable` parameter through all of the type property methods. In the interests of making that PR easier to review, I've pulled that bit out into here, so that it can be reviewed in isolation. This should be a pure refactoring, with no logic changes or behavioral changes.
 

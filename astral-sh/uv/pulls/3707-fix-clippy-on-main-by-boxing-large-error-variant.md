@@ -13,14 +13,14 @@ head: konsti/fix-windows-clippy-main
 created_at: 2024-05-21T17:24:16Z
 updated_at: 2024-05-21T17:56:24Z
 url: https://github.com/astral-sh/uv/pull/3707
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Fix clippy on main by boxing large error variant
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 17:24_
+_@konstin_
 
 I don't really understand why this only happens on windows clippy and not on linux too, but as usual, boxing the error variant fixes it.
 

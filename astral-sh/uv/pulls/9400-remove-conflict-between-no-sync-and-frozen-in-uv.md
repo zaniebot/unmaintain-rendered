@@ -13,14 +13,14 @@ head: charlie/fro
 created_at: 2024-11-25T01:09:38Z
 updated_at: 2024-11-25T01:18:28Z
 url: https://github.com/astral-sh/uv/pull/9400
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Remove conflict between `--no-sync` and `--frozen` in `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-25 01:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/syn-duplicate-parameter-names
 created_at: 2025-04-01T19:09:12Z
 updated_at: 2025-04-23T19:45:53Z
 url: https://github.com/astral-sh/ruff/pull/17131
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Make duplicate parameter names a semantic error
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-01 19:09_
+_@ntBre_
 
 Status
 --

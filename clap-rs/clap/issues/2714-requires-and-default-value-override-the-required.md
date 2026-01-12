@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-18T03:32:08Z
 updated_at: 2021-10-27T21:31:07Z
 url: https://github.com/clap-rs/clap/issues/2714
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `requires` and `default_value` override the `required` field on the target of `requires`
 
 ---
 
-_Issue opened by @rectangular-zone on 2021-08-18 03:32_
+_@rectangular-zone_
 
 ### Please complete the following tasks
 

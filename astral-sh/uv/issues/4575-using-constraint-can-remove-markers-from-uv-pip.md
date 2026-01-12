@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T08:46:21Z
 updated_at: 2024-06-29T16:51:05Z
 url: https://github.com/astral-sh/uv/issues/4575
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Using --constraint can remove markers from 'uv pip compile --universal'
 
 ---
 
-_Issue opened by @Lordshinjo on 2024-06-27 08:46_
+_@Lordshinjo_
 
 (Note: I suspect the issues also applies to `--no-strip-markers`, but am only talking about `--universal` here)
 

@@ -12,14 +12,14 @@ head: charlie/empty
 created_at: 2023-03-14T21:57:27Z
 updated_at: 2023-03-14T22:09:14Z
 url: https://github.com/astral-sh/ruff/pull/3526
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid PEP 604 panic with empty tuple
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-14 21:57_
+_@charliermarsh_
 
 Closes #3524.
 

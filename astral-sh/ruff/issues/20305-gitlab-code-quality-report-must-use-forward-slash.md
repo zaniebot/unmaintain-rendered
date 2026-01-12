@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T14:27:45Z
 updated_at: 2025-09-08T17:42:12Z
 url: https://github.com/astral-sh/ruff/issues/20305
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Gitlab code quality report must use forward slash in paths
 
 ---
 
-_Issue opened by @mathieugouin on 2025-09-08 14:27_
+_@mathieugouin_
 
 ### Summary
 

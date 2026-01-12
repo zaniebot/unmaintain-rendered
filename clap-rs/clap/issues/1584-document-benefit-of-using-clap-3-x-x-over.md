@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-10-25T10:14:18Z
 updated_at: 2021-05-26T00:34:27Z
 url: https://github.com/clap-rs/clap/issues/1584
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Document benefit of using Clap 3.x.x over StructOpt
 
 ---
 
-_Issue opened by @danieleades on 2019-10-25 10:14_
+_@danieleades_
 
 I've been using Clap for some time now and I'm a big fan.
 

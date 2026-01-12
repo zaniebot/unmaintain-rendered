@@ -13,14 +13,14 @@ head: zb/default-groups
 created_at: 2025-01-23T14:48:10Z
 updated_at: 2025-01-23T16:44:35Z
 url: https://github.com/astral-sh/uv/pull/10899
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Add a `uv pip install --group` test case with `default-groups`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 14:48_
+_@zanieb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: konsti/reduce-stack-usage
 created_at: 2024-01-17T13:15:52Z
 updated_at: 2024-01-19T09:29:11Z
 url: https://github.com/astral-sh/uv/pull/947
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Reduce stack usage by boxing `File` in `Dist`, `CachePolicy` and large futures
 
 ---
 
-_Pull request opened by @konstin on 2024-01-17 13:15_
+_@konstin_
 
 Windows has a default stack size of 1MB, which makes puffin often fail with stack overflows. The PR reduces stack size by three changes:
 

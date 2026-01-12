@@ -12,14 +12,14 @@ head: jg/kqvvzuzuzywv
 created_at: 2025-11-09T15:55:07Z
 updated_at: 2025-11-10T20:03:02Z
 url: https://github.com/clap-rs/clap/pull/6181
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs(complete): Fix instructions for sourcing PowerShell completions
 
 ---
 
-_Pull request opened by @jgreitemann on 2025-11-09 15:55_
+_@jgreitemann_
 
 The previous instructions were wrong in that they set the `COMPLETE` env var only while the `$PROFILE` script was written. This was akin to
 

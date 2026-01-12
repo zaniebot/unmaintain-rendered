@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T19:56:50Z
 updated_at: 2025-08-16T21:55:51Z
 url: https://github.com/astral-sh/uv/issues/5975
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv show` / `uv info`
 
 ---
 
-_Issue opened by @nikhilweee on 2024-08-09 19:56_
+_@nikhilweee_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

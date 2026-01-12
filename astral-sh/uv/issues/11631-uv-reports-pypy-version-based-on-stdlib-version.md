@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T18:34:18Z
 updated_at: 2025-02-19T18:39:05Z
 url: https://github.com/astral-sh/uv/issues/11631
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # uv reports PyPy version based on stdlib version rather than `pypy_version`
 
 ---
 
-_Issue opened by @mgorny on 2025-02-19 18:34_
+_@mgorny_
 
 ### Summary
 

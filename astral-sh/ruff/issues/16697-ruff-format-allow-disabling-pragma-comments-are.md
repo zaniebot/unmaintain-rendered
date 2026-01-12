@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T05:04:37Z
 updated_at: 2025-03-13T11:23:22Z
 url: https://github.com/astral-sh/ruff/issues/16697
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff format: allow disabling "Pragma comments are ignored when computing line width"
 
 ---
 
-_Issue opened by @gotmax23 on 2025-03-13 05:04_
+_@gotmax23_
 
 See https://docs.astral.sh/ruff/formatter/black/#pragma-comments-are-ignored-when-computing-line-width. This is a divergence from black and causes lines that were previously wrapped so that pragma comments are one a separated line to be put back to together into a line that exceeds my preferred line length. Would it be possible to make this configurable?
 

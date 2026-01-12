@@ -13,14 +13,14 @@ head: ruff-format-badge
 created_at: 2023-10-09T21:06:56Z
 updated_at: 2023-10-19T13:54:08Z
 url: https://github.com/astral-sh/ruff/pull/7878
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # chore: add code style badge for `ruff format`
 
 ---
 
-_Pull request opened by @JacobCoffee on 2023-10-09 21:06_
+_@JacobCoffee_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

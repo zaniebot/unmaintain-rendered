@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-11T14:50:07Z
 updated_at: 2023-12-11T19:17:57Z
 url: https://github.com/astral-sh/ruff/issues/9093
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Disallow Implicit Str Concat
 
 ---
 
-_Issue opened by @delulu52 on 2023-12-11 14:50_
+_@delulu52_
 
 So would desire to disallow implicit str concat (single line and multi line). I know via https://github.com/astral-sh/ruff/issues/8549 talks about how to remove multi line. But wondering
 

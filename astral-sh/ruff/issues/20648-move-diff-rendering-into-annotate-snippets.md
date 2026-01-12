@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-30T15:32:32Z
 updated_at: 2025-09-30T15:32:32Z
 url: https://github.com/astral-sh/ruff/issues/20648
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Move diff rendering into `annotate-snippets`
 
 ---
 
-_Issue opened by @ntBre on 2025-09-30 15:32_
+_@ntBre_
 
 Following https://github.com/astral-sh/ruff/pull/19919 and https://github.com/astral-sh/ruff/pull/20443, we now render fix diffs in the default output format for both the linter and formatter (in preview). For the snippet attached to the diagnostic, we use our fork of `annotate-snippets` to render the code but separate code for rendering the fix diff. We did our best to get the two to align well, and I think most cases are covered, but there are a few examples where it breaks down. For example, we render more context lines in the diff than in the snippet, so changes near a line width boundary (e.g. 9 -> 10, 99 -> 100) can result in a shift of the line number separator before and after the `help` message:
 

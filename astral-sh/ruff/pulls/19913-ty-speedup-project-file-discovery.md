@@ -14,14 +14,14 @@ head: micha/fix-walk-files-waterfall
 created_at: 2025-08-14T11:59:26Z
 updated_at: 2025-08-14T18:38:41Z
 url: https://github.com/astral-sh/ruff/pull/19913
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Speedup project file discovery 
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-14 11:59_
+_@MichaReiser_
 
 ## Summary
 

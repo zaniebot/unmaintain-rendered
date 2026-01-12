@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T13:26:55Z
 updated_at: 2024-10-10T13:32:55Z
 url: https://github.com/astral-sh/uv/issues/8089
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Can't run uv init due to uv init not being a subcommand
 
 ---
 
-_Issue opened by @askerrit on 2024-10-10 13:26_
+_@askerrit_
 
 Hi, I installed uv with:
 

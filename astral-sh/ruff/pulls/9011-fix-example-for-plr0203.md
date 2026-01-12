@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-05T17:55:05Z
 updated_at: 2023-12-05T19:01:20Z
 url: https://github.com/astral-sh/ruff/pull/9011
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix example for PLR0203
 
 ---
 
-_Pull request opened by @ofek on 2023-12-05 17:55_
+_@ofek_
 
 _No description provided._
 

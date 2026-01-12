@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-12T09:29:14Z
 updated_at: 2025-11-12T15:45:41Z
 url: https://github.com/astral-sh/uv/pull/16700
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # chore: fix typo in crates/uv-virtualenv/README.md
 
 ---
 
-_Pull request opened by @bigmoonbit on 2025-11-12 09:29_
+_@bigmoonbit_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

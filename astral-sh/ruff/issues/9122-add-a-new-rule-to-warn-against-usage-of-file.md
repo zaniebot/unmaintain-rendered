@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-13T23:24:13Z
 updated_at: 2024-07-29T01:04:20Z
 url: https://github.com/astral-sh/ruff/issues/9122
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add a new rule to warn against usage of `__file__` module attribute
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-12-13 23:24_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

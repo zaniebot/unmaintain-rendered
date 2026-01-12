@@ -12,14 +12,14 @@ head: generate-check-code-prefix
 created_at: 2022-12-18T20:12:18Z
 updated_at: 2022-12-18T22:46:23Z
 url: https://github.com/astral-sh/ruff/pull/1282
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # generate-check-code-prefix: Run `rustfmt` automatically; only write if changed
 
 ---
 
-_Pull request opened by @andersk on 2022-12-18 20:12_
+_@andersk_
 
 This avoids unnecessary recompilation when nothing changed.
 

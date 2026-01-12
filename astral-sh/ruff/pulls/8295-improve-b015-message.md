@@ -13,14 +13,14 @@ head: improve-B015-message
 created_at: 2023-10-28T03:49:48Z
 updated_at: 2023-10-28T11:31:13Z
 url: https://github.com/astral-sh/ruff/pull/8295
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve B015 message
 
 ---
 
-_Pull request opened by @harupy on 2023-10-28 03:49_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

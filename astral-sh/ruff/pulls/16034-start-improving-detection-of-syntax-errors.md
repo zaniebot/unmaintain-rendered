@@ -13,14 +13,14 @@ head: brent/syntax-errors
 created_at: 2025-02-08T00:46:46Z
 updated_at: 2025-05-01T15:32:23Z
 url: https://github.com/astral-sh/ruff/pull/16034
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Start improving detection of syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-08 00:46_
+_@ntBre_
 
 ## Summary
 

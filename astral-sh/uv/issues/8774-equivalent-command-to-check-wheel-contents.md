@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T12:07:10Z
 updated_at: 2025-06-27T09:02:53Z
 url: https://github.com/astral-sh/uv/issues/8774
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Equivalent command to `check-wheel-contents`
 
 ---
 
-_Issue opened by @kdeldycke on 2024-11-03 12:07_
+_@kdeldycke_
 
 In the same spirit as `twine check` (see #8641), there is a nice utility called [`check-wheel-contents`](https://github.com/jwodder/check-wheel-contents).
 

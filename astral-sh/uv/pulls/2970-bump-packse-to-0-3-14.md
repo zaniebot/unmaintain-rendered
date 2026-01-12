@@ -13,14 +13,14 @@ head: zb/bump-packse-0314
 created_at: 2024-04-10T16:08:39Z
 updated_at: 2024-04-11T08:23:58Z
 url: https://github.com/astral-sh/uv/pull/2970
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Bump packse to 0.3.14
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 16:08_
+_@zanieb_
 
 Fixes #2963 which did not include the change as intended.
 

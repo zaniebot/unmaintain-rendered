@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T00:04:17Z
 updated_at: 2025-04-02T00:05:43Z
 url: https://github.com/astral-sh/uv/issues/12615
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Add a `uv sync --system` hint to use `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Issue opened by @zanieb on 2025-04-02 00:04_
+_@zanieb_
 
 I'm a little hesitant, but... we could address confusion like https://github.com/astral-sh/uv/issues/12554 by adding a dummy flag that explains why this is not supported out of the box and what to do if you really want to do it?
 

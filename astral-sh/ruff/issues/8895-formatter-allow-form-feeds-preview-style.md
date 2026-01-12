@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-29T02:39:04Z
 updated_at: 2023-12-22T05:55:27Z
 url: https://github.com/astral-sh/ruff/issues/8895
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `allow_form_feeds` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 02:39_
+_@MichaReiser_
 
 Implement Black's [`allow_form_feeds`](https://github.com/psf/black/pull/4021) style as a preview style in Ruff. 
 

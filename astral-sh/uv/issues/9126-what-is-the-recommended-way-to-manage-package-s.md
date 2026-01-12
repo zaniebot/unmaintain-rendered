@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T18:00:38Z
 updated_at: 2024-11-14T18:35:55Z
 url: https://github.com/astral-sh/uv/issues/9126
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # What is the recommended way to manage package's version
 
 ---
 
-_Issue opened by @maxkoretskyi on 2024-11-14 18:00_
+_@maxkoretskyi_
 
 I'm using `pyproject.toml` to define package metadata:
 

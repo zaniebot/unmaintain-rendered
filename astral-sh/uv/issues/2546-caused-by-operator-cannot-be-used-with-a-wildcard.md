@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T17:58:57Z
 updated_at: 2024-03-20T15:38:46Z
 url: https://github.com/astral-sh/uv/issues/2546
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Caused by: Operator >= cannot be used with a wildcard version specifier
 
 ---
 
-_Issue opened by @webcoderz on 2024-03-19 17:58_
+_@webcoderz_
 
  using `uv pip install -r "requirements_versions.txt" ` once gets to `torchsde==0.2.5` in the dependencies, 
 

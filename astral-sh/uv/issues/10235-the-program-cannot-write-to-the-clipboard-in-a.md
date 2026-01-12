@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-30T10:02:52Z
 updated_at: 2024-12-30T15:38:02Z
 url: https://github.com/astral-sh/uv/issues/10235
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # The program cannot write to the clipboard in a PySide6 project.
 
 ---
 
-_Issue opened by @vichbb on 2024-12-30 10:02_
+_@vichbb_
 
 ```python
     def copy(self, text):

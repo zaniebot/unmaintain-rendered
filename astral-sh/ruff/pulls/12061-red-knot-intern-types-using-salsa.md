@@ -13,14 +13,14 @@ head: cjm/fine
 created_at: 2024-06-27T04:15:45Z
 updated_at: 2024-07-05T19:16:39Z
 url: https://github.com/astral-sh/ruff/pull/12061
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] intern types using Salsa
 
 ---
 
-_Pull request opened by @carljm on 2024-06-27 04:15_
+_@carljm_
 
 Intern types using Salsa interning instead of in the `TypeInference` result.
 

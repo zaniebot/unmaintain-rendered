@@ -12,14 +12,14 @@ head: charlie/wheel-tags
 created_at: 2023-10-06T00:59:53Z
 updated_at: 2023-10-06T00:59:59Z
 url: https://github.com/astral-sh/uv/pull/15
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Add support for wheel tag parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 00:59_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/12.
 

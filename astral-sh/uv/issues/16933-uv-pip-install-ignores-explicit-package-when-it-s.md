@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T17:09:51Z
 updated_at: 2025-12-04T00:12:50Z
 url: https://github.com/astral-sh/uv/issues/16933
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `uv pip install` ignores explicit package when it's in `override-dependencies`
 
 ---
 
-_Issue opened by @jreiml on 2025-12-02 17:09_
+_@jreiml_
 
 ### Summary
 

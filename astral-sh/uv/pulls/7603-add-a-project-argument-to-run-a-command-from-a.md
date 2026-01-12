@@ -14,14 +14,14 @@ head: charlie/project
 created_at: 2024-09-20T21:08:33Z
 updated_at: 2024-09-21T20:19:50Z
 url: https://github.com/astral-sh/uv/pull/7603
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Add a `--project` argument to run a command from a project
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 21:08_
+_@charliermarsh_
 
 ## Summary
 

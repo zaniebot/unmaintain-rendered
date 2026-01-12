@@ -11,14 +11,14 @@ head: non-transitive-compound-comparison
 created_at: 2024-02-18T15:57:21Z
 updated_at: 2024-04-05T15:08:39Z
 url: https://github.com/astral-sh/ruff/pull/10028
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`ruff`] Implement compound comparison rule (`RUF029`)
 
 ---
 
-_Pull request opened by @tjkuson on 2024-02-18 15:57_
+_@tjkuson_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/union-tests
 created_at: 2024-10-30T17:26:53Z
 updated_at: 2024-10-30T18:22:36Z
 url: https://github.com/astral-sh/ruff/pull/14002
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add failing tests for augmented assignments with partial binding
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 17:26_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T18:48:39Z
 updated_at: 2025-03-12T22:46:08Z
 url: https://github.com/astral-sh/uv/issues/12141
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Can't resolve dependencies with git dependency
 
 ---
 
-_Issue opened by @adriangb on 2025-03-12 18:48_
+_@adriangb_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: zb/fix-system-hint
 created_at: 2025-10-21T17:06:03Z
 updated_at: 2025-10-21T17:59:02Z
 url: https://github.com/astral-sh/uv/pull/16392
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Improve hint on `pip install --system` when externally managed
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-21 17:06_
+_@zanieb_
 
 I had some qualms with https://github.com/astral-sh/uv/pull/16318
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T21:11:22Z
 updated_at: 2023-02-20T17:56:17Z
 url: https://github.com/astral-sh/ruff/issues/3042
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # N999 for `__main__.py`
 
 ---
 
-_Issue opened by @scop on 2023-02-19 21:11_
+_@scop_
 
 ruff 0.0.248 seems to issue `N999` for all `__main__.py`.
 

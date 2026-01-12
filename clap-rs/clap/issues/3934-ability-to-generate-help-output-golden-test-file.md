@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-14T03:54:47Z
 updated_at: 2022-11-16T03:57:34Z
 url: https://github.com/clap-rs/clap/issues/3934
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Ability to generate help output golden test file?
 
 ---
 
-_Issue opened by @SUPERCILEX on 2022-07-14 03:54_
+_@SUPERCILEX_
 
 ### Please complete the following tasks
 

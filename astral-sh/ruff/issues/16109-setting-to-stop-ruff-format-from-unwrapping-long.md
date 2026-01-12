@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T00:49:39Z
 updated_at: 2025-02-12T19:54:23Z
 url: https://github.com/astral-sh/ruff/issues/16109
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Setting to stop `ruff format` from unwrapping long strings
 
 ---
 
-_Issue opened by @jamesbraza on 2025-02-12 00:49_
+_@jamesbraza_
 
 ### Description
 

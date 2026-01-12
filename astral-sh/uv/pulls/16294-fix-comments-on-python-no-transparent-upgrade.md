@@ -15,14 +15,14 @@ head: geofft/transparent-upgrade-comment
 created_at: 2025-10-14T12:20:57Z
 updated_at: 2025-10-14T12:32:56Z
 url: https://github.com/astral-sh/uv/pull/16294
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Fix comments on python_no_transparent_upgrade_with_venv_patch_specification
 
 ---
 
-_Pull request opened by @geofft on 2025-10-14 12:20_
+_@geofft_
 
 I think this was originally intended to behave as the comments specified, but the behavior changed in discussions in #13312 somewhere.
 

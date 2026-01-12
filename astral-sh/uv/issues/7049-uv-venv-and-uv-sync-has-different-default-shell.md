@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-04T21:15:12Z
 updated_at: 2024-09-04T22:16:50Z
 url: https://github.com/astral-sh/uv/issues/7049
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv venv` and `uv sync` has different default shell prompts
 
 ---
 
-_Issue opened by @leddy231 on 2024-09-04 21:15_
+_@leddy231_
 
 
 `uv venv` creates a .venv where the default shell prompt is the name of the current folder. Nice!

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T20:19:19Z
 updated_at: 2024-08-19T20:49:11Z
 url: https://github.com/astral-sh/uv/issues/6230
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Respect pyproject.toml defined index-url & keyring-provider in 1st level commands
 
 ---
 
-_Issue opened by @Eyal-Shalev on 2024-08-19 20:19_
+_@Eyal-Shalev_
 
 1st level commands such as `uv lock`, `uv add` & `uv sync` do not respect the `index-url` & `keyring-provider` parameters as they are defined in `pyproject.toml`
 

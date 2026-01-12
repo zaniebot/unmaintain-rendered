@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T17:08:37Z
 updated_at: 2024-03-25T17:10:18Z
 url: https://github.com/astral-sh/ruff/issues/10574
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `Q000` autofix failing in forward reference type annotations
 
 ---
 
-_Issue opened by @augustelalande on 2024-03-25 17:08_
+_@augustelalande_
 
 The `Q000` autofix is generating syntax errors in code with forward reference type annotations which include string literals.
 ```python

@@ -13,14 +13,14 @@ head: konsti/error-invalid-setuptools-build
 created_at: 2025-02-10T18:55:03Z
 updated_at: 2025-02-17T15:57:19Z
 url: https://github.com/astral-sh/uv/pull/11394
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Warn for builds in non-build and workspace root pyproject.toml
 
 ---
 
-_Pull request opened by @konstin on 2025-02-10 18:55_
+_@konstin_
 
 When running `uv pip install .` in a directory with a pyproject.toml that does not configure a build, we will invoke setuptools and get a wheel we can't parse (https://github.com/astral-sh/uv/issues/11344). This PR adds warnings around these setups.
 

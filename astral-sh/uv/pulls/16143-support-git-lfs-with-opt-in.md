@@ -14,14 +14,14 @@ head: conditional_lfs_support
 created_at: 2025-10-06T21:13:10Z
 updated_at: 2025-12-06T12:08:39Z
 url: https://github.com/astral-sh/uv/pull/16143
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Support Git LFS with opt-in
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-06 21:13_
+_@samypr100_
 
 ## Summary
 

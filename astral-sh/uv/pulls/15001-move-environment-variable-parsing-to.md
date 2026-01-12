@@ -12,14 +12,14 @@ head: lg/move-env-variables
 created_at: 2025-07-31T17:27:35Z
 updated_at: 2025-08-07T21:35:32Z
 url: https://github.com/astral-sh/uv/pull/15001
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Move environment variable parsing to EnvironmentOptions
 
 ---
 
-_Pull request opened by @Zaloog on 2025-07-31 17:27_
+_@Zaloog_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

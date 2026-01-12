@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-11T08:24:37Z
 updated_at: 2023-07-24T19:23:16Z
 url: https://github.com/clap-rs/clap/issues/4626
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Improve how we infer behavior from field types
 
 ---
 
-_Issue opened by @tmccombs on 2023-01-11 08:24_
+_@tmccombs_
 
 As brought up in #4600 and #3661, there are cases where it would be nice to support additional types with special semantics for clap_derive fields. However, doing so for any existing isn't backwards compatible, because users might have custom value parsers that produce those types. In addition, currently in order to opt out of special behavior for field types of `Opt` or `Vec`, you need to fully qualify the paths for those types (ex. `::std::vec::Vec`), which is both undocumented, and non-obvious. It would be nice to have a consistent, easy to understand way to specify how 0 or more values for an option are aggregated into a single type.
 

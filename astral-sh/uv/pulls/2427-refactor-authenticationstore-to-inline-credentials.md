@@ -13,14 +13,14 @@ head: zb/auth-store-global
 created_at: 2024-03-13T20:43:01Z
 updated_at: 2024-03-13T22:48:02Z
 url: https://github.com/astral-sh/uv/pull/2427
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Refactor `AuthenticationStore` to inline credentials
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 20:43_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T20:00:30Z
 updated_at: 2025-05-21T20:19:34Z
 url: https://github.com/astral-sh/uv/issues/13581
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv sync --all-extras --all-groups --all-packages` is not installing `git` sources when `workspace` sources are set.
 
 ---
 
-_Issue opened by @fabioz on 2025-05-21 20:00_
+_@fabioz_
 
 ### Summary
 

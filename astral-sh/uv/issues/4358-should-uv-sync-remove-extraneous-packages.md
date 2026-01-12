@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-17T15:56:26Z
 updated_at: 2024-10-11T12:34:19Z
 url: https://github.com/astral-sh/uv/issues/4358
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Should `uv sync` remove extraneous packages?
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-17 15:56_
+_@ibraheemdev_
 
 [It currently does not](https://github.com/astral-sh/uv/blob/67f1285ce3f00840e1833e4aa5a7e6480e94e489/crates/uv/src/commands/project/sync.rs#L191), while `uv pip sync` does. This would also affect whether `uv remove` removes *all* extraneous packages, or has to do extra work to only remove the affected packages.
 

@@ -14,14 +14,14 @@ head: charlie/upgrade-output
 created_at: 2024-08-10T17:30:49Z
 updated_at: 2024-08-11T00:24:52Z
 url: https://github.com/astral-sh/uv/pull/5997
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Use upgrade-specific output for tool upgrade
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-10 17:30_
+_@charliermarsh_
 
 ## Summary
 

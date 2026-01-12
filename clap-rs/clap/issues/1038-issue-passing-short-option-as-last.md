@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-25T13:46:36Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1038
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Issue passing short option as last 
 
 ---
 
-_Issue opened by @snowe2010 on 2017-08-25 13:46_
+_@snowe2010_
 
 ### Rust Version
 

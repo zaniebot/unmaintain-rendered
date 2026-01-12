@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T19:32:39Z
 updated_at: 2024-07-23T13:54:37Z
 url: https://github.com/astral-sh/ruff/issues/12463
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # S610: false positive on unrelated method named `extra`
 
 ---
 
-_Issue opened by @nelsyeung on 2024-07-22 19:32_
+_@nelsyeung_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: micha/format-datatest
 created_at: 2025-12-12T07:41:19Z
 updated_at: 2025-12-13T08:02:24Z
 url: https://github.com/astral-sh/ruff/pull/21933
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # Use datatest for formatter tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-12 07:41_
+_@MichaReiser_
 
 ## Summary
 

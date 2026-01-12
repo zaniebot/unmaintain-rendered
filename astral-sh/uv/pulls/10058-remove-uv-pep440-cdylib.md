@@ -13,14 +13,14 @@ head: konsti/pep440-cdylib
 created_at: 2024-12-20T15:25:17Z
 updated_at: 2024-12-20T15:38:14Z
 url: https://github.com/astral-sh/uv/pull/10058
-synced_at: 2026-01-10T11:44:32Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Remove uv-pep440 cdylib
 
 ---
 
-_Pull request opened by @konstin on 2024-12-20 15:25_
+_@konstin_
 
 This is a remnant from the removed pyo3 bindings
 

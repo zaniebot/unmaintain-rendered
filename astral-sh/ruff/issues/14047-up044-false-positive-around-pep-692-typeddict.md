@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T16:34:51Z
 updated_at: 2024-11-02T17:10:57Z
 url: https://github.com/astral-sh/ruff/issues/14047
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # UP044 false positive around PEP 692 TypedDict `**kwargs` type hints
 
 ---
 
-_Issue opened by @kkom on 2024-11-01 16:34_
+_@kkom_
 
 Since ruff 0.7.2 the code below:
 

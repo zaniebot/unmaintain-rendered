@@ -11,14 +11,14 @@ head: ci/use-rust-toolchain-action
 created_at: 2023-03-13T10:55:40Z
 updated_at: 2023-07-24T15:02:04Z
 url: https://github.com/astral-sh/ruff/pull/3479
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # ci: Use rust toolchain actions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-13 10:55_
+_@MichaReiser_
 
 Use the `actions-rs/toolchain` action to install Rust, `actions-rs/cargo` to run cargo commands, and `action-rs/clippy-check` to run clippy.
 

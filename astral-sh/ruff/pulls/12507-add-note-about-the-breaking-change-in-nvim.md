@@ -13,14 +13,14 @@ head: dhruv/docs
 created_at: 2024-07-25T13:58:37Z
 updated_at: 2024-07-25T14:01:18Z
 url: https://github.com/astral-sh/ruff/pull/12507
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add note about the breaking change in `nvim-lspconfig`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-25 13:58_
+_@dhruvmanila_
 
 Refer https://github.com/astral-sh/ruff/issues/12408
 

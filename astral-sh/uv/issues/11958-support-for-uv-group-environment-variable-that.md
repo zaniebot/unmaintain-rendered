@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T18:32:45Z
 updated_at: 2025-12-11T00:33:03Z
 url: https://github.com/astral-sh/uv/issues/11958
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Support for `UV_GROUP` environment variable that acts like the CLI `--group` argument
 
 ---
 
-_Issue opened by @iloveitaly on 2025-03-04 18:32_
+_@iloveitaly_
 
 ### Summary
 

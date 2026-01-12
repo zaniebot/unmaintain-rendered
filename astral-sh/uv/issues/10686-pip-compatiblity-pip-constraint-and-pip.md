@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T17:13:50Z
 updated_at: 2025-01-16T22:49:56Z
 url: https://github.com/astral-sh/uv/issues/10686
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # pip-compatiblity: PIP_CONSTRAINT and PIP_CONSTRAINTS are not used, only UV_CONSTRAINT is used
 
 ---
 
-_Issue opened by @ssbarnea on 2025-01-16 17:13_
+_@ssbarnea_
 
 I found the hard way after migrating from pip to uv on few projects that my lock files are no longer working, just because `uv pip` command seems to ignore presence of `PIP_CONSTRAINT` or `PIP_CONSTRAINTS` file and thus failed to lock the dependencies during install.
 

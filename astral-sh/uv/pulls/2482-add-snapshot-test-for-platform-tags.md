@@ -13,14 +13,14 @@ head: zb/platform-tags
 created_at: 2024-03-15T20:46:19Z
 updated_at: 2024-03-16T22:20:58Z
 url: https://github.com/astral-sh/uv/pull/2482
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Add snapshot test for platform tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-15 20:46_
+_@zanieb_
 
 Adding ordering test coverage as a preface to fixing https://github.com/astral-sh/uv/issues/2477 (see #2483)
 

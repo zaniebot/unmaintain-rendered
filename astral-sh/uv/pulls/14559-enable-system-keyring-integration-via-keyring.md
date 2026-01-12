@@ -11,14 +11,14 @@ head: jtfm/keyring-exploration
 created_at: 2025-07-11T08:26:24Z
 updated_at: 2025-09-02T11:41:41Z
 url: https://github.com/astral-sh/uv/pull/14559
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Enable system keyring integration via `--keyring-provider native`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-11 08:26_
+_@jtfmumm_
 
 This PR uses the `uv-keyring` crate vendored in #14725 to automatically integrate with the system keyring when the keyring provider is set to "native". 
 

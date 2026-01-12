@@ -12,14 +12,14 @@ head: thomas/control_flow_graph
 created_at: 2023-06-27T10:21:45Z
 updated_at: 2023-07-04T14:42:47Z
 url: https://github.com/astral-sh/ruff/pull/5384
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add unreachable code rule
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-27 10:21_
+_@Thomasdezeeuw_
 
 ## Summary
 

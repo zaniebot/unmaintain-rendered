@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-09-12T23:53:32Z
 updated_at: 2025-04-24T14:16:22Z
 url: https://github.com/clap-rs/clap/issues/1546
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # No argument validation on globals
 
 ---
 
-_Issue opened by @gabbifish on 2019-09-12 23:53_
+_@gabbifish_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

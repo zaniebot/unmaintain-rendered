@@ -13,14 +13,14 @@ head: zb/features
 created_at: 2024-09-26T16:27:27Z
 updated_at: 2024-09-26T17:47:13Z
 url: https://github.com/astral-sh/uv/pull/7716
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Add `uv build` and `uv publish` to features overview
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-26 16:27_
+_@zanieb_
 
 _No description provided._
 

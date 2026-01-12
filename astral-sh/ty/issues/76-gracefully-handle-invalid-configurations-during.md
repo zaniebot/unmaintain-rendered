@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-28T18:14:27Z
 updated_at: 2025-07-14T10:27:53Z
 url: https://github.com/astral-sh/ty/issues/76
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Gracefully handle invalid configurations during startup
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-28 18:14_
+_@MichaReiser_
 
 * Create an invalid ty configuration (e.g. a syntax error)
 * Start VS Code

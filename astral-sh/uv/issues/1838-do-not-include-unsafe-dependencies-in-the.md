@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T22:17:32Z
 updated_at: 2024-02-21T22:42:10Z
 url: https://github.com/astral-sh/uv/issues/1838
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Do not include `unsafe` dependencies in the compiled file unless some flag specified
 
 ---
 
-_Issue opened by @drjackild on 2024-02-21 22:17_
+_@drjackild_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: zb/impl-into
 created_at: 2025-06-27T23:30:58Z
 updated_at: 2025-06-28T14:42:19Z
 url: https://github.com/astral-sh/uv/pull/14337
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Use the canonical `ImplementationName` -> `&str` implementation
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 23:30_
+_@zanieb_
 
 Motivated by some code duplication highlighted in https://github.com/astral-sh/uv/pull/14201, I noticed we weren't taking advantage of the existing implementation for casting to a str here. Unfortunately, we do need a special case for CPython still.
 

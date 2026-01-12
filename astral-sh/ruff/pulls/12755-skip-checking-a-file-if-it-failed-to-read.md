@@ -13,14 +13,14 @@ head: handle-file-read-errors
 created_at: 2024-08-08T14:57:19Z
 updated_at: 2024-08-12T07:40:35Z
 url: https://github.com/astral-sh/ruff/pull/12755
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Skip checking a file if it failed to read
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-08 14:57_
+_@MichaReiser_
 
 ## Summary
 

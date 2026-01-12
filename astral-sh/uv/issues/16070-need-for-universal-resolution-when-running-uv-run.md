@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T09:01:30Z
 updated_at: 2025-10-10T07:58:29Z
 url: https://github.com/astral-sh/uv/issues/16070
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Need for universal resolution when running `uv run --python 3.xx`?
 
 ---
 
-_Issue opened by @mancellin on 2025-09-30 09:01_
+_@mancellin_
 
 ### Question
 

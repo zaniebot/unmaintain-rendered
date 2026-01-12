@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-12T10:40:13Z
 updated_at: 2025-05-17T17:28:01Z
 url: https://github.com/astral-sh/ty/issues/325
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # server: Add link to rule documentation
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-12 10:40_
+_@MichaReiser_
 
 We should add a `codeDescription` for all diagnostics with a `LintName` with an URL pointing to the corresponding anchor in https://github.com/astral-sh/ty/blob/main/docs/rules.md#call-non-callable
 

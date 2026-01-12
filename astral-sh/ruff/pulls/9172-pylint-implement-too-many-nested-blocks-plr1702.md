@@ -14,14 +14,14 @@ head: add-R1702
 created_at: 2023-12-17T21:55:11Z
 updated_at: 2024-01-24T19:38:08Z
 url: https://github.com/astral-sh/ruff/pull/9172
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `too-many-nested-blocks` (`PLR1702`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-17 21:55_
+_@diceroll123_
 
 ## Summary
 

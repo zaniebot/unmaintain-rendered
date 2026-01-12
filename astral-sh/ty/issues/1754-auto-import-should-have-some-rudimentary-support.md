@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T14:10:50Z
 updated_at: 2026-01-05T14:46:11Z
 url: https://github.com/astral-sh/ty/issues/1754
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import should have some rudimentary support for evaluating conditionals
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-04 14:10_
+_@BurntSushi_
 
 At present, auto-import assumes all conditionals are always true. This means it will return symbols that may not be available in the current environment.
 

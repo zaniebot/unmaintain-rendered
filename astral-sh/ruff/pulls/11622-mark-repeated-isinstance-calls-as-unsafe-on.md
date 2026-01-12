@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2024-05-30T18:01:52Z
 updated_at: 2024-05-30T18:14:54Z
 url: https://github.com/astral-sh/ruff/pull/11622
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Mark `repeated-isinstance-calls` as unsafe on Python 3.10 and later
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 18:01_
+_@charliermarsh_
 
 ## Summary
 

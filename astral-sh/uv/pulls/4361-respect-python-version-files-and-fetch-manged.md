@@ -13,14 +13,14 @@ head: zb/toolchain-file-project
 created_at: 2024-06-17T16:43:39Z
 updated_at: 2024-06-18T14:43:53Z
 url: https://github.com/astral-sh/uv/pull/4361
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Respect `.python-version` files and fetch manged toolchains in uv project commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-17 16:43_
+_@zanieb_
 
 As in #4360, updates the uv project CLI to respect `.python-version` files as default Python version requests. Additionally, updates project interpreter discovery to fetch managed toolchains as in `uv venv --preview`.
 

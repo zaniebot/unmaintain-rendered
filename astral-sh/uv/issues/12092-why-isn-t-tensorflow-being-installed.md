@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T10:06:15Z
 updated_at: 2025-06-02T09:25:59Z
 url: https://github.com/astral-sh/uv/issues/12092
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Why isn't tensorflow being installed?
 
 ---
 
-_Issue opened by @josh-gree on 2025-03-10 10:06_
+_@josh-gree_
 
 ### Question
 

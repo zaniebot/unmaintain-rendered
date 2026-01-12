@@ -13,14 +13,14 @@ head: zb/win-wor
 created_at: 2025-06-26T16:39:27Z
 updated_at: 2025-07-02T17:59:01Z
 url: https://github.com/astral-sh/uv/pull/14284
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Reduce test worker count from 20 -> 12 on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 16:39_
+_@zanieb_
 
 Investigating https://github.com/astral-sh/uv/issues/14158
 

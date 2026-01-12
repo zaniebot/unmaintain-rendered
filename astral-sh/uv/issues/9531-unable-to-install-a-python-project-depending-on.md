@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T20:26:00Z
 updated_at: 2025-04-02T18:29:42Z
 url: https://github.com/astral-sh/uv/issues/9531
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Unable to install a python project depending on `httpx` on a corporate Jenkins Windows Runner with AV
 
 ---
 
-_Issue opened by @Coruscant11 on 2024-11-29 20:26_
+_@Coruscant11_
 
 Hello!
 

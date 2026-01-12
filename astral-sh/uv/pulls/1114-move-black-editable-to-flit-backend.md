@@ -13,14 +13,14 @@ head: charlie/flit
 created_at: 2024-01-26T00:52:14Z
 updated_at: 2024-01-26T00:54:55Z
 url: https://github.com/astral-sh/uv/pull/1114
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Move Black editable to flit backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 00:52_
+_@charliermarsh_
 
 I ran into a bug in PDM that's making it impossible to use the Black example for extras: https://github.com/pdm-project/pdm-backend/issues/210.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T12:42:52Z
 updated_at: 2025-10-10T15:55:37Z
 url: https://github.com/astral-sh/ty/issues/1197
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Ty fails on non-existing extra-paths
 
 ---
 
-_Issue opened by @GarbenTangheVintecc on 2025-09-17 12:42_
+_@GarbenTangheVintecc_
 
 ### Summary
 

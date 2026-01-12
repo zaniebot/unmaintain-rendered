@@ -13,14 +13,14 @@ head: red-knot-update-code-owners
 created_at: 2024-07-04T11:47:14Z
 updated_at: 2024-07-04T12:14:25Z
 url: https://github.com/astral-sh/ruff/pull/12187
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update code owners for red knot
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-04 11:47_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T16:10:32Z
 updated_at: 2026-01-08T18:37:30Z
 url: https://github.com/astral-sh/ty/issues/1248
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # better gradual guarantee for un-annotated dict (and other container?) literals
 
 ---
 
-_Issue opened by @carljm on 2025-09-24 16:10_
+_@carljm_
 
 In the ecosystem, we see this kind of pattern:
 

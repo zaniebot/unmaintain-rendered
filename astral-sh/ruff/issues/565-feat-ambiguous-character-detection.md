@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-03T10:35:18Z
 updated_at: 2022-11-09T15:24:20Z
 url: https://github.com/astral-sh/ruff/issues/565
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # feat: Ambiguous character detection
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-11-03 10:35_
+_@samuelcolvin_
 
 vscode identifies ambiguous unicode characters and warns about them, screenshot:
 

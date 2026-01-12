@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-10T00:36:24Z
 updated_at: 2025-12-10T04:48:09Z
 url: https://github.com/astral-sh/ty/issues/1831
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Assignability of `type[T]` to union of callables
 
 ---
 
-_Issue opened by @carljm on 2025-12-10 00:36_
+_@carljm_
 
 ```py
 from typing import Callable, Any

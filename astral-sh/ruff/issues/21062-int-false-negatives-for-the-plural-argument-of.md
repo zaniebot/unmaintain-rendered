@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T13:51:21Z
 updated_at: 2025-10-24T19:22:36Z
 url: https://github.com/astral-sh/ruff/issues/21062
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # INT false negatives for the plural argument of `ngettext`
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-24 13:51_
+_@dscorbett_
 
 ### Summary
 

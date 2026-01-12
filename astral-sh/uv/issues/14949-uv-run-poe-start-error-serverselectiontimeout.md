@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T09:18:45Z
 updated_at: 2025-07-29T12:56:55Z
 url: https://github.com/astral-sh/uv/issues/14949
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # uv run poe start error: ServerSelectionTimeout
 
 ---
 
-_Issue opened by @LorenzaMNF on 2025-07-29 09:18_
+_@LorenzaMNF_
 
 ### Question
 

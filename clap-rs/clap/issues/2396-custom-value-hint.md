@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-03-09T15:10:02Z
 updated_at: 2021-09-06T23:25:38Z
 url: https://github.com/clap-rs/clap/issues/2396
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Custom value hint
 
 ---
 
-_Issue opened by @tailhook on 2021-03-09 15:10_
+_@tailhook_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T22:10:08Z
 updated_at: 2024-08-07T08:11:28Z
 url: https://github.com/astral-sh/uv/issues/5836
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `uv sync` reports selecting incorrect arch for numpy wheel
 
 ---
 
-_Issue opened by @tpgillam on 2024-08-06 22:10_
+_@tpgillam_
 
 I'm using `uv` version `0.2.33`. The following may be related to https://github.com/astral-sh/rye/issues/1206
 

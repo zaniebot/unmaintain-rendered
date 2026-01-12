@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T00:24:13Z
 updated_at: 2025-12-21T17:30:12Z
 url: https://github.com/astral-sh/uv/issues/16333
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Specify Python Version Resolution Rules
 
 ---
 
-_Issue opened by @powercoconola on 2025-10-17 00:24_
+_@powercoconola_
 
 ### Summary
 

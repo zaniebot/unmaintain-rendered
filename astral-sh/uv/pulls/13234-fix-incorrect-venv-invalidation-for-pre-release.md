@@ -13,14 +13,14 @@ head: zb/fix-version-comp
 created_at: 2025-04-30T15:34:42Z
 updated_at: 2025-05-04T12:26:21Z
 url: https://github.com/astral-sh/uv/pull/13234
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Fix incorrect venv invalidation for pre-release Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-30 15:34_
+_@zanieb_
 
 I think this regressed in https://github.com/astral-sh/uv/pull/13027 — I misunderstood what versions could be represented in the `pyvenv.cfg` (I assumed they _never_ included pre-release components).
 

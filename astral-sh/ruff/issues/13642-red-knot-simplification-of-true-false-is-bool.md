@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-05T16:08:08Z
 updated_at: 2024-10-05T18:01:11Z
 url: https://github.com/astral-sh/ruff/issues/13642
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] simplification of 'True | False' is bool class (instead of bool instance)
 
 ---
 
-_Issue opened by @Slyces on 2024-10-05 16:08_
+_@Slyces_
 
 Extracted [this comment](https://github.com/astral-sh/ruff/pull/13615#discussion_r1788554559) from @AlexWaygood to keep track of this bug
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T07:34:48Z
 updated_at: 2024-09-17T08:33:50Z
 url: https://github.com/astral-sh/uv/issues/7450
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Switching from poetry to uv breaks CI
 
 ---
 
-_Issue opened by @aeroaks on 2024-09-17 07:34_
+_@aeroaks_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

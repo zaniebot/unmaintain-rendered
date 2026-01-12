@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-10T10:20:11Z
 updated_at: 2023-01-12T00:21:32Z
 url: https://github.com/astral-sh/ruff/issues/1766
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM108 autofix produces code that breaks E501
 
 ---
 
-_Issue opened by @Czaki on 2023-01-10 10:20_
+_@Czaki_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

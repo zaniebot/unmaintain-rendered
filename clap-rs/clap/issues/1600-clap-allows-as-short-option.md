@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-11-22T21:09:15Z
 updated_at: 2020-02-03T03:12:22Z
 url: https://github.com/clap-rs/clap/issues/1600
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap allows '-' as short option
 
 ---
 
-_Issue opened by @txk2048 on 2019-11-22 21:09_
+_@txk2048_
 
 ## Affected version
 master branch

@@ -11,14 +11,14 @@ head: expose-lexer-state
 created_at: 2025-10-25T14:39:28Z
 updated_at: 2025-10-26T10:09:42Z
 url: https://github.com/astral-sh/ruff/pull/21074
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Expose some methods of `ruff_python_parser::Lexer`
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-10-25 14:39_
+_@ShaharNaveh_
 
 While trying to lex an incomplete source code that comes from a lazy iterator or a [`BufRead`](https://doc.rust-lang.org/std/io/trait.BufRead.html), I had trouble with:
 - knowing what is the offset of the last good token

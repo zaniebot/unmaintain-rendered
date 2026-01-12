@@ -13,14 +13,14 @@ head: zb/distutils
 created_at: 2025-01-17T15:14:04Z
 updated_at: 2025-01-20T17:29:30Z
 url: https://github.com/astral-sh/uv/pull/10713
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Improve log when distutils is missing
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-17 15:14_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/4204 for motivation
 

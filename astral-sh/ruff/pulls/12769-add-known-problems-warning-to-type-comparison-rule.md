@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-08-09T01:37:06Z
 updated_at: 2024-08-09T01:50:38Z
 url: https://github.com/astral-sh/ruff/pull/12769
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add known problems warning to `type-comparison` rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 01:37_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/remove-venv
 created_at: 2025-07-22T11:21:46Z
 updated_at: 2025-07-22T13:13:40Z
 url: https://github.com/astral-sh/uv/pull/14808
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Update virtual environment removal to delete `pyvenv.cfg` last
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 11:21_
+_@zanieb_
 
 An alternative to https://github.com/astral-sh/uv/pull/14569
 

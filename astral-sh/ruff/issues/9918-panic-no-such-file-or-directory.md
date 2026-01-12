@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T23:08:14Z
 updated_at: 2025-02-25T14:17:43Z
 url: https://github.com/astral-sh/ruff/issues/9918
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Panic] No such file or directory
 
 ---
 
-_Issue opened by @CoderJoshDK on 2024-02-09 23:08_
+_@CoderJoshDK_
 
 Rare bug, hard to reproduce.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T01:25:36Z
 updated_at: 2024-08-15T01:02:58Z
 url: https://github.com/astral-sh/ruff/issues/12873
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `ASYNC100` does not match upstream `flake8-async`
 
 ---
 
-_Issue opened by @Zac-HD on 2024-08-14 01:25_
+_@Zac-HD_
 
 `ASYNC100` ([ruff](https://docs.astral.sh/ruff/rules/cancel-scope-no-checkpoint/), [upstream](https://flake8-async.readthedocs.io/en/latest/rules.html#async100)) warns when a timeout context manager doesn't contain any checkpoints - and therefore can't be cancelled by the async framework.  However, if you're _implementing_ a context manager, then it's entirely reasonable to wrap such a timeout around a `yield`, and we should treat that as a checkpoint - as in https://github.com/python-trio/flake8-async/pull/228
 

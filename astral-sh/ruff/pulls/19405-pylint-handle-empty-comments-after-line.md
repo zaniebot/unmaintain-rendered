@@ -14,14 +14,14 @@ head: frank/19326
 created_at: 2025-07-17T16:21:53Z
 updated_at: 2025-07-23T15:56:49Z
 url: https://github.com/astral-sh/ruff/pull/19405
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`pylint`] Handle empty comments after line continuation (`PLR2044`)
 
 ---
 
-_Pull request opened by @soundsonacid on 2025-07-17 16:21_
+_@soundsonacid_
 
 fixes #19326 
 

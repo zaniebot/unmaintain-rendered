@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T06:52:56Z
 updated_at: 2025-08-19T14:30:45Z
 url: https://github.com/astral-sh/uv/issues/15342
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Configure index be based on host or platform
 
 ---
 
-_Issue opened by @jpkolsen on 2025-08-18 06:52_
+_@jpkolsen_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T12:51:10Z
 updated_at: 2025-10-10T16:16:24Z
 url: https://github.com/astral-sh/ruff/issues/20803
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `missing-f-string-syntax` (RUF027) should apply before `unused-import` (F401)
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-10 12:51_
+_@dscorbett_
 
 ### Summary
 

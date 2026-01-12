@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T21:33:16Z
 updated_at: 2025-02-28T11:30:34Z
 url: https://github.com/astral-sh/uv/issues/11840
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # nushell activation script creates a duplicated prompt
 
 ---
 
-_Issue opened by @Ravencentric on 2025-02-27 21:33_
+_@Ravencentric_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-24T10:52:59Z
 updated_at: 2025-11-29T07:09:17Z
 url: https://github.com/astral-sh/uv/issues/16828
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # uv build fails to retrieve correct version with setuptools-scm on a release tag
 
 ---
 
-_Issue opened by @greatvovan on 2025-11-24 10:52_
+_@greatvovan_
 
 ### Summary
 

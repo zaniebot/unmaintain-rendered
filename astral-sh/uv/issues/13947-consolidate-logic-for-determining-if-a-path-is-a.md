@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T13:16:39Z
 updated_at: 2025-06-23T13:12:44Z
 url: https://github.com/astral-sh/uv/issues/13947
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Consolidate logic for determining if a path is a virtual environment
 
 ---
 
-_Issue opened by @zanieb on 2025-06-10 13:16_
+_@zanieb_
 
 e.g.
 

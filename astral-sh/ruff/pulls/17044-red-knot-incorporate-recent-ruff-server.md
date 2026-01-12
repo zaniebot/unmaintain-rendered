@@ -13,14 +13,14 @@ head: micha/pull-in-ruff-server-changes
 created_at: 2025-03-28T18:23:24Z
 updated_at: 2025-03-28T18:39:19Z
 url: https://github.com/astral-sh/ruff/pull/17044
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Incorporate recent ruff server improvements into red knot's LSP
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-28 18:23_
+_@MichaReiser_
 
 _No description provided._
 

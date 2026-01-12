@@ -12,14 +12,14 @@ head: gitignore
 created_at: 2023-02-13T14:06:13Z
 updated_at: 2023-02-13T14:29:54Z
 url: https://github.com/astral-sh/ruff/pull/2856
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # ci(gitignore): ignore VIM files
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-13 14:06_
+_@spaceone_
 
 _No description provided._
 

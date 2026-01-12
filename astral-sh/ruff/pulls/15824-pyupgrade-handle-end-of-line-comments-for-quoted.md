@@ -14,14 +14,14 @@ head: quoted-annots
 created_at: 2025-01-30T03:07:32Z
 updated_at: 2025-01-30T06:03:06Z
 url: https://github.com/astral-sh/ruff/pull/15824
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyupgrade`] Handle end-of-line comments for `quoted-annotation` (`UP037`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-30 03:07_
+_@dylwil3_
 
 This PR uses the tokens of the parsed annotation available in the `Checker`, instead of re-lexing (using `SimpleTokenizer`) the annotation. This avoids some limitations of the `SimpleTokenizer`, such as not being able to handle number and string literals.
 

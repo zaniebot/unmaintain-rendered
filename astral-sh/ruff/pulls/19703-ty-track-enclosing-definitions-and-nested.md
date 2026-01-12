@@ -13,14 +13,14 @@ head: jack/semantic-index-nonlocals
 created_at: 2025-08-02T01:15:41Z
 updated_at: 2025-08-08T04:00:20Z
 url: https://github.com/astral-sh/ruff/pull/19703
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Track enclosing definitions and nested references in the semantic index
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-02 01:15_
+_@oconnor663_
 
 Add three new maps to the `SemanticIndex`:
 - `definitions_in_enclosing_scopes`

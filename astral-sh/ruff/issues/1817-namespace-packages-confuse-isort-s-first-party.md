@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T13:54:58Z
 updated_at: 2023-07-21T19:32:51Z
 url: https://github.com/astral-sh/ruff/issues/1817
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Namespace packages confuse isort's first party detection
 
 ---
 
-_Issue opened by @ashb on 2023-01-12 13:54_
+_@ashb_
 
 In Airflow we have a namespace package `airflow.providers` (so we don't have `airflow/providers/__init__.py`) as each of the modules underneath it is released as a separate distribution on pypi. https://github.com/apache/airflow/tree/f1eb2f1af42c537f7c49a891f238083fd5d9e762/airflow/providers
 

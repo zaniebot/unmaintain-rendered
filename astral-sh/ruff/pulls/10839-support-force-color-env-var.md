@@ -13,14 +13,14 @@ head: cjm/force-color
 created_at: 2024-04-08T21:03:18Z
 updated_at: 2024-04-08T21:29:29Z
 url: https://github.com/astral-sh/ruff/pull/10839
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Support FORCE_COLOR env var
 
 ---
 
-_Pull request opened by @carljm on 2024-04-08 21:03_
+_@carljm_
 
 Fixes #5499 
 

@@ -13,14 +13,14 @@ head: zb/rooster-fix
 created_at: 2025-09-10T21:27:07Z
 updated_at: 2025-09-11T04:47:09Z
 url: https://github.com/astral-sh/uv/pull/15778
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Include the `pyproject.toml` in the version files
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 21:27_
+_@zanieb_
 
 Apparently I decided to remove this special-case!
 

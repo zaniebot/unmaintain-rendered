@@ -13,14 +13,14 @@ head: cjm/lsplog
 created_at: 2025-03-14T19:22:28Z
 updated_at: 2025-03-15T15:47:51Z
 url: https://github.com/astral-sh/ruff/pull/16760
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] LSP: only emit WARN logs from non-red-knot sources
 
 ---
 
-_Pull request opened by @carljm on 2025-03-14 19:22_
+_@carljm_
 
 Currently the red-knot LSP server emits any log messages of level `INFO` or higher from non-red-knot crates. This makes its output quite verbose, because Salsa emits an `INFO` level message every time it executes a query. I use red-knot as LSP with neovim, and this spams the log file quite a lot.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T15:55:56Z
 updated_at: 2024-07-22T17:15:13Z
 url: https://github.com/astral-sh/uv/issues/5191
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Provide footer to navigate between previous and next pages
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-18 15:55_
+_@dhruvmanila_
 
 I think it might be useful to add the footer with the "Next" and "Previous" section because it has different pages instead of what Ruff has.
 

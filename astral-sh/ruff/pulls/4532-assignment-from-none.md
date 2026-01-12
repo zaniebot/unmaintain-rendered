@@ -11,14 +11,14 @@ head: assignment-from-none
 created_at: 2023-05-19T16:33:57Z
 updated_at: 2023-06-05T22:08:50Z
 url: https://github.com/astral-sh/ruff/pull/4532
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Assignment from none
 
 ---
 
-_Pull request opened by @ghost on 2023-05-19 16:33_
+_@ghost_
 
 Here is a draft of implementing PLE1128. I have a skeleton implementation and need assistance finishing it using Visitor or something similar. Looking for feedback, and suggestions on how to finish this off. 
 

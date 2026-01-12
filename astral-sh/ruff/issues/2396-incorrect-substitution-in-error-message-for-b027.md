@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T14:00:09Z
 updated_at: 2023-01-31T17:41:24Z
 url: https://github.com/astral-sh/ruff/issues/2396
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Incorrect substitution in error message for `B027`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 14:00_
+_@ngnpope_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

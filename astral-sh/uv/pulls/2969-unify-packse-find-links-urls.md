@@ -13,14 +13,14 @@ head: konsti/unify-packse-find-links
 created_at: 2024-04-10T15:14:27Z
 updated_at: 2024-04-11T08:35:24Z
 url: https://github.com/astral-sh/uv/pull/2969
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Unify packse find links urls
 
 ---
 
-_Pull request opened by @konstin on 2024-04-10 15:14_
+_@konstin_
 
 The sync scenarios script is broken, so i did the updates manually
 

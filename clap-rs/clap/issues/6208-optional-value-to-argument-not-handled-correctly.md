@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-04T21:07:29Z
 updated_at: 2026-01-04T21:07:29Z
 url: https://github.com/clap-rs/clap/issues/6208
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Optional value to argument not handled correctly in the generated zsh completion script
 
 ---
 
-_Issue opened by @saiarcot895 on 2026-01-04 21:07_
+_@saiarcot895_
 
 ### Please complete the following tasks
 

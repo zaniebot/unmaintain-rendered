@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T21:24:35Z
 updated_at: 2024-04-11T15:26:51Z
 url: https://github.com/astral-sh/uv/issues/2979
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Allow unnamed requirements with `--require-hashes`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-10 21:24_
+_@charliermarsh_
 
 This is a (fixable) limitation of the current implementation. I suspect this to be rare, since with `--require-hashes`, you're typically working with a locked `requirements.txt`, which will always have package names. But we should lift it.
 

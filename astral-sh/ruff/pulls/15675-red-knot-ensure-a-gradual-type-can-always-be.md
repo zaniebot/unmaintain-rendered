@@ -13,14 +13,14 @@ head: alex/assignability-reflexive
 created_at: 2025-01-22T15:43:48Z
 updated_at: 2025-01-22T16:01:17Z
 url: https://github.com/astral-sh/ruff/pull/15675
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Ensure a gradual type can always be assigned to itself
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-22 15:43_
+_@AlexWaygood_
 
 ## Summary
 

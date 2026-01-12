@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T09:38:22Z
 updated_at: 2025-08-07T09:38:22Z
 url: https://github.com/astral-sh/uv/issues/15127
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `uv install tool` does not work with old `git-lfs`
 
 ---
 
-_Issue opened by @avaldebe on 2025-08-07 09:38_
+_@avaldebe_
 
 ### Summary
 

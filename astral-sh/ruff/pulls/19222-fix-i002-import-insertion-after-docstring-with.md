@@ -14,14 +14,14 @@ head: fix-19159
 created_at: 2025-07-09T00:48:09Z
 updated_at: 2025-07-11T16:55:18Z
 url: https://github.com/astral-sh/ruff/pull/19222
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # Fix I002 import insertion after docstring with multiple string statements
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-09 00:48_
+_@danparizher_
 
 ## Summary
 

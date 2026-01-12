@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T08:57:02Z
 updated_at: 2024-04-19T05:26:17Z
 url: https://github.com/astral-sh/ruff/issues/3026
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Understanding custom python codecs
 
 ---
 
-_Issue opened by @delfick on 2023-02-19 08:57_
+_@delfick_
 
 Hello,
 

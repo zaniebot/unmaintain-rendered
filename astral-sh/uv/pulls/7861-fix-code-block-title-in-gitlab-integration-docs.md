@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-10-02T09:13:37Z
 updated_at: 2024-10-02T09:22:56Z
 url: https://github.com/astral-sh/uv/pull/7861
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Fix code block title in Gitlab integration docs
 
 ---
 
-_Pull request opened by @Viicos on 2024-10-02 09:13_
+_@Viicos_
 
 ![image](https://github.com/user-attachments/assets/64b8d1cc-6dd7-4cd0-9e4a-aee992ec87fc)
 

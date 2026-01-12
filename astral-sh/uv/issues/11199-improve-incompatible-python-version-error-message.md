@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T22:14:34Z
 updated_at: 2025-02-03T22:25:39Z
 url: https://github.com/astral-sh/uv/issues/11199
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Improve incompatible `.python-version` error message suggestion
 
 ---
 
-_Issue opened by @edmorley on 2025-02-03 22:14_
+_@edmorley_
 
 ### Summary
 

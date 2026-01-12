@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-16T07:47:20Z
 updated_at: 2024-07-26T14:24:42Z
 url: https://github.com/astral-sh/ruff/issues/11887
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SLOT002 gives a false positive because does take into account multiple inheritance
 
 ---
 
-_Issue opened by @alessio-locatelli on 2024-06-16 07:47_
+_@alessio-locatelli_
 
 ### Search I have tried
 

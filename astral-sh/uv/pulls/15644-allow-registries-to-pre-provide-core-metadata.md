@@ -13,14 +13,14 @@ head: charlie/pyx-simple
 created_at: 2025-09-02T21:58:33Z
 updated_at: 2025-09-03T02:12:48Z
 url: https://github.com/astral-sh/uv/pull/15644
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Allow registries to pre-provide core metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-02 21:58_
+_@charliermarsh_
 
 ## Summary
 

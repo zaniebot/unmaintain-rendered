@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-02T19:51:28Z
 updated_at: 2024-10-30T05:18:28Z
 url: https://github.com/astral-sh/ruff/issues/2493
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Ruff (and flake8) doesn't report a situation where a variable _may_ be  unbound
 
 ---
 
-_Issue opened by @DMRobertson on 2023-02-02 19:51_
+_@DMRobertson_
 
 Consider the following snippet:
 

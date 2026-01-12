@@ -13,14 +13,14 @@ head: charlie/rustc
 created_at: 2024-03-21T15:33:52Z
 updated_at: 2024-03-27T14:41:28Z
 url: https://github.com/astral-sh/uv/pull/2591
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Update Rust to v1.77
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-21 15:33_
+_@charliermarsh_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-01T00:02:10Z
 updated_at: 2025-10-01T00:34:08Z
 url: https://github.com/astral-sh/ty/issues/1291
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Cannot check files starting with @ by name
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-01 00:02_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: fix/18596-PLW0177-detect-exotic-nan-literals
 created_at: 2025-06-11T17:10:36Z
 updated_at: 2025-06-24T20:30:59Z
 url: https://github.com/astral-sh/ruff/pull/18630
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pylint`] Detect more exotic NaN literals in `PLW0177`
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-11 17:10_
+_@robsdedude_
 
 ## Summary
 The rule was only detecting more or less straight forward NaN literals (e.g., `float("nan")`). It'd fail to detect `float("+nan")` or a little more unhinged `float("-NaN\n  \t")`

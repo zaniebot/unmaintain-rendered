@@ -12,14 +12,14 @@ head: alex/unknown-kind
 created_at: 2024-08-19T11:00:26Z
 updated_at: 2025-05-07T15:23:59Z
 url: https://github.com/astral-sh/ruff/pull/12986
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Track root cause of why a type is inferred as `Unknown`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-19 11:00_
+_@AlexWaygood_
 
 ## Summary
 

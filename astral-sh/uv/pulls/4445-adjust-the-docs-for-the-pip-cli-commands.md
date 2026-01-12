@@ -14,14 +14,14 @@ head: zb/touchup
 created_at: 2024-06-21T22:55:22Z
 updated_at: 2024-06-23T16:03:50Z
 url: https://github.com/astral-sh/uv/pull/4445
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Adjust the docs for the pip CLI commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-21 22:55_
+_@zanieb_
 
 _No description provided._
 

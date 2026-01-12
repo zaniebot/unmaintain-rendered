@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-14T21:49:28Z
 updated_at: 2024-05-15T03:02:18Z
 url: https://github.com/astral-sh/uv/issues/3594
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # can't install flash attention pre-compiled wheels because of a version mismatch
 
 ---
 
-_Issue opened by @isidentical on 2024-05-14 21:49_
+_@isidentical_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

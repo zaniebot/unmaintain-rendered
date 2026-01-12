@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T22:53:56Z
 updated_at: 2024-07-12T14:33:55Z
 url: https://github.com/astral-sh/ruff/issues/12284
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Access Denied error due to race saving cache file on Windows
 
 ---
 
-_Issue opened by @jaraco on 2024-07-10 22:53_
+_@jaraco_
 
 In pypa/setuptools#4467 and businho/pytest-ruff#28 and [this Discord convo](https://discord.com/channels/1039017663004942429/1039017663512449056/1260661337411944588), I've captured an issue that's recently become apparent when pytest-ruff started failing on an exit code 2 (pytest-ruff 0.4).
 

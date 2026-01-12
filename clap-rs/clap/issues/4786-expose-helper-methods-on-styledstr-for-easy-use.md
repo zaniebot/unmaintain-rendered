@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-24T20:03:43Z
 updated_at: 2023-03-24T21:05:07Z
 url: https://github.com/clap-rs/clap/issues/4786
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Expose helper methods on `StyledStr` for easy use by consumers
 
 ---
 
-_Issue opened by @pdaoust on 2023-03-24 20:03_
+_@pdaoust_
 
 ### Please complete the following tasks
 

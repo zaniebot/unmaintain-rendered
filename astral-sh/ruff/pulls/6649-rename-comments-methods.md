@@ -13,14 +13,14 @@ head: rename-comments-methods
 created_at: 2023-08-17T12:07:08Z
 updated_at: 2023-08-18T06:53:59Z
 url: https://github.com/astral-sh/ruff/pull/6649
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Rename Comments methods
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-17 12:07_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

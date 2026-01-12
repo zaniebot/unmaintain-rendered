@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T18:44:36Z
 updated_at: 2025-12-28T09:11:55Z
 url: https://github.com/astral-sh/uv/issues/6265
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Allow creating a `python` shim on `python install`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 18:44_
+_@zanieb_
 
 When installing Python, I should be able to opt-in to adding a `python` shim to my PATH.
 

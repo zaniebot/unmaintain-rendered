@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T17:12:07Z
 updated_at: 2025-08-27T16:19:11Z
 url: https://github.com/astral-sh/uv/issues/11836
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # `uv publish`: Credentials not used in checking if package exists
 
 ---
 
-_Issue opened by @doraut on 2025-02-27 17:12_
+_@doraut_
 
 ### Summary
 

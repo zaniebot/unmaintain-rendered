@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-25T20:24:47Z
 updated_at: 2024-03-06T01:46:14Z
 url: https://github.com/astral-sh/uv/issues/1970
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `pip freeze` command as an option for `pip list`
 
 ---
 
-_Issue opened by @T-256 on 2024-02-25 20:24_
+_@T-256_
 
 Now https://github.com/astral-sh/uv/pull/1662 is merged, we can consider `pip list --format freeze` instead of independent subcommand.
 

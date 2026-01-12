@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-20T06:38:59Z
 updated_at: 2024-08-10T00:45:00Z
 url: https://github.com/clap-rs/clap/issues/3644
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Improved fish shell completion with filename parameters
 
 ---
 
-_Issue opened by @Icelk on 2022-04-20 06:38_
+_@Icelk_
 
 ### Please complete the following tasks
 

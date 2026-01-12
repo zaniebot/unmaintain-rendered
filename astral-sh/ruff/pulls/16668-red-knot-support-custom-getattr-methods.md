@@ -13,14 +13,14 @@ head: david/custom-getattr
 created_at: 2025-03-12T11:08:02Z
 updated_at: 2025-03-12T12:44:13Z
 url: https://github.com/astral-sh/ruff/pull/16668
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Support custom `__getattr__` methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-12 11:08_
+_@sharkdp_
 
 ## Summary
 

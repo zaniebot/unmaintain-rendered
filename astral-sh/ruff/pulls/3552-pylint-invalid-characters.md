@@ -13,14 +13,14 @@ head: chars-b
 created_at: 2023-03-15T23:57:01Z
 updated_at: 2023-03-17T19:54:11Z
 url: https://github.com/astral-sh/ruff/pull/3552
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`pylint`] invalid-characters-*
 
 ---
 
-_Pull request opened by @r3m0t on 2023-03-15 23:57_
+_@r3m0t_
 
 _No description provided._
 

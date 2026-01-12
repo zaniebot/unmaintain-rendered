@@ -13,14 +13,14 @@ head: konsti/deduplicate-relative-url
 created_at: 2025-07-03T21:21:53Z
 updated_at: 2025-07-09T23:20:03Z
 url: https://github.com/astral-sh/uv/pull/14449
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Simplify relative URL handling
 
 ---
 
-_Pull request opened by @konstin on 2025-07-03 21:21_
+_@konstin_
 
 I was trying to figure out what the correct relative-and-absolute URL handling function was and realized there are two and they are redundant.
 

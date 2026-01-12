@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T18:07:23Z
 updated_at: 2024-12-07T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/7760
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Incorporate knowledge of disjoint markers into simplification
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-28 18:07_
+_@charliermarsh_
 
 There are some markers that we "know" cannot be true at the same time, despite the fact that it's not encoded in the grammar or schema at all.
 

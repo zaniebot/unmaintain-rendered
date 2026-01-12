@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-27T05:05:57Z
 updated_at: 2024-08-27T10:10:14Z
 url: https://github.com/astral-sh/uv/issues/6671
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv init -p <path> confused me (I'm sorry)
 
 ---
 
-_Issue opened by @bluss on 2024-08-27 05:05_
+_@bluss_
 
 I can't get this one to work:
 

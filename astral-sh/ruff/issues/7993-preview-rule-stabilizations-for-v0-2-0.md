@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-16T19:29:32Z
 updated_at: 2024-02-01T19:35:04Z
 url: https://github.com/astral-sh/ruff/issues/7993
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Preview rule stabilizations for v0.2.0
 
 ---
 
-_Issue opened by @zanieb on 2023-10-16 19:29_
+_@zanieb_
 
 New rules are now added in preview. This issue serves as a central discussion for rules that should be promoted from preview to stable in the next breaking version of Ruff.
 

@@ -13,14 +13,14 @@ head: precise-prefix-locking
 created_at: 2024-06-25T04:05:02Z
 updated_at: 2024-06-25T10:47:52Z
 url: https://github.com/astral-sh/uv/pull/4506
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # More precise locking with --prefix option
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2024-06-25 04:05_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

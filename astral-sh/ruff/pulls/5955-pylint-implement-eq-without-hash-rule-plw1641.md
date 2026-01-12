@@ -13,14 +13,14 @@ head: pylint-eq-without-hash
 created_at: 2023-07-21T21:15:39Z
 updated_at: 2023-07-27T19:07:43Z
 url: https://github.com/astral-sh/ruff/pull/5955
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [pylint] Implement `eq-without-hash` rule (PLW1641)
 
 ---
 
-_Pull request opened by @jelly on 2023-07-21 21:15_
+_@jelly_
 
 Implement https://pylint.pycqa.org/en/latest/user_guide/messages/warning/eq-without-hash.html
 Issue https://github.com/astral-sh/ruff/issues/970

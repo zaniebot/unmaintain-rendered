@@ -13,14 +13,14 @@ head: rule/LOG009
 created_at: 2023-09-08T22:50:54Z
 updated_at: 2023-09-15T15:32:16Z
 url: https://github.com/astral-sh/ruff/pull/7249
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`flake8-logging`] Add `flake8_logging` boilerplate and first rule `LOG009` 
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-09-08 22:50_
+_@qdegraaf_
 
 ## Summary
 

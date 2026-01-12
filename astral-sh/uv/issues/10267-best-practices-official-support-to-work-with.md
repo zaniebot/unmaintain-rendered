@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T01:33:27Z
 updated_at: 2025-08-15T10:53:03Z
 url: https://github.com/astral-sh/uv/issues/10267
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Best Practices / Official support to work with CMake FindPython module
 
 ---
 
-_Issue opened by @YouJiacheng on 2025-01-02 01:33_
+_@YouJiacheng_
 
 [CMake FindPython](https://cmake.org/cmake/help/latest/module/FindPython.html)
 

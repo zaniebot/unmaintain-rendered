@@ -13,14 +13,14 @@ head: alex/simplify-constraint-fn
 created_at: 2025-01-05T15:21:46Z
 updated_at: 2025-01-05T21:52:49Z
 url: https://github.com/astral-sh/ruff/pull/15270
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Minor simplifications and improvements to constraint narrowing logic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-05 15:21_
+_@AlexWaygood_
 
 ## Summary
 

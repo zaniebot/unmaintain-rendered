@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T16:00:44Z
 updated_at: 2023-04-27T12:51:08Z
 url: https://github.com/astral-sh/ruff/issues/4118
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] I001 Import block is un-sorted or un-formatted
 
 ---
 
-_Issue opened by @DouglasBlackwood on 2023-04-26 16:00_
+_@DouglasBlackwood_
 
 The error: `error: Autofix introduced a syntax error. Reverting all changes.`
 

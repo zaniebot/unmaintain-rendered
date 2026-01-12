@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T20:48:07Z
 updated_at: 2025-01-03T21:52:03Z
 url: https://github.com/astral-sh/uv/issues/10294
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Documentation assumes I know the Python ecosystem
 
 ---
 
-_Issue opened by @tringenbach on 2025-01-03 20:48_
+_@tringenbach_
 
 My more recent background is Javascript, Typescript, and Java, where I mainly use `yarn` as a package manager.  I've touched Python a little over the years, but only recently have really focused on it and needed to care about tools like `uv`.
 

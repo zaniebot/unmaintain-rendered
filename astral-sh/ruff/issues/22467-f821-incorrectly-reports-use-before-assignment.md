@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T23:39:25Z
 updated_at: 2026-01-09T11:12:00Z
 url: https://github.com/astral-sh/ruff/issues/22467
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # `F821`: Incorrectly reports use before assignment for conditional import
 
 ---
 
-_Issue opened by @k4lizen on 2026-01-08 23:39_
+_@k4lizen_
 
 ### Summary
 

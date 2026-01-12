@@ -13,14 +13,14 @@ head: charlie/top-level
 created_at: 2023-02-04T13:21:07Z
 updated_at: 2023-02-04T13:21:26Z
 url: https://github.com/astral-sh/ruff/pull/2565
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Ignore direct root-children in implicit-namespace-package
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-04 13:21_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/issues/2556#issuecomment-1416728269.
 

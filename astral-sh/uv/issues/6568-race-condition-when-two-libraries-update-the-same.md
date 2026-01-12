@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-24T04:38:36Z
 updated_at: 2025-02-06T04:38:57Z
 url: https://github.com/astral-sh/uv/issues/6568
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Race condition when two libraries update the same __init__.py
 
 ---
 
-_Issue opened by @ramarnat on 2024-08-24 04:38_
+_@ramarnat_
 
 This has had me pulling my hair out.
 

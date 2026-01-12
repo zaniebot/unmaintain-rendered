@@ -14,14 +14,14 @@ head: david/fix-mdtest-line-numbers
 created_at: 2025-02-04T13:28:34Z
 updated_at: 2025-02-04T13:44:06Z
 url: https://github.com/astral-sh/ruff/pull/15932
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] MDTest: Fix line numbers in error messages
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-04 13:28_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T15:36:02Z
 updated_at: 2025-07-25T02:55:05Z
 url: https://github.com/astral-sh/uv/issues/14873
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Bug: `uv venv` activation uses system `pip` instead of virtual environment's `pip`
 
 ---
 
-_Issue opened by @guillermodotn on 2025-07-24 15:36_
+_@guillermodotn_
 
 ### Summary
 

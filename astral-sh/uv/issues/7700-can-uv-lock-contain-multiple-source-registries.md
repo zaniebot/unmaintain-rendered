@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T08:50:44Z
 updated_at: 2025-02-28T09:39:51Z
 url: https://github.com/astral-sh/uv/issues/7700
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Can `uv.lock` contain multiple source registries for a single package?
 
 ---
 
-_Issue opened by @zmeir on 2024-09-26 08:50_
+_@zmeir_
 
 I've been experimenting a bit with `uv lock` and came across a use-case that I can't seem to resolve.
 

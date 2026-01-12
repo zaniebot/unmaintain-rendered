@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T23:27:39Z
 updated_at: 2024-12-29T18:08:56Z
 url: https://github.com/astral-sh/ruff/issues/15155
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Incorrect import removal with "todo:" in Neovim/LSP
 
 ---
 
-_Issue opened by @pykeras on 2024-12-26 23:27_
+_@pykeras_
 
 When using Ruff as a formatter within Neovim with Mason and nvim-lspconfig, Ruff aggressively removes imports, even if they are used later in the file, if the file starts with a comment containing "todo:".
 

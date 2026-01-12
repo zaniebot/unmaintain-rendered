@@ -12,14 +12,14 @@ head: drop-placeholder
 created_at: 2023-01-19T14:15:05Z
 updated_at: 2023-01-19T16:09:06Z
 url: https://github.com/astral-sh/ruff/pull/1996
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Drop `Violation::placeholder`
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-19 14:15_
+_@not-my-profile_
 
 This PR removes the following associated function from the Violation trait:
 

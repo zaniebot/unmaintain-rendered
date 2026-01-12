@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-23T16:31:45Z
 updated_at: 2023-06-29T06:09:28Z
 url: https://github.com/astral-sh/ruff/issues/5338
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # formatter bug with `a and not a & a` when wrapping
 
 ---
 
-_Issue opened by @davidszotten on 2023-06-23 16:31_
+_@davidszotten_
 
 In
 

@@ -13,14 +13,14 @@ head: issue-14525
 created_at: 2024-11-22T14:16:43Z
 updated_at: 2024-11-24T02:50:39Z
 url: https://github.com/astral-sh/ruff/pull/14532
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-bugbear`] Fix `mutable-contextvar-default (B039)` to resolve annotated function calls properly
 
 ---
 
-_Pull request opened by @harupy on 2024-11-22 14:16_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

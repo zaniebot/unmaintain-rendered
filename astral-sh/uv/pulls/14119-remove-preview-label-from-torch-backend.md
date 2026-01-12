@@ -13,14 +13,14 @@ head: charlie/pt
 created_at: 2025-06-17T19:31:24Z
 updated_at: 2025-06-17T20:49:02Z
 url: https://github.com/astral-sh/uv/pull/14119
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Remove preview label from `--torch-backend`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-17 19:31_
+_@charliermarsh_
 
 This is now used in enough places that I'm comfortable committing to maintaining it under our versioning policy.
 

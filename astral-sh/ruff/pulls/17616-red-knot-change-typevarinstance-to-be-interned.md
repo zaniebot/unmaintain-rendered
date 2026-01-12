@@ -13,14 +13,14 @@ head: cjm/interntv
 created_at: 2025-04-24T21:13:59Z
 updated_at: 2025-04-24T21:52:28Z
 url: https://github.com/astral-sh/ruff/pull/17616
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] change TypeVarInstance to be interned, not tracked
 
 ---
 
-_Pull request opened by @carljm on 2025-04-24 21:13_
+_@carljm_
 
 ## Summary
 

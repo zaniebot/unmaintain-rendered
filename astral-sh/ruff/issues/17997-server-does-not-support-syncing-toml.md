@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T21:41:11Z
 updated_at: 2025-05-20T17:39:30Z
 url: https://github.com/astral-sh/ruff/issues/17997
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Server does not support syncing TOML configuration files
 
 ---
 
-_Issue opened by @trim21 on 2025-05-09 21:41_
+_@trim21_
 
 ### Summary
 

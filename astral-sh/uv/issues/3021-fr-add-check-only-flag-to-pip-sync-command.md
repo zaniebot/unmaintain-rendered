@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-14T21:13:04Z
 updated_at: 2024-08-09T09:42:34Z
 url: https://github.com/astral-sh/uv/issues/3021
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # FR: add `--check-only` flag to `pip sync` command
 
 ---
 
-_Issue opened by @ofek on 2024-04-14 21:13_
+_@ofek_
 
 We have a need to check whether environments are synchronized without performing action so it would be nice to have such a flag that would produce JSON output like:
 

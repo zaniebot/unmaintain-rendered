@@ -13,14 +13,14 @@ head: format-FormatPatternSequence
 created_at: 2023-08-18T14:39:20Z
 updated_at: 2023-08-23T00:58:14Z
 url: https://github.com/astral-sh/ruff/pull/6676
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchSequence`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-18 14:39_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: fix-D208-indent
 created_at: 2024-09-16T21:31:43Z
 updated_at: 2024-09-26T12:53:21Z
 url: https://github.com/astral-sh/ruff/pull/13372
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Don't raise `D208` when last line is non-empty
 
 ---
 
-_Pull request opened by @ukyen8 on 2024-09-16 21:31_
+_@ukyen8_
 
 …D208)
 

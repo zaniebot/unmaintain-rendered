@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T04:36:41Z
 updated_at: 2024-04-26T04:08:01Z
 url: https://github.com/astral-sh/ruff/issues/8669
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Notebook related rule updates
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-11-14 04:36_
+_@dhruvmanila_
 
 This is an open discussion around linting Jupyter Notebooks using certain rules that doesn't map well with the notebook model.
 

@@ -14,14 +14,14 @@ head: fix-20819
 created_at: 2025-10-12T23:35:38Z
 updated_at: 2025-10-15T14:12:21Z
 url: https://github.com/astral-sh/ruff/pull/20825
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [`pyupgrade`] Extend `UP019` to detect `typing_extensions.Text` (`UP019`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-12 23:35_
+_@danparizher_
 
 ## Summary
 

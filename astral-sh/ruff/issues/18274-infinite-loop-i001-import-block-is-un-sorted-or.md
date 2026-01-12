@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T11:51:50Z
 updated_at: 2025-05-23T13:42:13Z
 url: https://github.com/astral-sh/ruff/issues/18274
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Infinite loop] I001 Import block is un-sorted or un-formatted
 
 ---
 
-_Issue opened by @moszajca-sonatus on 2025-05-23 11:51_
+_@moszajca-sonatus_
 
 Comments are causing infinite loop.
 

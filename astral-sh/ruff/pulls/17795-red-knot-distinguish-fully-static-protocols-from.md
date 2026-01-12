@@ -13,14 +13,14 @@ head: alex/fully-static-protocols-2
 created_at: 2025-05-02T18:35:00Z
 updated_at: 2025-05-03T10:12:25Z
 url: https://github.com/astral-sh/ruff/pull/17795
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Distinguish fully static protocols from non-fully-static protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-02 18:35_
+_@AlexWaygood_
 
 ## Summary
 

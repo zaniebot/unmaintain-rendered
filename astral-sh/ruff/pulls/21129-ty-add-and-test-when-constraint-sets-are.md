@@ -14,14 +14,14 @@ head: dcreager/satisfies
 created_at: 2025-10-29T18:45:56Z
 updated_at: 2025-10-31T14:53:39Z
 url: https://github.com/astral-sh/ruff/pull/21129
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Add and test when constraint sets are satisfied by their typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-29 18:45_
+_@dcreager_
 
 This PR adds a new `satisfied_by_all_typevar` method, which implements one of the final steps of actually using these dang constraint sets. Constraint sets exist to help us check assignability and subtyping of types in the presence of typevars. We construct a constraint set describing the conditions under which assignability holds between the two types. Then we check whether that constraint set is satisfied for the valid specializations of the relevant typevars (which is this new method).
 

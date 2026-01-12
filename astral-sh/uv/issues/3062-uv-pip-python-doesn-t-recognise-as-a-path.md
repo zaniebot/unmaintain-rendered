@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T14:49:06Z
 updated_at: 2024-04-17T14:02:21Z
 url: https://github.com/astral-sh/uv/issues/3062
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # `uv pip --python` doesn't recognise / as a path separator on Windows
 
 ---
 
-_Issue opened by @pfmoore on 2024-04-16 14:49_
+_@pfmoore_
 
 To demonstrate:
 

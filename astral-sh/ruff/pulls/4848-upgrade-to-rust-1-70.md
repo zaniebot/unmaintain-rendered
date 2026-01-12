@@ -13,14 +13,14 @@ head: rust-1.70
 created_at: 2023-06-04T13:08:33Z
 updated_at: 2023-06-04T18:08:28Z
 url: https://github.com/astral-sh/ruff/pull/4848
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Upgrade to Rust 1.70
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-04 13:08_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

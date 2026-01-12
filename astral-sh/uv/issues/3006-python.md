@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T03:50:07Z
 updated_at: 2024-05-22T13:38:17Z
 url: https://github.com/astral-sh/uv/issues/3006
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # 新增安装 Python 功能
 
 ---
 
-_Issue opened by @522247020 on 2024-04-12 03:50_
+_@522247020_
 
 
 我以前比较喜欢使用 miniconda 来当做虚拟环境管理。

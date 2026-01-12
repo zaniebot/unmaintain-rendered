@@ -12,14 +12,14 @@ head: ci/python-311
 created_at: 2023-07-12T00:17:19Z
 updated_at: 2023-07-12T14:23:23Z
 url: https://github.com/astral-sh/ruff/pull/5700
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Bump static Python versions in CI from 3.7 to 3.11
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-12 00:17_
+_@zanieb_
 
 Python 3.7 is EOL and we should use the latest stable version for builds.
 

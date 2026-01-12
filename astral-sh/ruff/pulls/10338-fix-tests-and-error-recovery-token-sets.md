@@ -13,14 +13,14 @@ head: dhruv/fix-tests
 created_at: 2024-03-11T13:23:24Z
 updated_at: 2024-03-12T08:11:16Z
 url: https://github.com/astral-sh/ruff/pull/10338
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix tests and error recovery token sets
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-11 13:23_
+_@dhruvmanila_
 
 ## Summary
 

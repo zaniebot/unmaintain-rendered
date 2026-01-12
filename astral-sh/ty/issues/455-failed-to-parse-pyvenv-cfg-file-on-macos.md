@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T17:05:12Z
 updated_at: 2025-11-14T14:43:04Z
 url: https://github.com/astral-sh/ty/issues/455
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Failed to parse pyvenv.cfg file on MacOS
 
 ---
 
-_Issue opened by @Skylion007 on 2025-05-19 17:05_
+_@Skylion007_
 
 ### Summary
 

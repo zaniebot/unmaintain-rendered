@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T21:02:06Z
 updated_at: 2025-07-30T06:15:32Z
 url: https://github.com/astral-sh/ruff/issues/19623
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # subprocess modernize rules
 
 ---
 
-_Issue opened by @kaddkaka on 2025-07-29 21:02_
+_@kaddkaka_
 
 ### Summary
 

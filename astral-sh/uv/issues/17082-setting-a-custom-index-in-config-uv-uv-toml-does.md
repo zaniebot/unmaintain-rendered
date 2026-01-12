@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T11:00:27Z
 updated_at: 2025-12-11T11:58:18Z
 url: https://github.com/astral-sh/uv/issues/17082
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Setting a custom index in ~/.config/uv/uv.toml does not work
 
 ---
 
-_Issue opened by @moritzdietz on 2025-12-11 11:00_
+_@moritzdietz_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: docs-normalization
 created_at: 2025-06-20T18:56:41Z
 updated_at: 2025-06-20T20:56:43Z
 url: https://github.com/astral-sh/ruff/pull/18831
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # Docs normalization
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 18:56_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

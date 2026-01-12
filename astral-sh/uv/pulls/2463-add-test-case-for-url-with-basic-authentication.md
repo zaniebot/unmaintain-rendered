@@ -13,14 +13,14 @@ head: zb/basic-auth
 created_at: 2024-03-14T18:18:04Z
 updated_at: 2024-03-15T14:50:05Z
 url: https://github.com/astral-sh/uv/pull/2463
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Add test case for URL with basic authentication
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-14 18:18_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2447
 

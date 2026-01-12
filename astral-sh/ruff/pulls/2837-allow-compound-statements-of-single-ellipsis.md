@@ -12,14 +12,14 @@ head: charlie/ellipsis
 created_at: 2023-02-12T23:50:44Z
 updated_at: 2023-02-12T23:56:44Z
 url: https://github.com/astral-sh/ruff/pull/2837
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Allow compound statements of single ellipsis
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 23:50_
+_@charliermarsh_
 
 This allows `class C: ...`-style compound statements in stub files.
 

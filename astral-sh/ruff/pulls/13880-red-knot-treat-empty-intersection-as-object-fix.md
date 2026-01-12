@@ -13,14 +13,14 @@ head: david/fix-13870
 created_at: 2024-10-22T14:16:44Z
 updated_at: 2024-10-22T19:02:47Z
 url: https://github.com/astral-sh/ruff/pull/13880
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Treat empty intersection as 'object', fix intersection simplification
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-22 14:16_
+_@sharkdp_
 
 ## Summary
 

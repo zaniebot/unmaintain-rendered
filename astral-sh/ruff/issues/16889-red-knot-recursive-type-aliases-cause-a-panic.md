@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T09:19:20Z
 updated_at: 2025-05-07T15:22:52Z
 url: https://github.com/astral-sh/ruff/issues/16889
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Recursive type aliases cause a panic
 
 ---
 
-_Issue opened by @cake-monotone on 2025-03-21 09:19_
+_@cake-monotone_
 
 ### Summary
 

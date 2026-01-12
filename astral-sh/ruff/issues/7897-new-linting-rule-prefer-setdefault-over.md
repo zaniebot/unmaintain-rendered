@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-10T15:10:26Z
 updated_at: 2023-10-12T05:21:54Z
 url: https://github.com/astral-sh/ruff/issues/7897
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # New Linting Rule: Prefer `setdefault` Over Conditional Key Checks for Dictionary Assignment
 
 ---
 
-_Issue opened by @danparizher on 2023-10-10 15:10_
+_@danparizher_
 
 # Proposed Linting Rule
 

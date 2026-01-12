@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-22T20:56:14Z
 updated_at: 2024-01-24T13:52:03Z
 url: https://github.com/astral-sh/ruff/issues/9616
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [New Rule Request][Django] No `first()` without `order_by()`
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-01-22 20:56_
+_@tylerlaprade_
 
 Many of my bugs in Django are from doing `.first()` on an unordered QuerySet, which arbitrarily gives me one of the records. I would like `.first()` to be flagged as an error unless it is chained with `.order_by()` (not necessarily consecutively, but in the same statement). I searched for an example of a similar rule in flake8 but couldn't find any.
 

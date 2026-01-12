@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-08T20:53:25Z
 updated_at: 2024-12-31T18:37:32Z
 url: https://github.com/astral-sh/uv/issues/7199
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Feature suggestion: Re-init option for `uv init`
 
 ---
 
-_Issue opened by @smheidrich on 2024-09-08 20:53_
+_@smheidrich_
 
 ## Proposal
 

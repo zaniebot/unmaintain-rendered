@@ -1,0 +1,78 @@
+```yaml
+number: 2425
+title: Add shell completion to the binary itself as one of the options
+type: issue
+state: closed
+author: nyurik
+labels:
+  - rollup
+assignees: []
+created_at: 2023-02-21T05:12:04Z
+updated_at: 2023-11-25T20:03:56Z
+url: https://github.com/BurntSushi/ripgrep/issues/2425
+synced_at: 2026-01-12T16:13:24Z
+```
+
+# Add shell completion to the binary itself as one of the options
+
+---
+
+_@nyurik_
+
+#### Describe your feature request
+
+Managing separate shell-complete files is tedious, and requires manual steps.  Many tools offer a way to generate shell completion files by running the utility directly, e.g. `kubectl completion bash` - so I can just add `source <(kubectl completion ${SHELL_NAME})` to the `.shell_defaults`.
+
+Could we have something similar please?  Thanks for the best util on the planet :)
+
+---
+
+_Comment by @BurntSushi on 2023-02-21 12:01_
+
+It's an interesting idea. I'm not sure about it though. Are there any cons to doing this? One I can see is that it encourages spawning a new sub-process every time you open an interactive shell. That might not be an issue if it's only one of them, but if every tool does it, then that's probably not great. Of course, you can always put the completions in a file and then source that.
+
+It would indeed remove the need to ruffle through Cargo's target directory, which is not a great experience.
+
+---
+
+_Label `question` added by @BurntSushi on 2023-02-21 12:01_
+
+---
+
+_Comment by @nyurik on 2023-02-21 17:46_
+
+@BurntSushi spawning 10-15 processes that each exit within a millisecond is not that big of a deal nowadays, but you are right - it is not optimal.  BUT -- users don't need to -- most of the time, people just call it once during installation (this would be part of the `--help`):   `kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null`  (this line is part of the documentation too)
+
+---
+
+_Comment by @BurntSushi on 2023-02-21 18:08_
+
+It's very very unlikely that a process will actually spawn and exit within a single millisecond. Maybe the process itself only runs for that long, but the actual amount of time you're spent waiting for the process to spawn and exit is usually quite a bit more than 1 millisecond. For example, `time cat < /dev/null` on my system takes 5 milliseconds, and that's about as fast as it gets. You get 15 of those and you're looking at something that is human perceptible. I've personally found that more than a couple sub-process executions in my shell prompt is too much, and beyond that, I start really noticing the lag.
+
+> BUT -- users don't need to -- most of the time, people just call it once during installation
+
+Well yes, I said pretty much exactly that.
+
+---
+
+_Comment by @BurntSushi on 2023-11-22 19:54_
+
+This will be closed by #2649.
+
+I actually had forgotten about this request. I was working on removing the dependency on Clap (arg parser) and needed to come up with something different for generating shell completions. I ended up deciding on just having ripgrep do it itself instead of at build time. When it's done at build time, it has to be done as part of the build script, which means some portion of ripgrep needs to be compiled into the build script and then again into the final binary. And then of course, actually _finding_ the files it generates is an unmitigated disaster. I had gone this route with Clap originally because I don't believe it exposed a way to query flag metadata. In any case, with my own custom handling of flags, I was far less restricted and thought it would be operationally much simpler to just have something like `rg --generate complete-bash` do the right thing. And I did this for the man page too.
+
+So... this will be in the next release!
+
+---
+
+_Label `question` removed by @BurntSushi on 2023-11-22 21:46_
+
+---
+
+_Label `rollup` added by @BurntSushi on 2023-11-22 21:46_
+
+---
+
+_Closed by @BurntSushi on 2023-11-25 20:03_
+
+---

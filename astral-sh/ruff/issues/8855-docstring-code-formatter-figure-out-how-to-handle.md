@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-27T16:01:03Z
 updated_at: 2023-12-12T15:01:24Z
 url: https://github.com/astral-sh/ruff/issues/8855
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # docstring code formatter: figure out how to handle line width
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-27 16:01_
+_@BurntSushi_
 
 In #8811, the formatter grew the ability to format doctest code snippets in docstrings. In this initial implementation, it handles line width limits by resetting the column of the code snippet to the first column. It is [unclear whether this is the right behavior](https://github.com/astral-sh/ruff/pull/8811#discussion_r1401165926). This means that individual lines inside the docstring can exceed [line length limits imposed by the linter](https://github.com/BurntSushi/polars/actions/runs/7006619426/job/19058868021?pr=1), and it also just generally means that it is difficult to maintain a line length limit in the source code.
 

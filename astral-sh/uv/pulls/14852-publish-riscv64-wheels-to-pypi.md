@@ -13,14 +13,14 @@ head: zb/riscv
 created_at: 2025-07-23T18:13:10Z
 updated_at: 2025-07-23T21:52:38Z
 url: https://github.com/astral-sh/uv/pull/14852
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Publish riscv64 wheels to PyPI
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-23 18:13_
+_@zanieb_
 
 This reverts commit 49b450109b825ec8fdec7600c2a8f763496f70b7 from https://github.com/astral-sh/uv/pull/14009 following https://github.com/pypi/warehouse/pull/18390
 

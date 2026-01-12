@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-13T23:03:40Z
 updated_at: 2025-09-16T01:36:25Z
 url: https://github.com/clap-rs/clap/issues/6130
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Completion keeps suggesting options (long/short) after an escape (`--`)
 
 ---
 
-_Issue opened by @mernen on 2025-09-13 23:03_
+_@mernen_
 
 ### Please complete the following tasks
 

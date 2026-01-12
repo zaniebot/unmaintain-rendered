@@ -14,14 +14,14 @@ head: david/remove-specialization-display
 created_at: 2025-08-01T08:24:58Z
 updated_at: 2025-08-01T08:44:13Z
 url: https://github.com/astral-sh/ruff/pull/19682
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Remove `Specialization::display` (full)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-01 08:24_
+_@sharkdp_
 
 ## Summary
 

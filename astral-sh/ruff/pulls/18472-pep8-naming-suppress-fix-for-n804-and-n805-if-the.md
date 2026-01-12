@@ -14,14 +14,14 @@ head: fix-N805
 created_at: 2025-06-04T20:40:35Z
 updated_at: 2025-06-11T05:58:55Z
 url: https://github.com/astral-sh/ruff/pull/18472
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [`pep8-naming`] Suppress fix for `N804` and `N805` if the recommend name is already used
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-04 20:40_
+_@LaBatata101_
 
 
 

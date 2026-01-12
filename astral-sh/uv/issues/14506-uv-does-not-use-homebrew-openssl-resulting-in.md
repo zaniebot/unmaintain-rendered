@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T12:56:31Z
 updated_at: 2025-07-09T18:55:46Z
 url: https://github.com/astral-sh/uv/issues/14506
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # uv does not use Homebrew OpenSSL, resulting in "fatal error: 'openssl/crypto.h' file not found"
 
 ---
 
-_Issue opened by @slhck on 2025-07-08 12:56_
+_@slhck_
 
 ### Summary
 

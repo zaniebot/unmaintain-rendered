@@ -14,14 +14,14 @@ head: inlay-hint-call-argument-location
 created_at: 2025-09-11T12:17:49Z
 updated_at: 2025-12-27T00:21:02Z
 url: https://github.com/astral-sh/ruff/pull/20349
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Inlay hint call argument location
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-09-11 12:17_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

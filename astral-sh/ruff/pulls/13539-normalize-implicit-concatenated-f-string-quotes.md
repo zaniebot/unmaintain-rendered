@@ -14,14 +14,14 @@ head: micha/remove-string-literal-implicit-fstring-kind
 created_at: 2024-09-27T15:11:56Z
 updated_at: 2024-10-08T10:05:12Z
 url: https://github.com/astral-sh/ruff/pull/13539
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Normalize implicit concatenated f-string quotes per part
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-27 15:11_
+_@MichaReiser_
 
 This PR fixes a bug where ruff decided on whether the quotes for an implicit concatenated string can be changed for the entire expression instead of deciding on the part-level. 
 

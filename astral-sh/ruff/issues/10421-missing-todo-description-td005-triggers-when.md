@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T13:27:58Z
 updated_at: 2024-09-05T05:18:05Z
 url: https://github.com/astral-sh/ruff/issues/10421
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `missing-todo-description` (`TD005`) triggers when description begins on following line
 
 ---
 
-_Issue opened by @tjkuson on 2024-03-15 13:27_
+_@tjkuson_
 
 `missing-todo-description` (`TD005`) triggers on the following code.
 

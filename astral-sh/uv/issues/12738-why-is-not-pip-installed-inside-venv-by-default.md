@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T08:46:42Z
 updated_at: 2025-04-08T17:25:38Z
 url: https://github.com/astral-sh/uv/issues/12738
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Why is not `pip` installed inside `venv` by default (`uv venv --seed`)?
 
 ---
 
-_Issue opened by @Danipulok on 2025-04-08 08:46_
+_@Danipulok_
 
 ### Question
 

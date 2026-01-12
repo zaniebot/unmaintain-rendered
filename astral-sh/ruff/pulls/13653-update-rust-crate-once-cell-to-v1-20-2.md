@@ -13,14 +13,14 @@ head: renovate/once_cell-1.x-lockfile
 created_at: 2024-10-07T01:12:39Z
 updated_at: 2024-10-07T06:03:13Z
 url: https://github.com/astral-sh/ruff/pull/13653
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Update Rust crate once_cell to v1.20.2
 
 ---
 
-_Pull request opened by @renovate on 2024-10-07 01:12_
+_@renovate_
 
 This PR contains the following updates:
 

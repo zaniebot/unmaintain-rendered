@@ -13,14 +13,14 @@ head: renovate/petgraph-0.x
 created_at: 2025-01-06T01:01:10Z
 updated_at: 2025-01-08T18:39:27Z
 url: https://github.com/astral-sh/uv/pull/10317
-synced_at: 2026-01-10T11:44:42Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Update Rust crate petgraph to 0.7.1
 
 ---
 
-_Pull request opened by @renovate on 2025-01-06 01:01_
+_@renovate_
 
 This PR contains the following updates:
 

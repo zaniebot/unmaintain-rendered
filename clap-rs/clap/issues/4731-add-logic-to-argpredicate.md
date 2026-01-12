@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T04:03:48Z
 updated_at: 2023-02-27T17:09:49Z
 url: https://github.com/clap-rs/clap/issues/4731
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add logic to ArgPredicate
 
 ---
 
-_Issue opened by @jaskij on 2023-02-27 04:03_
+_@jaskij_
 
 ### Please complete the following tasks
 

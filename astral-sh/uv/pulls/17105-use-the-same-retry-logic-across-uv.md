@@ -13,14 +13,14 @@ head: konsti/better-retry-handling-5
 created_at: 2025-12-12T17:44:33Z
 updated_at: 2025-12-18T12:44:38Z
 url: https://github.com/astral-sh/uv/pull/17105
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Use the same retry logic across uv
 
 ---
 
-_Pull request opened by @konstin on 2025-12-12 17:44_
+_@konstin_
 
 We were using slightly different retry code in multiple places, this PR unifies it.
 

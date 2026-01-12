@@ -11,14 +11,14 @@ head: sysinfo
 created_at: 2025-11-15T14:03:50Z
 updated_at: 2025-11-21T16:43:18Z
 url: https://github.com/astral-sh/uv/pull/16746
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Migrate sys_info to sysinfo
 
 ---
 
-_Pull request opened by @LIghtJUNction on 2025-11-15 14:03_
+_@LIghtJUNction_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: ruff-db-remove-itertools
 created_at: 2024-06-22T18:33:54Z
 updated_at: 2024-06-22T18:53:29Z
 url: https://github.com/astral-sh/ruff/pull/11984
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Remove itertools dependency from `ruff_db`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-22 18:33_
+_@MichaReiser_
 
 ## Summary
 

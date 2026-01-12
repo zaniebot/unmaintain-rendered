@@ -12,14 +12,14 @@ head: ibraheem/marker-tree-debug
 created_at: 2024-08-15T21:19:10Z
 updated_at: 2024-09-06T20:47:52Z
 url: https://github.com/astral-sh/uv/pull/6129
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Add debug representation for `MarkerTree`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-15 21:19_
+_@ibraheemdev_
 
 ## Summary
 

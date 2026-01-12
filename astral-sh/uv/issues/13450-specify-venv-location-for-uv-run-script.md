@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T11:51:53Z
 updated_at: 2025-05-15T08:21:07Z
 url: https://github.com/astral-sh/uv/issues/13450
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Specify venv location for `uv run --script`
 
 ---
 
-_Issue opened by @ValeKnappich on 2025-05-14 11:51_
+_@ValeKnappich_
 
 ### Question
 

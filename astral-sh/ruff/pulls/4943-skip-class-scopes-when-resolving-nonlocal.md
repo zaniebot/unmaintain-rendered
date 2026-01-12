@@ -13,14 +13,14 @@ head: charlie/non-local
 created_at: 2023-06-07T22:17:56Z
 updated_at: 2023-06-07T22:49:49Z
 url: https://github.com/astral-sh/ruff/pull/4943
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Skip class scopes when resolving nonlocal references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-07 22:17_
+_@charliermarsh_
 
 ## Summary
 

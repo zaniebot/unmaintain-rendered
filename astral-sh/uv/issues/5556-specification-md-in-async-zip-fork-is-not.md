@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-29T11:48:39Z
 updated_at: 2024-07-29T16:05:54Z
 url: https://github.com/astral-sh/uv/issues/5556
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # SPECIFICATION.md in async_zip fork is not redistributable
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-07-29 11:48_
+_@musicinmybrain_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

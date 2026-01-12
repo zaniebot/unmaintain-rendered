@@ -13,14 +13,14 @@ head: ww/dewrangle
 created_at: 2025-12-19T21:51:24Z
 updated_at: 2025-12-20T15:21:49Z
 url: https://github.com/astral-sh/ruff/pull/22098
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # Remove in-workflow deployment to Cloudflare Pages
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-19 21:51_
+_@woodruffw_
 
 ## Summary
 

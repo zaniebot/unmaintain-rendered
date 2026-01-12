@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-03T04:05:26Z
 updated_at: 2024-09-03T07:59:40Z
 url: https://github.com/astral-sh/uv/issues/6956
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # [Question] Why not publish it on crateio?
 
 ---
 
-_Issue opened by @chatblanc-ciel on 2024-09-03 04:05_
+_@chatblanc-ciel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

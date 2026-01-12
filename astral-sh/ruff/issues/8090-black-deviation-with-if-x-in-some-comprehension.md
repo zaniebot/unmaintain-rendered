@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-20T09:09:48Z
 updated_at: 2023-10-22T23:58:27Z
 url: https://github.com/astral-sh/ruff/issues/8090
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Black deviation with if x in some comprehension 
 
 ---
 
-_Issue opened by @philippgl on 2023-10-20 09:09_
+_@philippgl_
 
 I just fund a small difference with the black formatter. 
 

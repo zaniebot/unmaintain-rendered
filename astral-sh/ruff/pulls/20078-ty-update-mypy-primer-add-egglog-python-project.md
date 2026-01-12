@@ -15,14 +15,14 @@ head: david/bump-mypy_primer
 created_at: 2025-08-25T09:09:19Z
 updated_at: 2025-09-05T12:17:10Z
 url: https://github.com/astral-sh/ruff/pull/20078
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Update mypy_primer, add egglog-python project
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-25 09:09_
+_@sharkdp_
 
 Now that https://github.com/astral-sh/ruff/pull/20263 is merged, we can update mypy_primer and add the new `egglog-python` project to `good.txt`. The ecosystem-analyzer run shows that we now add 1,356 diagnostics (where we had over 5,000 previously, due to the unsupported project layout).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T22:07:20Z
 updated_at: 2025-03-28T00:30:23Z
 url: https://github.com/astral-sh/uv/issues/12519
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # How can I run custom scripts like npm run dev with uv?
 
 ---
 
-_Issue opened by @HateRainbow on 2025-03-27 22:07_
+_@HateRainbow_
 
 Hello,
 

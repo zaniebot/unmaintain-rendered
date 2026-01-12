@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T12:05:54Z
 updated_at: 2025-09-03T17:54:37Z
 url: https://github.com/astral-sh/uv/issues/15656
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Install dev dependencies of transitive workspace packages when targeting a single package
 
 ---
 
-_Issue opened by @Spenhouet on 2025-09-03 12:05_
+_@Spenhouet_
 
 ### Summary
 

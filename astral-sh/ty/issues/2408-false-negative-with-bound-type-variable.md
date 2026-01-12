@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-09T05:22:31Z
 updated_at: 2026-01-09T20:48:05Z
 url: https://github.com/astral-sh/ty/issues/2408
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False negative with bound type variable
 
 ---
 
-_Issue opened by @hauntsaninja on 2026-01-09 05:22_
+_@hauntsaninja_
 
 ### Summary
 

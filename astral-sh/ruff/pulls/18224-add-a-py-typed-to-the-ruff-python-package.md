@@ -11,14 +11,14 @@ head: py.typed
 created_at: 2025-05-20T15:39:12Z
 updated_at: 2025-05-20T16:57:08Z
 url: https://github.com/astral-sh/ruff/pull/18224
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # add a `py.typed` to the `ruff` python package
 
 ---
 
-_Pull request opened by @jorenham on 2025-05-20 15:39_
+_@jorenham_
 
 ## Summary
 

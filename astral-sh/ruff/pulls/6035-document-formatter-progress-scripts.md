@@ -14,14 +14,14 @@ head: document_formatter_progress_scripts
 created_at: 2023-07-24T15:37:18Z
 updated_at: 2023-07-24T17:42:21Z
 url: https://github.com/astral-sh/ruff/pull/6035
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Document formatter progress scripts
 
 ---
 
-_Pull request opened by @konstin on 2023-07-24 15:37_
+_@konstin_
 
 ## Summary
 

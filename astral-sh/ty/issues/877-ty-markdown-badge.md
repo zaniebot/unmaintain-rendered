@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T16:00:58Z
 updated_at: 2025-07-28T19:35:09Z
 url: https://github.com/astral-sh/ty/issues/877
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `ty` markdown badge
 
 ---
 
-_Issue opened by @jorenham on 2025-07-23 16:00_
+_@jorenham_
 
 I think it would be kinda cool to have a [![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff), but for `ty`. 
 

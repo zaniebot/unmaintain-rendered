@@ -12,14 +12,14 @@ head: install-wheel-rs-error-paths
 created_at: 2023-11-29T17:49:12Z
 updated_at: 2023-11-29T19:14:36Z
 url: https://github.com/astral-sh/uv/pull/514
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Show error paths in install-wheel-rs
 
 ---
 
-_Pull request opened by @konstin on 2023-11-29 17:49_
+_@konstin_
 
 Ensure that we consistently show a path for all io errors in install-wheel-rs either (preferred) through `fs_err`, or as fallback by a custom error type. For zip reading errors, we rely on the caller to add the name and/or location of the wheel.
 

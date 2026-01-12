@@ -12,14 +12,14 @@ head: PERF102-comp
 created_at: 2023-08-31T14:12:43Z
 updated_at: 2023-10-14T08:57:29Z
 url: https://github.com/astral-sh/ruff/pull/7022
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`perflint`] Update `PERF102` to support comprehensions
 
 ---
 
-_Pull request opened by @harupy on 2023-08-31 14:12_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

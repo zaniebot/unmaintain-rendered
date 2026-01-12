@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-11T16:29:06Z
 updated_at: 2025-01-23T17:45:55Z
 url: https://github.com/astral-sh/uv/issues/9021
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Empty environment variables e.g. `UV_FROZEN=''` is treated as an error, not unset
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-11-11 16:29_
+_@samuelcolvin_
 
 Running
 

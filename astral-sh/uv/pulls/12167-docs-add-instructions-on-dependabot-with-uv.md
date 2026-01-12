@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-14T13:59:10Z
 updated_at: 2025-03-14T16:23:03Z
 url: https://github.com/astral-sh/uv/pull/12167
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # docs: add instructions on dependabot with uv
 
 ---
 
-_Pull request opened by @john-s-lin on 2025-03-14 13:59_
+_@john-s-lin_
 
 ## Summary
 

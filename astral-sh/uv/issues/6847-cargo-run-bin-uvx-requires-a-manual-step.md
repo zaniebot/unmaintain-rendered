@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-30T01:10:52Z
 updated_at: 2024-08-30T12:48:23Z
 url: https://github.com/astral-sh/uv/issues/6847
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # cargo run --bin uvx requires a manual step
 
 ---
 
-_Issue opened by @dimaqq on 2024-08-30 01:10_
+_@dimaqq_
 
 To reproduce:
 

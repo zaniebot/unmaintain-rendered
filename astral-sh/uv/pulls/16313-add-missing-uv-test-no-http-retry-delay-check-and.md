@@ -13,14 +13,14 @@ head: konsti/missing-no-delay-check
 created_at: 2025-10-15T12:53:14Z
 updated_at: 2025-10-15T18:45:23Z
 url: https://github.com/astral-sh/uv/pull/16313
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Add missing `UV_TEST_NO_HTTP_RETRY_DELAY` check and better logging
 
 ---
 
-_Pull request opened by @konstin on 2025-10-15 12:53_
+_@konstin_
 
 The `install_http_retries` test goes from 15s to 0.3s. Additionally, we log the retry delay.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T12:47:30Z
 updated_at: 2025-06-13T12:55:05Z
 url: https://github.com/astral-sh/ruff/issues/12578
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # SIM118: Error on any method called `.keys()`, not just dictionaries
 
 ---
 
-_Issue opened by @ocaballeror on 2024-07-30 12:47_
+_@ocaballeror_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 

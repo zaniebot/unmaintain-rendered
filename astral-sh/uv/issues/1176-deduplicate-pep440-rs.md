@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T21:01:36Z
 updated_at: 2024-01-29T21:11:43Z
 url: https://github.com/astral-sh/uv/issues/1176
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Deduplicate `pep440_rs`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-29 21:01_
+_@charliermarsh_
 
 Right now, `pyproject-toml` is pulling in the version from crates.io, while the rest of the project gets the local version:
 

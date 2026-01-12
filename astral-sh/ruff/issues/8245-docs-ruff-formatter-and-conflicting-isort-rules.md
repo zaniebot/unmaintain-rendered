@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T06:55:14Z
 updated_at: 2023-10-31T09:32:40Z
 url: https://github.com/astral-sh/ruff/issues/8245
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Docs: Ruff formatter and conflicting isort rules ambiguity
 
 ---
 
-_Issue opened by @thernstig on 2023-10-26 06:55_
+_@thernstig_
 
 I have read all the docs now, and they are in general in great shape! So good job. There was only one section I could not grok, and I believe it could use some kind of improvement in its description.
 

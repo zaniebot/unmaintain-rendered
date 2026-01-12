@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T15:01:38Z
 updated_at: 2024-12-11T15:37:51Z
 url: https://github.com/astral-sh/uv/issues/9814
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Highlight feature to sync a single package
 
 ---
 
-_Issue opened by @kevinsimper on 2024-12-11 15:01_
+_@kevinsimper_
 
 If you are working with UV codespaces, you can end up with a really big list of dependencies.
 

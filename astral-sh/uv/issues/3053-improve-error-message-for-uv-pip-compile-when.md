@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T07:16:06Z
 updated_at: 2024-04-16T07:57:14Z
 url: https://github.com/astral-sh/uv/issues/3053
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Improve error message for uv pip compile when input requirements conflict
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-04-16 07:16_
+_@hauntsaninja_
 
 ```
 λ cat r.txt

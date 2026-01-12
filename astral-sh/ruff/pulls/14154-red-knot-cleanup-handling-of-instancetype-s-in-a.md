@@ -13,14 +13,14 @@ head: redknot-instance
 created_at: 2024-11-07T14:03:34Z
 updated_at: 2024-11-07T14:17:33Z
 url: https://github.com/astral-sh/ruff/pull/14154
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Cleanup handling of `InstanceType`s in a couple of places
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-07 14:03_
+_@AlexWaygood_
 
 ## Summary
 

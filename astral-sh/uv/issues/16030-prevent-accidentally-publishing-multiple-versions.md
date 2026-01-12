@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-25T19:22:49Z
 updated_at: 2025-10-16T07:54:29Z
 url: https://github.com/astral-sh/uv/issues/16030
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Prevent accidentally publishing multiple versions of the same package
 
 ---
 
-_Issue opened by @konstin on 2025-09-25 19:22_
+_@konstin_
 
 We regularly get questions where users accidentally try to publish more versions of a package because they had an old `dist` around (https://github.com/astral-sh/uv/issues/8033, https://github.com/astral-sh/uv/issues/13185, https://github.com/astral-sh/uv/issues/16028, https://python.plainenglish.io/overcoming-uvs-own-shortcomings-with-uv-02fe47885358). We should try to safeguard better against this.
 

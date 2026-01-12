@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-11T05:08:17Z
 updated_at: 2025-06-05T10:30:18Z
 url: https://github.com/astral-sh/uv/issues/8121
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Useless Warning: cannot find your CPU L2 & L3 cache size in /sys/devices/system/cpu/cpuX/cache
 
 ---
 
-_Issue opened by @dimaqq on 2024-10-11 05:08_
+_@dimaqq_
 
 I get this warning on every uvx [command] run in a VM:
 

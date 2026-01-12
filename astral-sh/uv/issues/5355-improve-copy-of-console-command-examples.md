@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T17:42:20Z
 updated_at: 2024-07-31T14:52:03Z
 url: https://github.com/astral-sh/uv/issues/5355
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Improve copy of console command examples
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 17:42_
+_@zanieb_
 
 e.g.
 

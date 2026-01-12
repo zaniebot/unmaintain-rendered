@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-01T17:03:46Z
 updated_at: 2025-12-16T11:38:21Z
 url: https://github.com/astral-sh/uv/issues/6914
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # How do I replace using `python -m` with `uv`
 
 ---
 
-_Issue opened by @mattpodolak on 2024-09-01 17:03_
+_@mattpodolak_
 
 To download a language for spacy, normally I would run  `python -m spacy download`, I  can't seem to figure out the `uv` way of doing this. 
 

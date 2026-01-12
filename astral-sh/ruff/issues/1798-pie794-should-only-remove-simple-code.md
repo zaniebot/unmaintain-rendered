@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T23:22:57Z
 updated_at: 2023-01-16T08:20:47Z
 url: https://github.com/astral-sh/ruff/issues/1798
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PIE794 should only remove simple code?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 23:22_
+_@spaceone_
 
 ```
 class Foo(object):

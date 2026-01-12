@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-03T08:49:01Z
 updated_at: 2022-01-04T13:38:11Z
 url: https://github.com/clap-rs/clap/issues/3245
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # unused_braces warning for default_value_t
 
 ---
 
-_Issue opened by @href on 2022-01-03 08:49_
+_@href_
 
 ### Please complete the following tasks
 

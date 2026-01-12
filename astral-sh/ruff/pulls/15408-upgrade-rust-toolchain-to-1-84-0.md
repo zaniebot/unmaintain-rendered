@@ -13,14 +13,14 @@ head: rust-184
 created_at: 2025-01-10T19:51:39Z
 updated_at: 2025-01-11T08:52:00Z
 url: https://github.com/astral-sh/ruff/pull/15408
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Upgrade Rust toolchain to 1.84.0
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-10 19:51_
+_@MichaReiser_
 
 ## Summary
 

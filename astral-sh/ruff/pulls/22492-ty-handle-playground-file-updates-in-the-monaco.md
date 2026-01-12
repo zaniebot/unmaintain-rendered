@@ -13,14 +13,14 @@ head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
 updated_at: 2026-01-12T08:26:25Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
 
 ---
 
-_Pull request opened by @RasmusNygren on 2026-01-10 13:37_
+_@RasmusNygren_
 
 ## Summary
 

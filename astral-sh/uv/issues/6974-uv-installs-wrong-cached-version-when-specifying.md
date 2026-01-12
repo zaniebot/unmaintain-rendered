@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T18:42:27Z
 updated_at: 2024-09-25T21:50:29Z
 url: https://github.com/astral-sh/uv/issues/6974
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv installs wrong (cached) version when specifying a git+ dependency with hash
 
 ---
 
-_Issue opened by @MacLake on 2024-09-03 18:42_
+_@MacLake_
 
 I use uv 0.4.3 with Python 3.11 on Manjaro Linux.
 

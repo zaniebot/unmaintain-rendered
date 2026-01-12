@@ -14,14 +14,14 @@ head: david/document-ty_config_file
 created_at: 2025-12-16T10:41:16Z
 updated_at: 2025-12-16T12:15:27Z
 url: https://github.com/astral-sh/ruff/pull/22001
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Document `TY_CONFIG_FILE`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 10:41_
+_@sharkdp_
 
 _No description provided._
 

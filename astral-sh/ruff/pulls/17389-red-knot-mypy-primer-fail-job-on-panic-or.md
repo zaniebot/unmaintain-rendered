@@ -14,14 +14,14 @@ head: david/mypy_primer-fail-job-on-panics
 created_at: 2025-04-14T11:47:12Z
 updated_at: 2025-04-14T11:56:41Z
 url: https://github.com/astral-sh/ruff/pull/17389
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] mypy_primer: Fail job on panic or internal errors
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-14 11:47_
+_@sharkdp_
 
 ## Summary
 

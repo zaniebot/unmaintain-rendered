@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-23T19:12:10Z
 updated_at: 2025-01-03T18:45:57Z
 url: https://github.com/astral-sh/ruff/issues/13899
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] mdtest doesn't tell you the path of the Markdown file if there's a panic
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-23 19:12_
+_@AlexWaygood_
 
 If there's a panic in an mdtest, mdtest tells you the name of the test that panicked, but not the path to the file that contains the test:
 

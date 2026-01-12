@@ -12,14 +12,14 @@ head: move-quotes-violations
 created_at: 2023-02-02T13:16:44Z
 updated_at: 2023-02-02T15:08:12Z
 url: https://github.com/astral-sh/ruff/pull/2475
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-quotes violations to rules module
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 13:16_
+_@akx_
 
 _No description provided._
 

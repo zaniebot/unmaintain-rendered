@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T18:27:57Z
 updated_at: 2024-03-20T19:32:52Z
 url: https://github.com/astral-sh/ruff/issues/10462
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Style suggestion: Allow aligning dict values
 
 ---
 
-_Issue opened by @kaddkaka on 2024-03-18 18:27_
+_@kaddkaka_
 
 **Describe the style change**
 Allow aligning dict values in dict literals. 

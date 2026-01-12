@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-05-21T15:27:33Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/965
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Clap doesn't parse correctly a YAML file if 2 spaces are used (for indent) instead of 4.
 
 ---
 
-_Issue opened by @Booteille on 2017-05-21 15:27_
+_@Booteille_
 
 ### Rust Version
 

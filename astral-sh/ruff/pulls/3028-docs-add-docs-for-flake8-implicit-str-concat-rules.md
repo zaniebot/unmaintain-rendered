@@ -13,14 +13,14 @@ head: ISC-docs
 created_at: 2023-02-19T10:25:04Z
 updated_at: 2023-02-19T14:38:59Z
 url: https://github.com/astral-sh/ruff/pull/3028
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [docs] Add docs for `flake8-implicit-str-concat` rules
 
 ---
 
-_Pull request opened by @thatlittleboy on 2023-02-19 10:25_
+_@thatlittleboy_
 
 Added docs for the ISC rules.
 

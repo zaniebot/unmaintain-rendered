@@ -13,14 +13,14 @@ head: zed-binary-path
 created_at: 2025-11-10T19:07:47Z
 updated_at: 2025-11-12T11:52:23Z
 url: https://github.com/astral-sh/ty/pull/1518
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add documentation about Zed binary path
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-10 19:07_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

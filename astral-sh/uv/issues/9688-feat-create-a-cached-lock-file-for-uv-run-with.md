@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T16:12:42Z
 updated_at: 2025-01-08T20:34:48Z
 url: https://github.com/astral-sh/uv/issues/9688
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Feat: Create a cached lock file for `uv run` with scripts
 
 ---
 
-_Issue opened by @notatallshaw on 2024-12-06 16:12_
+_@notatallshaw_
 
 This is a follow up to https://github.com/astral-sh/uv/issues/7538, I wanted to make a clear feature request. Basically I don't want `uv run ...` to resolve when it's already done it once, unless I pass something like `uv run --upgrade ...`.
 

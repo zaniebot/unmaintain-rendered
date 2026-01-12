@@ -13,14 +13,14 @@ head: assignment
 created_at: 2024-10-11T06:38:50Z
 updated_at: 2024-10-16T12:51:49Z
 url: https://github.com/astral-sh/ruff/pull/13711
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Do not panic if named expressions show up in assignment position
 
 ---
 
-_Pull request opened by @rtpg on 2024-10-11 06:38_
+_@rtpg_
 
 Unfortunately the test I added here still fails (I believe due to scoping issues, still trying to wrap my head around how the scoping is supposed to work), but I believe my changes to the builder are correct: it is not incorrect for there to be `current_assignment`s to juggle, given the existence of named expressions.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-03T10:37:54Z
 updated_at: 2024-01-29T13:59:36Z
 url: https://github.com/astral-sh/ruff/issues/9378
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Set location of ruff binary via env var
 
 ---
 
-_Issue opened by @jenia90 on 2024-01-03 10:37_
+_@jenia90_
 
 Our python dist uses a different location for the bin/ folder, thus getting its location via `sysconfig` functions doesn't work.
 So, it'd be really handy to be able to specify the location of ruff executable via env var. We can have something like

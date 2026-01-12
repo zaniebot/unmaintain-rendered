@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T16:28:21Z
 updated_at: 2025-03-04T18:33:50Z
 url: https://github.com/astral-sh/ruff/issues/16502
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # N806, N815, and N816 ignore case patterns
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-04 16:28_
+_@dscorbett_
 
 ### Summary
 

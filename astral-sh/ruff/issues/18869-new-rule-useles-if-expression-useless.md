@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T00:03:16Z
 updated_at: 2025-06-23T00:36:50Z
 url: https://github.com/astral-sh/ruff/issues/18869
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # new rule - useles if expression / useless comprehension
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-23 00:03_
+_@DetachHead_
 
 ### Summary
 

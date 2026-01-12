@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T17:23:35Z
 updated_at: 2025-05-12T17:48:55Z
 url: https://github.com/astral-sh/ty/issues/314
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # List concatenation not resolving correctly to `list[str]` but to `list[_T]`
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 17:23_
+_@ion-elgreco_
 
 ### Summary
 

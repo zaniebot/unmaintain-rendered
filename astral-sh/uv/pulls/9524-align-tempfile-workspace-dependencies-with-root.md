@@ -13,14 +13,14 @@ head: adjust-tempfile-dependency
 created_at: 2024-11-29T15:27:15Z
 updated_at: 2024-11-29T17:05:10Z
 url: https://github.com/astral-sh/uv/pull/9524
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Align tempfile workspace dependencies with root project
 
 ---
 
-_Pull request opened by @Coruscant11 on 2024-11-29 15:27_
+_@Coruscant11_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

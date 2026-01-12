@@ -13,14 +13,14 @@ head: guangyey/uv
 created_at: 2025-07-01T07:17:41Z
 updated_at: 2025-07-10T02:00:32Z
 url: https://github.com/astral-sh/uv/pull/14386
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Add auto-detection for Intel GPUs
 
 ---
 
-_Pull request opened by @guangyey on 2025-07-01 07:17_
+_@guangyey_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

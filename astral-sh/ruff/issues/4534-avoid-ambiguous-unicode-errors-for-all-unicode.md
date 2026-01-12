@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-19T18:20:17Z
 updated_at: 2023-05-22T14:42:27Z
 url: https://github.com/astral-sh/ruff/issues/4534
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Avoid ambiguous-unicode errors for all-unicode strings
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-19 18:20_
+_@charliermarsh_
 
 Well, the title is a little misleading -- there's more nuance to it.
 

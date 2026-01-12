@@ -13,14 +13,14 @@ head: manzt/docs
 created_at: 2024-11-14T23:56:55Z
 updated_at: 2025-01-06T15:07:25Z
 url: https://github.com/astral-sh/uv/pull/9135
-synced_at: 2026-01-10T11:44:29Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Clarify exclude-newer only allows full timestamps in settings docs
 
 ---
 
-_Pull request opened by @manzt on 2024-11-14 23:56_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-28T00:03:09Z
 updated_at: 2025-01-08T21:48:55Z
 url: https://github.com/astral-sh/uv/issues/8609
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Support `uv export --script`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-28 00:03_
+_@charliermarsh_
 
 You should be able to point to a PEP 723 script to get a requirements.txt of the resolved dependencies.
 

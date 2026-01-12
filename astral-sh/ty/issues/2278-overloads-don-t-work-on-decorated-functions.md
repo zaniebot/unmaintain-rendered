@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T15:41:36Z
 updated_at: 2026-01-09T11:15:46Z
 url: https://github.com/astral-sh/ty/issues/2278
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Overloads don't work on decorated functions
 
 ---
 
-_Issue opened by @ncollins-vs on 2025-12-30 15:41_
+_@ncollins-vs_
 
 ### Summary
 

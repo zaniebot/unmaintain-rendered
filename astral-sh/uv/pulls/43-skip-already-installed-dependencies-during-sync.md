@@ -12,14 +12,14 @@ head: charlie/skip
 created_at: 2023-10-07T19:06:50Z
 updated_at: 2023-10-07T19:26:47Z
 url: https://github.com/astral-sh/uv/pull/43
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Skip already-installed dependencies during `sync` command
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 19:06_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/35.
 

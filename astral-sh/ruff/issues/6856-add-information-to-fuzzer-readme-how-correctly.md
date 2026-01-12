@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T17:29:53Z
 updated_at: 2024-01-08T08:27:14Z
 url: https://github.com/astral-sh/ruff/issues/6856
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add information to fuzzer README how correctly report problems found by this tool
 
 ---
 
-_Issue opened by @qarmin on 2023-08-24 17:29_
+_@qarmin_
 
 After downloading fuzz corpus, I run command `cargo fuzz run -s none ruff_fix_validity -- -timeout=200` and file with invalid content was created:
 ```

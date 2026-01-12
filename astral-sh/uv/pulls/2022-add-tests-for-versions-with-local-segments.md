@@ -11,14 +11,14 @@ head: ag/local-tests
 created_at: 2024-02-27T17:36:26Z
 updated_at: 2024-03-13T15:14:39Z
 url: https://github.com/astral-sh/uv/pull/2022
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # add tests for versions with local segments
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-27 17:36_
+_@BurntSushi_
 
 While trying to fix #1855, I came up with a few tests that improve
 our coverage of versions with local segments. Those tests were added

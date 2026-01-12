@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-18T21:23:19Z
 updated_at: 2022-10-26T02:02:59Z
 url: https://github.com/astral-sh/ruff/issues/452
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # DRY up the `matches!(checker.autofix, fixer::Mode::Generate | fixer::Mode::Apply)` pattern
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-18 21:23_
+_@charliermarsh_
 
 Might be a cleaner or more succinct way to express this.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T15:56:58Z
 updated_at: 2025-12-24T14:28:08Z
 url: https://github.com/astral-sh/uv/issues/2512
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Add dependabot support
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-03-18 15:56_
+_@mjclarke94_
 
 I'm not quite sure on whether this is a `rye` or a `uv` issue, but it would be broadly useful to have dependabot understand rye/uv backed projects as a target for dependabot updates. The current known targets are `pip` and `poetry` (which you leave as pip, they just have support for a poetry-style pyproject file).
 

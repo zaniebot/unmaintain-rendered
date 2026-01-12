@@ -13,14 +13,14 @@ head: path-fragment
 created_at: 2024-03-18T01:30:07Z
 updated_at: 2024-03-18T19:47:11Z
 url: https://github.com/astral-sh/uv/pull/2502
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Allow direct file path requirements to include fragments
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-03-18 01:30_
+_@eth3lbert_
 
 This PR handles the fragment part of the URL path.
 It achieves this by splitting the fragment from the path before normalization and parsing. It then sets the fragment back after the URL has been parsed.

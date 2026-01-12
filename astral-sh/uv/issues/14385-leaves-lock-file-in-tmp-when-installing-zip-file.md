@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T05:58:57Z
 updated_at: 2025-07-02T01:18:13Z
 url: https://github.com/astral-sh/uv/issues/14385
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Leaves lock file in tmp when installing zip file
 
 ---
 
-_Issue opened by @nijel on 2025-07-01 05:58_
+_@nijel_
 
 ### Summary
 

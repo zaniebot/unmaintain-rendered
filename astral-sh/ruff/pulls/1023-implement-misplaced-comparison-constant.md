@@ -12,14 +12,14 @@ head: misplaced-comparison-constant
 created_at: 2022-12-04T04:52:53Z
 updated_at: 2022-12-04T05:10:08Z
 url: https://github.com/astral-sh/ruff/pull/1023
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement `misplaced-comparison-constant`
 
 ---
 
-_Pull request opened by @harupy on 2022-12-04 04:52_
+_@harupy_
 
 #970 
 

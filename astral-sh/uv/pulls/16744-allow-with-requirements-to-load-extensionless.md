@@ -13,14 +13,14 @@ head: with-req-inline-metadata
 created_at: 2025-11-15T02:41:03Z
 updated_at: 2025-11-21T04:11:11Z
 url: https://github.com/astral-sh/uv/pull/16744
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Allow `--with-requirements` to load extensionless inline-metadata scripts
 
 ---
 
-_Pull request opened by @terror on 2025-11-15 02:41_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16732
 

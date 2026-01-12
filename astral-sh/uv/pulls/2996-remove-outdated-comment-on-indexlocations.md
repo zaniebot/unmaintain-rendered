@@ -13,14 +13,14 @@ head: charlie/do
 created_at: 2024-04-11T17:22:06Z
 updated_at: 2024-04-11T17:31:35Z
 url: https://github.com/astral-sh/uv/pull/2996
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Remove outdated comment on `IndexLocations`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 17:22_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2990.
 

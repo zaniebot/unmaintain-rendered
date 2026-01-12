@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T12:03:07Z
 updated_at: 2024-03-06T04:25:30Z
 url: https://github.com/astral-sh/uv/issues/1481
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv pip install` cannot fetch requirement file from remote URL
 
 ---
 
-_Issue opened by @kdeldycke on 2024-02-16 12:03_
+_@kdeldycke_
 
 Trying to install packages from a `requirements.txt` file that is available on a remote URL is not supported:
 ```shell-session

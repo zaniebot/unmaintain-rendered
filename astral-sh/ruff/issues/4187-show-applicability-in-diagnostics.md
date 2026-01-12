@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-02T09:38:51Z
 updated_at: 2023-10-17T03:02:56Z
 url: https://github.com/astral-sh/ruff/issues/4187
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Show `Applicability` in Diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:38_
+_@MichaReiser_
 
 This task is part of #4181 and depends on #4183
 

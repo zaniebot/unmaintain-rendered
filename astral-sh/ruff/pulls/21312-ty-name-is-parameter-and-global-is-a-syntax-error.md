@@ -13,14 +13,14 @@ head: ty_bound_parameter
 created_at: 2025-11-07T06:08:43Z
 updated_at: 2025-11-14T18:15:34Z
 url: https://github.com/astral-sh/ruff/pull/21312
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] name is parameter and global is a syntax error
 
 ---
 
-_Pull request opened by @11happy on 2025-11-07 06:08_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

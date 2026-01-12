@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-31T05:17:54Z
 updated_at: 2024-01-02T14:20:44Z
 url: https://github.com/astral-sh/ruff/issues/9327
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Request: extending `unnecessary-assign` (`RET504`) to account for `+=` (`__iadd__`)
 
 ---
 
-_Issue opened by @jamesbraza on 2023-12-31 05:17_
+_@jamesbraza_
 
 With `ruff==0.1.9`'s [`unnecessary-assign`](https://docs.astral.sh/ruff/rules/unnecessary-assign/) (`RET504`), this goes undetected as having extra steps:
 

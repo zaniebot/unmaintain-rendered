@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T08:22:33Z
 updated_at: 2024-08-08T13:07:03Z
 url: https://github.com/astral-sh/uv/issues/5900
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `uv lock --upgrade-package` has no effect
 
 ---
 
-_Issue opened by @konstin on 2024-08-08 08:22_
+_@konstin_
 
 Reproducer: Start with
 

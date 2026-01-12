@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T11:04:15Z
 updated_at: 2025-12-02T02:35:09Z
 url: https://github.com/astral-sh/ty/issues/1701
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Use decorated function as type context when inferring decorator expression (or more aggressively promote literals in decorators)
 
 ---
 
-_Issue opened by @patrick91 on 2025-12-01 11:04_
+_@patrick91_
 
 ### Summary
 

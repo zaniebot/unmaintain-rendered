@@ -13,14 +13,14 @@ head: david/fix-intersection-type-explanation
 created_at: 2024-11-07T20:14:08Z
 updated_at: 2024-11-08T10:44:43Z
 url: https://github.com/astral-sh/ruff/pull/14176
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Minor fix in intersection type comment
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-07 20:14_
+_@sharkdp_
 
 ## Summary
 

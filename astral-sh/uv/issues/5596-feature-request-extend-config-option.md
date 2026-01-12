@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T11:57:59Z
 updated_at: 2025-05-29T09:05:06Z
 url: https://github.com/astral-sh/uv/issues/5596
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Feature Request: `extend` config option
 
 ---
 
-_Issue opened by @jvacek on 2024-07-30 11:57_
+_@jvacek_
 
 The usecase for us is that we share a lot of configs among multiple repositories. We track the "shared" configuration separately to our codebases, and the individual repos pull that as a submodule, and extend from it in pyproject.toml. If we need to do major changes like changing our extra-index address for example, this would help us do that more efficiently.
 

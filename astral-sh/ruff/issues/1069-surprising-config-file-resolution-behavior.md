@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T18:52:57Z
 updated_at: 2023-02-03T18:28:30Z
 url: https://github.com/astral-sh/ruff/issues/1069
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Surprising config file resolution behavior
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 18:52_
+_@smackesey_
 
 Our repo has two pyproject.toml files with `[tool.ruff]` sections:
 

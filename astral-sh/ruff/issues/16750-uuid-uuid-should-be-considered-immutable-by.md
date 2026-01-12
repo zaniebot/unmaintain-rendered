@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T15:24:21Z
 updated_at: 2025-04-15T15:24:00Z
 url: https://github.com/astral-sh/ruff/issues/16750
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # uuid.UUID should be considered immutable by default
 
 ---
 
-_Issue opened by @sk- on 2025-03-14 15:24_
+_@sk-_
 
 ### Summary
 

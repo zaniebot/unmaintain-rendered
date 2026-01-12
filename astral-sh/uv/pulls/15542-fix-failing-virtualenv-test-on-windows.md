@@ -12,14 +12,14 @@ head: charlie/v
 created_at: 2025-08-27T01:42:30Z
 updated_at: 2025-08-27T03:14:15Z
 url: https://github.com/astral-sh/uv/pull/15542
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Fix failing virtualenv test on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-27 01:42_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/15540.
 

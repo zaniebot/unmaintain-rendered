@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-10T05:48:29Z
 updated_at: 2025-01-10T09:39:48Z
 url: https://github.com/astral-sh/uv/issues/10459
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Add Option to Specify Disk or Server for python-build-standalone Download
 
 ---
 
-_Issue opened by @darjeeling on 2025-01-10 05:48_
+_@darjeeling_
 
 When acquiring python-build-standalone through uv, it would be beneficial to have an option that allows specifying a disk or particular server for downloads. This is crucial for environments with security or compliance requirements or when direct internet access is unavailable.
 

@@ -14,14 +14,14 @@ head: alex/type-t-subtype
 created_at: 2025-01-20T19:02:08Z
 updated_at: 2025-01-22T00:31:57Z
 url: https://github.com/astral-sh/ruff/pull/15622
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Small simplifications to `Type::is_subtype_of` and `Type::is_disjoint_from`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-20 19:02_
+_@AlexWaygood_
 
 ## Summary
 

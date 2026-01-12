@@ -13,14 +13,14 @@ head: charlie/member-kind
 created_at: 2023-08-06T14:12:08Z
 updated_at: 2023-08-07T17:37:18Z
 url: https://github.com/astral-sh/ruff/pull/6374
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use dedicated AST nodes on `MemberKind`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-06 14:12_
+_@charliermarsh_
 
 ## Summary
 

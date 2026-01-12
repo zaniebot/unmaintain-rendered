@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T16:38:01Z
 updated_at: 2025-10-19T12:22:04Z
 url: https://github.com/astral-sh/uv/issues/13433
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # Failed to build inflate64
 
 ---
 
-_Issue opened by @NewAtair on 2025-05-13 16:38_
+_@NewAtair_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: ag/diag-call-union
 created_at: 2025-05-08T16:30:57Z
 updated_at: 2025-05-09T14:14:26Z
 url: https://github.com/astral-sh/ruff/pull/17959
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] improve diagnostic messages for union type function calls
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-08 16:30_
+_@BurntSushi_
 
 This PR goes to some effort to improve diagnostics for invalid function
 calls, when the type of the function is a union of function types.

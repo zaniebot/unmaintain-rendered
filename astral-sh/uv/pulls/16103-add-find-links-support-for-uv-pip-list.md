@@ -11,14 +11,14 @@ head: pip-list-outdated
 created_at: 2025-10-02T15:50:07Z
 updated_at: 2025-10-27T06:25:20Z
 url: https://github.com/astral-sh/uv/pull/16103
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Add `--find-links` support for `uv pip list`
 
 ---
 
-_Pull request opened by @terror on 2025-10-02 15:50_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16095
 

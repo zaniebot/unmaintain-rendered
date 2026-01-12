@@ -13,14 +13,14 @@ head: 13768/cleanup-markdown-test
 created_at: 2024-10-20T10:27:39Z
 updated_at: 2024-10-21T15:56:16Z
 url: https://github.com/astral-sh/ruff/pull/13831
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Cleanup generated names of mdtest tests
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-20 10:27_
+_@Aditya-PS-05_
 
 Part of #13768 
 

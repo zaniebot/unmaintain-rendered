@@ -12,14 +12,14 @@ head: redknot.internsymbolnames
 created_at: 2024-06-01T06:29:05Z
 updated_at: 2025-02-20T09:00:29Z
 url: https://github.com/astral-sh/ruff/pull/11675
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # intern names in the symbol table
 
 ---
 
-_Pull request opened by @plredmond on 2024-06-01 06:29_
+_@plredmond_
 
 # intern all the names used in a module in its SymbolTable
 

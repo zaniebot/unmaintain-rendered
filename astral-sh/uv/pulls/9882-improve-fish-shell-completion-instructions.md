@@ -12,14 +12,14 @@ head: fishcompletions
 created_at: 2024-12-13T20:39:37Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9882
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Improve fish shell completion instructions
 
 ---
 
-_Pull request opened by @leofleeo on 2024-12-13 20:39_
+_@leofleeo_
 
 Suggest adding the completions to a file in the completions folder instead of generating the completions on every shell launch.
 

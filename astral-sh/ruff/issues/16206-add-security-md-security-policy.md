@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-17T07:20:12Z
 updated_at: 2025-02-18T14:42:56Z
 url: https://github.com/astral-sh/ruff/issues/16206
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add SECURITY.md - Security Policy
 
 ---
 
-_Issue opened by @AhlamBCoding on 2025-02-17 07:20_
+_@AhlamBCoding_
 
 ### Description
 

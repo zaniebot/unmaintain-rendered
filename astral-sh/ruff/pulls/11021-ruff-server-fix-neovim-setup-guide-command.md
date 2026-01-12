@@ -13,14 +13,14 @@ head: nvim-lsp-setup
 created_at: 2024-04-19T01:55:24Z
 updated_at: 2024-04-19T02:56:44Z
 url: https://github.com/astral-sh/ruff/pull/11021
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: fix Neovim setup guide command
 
 ---
 
-_Pull request opened by @MithicSpirit on 2024-04-19 01:55_
+_@MithicSpirit_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

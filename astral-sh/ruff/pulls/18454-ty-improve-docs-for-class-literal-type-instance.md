@@ -14,14 +14,14 @@ head: david/improve-instance_member-docs
 created_at: 2025-06-04T07:49:47Z
 updated_at: 2025-06-04T07:55:47Z
 url: https://github.com/astral-sh/ruff/pull/18454
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Improve docs for Class{Literal,Type}::instance_member
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-04 07:49_
+_@sharkdp_
 
 ## Summary
 

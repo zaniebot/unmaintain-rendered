@@ -13,14 +13,14 @@ head: dependabot/cargo/configparser-3.0.3
 created_at: 2023-11-27T08:48:27Z
 updated_at: 2023-11-27T10:07:23Z
 url: https://github.com/astral-sh/ruff/pull/8849
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump configparser from 3.0.2 to 3.0.3
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-27 08:48_
+_@dependabot_
 
 Bumps [configparser](https://github.com/QEDK/configparser-rs) from 3.0.2 to 3.0.3.
 <details>

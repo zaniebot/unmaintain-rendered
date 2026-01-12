@@ -13,14 +13,14 @@ head: david/extend-ecosystem-checks
 created_at: 2025-03-14T20:35:37Z
 updated_at: 2025-03-14T21:17:40Z
 url: https://github.com/astral-sh/ruff/pull/16761
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Extend ecosystem checks
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-14 20:35_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: x86_build
 created_at: 2025-01-12T13:46:38Z
 updated_at: 2025-01-23T05:12:03Z
 url: https://github.com/astral-sh/uv/pull/10540
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Build aarch64 uv using x86 windows runner.
 
 ---
 
-_Pull request opened by @kalradivyanshu on 2025-01-12 13:46_
+_@kalradivyanshu_
 
 Based on discussion in https://github.com/astral-sh/uv/pull/10306, this adds building aarch64 exe using x86 runner. See: https://github.com/astral-sh/uv/pull/10402#issuecomment-2579094192
 

@@ -13,14 +13,14 @@ head: docs/pypi-token-faq-link
 created_at: 2025-06-24T15:09:42Z
 updated_at: 2025-06-24T15:56:42Z
 url: https://github.com/astral-sh/uv/pull/14242
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Add a link to PyPI FAQ to clarify what per-project token is.
 
 ---
 
-_Pull request opened by @iamdbychkov on 2025-06-24 15:09_
+_@iamdbychkov_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

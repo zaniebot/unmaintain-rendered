@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T02:05:32Z
 updated_at: 2024-11-29T00:02:07Z
 url: https://github.com/astral-sh/uv/issues/7418
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Regression on tolerance for older Pythons
 
 ---
 
-_Issue opened by @garthk on 2024-09-16 02:05_
+_@garthk_
 
 Edit: I'm sorry; this top comment was a mess. I've revised it for clarity [below](#issuecomment-2506861641).
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-22T15:57:05Z
 updated_at: 2024-12-24T08:37:24Z
 url: https://github.com/astral-sh/ruff/issues/15098
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # known-third-party not respected when the project root (local folder) contains a subfolder with the same name as a declared import
 
 ---
 
-_Issue opened by @Dev-iL on 2024-12-22 15:57_
+_@Dev-iL_
 
 ## Background
 I have a project with the following structure:

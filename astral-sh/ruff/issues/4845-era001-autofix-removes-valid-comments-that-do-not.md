@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-03T23:41:00Z
 updated_at: 2025-04-19T19:55:57Z
 url: https://github.com/astral-sh/ruff/issues/4845
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # ERA001: autofix removes valid comments that do not contain code or removes not everything
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-06-03 23:41_
+_@saippuakauppias_
 
 Example:
 ```python

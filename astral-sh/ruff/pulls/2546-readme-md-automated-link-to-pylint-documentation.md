@@ -11,14 +11,14 @@ head: automated-link-to-pylint-doc
 created_at: 2023-02-03T15:53:46Z
 updated_at: 2023-02-08T02:40:08Z
 url: https://github.com/astral-sh/ruff/pull/2546
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [readme.md] Automated link to pylint documentation using pre-commit
 
 ---
 
-_Pull request opened by @Pierre-Sassoulas on 2023-02-03 15:53_
+_@Pierre-Sassoulas_
 
 This permit to have a link to the pylint documentation explaining the message using a pre-commit hook. Result here: https://github.com/Pierre-Sassoulas/ruff/tree/automated-link-to-pylint-doc#pylint-pl
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T13:06:55Z
 updated_at: 2024-08-05T15:42:21Z
 url: https://github.com/astral-sh/uv/issues/5684
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # HTTP client build error on Windows
 
 ---
 
-_Issue opened by @EricThomson on 2024-08-01 13:06_
+_@EricThomson_
 
 `uv` is great thanks for the amazing package! Sorry if this is a duplicate I couldn't find it in the issue queue. 
 

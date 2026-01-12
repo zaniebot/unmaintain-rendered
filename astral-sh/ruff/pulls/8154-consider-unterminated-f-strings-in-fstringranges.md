@@ -13,14 +13,14 @@ head: dhruv/unterminated-fstring
 created_at: 2023-10-24T05:27:01Z
 updated_at: 2023-10-27T11:19:14Z
 url: https://github.com/astral-sh/ruff/pull/8154
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Consider unterminated f-strings in `FStringRanges`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-24 05:27_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T21:53:34Z
 updated_at: 2026-01-01T04:13:56Z
 url: https://github.com/astral-sh/ruff/issues/9722
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Feature request] Indentation for ternary statements
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-01-30 21:53_
+_@tylerlaprade_
 
 Ternary statements that are broken across multiple lines are indented at the same level as the parent line, making them very hard to read, especially if surrounded by additional logic. Prettier handles the equivalent case in JS/TS by adding an indentation level to the ternaries. This would likely need to be behind a flag for ease of migration from Black, but ideally this would be the only behavior if that constraint didn't exist.
 

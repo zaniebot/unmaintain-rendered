@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-11T05:38:40Z
 updated_at: 2025-01-11T14:08:15Z
 url: https://github.com/astral-sh/uv/issues/10493
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Tests hang (waiting for username) in 0.5.17
 
 ---
 
-_Issue opened by @mgorny on 2025-01-11 05:38_
+_@mgorny_
 
 ```
      Running `/var/tmp/portage/dev-python/uv-0.5.17/work/uv-0.5.17/target/x86_64-unknown-linux-gnu/debug/deps/uv-4b4c36941a62e59d`

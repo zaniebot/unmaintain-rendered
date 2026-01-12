@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-17T21:20:59Z
 updated_at: 2023-10-17T21:21:18Z
 url: https://github.com/astral-sh/ruff/issues/8026
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider a rule for breaking up monolithic classes
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-10-17 21:20_
+_@NeilGirdhar_
 
 I'm actually going to open and then close this.  It's an interesting idea, but probably too much work, and may not be popular.
 

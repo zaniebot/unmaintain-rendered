@@ -13,14 +13,14 @@ head: superset
 created_at: 2024-04-25T00:57:24Z
 updated_at: 2024-04-25T01:39:42Z
 url: https://github.com/astral-sh/ruff/pull/11136
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # README: add Apache Superset to project list
 
 ---
 
-_Pull request opened by @mistercrunch on 2024-04-25 00:57_
+_@mistercrunch_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-09T21:04:53Z
 updated_at: 2023-01-10T00:22:35Z
 url: https://github.com/astral-sh/ruff/issues/1753
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Auto-fix for `SIM108` breaks `if sys.version_info ...` mypy convention
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-01-09 21:04_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

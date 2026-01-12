@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T18:35:24Z
 updated_at: 2025-05-02T13:46:32Z
 url: https://github.com/astral-sh/uv/issues/13256
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Clarification on Long-Term Licensing and Free Usage of UV for Enterprise Use
 
 ---
 
-_Issue opened by @shaikmoeed on 2025-05-01 18:35_
+_@shaikmoeed_
 
 ### Question
 

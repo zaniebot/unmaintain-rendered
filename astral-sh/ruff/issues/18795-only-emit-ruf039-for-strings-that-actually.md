@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T15:00:46Z
 updated_at: 2025-06-25T07:34:53Z
 url: https://github.com/astral-sh/ruff/issues/18795
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Only emit RUF039 for strings that actually require escaping
 
 ---
 
-_Issue opened by @mxmlnkn on 2025-06-19 15:00_
+_@mxmlnkn_
 
 ### Summary
 

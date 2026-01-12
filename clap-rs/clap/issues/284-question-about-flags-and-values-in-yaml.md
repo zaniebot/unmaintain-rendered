@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-28T23:28:08Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/284
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Question about flags and values in YAML
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-28 23:28_
+_@XAMPPRocky_
 
 When a flag is imported from YAML, and used in the app, the parser will recognise that the flag being passed, but will not give it a value leading to getting a `None`. In the following example, I have two arguments, one a required free argument, the other a flag that conflicts withs the first. The program will run without error, leading to believe the flag is being parsed correctly, but isn't being assigned a value.
 ### main.rs

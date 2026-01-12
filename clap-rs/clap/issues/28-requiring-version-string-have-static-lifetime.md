@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-03-23T04:18:38Z
 updated_at: 2018-08-02T03:29:36Z
 url: https://github.com/clap-rs/clap/issues/28
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Requiring version string have static lifetime makes for awkward code
 
 ---
 
-_Issue opened by @jhelwig on 2015-03-23 04:18_
+_@jhelwig_
 
 In trying to get the version string to automatically populate based on the version I specify in my `Cargo.toml` using something like:
 

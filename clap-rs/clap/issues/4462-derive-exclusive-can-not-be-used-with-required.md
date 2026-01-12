@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-07T16:17:35Z
 updated_at: 2022-11-07T21:50:58Z
 url: https://github.com/clap-rs/clap/issues/4462
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [derive] Exclusive can not be used with required
 
 ---
 
-_Issue opened by @fmorency on 2022-11-07 16:17_
+_@fmorency_
 
 ### Please complete the following tasks
 

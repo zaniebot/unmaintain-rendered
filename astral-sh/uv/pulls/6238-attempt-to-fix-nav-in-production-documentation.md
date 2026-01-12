@@ -14,14 +14,14 @@ head: zb/docs-fix
 created_at: 2024-08-19T23:58:37Z
 updated_at: 2024-08-20T00:03:18Z
 url: https://github.com/astral-sh/uv/pull/6238
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Attempt to fix nav in production documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 23:58_
+_@zanieb_
 
 My deployment to production does not properly render the nav, as it does locally, e.g.:
 

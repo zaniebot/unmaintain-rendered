@@ -14,14 +14,14 @@ head: charlie/re
 created_at: 2025-01-27T17:20:15Z
 updated_at: 2025-01-28T17:17:29Z
 url: https://github.com/astral-sh/uv/pull/10993
-synced_at: 2026-01-10T11:45:21Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Amend `requires-python` rules in resolver documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 17:20_
+_@charliermarsh_
 
 ## Summary
 

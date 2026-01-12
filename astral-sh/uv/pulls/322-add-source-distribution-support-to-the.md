@@ -12,14 +12,14 @@ head: charlie/select
 created_at: 2023-11-06T04:48:45Z
 updated_at: 2023-11-06T05:16:06Z
 url: https://github.com/astral-sh/uv/pull/322
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Add source distribution support to the `DistributionFinder`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 04:48_
+_@charliermarsh_
 
 ## Summary
 

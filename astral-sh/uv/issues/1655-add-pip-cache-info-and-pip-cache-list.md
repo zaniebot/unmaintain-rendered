@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T15:45:44Z
 updated_at: 2024-09-27T04:13:36Z
 url: https://github.com/astral-sh/uv/issues/1655
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Add `pip cache info` and `pip cache list`
 
 ---
 
-_Issue opened by @hugovk on 2024-02-18 15:45_
+_@hugovk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

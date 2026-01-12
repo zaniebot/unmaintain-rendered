@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-15T05:32:45Z
 updated_at: 2023-10-01T07:29:55Z
 url: https://github.com/astral-sh/ruff/issues/7400
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Disable E501 for inline comments
 
 ---
 
-_Issue opened by @Actticus on 2023-09-15 05:32_
+_@Actticus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

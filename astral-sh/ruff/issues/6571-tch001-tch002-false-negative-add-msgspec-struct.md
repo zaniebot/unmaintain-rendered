@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-14T20:19:03Z
 updated_at: 2023-08-16T01:45:47Z
 url: https://github.com/astral-sh/ruff/issues/6571
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # TCH001 TCH002 false negative – add msgspec.Struct support
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-08-14 20:19_
+_@Olegt0rr_
 
 > TCH001 [*] Move application import `.objects.Issue` into a type-checking block
 

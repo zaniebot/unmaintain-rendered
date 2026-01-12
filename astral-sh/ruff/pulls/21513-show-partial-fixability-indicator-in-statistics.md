@@ -13,14 +13,14 @@ head: statistics-partial-fixable
 created_at: 2025-11-18T16:21:10Z
 updated_at: 2025-11-28T19:12:10Z
 url: https://github.com/astral-sh/ruff/pull/21513
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # Show partial fixability indicator in statistics output
 
 ---
 
-_Pull request opened by @tsvikas on 2025-11-18 16:21_
+_@tsvikas_
 
 ## Summary
 

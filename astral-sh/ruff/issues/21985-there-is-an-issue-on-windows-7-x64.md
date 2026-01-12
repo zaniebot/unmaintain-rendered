@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T09:21:22Z
 updated_at: 2025-12-15T14:54:08Z
 url: https://github.com/astral-sh/ruff/issues/21985
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # There is an issue on Windows 7 x64.
 
 ---
 
-_Issue opened by @pengfan806 on 2025-12-15 09:21_
+_@pengfan806_
 
 ### Summary
 

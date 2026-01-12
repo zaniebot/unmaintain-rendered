@@ -12,14 +12,14 @@ head: charlie/optimize-imports
 created_at: 2023-02-07T21:20:32Z
 updated_at: 2023-02-07T21:22:49Z
 url: https://github.com/astral-sh/ruff/pull/2638
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Reorder imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 21:20_
+_@charliermarsh_
 
 This PR runs `rustfmt` with our previous nightly options as a one-time change to make some upcoming refactors cleaner.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T23:55:30Z
 updated_at: 2023-01-12T17:19:27Z
 url: https://github.com/astral-sh/ruff/issues/1700
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature Request: Please support isort add_imports option
 
 ---
 
-_Issue opened by @nefrob on 2023-01-06 23:55_
+_@nefrob_
 
 With `isort` you can auto import things, i.e. in the `pyproject.toml`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T18:56:48Z
 updated_at: 2025-03-21T23:01:34Z
 url: https://github.com/astral-sh/ruff/issues/16609
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # No way to autofix F401 errors in __init__.py
 
 ---
 
-_Issue opened by @ezyang on 2025-03-10 18:56_
+_@ezyang_
 
 ### Summary
 

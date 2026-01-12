@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T06:49:32Z
 updated_at: 2024-01-16T22:49:33Z
 url: https://github.com/astral-sh/ruff/issues/9543
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Cache behaves differently with and without cache (`INP001`)
 
 ---
 
-_Issue opened by @bersbersbers on 2024-01-16 06:49_
+_@bersbersbers_
 
 `INP001` is issued after creating `__init__.py`, due to caching and potentially due to `N999`:
 

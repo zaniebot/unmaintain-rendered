@@ -13,14 +13,14 @@ head: brent/stabilize-ruf053
 created_at: 2025-06-06T19:16:45Z
 updated_at: 2025-06-10T20:11:25Z
 url: https://github.com/astral-sh/ruff/pull/18512
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ruff] Stabilize `class-with-mixed-type-vars` (RUF053)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 19:16_
+_@ntBre_
 
 This PR stabilizes the RUF053 rule by moving it from preview to stable status for the 0.12.0 release.
 

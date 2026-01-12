@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T04:10:43Z
 updated_at: 2023-12-07T02:47:38Z
 url: https://github.com/astral-sh/ruff/issues/9004
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Disable ANN201 None-autofix for abstractmethods?
 
 ---
 
-_Issue opened by @twoertwein on 2023-12-05 04:10_
+_@twoertwein_
 
 Abstract methods often have an almost empty body (doc-string, pass, or raise) but it seems unlikely that they should return `None`. https://github.com/JelleZijlstra/autotyping does not add `None` for `abstractmethod`s.
 ```py

@@ -13,14 +13,14 @@ head: zb/integration-test-project-environment
 created_at: 2024-09-20T16:25:30Z
 updated_at: 2024-09-20T19:03:43Z
 url: https://github.com/astral-sh/uv/pull/7591
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Add integration test for `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 16:25_
+_@zanieb_
 
 [Example](https://github.com/astral-sh/uv/actions/runs/10963662204/job/30445673572?pr=7591)
 

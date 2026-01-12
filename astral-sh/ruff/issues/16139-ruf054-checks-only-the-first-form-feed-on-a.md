@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T15:16:29Z
 updated_at: 2025-03-01T16:55:49Z
 url: https://github.com/astral-sh/ruff/issues/16139
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF054 checks only the first form feed on a physical line
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-13 15:16_
+_@dscorbett_
 
 ### Description
 

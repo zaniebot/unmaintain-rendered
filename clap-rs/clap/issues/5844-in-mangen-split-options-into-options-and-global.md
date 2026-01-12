@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-14T14:20:40Z
 updated_at: 2024-12-24T01:59:21Z
 url: https://github.com/clap-rs/clap/issues/5844
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # In mangen split OPTIONS into OPTIONS and GLOBAL OPTIONS
 
 ---
 
-_Issue opened by @0xAdk on 2024-12-14 14:20_
+_@0xAdk_
 
 ### Please complete the following tasks
 

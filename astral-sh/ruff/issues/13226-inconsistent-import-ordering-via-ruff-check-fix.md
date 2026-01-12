@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-03T09:51:09Z
 updated_at: 2024-09-03T09:56:48Z
 url: https://github.com/astral-sh/ruff/issues/13226
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Inconsistent import ordering via `ruff check --fix --select I`?
 
 ---
 
-_Issue opened by @pansen on 2024-09-03 09:51_
+_@pansen_
 
 Thanks for your wonderful work! 
 

@@ -14,14 +14,14 @@ head: david/ecosystem-activate-pywin32
 created_at: 2025-06-17T07:47:53Z
 updated_at: 2025-06-17T07:52:28Z
 url: https://github.com/astral-sh/ruff/pull/18716
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Enable ecosystem check for 'pywin32'
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-17 07:47_
+_@sharkdp_
 
 ## Summary
 

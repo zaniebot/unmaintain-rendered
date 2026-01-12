@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T19:30:59Z
 updated_at: 2025-09-24T18:20:31Z
 url: https://github.com/astral-sh/uv/issues/16007
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # uv add fails with git repositories using `objectformat = sha256`
 
 ---
 
-_Issue opened by @berhoel on 2025-09-23 19:30_
+_@berhoel_
 
 ### Summary
 

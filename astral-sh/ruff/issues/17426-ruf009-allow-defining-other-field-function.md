@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-16T11:24:05Z
 updated_at: 2025-04-23T06:27:01Z
 url: https://github.com/astral-sh/ruff/issues/17426
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF009 - allow defining other field function
 
 ---
 
-_Issue opened by @CarliJoy on 2025-04-16 11:24_
+_@CarliJoy_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-18T22:06:39Z
 updated_at: 2024-01-18T22:32:46Z
 url: https://github.com/astral-sh/ruff/issues/9574
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add a rule to catch when dataclass is initialized as default argument using field
 
 ---
 
-_Issue opened by @bvsk35 on 2024-01-18 22:06_
+_@bvsk35_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

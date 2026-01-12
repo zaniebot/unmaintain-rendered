@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T22:08:47Z
 updated_at: 2024-03-19T03:06:17Z
 url: https://github.com/astral-sh/uv/issues/2527
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # uv ignores packages installed in lib64/
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-18 22:08_
+_@danielhollas_
 
 On Fedora 39 (and presumably some other distros), Python packages can be installed in two directories, lib/ and lib64. E.g. system packages can be both in:
 - /usr/lib/python3.12/site-packages

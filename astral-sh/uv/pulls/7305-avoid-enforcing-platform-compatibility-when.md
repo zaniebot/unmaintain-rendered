@@ -14,14 +14,14 @@ head: charlie/ext-warn
 created_at: 2024-09-11T19:09:56Z
 updated_at: 2024-09-11T19:17:08Z
 url: https://github.com/astral-sh/uv/pull/7305
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Avoid enforcing platform compatibility when validating lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-11 19:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: I002_fix
 created_at: 2023-07-15T19:41:56Z
 updated_at: 2023-07-15T20:12:23Z
 url: https://github.com/astral-sh/ruff/pull/5786
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Include alias when formatting import-from structs
 
 ---
 
-_Pull request opened by @guillaumeLepape on 2023-07-15 19:41_
+_@guillaumeLepape_
 
 When required-imports is set with the syntax from ... import ... as ..., autofix I002 is failing
 

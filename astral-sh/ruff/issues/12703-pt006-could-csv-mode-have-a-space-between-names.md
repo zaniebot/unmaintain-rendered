@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T23:32:21Z
 updated_at: 2024-08-12T05:51:22Z
 url: https://github.com/astral-sh/ruff/issues/12703
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PT006: Could csv mode have a space between names?
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-05 23:32_
+_@notatallshaw_
 
 I am working on adding [pytest rules for pip](https://github.com/pypa/pip/pull/12894). Turning on [PT006](https://docs.astral.sh/ruff/rules/pytest-parametrize-names-wrong-type/) with [lint.flake8-pytest-style.parametrize-names-type](https://docs.astral.sh/ruff/settings/#lint_flake8-pytest-style_parametrize-names-type) set to csv produces a slight styling difference on autofix of tests using tuple or list compared to pip's standard style.
 

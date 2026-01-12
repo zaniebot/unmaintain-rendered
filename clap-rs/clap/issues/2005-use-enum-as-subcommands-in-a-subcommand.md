@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-09T01:30:18Z
 updated_at: 2021-07-16T20:39:06Z
 url: https://github.com/clap-rs/clap/issues/2005
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Use enum as subcommands in a subcommand
 
 ---
 
-_Issue opened by @leotaku on 2020-07-09 01:30_
+_@leotaku_
 
 ### Make sure you completed the following tasks
 

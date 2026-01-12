@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T14:01:25Z
 updated_at: 2024-09-14T21:56:01Z
 url: https://github.com/astral-sh/uv/issues/4198
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add setting to manage preference for managed toolchains
 
 ---
 
-_Issue opened by @zanieb on 2024-06-10 14:01_
+_@zanieb_
 
 Users should be able to opt in and out of managed toolchains, e.g.
 

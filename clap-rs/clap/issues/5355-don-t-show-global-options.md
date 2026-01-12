@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T12:50:40Z
 updated_at: 2024-02-21T15:15:03Z
 url: https://github.com/clap-rs/clap/issues/5355
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Don't show global options
 
 ---
 
-_Issue opened by @nwalfield on 2024-02-16 12:50_
+_@nwalfield_
 
 ### Please complete the following tasks
 

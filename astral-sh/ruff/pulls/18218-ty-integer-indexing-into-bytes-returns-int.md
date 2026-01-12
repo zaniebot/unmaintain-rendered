@@ -13,14 +13,14 @@ head: ty-bytes-subscription
 created_at: 2025-05-20T14:38:24Z
 updated_at: 2025-05-20T14:44:42Z
 url: https://github.com/astral-sh/ruff/pull/18218
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Integer indexing into `bytes` returns `int`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-20 14:38_
+_@InSyncWithFoo_
 
 ## Summary
 

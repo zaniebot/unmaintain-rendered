@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-04T11:27:39Z
 updated_at: 2025-06-24T20:19:15Z
 url: https://github.com/astral-sh/uv/issues/7924
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Allow `extra-index-url` config value to be overridden
 
 ---
 
-_Issue opened by @richardcooper on 2024-10-04 11:27_
+_@richardcooper_
 
 I have an `extra-index-url` config setting in the `[tool.uv.pip]` section of `pyproject.toml`. I'd like to be able to completely override it using env-vars or similar. That doesn't seem to be possible currently because:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-21T19:00:41Z
 updated_at: 2023-01-21T19:05:33Z
 url: https://github.com/astral-sh/ruff/issues/2067
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # line-length violation autofix is possible ?
 
 ---
 
-_Issue opened by @hasanozdem1r on 2023-01-21 19:00_
+_@hasanozdem1r_
 
 Hello everyone,
 

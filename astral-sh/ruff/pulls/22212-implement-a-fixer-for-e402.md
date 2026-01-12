@@ -12,14 +12,14 @@ head: e402-fixer
 created_at: 2025-12-26T19:05:54Z
 updated_at: 2025-12-26T22:52:25Z
 url: https://github.com/astral-sh/ruff/pull/22212
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # Implement a fixer for E402
 
 ---
 
-_Pull request opened by @PeterJCLaw on 2025-12-26 19:05_
+_@PeterJCLaw_
 
 ## Summary
 

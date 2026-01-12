@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T17:39:00Z
 updated_at: 2024-02-22T02:28:00Z
 url: https://github.com/astral-sh/uv/issues/1821
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Raise error on duplicate editables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-21 17:39_
+_@charliermarsh_
 
 If two editables resolve to the same package name, we silently drop one of them.
 

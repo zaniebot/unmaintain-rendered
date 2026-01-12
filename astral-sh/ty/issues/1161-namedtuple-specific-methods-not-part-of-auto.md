@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-09-10T10:01:10Z
 updated_at: 2025-11-29T18:37:01Z
 url: https://github.com/astral-sh/ty/issues/1161
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `NamedTuple`-specific methods not part of auto-completions
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-10 10:01_
+_@sharkdp_
 
 Start with:
 

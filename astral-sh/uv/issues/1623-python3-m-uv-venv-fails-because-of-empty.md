@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T04:22:14Z
 updated_at: 2024-02-22T03:12:52Z
 url: https://github.com/astral-sh/uv/issues/1623
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # `python3 -m uv venv` fails because of empty subprocess environment
 
 ---
 
-_Issue opened by @SnoopJ on 2024-02-18 04:22_
+_@SnoopJ_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

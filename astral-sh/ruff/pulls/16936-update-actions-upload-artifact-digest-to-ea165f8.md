@@ -13,14 +13,14 @@ head: renovate/actions-upload-artifact-digest
 created_at: 2025-03-24T01:14:49Z
 updated_at: 2025-03-24T01:29:35Z
 url: https://github.com/astral-sh/ruff/pull/16936
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Update actions/upload-artifact digest to ea165f8
 
 ---
 
-_Pull request opened by @renovate on 2025-03-24 01:14_
+_@renovate_
 
 This PR contains the following updates:
 

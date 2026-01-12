@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-08T11:26:21Z
 updated_at: 2023-02-08T15:45:24Z
 url: https://github.com/astral-sh/ruff/issues/2656
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Same way to ban import of certain modules?
 
 ---
 
-_Issue opened by @ehdr on 2023-02-08 11:26_
+_@ehdr_
 
 It would be great to have a kind-of inverse of [`required-imports`](https://github.com/charliermarsh/ruff#required-imports), to **prevent** certain modules from being imported.
 

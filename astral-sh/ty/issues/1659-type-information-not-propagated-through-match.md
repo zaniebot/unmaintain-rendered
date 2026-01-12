@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T19:46:51Z
 updated_at: 2025-11-27T20:03:21Z
 url: https://github.com/astral-sh/ty/issues/1659
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type information not propagated through `match` case statement
 
 ---
 
-_Issue opened by @save-buffer on 2025-11-27 19:46_
+_@save-buffer_
 
 ### Summary
 

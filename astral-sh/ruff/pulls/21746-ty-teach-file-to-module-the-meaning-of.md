@@ -14,14 +14,14 @@ head: gankra/workup2
 created_at: 2025-12-02T02:08:57Z
 updated_at: 2025-12-02T14:06:18Z
 url: https://github.com/astral-sh/ruff/pull/21746
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] teach `file_to_module` the meaning of desperation as well
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-02 02:08_
+_@Gankra_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zanie/extra-norm
 created_at: 2023-10-31T15:46:46Z
 updated_at: 2023-10-31T19:15:01Z
 url: https://github.com/astral-sh/uv/pull/253
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Normalize optional dependency group names in pyproject files
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 15:46_
+_@zanieb_
 
 Going to add some tests.
 

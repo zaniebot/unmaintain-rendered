@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-01-23T19:57:57Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/383
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # API for shared arguments is a bit weird
 
 ---
 
-_Issue opened by @sgrif on 2016-01-23 19:57_
+_@sgrif_
 
 So `diesel_cli` has a use case where basically all of our commands take the same argument. You can see our exact code here: https://github.com/sgrif/diesel/blob/331f81c353ec0c7f0b6897cb80cb405b2d9120bb/diesel_cli/src/main.rs#L13-L42
 

@@ -14,14 +14,14 @@ head: charlie/dep
 created_at: 2024-08-01T02:58:06Z
 updated_at: 2024-08-01T16:43:31Z
 url: https://github.com/astral-sh/uv/pull/5679
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Support legacy tool receipts with PEP 508 requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 02:58_
+_@charliermarsh_
 
 ## Summary
 

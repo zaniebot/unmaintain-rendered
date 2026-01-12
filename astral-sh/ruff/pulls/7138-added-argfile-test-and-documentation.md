@@ -12,14 +12,14 @@ head: argfile-test-and-doc
 created_at: 2023-09-04T23:01:31Z
 updated_at: 2023-09-05T16:42:38Z
 url: https://github.com/astral-sh/ruff/pull/7138
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Added argfile test and documentation
 
 ---
 
-_Pull request opened by @njgrisafi on 2023-09-04 23:01_
+_@njgrisafi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-30T20:30:43Z
 updated_at: 2024-08-06T08:51:24Z
 url: https://github.com/clap-rs/clap/issues/5055
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Variant of allow_hyphen_values that treats `--` like a regular value
 
 ---
 
-_Issue opened by @RalfJung on 2023-07-30 20:30_
+_@RalfJung_
 
 ### Please complete the following tasks
 

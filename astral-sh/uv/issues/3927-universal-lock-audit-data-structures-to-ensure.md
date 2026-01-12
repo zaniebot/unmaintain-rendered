@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-30T18:27:11Z
 updated_at: 2024-06-27T09:53:43Z
 url: https://github.com/astral-sh/uv/issues/3927
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # universal-lock: audit data structures to ensure they can handle multiple versions of the same package
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-30 18:27_
+_@BurntSushi_
 
 Basically, it is suspected that there are some parts of our resolver that implicitly rely on the fact that there is only one version of a package available in resolution. This often leads to things like indexing on just package name. But we probably need to index on version (and possibly extra name?).
 

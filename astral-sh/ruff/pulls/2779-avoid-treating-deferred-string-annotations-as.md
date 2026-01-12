@@ -12,14 +12,14 @@ head: charlie/defer
 created_at: 2023-02-11T19:56:24Z
 updated_at: 2023-02-11T20:00:09Z
 url: https://github.com/astral-sh/ruff/pull/2779
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Avoid treating deferred string annotations as required-at-runtime
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 19:56_
+_@charliermarsh_
 
 See #2761.
 

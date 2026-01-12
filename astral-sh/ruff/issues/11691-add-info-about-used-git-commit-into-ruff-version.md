@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T12:49:40Z
 updated_at: 2024-06-03T16:20:11Z
 url: https://github.com/astral-sh/ruff/issues/11691
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add info about used git commit into `ruff --version` if available
 
 ---
 
-_Issue opened by @qarmin on 2024-06-02 12:49_
+_@qarmin_
 
 Currently git version of app, always for `ruff --version` prints something like 
 ```

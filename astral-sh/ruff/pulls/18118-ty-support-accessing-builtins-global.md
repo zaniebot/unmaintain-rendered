@@ -13,14 +13,14 @@ head: fix/support-for-__builtins__
 created_at: 2025-05-15T10:53:26Z
 updated_at: 2025-05-15T20:01:38Z
 url: https://github.com/astral-sh/ruff/pull/18118
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] support accessing `__builtins__` global
 
 ---
 
-_Pull request opened by @felixscherz on 2025-05-15 10:53_
+_@felixscherz_
 
 Hi, this is in regards to https://github.com/astral-sh/ty/issues/393 and intends to support `__builtins__` access.
 

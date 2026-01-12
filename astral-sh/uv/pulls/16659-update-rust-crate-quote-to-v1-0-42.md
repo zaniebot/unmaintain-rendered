@@ -13,14 +13,14 @@ head: renovate/quote-1.x-lockfile
 created_at: 2025-11-10T02:06:01Z
 updated_at: 2025-11-10T11:33:39Z
 url: https://github.com/astral-sh/uv/pull/16659
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Update Rust crate quote to v1.0.42
 
 ---
 
-_Pull request opened by @renovate on 2025-11-10 02:06_
+_@renovate_
 
 This PR contains the following updates:
 

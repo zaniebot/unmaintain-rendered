@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T17:34:24Z
 updated_at: 2023-09-18T13:56:43Z
 url: https://github.com/astral-sh/ruff/issues/7467
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter bug: Required parenthesis around awaited expression are removed
 
 ---
 
-_Issue opened by @Avasam on 2023-09-17 17:34_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

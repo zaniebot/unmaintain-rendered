@@ -12,14 +12,14 @@ head: charlie/per-file-ignores
 created_at: 2022-11-28T02:38:39Z
 updated_at: 2022-11-28T02:38:44Z
 url: https://github.com/astral-sh/ruff/pull/931
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use alternative TOML format for per-file-ignores in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 02:38_
+_@charliermarsh_
 
 Resolves #928.
 

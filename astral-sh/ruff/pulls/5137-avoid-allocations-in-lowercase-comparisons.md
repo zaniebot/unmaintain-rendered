@@ -12,14 +12,14 @@ head: charlie/lower
 created_at: 2023-06-16T03:23:42Z
 updated_at: 2023-06-16T12:57:44Z
 url: https://github.com/astral-sh/ruff/pull/5137
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Avoid allocations in lowercase comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 03:23_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: fix-python-list-specified-system-only
 created_at: 2024-07-19T14:07:13Z
 updated_at: 2024-07-20T13:04:20Z
 url: https://github.com/astral-sh/uv/pull/5219
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Change to show only the python installed on the system if `--python-preference only-system` is specified
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-19 14:07_
+_@Di-Is_
 
 Fix #5211
 

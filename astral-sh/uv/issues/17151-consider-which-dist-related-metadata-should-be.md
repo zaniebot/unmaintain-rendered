@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-16T15:55:44Z
 updated_at: 2026-01-06T16:40:28Z
 url: https://github.com/astral-sh/uv/issues/17151
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Consider which dist related metadata should be included in `--output-format=json` when a dist is included in the output
 
 ---
 
-_Issue opened by @EliteTK on 2025-12-16 15:55_
+_@EliteTK_
 
 ### Summary
 

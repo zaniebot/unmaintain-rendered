@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T13:47:50Z
 updated_at: 2025-09-22T11:28:10Z
 url: https://github.com/astral-sh/ty/issues/974
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add memory usage report to the LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-12 13:47_
+_@MichaReiser_
 
 ty's CLI emits a detailed memory usage report when run with `TY_MEMORY_REPORT=full`. It would be great to have a similar command for the LSP that prints debug information, which also includes the memory report.
 

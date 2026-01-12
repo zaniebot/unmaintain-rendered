@@ -13,14 +13,14 @@ head: zb/fix-windows
 created_at: 2025-02-05T20:58:14Z
 updated_at: 2025-02-10T23:49:34Z
 url: https://github.com/astral-sh/ruff/pull/15981
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Disable CRL checks during Windows test CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 20:58_
+_@zanieb_
 
 Corresponding to https://github.com/astral-sh/uv/pull/11262
 

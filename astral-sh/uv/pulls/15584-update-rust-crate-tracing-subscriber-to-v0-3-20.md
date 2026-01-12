@@ -14,14 +14,14 @@ head: renovate/crate-tracing-subscriber-vulnerability
 created_at: 2025-08-29T21:59:58Z
 updated_at: 2025-08-30T00:21:00Z
 url: https://github.com/astral-sh/uv/pull/15584
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Update Rust crate tracing-subscriber to v0.3.20
 
 ---
 
-_Pull request opened by @renovate on 2025-08-29 21:59_
+_@renovate_
 
 This PR contains the following updates:
 

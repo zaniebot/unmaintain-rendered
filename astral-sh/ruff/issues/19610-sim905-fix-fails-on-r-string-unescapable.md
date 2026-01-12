@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-29T01:20:23Z
 updated_at: 2025-07-29T19:23:17Z
 url: https://github.com/astral-sh/ruff/issues/19610
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM905 fix fails on r-string unescapable character concatenation cases
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-29 01:20_
+_@MeGaGiGaGon_
 
 ### Summary
 

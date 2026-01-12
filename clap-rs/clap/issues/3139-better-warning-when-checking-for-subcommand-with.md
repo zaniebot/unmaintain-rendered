@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-10T00:03:57Z
 updated_at: 2021-12-10T01:40:24Z
 url: https://github.com/clap-rs/clap/issues/3139
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # better warning when checking for subcommand with is_matches()
 
 ---
 
-_Issue opened by @matthiaskrgr on 2021-12-10 00:03_
+_@matthiaskrgr_
 
 ### Please complete the following tasks
 

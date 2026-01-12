@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T15:36:34Z
 updated_at: 2024-09-10T01:43:07Z
 url: https://github.com/astral-sh/uv/issues/6255
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add option to add files that need to be considered for the cache key in pyproject.toml
 
 ---
 
-_Issue opened by @albertferras-vrf on 2024-08-20 15:36_
+_@albertferras-vrf_
 
 Consider the following `pyproject.toml` file, which uses dynamic metadata to reference `requirements.in` files.
 

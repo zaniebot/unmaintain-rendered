@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T15:54:31Z
 updated_at: 2024-08-08T16:42:17Z
 url: https://github.com/astral-sh/ruff/issues/12757
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Allow specifying `files` in persistent configuration
 
 ---
 
-_Issue opened by @daniil-berg on 2024-08-08 15:54_
+_@daniil-berg_
 
 It would be nice, if I could specify the files to check, format, etc. via the ruff configuration file (in my case `pyproject.toml`). I thought of something analogous to the [`files` directive of `mypy`](https://mypy.readthedocs.io/en/stable/config_file.html#confval-files).
 

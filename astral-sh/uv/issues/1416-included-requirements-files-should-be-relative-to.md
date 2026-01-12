@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T02:48:43Z
 updated_at: 2024-02-16T04:19:45Z
 url: https://github.com/astral-sh/uv/issues/1416
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Included requirements files should be relative to parent, not cwd
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-16 02:48_
+_@hauntsaninja_
 
 ```
 . λ rm -rf tmp

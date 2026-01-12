@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-02T07:36:23Z
 updated_at: 2022-11-07T15:59:08Z
 url: https://github.com/clap-rs/clap/issues/4441
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [Derive] Way to parse long_help from doc comments excluding 
 
 ---
 
-_Issue opened by @tmccombs on 2022-11-02 07:36_
+_@tmccombs_
 
 ### Please complete the following tasks
 

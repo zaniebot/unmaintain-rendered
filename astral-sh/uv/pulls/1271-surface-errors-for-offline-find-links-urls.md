@@ -13,14 +13,14 @@ head: charlie/offline-ii
 created_at: 2024-02-11T02:21:19Z
 updated_at: 2024-02-13T03:41:02Z
 url: https://github.com/astral-sh/uv/pull/1271
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Surface errors for offline `--find-links` URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-11 02:21_
+_@charliermarsh_
 
 ## Summary
 

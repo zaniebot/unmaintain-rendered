@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T12:45:51Z
 updated_at: 2023-11-14T04:34:17Z
 url: https://github.com/astral-sh/ruff/issues/8213
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule proposal: Auto-add `-> None` typehint to functions
 
 ---
 
-_Issue opened by @intgr on 2023-10-25 12:45_
+_@intgr_
 
 I want to create a new Ruff rule that auto-adds `-> None` return type hint to functions when no `return <value>` statements are present.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-25T06:26:46Z
 updated_at: 2025-09-03T18:42:13Z
 url: https://github.com/astral-sh/ruff/issues/16964
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # document side effect of FURB192
 
 ---
 
-_Issue opened by @spaceone on 2025-03-25 06:26_
+_@spaceone_
 
 ### Summary
 

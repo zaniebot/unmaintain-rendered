@@ -12,14 +12,14 @@ head: typeshed-automation
 created_at: 2024-05-14T17:23:50Z
 updated_at: 2024-05-15T00:41:11Z
 url: https://github.com/astral-sh/ruff/pull/11427
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add automation for updating our vendored typeshed stubs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-14 17:23_
+_@AlexWaygood_
 
 ## Summary
 

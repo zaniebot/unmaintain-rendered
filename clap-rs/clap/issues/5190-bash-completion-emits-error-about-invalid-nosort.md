@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T21:13:21Z
 updated_at: 2024-01-02T20:59:12Z
 url: https://github.com/clap-rs/clap/issues/5190
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Bash completion emits error about invalid nosort option
 
 ---
 
-_Issue opened by @gbelouze on 2023-10-30 21:13_
+_@gbelouze_
 
 ### Please complete the following tasks
 

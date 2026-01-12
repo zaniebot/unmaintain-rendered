@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-22T08:32:47Z
 updated_at: 2025-07-22T11:04:13Z
 url: https://github.com/astral-sh/ty/issues/867
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support runtime checking
 
 ---
 
-_Issue opened by @jdahlin on 2025-07-22 08:32_
+_@jdahlin_
 
 Feature request: Support runtime type checking
 

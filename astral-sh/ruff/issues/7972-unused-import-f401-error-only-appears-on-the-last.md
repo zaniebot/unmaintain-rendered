@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-16T03:26:23Z
 updated_at: 2023-10-16T03:30:29Z
 url: https://github.com/astral-sh/ruff/issues/7972
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `unused-import` (`F401`) - error only appears on the last unused import
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-16 03:26_
+_@DetachHead_
 
 ```py
 import foo.bar # no error

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T10:13:51Z
 updated_at: 2024-04-12T20:24:41Z
 url: https://github.com/astral-sh/ruff/issues/8553
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Indicate successful check
 
 ---
 
-_Issue opened by @bessman on 2023-11-08 10:13_
+_@bessman_
 
 Two of the five testimonials in the README mention intentionally introducing errors to be sure ruff was even running. I admit I did the same when I first tried ruff. It's cool that ruff is so fast people aren't sure it ran at all, but perhaps it is also a UX problem?
 

@@ -14,14 +14,14 @@ head: compr-args-count
 created_at: 2025-01-30T22:14:59Z
 updated_at: 2025-01-30T23:10:44Z
 url: https://github.com/astral-sh/ruff/pull/15838
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-comprehensions`] Skip when `TypeError` present from too many (kw)args for `C410`,`C411`, and `C418`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-30 22:14_
+_@dylwil3_
 
 Both `list` and `dict` expect only a single positional argument. Giving more positional arguments, or a keyword argument, is a `TypeError` and neither the lint rule nor its fix make sense in that context.
 

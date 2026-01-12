@@ -13,14 +13,14 @@ head: dcreager/legacy-typevar-instance
 created_at: 2025-03-06T16:23:56Z
 updated_at: 2025-04-29T14:15:29Z
 url: https://github.com/astral-sh/ruff/pull/16538
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Create `TypeVarInstance` type for legacy typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-06 16:23_
+_@dcreager_
 
 We are currently representing type variables using a `KnownInstance` variant, which wraps a `TypeVarInstance` that contains the information about the typevar (name, bounds, constraints, default type).  We were previously only constructing that type for PEP 695 typevars.  This PR constructs that type for legacy typevars as well.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-17T19:57:15Z
 updated_at: 2023-05-17T20:01:56Z
 url: https://github.com/astral-sh/ruff/issues/4477
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive for F823 undefined-local when redefining builtin with partial
 
 ---
 
-_Issue opened by @Hnasar on 2023-05-17 19:57_
+_@Hnasar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

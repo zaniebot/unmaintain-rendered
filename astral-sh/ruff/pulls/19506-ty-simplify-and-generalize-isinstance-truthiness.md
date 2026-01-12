@@ -13,14 +13,14 @@ head: alex/isinstance-truthiness
 created_at: 2025-07-23T11:10:28Z
 updated_at: 2025-07-23T12:02:16Z
 url: https://github.com/astral-sh/ruff/pull/19506
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Simplify and generalize `isinstance()` truthiness inference
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-23 11:10_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

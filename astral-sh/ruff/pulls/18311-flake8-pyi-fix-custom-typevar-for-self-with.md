@@ -13,14 +13,14 @@ head: fix/custom_tv_for_self_string
 created_at: 2025-05-26T06:41:06Z
 updated_at: 2025-06-16T14:47:17Z
 url: https://github.com/astral-sh/ruff/pull/18311
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [`flake8-pyi`] Fix `custom-typevar-for-self` with string annotations (`PYI019`)
 
 ---
 
-_Pull request opened by @close2code-palm on 2025-05-26 06:41_
+_@close2code-palm_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

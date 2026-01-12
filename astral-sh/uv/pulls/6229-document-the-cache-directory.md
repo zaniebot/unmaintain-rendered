@@ -14,14 +14,14 @@ head: zb/docs-cache-dir
 created_at: 2024-08-19T20:05:22Z
 updated_at: 2024-08-19T20:51:47Z
 url: https://github.com/astral-sh/uv/pull/6229
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Document the cache directory
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 20:05_
+_@zanieb_
 
 _No description provided._
 

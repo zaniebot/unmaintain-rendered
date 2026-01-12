@@ -12,14 +12,14 @@ head: charlie/unary
 created_at: 2023-05-16T20:28:21Z
 updated_at: 2023-05-17T15:53:56Z
 url: https://github.com/astral-sh/ruff/pull/4458
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove special-casing for whitespace-around-@
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-16 20:28_
+_@charliermarsh_
 
 ## Summary
 

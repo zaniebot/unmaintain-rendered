@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T00:53:30Z
 updated_at: 2025-05-12T16:20:15Z
 url: https://github.com/astral-sh/uv/issues/7237
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # How to `uv add` with markers?
 
 ---
 
-_Issue opened by @dimaqq on 2024-09-10 00:53_
+_@dimaqq_
 
 Let's say I want to achieve `tomli = { version = "~2.0", python = "<3.11" }`.
 

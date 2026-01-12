@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-11T17:27:33Z
 updated_at: 2025-12-02T12:40:16Z
 url: https://github.com/astral-sh/uv/issues/888
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Support hash checking against `RECORD`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-11 17:27_
+_@charliermarsh_
 
 We should validate the hash of each individual file in the wheel against the hash recorded in `RECORD`. (This is distinct from the hash-checking mode described in https://github.com/astral-sh/puffin/issues/131 and https://github.com/astral-sh/puffin/issues/474.)
 

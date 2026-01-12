@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T08:14:04Z
 updated_at: 2025-10-23T15:48:35Z
 url: https://github.com/astral-sh/uv/issues/16416
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # `uv python upgrade` installs cpython-3.11 if pypy-3.11 exists
 
 ---
 
-_Issue opened by @injust on 2025-10-23 08:14_
+_@injust_
 
 ### Summary
 

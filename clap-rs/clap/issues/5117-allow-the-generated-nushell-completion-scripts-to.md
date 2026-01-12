@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-11T11:10:05Z
 updated_at: 2023-09-11T14:26:59Z
 url: https://github.com/clap-rs/clap/issues/5117
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow the generated nushell completion scripts to be used as module and overlay
 
 ---
 
-_Issue opened by @nibon7 on 2023-09-11 11:10_
+_@nibon7_
 
 ### Please complete the following tasks
 

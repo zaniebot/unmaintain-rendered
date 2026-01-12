@@ -14,14 +14,14 @@ head: narrow-isinst
 created_at: 2025-09-04T21:19:07Z
 updated_at: 2025-09-04T23:01:40Z
 url: https://github.com/astral-sh/ruff/pull/20256
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Narrow specialized generics using isinstance()
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-09-04 21:19_
+_@JelleZijlstra_
 
 Closes astral-sh/ty#456. Part of astral-sh/ty#994.
 

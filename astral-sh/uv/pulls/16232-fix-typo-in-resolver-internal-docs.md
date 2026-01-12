@@ -13,14 +13,14 @@ head: konsti/resolver-typo
 created_at: 2025-10-10T15:45:30Z
 updated_at: 2025-10-10T15:46:48Z
 url: https://github.com/astral-sh/uv/pull/16232
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Fix typo in resolver internal docs
 
 ---
 
-_Pull request opened by @konstin on 2025-10-10 15:45_
+_@konstin_
 
 _No description provided._
 

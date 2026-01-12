@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-18T11:12:25Z
 updated_at: 2024-11-18T13:18:55Z
 url: https://github.com/astral-sh/uv/issues/9192
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # support reinstalling the project with `--reinstall-package`
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-18 11:12_
+_@DetachHead_
 
 i would like to be able make `uv sync` always reinstall the current project, because part of my build process involves generating some files that uv is unaware of. this means `uv sync` doesn't always fully install my project
 

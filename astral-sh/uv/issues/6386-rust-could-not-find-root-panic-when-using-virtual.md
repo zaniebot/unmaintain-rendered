@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T22:53:41Z
 updated_at: 2025-02-18T16:58:29Z
 url: https://github.com/astral-sh/uv/issues/6386
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Rust "could not find root" panic when using virtual workspaces
 
 ---
 
-_Issue opened by @ts826848 on 2024-08-21 22:53_
+_@ts826848_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

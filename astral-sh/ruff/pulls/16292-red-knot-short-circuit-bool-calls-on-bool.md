@@ -13,14 +13,14 @@ head: david/short-circuit-bool-of-bool
 created_at: 2025-02-20T21:52:27Z
 updated_at: 2025-02-20T23:09:12Z
 url: https://github.com/astral-sh/ruff/pull/16292
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Short-circuit bool calls on bool
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-20 21:52_
+_@sharkdp_
 
 ## Summary
 

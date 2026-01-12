@@ -13,14 +13,14 @@ head: david/fix-728
 created_at: 2025-07-01T08:29:23Z
 updated_at: 2025-07-01T09:06:39Z
 url: https://github.com/astral-sh/ruff/pull/19066
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Model reachability of star import definitions for nonlocal lookups
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-01 08:29_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T15:49:48Z
 updated_at: 2025-11-14T08:59:11Z
 url: https://github.com/astral-sh/ty/issues/717
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add `json` output format
 
 ---
 
-_Issue opened by @Sh099078 on 2025-06-27 15:49_
+_@Sh099078_
 
 ### Question
 

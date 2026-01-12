@@ -14,14 +14,14 @@ head: dcreager/smoosh-reachability
 created_at: 2025-07-17T21:55:44Z
 updated_at: 2025-07-21T18:16:28Z
 url: https://github.com/astral-sh/ruff/pull/19414
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Garbage-collect reachability constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-17 21:55_
+_@dcreager_
 
 This is a follow-on to #19410 that further reduces the memory usage of our reachability constraints. When finishing the building of a use-def map, we walk through all of the "final" states and mark only those reachability constraints as "used". We then throw away the interior TDD nodes of any reachability constraints that weren't marked as used.
 

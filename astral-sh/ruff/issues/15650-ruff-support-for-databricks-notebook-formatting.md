@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T16:05:19Z
 updated_at: 2025-08-18T12:04:46Z
 url: https://github.com/astral-sh/ruff/issues/15650
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff support for Databricks notebook formatting - Ignore lines starting with ! or %
 
 ---
 
-_Issue opened by @vivek-freddy on 2025-01-21 16:05_
+_@vivek-freddy_
 
 I have a .py file which runs as notebook 
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T14:56:17Z
 updated_at: 2025-09-24T15:49:53Z
 url: https://github.com/astral-sh/ty/issues/1246
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] importing Ontology from pronto package raises 'too many cycle iterations'
 
 ---
 
-_Issue opened by @jday1 on 2025-09-24 14:56_
+_@jday1_
 
 Repository:
 

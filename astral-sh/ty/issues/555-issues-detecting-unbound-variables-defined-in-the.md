@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-30T18:58:08Z
 updated_at: 2025-05-31T05:55:15Z
 url: https://github.com/astral-sh/ty/issues/555
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Issues detecting unbound variables defined in the loops
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-30 18:58_
+_@Andrej730_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-02T10:52:35Z
 updated_at: 2025-04-15T20:21:57Z
 url: https://github.com/astral-sh/uv/issues/8762
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Error install mlx with --python-platform macOS
 
 ---
 
-_Issue opened by @0LEL0 on 2024-11-02 10:52_
+_@0LEL0_
 
 * A minimal code snippet that reproduces the bug.
 uv pip install --dry-run mlx -i https://pypi.org/simple --python-platform macos

@@ -13,14 +13,14 @@ head: red-knot-cli-verbosity
 created_at: 2024-07-19T10:35:45Z
 updated_at: 2024-07-19T11:48:10Z
 url: https://github.com/astral-sh/ruff/pull/12404
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Add verbosity argument to CLI
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-19 10:35_
+_@MichaReiser_
 
 ## Summary
 

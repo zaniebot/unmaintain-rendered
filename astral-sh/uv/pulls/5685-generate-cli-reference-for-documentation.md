@@ -14,14 +14,14 @@ head: zb/docs-reference
 created_at: 2024-08-01T14:43:36Z
 updated_at: 2024-08-01T16:04:18Z
 url: https://github.com/astral-sh/uv/pull/5685
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Generate CLI reference for documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 14:43_
+_@zanieb_
 
 Loosely based on [Cargo's format](https://github.com/rust-lang/cargo/blob/master/src/doc/src/commands/cargo-build.md)
 

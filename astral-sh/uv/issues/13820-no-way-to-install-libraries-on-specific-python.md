@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T14:46:10Z
 updated_at: 2025-06-04T02:22:29Z
 url: https://github.com/astral-sh/uv/issues/13820
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # No way to install libraries on specific python `--system`
 
 ---
 
-_Issue opened by @SkeletonMask on 2025-06-03 14:46_
+_@SkeletonMask_
 
 ### Question
 

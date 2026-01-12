@@ -13,14 +13,14 @@ head: retry-more-typeshed-tests
 created_at: 2024-06-23T13:45:52Z
 updated_at: 2024-06-23T14:04:27Z
 url: https://github.com/astral-sh/ruff/pull/11987
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Once again, add more tests asserting that the `VendoredFileSystem` and the `VERSIONS` parser work with the vendored typeshed stubs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-23 13:45_
+_@AlexWaygood_
 
 This reapplies https://github.com/astral-sh/ruff/pull/11970, which was previously reverted in https://github.com/astral-sh/ruff/pull/11975 as the tests failed on Windows. The tests should now pass on Windows thanks to https://github.com/astral-sh/ruff/pull/11982; but if they do fail again, it should be easier to debug them now, thanks to https://github.com/astral-sh/ruff/pull/11983.
 

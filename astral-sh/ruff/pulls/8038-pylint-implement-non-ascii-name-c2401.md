@@ -13,14 +13,14 @@ head: add-C2401
 created_at: 2023-10-18T05:56:42Z
 updated_at: 2023-10-20T19:02:33Z
 url: https://github.com/astral-sh/ruff/pull/8038
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] - implement `non-ascii-name` (`C2401`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-18 05:56_
+_@diceroll123_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/fix-context-manager-3.8
 created_at: 2025-10-13T14:27:05Z
 updated_at: 2025-10-13T18:13:29Z
 url: https://github.com/astral-sh/ruff/pull/20846
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Fix syntax error false positives on parenthesized context managers
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-13 14:27_
+_@ntBre_
 
 This PR resolves the issue noticed in https://github.com/astral-sh/ruff/pull/20777#discussion_r2417233227. Namely, cases like this were being flagged as syntax errors despite being perfectly valid on Python 3.8:
 

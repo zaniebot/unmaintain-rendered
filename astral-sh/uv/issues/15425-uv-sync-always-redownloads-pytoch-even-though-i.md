@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T18:29:01Z
 updated_at: 2025-08-21T18:33:58Z
 url: https://github.com/astral-sh/uv/issues/15425
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # `uv sync` always redownloads pytoch even though I have a lockfile
 
 ---
 
-_Issue opened by @pshirshov on 2025-08-21 18:29_
+_@pshirshov_
 
 ### Summary
 

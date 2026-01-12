@@ -12,14 +12,14 @@ head: charlie/rename
 created_at: 2022-11-10T22:28:07Z
 updated_at: 2022-11-10T22:28:11Z
 url: https://github.com/astral-sh/ruff/pull/671
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Rename some fixture files
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-10 22:28_
+_@charliermarsh_
 
 _No description provided._
 

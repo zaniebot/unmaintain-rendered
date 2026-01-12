@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T03:17:06Z
 updated_at: 2025-04-07T03:18:50Z
 url: https://github.com/astral-sh/uv/issues/12618
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # uv doesn't report crc errors with corrupted packages where pip does
 
 ---
 
-_Issue opened by @jabbera on 2025-04-02 03:17_
+_@jabbera_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: fix-suppressed-indentation
 created_at: 2023-08-11T17:12:58Z
 updated_at: 2023-08-15T06:00:37Z
 url: https://github.com/astral-sh/ruff/pull/6507
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Indent statements in suppressed ranges
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-11 17:12_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

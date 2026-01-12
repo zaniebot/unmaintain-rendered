@@ -13,14 +13,14 @@ head: charlie/version-small
 created_at: 2024-11-05T21:38:34Z
 updated_at: 2024-11-06T14:08:25Z
 url: https://github.com/astral-sh/uv/pull/8843
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Incorporate `[max]` local version into `VersionSmall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-05 21:38_
+_@charliermarsh_
 
 ## Summary
 

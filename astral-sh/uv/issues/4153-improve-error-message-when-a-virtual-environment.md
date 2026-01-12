@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-08T00:55:13Z
 updated_at: 2024-10-04T16:15:00Z
 url: https://github.com/astral-sh/uv/issues/4153
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Improve error message when a virtual environment cannot be found
 
 ---
 
-_Issue opened by @zanieb on 2024-06-08 00:55_
+_@zanieb_
 
 ```
 ❯ uv pip install anyio

@@ -12,14 +12,14 @@ head: fix/sync-no-sources-editable-switch
 created_at: 2025-08-22T11:43:05Z
 updated_at: 2025-09-17T01:44:07Z
 url: https://github.com/astral-sh/uv/pull/15450
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Fix `uv sync` accidentally retaining editables
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-22 11:43_
+_@charliermarsh_
 
 ## Summary
 

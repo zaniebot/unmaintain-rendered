@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T05:44:03Z
 updated_at: 2025-11-04T06:52:13Z
 url: https://github.com/astral-sh/uv/issues/11941
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # How to Configure Different Sources for Different `dependency-groups` Like `optional-dependencies`
 
 ---
 
-_Issue opened by @pplmx on 2025-03-04 05:44_
+_@pplmx_
 
 ### Question
 

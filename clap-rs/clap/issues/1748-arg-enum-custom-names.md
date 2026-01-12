@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-14T23:04:19Z
 updated_at: 2020-04-22T18:42:00Z
 url: https://github.com/clap-rs/clap/issues/1748
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # arg_enum Custom Names
 
 ---
 
-_Issue opened by @erayerdin on 2020-03-14 23:04_
+_@erayerdin_
 
 Currently, we can assign enums to [possible_values](https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.possible_values) with [arg_enum](https://docs.rs/clap/2.33.0/clap/macro.arg_enum.html) macro. While this is good enough, it is usually considered values to be all lower case. Take the example:
 

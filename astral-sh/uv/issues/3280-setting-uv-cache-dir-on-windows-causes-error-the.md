@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-26T16:07:28Z
 updated_at: 2024-04-29T14:33:11Z
 url: https://github.com/astral-sh/uv/issues/3280
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Setting UV_CACHE_DIR on Windows causes "error: The system cannot find the path specified. (os error 3)"
 
 ---
 
-_Issue opened by @gozdal on 2024-04-26 16:07_
+_@gozdal_
 
 I am trying to work around another issue in [concurrently using the same cache directory](https://github.com/astral-sh/uv/issues/2810) by setting `UV_CACHE_DIR`.
 If I do

@@ -14,14 +14,14 @@ head: claude/ty-python-semantic-todo-WpZ4S
 created_at: 2026-01-08T23:39:47Z
 updated_at: 2026-01-09T00:05:58Z
 url: https://github.com/astral-sh/ruff/pull/22468
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Complete minor TODO in ty_python_semantic crate
 
 ---
 
-_Pull request opened by @carljm on 2026-01-08 23:39_
+_@carljm_
 
 This TODO is very old -- we have long since recorded this definition. Updating the test to actually assert the declaration requires a new helper method for declarations, to complement the existing `first_public_binding` helper.
 

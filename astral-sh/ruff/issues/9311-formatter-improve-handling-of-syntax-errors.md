@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-29T17:26:12Z
 updated_at: 2023-12-31T12:10:47Z
 url: https://github.com/astral-sh/ruff/issues/9311
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter: Improve handling of syntax errors
 
 ---
 
-_Issue opened by @zanieb on 2023-12-29 17:26_
+_@zanieb_
 
 The current user-facing messaging for syntax errors encountered during formatting are not friendly and are significantly worse than the linter's. The error should be normalized into a message instead of using the debug representation of `ParseError`
 

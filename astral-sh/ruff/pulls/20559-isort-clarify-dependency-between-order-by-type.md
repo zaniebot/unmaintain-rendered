@@ -13,14 +13,14 @@ head: brent/update-docs-case-sensitive
 created_at: 2025-09-24T19:48:36Z
 updated_at: 2025-09-25T16:30:29Z
 url: https://github.com/astral-sh/ruff/pull/20559
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`isort`] Clarify dependency between `order-by-type` and `case-sensitive` settings
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-24 19:48_
+_@ntBre_
 
 Summary
 --

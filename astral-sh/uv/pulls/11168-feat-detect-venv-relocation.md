@@ -12,14 +12,14 @@ head: detect-venv-relocation
 created_at: 2025-02-02T17:31:15Z
 updated_at: 2025-08-07T16:31:04Z
 url: https://github.com/astral-sh/uv/pull/11168
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # feat: detect venv relocation 
 
 ---
 
-_Pull request opened by @jonaslb on 2025-02-02 17:31_
+_@jonaslb_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

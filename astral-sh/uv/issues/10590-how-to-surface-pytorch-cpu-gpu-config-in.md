@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T10:55:03Z
 updated_at: 2025-01-27T14:05:43Z
 url: https://github.com/astral-sh/uv/issues/10590
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # How to surface Pytorch CPU/GPU config in workspace member to repo level
 
 ---
 
-_Issue opened by @bepuca on 2025-01-14 10:55_
+_@bepuca_
 
 ## Context
 

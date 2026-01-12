@@ -13,14 +13,14 @@ head: brent/pyi061
 created_at: 2025-09-04T14:30:45Z
 updated_at: 2025-10-07T14:19:03Z
 url: https://github.com/astral-sh/ruff/pull/20236
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `redundant-none-literal` (`PYI061`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 14:30_
+_@ntBre_
 
 Tests and docs look good
 

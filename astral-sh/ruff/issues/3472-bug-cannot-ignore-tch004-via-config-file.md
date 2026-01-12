@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-13T01:14:35Z
 updated_at: 2023-03-14T20:24:02Z
 url: https://github.com/astral-sh/ruff/issues/3472
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Bug - Cannot ignore `TCH004` via config file
 
 ---
 
-_Issue opened by @Kilo59 on 2023-03-13 01:14_
+_@Kilo59_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

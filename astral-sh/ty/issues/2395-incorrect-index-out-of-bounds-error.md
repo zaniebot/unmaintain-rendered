@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T13:35:32Z
 updated_at: 2026-01-08T16:09:57Z
 url: https://github.com/astral-sh/ty/issues/2395
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect `index-out-of-bounds` error
 
 ---
 
-_Issue opened by @alechouse97 on 2026-01-08 13:35_
+_@alechouse97_
 
 ### Summary
 

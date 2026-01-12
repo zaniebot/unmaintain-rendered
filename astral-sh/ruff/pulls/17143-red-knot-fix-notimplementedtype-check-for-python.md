@@ -13,14 +13,14 @@ head: cake/fix_notimplemented_over_310
 created_at: 2025-04-02T08:06:10Z
 updated_at: 2025-04-02T10:03:00Z
 url: https://github.com/astral-sh/ruff/pull/17143
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix `_NotImplementedType` check for Python >=3.10
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-04-02 08:06_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

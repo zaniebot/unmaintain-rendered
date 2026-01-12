@@ -13,14 +13,14 @@ head: fix-b901-pytest-hookimpl-wrapper
 created_at: 2025-12-12T04:00:22Z
 updated_at: 2025-12-17T16:24:17Z
 url: https://github.com/astral-sh/ruff/pull/21931
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [`flake8-bugbear`] Allow `B901` in pytest hook wrappers
 
 ---
 
-_Pull request opened by @assadyousuf on 2025-12-12 04:00_
+_@assadyousuf_
 
 
 ## Summary

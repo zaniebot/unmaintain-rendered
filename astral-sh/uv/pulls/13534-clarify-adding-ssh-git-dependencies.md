@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-05-19T13:18:05Z
 updated_at: 2025-05-27T15:50:56Z
 url: https://github.com/astral-sh/uv/pull/13534
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Clarify adding SSH Git dependencies
 
 ---
 
-_Pull request opened by @art-dsit on 2025-05-19 13:18_
+_@art-dsit_
 
 The current instructions say 
 

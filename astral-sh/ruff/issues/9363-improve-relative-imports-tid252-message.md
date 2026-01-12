@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-02T18:31:25Z
 updated_at: 2024-01-02T20:11:25Z
 url: https://github.com/astral-sh/ruff/issues/9363
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Improve `relative-imports` (`TID252`) message
 
 ---
 
-_Issue opened by @tjkuson on 2024-01-02 18:31_
+_@tjkuson_
 
 Running `ruff check --select TID252 /tmp/example.py` using version `0.1.9` on
 

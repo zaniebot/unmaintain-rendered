@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-27T10:09:58Z
 updated_at: 2024-06-26T03:21:13Z
 url: https://github.com/astral-sh/ruff/issues/484
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `--fix` flag removes imports in `__init__` files if there is a lack of `__all__`
 
 ---
 
-_Issue opened by @Czaki on 2022-10-27 10:09_
+_@Czaki_
 
 If `__init__` file does not contain `__all__` variable and `--fix` option is specified then `ruff` removes imports instead of create `__all__` variable with include all variables imported from submodules. 
 Or report it as an error without modifications to files. And highlight lack of `__all__` variable.  

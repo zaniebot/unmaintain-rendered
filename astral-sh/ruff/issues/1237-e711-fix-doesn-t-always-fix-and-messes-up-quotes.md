@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-14T11:14:19Z
 updated_at: 2022-12-15T17:08:33Z
 url: https://github.com/astral-sh/ruff/issues/1237
-synced_at: 2026-01-10T12:06:19Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # E711: `--fix` doesn't always fix and messes up quotes
 
 ---
 
-_Issue opened by @mikeroll on 2022-12-14 11:14_
+_@mikeroll_
 
 `ruff` correctly identifies the issues with the code below 
 ```py

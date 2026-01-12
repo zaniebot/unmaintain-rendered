@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T06:58:05Z
 updated_at: 2025-09-10T16:18:38Z
 url: https://github.com/astral-sh/uv/issues/15693
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Cannot install polars-lts-cpu on a machine with a Snapdragon X Plus (ARM) processor
 
 ---
 
-_Issue opened by @laurafroelich on 2025-09-05 06:58_
+_@laurafroelich_
 
 ### Summary
 

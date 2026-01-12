@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T14:54:37Z
 updated_at: 2022-09-05T14:21:08Z
 url: https://github.com/astral-sh/ruff/issues/72
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # (feature) pre-commit support
 
 ---
 
-_Issue opened by @kierun on 2022-09-01 14:54_
+_@kierun_
 
 It would be nice to have [pre-commit](https://pre-commit.com/) support. [How to create new hooks](https://pre-commit.com/#new-hooks) in case it is needed.
 

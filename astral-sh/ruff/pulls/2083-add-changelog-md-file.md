@@ -11,14 +11,14 @@ head: changelog
 created_at: 2023-01-22T07:08:02Z
 updated_at: 2023-07-24T11:57:28Z
 url: https://github.com/astral-sh/ruff/pull/2083
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add CHANGELOG.md file
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-22 07:08_
+_@not-my-profile_
 
 We are currently using the [GitHub releases page](https://github.com/charliermarsh/ruff/releases) as our changelog, which I think is suboptimal because it just lists all merged PRs in the order they were merged ... which isn't relevant to users at all. Internal refactors also aren't really of interest to people who are just end-users.
 

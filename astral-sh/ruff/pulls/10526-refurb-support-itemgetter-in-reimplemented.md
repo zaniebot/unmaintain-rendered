@@ -14,14 +14,14 @@ head: latyshev/furb118-itemgetter
 created_at: 2024-03-22T16:12:39Z
 updated_at: 2025-06-10T20:46:45Z
 url: https://github.com/astral-sh/ruff/pull/10526
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`refurb`] Support `itemgetter` in `reimplemented-operator` (`FURB118`)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-03-22 16:12_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

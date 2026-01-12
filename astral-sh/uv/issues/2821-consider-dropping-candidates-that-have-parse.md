@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-04T18:02:02Z
 updated_at: 2024-04-05T22:00:49Z
 url: https://github.com/astral-sh/uv/issues/2821
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Consider dropping candidates that have parse errors for resolution instead of failing the installation
 
 ---
 
-_Issue opened by @potiuk on 2024-04-04 18:02_
+_@potiuk_
 
 I have  really weird issue with latest uv (0.1.28) and I *think* there is an issue with how errors is parsing candidate metadata might cause the whole build to fail.
 

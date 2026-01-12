@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T22:53:02Z
 updated_at: 2025-05-27T03:53:19Z
 url: https://github.com/astral-sh/uv/issues/10699
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Suggest `MACOSX_DEPLOYMENT_TARGET` in resolver platform tag hint
 
 ---
 
-_Issue opened by @zanieb on 2025-01-16 22:53_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/10696#issuecomment-2597052942
 

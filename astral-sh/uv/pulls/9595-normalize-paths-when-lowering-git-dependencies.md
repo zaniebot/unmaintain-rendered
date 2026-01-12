@@ -13,14 +13,14 @@ head: charlie/back-path
 created_at: 2024-12-03T04:59:14Z
 updated_at: 2024-12-03T05:41:27Z
 url: https://github.com/astral-sh/uv/pull/9595
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Normalize paths when lowering Git dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-03 04:59_
+_@charliermarsh_
 
 ## Summary
 

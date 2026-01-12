@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-29T04:51:35Z
 updated_at: 2025-10-30T18:14:30Z
 url: https://github.com/astral-sh/ruff/issues/21121
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # TC003 false-positive for dataclass.KW_ONLY when future-annotations is true
 
 ---
 
-_Issue opened by @beskep on 2025-10-29 04:51_
+_@beskep_
 
 ### Summary
 

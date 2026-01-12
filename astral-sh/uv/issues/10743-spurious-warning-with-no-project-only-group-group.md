@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-18T20:24:13Z
 updated_at: 2025-01-20T03:44:57Z
 url: https://github.com/astral-sh/uv/issues/10743
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # Spurious warning with `--no-project --only-group <group>`?
 
 ---
 
-_Issue opened by @woodruffw on 2025-01-18 20:24_
+_@woodruffw_
 
 Hello! As always, thanks for all the amazing work you've done on `uv` and `ruff`.
 

@@ -12,14 +12,14 @@ head: warn-about-caching-in-debug-builds
 created_at: 2023-01-02T09:15:23Z
 updated_at: 2023-01-02T17:12:04Z
 url: https://github.com/astral-sh/ruff/pull/1549
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Print warning when running debug builds without --no-cache
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-02 09:15_
+_@not-my-profile_
 
 _No description provided._
 

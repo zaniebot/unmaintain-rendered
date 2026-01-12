@@ -12,14 +12,14 @@ head: zb/rev-5f3d46c
 created_at: 2025-12-02T18:50:54Z
 updated_at: 2025-12-02T23:06:11Z
 url: https://github.com/astral-sh/uv/pull/16938
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Revert "Bump `astral-tl` to v0.7.10 (#16887)"
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-02 18:50_
+_@zanieb_
 
 This reverts commit 5f3d46c2413225aac68c86fa24be97c4c2c193e4 / #16887
 

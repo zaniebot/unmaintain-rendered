@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T11:28:51Z
 updated_at: 2025-01-17T11:50:00Z
 url: https://github.com/astral-sh/ruff/issues/15548
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # flake8-bugbear B903 suggestion : Do not raise error if keyword argument is present and target-python version is less or equals than 3.9
 
 ---
 
-_Issue opened by @guillaumeLepape on 2025-01-17 11:28_
+_@guillaumeLepape_
 
 Hello,
 

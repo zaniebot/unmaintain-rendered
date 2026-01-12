@@ -14,14 +14,14 @@ head: micha/playground-preserve-editor-state
 created_at: 2025-04-01T08:00:00Z
 updated_at: 2025-04-01T08:04:53Z
 url: https://github.com/astral-sh/ruff/pull/17109
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Playground improvements
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-01 08:00_
+_@MichaReiser_
 
 ## Summary
 

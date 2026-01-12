@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T12:49:18Z
 updated_at: 2025-09-03T14:12:40Z
 url: https://github.com/astral-sh/uv/issues/15659
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # python-version should support multiple versions using newline separated string like actions/setup-python
 
 ---
 
-_Issue opened by @ssbarnea on 2025-09-03 12:49_
+_@ssbarnea_
 
 ### Summary
 

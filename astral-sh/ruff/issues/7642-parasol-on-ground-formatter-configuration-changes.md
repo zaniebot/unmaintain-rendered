@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T09:00:00Z
 updated_at: 2023-10-24T14:14:40Z
 url: https://github.com/astral-sh/ruff/issues/7642
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # :parasol_on_ground:  Formatter: Configuration changes
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:00_
+_@MichaReiser_
 
 Umbrella issue to track the necessary configuration changes to integrate the ruff formatter. 
 

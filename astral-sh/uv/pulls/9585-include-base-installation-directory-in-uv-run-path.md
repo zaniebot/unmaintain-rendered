@@ -14,14 +14,14 @@ head: charlie/dir
 created_at: 2024-12-02T22:01:52Z
 updated_at: 2024-12-02T23:05:34Z
 url: https://github.com/astral-sh/uv/pull/9585
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Include base installation directory in uv run PATH
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-02 22:01_
+_@charliermarsh_
 
 ## Summary
 

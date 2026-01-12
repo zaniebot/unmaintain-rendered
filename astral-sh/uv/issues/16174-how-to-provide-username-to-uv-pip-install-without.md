@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T05:41:14Z
 updated_at: 2025-12-18T16:25:01Z
 url: https://github.com/astral-sh/uv/issues/16174
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # How to provide username to uv pip install without pyproject.toml or inclusion in url?
 
 ---
 
-_Issue opened by @benbrummer on 2025-10-08 05:41_
+_@benbrummer_
 
 ### Question
 

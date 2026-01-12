@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T14:45:50Z
 updated_at: 2025-01-08T15:33:26Z
 url: https://github.com/astral-sh/ruff/issues/13822
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # It says "All checks passed!" although there are errors
 
 ---
 
-_Issue opened by @limafresh on 2024-10-19 14:45_
+_@limafresh_
 
 ```
 $ tree

@@ -14,14 +14,14 @@ head: david/typeddict
 created_at: 2025-08-04T08:47:25Z
 updated_at: 2025-08-05T12:00:47Z
 url: https://github.com/astral-sh/ruff/pull/19733
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] New `Type` variant for `TypedDict`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-04 08:47_
+_@sharkdp_
 
 ## Summary
 

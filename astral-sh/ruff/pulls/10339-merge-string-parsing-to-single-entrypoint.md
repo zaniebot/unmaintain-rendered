@@ -13,14 +13,14 @@ head: dhruv/string-parsing
 created_at: 2024-03-11T13:25:38Z
 updated_at: 2024-03-12T08:48:05Z
 url: https://github.com/astral-sh/ruff/pull/10339
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Merge string parsing to single entrypoint
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-11 13:25_
+_@dhruvmanila_
 
 ## Summary
 

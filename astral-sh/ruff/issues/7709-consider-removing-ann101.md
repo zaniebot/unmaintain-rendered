@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-29T12:04:03Z
 updated_at: 2024-02-01T19:35:10Z
 url: https://github.com/astral-sh/ruff/issues/7709
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider removing ANN101
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-29 12:04_
+_@charliermarsh_
 
 Note to self, to fill in when I’m back at my laptop.
 

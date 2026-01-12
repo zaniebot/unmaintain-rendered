@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T17:09:38Z
 updated_at: 2023-12-20T17:12:28Z
 url: https://github.com/astral-sh/ruff/issues/9133
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task`
 
 ---
 
-_Issue opened by @danking on 2023-12-14 17:09_
+_@danking_
 
 Hey there! A huge thank you for building ruff. It's been an invaluable tool for us over at https://github.com/hail-is/hail .
 

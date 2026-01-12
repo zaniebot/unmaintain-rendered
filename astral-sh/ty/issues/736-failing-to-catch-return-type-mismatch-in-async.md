@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-01T08:37:39Z
 updated_at: 2025-07-30T09:51:22Z
 url: https://github.com/astral-sh/ty/issues/736
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Failing to catch return type mismatch in async functions only
 
 ---
 
-_Issue opened by @rian-dolphin on 2025-07-01 08:37_
+_@rian-dolphin_
 
 ### Summary
 

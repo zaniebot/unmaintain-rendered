@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-15T18:56:51Z
 updated_at: 2023-07-15T19:53:40Z
 url: https://github.com/astral-sh/ruff/issues/5784
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Getting "error: Failed to converge after 100 iterations", rule I002, required-imports with syntax from ... import ... as ...
 
 ---
 
-_Issue opened by @guillaumeLepape on 2023-07-15 18:56_
+_@guillaumeLepape_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

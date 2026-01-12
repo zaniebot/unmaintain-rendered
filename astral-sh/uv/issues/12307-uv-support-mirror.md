@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T02:13:29Z
 updated_at: 2025-03-19T03:48:31Z
 url: https://github.com/astral-sh/uv/issues/12307
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # uv Support mirror？
 
 ---
 
-_Issue opened by @Dengjun21 on 2025-03-19 02:13_
+_@Dengjun21_
 
 ### Question
 

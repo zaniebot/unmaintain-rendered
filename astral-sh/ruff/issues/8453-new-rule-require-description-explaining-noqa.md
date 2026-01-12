@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-03T01:22:25Z
 updated_at: 2023-11-03T12:31:26Z
 url: https://github.com/astral-sh/ruff/issues/8453
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # new rule - require description explaining noqa comments
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-03 01:22_
+_@DetachHead_
 
 noqa comments are not very descriptive, especially since they don't support the more readable name and instead only allow you to specify the code (related: #1773)
 

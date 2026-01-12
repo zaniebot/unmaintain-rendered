@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T13:28:49Z
 updated_at: 2025-05-04T12:38:10Z
 url: https://github.com/astral-sh/uv/issues/13089
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # How to handle custom `.venv` location in multi lib repos
 
 ---
 
-_Issue opened by @andresliszt on 2025-04-24 13:28_
+_@andresliszt_
 
 ### Question
 

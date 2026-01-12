@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-04-02T18:19:57Z
 updated_at: 2025-04-02T20:22:28Z
 url: https://github.com/astral-sh/uv/pull/12634
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # [docs] Fix suggestion for index strategy
 
 ---
 
-_Pull request opened by @TBoshoven on 2025-04-02 18:19_
+_@TBoshoven_
 
 ## Summary
 

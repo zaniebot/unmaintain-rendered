@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T14:33:09Z
 updated_at: 2024-10-20T11:36:48Z
 url: https://github.com/astral-sh/ruff/issues/8221
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `SIM115 Use context handler` across a try/else block
 
 ---
 
-_Issue opened by @smurfix on 2023-10-25 14:33_
+_@smurfix_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

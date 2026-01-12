@@ -11,14 +11,14 @@ head: uv-pip-list-dependencies
 created_at: 2025-01-23T07:00:21Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/10886
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Print dependencies in uv pip list.
 
 ---
 
-_Pull request opened by @tjni on 2025-01-23 07:00_
+_@tjni_
 
 ## Summary
 

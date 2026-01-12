@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T18:58:25Z
 updated_at: 2025-03-27T19:26:36Z
 url: https://github.com/astral-sh/uv/issues/12513
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Minimal example of FsatAPI and uv
 
 ---
 
-_Issue opened by @brunolnetto on 2025-03-27 18:58_
+_@brunolnetto_
 
 ### Question
 

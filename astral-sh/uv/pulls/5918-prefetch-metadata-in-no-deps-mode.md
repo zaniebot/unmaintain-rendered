@@ -13,14 +13,14 @@ head: charlie/prefetch
 created_at: 2024-08-08T16:15:23Z
 updated_at: 2024-08-08T16:35:17Z
 url: https://github.com/astral-sh/uv/pull/5918
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Prefetch metadata in `--no-deps` mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 16:15_
+_@charliermarsh_
 
 ## Summary
 

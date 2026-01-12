@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T16:56:55Z
 updated_at: 2025-09-05T14:24:20Z
 url: https://github.com/astral-sh/ruff/issues/18727
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Remove deprecated UP038
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-17 16:56_
+_@MichaReiser_
 
 _No description provided._
 

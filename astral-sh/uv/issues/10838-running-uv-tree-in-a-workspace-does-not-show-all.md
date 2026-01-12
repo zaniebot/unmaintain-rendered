@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T02:07:38Z
 updated_at: 2025-01-22T02:10:21Z
 url: https://github.com/astral-sh/uv/issues/10838
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Running `uv tree` in a workspace does not show all packages as top level entries
 
 ---
 
-_Issue opened by @scrooks on 2025-01-22 02:07_
+_@scrooks_
 
 ### Question
 

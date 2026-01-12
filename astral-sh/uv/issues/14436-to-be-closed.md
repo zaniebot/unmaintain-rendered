@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T09:25:17Z
 updated_at: 2025-12-27T09:10:52Z
 url: https://github.com/astral-sh/uv/issues/14436
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # To Be Closed
 
 ---
 
-_Issue opened by @mourad-ghafiri on 2025-07-03 09:25_
+_@mourad-ghafiri_
 
 _No description provided._
 

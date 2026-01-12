@@ -14,14 +14,14 @@ head: 15745-fix-PLC2801-missing-parens
 created_at: 2025-01-27T03:07:10Z
 updated_at: 2025-02-04T23:16:46Z
 url: https://github.com/astral-sh/ruff/pull/15762
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pylint`] Fix missing parens in unsafe fix for `unnecessary-dunder-call` (`PLC2801`)
 
 ---
 
-_Pull request opened by @mishamsk on 2025-01-27 03:07_
+_@mishamsk_
 
 ## Summary
 

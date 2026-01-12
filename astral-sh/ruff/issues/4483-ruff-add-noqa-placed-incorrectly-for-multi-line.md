@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-17T22:22:30Z
 updated_at: 2023-05-18T00:45:05Z
 url: https://github.com/astral-sh/ruff/issues/4483
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff --add-noqa placed incorrectly for multi-line strings
 
 ---
 
-_Issue opened by @fennerm on 2023-05-17 22:22_
+_@fennerm_
 
 (ruff=v0.0.267).
 

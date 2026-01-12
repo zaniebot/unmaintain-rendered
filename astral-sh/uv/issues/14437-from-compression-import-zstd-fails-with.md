@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T09:32:29Z
 updated_at: 2025-07-10T13:34:30Z
 url: https://github.com/astral-sh/uv/issues/14437
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # `from compression import zstd` fails with `ModuleNotFoundError` in Python 3.14.0b2 on Linux
 
 ---
 
-_Issue opened by @BioGeek on 2025-07-03 09:32_
+_@BioGeek_
 
 ### Summary
 

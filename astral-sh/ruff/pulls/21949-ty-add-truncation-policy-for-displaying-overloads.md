@@ -13,14 +13,14 @@ head: dhruv/overload-truncation-policy
 created_at: 2025-12-12T14:49:15Z
 updated_at: 2025-12-12T16:36:05Z
 url: https://github.com/astral-sh/ruff/pull/21949
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Add truncation policy for displaying overloads on single line
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-12 14:49_
+_@dhruvmanila_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

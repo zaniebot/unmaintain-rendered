@@ -13,14 +13,14 @@ head: zb/venv-project
 created_at: 2024-08-29T22:21:17Z
 updated_at: 2024-09-03T19:22:32Z
 url: https://github.com/astral-sh/uv/pull/6835
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Improve project handling in `uv venv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-29 22:21_
+_@zanieb_
 
 - Respect `UV_PROJECT_ENVIRONMENT` when in project root
 - Add `--no-project` and `--no-workspace` to opt-out of above and `requires-python` detection

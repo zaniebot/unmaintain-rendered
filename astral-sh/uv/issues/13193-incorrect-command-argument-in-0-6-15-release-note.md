@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T13:25:14Z
 updated_at: 2025-04-29T13:33:50Z
 url: https://github.com/astral-sh/uv/issues/13193
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Incorrect command argument in 0.6.15 Release Note
 
 ---
 
-_Issue opened by @Maxioum on 2025-04-29 13:25_
+_@Maxioum_
 
 ### Summary
 

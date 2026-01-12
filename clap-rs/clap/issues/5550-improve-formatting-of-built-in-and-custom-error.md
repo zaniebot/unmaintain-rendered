@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-25T13:34:22Z
 updated_at: 2025-09-04T06:53:53Z
 url: https://github.com/clap-rs/clap/issues/5550
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Improve formatting of built-in and custom error messages being appended to each other
 
 ---
 
-_Issue opened by @mahor1221 on 2024-06-25 13:34_
+_@mahor1221_
 
 ### Please complete the following tasks
 

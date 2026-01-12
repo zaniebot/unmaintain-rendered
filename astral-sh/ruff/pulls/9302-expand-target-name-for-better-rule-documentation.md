@@ -13,14 +13,14 @@ head: charlie/operator
 created_at: 2023-12-28T14:53:26Z
 updated_at: 2023-12-28T15:05:57Z
 url: https://github.com/astral-sh/ruff/pull/9302
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Expand target name for better rule documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-28 14:53_
+_@charliermarsh_
 
 _No description provided._
 

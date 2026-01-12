@@ -13,14 +13,14 @@ head: renovate/unicode_names2-1.x-lockfile
 created_at: 2024-09-23T03:05:00Z
 updated_at: 2024-09-23T07:54:46Z
 url: https://github.com/astral-sh/ruff/pull/13474
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Update Rust crate unicode_names2 to v1.3.0
 
 ---
 
-_Pull request opened by @renovate on 2024-09-23 03:05_
+_@renovate_
 
 This PR contains the following updates:
 

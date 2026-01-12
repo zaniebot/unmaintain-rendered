@@ -14,14 +14,14 @@ head: zb/your-requirements
 created_at: 2024-08-15T14:21:51Z
 updated_at: 2024-08-15T15:26:32Z
 url: https://github.com/astral-sh/uv/pull/6113
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Use "your requirements" consistently in resolver error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 14:21_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/6092#discussion_r1717648821
 

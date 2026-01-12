@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T19:15:48Z
 updated_at: 2023-06-22T20:01:09Z
 url: https://github.com/astral-sh/ruff/issues/5310
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add Python 3.12 to `PythonVersion`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-22 19:15_
+_@charliermarsh_
 
 _No description provided._
 

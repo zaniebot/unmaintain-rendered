@@ -12,14 +12,14 @@ head: charlie/toml
 created_at: 2023-01-20T21:26:24Z
 updated_at: 2023-01-21T12:26:10Z
 url: https://github.com/astral-sh/ruff/pull/2040
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Upgrade to toml v0.5.11
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-20 21:26_
+_@charliermarsh_
 
 In #1680, we moved over to `toml_edit`. But it looks like `toml` now uses `toml_edit`, and has implemented some improvements (e.g., this closes #1894).
 

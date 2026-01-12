@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T15:28:33Z
 updated_at: 2024-01-18T03:17:47Z
 url: https://github.com/astral-sh/ruff/issues/9552
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PLR0917: should this exclude `self` and `cls`?
 
 ---
 
-_Issue opened by @tmke8 on 2024-01-16 15:28_
+_@tmke8_
 
 [PLR0917](https://docs.astral.sh/ruff/rules/too-many-positional/) counts the number of non-keyword-only arguments and checks whether the number is above `max-positional-args`. This count includes `self` and `cls` in methods and class-methods, but I feel like those shouldn't count because they are passed in implicitly.
 

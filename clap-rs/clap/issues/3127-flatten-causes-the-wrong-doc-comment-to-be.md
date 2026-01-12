@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-09T16:17:30Z
 updated_at: 2021-12-10T20:07:29Z
 url: https://github.com/clap-rs/clap/issues/3127
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `flatten` causes the wrong doc-comment to be respected
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:17_
+_@epage_
 
 <a href="https://github.com/epage"><img src="https://avatars.githubusercontent.com/u/60961?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [epage](https://github.com/epage)**
 _Thursday Jan 16, 2020 at 13:46 GMT_

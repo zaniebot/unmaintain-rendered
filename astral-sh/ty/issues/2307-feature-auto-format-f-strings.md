@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-02T19:42:17Z
 updated_at: 2026-01-06T11:02:20Z
 url: https://github.com/astral-sh/ty/issues/2307
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Feature: Auto Format F-strings
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-02 19:42_
+_@AndBoyS_
 
 Add an option to LSP: prefix string with f if `{` is typed inside a string (like in https://github.com/DetachHead/basedpyright/issues/280)
 

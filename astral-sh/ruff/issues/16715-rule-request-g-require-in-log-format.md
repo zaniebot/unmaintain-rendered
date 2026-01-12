@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T19:13:16Z
 updated_at: 2025-09-16T15:54:51Z
 url: https://github.com/astral-sh/ruff/issues/16715
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule request: G: Require {} in log format
 
 ---
 
-_Issue opened by @colindean on 2025-03-13 19:13_
+_@colindean_
 
 ### Summary
 

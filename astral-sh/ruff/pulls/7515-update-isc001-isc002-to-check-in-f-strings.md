@@ -14,14 +14,14 @@ head: dhruv/issue-7298
 created_at: 2023-09-19T12:29:46Z
 updated_at: 2023-09-28T03:58:56Z
 url: https://github.com/astral-sh/ruff/pull/7515
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update `ISC001`, `ISC002` to check in f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-19 12:29_
+_@dhruvmanila_
 
 ## Summary
 

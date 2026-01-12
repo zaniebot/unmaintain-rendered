@@ -13,14 +13,14 @@ head: konsti/dont-redact-ssh-git-username
 created_at: 2025-06-03T09:32:24Z
 updated_at: 2025-06-03T14:18:21Z
 url: https://github.com/astral-sh/uv/pull/13799
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Don't redact username `git` for SSH
 
 ---
 
-_Pull request opened by @konstin on 2025-06-03 09:32_
+_@konstin_
 
 Fixes #13795 specifically by not redacting the username convention `git` for SSH URLs, though we should never write stars in `uv export` generally (#13791).
 

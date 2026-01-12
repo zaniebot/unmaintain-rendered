@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T19:10:44Z
 updated_at: 2025-07-23T19:09:15Z
 url: https://github.com/astral-sh/uv/issues/11701
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Failed to parse uv.lock file
 
 ---
 
-_Issue opened by @AnanyaRaval on 2025-02-21 19:10_
+_@AnanyaRaval_
 
 ### Question
 

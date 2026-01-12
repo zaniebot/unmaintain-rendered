@@ -13,14 +13,14 @@ head: alex/type-narrow-negate
 created_at: 2025-08-15T08:08:08Z
 updated_at: 2025-08-15T13:52:32Z
 url: https://github.com/astral-sh/ruff/pull/19925
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # Add `else`-branch narrowing for `if type(a) is A` when `A` is `@final`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-15 08:08_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/996
 

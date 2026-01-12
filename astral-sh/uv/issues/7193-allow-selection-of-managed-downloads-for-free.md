@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-08T17:30:41Z
 updated_at: 2024-10-14T20:18:53Z
 url: https://github.com/astral-sh/uv/issues/7193
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Allow selection of managed downloads for free-threaded Python 3.13
 
 ---
 
-_Issue opened by @zanieb on 2024-09-08 17:30_
+_@zanieb_
 
 Related
 

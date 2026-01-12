@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-29T18:43:35Z
 updated_at: 2024-02-23T01:55:40Z
 url: https://github.com/astral-sh/ruff/issues/9312
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `runtime-evaluated-decorators` not working for the annotations of decorated functions.
 
 ---
 
-_Issue opened by @avandierast on 2023-12-29 18:43_
+_@avandierast_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

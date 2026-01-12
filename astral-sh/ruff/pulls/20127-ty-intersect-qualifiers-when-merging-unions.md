@@ -13,14 +13,14 @@ head: david/map-with-boundness-intersect
 created_at: 2025-08-28T07:31:57Z
 updated_at: 2025-08-28T13:47:42Z
 url: https://github.com/astral-sh/ruff/pull/20127
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Intersect qualifiers when merging unions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-28 07:31_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: rk-pt-is-gradual-equivalent-to
 created_at: 2025-01-19T00:20:35Z
 updated_at: 2025-01-19T16:38:47Z
 url: https://github.com/astral-sh/ruff/pull/15579
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Two gradual equivalent fully static types are also equivalent
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-19 00:20_
+_@InSyncWithFoo_
 
 ## Summary
 

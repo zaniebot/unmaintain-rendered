@@ -12,14 +12,14 @@ head: gist-redirect
 created_at: 2025-10-26T00:20:57Z
 updated_at: 2025-10-29T22:41:24Z
 url: https://github.com/astral-sh/uv/pull/16451
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Support GitHub Gist URLs via HTTP redirects in `uv run`
 
 ---
 
-_Pull request opened by @twilligon on 2025-10-26 00:20_
+_@twilligon_
 
 ## Summary
 

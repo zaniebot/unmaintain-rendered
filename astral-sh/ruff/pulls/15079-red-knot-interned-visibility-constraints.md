@@ -13,14 +13,14 @@ head: david/interned-visibility-constraints
 created_at: 2024-12-20T10:37:35Z
 updated_at: 2025-02-10T12:32:33Z
 url: https://github.com/astral-sh/ruff/pull/15079
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Interned visibility constraints
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-20 10:37_
+_@sharkdp_
 
 ## Summary
 

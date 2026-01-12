@@ -12,14 +12,14 @@ head: zb/conda-name-ii
 created_at: 2025-09-04T14:08:06Z
 updated_at: 2025-09-17T17:32:15Z
 url: https://github.com/astral-sh/uv/pull/15682
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Always treat conda environments named `base` and `root` as base environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-04 14:08_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/15679
 

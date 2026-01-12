@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-14T09:39:54Z
 updated_at: 2023-12-14T14:53:46Z
 url: https://github.com/astral-sh/ruff/issues/9126
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Docstring formatting does not always respect line length in `dynamic` mode
 
 ---
 
-_Issue opened by @stinodego on 2023-12-14 09:39_
+_@stinodego_
 
 First off, thanks so much for the great work on the docstring formatter! I'm very much looking forward to using it for the Polars code base.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-29T18:04:29Z
 updated_at: 2024-08-29T20:08:06Z
 url: https://github.com/astral-sh/ruff/issues/13153
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff check passes, but file is has syntax error
 
 ---
 
-_Issue opened by @uweschmitt on 2024-08-29 18:04_
+_@uweschmitt_
 
 The following program is syntactially not correct, but accepted by `ruff`:
 

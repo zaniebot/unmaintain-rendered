@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-12T12:56:56Z
 updated_at: 2025-07-12T13:41:08Z
 url: https://github.com/astral-sh/uv/issues/14576
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # An index URL could not be queried due to a lack of valid authentication credentials (403 Forbidden).
 
 ---
 
-_Issue opened by @mr-cn on 2025-07-12 12:56_
+_@mr-cn_
 
 ### Summary
 

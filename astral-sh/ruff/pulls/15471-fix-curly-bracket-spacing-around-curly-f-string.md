@@ -14,14 +14,14 @@ head: micha/formatter-fix-f-string-curly-spacing
 created_at: 2025-01-14T10:16:42Z
 updated_at: 2025-01-15T08:22:50Z
 url: https://github.com/astral-sh/ruff/pull/15471
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Fix curly bracket spacing around curly f-string expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-14 10:16_
+_@MichaReiser_
 
 ## Summary
 

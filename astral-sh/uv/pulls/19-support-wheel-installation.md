@@ -12,14 +12,14 @@ head: charlie/install
 created_at: 2023-10-06T04:47:06Z
 updated_at: 2023-10-06T04:47:46Z
 url: https://github.com/astral-sh/uv/pull/19
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Support wheel installation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 04:47_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/8.
 

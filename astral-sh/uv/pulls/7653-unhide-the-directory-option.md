@@ -13,14 +13,14 @@ head: zb/unhide-directory
 created_at: 2024-09-24T01:02:12Z
 updated_at: 2024-09-24T16:45:35Z
 url: https://github.com/astral-sh/uv/pull/7653
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Unhide the `--directory` option
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 01:02_
+_@zanieb_
 
 _No description provided._
 

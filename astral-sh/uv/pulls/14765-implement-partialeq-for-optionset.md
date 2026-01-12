@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2025-07-20T22:06:48Z
 updated_at: 2025-07-20T22:17:09Z
 url: https://github.com/astral-sh/uv/pull/14765
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Implement `PartialEq` for `OptionSet`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 22:06_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/14737.
 

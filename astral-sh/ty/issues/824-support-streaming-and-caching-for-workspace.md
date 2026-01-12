@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T05:43:03Z
 updated_at: 2025-08-04T10:26:40Z
 url: https://github.com/astral-sh/ty/issues/824
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support streaming and caching for workspace diagnostics
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-15 05:43_
+_@dhruvmanila_
 
 The current support for workspace diagnostics is implemented using the newly introduced [`workspace/diagnostic`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_diagnostic) endpoint which uses the pull model.
 

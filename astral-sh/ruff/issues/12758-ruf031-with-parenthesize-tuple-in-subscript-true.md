@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T15:56:50Z
 updated_at: 2024-08-09T19:31:29Z
 url: https://github.com/astral-sh/ruff/issues/12758
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF031 with `parenthesize-tuple-in-subscript = true` should ignore type annotations
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-08-08 15:56_
+_@ThiefMaster_
 
 Feels like a bug to me that this applies to type annotations. In case of dict keys it's a very nice rule to make it clear that you have a tuple key, but for type annotations it feels pretty noisy/ugly...
 

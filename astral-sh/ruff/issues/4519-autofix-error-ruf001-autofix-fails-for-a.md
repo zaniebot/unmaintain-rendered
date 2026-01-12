@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-19T08:02:44Z
 updated_at: 2023-09-05T18:21:16Z
 url: https://github.com/astral-sh/ruff/issues/4519
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] RUF001 autofix fails for `a = "丶"`
 
 ---
 
-_Issue opened by @konstin on 2023-05-19 08:02_
+_@konstin_
 
 The RUF001 autofix replace
 

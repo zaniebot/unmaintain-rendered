@@ -13,14 +13,14 @@ head: charlie/gist
 created_at: 2025-08-04T14:04:15Z
 updated_at: 2025-08-08T11:51:55Z
 url: https://github.com/astral-sh/uv/pull/15058
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Enable `uv run` with a GitHub Gist
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-04 14:04_
+_@charliermarsh_
 
 ## Summary
 

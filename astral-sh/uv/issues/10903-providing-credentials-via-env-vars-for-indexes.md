@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T15:46:52Z
 updated_at: 2025-01-23T18:29:26Z
 url: https://github.com/astral-sh/uv/issues/10903
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Providing credentials via env vars for indexes doesn't work for build requirements
 
 ---
 
-_Issue opened by @xixixao on 2025-01-23 15:46_
+_@xixixao_
 
 ### Summary
 

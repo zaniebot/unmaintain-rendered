@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-08T09:01:33Z
 updated_at: 2025-03-07T04:37:30Z
 url: https://github.com/astral-sh/uv/issues/9715
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # `uv python find --system` chooses Homebrew Python instead of system one
 
 ---
 
-_Issue opened by @abitrolly on 2024-12-08 09:01_
+_@abitrolly_
 
 Here is the Fedora 41 setup. 
 

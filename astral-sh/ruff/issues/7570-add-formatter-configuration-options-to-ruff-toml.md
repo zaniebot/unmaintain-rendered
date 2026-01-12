@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-21T11:34:45Z
 updated_at: 2023-09-25T09:39:32Z
 url: https://github.com/astral-sh/ruff/issues/7570
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add formatter configuration options to `ruff.toml`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-21 11:34_
+_@MichaReiser_
 
 * Line ending
 * quote style

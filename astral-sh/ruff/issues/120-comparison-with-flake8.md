@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-07T12:37:14Z
 updated_at: 2022-09-07T14:36:48Z
 url: https://github.com/astral-sh/ruff/issues/120
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Comparison with flake8?
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-09-07 12:37_
+_@samuelcolvin_
 
 As mentioned in #119, ruff looks great and I'd love to adopt it in pydantic, however I'd like to have a better understanding of what I loose by switching from flake8 to ruff?
 

@@ -12,14 +12,14 @@ head: ag/incomplete-markers
 created_at: 2024-07-15T14:48:26Z
 updated_at: 2024-07-16T09:00:36Z
 url: https://github.com/astral-sh/uv/pull/5074
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # add split to cover marker universe when existing splits are incomplete
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-15 14:48_
+_@BurntSushi_
 
 In some cases, it's possible for the marker expressions on conflicting
 dependency specification to be disjoint but *incomplete*. That is, if

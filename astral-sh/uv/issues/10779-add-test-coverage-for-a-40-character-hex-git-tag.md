@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T14:29:06Z
 updated_at: 2025-01-21T00:50:31Z
 url: https://github.com/astral-sh/uv/issues/10779
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Add test coverage for a 40-character hex Git tag
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-20 14:29_
+_@charliermarsh_
 
 This "looks like" a commit, but we shouldn't treat it as such.
 

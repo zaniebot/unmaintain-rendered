@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-03-01T10:03:59Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/436
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # How can subcommands automatically use the same version as the parent command?
 
 ---
 
-_Issue opened by @clux on 2016-03-01 10:03_
+_@clux_
 
 Hi there.
 

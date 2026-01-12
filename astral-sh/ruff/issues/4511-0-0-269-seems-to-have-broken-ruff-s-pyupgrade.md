@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-18T21:15:14Z
 updated_at: 2023-05-18T21:34:29Z
 url: https://github.com/astral-sh/ruff/issues/4511
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # 0.0.269 seems to have broken ruff's pyupgrade configuration
 
 ---
 
-_Issue opened by @Julian on 2023-05-18 21:15_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

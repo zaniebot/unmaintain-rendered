@@ -12,14 +12,14 @@ head: charlie/clean
 created_at: 2023-10-07T15:02:40Z
 updated_at: 2023-10-07T15:19:04Z
 url: https://github.com/astral-sh/uv/pull/41
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Add a `clean` command to clear the cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 15:02_
+_@charliermarsh_
 
 _No description provided._
 

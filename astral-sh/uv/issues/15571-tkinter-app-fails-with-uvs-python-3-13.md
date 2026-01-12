@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T16:38:20Z
 updated_at: 2025-11-26T22:15:15Z
 url: https://github.com/astral-sh/uv/issues/15571
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Tkinter app fails with uvs python 3.13
 
 ---
 
-_Issue opened by @vchalmel on 2025-08-28 16:38_
+_@vchalmel_
 
 ### Summary
 

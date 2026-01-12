@@ -13,14 +13,14 @@ head: charlie/expr-name
 created_at: 2023-08-14T03:30:05Z
 updated_at: 2023-08-14T04:04:13Z
 url: https://github.com/astral-sh/ruff/pull/6544
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove unnecessary `expr_name` function
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 03:30_
+_@charliermarsh_
 
 _No description provided._
 

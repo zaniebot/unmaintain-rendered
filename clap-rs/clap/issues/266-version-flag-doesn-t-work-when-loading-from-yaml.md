@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-22T15:33:41Z
 updated_at: 2015-09-22T17:54:17Z
 url: https://github.com/clap-rs/clap/issues/266
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Version flag doesn't work when loading from yaml.
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-22 15:33_
+_@XAMPPRocky_
 
 When tokei is built with this [file](https://github.com/Aaronepower/tokei/blob/master/cli.yml#L5). The version flag prints out nothing.
 

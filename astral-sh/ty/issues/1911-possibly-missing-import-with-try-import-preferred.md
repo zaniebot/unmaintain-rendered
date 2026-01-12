@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-15T22:20:23Z
 updated_at: 2025-12-17T23:46:38Z
 url: https://github.com/astral-sh/ty/issues/1911
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # possibly-missing-import with try: import preferred; except ImportError: import alternative
 
 ---
 
-_Issue opened by @emeralddcw on 2025-12-15 22:20_
+_@emeralddcw_
 
 ### Summary
 

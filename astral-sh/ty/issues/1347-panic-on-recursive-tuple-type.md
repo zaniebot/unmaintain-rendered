@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-13T13:52:18Z
 updated_at: 2025-10-13T14:01:38Z
 url: https://github.com/astral-sh/ty/issues/1347
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] on recursive tuple type
 
 ---
 
-_Issue opened by @cgravill on 2025-10-13 13:52_
+_@cgravill_
 
 ```
 error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/29ab321/src/function/execute.rs:217:25 when checking `/badger/badger_badger_badger.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(6001)): execute: too many cycle iterations`

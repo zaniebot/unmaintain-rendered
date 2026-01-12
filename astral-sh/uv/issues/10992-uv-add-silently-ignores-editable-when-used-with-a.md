@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T16:37:44Z
 updated_at: 2025-01-27T19:37:25Z
 url: https://github.com/astral-sh/uv/issues/10992
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # `uv add` silently ignores `--editable` when used with a Git/VCS dependency
 
 ---
 
-_Issue opened by @edmorley on 2025-01-27 16:37_
+_@edmorley_
 
 ### Summary
 

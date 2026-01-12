@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T02:35:28Z
 updated_at: 2023-06-22T21:21:10Z
 url: https://github.com/astral-sh/ruff/issues/5281
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F541 deletes fstring w/o adding additional whitespace
 
 ---
 
-_Issue opened by @jasikpark on 2023-06-22 02:35_
+_@jasikpark_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

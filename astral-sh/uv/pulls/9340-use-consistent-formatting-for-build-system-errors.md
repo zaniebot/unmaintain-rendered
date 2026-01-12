@@ -13,14 +13,14 @@ head: charlie/format
 created_at: 2024-11-21T23:05:42Z
 updated_at: 2024-11-27T14:22:55Z
 url: https://github.com/astral-sh/uv/pull/9340
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Use consistent formatting for build system errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 23:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T09:49:20Z
 updated_at: 2025-12-22T15:11:24Z
 url: https://github.com/astral-sh/ty/issues/2143
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Cannot resolve `win32more` import
 
 ---
 
-_Issue opened by @kouhe3 on 2025-12-21 09:49_
+_@kouhe3_
 
 ### Summary
 

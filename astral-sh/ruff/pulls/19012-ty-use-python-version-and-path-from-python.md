@@ -14,14 +14,14 @@ head: micha/python-extension-environment
 created_at: 2025-06-28T16:27:40Z
 updated_at: 2025-07-14T09:55:50Z
 url: https://github.com/astral-sh/ruff/pull/19012
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Use python version and path from Python extension
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-28 16:27_
+_@MichaReiser_
 
 ## Summary
 

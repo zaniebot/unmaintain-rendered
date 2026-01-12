@@ -11,14 +11,14 @@ head: issue-2155-print-install-path
 created_at: 2024-07-05T20:16:01Z
 updated_at: 2024-10-01T16:51:28Z
 url: https://github.com/astral-sh/uv/pull/4835
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Print Installation Path if not in working directory
 
 ---
 
-_Pull request opened by @danielenricocahall on 2024-07-05 20:16_
+_@danielenricocahall_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

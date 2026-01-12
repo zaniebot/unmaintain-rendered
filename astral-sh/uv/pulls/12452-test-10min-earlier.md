@@ -12,14 +12,14 @@ head: konsti/setuptools-tests
 created_at: 2025-03-24T21:30:25Z
 updated_at: 2025-03-25T01:28:53Z
 url: https://github.com/astral-sh/uv/pull/12452
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Test 10min earlier
 
 ---
 
-_Pull request opened by @konstin on 2025-03-24 21:30_
+_@konstin_
 
 Setuptools released their version with the fix at 2025-03-24 19:50:41 UTC, while we use exclude newer with 2025-03-24 20:00:00 UTC. We fix this by lowering the bound to 2025-03-24 19:00:00.
 

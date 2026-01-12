@@ -13,14 +13,14 @@ head: konsti/fix-instrumentation-for-install-wheel-rs
 created_at: 2024-04-28T18:25:22Z
 updated_at: 2024-04-28T18:33:41Z
 url: https://github.com/astral-sh/uv/pull/3293
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Fix span recording with install_wheel_rs
 
 ---
 
-_Pull request opened by @konstin on 2024-04-28 18:25_
+_@konstin_
 
 We would only record spans for `uv` prefixed crates, while the rayon operations are in `install_wheel_rs`, therefore "disappearing" spans from rayon.
 

@@ -14,14 +14,14 @@ head: dcreager/redundant-apply-spec
 created_at: 2026-01-06T19:11:25Z
 updated_at: 2026-01-07T07:40:28Z
 url: https://github.com/astral-sh/ruff/pull/22422
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Remove redundant `apply_specialization` type mappings
 
 ---
 
-_Pull request opened by @dcreager on 2026-01-06 19:11_
+_@dcreager_
 
 @dhruvmanila encountered this in #22416 — there are two different `TypeMapping` variants for apply a specialization to a type. One operates on a full `Specialization` instance, the other on a partially constructed one. If we move this enum-ness "down a level" it reduces some copy/paste in places where we are operating on a `TypeMapping`.
 

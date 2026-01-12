@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-04T14:24:02Z
 updated_at: 2024-08-05T06:50:33Z
 url: https://github.com/astral-sh/ruff/issues/12661
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # 0.5.6 fails to build on 32bit architectures
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-08-04 14:24_
+_@WhyNotHugo_
 
 Builds fail on anything that's not 64bit due to an overflow:
 

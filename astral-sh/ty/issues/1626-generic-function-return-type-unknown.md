@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-24T23:58:00Z
 updated_at: 2025-11-25T01:38:05Z
 url: https://github.com/astral-sh/ty/issues/1626
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Generic function return type Unknown
 
 ---
 
-_Issue opened by @aidandj on 2025-11-24 23:58_
+_@aidandj_
 
 ### Summary
 

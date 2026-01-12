@@ -13,14 +13,14 @@ head: zb/build-quiet
 created_at: 2024-09-24T21:23:32Z
 updated_at: 2024-09-25T13:23:46Z
 url: https://github.com/astral-sh/uv/pull/7674
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Respect `--quiet` flag in `uv build`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 21:23_
+_@zanieb_
 
 I noticed this was not respected, seems like an oversight.
 

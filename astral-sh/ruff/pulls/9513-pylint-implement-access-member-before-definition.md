@@ -12,14 +12,14 @@ head: linter-pylint-E0203
 created_at: 2024-01-14T09:39:41Z
 updated_at: 2025-05-21T20:26:49Z
 url: https://github.com/astral-sh/ruff/pull/9513
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [pylint] - implement  access-member-before-definition / E0203 rule
 
 ---
 
-_Pull request opened by @Glyphack on 2024-01-14 09:39_
+_@Glyphack_
 
 ## Summary
 

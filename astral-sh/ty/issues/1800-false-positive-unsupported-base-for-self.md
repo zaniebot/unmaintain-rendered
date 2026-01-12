@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-07T20:39:55Z
 updated_at: 2025-12-11T17:53:45Z
 url: https://github.com/astral-sh/ty/issues/1800
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # false positive `unsupported-base` for self-referential generic base
 
 ---
 
-_Issue opened by @jorenham on 2025-12-07 20:39_
+_@jorenham_
 
 ### Summary
 

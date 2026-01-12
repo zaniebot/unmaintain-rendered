@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-06-06T20:06:59Z
 updated_at: 2023-06-06T20:37:52Z
 url: https://github.com/astral-sh/ruff/pull/4906
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Avoid no-op fix for nested with expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-06 20:06_
+_@charliermarsh_
 
 ## Summary
 

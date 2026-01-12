@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T19:19:30Z
 updated_at: 2024-07-30T15:21:26Z
 url: https://github.com/astral-sh/uv/issues/4213
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Project rebuilds on `uv run` after `pyproject.toml` edit "feel bad"
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-10 19:19_
+_@charliermarsh_
 
 Fuzzy feedback after migrating to `uv run`: it's annoying that the project rebuilds, uninstalls, and reinstalls at seemingly random points in time. Those points in time aren't actually random -- it's whenever I edit the `pyproject.toml`. But it _feels_ random as a user.
 

@@ -14,14 +14,14 @@ head: alex/use-union-filter-more
 created_at: 2026-01-03T13:22:31Z
 updated_at: 2026-01-03T13:35:40Z
 url: https://github.com/astral-sh/ruff/pull/22354
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Use `UnionType::filter()` more
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 13:22_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

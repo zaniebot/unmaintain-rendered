@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-12T11:27:33Z
 updated_at: 2023-01-29T18:44:57Z
 url: https://github.com/astral-sh/ruff/issues/1814
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # feat: ruff --statistics
 
 ---
 
-_Issue opened by @spaceone on 2023-01-12 11:27_
+_@spaceone_
 
 `flake8` provides a nice `--statistics` flags which summarizes the findings at the end with a list like the following:
 

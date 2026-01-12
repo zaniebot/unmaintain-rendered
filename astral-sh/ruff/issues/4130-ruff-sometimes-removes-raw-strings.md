@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-27T12:13:29Z
 updated_at: 2023-07-14T04:27:47Z
 url: https://github.com/astral-sh/ruff/issues/4130
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff sometimes removes raw strings
 
 ---
 
-_Issue opened by @m-k-l-s on 2023-04-27 12:13_
+_@m-k-l-s_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

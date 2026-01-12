@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T22:48:18Z
 updated_at: 2025-09-06T19:53:52Z
 url: https://github.com/astral-sh/ruff/issues/6663
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Not autofixing `F901` when `raise NotImplemented`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-08-17 22:48_
+_@jamesbraza_
 
 I am using `ruff==0.0.285` on the below code:
 

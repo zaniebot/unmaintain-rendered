@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-15T18:25:14Z
 updated_at: 2023-07-16T01:32:23Z
 url: https://github.com/astral-sh/ruff/issues/3545
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add autofixit for B004 
 
 ---
 
-_Issue opened by @Skylion007 on 2023-03-15 18:25_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

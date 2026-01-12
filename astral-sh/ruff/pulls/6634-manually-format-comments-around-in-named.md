@@ -13,14 +13,14 @@ head: charlie/format-named-expr
 created_at: 2023-08-16T22:24:57Z
 updated_at: 2023-08-18T03:39:12Z
 url: https://github.com/astral-sh/ruff/pull/6634
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Manually format comments around `:=` in named expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 22:24_
+_@charliermarsh_
 
 ## Summary
 

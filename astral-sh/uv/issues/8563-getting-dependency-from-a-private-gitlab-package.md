@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T12:10:38Z
 updated_at: 2025-02-07T09:49:03Z
 url: https://github.com/astral-sh/uv/issues/8563
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Getting dependency from a private Gitlab package registry in CI works with Personal and Deploy token, but not Job token
 
 ---
 
-_Issue opened by @tomschelsen on 2024-10-25 12:10_
+_@tomschelsen_
 
 * The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T16:41:09Z
 updated_at: 2024-05-22T16:37:12Z
 url: https://github.com/astral-sh/uv/issues/3703
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Feature request: When using `uv pip compile` or `uv pip install --dry-run` warn and display yank message on selecting a yanked package
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-21 16:41_
+_@notatallshaw-gts_
 
 uv does not seem to display the the yank message when a yanked package is selected:
 

@@ -13,14 +13,14 @@ head: konsti/add-numpy-test
 created_at: 2024-03-12T09:28:36Z
 updated_at: 2024-03-18T13:09:33Z
 url: https://github.com/astral-sh/uv/pull/2380
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Add numpy to system import tests
 
 ---
 
-_Pull request opened by @konstin on 2024-03-12 09:28_
+_@konstin_
 
 Installing and importing numpy tests for two cases:
 

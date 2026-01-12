@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-22T15:06:58Z
 updated_at: 2024-06-26T21:09:29Z
 url: https://github.com/clap-rs/clap/issues/5039
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Make `last` take precedence over `allow_hyphen_values`
 
 ---
 
-_Issue opened by @mamekoro on 2023-07-22 15:06_
+_@mamekoro_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T15:52:32Z
 updated_at: 2024-09-25T21:48:01Z
 url: https://github.com/astral-sh/uv/issues/7334
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv run` does not sync when `uv.lock` changes across branches
 
 ---
 
-_Issue opened by @bayashi-cl on 2024-09-12 15:52_
+_@bayashi-cl_
 
 Thank you for this amazing tool!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T05:31:03Z
 updated_at: 2025-12-24T21:01:44Z
 url: https://github.com/astral-sh/ruff/issues/22169
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # False positive F821 with Annotation when accessing dictionary
 
 ---
 
-_Issue opened by @brendan-morin on 2025-12-24 05:31_
+_@brendan-morin_
 
 ### Summary
 

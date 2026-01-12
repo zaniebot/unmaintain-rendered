@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T14:31:53Z
 updated_at: 2024-03-03T18:17:53Z
 url: https://github.com/astral-sh/ruff/issues/10185
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [website] monospace text should include `monospace` as final fallback
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-03-01 14:31_
+_@WhyNotHugo_
 
 This issue is about astral.sh, not ruff itself. I didn't find the repository for the website, so I hope reporting here is okay (is the website still under somebody's personal account?).
 

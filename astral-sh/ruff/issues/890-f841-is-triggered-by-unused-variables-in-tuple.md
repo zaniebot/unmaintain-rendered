@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T08:44:51Z
 updated_at: 2024-09-13T12:39:00Z
 url: https://github.com/astral-sh/ruff/issues/890
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F841 is triggered by unused variables in tuple unpacking from with statements
 
 ---
 
-_Issue opened by @fnep on 2022-11-23 08:44_
+_@fnep_
 
 When tuple unpacking is used within `as` of a with statement, F841 is raised for unused variables. This is fine if really all variables are unused, but if I need only one, I have not other choice then getting all. This happens only within functions.
 

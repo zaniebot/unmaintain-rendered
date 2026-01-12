@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-11-13T01:33:53Z
 updated_at: 2018-08-02T03:29:56Z
 url: https://github.com/clap-rs/clap/issues/744
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # show better error message when a validator fails
 
 ---
 
-_Issue opened by @BurntSushi on 2016-11-13 01:33_
+_@BurntSushi_
 
 Let's say a valid command line invocation is this:
 

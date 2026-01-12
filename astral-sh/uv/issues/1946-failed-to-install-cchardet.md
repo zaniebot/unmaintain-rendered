@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T00:25:14Z
 updated_at: 2024-02-26T23:11:40Z
 url: https://github.com/astral-sh/uv/issues/1946
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Failed to install cchardet
 
 ---
 
-_Issue opened by @chrisgoddard on 2024-02-24 00:25_
+_@chrisgoddard_
 
 Error install cchardet==2.1.7
 

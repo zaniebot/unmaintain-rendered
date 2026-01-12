@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T20:49:49Z
 updated_at: 2023-02-22T03:23:48Z
 url: https://github.com/astral-sh/ruff/issues/2972
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Proposed check: reuse of loop variable in nested loop
 
 ---
 
-_Issue opened by @matthewlloyd on 2023-02-16 20:49_
+_@matthewlloyd_
 
 I was just bitten by a bug in production where I accidentally reused an outer loop variable in a nested loop. Example:
 

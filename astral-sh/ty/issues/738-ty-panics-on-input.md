@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T12:36:38Z
 updated_at: 2025-07-09T06:46:35Z
 url: https://github.com/astral-sh/ty/issues/738
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty panics on input `[.`
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-01 12:36_
+_@sharkdp_
 
 ### Summary
 

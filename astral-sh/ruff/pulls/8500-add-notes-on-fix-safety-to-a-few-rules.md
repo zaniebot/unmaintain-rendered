@@ -13,14 +13,14 @@ head: charlie/fix
 created_at: 2023-11-06T00:41:49Z
 updated_at: 2023-11-06T01:00:22Z
 url: https://github.com/astral-sh/ruff/pull/8500
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add notes on fix safety to a few rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 00:41_
+_@charliermarsh_
 
 _No description provided._
 

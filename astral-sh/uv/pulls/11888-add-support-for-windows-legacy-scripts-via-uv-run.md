@@ -13,14 +13,14 @@ head: windows-legacy-scripts
 created_at: 2025-03-02T00:33:27Z
 updated_at: 2025-03-10T11:09:06Z
 url: https://github.com/astral-sh/uv/pull/11888
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Add support for Windows legacy scripts via uv run
 
 ---
 
-_Pull request opened by @samypr100 on 2025-03-02 00:33_
+_@samypr100_
 
 ## Summary
 

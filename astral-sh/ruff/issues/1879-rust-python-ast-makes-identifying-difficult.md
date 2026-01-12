@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-15T01:43:48Z
 updated_at: 2023-01-23T02:32:59Z
 url: https://github.com/astral-sh/ruff/issues/1879
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Rust Python AST makes identifying `**` difficult
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-15 01:43_
+_@sbdchd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

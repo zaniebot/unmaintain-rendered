@@ -14,14 +14,14 @@ head: charlie/python-request
 created_at: 2024-06-30T15:13:01Z
 updated_at: 2024-07-01T12:31:43Z
 url: https://github.com/astral-sh/uv/pull/4658
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # DRY up some project interpreter validation and discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-30 15:13_
+_@charliermarsh_
 
 ## Summary
 

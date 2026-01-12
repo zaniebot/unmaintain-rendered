@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T11:31:25Z
 updated_at: 2024-07-11T14:34:16Z
 url: https://github.com/astral-sh/uv/issues/4991
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Question: can I use `uv venv` with vanilla pip
 
 ---
 
-_Issue opened by @mil-ad on 2024-07-11 11:31_
+_@mil-ad_
 
 qq - can I create an and activate a venv with `uv venv` but use vanilla pip (from pyenv) instead of `uv pip`? When I try this packages are installed directly in pyenv's `lib/python3.x/site-packages`. Is this expected?
 

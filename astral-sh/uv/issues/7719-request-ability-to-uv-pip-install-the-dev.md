@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T18:13:38Z
 updated_at: 2024-09-26T18:41:40Z
 url: https://github.com/astral-sh/uv/issues/7719
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Request: ability to `uv pip install` the `dev-dependencies`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-26 18:13_
+_@jamesbraza_
 
 Multiple of my teammates are not fully integrated with `uv sync`, and just want to install the core package editably with the [`dev-dependencies`](https://docs.astral.sh/uv/reference/settings/#dev-dependencies) from a `pyproject.toml`'s `[uv.tool]`.
 

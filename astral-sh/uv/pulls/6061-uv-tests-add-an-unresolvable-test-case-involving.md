@@ -12,14 +12,14 @@ head: ag/unresolvable-overlapping-markers
 created_at: 2024-08-13T16:51:38Z
 updated_at: 2024-08-13T17:14:50Z
 url: https://github.com/astral-sh/uv/pull/6061
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # uv/tests: add an unresolvable test case involving overlapping markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-13 16:51_
+_@BurntSushi_
 
 This example came up in discussion and it was initially unclear whether
 we should try to support it. Specifically, by automatically assuming

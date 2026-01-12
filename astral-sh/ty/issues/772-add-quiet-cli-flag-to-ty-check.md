@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T16:19:08Z
 updated_at: 2025-07-10T14:40:48Z
 url: https://github.com/astral-sh/ty/issues/772
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add `--quiet` CLI flag to `ty check`
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-07-07 16:19_
+_@ibraheemdev_
 
 This has come up a few times and is useful for benchmarking and memory profiling reports. It should silence all diagnostics and only provide an exit code, I think Ruff calls this `--silent`.
 

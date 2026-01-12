@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-04T09:54:46Z
 updated_at: 2024-08-07T09:39:40Z
 url: https://github.com/astral-sh/ruff/issues/12660
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff crashed workspace URL was not a file path!
 
 ---
 
-_Issue opened by @Odud on 2024-08-04 09:54_
+_@Odud_
 
 I'm trying to install and use ruff with Vscode on Windows 10
 I've installed ruff with `python -m pip install ruff` and then the vsode extension but on starting vscode I get the message saying that the Ruff server crashed 5 times in the last 3 minutes. The server will not be restarted. The output looks like this:

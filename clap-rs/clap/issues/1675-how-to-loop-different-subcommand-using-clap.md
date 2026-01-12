@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-05T09:34:04Z
 updated_at: 2020-02-05T11:00:01Z
 url: https://github.com/clap-rs/clap/issues/1675
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # how to loop different subcommand using clap
 
 ---
 
-_Issue opened by @shaojintian on 2020-02-05 09:34_
+_@shaojintian_
 
 I want to loop command line like redis CLI
 

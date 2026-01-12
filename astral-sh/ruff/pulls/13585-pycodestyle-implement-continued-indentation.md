@@ -11,14 +11,14 @@ head: e12x-continued-indentation
 created_at: 2024-10-01T10:17:58Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/13585
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [`pycodestyle`] Implement continued indentation related rules (`E12x`)
 
 ---
 
-_Pull request opened by @LordAro on 2024-10-01 10:17_
+_@LordAro_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

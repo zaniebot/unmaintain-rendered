@@ -13,14 +13,14 @@ head: feature/PYI032
 created_at: 2023-05-28T17:14:18Z
 updated_at: 2023-07-06T17:35:50Z
 url: https://github.com/astral-sh/ruff/pull/4695
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`flake8-pyi`] Add `PYI032` rule with autofix
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-28 17:14_
+_@qdegraaf_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T19:09:33Z
 updated_at: 2025-10-29T02:49:06Z
 url: https://github.com/astral-sh/uv/issues/16215
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # UV pip respects pyproject toml overrides
 
 ---
 
-_Issue opened by @haarisr on 2025-10-09 19:09_
+_@haarisr_
 
 ### Question
 

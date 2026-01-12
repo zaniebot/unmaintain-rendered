@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T13:36:47Z
 updated_at: 2023-10-26T15:05:00Z
 url: https://github.com/astral-sh/ruff/issues/8252
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: single quote style converts triple single quotes to double quotes anyway
 
 ---
 
-_Issue opened by @henryiii on 2023-10-26 13:36_
+_@henryiii_
 
 I was moving pypa/build to Ruff format in https://github.com/pypa/build/pull/696, since it's a single quote package, and it was previously handed by Black + pre-commit-hook's double to single quotes option. But it turns out Ruff converts triple quoted strings to double quotes even if single quotes is selected via `quote-style = "single"`:
 

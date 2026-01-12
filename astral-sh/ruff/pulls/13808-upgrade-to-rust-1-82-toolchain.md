@@ -13,14 +13,14 @@ head: micha/rust-1.82
 created_at: 2024-10-18T10:22:43Z
 updated_at: 2024-10-19T09:45:41Z
 url: https://github.com/astral-sh/ruff/pull/13808
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Upgrade to Rust 1.82 toolchain
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-18 10:22_
+_@MichaReiser_
 
 ## Summary
 Upgrade the developer toolchain. This does not bump the minimal MSRV.

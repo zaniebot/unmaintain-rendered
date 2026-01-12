@@ -13,14 +13,14 @@ head: charlie/arm
 created_at: 2024-03-13T14:49:34Z
 updated_at: 2024-03-15T13:49:30Z
 url: https://github.com/astral-sh/uv/pull/2417
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Add additional ARM targets to release
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 14:49_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2415.
 Closes https://github.com/astral-sh/uv/issues/2416.

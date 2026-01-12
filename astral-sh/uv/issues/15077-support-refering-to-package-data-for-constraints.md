@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T08:09:45Z
 updated_at: 2025-08-05T08:09:45Z
 url: https://github.com/astral-sh/uv/issues/15077
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # support refering to package data for constraints
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2025-08-05 08:09_
+_@RonnyPfannschmidt_
 
 ### Summary
 

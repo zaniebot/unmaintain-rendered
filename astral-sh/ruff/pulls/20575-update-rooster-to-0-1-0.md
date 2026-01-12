@@ -13,14 +13,14 @@ head: brent/bump-rooster
 created_at: 2025-09-25T13:54:24Z
 updated_at: 2025-09-25T14:11:23Z
 url: https://github.com/astral-sh/ruff/pull/20575
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # Update rooster to 0.1.0
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-25 13:54_
+_@ntBre_
 
 Summary
 --

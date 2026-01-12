@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T08:10:08Z
 updated_at: 2023-10-26T08:53:21Z
 url: https://github.com/astral-sh/ruff/issues/8246
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruff isort fails for a simple example
 
 ---
 
-_Issue opened by @alanwilter on 2023-10-26 08:10_
+_@alanwilter_
 
 `ruff`: 0.1.2
 `isort`: 5.10.1

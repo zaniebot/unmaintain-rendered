@@ -13,14 +13,14 @@ head: konsti/s390x-stable
 created_at: 2025-10-01T08:16:16Z
 updated_at: 2025-10-01T20:38:29Z
 url: https://github.com/astral-sh/uv/pull/16082
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Build s390x on stable again
 
 ---
 
-_Pull request opened by @konstin on 2025-10-01 08:16_
+_@konstin_
 
 Fixed by https://github.com/rust-lang/rust/issues/141287#issuecomment-3354275747
 

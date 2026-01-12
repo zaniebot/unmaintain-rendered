@@ -13,14 +13,14 @@ head: docs/replace-dead-playground-link
 created_at: 2025-02-14T06:10:03Z
 updated_at: 2025-02-14T06:57:14Z
 url: https://github.com/astral-sh/ruff/pull/16153
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Replace dead link for rome tools playground
 
 ---
 
-_Pull request opened by @vladNed on 2025-02-14 06:10_
+_@vladNed_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

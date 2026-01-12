@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T23:34:52Z
 updated_at: 2024-11-07T08:24:59Z
 url: https://github.com/astral-sh/ruff/issues/14143
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter undocumented deviation: extra unnecessary wrapping of arguments and extra parenthesis for long return types
 
 ---
 
-_Issue opened by @Avasam on 2024-11-06 23:34_
+_@Avasam_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
   undocumented deviation black return

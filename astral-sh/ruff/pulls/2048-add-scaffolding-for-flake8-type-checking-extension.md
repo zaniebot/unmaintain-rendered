@@ -12,14 +12,14 @@ head: charlie/typing
 created_at: 2023-01-21T03:31:02Z
 updated_at: 2023-01-21T03:41:37Z
 url: https://github.com/astral-sh/ruff/pull/2048
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add scaffolding for `flake8-type-checking` extension
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-21 03:31_
+_@charliermarsh_
 
 This PR adds the scaffolding files for `flake8-type-checking`, along with the simplest rule (`empty-type-checking-block`), just as an example to get us started.
 

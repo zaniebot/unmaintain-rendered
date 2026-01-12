@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T02:35:45Z
 updated_at: 2024-08-16T17:03:27Z
 url: https://github.com/astral-sh/uv/issues/6137
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Optimize `MarkerTree::is_disjoint`
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-08-16 02:35_
+_@ibraheemdev_
 
 We currently just call `MarkerTree::and`, which can cause unnecessary allocations because we only care if the result is satisfiable or not.
 

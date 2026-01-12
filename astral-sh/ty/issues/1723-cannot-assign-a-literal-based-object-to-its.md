@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-02T15:56:38Z
 updated_at: 2025-12-02T15:59:26Z
 url: https://github.com/astral-sh/ty/issues/1723
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Cannot assign a `literal`-based object to its corresponding `collections.abc`-based object
 
 ---
 
-_Issue opened by @mflova on 2025-12-02 15:56_
+_@mflova_
 
 ### Summary
 

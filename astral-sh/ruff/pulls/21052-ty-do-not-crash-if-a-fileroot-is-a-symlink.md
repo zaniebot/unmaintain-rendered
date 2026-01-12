@@ -13,14 +13,14 @@ head: gankra/rootcause
 created_at: 2025-10-23T22:23:02Z
 updated_at: 2025-11-12T20:47:47Z
 url: https://github.com/astral-sh/ruff/pull/21052
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Do not crash if a FileRoot is a symlink
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-23 22:23_
+_@Gankra_
 
 This is a fix for the issue [described here](https://github.com/astral-sh/ruff/pull/21047#issuecomment-3437837018), where ty found my homebrew python site-packages, and then panicked because it was handling both symlink and non-symlink versions of the same directory (which, syntactically, are not subdirectories of eachother).
 

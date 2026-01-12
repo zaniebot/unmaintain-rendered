@@ -13,14 +13,14 @@ head: feat/dict-comprehension
 created_at: 2023-03-19T09:40:42Z
 updated_at: 2023-03-20T03:35:04Z
 url: https://github.com/astral-sh/ruff/pull/3605
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # feat: update C416 with dict comprehension (autofixable)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-19 09:40_
+_@dhruvmanila_
 
 Update C416 with dict comprehensions which is auto-fixable.
 

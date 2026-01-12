@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-26T21:17:03Z
 updated_at: 2024-02-28T01:56:26Z
 url: https://github.com/astral-sh/uv/issues/1991
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Dynamic optional dependencies not audited upon re-install
 
 ---
 
-_Issue opened by @kendallbailey on 2024-02-26 21:17_
+_@kendallbailey_
 
 uv version: 0.1.11
 platform: Ubuntu 20.04, python 3.10

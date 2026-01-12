@@ -13,14 +13,14 @@ head: charlie/fbt
 created_at: 2024-05-04T21:26:11Z
 updated_at: 2024-05-04T21:39:16Z
 url: https://github.com/astral-sh/ruff/pull/11287
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Allow `set(True)` for boolean traps
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 21:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8923.
 

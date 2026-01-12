@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-15T04:13:27Z
 updated_at: 2024-05-15T15:48:33Z
 url: https://github.com/astral-sh/uv/issues/3601
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv run can install two versions of the same package (and forces upgrades)
 
 ---
 
-_Issue opened by @henryiii on 2024-05-15 04:13_
+_@henryiii_
 
 I was trying out different versions of pytest with a pytest plugin to see when it was broken. I mentally was thinking of `uv run` as the Python launcher for UNIX, a way to avoid activating a venv (`py` instead of `.venv/bin/python`). It seems to do some installing automatically - including three strange things:
 

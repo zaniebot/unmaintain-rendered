@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T22:19:47Z
 updated_at: 2025-07-16T04:28:19Z
 url: https://github.com/astral-sh/uv/issues/14639
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # working on a prerelease of a package breaks uv for local development
 
 ---
 
-_Issue opened by @Butanium on 2025-07-15 22:19_
+_@Butanium_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T00:03:59Z
 updated_at: 2025-12-11T09:12:51Z
 url: https://github.com/astral-sh/ty/issues/1604
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # support recursive PEP 613 / implicit type aliases
 
 ---
 
-_Issue opened by @carljm on 2025-11-21 00:03_
+_@carljm_
 
 Currently these typically fall back to Divergent/Unknown at the point of recursion. We should properly support them.
 

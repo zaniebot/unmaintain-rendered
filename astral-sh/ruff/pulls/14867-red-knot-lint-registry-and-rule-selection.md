@@ -13,14 +13,14 @@ head: micha/error-codes
 created_at: 2024-12-09T12:29:43Z
 updated_at: 2024-12-09T14:34:48Z
 url: https://github.com/astral-sh/ruff/pull/14867
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Lint registry and rule selection
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-09 12:29_
+_@MichaReiser_
 
 ## Summary
 

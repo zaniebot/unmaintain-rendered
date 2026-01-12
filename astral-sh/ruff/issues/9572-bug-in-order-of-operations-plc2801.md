@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-18T09:27:19Z
 updated_at: 2024-03-04T10:25:18Z
 url: https://github.com/astral-sh/ruff/issues/9572
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Bug in order of operations (PLC2801)
 
 ---
 
-_Issue opened by @RubenVanEldik on 2024-01-18 09:27_
+_@RubenVanEldik_
 
 Hi all!
 

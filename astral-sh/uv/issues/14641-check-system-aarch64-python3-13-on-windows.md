@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T22:55:14Z
 updated_at: 2025-07-16T14:10:00Z
 url: https://github.com/astral-sh/uv/issues/14641
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # `check system | aarch64 python3.13 on windows aarch64` flakes with pylint not installed
 
 ---
 
-_Issue opened by @zanieb on 2025-07-15 22:55_
+_@zanieb_
 
 ```
 Prepared 8 packages in 396ms

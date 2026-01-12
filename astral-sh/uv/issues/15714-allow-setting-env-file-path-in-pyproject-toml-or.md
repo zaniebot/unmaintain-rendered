@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-07T18:07:20Z
 updated_at: 2025-09-08T13:45:49Z
 url: https://github.com/astral-sh/uv/issues/15714
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Allow setting .env file path in pyproject.toml or self-contained script front-matter
 
 ---
 
-_Issue opened by @strangemonad on 2025-09-07 18:07_
+_@strangemonad_
 
 ### Summary
 

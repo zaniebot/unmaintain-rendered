@@ -13,14 +13,14 @@ head: fix-typo
 created_at: 2024-02-07T15:31:55Z
 updated_at: 2024-02-07T16:26:24Z
 url: https://github.com/astral-sh/ruff/pull/9874
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix typo in option name: `output_format` -> `output-format`
 
 ---
 
-_Pull request opened by @hugovk on 2024-02-07 15:31_
+_@hugovk_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

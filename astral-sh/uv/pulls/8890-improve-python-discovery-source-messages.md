@@ -13,14 +13,14 @@ head: zb/preference-format
 created_at: 2024-11-07T15:58:49Z
 updated_at: 2024-11-07T20:08:52Z
 url: https://github.com/astral-sh/uv/pull/8890
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Improve Python discovery source messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-07 15:58_
+_@zanieb_
 
 e.g.
 

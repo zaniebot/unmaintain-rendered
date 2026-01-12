@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T15:21:34Z
 updated_at: 2023-02-21T22:44:46Z
 url: https://github.com/astral-sh/ruff/issues/3061
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D407 / D405: false positive
 
 ---
 
-_Issue opened by @spaceone on 2023-02-20 15:21_
+_@spaceone_
 
 ```
 D407 [*] Missing dashed underline after section ("TODO")

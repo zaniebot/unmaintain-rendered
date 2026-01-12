@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-04T16:09:37Z
 updated_at: 2022-11-08T02:16:35Z
 url: https://github.com/astral-sh/ruff/issues/586
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # RUF001 should include ambiguous unicode characters in comments
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-04 16:09_
+_@charliermarsh_
 
 Right now, the RustPython tokenizer doesn't include comments (unlike the CPython tokenizer), which is blocking this check.
 

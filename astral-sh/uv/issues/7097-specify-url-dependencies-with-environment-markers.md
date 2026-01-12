@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T20:17:30Z
 updated_at: 2024-09-06T08:46:19Z
 url: https://github.com/astral-sh/uv/issues/7097
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Specify URL dependencies with environment markers
 
 ---
 
-_Issue opened by @tudoroancea on 2024-09-05 20:17_
+_@tudoroancea_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

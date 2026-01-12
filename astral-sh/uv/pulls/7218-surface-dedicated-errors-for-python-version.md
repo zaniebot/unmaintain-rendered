@@ -13,14 +13,14 @@ head: charlie/version-errors
 created_at: 2024-09-09T14:57:39Z
 updated_at: 2024-09-09T21:12:55Z
 url: https://github.com/astral-sh/uv/pull/7218
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Surface dedicated errors for `.python-version` conflict with `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-09 14:57_
+_@charliermarsh_
 
 ## Summary
 

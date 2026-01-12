@@ -13,14 +13,14 @@ head: konsti/resolution-graph-refactorings
 created_at: 2024-07-25T10:33:35Z
 updated_at: 2024-07-25T12:40:11Z
 url: https://github.com/astral-sh/uv/pull/5439
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Split `ResolutionGraph::from_state` into methods
 
 ---
 
-_Pull request opened by @konstin on 2024-07-25 10:33_
+_@konstin_
 
 Two changes split out from the instability work:
 

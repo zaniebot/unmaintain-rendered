@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T10:16:51Z
 updated_at: 2025-10-08T08:50:47Z
 url: https://github.com/astral-sh/ruff/issues/20742
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Conftest imports get flag as not used, but they are not.
 
 ---
 
-_Issue opened by @ferwanguer on 2025-10-07 10:16_
+_@ferwanguer_
 
 ### Summary
 

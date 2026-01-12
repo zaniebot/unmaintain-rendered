@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-12T13:19:46Z
 updated_at: 2024-02-12T17:06:21Z
 url: https://github.com/astral-sh/ruff/issues/9948
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PYI049: false positive for private inner class
 
 ---
 
-_Issue opened by @arvidfm on 2024-02-12 13:19_
+_@arvidfm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

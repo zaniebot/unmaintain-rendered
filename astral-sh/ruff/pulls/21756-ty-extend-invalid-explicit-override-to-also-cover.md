@@ -13,14 +13,14 @@ head: alex/override-tests
 created_at: 2025-12-02T16:15:29Z
 updated_at: 2025-12-03T11:27:49Z
 url: https://github.com/astral-sh/ruff/pull/21756
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Extend `invalid-explicit-override` to also cover properties decorated with `@override` that do not override anything
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-02 16:15_
+_@AlexWaygood_
 
 ## Summary
 

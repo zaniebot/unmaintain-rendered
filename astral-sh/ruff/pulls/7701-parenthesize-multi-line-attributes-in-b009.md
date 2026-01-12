@@ -14,14 +14,14 @@ head: charlie/B009
 created_at: 2023-09-28T20:42:14Z
 updated_at: 2023-09-28T21:04:47Z
 url: https://github.com/astral-sh/ruff/pull/7701
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Parenthesize multi-line attributes in B009
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 20:42_
+_@charliermarsh_
 
 See https://github.com/astral-sh/ruff/issues/7455#issuecomment-1739800901.
 

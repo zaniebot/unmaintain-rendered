@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T11:45:22Z
 updated_at: 2025-11-14T15:25:29Z
 url: https://github.com/astral-sh/ty/issues/710
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Narrow nonlocal type based on position of inner scope
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-26 11:45_
+_@sharkdp_
 
 With https://github.com/astral-sh/ruff/pull/18750 merged, we now consider all reachable bindings for nonlocal types. This can cause overly wide union types in cases where the inner scope is only executed after narrowing the type in the outer scope through an assignment. For example:
 

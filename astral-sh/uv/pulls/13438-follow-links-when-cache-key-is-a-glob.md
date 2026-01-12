@@ -13,14 +13,14 @@ head: feat/cache-key-glob-symlink
 created_at: 2025-05-14T01:43:13Z
 updated_at: 2025-07-14T15:35:34Z
 url: https://github.com/astral-sh/uv/pull/13438
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Follow links when cache-key is a glob
 
 ---
 
-_Pull request opened by @aldanor on 2025-05-14 01:43_
+_@aldanor_
 
 ## Summary
 

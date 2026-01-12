@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T09:53:11Z
 updated_at: 2024-07-16T16:57:31Z
 url: https://github.com/astral-sh/uv/issues/4580
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 #  Allow different locals in forks
 
 ---
 
-_Issue opened by @konstin on 2024-06-27 09:53_
+_@konstin_
 
 As we allow different URLs in forks, we should also split the locals settings by fork.
 

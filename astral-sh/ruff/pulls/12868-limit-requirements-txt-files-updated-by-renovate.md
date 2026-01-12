@@ -13,14 +13,14 @@ head: renovate-config-fix
 created_at: 2024-08-13T16:53:01Z
 updated_at: 2024-08-13T17:20:18Z
 url: https://github.com/astral-sh/ruff/pull/12868
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Limit `requirements.txt` files updated by renovate
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-13 16:53_
+_@AlexWaygood_
 
 ## Summary
 

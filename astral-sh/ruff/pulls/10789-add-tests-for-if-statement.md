@@ -14,14 +14,14 @@ head: dhruv/if-stmt
 created_at: 2024-04-05T11:54:25Z
 updated_at: 2024-04-09T14:04:09Z
 url: https://github.com/astral-sh/ruff/pull/10789
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `if` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-05 11:54_
+_@dhruvmanila_
 
 ## Summary
 

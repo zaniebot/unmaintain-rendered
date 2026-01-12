@@ -13,14 +13,14 @@ head: py-dir-unittest
 created_at: 2023-07-23T01:01:01Z
 updated_at: 2023-07-24T02:28:33Z
 url: https://github.com/astral-sh/ruff/pull/5997
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add a unit test for python-file-like directory exclusion
 
 ---
 
-_Pull request opened by @harupy on 2023-07-23 01:01_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

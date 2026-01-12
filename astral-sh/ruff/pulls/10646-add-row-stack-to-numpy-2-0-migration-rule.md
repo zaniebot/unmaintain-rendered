@@ -13,14 +13,14 @@ head: row_stack-numpy-rule
 created_at: 2024-03-28T10:01:57Z
 updated_at: 2024-03-28T13:56:38Z
 url: https://github.com/astral-sh/ruff/pull/10646
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add `row_stack` to NumPy 2.0 migration rule
 
 ---
 
-_Pull request opened by @mtsokol on 2024-03-28 10:01_
+_@mtsokol_
 
 Hi! 
 

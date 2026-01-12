@@ -13,14 +13,14 @@ head: document-link-between-formatter-and-import-sorting
 created_at: 2023-12-13T19:06:42Z
 updated_at: 2023-12-15T10:47:19Z
 url: https://github.com/astral-sh/ruff/pull/9117
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Document link between import sorting and formatter
 
 ---
 
-_Pull request opened by @bluthej on 2023-12-13 19:06_
+_@bluthej_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

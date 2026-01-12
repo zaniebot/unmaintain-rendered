@@ -13,14 +13,14 @@ head: quotestyle-ast
 created_at: 2024-03-08T13:28:53Z
 updated_at: 2024-03-08T19:11:50Z
 url: https://github.com/astral-sh/ruff/pull/10298
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Start tracking quoting style in the AST
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-08 13:28_
+_@AlexWaygood_
 
 ## Summary
 

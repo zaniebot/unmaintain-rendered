@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T11:06:31Z
 updated_at: 2024-04-18T00:51:10Z
 url: https://github.com/astral-sh/ruff/issues/10020
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # CPY001: ignore empty files like `__init__.py`.
 
 ---
 
-_Issue opened by @spaceone on 2024-02-18 11:06_
+_@spaceone_
 
 `CPY001` should ignore empty files like `__init__.py`
 

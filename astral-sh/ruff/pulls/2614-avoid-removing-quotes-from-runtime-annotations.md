@@ -12,14 +12,14 @@ head: charlie/runtime
 created_at: 2023-02-06T23:14:04Z
 updated_at: 2023-02-06T23:15:21Z
 url: https://github.com/astral-sh/ruff/pull/2614
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid removing quotes from runtime annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-06 23:14_
+_@charliermarsh_
 
 Fixes part of #2613.
 

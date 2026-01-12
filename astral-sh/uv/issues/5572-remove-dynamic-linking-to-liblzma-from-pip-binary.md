@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-29T20:34:52Z
 updated_at: 2024-07-30T22:29:12Z
 url: https://github.com/astral-sh/uv/issues/5572
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # remove dynamic linking to `liblzma` from pip binary 
 
 ---
 
-_Issue opened by @universalmind303 on 2024-07-29 20:34_
+_@universalmind303_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

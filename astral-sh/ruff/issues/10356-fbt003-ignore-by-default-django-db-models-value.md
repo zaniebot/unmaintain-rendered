@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T10:03:40Z
 updated_at: 2024-03-30T00:26:14Z
 url: https://github.com/astral-sh/ruff/issues/10356
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FBT003: Ignore by default django.db.models.Value
 
 ---
 
-_Issue opened by @9128305 on 2024-03-12 10:03_
+_@9128305_
 
 Hi, there is a common usage of `Value(False)` | `Value(True)`  in [Django](https://docs.djangoproject.com/en/5.0/ref/models/expressions/#value-expressions) projects. Ruff does not provide any configuration to extend the FBT003 default whitelist. So my request would be 1) Ignore `Value` by default like https://github.com/astral-sh/ruff/issues/6711 2) settings to extend FBT003 whitelist.
 <!--

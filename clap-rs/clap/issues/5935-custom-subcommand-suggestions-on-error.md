@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-02T23:06:53Z
 updated_at: 2025-03-20T02:02:46Z
 url: https://github.com/clap-rs/clap/issues/5935
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Custom subcommand suggestions on error
 
 ---
 
-_Issue opened by @ilyagr on 2025-03-02 23:06_
+_@ilyagr_
 
 ### Please complete the following tasks
 

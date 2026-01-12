@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-27T16:35:54Z
 updated_at: 2022-10-27T17:10:27Z
 url: https://github.com/astral-sh/ruff/issues/486
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add example of per-file-ignores in TOML to Readme
 
 ---
 
-_Issue opened by @tgross35 on 2022-10-27 16:35_
+_@tgross35_
 
 Hello,
 

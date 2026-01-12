@@ -13,14 +13,14 @@ head: cjm/litmath
 created_at: 2024-06-05T19:51:17Z
 updated_at: 2024-06-05T20:10:38Z
 url: https://github.com/astral-sh/ruff/pull/11760
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] arithmetic on int literals
 
 ---
 
-_Pull request opened by @carljm on 2024-06-05 19:51_
+_@carljm_
 
 ## Summary
 

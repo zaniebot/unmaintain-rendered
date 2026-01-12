@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-07T08:51:59Z
 updated_at: 2023-05-08T18:20:46Z
 url: https://github.com/astral-sh/ruff/issues/4268
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # I suggest that ruff should update the code for detecting ambiguous unicode characters with following VSCode's code.
 
 ---
 
-_Issue opened by @yuji38kwmt on 2023-05-07 08:51_
+_@yuji38kwmt_
 
 
 

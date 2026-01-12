@@ -13,14 +13,14 @@ head: track_formatting_all_comments
 created_at: 2023-07-30T13:44:11Z
 updated_at: 2023-08-10T07:37:11Z
 url: https://github.com/astral-sh/ruff/pull/6178
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Track formatting all comments
 
 ---
 
-_Pull request opened by @konstin on 2023-07-30 13:44_
+_@konstin_
 
 We currently don't format all comments as match statements are not yet implemented. We can work around this for the top level match statement by setting them manually formatted but the mocked-out top level match doesn't call into its children so they would still have unformatted comments
 

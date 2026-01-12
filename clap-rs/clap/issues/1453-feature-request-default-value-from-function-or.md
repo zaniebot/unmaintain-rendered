@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-04-11T02:36:03Z
 updated_at: 2025-01-20T03:41:16Z
 url: https://github.com/clap-rs/clap/issues/1453
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # [Feature Request] default value from function (or closure)
 
 ---
 
-_Issue opened by @pbzweihander on 2019-04-11 02:36_
+_@pbzweihander_
 
 It would be great if I can make default values from functions, not literals.
 

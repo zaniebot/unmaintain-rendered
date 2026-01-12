@@ -13,14 +13,14 @@ head: charlie/pattern
 created_at: 2023-07-17T01:11:42Z
 updated_at: 2023-07-17T01:43:51Z
 url: https://github.com/astral-sh/ruff/pull/5816
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove `TryIdentifier` trait
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-17 01:11_
+_@charliermarsh_
 
 ## Summary
 

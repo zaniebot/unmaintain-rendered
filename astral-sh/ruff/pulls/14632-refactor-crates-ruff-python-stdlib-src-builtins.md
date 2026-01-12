@@ -13,14 +13,14 @@ head: alex/314
 created_at: 2024-11-27T10:48:18Z
 updated_at: 2024-11-27T12:22:30Z
 url: https://github.com/astral-sh/ruff/pull/14632
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 #  Refactor `crates/ruff_python_stdlib/src/builtins.rs` to make it easier to add support for new Python versions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-27 10:48_
+_@AlexWaygood_
 
 ## Summary
 

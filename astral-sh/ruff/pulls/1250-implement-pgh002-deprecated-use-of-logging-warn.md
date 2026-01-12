@@ -11,14 +11,14 @@ head: pygrep-hooks-deprecated-log-warn
 created_at: 2022-12-15T19:38:25Z
 updated_at: 2022-12-27T05:43:04Z
 url: https://github.com/astral-sh/ruff/pull/1250
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement PGH002 - deprecated use of logging.warn
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-15 19:38_
+_@squiddy_
 
 Refs #980
 

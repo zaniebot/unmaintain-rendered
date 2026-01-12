@@ -14,14 +14,14 @@ head: charlie/dynamic-cache
 created_at: 2024-09-06T21:04:49Z
 updated_at: 2024-09-09T20:20:34Z
 url: https://github.com/astral-sh/uv/pull/7136
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Add support for dynamic cache keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-06 21:04_
+_@charliermarsh_
 
 ## Summary
 

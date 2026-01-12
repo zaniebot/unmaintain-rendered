@@ -14,14 +14,14 @@ head: charlie/glob
 created_at: 2024-09-10T18:37:56Z
 updated_at: 2024-09-11T19:31:01Z
 url: https://github.com/astral-sh/uv/pull/7268
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Support globs as cache keys in `tool.uv.cache-keys`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 18:37_
+_@charliermarsh_
 
 ## Summary
 

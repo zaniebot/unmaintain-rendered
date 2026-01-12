@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T11:54:32Z
 updated_at: 2025-02-24T14:17:44Z
 url: https://github.com/astral-sh/ruff/issues/15963
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Diagnostic for class-object access to pure instance variables
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 11:54_
+_@sharkdp_
 
 The goal of this ticket is to resolve those two `TODO`s and introduce a new diagnostic for accesses of pure instance variables through class objects:
 

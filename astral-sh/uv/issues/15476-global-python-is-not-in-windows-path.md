@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-24T07:10:45Z
 updated_at: 2025-08-24T12:14:53Z
 url: https://github.com/astral-sh/uv/issues/15476
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # global python is not in windows path
 
 ---
 
-_Issue opened by @GoFireStar on 2025-08-24 07:10_
+_@GoFireStar_
 
 ### Question
 

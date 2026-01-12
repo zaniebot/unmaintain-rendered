@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-14T05:40:35Z
 updated_at: 2024-04-11T19:52:54Z
 url: https://github.com/astral-sh/ruff/issues/9511
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule: Flake8-bugbear B038 " detect changes to iterable object of loop"
 
 ---
 
-_Issue opened by @mimre25 on 2024-01-14 05:40_
+_@mimre25_
 
 I've added a new rule to flake8-bugbear.
 

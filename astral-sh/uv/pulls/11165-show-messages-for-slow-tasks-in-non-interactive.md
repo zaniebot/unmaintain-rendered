@@ -13,14 +13,14 @@ head: konsti/non-interactive-progress
 created_at: 2025-02-02T13:40:06Z
 updated_at: 2025-02-06T02:28:59Z
 url: https://github.com/astral-sh/uv/pull/11165
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Show messages for slow tasks in non-interactive mode
 
 ---
 
-_Pull request opened by @konstin on 2025-02-02 13:40_
+_@konstin_
 
 When stderr is not a tty, we currently don't show any messages for build or large downloads, since indicatif is hidden. We can improve this by showing a message for:
 

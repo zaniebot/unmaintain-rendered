@@ -14,14 +14,14 @@ head: refurb-hexdigest
 created_at: 2023-12-09T20:59:07Z
 updated_at: 2023-12-10T08:39:17Z
 url: https://github.com/astral-sh/ruff/pull/9077
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`refurb`] Implement `hashlib-digest-hex` (`FURB181`)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-12-09 20:59_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-02-08T09:16:34Z
 updated_at: 2025-02-09T16:16:30Z
 url: https://github.com/astral-sh/ruff/issues/16037
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Infinite loop when fixing file with `cast` and format strings
 
 ---
 
-_Issue opened by @qarmin on 2025-02-08 09:16_
+_@qarmin_
 
 ### Description
 

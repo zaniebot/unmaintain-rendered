@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T20:03:06Z
 updated_at: 2025-12-24T17:49:11Z
 url: https://github.com/astral-sh/ty/issues/1426
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect top materialization of `Callable` types
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-23 20:03_
+_@AlexWaygood_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-24T02:54:37Z
 updated_at: 2024-02-03T00:21:05Z
 url: https://github.com/astral-sh/ruff/issues/8151
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # new rule - fstring syntax in non-fstring
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-24 02:54_
+_@DetachHead_
 
 ```py
 asdf = 1

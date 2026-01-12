@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T16:43:52Z
 updated_at: 2024-07-17T23:03:25Z
 url: https://github.com/astral-sh/uv/issues/3611
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # universal-lock: clean up lock file format
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-15 16:43_
+_@BurntSushi_
 
 In #3314, an initial version of a universal lock file format was added. It came with a lot of TODOs in the code and some uncertainties with the data model. Before we declare the lock file ready to use by users, we should take another pass over it and smooth things out. Here is a non-exhaustive list of things:
 

@@ -13,14 +13,14 @@ head: cjm/signatures
 created_at: 2024-11-13T03:07:50Z
 updated_at: 2024-11-14T23:43:44Z
 url: https://github.com/astral-sh/ruff/pull/14304
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] function signature representation
 
 ---
 
-_Pull request opened by @carljm on 2024-11-13 03:07_
+_@carljm_
 
 ## Summary
 

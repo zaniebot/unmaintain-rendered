@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-20T03:54:41Z
 updated_at: 2025-11-20T04:53:49Z
 url: https://github.com/astral-sh/ty/issues/1597
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add command to generate type stubs (equivalent to mypy's `stubgen`)
 
 ---
 
-_Issue opened by @MamadouSDiallo on 2025-11-20 03:54_
+_@MamadouSDiallo_
 
 ### Is your feature request related to a problem? Please describe.
 I am developing a Python library that includes compiled extensions (via Cython, PyO3, or C-extensions). To ensure users receive proper IDE support (autocompletion, signatures, and docstrings), I need to distribute `.pyi` stub files alongside my compiled binaries (`.so` / `.pyd`).

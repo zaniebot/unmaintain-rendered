@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-10T23:34:42Z
 updated_at: 2023-12-11T15:32:34Z
 url: https://github.com/astral-sh/ruff/issues/9082
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive: B018
 
 ---
 
-_Issue opened by @wmortal on 2023-12-10 23:34_
+_@wmortal_
 
 Ruff 0.1.7
 pyproject.toml:

@@ -12,14 +12,14 @@ head: ag/test-version-duplicates
 created_at: 2024-09-20T17:53:31Z
 updated_at: 2024-09-24T14:55:27Z
 url: https://github.com/astral-sh/uv/pull/7595
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # uv-resolver: add error checking for conflicting distributions
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-20 17:53_
+_@BurntSushi_
 
 This PR adds some additional sanity checking on resolution graphs to
 ensure we can never install different versions of the same package into

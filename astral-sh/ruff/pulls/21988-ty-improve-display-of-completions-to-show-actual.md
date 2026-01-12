@@ -14,14 +14,14 @@ head: ag/improve-completion-display
 created_at: 2025-12-15T14:45:22Z
 updated_at: 2025-12-16T13:00:06Z
 url: https://github.com/astral-sh/ruff/pull/21988
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Improve display of completions to show actual insertion text
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-15 14:45_
+_@BurntSushi_
 
 This PR makes a few related changes to completions:
 

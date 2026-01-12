@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-17T10:55:46Z
 updated_at: 2025-10-22T12:29:12Z
 url: https://github.com/astral-sh/ty/issues/1383
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Too many cycle iterations for infinitely wrapped instance of generic class
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-17 10:55_
+_@sharkdp_
 
 This is a heavily modified MRE for the ecosystem panic observed on "bokeh" in https://github.com/astral-sh/ruff/pull/20922. As with most of the previous bug reports sprawling from those PRs, this one is also reproducible on `main`, if we simply add a `self: Self` annotation. The reason why this leads to divergent behavior is probably that the generic context of `Value` keeps track of the recursive nesting (`Value[Value[Value[...[Value[T]]]]]`):
 

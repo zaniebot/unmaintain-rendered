@@ -14,14 +14,14 @@ head: dhruv/remove-del-named-expr
 created_at: 2024-04-17T11:39:08Z
 updated_at: 2024-04-17T12:56:47Z
 url: https://github.com/astral-sh/ruff/pull/10995
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Remove invalid named expr test from formatter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-17 11:39_
+_@dhruvmanila_
 
 ## Summary
 

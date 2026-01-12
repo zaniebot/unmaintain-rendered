@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T09:33:35Z
 updated_at: 2024-09-19T14:11:38Z
 url: https://github.com/astral-sh/ruff/issues/13390
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLE1205 false-positive with Loguru
 
 ---
 
-_Issue opened by @dorschw on 2024-09-18 09:33_
+_@dorschw_
 
 In [loguru](https://github.com/Delgan/loguru), the formatting isn't `%`-based, but `{}`-based, see [here](https://loguru.readthedocs.io/en/stable/resources/migration.html).
 When configuring it as the logger object and writing

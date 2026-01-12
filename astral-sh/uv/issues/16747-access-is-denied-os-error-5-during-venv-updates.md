@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-15T17:03:33Z
 updated_at: 2025-12-05T12:51:52Z
 url: https://github.com/astral-sh/uv/issues/16747
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # "Access is denied. (os error 5)" during .venv updates and database write errors for Python installed via uv
 
 ---
 
-_Issue opened by @Cmastris on 2025-11-15 17:03_
+_@Cmastris_
 
 ### Summary
 

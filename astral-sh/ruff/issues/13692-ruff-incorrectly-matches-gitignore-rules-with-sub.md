@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T15:08:31Z
 updated_at: 2025-12-31T17:45:08Z
 url: https://github.com/astral-sh/ruff/issues/13692
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff incorrectly matches .gitignore rules with sub-directories and has issues with `respect-gitignore = false`
 
 ---
 
-_Issue opened by @mihnatenko on 2024-10-09 15:08_
+_@mihnatenko_
 
 Recently I have faced two issues with ruff. And they might not be that tightly related, but the description for the first one serves as a context for the second one, so I have combined them into a single issue. Let me know if it would be better to separate them.
 

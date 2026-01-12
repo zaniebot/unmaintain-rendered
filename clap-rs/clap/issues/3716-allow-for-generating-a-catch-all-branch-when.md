@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-10T10:35:48Z
 updated_at: 2022-11-08T04:31:07Z
 url: https://github.com/clap-rs/clap/issues/3716
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Allow for generating a "catch-all" branch when generating completions
 
 ---
 
-_Issue opened by @mattcl on 2022-05-10 10:35_
+_@mattcl_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: dhruv/W605-fix-title
 created_at: 2023-10-24T06:04:37Z
 updated_at: 2023-10-26T16:01:40Z
 url: https://github.com/astral-sh/ruff/pull/8156
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Correct quick fix message for `W605`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-24 06:04_
+_@dhruvmanila_
 
 ## Summary
 

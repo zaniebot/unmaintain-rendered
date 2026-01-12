@@ -13,14 +13,14 @@ head: david/typeddict-attributes
 created_at: 2025-08-05T10:10:52Z
 updated_at: 2025-08-05T11:59:11Z
 url: https://github.com/astral-sh/ruff/pull/19758
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Fix attribute access on `TypedDict`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-05 10:10_
+_@sharkdp_
 
 ## Summary
 

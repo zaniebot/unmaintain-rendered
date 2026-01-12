@@ -12,14 +12,14 @@ head: zb/venv-python
 created_at: 2024-02-16T15:48:35Z
 updated_at: 2024-02-16T18:55:24Z
 url: https://github.com/astral-sh/uv/pull/1504
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Automatically detect virtual environments when used via `python -m uv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-16 15:48_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1501
 

@@ -14,14 +14,14 @@ head: konsti/windows-aarch64
 created_at: 2024-01-30T17:26:36Z
 updated_at: 2024-01-30T17:51:28Z
 url: https://github.com/astral-sh/uv/pull/1190
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Add windows aarch64 trampolines
 
 ---
 
-_Pull request opened by @konstin on 2024-01-30 17:26_
+_@konstin_
 
 Lacking windows compatible aarch64 hardware, i cross compiled the trampoline from x86_64 linux to aarch64-pc-windows-msvc; I added the instructions to the puffin-trampoline readme. With some testing on an aarch64 windows machine, this should be sufficient to build working win_arm64 tagged wheels.
 

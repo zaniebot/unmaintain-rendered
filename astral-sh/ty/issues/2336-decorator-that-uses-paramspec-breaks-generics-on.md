@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T07:38:32Z
 updated_at: 2026-01-07T09:58:09Z
 url: https://github.com/astral-sh/ty/issues/2336
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # decorator that uses paramspec breaks generics on decorated function
 
 ---
 
-_Issue opened by @DetachHead on 2026-01-05 07:38_
+_@DetachHead_
 
 ### Summary
 

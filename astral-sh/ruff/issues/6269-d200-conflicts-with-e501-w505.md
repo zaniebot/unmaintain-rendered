@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T09:35:20Z
 updated_at: 2025-06-25T02:17:33Z
 url: https://github.com/astral-sh/ruff/issues/6269
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `D200` conflicts with `E501`/`W505`.
 
 ---
 
-_Issue opened by @ngnpope on 2023-08-02 09:35_
+_@ngnpope_
 
 I have an issue where `D200` is raised, but after fixing it I get `E501`/`W505`.  `D200` should take into account the quote style, e.g. single or triple quotes, and prefixes, e.g. `r` for raw strings, and calculate the expected length appropriately, not raising if the fixed version would exceed `max-doc-length` or `max-length`.
 

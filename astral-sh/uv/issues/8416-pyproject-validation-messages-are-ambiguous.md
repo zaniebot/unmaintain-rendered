@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T12:42:21Z
 updated_at: 2024-10-21T21:58:38Z
 url: https://github.com/astral-sh/uv/issues/8416
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # pyproject validation messages are ambiguous
 
 ---
 
-_Issue opened by @lskbr on 2024-10-21 12:42_
+_@lskbr_
 
 uv --version
 0.4.45

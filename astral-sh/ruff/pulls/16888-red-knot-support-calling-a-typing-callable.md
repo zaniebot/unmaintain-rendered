@@ -13,14 +13,14 @@ head: dhruv/callable-call
 created_at: 2025-03-21T09:09:56Z
 updated_at: 2025-05-07T15:21:03Z
 url: https://github.com/astral-sh/ruff/pull/16888
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Support calling a `typing.Callable`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-21 09:09_
+_@dhruvmanila_
 
 ## Summary
 

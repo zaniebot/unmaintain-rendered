@@ -13,14 +13,14 @@ head: renovate/dawidd6-action-download-artifact-8.x
 created_at: 2025-01-27T01:42:41Z
 updated_at: 2025-01-27T03:27:17Z
 url: https://github.com/astral-sh/ruff/pull/15760
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Update dawidd6/action-download-artifact action to v8 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-01-27 01:42_
+_@renovate_
 
 This PR contains the following updates:
 

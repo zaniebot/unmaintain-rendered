@@ -14,14 +14,14 @@ head: david/fix-specialized-unknown
 created_at: 2025-12-01T14:24:22Z
 updated_at: 2025-12-03T09:00:04Z
 url: https://github.com/astral-sh/ruff/pull/21730
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Support typevar-specialized dynamic types in generic type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-01 14:24_
+_@sharkdp_
 
 ## Summary
 

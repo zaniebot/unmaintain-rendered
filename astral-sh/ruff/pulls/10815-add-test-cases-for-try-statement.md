@@ -14,14 +14,14 @@ head: dhruv/try-stmt
 created_at: 2024-04-07T15:46:35Z
 updated_at: 2024-04-09T14:05:21Z
 url: https://github.com/astral-sh/ruff/pull/10815
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add test cases for `try` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 15:46_
+_@dhruvmanila_
 
 ## Summary
 

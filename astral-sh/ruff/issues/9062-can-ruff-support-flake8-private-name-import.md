@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-08T23:36:20Z
 updated_at: 2023-12-09T16:03:15Z
 url: https://github.com/astral-sh/ruff/issues/9062
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Can ruff support `flake8-private-name-import`
 
 ---
 
-_Issue opened by @Tomperez98 on 2023-12-08 23:36_
+_@Tomperez98_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

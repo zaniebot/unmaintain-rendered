@@ -13,14 +13,14 @@ head: red-knot-lint-jar
 created_at: 2024-04-29T13:49:52Z
 updated_at: 2024-04-30T14:01:47Z
 url: https://github.com/astral-sh/ruff/pull/11204
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red knot] Introduce `LintDb`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-29 13:49_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T14:20:24Z
 updated_at: 2023-11-08T14:56:55Z
 url: https://github.com/astral-sh/ruff/issues/8561
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # should the docs for pre-commit point to the latest ruff?
 
 ---
 
-_Issue opened by @raybellwaves on 2023-11-08 14:20_
+_@raybellwaves_
 
 https://docs.astral.sh/ruff/integrations/#pre-commit (https://github.com/astral-sh/ruff/blob/main/docs/integrations.md#pre-commit) currently lists v0.0.291 as the ruff version the latest version is v0.1.4.
 

@@ -13,14 +13,14 @@ head: map-code-recursion
 created_at: 2024-03-18T09:27:32Z
 updated_at: 2024-03-20T01:15:00Z
 url: https://github.com/astral-sh/ruff/pull/10452
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove long `Iterator::chain` sequence in `RuleCodePrefix::iter`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-18 09:27_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T20:41:09Z
 updated_at: 2025-07-08T17:39:33Z
 url: https://github.com/astral-sh/uv/issues/14495
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # How to most efficiently use uv in a Gitlab CI environment?
 
 ---
 
-_Issue opened by @alechouse97 on 2025-07-07 20:41_
+_@alechouse97_
 
 ### Question
 

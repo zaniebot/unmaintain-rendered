@@ -13,14 +13,14 @@ head: alex/protocol-union-normalization
 created_at: 2025-05-03T10:47:26Z
 updated_at: 2025-05-03T15:43:38Z
 url: https://github.com/astral-sh/ruff/pull/17808
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [red-knot] Recurse into the types of protocol members when normalizing a protocol's interface
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-03 10:47_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T02:59:34Z
 updated_at: 2025-07-13T14:13:41Z
 url: https://github.com/astral-sh/ty/issues/260
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Semantic syntax highlighting
 
 ---
 
-_Issue opened by @kiyoon on 2025-05-08 02:59_
+_@kiyoon_
 
 I would like to know if anything is planned for semantic highlighting.
 

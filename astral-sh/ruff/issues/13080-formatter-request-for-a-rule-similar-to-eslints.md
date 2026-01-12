@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T15:03:19Z
 updated_at: 2024-08-25T13:54:46Z
 url: https://github.com/astral-sh/ruff/issues/13080
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Formatter: request for a Rule Similar to ESLint’s padding-line-between-statements
 
 ---
 
-_Issue opened by @ivaaahn on 2024-08-23 15:03_
+_@ivaaahn_
 
 Hey, guys!
 

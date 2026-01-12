@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T14:34:16Z
 updated_at: 2025-02-25T19:30:57Z
 url: https://github.com/astral-sh/uv/issues/5107
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Git prompt hidden without `--verbose` flag
 
 ---
 
-_Issue opened by @zanieb on 2024-07-16 14:34_
+_@zanieb_
 
 The following command hung for a while:
 ```

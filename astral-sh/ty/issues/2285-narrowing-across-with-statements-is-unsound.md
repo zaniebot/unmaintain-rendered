@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-31T03:19:39Z
 updated_at: 2025-12-31T11:03:13Z
 url: https://github.com/astral-sh/ty/issues/2285
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Narrowing across `with` statements is unsound
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-31 03:19_
+_@MeGaGiGaGon_
 
 ### Summary
 

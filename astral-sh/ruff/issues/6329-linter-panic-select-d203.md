@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T07:07:17Z
 updated_at: 2023-08-04T16:08:38Z
 url: https://github.com/astral-sh/ruff/issues/6329
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Linter panic] --select=D203
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-08-04 07:07_
+_@FishAlchemist_
 
 ### Ruff Version
  commit message: Make the Nodes vector generic on node type (#6328)

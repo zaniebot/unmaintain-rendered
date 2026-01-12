@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T15:30:30Z
 updated_at: 2024-08-09T07:28:01Z
 url: https://github.com/astral-sh/ruff/issues/10300
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature Request: Rule to avoid module coupling
 
 ---
 
-_Issue opened by @ndrluis on 2024-03-08 15:30_
+_@ndrluis_
 
 Hello, I'm not a Pythonist, but I'm working on some Python projects and having a problem with how to avoid some import coupling. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T15:59:19Z
 updated_at: 2025-01-20T09:02:55Z
 url: https://github.com/astral-sh/uv/issues/9778
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Unable to publish package to Google Artifact Registry
 
 ---
 
-_Issue opened by @joaodaher on 2024-12-10 15:59_
+_@joaodaher_
 
 We're currently migrating from Poetry to uv.
 We use Google Artifact Registry as our private PyPI server.

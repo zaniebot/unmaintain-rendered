@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T09:24:23Z
 updated_at: 2025-01-07T14:21:04Z
 url: https://github.com/astral-sh/uv/issues/10343
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Change in `--upgrade` behavior breaks install from private registry
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-01-07 09:24_
+_@samuelcolvin_
 
 (Mostly for the benefits of others encountering this problem.)
 

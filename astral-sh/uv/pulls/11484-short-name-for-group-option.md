@@ -12,14 +12,14 @@ head: feature/short-group
 created_at: 2025-02-13T16:38:36Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11484
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Short name for "--group" option
 
 ---
 
-_Pull request opened by @hongquan on 2025-02-13 16:38_
+_@hongquan_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

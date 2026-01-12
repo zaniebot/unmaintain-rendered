@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-17T09:32:23Z
 updated_at: 2023-09-04T13:28:23Z
 url: https://github.com/astral-sh/ruff/issues/5828
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # 📋 Formatter black compatibility tracking issue
 
 ---
 
-_Issue opened by @konstin on 2023-07-17 09:32_
+_@konstin_
 
 We will continuously update this issue with compatibility measure between our formatter and black and the general status of the formatter.
 

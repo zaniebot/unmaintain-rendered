@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-30T00:19:41Z
 updated_at: 2024-02-29T13:50:02Z
 url: https://github.com/astral-sh/ruff/issues/9692
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Deprecate the `ruff` alias to `ruff check`
 
 ---
 
-_Issue opened by @zanieb on 2024-01-30 00:19_
+_@zanieb_
 
 We should display a warning when this legacy interface is used and, eventually, remove the alias.
 

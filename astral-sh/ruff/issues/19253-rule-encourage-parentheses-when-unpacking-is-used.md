@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-10T09:49:03Z
 updated_at: 2025-07-10T11:43:12Z
 url: https://github.com/astral-sh/ruff/issues/19253
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule: Encourage parentheses when unpacking is used with binary expression
 
 ---
 
-_Issue opened by @NeilGirdhar on 2025-07-10 09:49_
+_@NeilGirdhar_
 
 ### Summary
 

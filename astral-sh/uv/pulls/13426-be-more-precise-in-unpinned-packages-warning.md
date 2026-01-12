@@ -13,14 +13,14 @@ head: konsti/lowest-direct-warning
 created_at: 2025-05-13T07:17:08Z
 updated_at: 2025-05-13T07:25:06Z
 url: https://github.com/astral-sh/uv/pull/13426
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Be more precise in unpinned packages warning
 
 ---
 
-_Pull request opened by @konstin on 2025-05-13 07:17_
+_@konstin_
 
 Fixes #13424
 

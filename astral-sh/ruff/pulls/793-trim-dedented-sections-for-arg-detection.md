@@ -12,14 +12,14 @@ head: charlie/strip
 created_at: 2022-11-17T17:55:52Z
 updated_at: 2022-11-17T17:55:56Z
 url: https://github.com/astral-sh/ruff/pull/793
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Trim dedented sections for arg detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 17:55_
+_@charliermarsh_
 
 I missed a trim that was causing an edge case to fail in argument detection!
 

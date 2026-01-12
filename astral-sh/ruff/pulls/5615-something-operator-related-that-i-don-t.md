@@ -12,14 +12,14 @@ head: magic-comma-always-parens
 created_at: 2023-07-08T15:43:47Z
 updated_at: 2023-07-24T15:01:25Z
 url: https://github.com/astral-sh/ruff/pull/5615
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Something operator related that I don't understand yet
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-08 15:43_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

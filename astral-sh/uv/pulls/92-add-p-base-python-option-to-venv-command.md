@@ -12,14 +12,14 @@ head: base-python-option
 created_at: 2023-10-12T18:34:29Z
 updated_at: 2023-10-12T18:41:53Z
 url: https://github.com/astral-sh/uv/pull/92
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Add `-p` base python option to venv command
 
 ---
 
-_Pull request opened by @konstin on 2023-10-12 18:34_
+_@konstin_
 
 This is the same option that `virtualenv` offers, except that we only support absolute paths atm and not e.g. `-p 3.10` (which we need to eventually).
 

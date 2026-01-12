@@ -14,14 +14,14 @@ head: konsti/windows-paths-are-valid-urls
 created_at: 2025-05-23T19:01:57Z
 updated_at: 2025-05-28T15:11:58Z
 url: https://github.com/astral-sh/uv/pull/13625
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Windows paths are valid URLs
 
 ---
 
-_Pull request opened by @konstin on 2025-05-23 19:01_
+_@konstin_
 
 Currently, it is not possible to set a custom Python downloads JSON on Windows, as Windows paths can be valid URLs.
 

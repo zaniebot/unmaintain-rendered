@@ -13,14 +13,14 @@ head: konsti/update-pubgrub
 created_at: 2024-03-25T14:05:06Z
 updated_at: 2024-03-25T14:51:32Z
 url: https://github.com/astral-sh/uv/pull/2648
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Update pubgrub to use a dependency provider
 
 ---
 
-_Pull request opened by @konstin on 2024-03-25 14:05_
+_@konstin_
 
 With https://github.com/pubgrub-rs/pubgrub/pull/190, pubgrub attaches all types to a dependency provider to reduce the number of generics. We need a dummy dependency provider now to emulate this. On the plus side, pep440_rs drops its pubgrub dependency.
 

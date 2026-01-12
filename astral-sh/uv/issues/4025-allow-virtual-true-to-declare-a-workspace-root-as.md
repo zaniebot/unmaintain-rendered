@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-04T21:54:16Z
 updated_at: 2024-09-09T00:49:21Z
 url: https://github.com/astral-sh/uv/issues/4025
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Allow `virtual = true` to declare a workspace root as virtual
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-04 21:54_
+_@charliermarsh_
 
 Right now, we seem to rely on `project` being absent, but that also means that we (e.g.) can't show a project name during errors. I think we should decouple `project` from virtual.
 

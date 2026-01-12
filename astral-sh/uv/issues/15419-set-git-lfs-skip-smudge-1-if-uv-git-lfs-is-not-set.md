@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T15:13:17Z
 updated_at: 2025-10-01T18:12:15Z
 url: https://github.com/astral-sh/uv/issues/15419
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Set `GIT_LFS_SKIP_SMUDGE=1` if `UV_GIT_LFS` is not set?
 
 ---
 
-_Issue opened by @Turakar on 2025-08-21 15:13_
+_@Turakar_
 
 ### Summary
 

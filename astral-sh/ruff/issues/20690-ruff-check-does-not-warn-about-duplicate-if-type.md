@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-03T02:49:18Z
 updated_at: 2025-11-11T06:47:56Z
 url: https://github.com/astral-sh/ruff/issues/20690
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff check does not warn about duplicate if TYPE_CHECKING: import clauses
 
 ---
 
-_Issue opened by @ktns on 2025-10-03 02:49_
+_@ktns_
 
 ### Summary
 

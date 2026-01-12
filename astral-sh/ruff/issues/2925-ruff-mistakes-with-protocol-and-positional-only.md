@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T15:06:41Z
 updated_at: 2023-02-15T15:25:19Z
 url: https://github.com/astral-sh/ruff/issues/2925
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff mistakes with Protocol and positional-only arguments.
 
 ---
 
-_Issue opened by @nstarman on 2023-02-15 15:06_
+_@nstarman_
 
 I'm not sure if I've dug down to the root of the issue, but the following code incorrectly produces the following errors. When I remove the `/` and make `array` positional-or-keyword, rather than positional-only, the errors disappear.
 

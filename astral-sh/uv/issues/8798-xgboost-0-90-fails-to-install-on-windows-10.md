@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T06:33:49Z
 updated_at: 2024-11-04T11:53:01Z
 url: https://github.com/astral-sh/uv/issues/8798
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # xgboost==0.90 fails to install on Windows 10
 
 ---
 
-_Issue opened by @RyanBlace on 2024-11-04 06:33_
+_@RyanBlace_
 
 ```
 C:\Users\Ryan\xgboostinstall>uv init

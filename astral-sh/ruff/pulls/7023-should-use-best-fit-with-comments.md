@@ -12,14 +12,14 @@ head: should-use-best-fit-with-comments
 created_at: 2023-08-31T14:37:18Z
 updated_at: 2023-09-20T06:42:51Z
 url: https://github.com/astral-sh/ruff/pull/7023
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # `should_use_best_fit with comments
 
 ---
 
-_Pull request opened by @davidszotten on 2023-08-31 14:37_
+_@davidszotten_
 
 draft for discussion
 

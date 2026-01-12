@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-01T13:07:57Z
 updated_at: 2026-01-06T00:33:01Z
 url: https://github.com/astral-sh/ty/issues/2296
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty is unable to identify Authenticated Users in Django
 
 ---
 
-_Issue opened by @KavyanshKhaitan2 on 2026-01-01 13:07_
+_@KavyanshKhaitan2_
 
 ### Summary
 

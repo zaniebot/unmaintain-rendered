@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T16:43:16Z
 updated_at: 2024-08-23T22:12:08Z
 url: https://github.com/astral-sh/uv/issues/6532
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Remove `--preview` from test fixtures
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-23 16:43_
+_@charliermarsh_
 
 _No description provided._
 

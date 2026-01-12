@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T12:31:39Z
 updated_at: 2025-07-03T21:36:34Z
 url: https://github.com/astral-sh/uv/issues/14272
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Staging mode for uv lock preserving (binary) wheels
 
 ---
 
-_Issue opened by @detlefla on 2025-06-26 12:31_
+_@detlefla_
 
 ### Summary
 

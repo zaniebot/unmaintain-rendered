@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T11:16:56Z
 updated_at: 2023-11-03T14:55:03Z
 url: https://github.com/astral-sh/ruff/issues/8467
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Long variable definition with typing format different than black  
 
 ---
 
-_Issue opened by @iurisilvio on 2023-11-03 11:16_
+_@iurisilvio_
 
 This code pass black check, but `ruff format` split it in a weird way:
 

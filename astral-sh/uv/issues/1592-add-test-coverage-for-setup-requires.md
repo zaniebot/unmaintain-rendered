@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T14:25:20Z
 updated_at: 2024-02-22T17:08:17Z
 url: https://github.com/astral-sh/uv/issues/1592
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Add test coverage for `setup_requires`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-17 14:25_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/1590.
 

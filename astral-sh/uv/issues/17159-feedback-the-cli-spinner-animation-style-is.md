@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T07:23:25Z
 updated_at: 2025-12-17T07:23:25Z
 url: https://github.com/astral-sh/uv/issues/17159
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Feedback: The CLI spinner animation style is visually uncomfortable (similar to npm)
 
 ---
 
-_Issue opened by @zsyeh on 2025-12-17 07:23_
+_@zsyeh_
 
 ### Summary
 

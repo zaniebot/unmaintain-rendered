@@ -13,14 +13,14 @@ head: trixie-docker-image
 created_at: 2025-08-14T04:24:16Z
 updated_at: 2025-08-17T00:30:34Z
 url: https://github.com/astral-sh/uv/pull/15269
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Add Debian 13 trixie to published Docker images
 
 ---
 
-_Pull request opened by @smeng9 on 2025-08-14 04:24_
+_@smeng9_
 
 Closes https://github.com/astral-sh/uv/issues/15230
 

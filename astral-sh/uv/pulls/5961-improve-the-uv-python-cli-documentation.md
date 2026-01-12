@@ -15,14 +15,14 @@ head: zb/docs-python-cli
 created_at: 2024-08-09T16:46:37Z
 updated_at: 2024-08-09T19:46:23Z
 url: https://github.com/astral-sh/uv/pull/5961
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Improve the `uv python` CLI documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 16:46_
+_@zanieb_
 
 _No description provided._
 

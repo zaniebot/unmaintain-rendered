@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T04:05:37Z
 updated_at: 2025-06-13T12:11:08Z
 url: https://github.com/astral-sh/uv/issues/5279
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Allow using `uv venv` with `--format=json`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-07-22 04:05_
+_@InSyncWithFoo_
 
 This is what `uv venv` currently outputs on Windows:
 

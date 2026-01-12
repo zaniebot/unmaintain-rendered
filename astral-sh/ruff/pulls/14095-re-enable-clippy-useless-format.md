@@ -13,14 +13,14 @@ head: re-enable-clippy-useless-format
 created_at: 2024-11-04T17:14:14Z
 updated_at: 2024-11-04T17:37:05Z
 url: https://github.com/astral-sh/ruff/pull/14095
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Re-enable clippy `useless-format`
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-04 17:14_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

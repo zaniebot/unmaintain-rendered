@@ -13,14 +13,14 @@ head: zsol/jj-tmzykyorxszv
 created_at: 2025-09-12T10:45:11Z
 updated_at: 2025-09-12T13:38:40Z
 url: https://github.com/astral-sh/uv/pull/15807
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # upgrade to cargo-dist 0.30.0
 
 ---
 
-_Pull request opened by @zsol on 2025-09-12 10:45_
+_@zsol_
 
 ## Summary
 

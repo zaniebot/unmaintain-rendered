@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-07-21T13:23:22Z
 updated_at: 2024-07-22T13:25:47Z
 url: https://github.com/astral-sh/ruff/pull/12429
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Comment release link to relevant issues and PRs
 
 ---
 
-_Pull request opened by @ddelange on 2024-07-21 13:23_
+_@ddelange_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

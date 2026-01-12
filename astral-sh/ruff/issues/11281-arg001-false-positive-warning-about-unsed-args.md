@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T14:48:14Z
 updated_at: 2024-05-22T04:15:59Z
 url: https://github.com/astral-sh/ruff/issues/11281
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ARG001` False positive warning about unsed `args`, `kwargs`
 
 ---
 
-_Issue opened by @mh-firouzjah on 2024-05-04 14:48_
+_@mh-firouzjah_
 
 While *args and **kwargs are commonly used to handle variable-length arguments and keyword arguments, there are cases where we intentionally do not use these variables directly inside the function body. For example, when overriding existing methods or implementing callback functions, *args and **kwargs may be part of the function signature for compatibility or flexibility without immediate usage in the implementation. In such scenarios, the apparent unused status of *args and **kwargs is intentional and not indicative of an issue. This linting warning can be considered a false positive in specific design contexts.
 

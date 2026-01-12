@@ -14,14 +14,14 @@ head: david/fix-14305
 created_at: 2024-11-13T08:12:09Z
 updated_at: 2024-11-13T19:42:00Z
 url: https://github.com/astral-sh/ruff/pull/14306
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Fix assertion for invalid match pattern
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-13 08:12_
+_@sharkdp_
 
 ## Summary
 

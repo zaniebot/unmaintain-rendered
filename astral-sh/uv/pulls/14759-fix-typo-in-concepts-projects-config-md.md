@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-20T19:03:48Z
 updated_at: 2025-07-20T21:27:37Z
 url: https://github.com/astral-sh/uv/pull/14759
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Fix typo in `concepts/projects/config.md`
 
 ---
 
-_Pull request opened by @CarrotManMatt on 2025-07-20 19:03_
+_@CarrotManMatt_
 
 _No description provided._
 

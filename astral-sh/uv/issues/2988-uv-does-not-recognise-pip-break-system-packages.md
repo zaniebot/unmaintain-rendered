@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-11T07:42:25Z
 updated_at: 2024-04-12T07:00:36Z
 url: https://github.com/astral-sh/uv/issues/2988
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv does not recognise PIP_BREAK_SYSTEM_PACKAGES env variable
 
 ---
 
-_Issue opened by @m-reichle on 2024-04-11 07:42_
+_@m-reichle_
 
 Hi, 
 

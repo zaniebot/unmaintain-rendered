@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T00:03:48Z
 updated_at: 2025-02-02T03:23:15Z
 url: https://github.com/astral-sh/uv/issues/10529
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Failed to Build pyaudio
 
 ---
 
-_Issue opened by @Runelaron on 2025-01-12 00:03_
+_@Runelaron_
 
 cc cmd not found when building pyaudio from source.
 

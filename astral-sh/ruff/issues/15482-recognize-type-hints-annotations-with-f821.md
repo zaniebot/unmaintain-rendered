@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T23:22:37Z
 updated_at: 2025-01-15T04:58:24Z
 url: https://github.com/astral-sh/ruff/issues/15482
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Recognize type hints/annotations with F821 `undefined-name`
 
 ---
 
-_Issue opened by @wzyboy on 2025-01-14 23:22_
+_@wzyboy_
 
 When writing modules for [SaltStack](https://github.com/saltstack/salt), dynamic variables such as [`__grains__`](https://docs.saltproject.io/en/latest/topics/development/modules/developing.html#dunder-dictionaries) are often used. These variables are not defined in the code but are injected at runtime by Salt's execution environment. For example:
 

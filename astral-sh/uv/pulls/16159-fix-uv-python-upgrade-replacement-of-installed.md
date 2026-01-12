@@ -13,14 +13,14 @@ head: zb/fix-up-pre
 created_at: 2025-10-07T19:28:01Z
 updated_at: 2025-10-07T20:29:44Z
 url: https://github.com/astral-sh/uv/pull/16159
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Fix `uv python upgrade` replacement of installed binaries on pre-release to stable
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 19:28_
+_@zanieb_
 
 _No description provided._
 

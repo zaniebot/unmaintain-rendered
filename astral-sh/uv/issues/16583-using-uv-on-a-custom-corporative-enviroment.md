@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T20:48:58Z
 updated_at: 2025-11-10T12:25:36Z
 url: https://github.com/astral-sh/uv/issues/16583
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Using UV on a custom corporative enviroment
 
 ---
 
-_Issue opened by @frbelotto on 2025-11-03 20:48_
+_@frbelotto_
 
 ### Question
 

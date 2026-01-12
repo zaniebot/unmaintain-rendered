@@ -13,14 +13,14 @@ head: cjm/unionlimit3
 created_at: 2025-04-16T15:39:24Z
 updated_at: 2025-04-16T16:22:18Z
 url: https://github.com/astral-sh/ruff/pull/17429
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] simplify union size limit handling
 
 ---
 
-_Pull request opened by @carljm on 2025-04-16 15:39_
+_@carljm_
 
 A simplification suggested by @sharkdp in https://github.com/astral-sh/ruff/pull/17419 after it had landed.
 

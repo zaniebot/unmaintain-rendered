@@ -14,14 +14,14 @@ head: fix-match-value-narrowing
 created_at: 2025-10-15T04:50:34Z
 updated_at: 2025-10-18T01:03:55Z
 url: https://github.com/astral-sh/ruff/pull/20882
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Fix match pattern value narrowing to use equality semantics
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-10-15 04:50_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

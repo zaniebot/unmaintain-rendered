@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-21T07:28:55Z
 updated_at: 2024-08-23T08:12:14Z
 url: https://github.com/astral-sh/ruff/pull/13023
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [async-function-with-timeout] Disable check for asyncio before Python 3.11 (ASYNC109)
 
 ---
 
-_Pull request opened by @jessekv on 2024-08-21 07:28_
+_@jessekv_
 
 Some (occasionally tangential) discussion is found here: https://github.com/astral-sh/ruff/issues/12353
 

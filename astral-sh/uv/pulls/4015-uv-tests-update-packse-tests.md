@@ -12,14 +12,14 @@ head: ag/update-packse
 created_at: 2024-06-04T16:56:05Z
 updated_at: 2024-06-04T17:56:22Z
 url: https://github.com/astral-sh/uv/pull/4015
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # uv/tests: update packse tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-04 16:56_
+_@BurntSushi_
 
 This is just the result of running
 

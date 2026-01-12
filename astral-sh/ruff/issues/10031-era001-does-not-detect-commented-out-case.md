@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-18T20:09:39Z
 updated_at: 2024-02-20T03:56:44Z
 url: https://github.com/astral-sh/ruff/issues/10031
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `ERA001` does not detect commented out `case` statements
 
 ---
 
-_Issue opened by @dosisod on 2024-02-18 20:09_
+_@dosisod_
 
 Commented out `case` statements are ignored if they are missing a body, or have a body and fit on one line:
 

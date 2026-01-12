@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T22:59:00Z
 updated_at: 2025-08-28T12:05:49Z
 url: https://github.com/astral-sh/uv/issues/11463
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # universal {lock, pip compile}: ability to ignore wheels for certain platforms during resolution
 
 ---
 
-_Issue opened by @paveldikov on 2025-02-12 22:59_
+_@paveldikov_
 
 ### Summary
 

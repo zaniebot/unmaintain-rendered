@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T09:13:50Z
 updated_at: 2025-12-26T17:22:52Z
 url: https://github.com/astral-sh/ty/issues/1644
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Improve Liskov diagnostics to say *why* a method override is incompatible
 
 ---
 
-_Issue opened by @tronical on 2025-11-26 09:13_
+_@tronical_
 
 ### Summary
 

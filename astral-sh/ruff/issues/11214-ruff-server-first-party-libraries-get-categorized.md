@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-30T14:25:23Z
 updated_at: 2024-05-02T02:24:37Z
 url: https://github.com/astral-sh/ruff/issues/11214
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` first-party libraries get categorized as third-party
 
 ---
 
-_Issue opened by @bluthej on 2024-04-30 14:25_
+_@bluthej_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

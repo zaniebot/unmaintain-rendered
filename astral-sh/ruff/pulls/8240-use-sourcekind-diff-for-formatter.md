@@ -13,14 +13,14 @@ head: dhruv/formatter-diff
 created_at: 2023-10-26T03:45:51Z
 updated_at: 2023-10-26T07:18:56Z
 url: https://github.com/astral-sh/ruff/pull/8240
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use `SourceKind::diff` for formatter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-26 03:45_
+_@dhruvmanila_
 
 ## Summary
 

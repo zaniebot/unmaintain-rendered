@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-07T07:25:38Z
 updated_at: 2025-11-13T06:31:33Z
 url: https://github.com/astral-sh/ty/issues/599
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # how do i type a function that has `__name__`/`__qualname__` attributes?
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-07 07:25_
+_@DetachHead_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: fixes-future-imports
 created_at: 2022-11-11T12:53:54Z
 updated_at: 2022-11-12T16:28:05Z
 url: https://github.com/astral-sh/ruff/pull/682
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # add fixes for __future__ import removal
 
 ---
 
-_Pull request opened by @chammika-become on 2022-11-11 12:53_
+_@chammika-become_
 
 This PR will close #312
 

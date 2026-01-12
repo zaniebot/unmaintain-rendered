@@ -12,14 +12,14 @@ head: charlie/f-string-err
 created_at: 2024-01-04T04:31:49Z
 updated_at: 2024-01-04T05:11:29Z
 url: https://github.com/astral-sh/ruff/pull/9388
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Ignore trailing quotes for unclosed l-brace errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-04 04:31_
+_@charliermarsh_
 
 ## Summary
 

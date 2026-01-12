@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T12:36:42Z
 updated_at: 2025-05-06T06:56:46Z
 url: https://github.com/astral-sh/ruff/issues/16980
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SIM102 should be disabled for os.name and platform.system() checks (in addition to sys.platform)
 
 ---
 
-_Issue opened by @real-or-random on 2025-03-26 12:36_
+_@real-or-random_
 
 ### Summary
 

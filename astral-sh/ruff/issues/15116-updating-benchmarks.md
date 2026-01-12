@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T03:05:40Z
 updated_at: 2024-12-23T09:32:47Z
 url: https://github.com/astral-sh/ruff/issues/15116
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Updating benchmarks
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-12-23 03:05_
+_@InSyncWithFoo_
 
 [Almost 2 years ago](https://github.com/astral-sh/ruff/issues/269) Ruff took 0.29 seconds to lint the CPython codebase from scratch on Charlie's setup. How long does it take now, with significantly more rules and logic?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T06:34:11Z
 updated_at: 2024-07-26T01:57:47Z
 url: https://github.com/astral-sh/ruff/issues/2714
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Merge rules checking the same violation
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-10 06:34_
+_@not-my-profile_
 
 As per the rule naming convention established in #2712 the rule name should be the bad thing that's being checked for and not contain the solution, so we should merge the following rules accordingly:
 

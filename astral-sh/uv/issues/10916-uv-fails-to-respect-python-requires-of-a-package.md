@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T22:14:25Z
 updated_at: 2025-01-29T16:13:43Z
 url: https://github.com/astral-sh/uv/issues/10916
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # uv fails to respect `python-requires` of a package
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-01-23 22:14_
+_@PhilipVinc_
 
 ### Summary
 

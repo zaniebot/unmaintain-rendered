@@ -13,14 +13,14 @@ head: zb/ecosystem-sphinx
 created_at: 2023-12-27T17:10:01Z
 updated_at: 2023-12-28T16:42:08Z
 url: https://github.com/astral-sh/ruff/pull/9294
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Exclude failing sphinx file in ecosytem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-27 17:10_
+_@zanieb_
 
 Failing due to
 

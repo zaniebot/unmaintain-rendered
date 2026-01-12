@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-09T09:51:04Z
 updated_at: 2020-04-10T08:41:25Z
 url: https://github.com/clap-rs/clap/issues/1800
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Regression in 3.x: trailing commas do not mix well with arg_enum!
 
 ---
 
-_Issue opened by @lf- on 2020-04-09 09:51_
+_@lf-_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

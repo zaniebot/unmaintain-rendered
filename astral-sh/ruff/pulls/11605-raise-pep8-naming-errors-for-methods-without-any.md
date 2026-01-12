@@ -12,14 +12,14 @@ head: charlie/n
 created_at: 2024-05-30T02:35:30Z
 updated_at: 2024-05-30T13:17:32Z
 url: https://github.com/astral-sh/ruff/pull/11605
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Raise `pep8-naming` errors for methods without any arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 02:35_
+_@charliermarsh_
 
 ## Summary
 

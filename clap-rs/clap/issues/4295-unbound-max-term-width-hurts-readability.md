@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-30T03:38:41Z
 updated_at: 2023-07-17T15:26:00Z
 url: https://github.com/clap-rs/clap/issues/4295
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Unbound `max_term_width` hurts readability
 
 ---
 
-_Issue opened by @SUPERCILEX on 2022-09-30 03:38_
+_@SUPERCILEX_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T12:21:48Z
 updated_at: 2025-06-26T16:29:31Z
 url: https://github.com/astral-sh/uv/issues/2152
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Running `uv pip install 'cryptography @ .'` repeatedly doesn't rebuild, even when there are source changes
 
 ---
 
-_Issue opened by @alex on 2024-03-04 12:21_
+_@alex_
 
 ```
 (cryptography) ~/p/cryptography ❯❯❯ uv --version

@@ -13,14 +13,14 @@ head: charlie/filter
 created_at: 2024-05-30T20:08:09Z
 updated_at: 2024-05-30T20:19:10Z
 url: https://github.com/astral-sh/uv/pull/3929
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Avoid filtering preferences by `--reinstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 20:08_
+_@charliermarsh_
 
 ## Summary
 

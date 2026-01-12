@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T17:09:11Z
 updated_at: 2024-03-22T11:39:59Z
 url: https://github.com/clap-rs/clap/issues/5399
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_dervie doesnt working on rust version 1.72.1
 
 ---
 
-_Issue opened by @satyakommula96 on 2024-03-18 17:09_
+_@satyakommula96_
 
 ### Please complete the following tasks
 

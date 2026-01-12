@@ -15,14 +15,14 @@ head: konsti/backtrack
 created_at: 2024-12-12T15:44:12Z
 updated_at: 2024-12-16T10:39:52Z
 url: https://github.com/astral-sh/uv/pull/9843
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Change backtracking when packages conflict too much
 
 ---
 
-_Pull request opened by @konstin on 2024-12-12 15:44_
+_@konstin_
 
 Background reading: https://github.com/astral-sh/uv/issues/8157
 Companion PR: https://github.com/astral-sh/pubgrub/pull/36

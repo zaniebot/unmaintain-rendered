@@ -13,14 +13,14 @@ head: charlie/env-everywhere
 created_at: 2026-01-05T18:49:48Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/pull/17326
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Move remaining Boolean environment variables out of Clap
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 18:49_
+_@charliermarsh_
 
 _No description provided._
 

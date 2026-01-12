@@ -13,14 +13,14 @@ head: autofix-s608
 created_at: 2025-05-10T04:02:08Z
 updated_at: 2025-05-10T10:38:00Z
 url: https://github.com/astral-sh/ruff/pull/17999
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # Skip S608 for expressionless f-strings
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-10 04:02_
+_@maxmynter_
 
 
 <!--

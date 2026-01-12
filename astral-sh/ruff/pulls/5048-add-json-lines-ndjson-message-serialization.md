@@ -12,14 +12,14 @@ head: jsonl
 created_at: 2023-06-13T10:46:07Z
 updated_at: 2023-06-13T14:37:03Z
 url: https://github.com/astral-sh/ruff/pull/5048
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add JSON Lines (NDJSON) message serialization
 
 ---
 
-_Pull request opened by @akx on 2023-06-13 10:46_
+_@akx_
 
 ## Summary
 

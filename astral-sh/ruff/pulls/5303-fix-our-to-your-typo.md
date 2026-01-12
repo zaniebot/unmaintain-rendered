@@ -13,14 +13,14 @@ head: charlie/typo
 created_at: 2023-06-22T15:42:47Z
 updated_at: 2023-06-22T16:11:26Z
 url: https://github.com/astral-sh/ruff/pull/5303
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix 'our' to 'your' typo
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 15:42_
+_@charliermarsh_
 
 _No description provided._
 

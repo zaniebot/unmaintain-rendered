@@ -13,14 +13,14 @@ head: konsti/gil-disabled-abiflags
 created_at: 2024-04-03T13:27:59Z
 updated_at: 2024-04-12T09:39:49Z
 url: https://github.com/astral-sh/uv/pull/2805
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Support freethreading python
 
 ---
 
-_Pull request opened by @konstin on 2024-04-03 13:27_
+_@konstin_
 
 freethreaded python reintroduces abiflags since it is incompatible with regular native modules and abi3.
 

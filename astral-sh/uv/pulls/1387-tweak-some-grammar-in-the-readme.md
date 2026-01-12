@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-15T23:38:25Z
 updated_at: 2024-02-16T21:15:52Z
 url: https://github.com/astral-sh/uv/pull/1387
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Tweak some grammar in the README
 
 ---
 
-_Pull request opened by @brettcannon on 2024-02-15 23:38_
+_@brettcannon_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/F811
 created_at: 2024-03-21T16:07:33Z
 updated_at: 2024-03-21T16:22:51Z
 url: https://github.com/astral-sh/ruff/pull/10512
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Don't treat annotations as redefinitions in `.pyi` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-21 16:07_
+_@charliermarsh_
 
 ## Summary
 

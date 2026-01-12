@@ -14,14 +14,14 @@ head: charlie/git-lock
 created_at: 2024-06-01T12:21:53Z
 updated_at: 2024-06-01T12:40:13Z
 url: https://github.com/astral-sh/uv/pull/3956
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Respect resolved Git SHAs in `uv lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-01 12:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: false-positive-tests
 created_at: 2025-03-19T18:19:59Z
 updated_at: 2025-03-20T17:19:38Z
 url: https://github.com/astral-sh/ruff/pull/16856
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] add test cases result in false positive errors
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-19 18:19_
+_@mtshiba_
 
 ## Summary
 

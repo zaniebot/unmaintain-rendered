@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T19:11:28Z
 updated_at: 2024-01-16T20:19:34Z
 url: https://github.com/astral-sh/ruff/issues/9554
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `# noqa: I001` not respected but `# isort:skip` is
 
 ---
 
-_Issue opened by @monotkate on 2024-01-16 19:11_
+_@monotkate_
 
 I'm working to move a codebase from isort from ruff's isort. There are a few lines we don't want moving around, that are currently labeled with `# noqa for side effects`. Ruff isort blew right through that comment, so I updated it to `# noqa: I001` and it continues to sort that line. Digging through issues I saw Ruff should also respect `# isort:skip` and discovered it does respect that. Config is pretty simple.
 

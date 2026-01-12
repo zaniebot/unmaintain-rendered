@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T09:40:26Z
 updated_at: 2025-03-16T03:39:59Z
 url: https://github.com/astral-sh/uv/issues/12166
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # `uv compile` raises an error if there is no whitespace before `#`
 
 ---
 
-_Issue opened by @t-imamichi on 2025-03-14 09:40_
+_@t-imamichi_
 
 ### Question
 

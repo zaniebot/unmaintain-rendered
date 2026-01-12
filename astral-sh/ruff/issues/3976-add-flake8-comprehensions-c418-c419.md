@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-14T18:59:04Z
 updated_at: 2023-04-14T20:50:43Z
 url: https://github.com/astral-sh/ruff/issues/3976
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add flake8-comprehensions C418, C419
 
 ---
 
-_Issue opened by @janosh on 2023-04-14 18:59_
+_@janosh_
 
 3.12.0 (2023-04-13)
 

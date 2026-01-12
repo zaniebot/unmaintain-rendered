@@ -13,14 +13,14 @@ head: brent/pth210-0.10
 created_at: 2025-03-12T02:43:01Z
 updated_at: 2025-03-12T17:07:07Z
 url: https://github.com/astral-sh/ruff/pull/16656
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-use-pathlib`] Stabilize `invalid-pathlib-with-suffix` (`PTH210`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 02:43_
+_@ntBre_
 
 Summary
 --

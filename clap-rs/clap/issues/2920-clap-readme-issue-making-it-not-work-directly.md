@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-22T10:19:22Z
 updated_at: 2021-10-25T15:40:31Z
 url: https://github.com/clap-rs/clap/issues/2920
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # clap: README issue, making it not work directly
 
 ---
 
-_Issue opened by @CoAuToSe on 2021-10-22 10:19_
+_@CoAuToSe_
 
 ### Please complete the following tasks
 

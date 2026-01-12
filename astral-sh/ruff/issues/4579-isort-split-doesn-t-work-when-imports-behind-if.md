@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-22T14:14:21Z
 updated_at: 2023-05-22T16:32:01Z
 url: https://github.com/astral-sh/ruff/issues/4579
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Isort split doesn't work when imports behind if statement
 
 ---
 
-_Issue opened by @bendoerry on 2023-05-22 14:14_
+_@bendoerry_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

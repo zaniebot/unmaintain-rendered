@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T06:04:54Z
 updated_at: 2024-07-13T19:45:36Z
 url: https://github.com/astral-sh/ruff/issues/12267
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FURB187 autofix can cause breaking changes 
 
 ---
 
-_Issue opened by @owenlamont on 2024-07-10 06:04_
+_@owenlamont_
 
 # FURB187 autofix causes breaking changes when applied to function arguments
 

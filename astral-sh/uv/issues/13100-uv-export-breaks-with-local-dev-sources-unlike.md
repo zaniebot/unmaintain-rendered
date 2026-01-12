@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T06:03:10Z
 updated_at: 2025-04-27T14:14:41Z
 url: https://github.com/astral-sh/uv/issues/13100
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # `uv export` breaks with local dev sources unlike `poetry export`
 
 ---
 
-_Issue opened by @MarkusSintonen on 2025-04-25 06:03_
+_@MarkusSintonen_
 
 ### Summary
 

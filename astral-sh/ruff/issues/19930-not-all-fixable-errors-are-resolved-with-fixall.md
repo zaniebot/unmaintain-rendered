@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T16:49:20Z
 updated_at: 2025-08-15T18:53:24Z
 url: https://github.com/astral-sh/ruff/issues/19930
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Not all fixable errors are resolved with fixAll (VSCode)
 
 ---
 
-_Issue opened by @mrufsvold on 2025-08-15 16:49_
+_@mrufsvold_
 
 ### Summary
 

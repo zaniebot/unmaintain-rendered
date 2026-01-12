@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T17:39:09Z
 updated_at: 2025-10-15T21:12:14Z
 url: https://github.com/astral-sh/uv/issues/16320
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # `uv add --active` doesn't appear to use active environment
 
 ---
 
-_Issue opened by @geophpherie on 2025-10-15 17:39_
+_@geophpherie_
 
 ### Summary
 

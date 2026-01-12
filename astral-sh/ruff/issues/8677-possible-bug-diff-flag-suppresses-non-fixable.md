@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T16:52:46Z
 updated_at: 2024-03-28T11:54:20Z
 url: https://github.com/astral-sh/ruff/issues/8677
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Possible bug: Diff flag suppresses non-fixable errors, with no clear way to enable
 
 ---
 
-_Issue opened by @pnovotnak on 2023-11-14 16:52_
+_@pnovotnak_
 
 Hello! I discovered what I think is a possible bug with the tool that I wanted to bring to your attention.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T05:11:09Z
 updated_at: 2026-01-09T13:46:07Z
 url: https://github.com/astral-sh/ty/issues/688
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `invalid-return-type` false positive on constrained generic
 
 ---
 
-_Issue opened by @gusutabopb on 2025-06-21 05:11_
+_@gusutabopb_
 
 ### Summary
 

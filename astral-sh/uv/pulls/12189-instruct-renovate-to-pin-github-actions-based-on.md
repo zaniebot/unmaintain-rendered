@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-03-15T15:54:35Z
 updated_at: 2025-03-15T17:24:34Z
 url: https://github.com/astral-sh/uv/pull/12189
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Instruct Renovate to pin GitHub Actions based on SHA
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-15 15:54_
+_@charliermarsh_
 
 ## Summary
 

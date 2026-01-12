@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T11:28:01Z
 updated_at: 2024-11-09T06:54:33Z
 url: https://github.com/astral-sh/uv/issues/7968
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Update uv on winget to v0.4.18
 
 ---
 
-_Issue opened by @timrid on 2024-10-07 11:28_
+_@timrid_
 
 At `winget` the latest available version of `uv` is v0.4.15. But currently v0.4.18 is already released. It would be good if the latest version of uv could also be obtained via winget.
 

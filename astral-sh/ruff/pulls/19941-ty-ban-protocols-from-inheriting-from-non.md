@@ -14,14 +14,14 @@ head: alex/genericalias-proto-inherit
 created_at: 2025-08-16T18:34:25Z
 updated_at: 2025-08-16T18:38:45Z
 url: https://github.com/astral-sh/ruff/pull/19941
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Ban protocols from inheriting from non-protocol generic classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-16 18:34_
+_@AlexWaygood_
 
 ## Summary
 

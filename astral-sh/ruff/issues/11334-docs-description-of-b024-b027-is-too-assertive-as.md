@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T10:07:49Z
 updated_at: 2024-05-08T15:16:59Z
 url: https://github.com/astral-sh/ruff/issues/11334
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [docs] Description of B024&B027 is too assertive, as compared flake8-bugbear
 
 ---
 
-_Issue opened by @jakkdl on 2024-05-08 10:07_
+_@jakkdl_
 
 The description of B024 [in flake8-bugbear](https://github.com/PyCQA/flake8-bugbear?tab=readme-ov-file#list-of-warnings) is:
 > B024: Abstract base class has methods, but none of them are abstract. This is not necessarily an error, but you might have forgotten to add the `@abstractmethod` decorator, potentially in conjunction with `@classmethod`, `@property` and/or `@staticmethod`.

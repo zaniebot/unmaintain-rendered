@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-08-21T22:18:23Z
 updated_at: 2021-10-13T11:24:24Z
 url: https://github.com/clap-rs/clap/issues/1037
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Tracking Issue for 3.x
 
 ---
 
-_Issue opened by @kbknapp on 2017-08-21 22:18_
+_@kbknapp_
 
 **UPDATED**: [3.0 Milestone](https://github.com/clap-rs/clap/milestone/76)
 

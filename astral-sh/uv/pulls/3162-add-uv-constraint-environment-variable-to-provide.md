@@ -13,14 +13,14 @@ head: add_UV_CONSTRAINT
 created_at: 2024-04-20T16:07:21Z
 updated_at: 2024-04-20T22:01:04Z
 url: https://github.com/astral-sh/uv/pull/3162
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:28Z
 ```
 
 # Add UV_CONSTRAINT environment variable to provide value for `--constraint` 
 
 ---
 
-_Pull request opened by @Czaki on 2024-04-20 16:07_
+_@Czaki_
 
 ## Summary
 

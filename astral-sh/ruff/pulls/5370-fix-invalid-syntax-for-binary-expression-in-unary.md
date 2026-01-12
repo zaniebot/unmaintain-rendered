@@ -14,14 +14,14 @@ head: binary-expression-parentheses
 created_at: 2023-06-26T15:15:31Z
 updated_at: 2023-06-29T06:09:27Z
 url: https://github.com/astral-sh/ruff/pull/5370
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix invalid syntax for binary expression in unary op
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-26 15:15_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

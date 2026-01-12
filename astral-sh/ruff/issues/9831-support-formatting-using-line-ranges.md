@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-05T13:37:34Z
 updated_at: 2024-02-05T13:38:51Z
 url: https://github.com/astral-sh/ruff/issues/9831
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Support formatting using line ranges
 
 ---
 
-_Issue opened by @jvacek on 2024-02-05 13:37_
+_@jvacek_
 
 Black added support for formatting line-ranges https://github.com/psf/black/pull/4020
 

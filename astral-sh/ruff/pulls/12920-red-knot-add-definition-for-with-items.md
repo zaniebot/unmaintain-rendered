@@ -13,14 +13,14 @@ head: dhruv/with-item-def
 created_at: 2024-08-16T08:22:07Z
 updated_at: 2024-08-22T02:30:22Z
 url: https://github.com/astral-sh/ruff/pull/12920
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Add definition for with items
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-16 08:22_
+_@dhruvmanila_
 
 ## Summary
 

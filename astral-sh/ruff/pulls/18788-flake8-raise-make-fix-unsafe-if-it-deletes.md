@@ -14,14 +14,14 @@ head: fix/rse102
 created_at: 2025-06-19T09:17:56Z
 updated_at: 2025-06-21T17:11:11Z
 url: https://github.com/astral-sh/ruff/pull/18788
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-raise`] Make fix unsafe if it deletes comments (`RSE102`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-19 09:17_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

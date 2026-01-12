@@ -13,14 +13,14 @@ head: micha/playground-copy-paste-toml
 created_at: 2024-09-11T18:48:12Z
 updated_at: 2024-09-13T12:44:26Z
 url: https://github.com/astral-sh/ruff/pull/13328
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Playground: Add Copy as pyproject.toml/ruff.toml and paste from TOML
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-11 18:48_
+_@MichaReiser_
 
 ## Summary
 

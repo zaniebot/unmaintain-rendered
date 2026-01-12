@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-09T18:11:39Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/892
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow optional values (not simply optional args with value notation)
 
 ---
 
-_Issue opened by @patcon on 2017-03-09 18:11_
+_@patcon_
 
 From my reading of the docs, this isn't possible, but feel free to correct me!
 

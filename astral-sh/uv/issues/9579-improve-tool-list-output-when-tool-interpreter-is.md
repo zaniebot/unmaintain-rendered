@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-02T15:50:12Z
 updated_at: 2025-01-09T21:48:08Z
 url: https://github.com/astral-sh/uv/issues/9579
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Improve `tool list` output when tool interpreter is missing
 
 ---
 
-_Issue opened by @zanieb on 2024-12-02 15:50_
+_@zanieb_
 
 We currently show "Python interpreter not found at `...`" which is not very helpful, we should provide more context on what's going on.
 

@@ -12,14 +12,14 @@ head: charlie/reserve
 created_at: 2024-07-19T19:54:18Z
 updated_at: 2024-08-06T02:29:49Z
 url: https://github.com/astral-sh/ruff/pull/12411
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Try reserving vector space based on source code estimate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-19 19:54_
+_@charliermarsh_
 
 Was curious so I hacked this together quickly. I see basically no improvement with Hyperfine and don't expect a CodSpeed improvement, but lets see.
 

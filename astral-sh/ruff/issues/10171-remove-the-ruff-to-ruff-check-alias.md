@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T14:00:14Z
 updated_at: 2024-10-08T13:45:13Z
 url: https://github.com/astral-sh/ruff/issues/10171
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Remove the `ruff` to `ruff check` alias
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-29 14:00_
+_@MichaReiser_
 
 We deprecated the `ruff` to `ruff check`, `ruff --explain` to `ruff rule`, `ruff --generate-shell-completion` to `ruff generate-shell-completion` and the `ruff --clean` to `ruff clean` aliases in 0.3. Ruff 0.5 changed the commands to error.  We should remove the aliases in an upcoming minor release.
 

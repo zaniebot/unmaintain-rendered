@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T14:52:13Z
 updated_at: 2025-11-21T18:49:51Z
 url: https://github.com/astral-sh/uv/issues/16601
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Resolution Order Dependency Causes Incorrect Backtracking
 
 ---
 
-_Issue opened by @qiulang on 2025-11-05 14:52_
+_@qiulang_
 
 ## Summary
 

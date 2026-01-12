@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T07:54:40Z
 updated_at: 2024-09-04T17:16:32Z
 url: https://github.com/astral-sh/uv/issues/6998
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # How to configure a script path? 
 
 ---
 
-_Issue opened by @TiansuYu on 2024-09-04 07:54_
+_@TiansuYu_
 
 I am building a CLI tool and tries to bind the script path to cli name. e.g. in Poetry this is https://python-poetry.org/docs/pyproject/#scripts. However, I could not find any instructions on how to do this in UV. Could you enlighten me please? 
 

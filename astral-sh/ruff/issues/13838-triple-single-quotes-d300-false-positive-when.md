@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T00:54:47Z
 updated_at: 2024-10-21T22:16:52Z
 url: https://github.com/astral-sh/ruff/issues/13838
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `triple-single-quotes` (`D300`) - false positive when docstring ends with a double quote
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-21 00:54_
+_@DetachHead_
 
 if i have a docstring that ends with a double quote, it's a syntax error:
 

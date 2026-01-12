@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T00:41:02Z
 updated_at: 2025-01-22T09:49:06Z
 url: https://github.com/astral-sh/ruff/issues/14070
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Rule Request] Enforce consistency between `import ...` and `from ... import ...`
 
 ---
 
-_Issue opened by @jimmyt857 on 2024-11-04 00:41_
+_@jimmyt857_
 
 When it comes to readability, consistency is the most important factor. Our team would love to see a rule that does the following:
 

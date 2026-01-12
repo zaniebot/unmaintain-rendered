@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T12:27:03Z
 updated_at: 2025-04-17T16:58:38Z
 url: https://github.com/astral-sh/uv/issues/12940
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # colors in `uv self update` are not readable on a light theme
 
 ---
 
-_Issue opened by @kdheepak on 2025-04-17 12:27_
+_@kdheepak_
 
 ### Summary
 

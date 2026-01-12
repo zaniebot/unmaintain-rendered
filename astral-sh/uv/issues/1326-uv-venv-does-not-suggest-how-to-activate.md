@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T19:05:15Z
 updated_at: 2024-02-20T12:39:43Z
 url: https://github.com/astral-sh/uv/issues/1326
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv venv` does not suggest how to activate
 
 ---
 
-_Issue opened by @zanieb on 2024-02-15 19:05_
+_@zanieb_
 
 ```
 ❯ uv venv

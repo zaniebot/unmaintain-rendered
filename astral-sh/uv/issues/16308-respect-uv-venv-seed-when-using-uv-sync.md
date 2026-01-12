@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T04:33:34Z
 updated_at: 2025-12-18T19:59:58Z
 url: https://github.com/astral-sh/uv/issues/16308
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Respect `UV_VENV_SEED` when using `uv sync`
 
 ---
 
-_Issue opened by @treyhunner on 2025-10-15 04:33_
+_@treyhunner_
 
 ### Summary
 

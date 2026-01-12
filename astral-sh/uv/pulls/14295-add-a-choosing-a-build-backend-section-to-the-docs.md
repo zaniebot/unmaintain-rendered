@@ -13,14 +13,14 @@ head: konsti/build-backend-docs-hatchling
 created_at: 2025-06-26T20:40:28Z
 updated_at: 2025-07-02T14:02:04Z
 url: https://github.com/astral-sh/uv/pull/14295
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Add a "choosing a build backend" section to the docs
 
 ---
 
-_Pull request opened by @konstin on 2025-06-26 20:40_
+_@konstin_
 
 I think the build backend docs as a whole are now ready for review. I only made a small change here.
 

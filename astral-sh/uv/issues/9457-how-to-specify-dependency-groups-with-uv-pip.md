@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T23:31:10Z
 updated_at: 2024-11-26T23:40:37Z
 url: https://github.com/astral-sh/uv/issues/9457
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # How to specify dependency groups with `uv pip install` and `uv pip compile`?
 
 ---
 
-_Issue opened by @cthoyt on 2024-11-26 23:31_
+_@cthoyt_
 
 I'm on uv 0.5.4 (Homebrew 2024-11-20) and it doesn't appear there's a way to install dependency groups with `uv pip install` nor include it in compilation with `uv pip compile`.
 

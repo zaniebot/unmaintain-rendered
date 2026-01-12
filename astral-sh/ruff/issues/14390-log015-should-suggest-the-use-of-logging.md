@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-16T21:54:46Z
 updated_at: 2024-11-17T08:22:53Z
 url: https://github.com/astral-sh/ruff/issues/14390
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [LOG015] should suggest the use of `logging.getLogger(__name__)`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-16 21:54_
+_@MichaReiser_
 
 > The recently implemented [LOG015](https://docs.astral.sh/ruff/rules/root-logger-call/#example) in #14302 is in conflict with [LOG002](https://docs.astral.sh/ruff/rules/invalid-get-logger-argument/#example). One suggests using `logging.getLogger(__file__)`, the other calls that a bad practice. LOG015 should suggest `logging.getLogger(__name__)`.
 

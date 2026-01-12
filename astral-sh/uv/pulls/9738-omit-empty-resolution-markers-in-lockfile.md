@@ -13,14 +13,14 @@ head: konsti/omit-empty-fork-markers
 created_at: 2024-12-09T12:02:26Z
 updated_at: 2024-12-10T17:18:11Z
 url: https://github.com/astral-sh/uv/pull/9738
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 #  Omit empty resolution markers in lockfile 
 
 ---
 
-_Pull request opened by @konstin on 2024-12-09 12:02_
+_@konstin_
 
 _No description provided._
 

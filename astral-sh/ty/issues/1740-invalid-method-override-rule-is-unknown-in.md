@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T10:56:52Z
 updated_at: 2025-12-03T11:25:42Z
 url: https://github.com/astral-sh/ty/issues/1740
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # invalid-method-override rule is unknown in pyproject.toml
 
 ---
 
-_Issue opened by @f-schnabel on 2025-12-03 10:56_
+_@f-schnabel_
 
 ### Summary
 

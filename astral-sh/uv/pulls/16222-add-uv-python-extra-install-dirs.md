@@ -12,14 +12,14 @@ head: extra-install-dirs
 created_at: 2025-10-10T08:03:19Z
 updated_at: 2025-10-12T23:36:02Z
 url: https://github.com/astral-sh/uv/pull/16222
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Add `UV_PYTHON_EXTRA_INSTALL_DIRS`
 
 ---
 
-_Pull request opened by @j178 on 2025-10-10 08:03_
+_@j178_
 
 ## Summary
 

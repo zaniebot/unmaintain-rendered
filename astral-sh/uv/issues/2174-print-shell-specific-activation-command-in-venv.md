@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-04T21:18:30Z
 updated_at: 2024-03-05T22:28:19Z
 url: https://github.com/astral-sh/uv/issues/2174
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Print shell-specific activation command in `venv`
 
 ---
 
-_Issue opened by @saada on 2024-03-04 21:18_
+_@saada_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

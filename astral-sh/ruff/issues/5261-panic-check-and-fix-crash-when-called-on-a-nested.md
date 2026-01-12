@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-21T17:59:11Z
 updated_at: 2023-06-21T21:14:43Z
 url: https://github.com/astral-sh/ruff/issues/5261
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Panic] `check` and `--fix` crash when called on a nested file next to an `__init__.py`
 
 ---
 
-_Issue opened by @Amar1729 on 2023-06-21 17:59_
+_@Amar1729_
 
 ### Minimal file structure
 

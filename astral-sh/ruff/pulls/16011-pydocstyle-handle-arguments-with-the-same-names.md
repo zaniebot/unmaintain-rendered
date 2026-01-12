@@ -14,14 +14,14 @@ head: brent/docstring-nested-attributes
 created_at: 2025-02-07T04:48:44Z
 updated_at: 2025-02-24T09:01:27Z
 url: https://github.com/astral-sh/ruff/pull/16011
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pydocstyle`] Handle arguments with the same names as sections (`D417`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-07 04:48_
+_@ntBre_
 
 ## Summary
 

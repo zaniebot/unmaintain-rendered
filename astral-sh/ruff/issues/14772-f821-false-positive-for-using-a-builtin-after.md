@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T14:42:55Z
 updated_at: 2024-12-13T19:15:49Z
 url: https://github.com/astral-sh/ruff/issues/14772
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F821 false positive for using a builtin after deleting a name that shadowed the builtin
 
 ---
 
-_Issue opened by @dscorbett on 2024-12-04 14:42_
+_@dscorbett_
 
 [`undefined-name` (F821)](https://docs.astral.sh/ruff/rules/undefined-name/) in Ruff 0.8.1 reports a name as undefined if it is used after being deleted but the name was shadowing a builtin. In that case, the name will resolve to the builtin without a `NameError`, so the rule should not report a problem.
 

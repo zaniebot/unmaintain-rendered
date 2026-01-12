@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-14T18:45:29Z
 updated_at: 2024-04-17T19:05:25Z
 url: https://github.com/astral-sh/uv/issues/2465
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Add unit test coverage for netrc authentication
 
 ---
 
-_Issue opened by @zanieb on 2024-03-14 18:45_
+_@zanieb_
 
 Similar to #2447 — but we should use a netrc file instead of in-url authentication.
 

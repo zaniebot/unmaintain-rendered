@@ -13,14 +13,14 @@ head: ag/fix-1357
 created_at: 2024-02-20T17:35:51Z
 updated_at: 2024-02-23T12:30:11Z
 url: https://github.com/astral-sh/uv/pull/1771
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # strip trailing `+` from version number of local Python builds
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-20 17:35_
+_@BurntSushi_
 
 (This PR message is mostly copied from the comment in the code.)
 

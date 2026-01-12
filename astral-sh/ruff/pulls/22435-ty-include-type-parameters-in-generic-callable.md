@@ -13,14 +13,14 @@ head: main
 created_at: 2026-01-07T12:02:47Z
 updated_at: 2026-01-08T20:27:47Z
 url: https://github.com/astral-sh/ruff/pull/22435
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Include type parameters in generic callable display
 
 ---
 
-_Pull request opened by @bxff on 2026-01-07 12:02_
+_@bxff_
 
 Fixes astral-sh/ty#1207
 

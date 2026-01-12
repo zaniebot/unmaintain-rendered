@@ -13,14 +13,14 @@ head: brent/global-test-suite
 created_at: 2025-04-22T19:49:15Z
 updated_at: 2025-04-23T21:18:45Z
 url: https://github.com/astral-sh/ruff/pull/17563
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add mdtests for `global` statement
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-22 19:49_
+_@ntBre_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T17:06:04Z
 updated_at: 2024-08-14T13:55:41Z
 url: https://github.com/astral-sh/uv/issues/6062
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Extras are sometimes not collapsed properly
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-13 17:06_
+_@charliermarsh_
 
 Given:
 

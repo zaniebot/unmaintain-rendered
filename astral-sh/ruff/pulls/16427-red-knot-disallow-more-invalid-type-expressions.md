@@ -13,14 +13,14 @@ head: alex/reject-bad-type-exprs
 created_at: 2025-02-27T23:47:08Z
 updated_at: 2025-02-28T10:04:32Z
 url: https://github.com/astral-sh/ruff/pull/16427
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Disallow more invalid type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-27 23:47_
+_@AlexWaygood_
 
 ## Summary
 

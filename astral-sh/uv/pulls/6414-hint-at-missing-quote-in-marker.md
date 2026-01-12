@@ -13,14 +13,14 @@ head: konsti/better-missing-quote-string
 created_at: 2024-08-22T08:09:21Z
 updated_at: 2024-08-23T14:27:27Z
 url: https://github.com/astral-sh/uv/pull/6414
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Hint at missing quote in marker
 
 ---
 
-_Pull request opened by @konstin on 2024-08-22 08:09_
+_@konstin_
 
 For https://github.com/astral-sh/uv/issues/6379#issuecomment-2303074836.
 

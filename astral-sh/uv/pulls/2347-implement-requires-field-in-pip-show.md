@@ -14,14 +14,14 @@ head: main
 created_at: 2024-03-10T22:18:32Z
 updated_at: 2024-03-12T04:35:23Z
 url: https://github.com/astral-sh/uv/pull/2347
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Implement "Requires" field in `pip show`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-03-10 22:18_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: charlie/req
 created_at: 2023-10-12T16:47:41Z
 updated_at: 2023-10-12T17:09:02Z
 url: https://github.com/astral-sh/uv/pull/90
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Migrate to `requirements_txt.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-12 16:47_
+_@charliermarsh_
 
 Remove the parser I wrote in favor of Konsti's which is much more complete. The only change vs. the version in `poc-monotrail` is that I changed the tests to use insta rather than manually storing and comparing against JSON snapshots.
 

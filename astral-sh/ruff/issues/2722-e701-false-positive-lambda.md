@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T17:44:42Z
 updated_at: 2023-02-10T20:21:08Z
 url: https://github.com/astral-sh/ruff/issues/2722
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E701 false positive: lambda
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 17:44_
+_@spaceone_
 
 `lambda foo: foo` is detected as E701
 

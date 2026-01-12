@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T05:34:41Z
 updated_at: 2025-10-02T18:25:23Z
 url: https://github.com/astral-sh/uv/issues/16095
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # uv pip list --outdated does not use UV_FIND_LINKS
 
 ---
 
-_Issue opened by @tomazfs on 2025-10-02 05:34_
+_@tomazfs_
 
 ### Summary
 

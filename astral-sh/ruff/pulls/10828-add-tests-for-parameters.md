@@ -14,14 +14,14 @@ head: dhruv/parameters
 created_at: 2024-04-08T03:51:34Z
 updated_at: 2024-04-09T16:11:33Z
 url: https://github.com/astral-sh/ruff/pull/10828
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for parameters
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-08 03:51_
+_@dhruvmanila_
 
 ## Summary
 

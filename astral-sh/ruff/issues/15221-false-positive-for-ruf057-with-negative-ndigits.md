@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-02T13:04:04Z
 updated_at: 2025-01-03T18:48:04Z
 url: https://github.com/astral-sh/ruff/issues/15221
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False positive for `RUF057` with negative ndigits
 
 ---
 
-_Issue opened by @UnknownPlatypus on 2025-01-02 13:04_
+_@UnknownPlatypus_
 
 ruff propose this change:
 

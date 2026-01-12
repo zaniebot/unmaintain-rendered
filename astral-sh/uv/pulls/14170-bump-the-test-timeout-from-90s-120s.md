@@ -13,14 +13,14 @@ head: zb/t120
 created_at: 2025-06-20T20:10:34Z
 updated_at: 2025-07-02T13:39:59Z
 url: https://github.com/astral-sh/uv/pull/14170
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Bump the test timeout from 90s -> 120s
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-20 20:10_
+_@zanieb_
 
 In hopes of resolving https://github.com/astral-sh/uv/issues/14158
 

@@ -12,14 +12,14 @@ head: arg-default
 created_at: 2024-07-10T08:13:45Z
 updated_at: 2024-08-02T16:54:56Z
 url: https://github.com/astral-sh/uv/pull/4957
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Show default value of `python-fetch` and `python-preference` in doc
 
 ---
 
-_Pull request opened by @j178 on 2024-07-10 08:13_
+_@j178_
 
 ## Summary
 

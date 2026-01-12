@@ -14,14 +14,14 @@ head: micha/fix-relative-imports-in-src-root
 created_at: 2025-02-06T09:08:24Z
 updated_at: 2025-02-06T17:56:08Z
 url: https://github.com/astral-sh/ruff/pull/15990
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Fix relative imports in `src.root`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-06 09:08_
+_@MichaReiser_
 
 ## Summary
 

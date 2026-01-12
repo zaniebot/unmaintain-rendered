@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T22:58:34Z
 updated_at: 2024-03-08T23:57:50Z
 url: https://github.com/astral-sh/ruff/issues/10282
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `Parameter` range is incorrect for `*args` and `**kwargs`
 
 ---
 
-_Issue opened by @GtrMo on 2024-03-07 22:58_
+_@GtrMo_
 
 I'm working on a fix for the `flake8-unused-arguments` (ARG) rules that would delete them.
 

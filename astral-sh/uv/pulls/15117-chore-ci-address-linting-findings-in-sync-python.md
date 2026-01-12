@@ -13,14 +13,14 @@ head: ww/more-ci-fixes
 created_at: 2025-08-06T19:51:03Z
 updated_at: 2025-08-06T20:45:21Z
 url: https://github.com/astral-sh/uv/pull/15117
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # chore(ci): address linting findings in sync-python-releases.yml
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-06 19:51_
+_@woodruffw_
 
 ## Summary
 

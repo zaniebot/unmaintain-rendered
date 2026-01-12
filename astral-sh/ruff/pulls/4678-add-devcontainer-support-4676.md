@@ -12,14 +12,14 @@ head: add-devcontainer-support
 created_at: 2023-05-27T12:49:52Z
 updated_at: 2023-05-30T12:49:52Z
 url: https://github.com/astral-sh/ruff/pull/4678
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add devcontainer support (#4676)
 
 ---
 
-_Pull request opened by @vadim-su on 2023-05-27 12:49_
+_@vadim-su_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

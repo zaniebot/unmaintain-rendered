@@ -13,14 +13,14 @@ head: extend_shrinking_script
 created_at: 2023-07-19T19:50:11Z
 updated_at: 2023-07-20T10:02:02Z
 url: https://github.com/astral-sh/ruff/pull/5898
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Extend shrinking script to also remove tokens and characters
 
 ---
 
-_Pull request opened by @konstin on 2023-07-19 19:50_
+_@konstin_
 
 This shrinks a good bit more than previously, which was helpful for all the formatter bugs. fwiw i treat this as a very ad-hoc script since it's mainly my ecosystem bug processing companion.
 

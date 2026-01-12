@@ -13,14 +13,14 @@ head: konsti/version-ranges-1
 created_at: 2024-10-29T16:31:51Z
 updated_at: 2024-10-29T16:39:51Z
 url: https://github.com/astral-sh/uv/pull/8667
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 #  Start using the version ranges crate
 
 ---
 
-_Pull request opened by @konstin on 2024-10-29 16:31_
+_@konstin_
 
 See https://github.com/pubgrub-rs/pubgrub/pull/262 for prior discussion.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T23:53:33Z
 updated_at: 2024-02-17T00:03:38Z
 url: https://github.com/astral-sh/uv/issues/1554
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # pip sync with multiple files should only fail if there are incompatible requirements found
 
 ---
 
-_Issue opened by @ericbn on 2024-02-16 23:53_
+_@ericbn_
 
 ### Bug description
 

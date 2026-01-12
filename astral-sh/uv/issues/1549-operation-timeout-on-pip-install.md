@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T22:57:05Z
 updated_at: 2024-02-20T04:37:57Z
 url: https://github.com/astral-sh/uv/issues/1549
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Operation Timeout on Pip Install
 
 ---
 
-_Issue opened by @PeterParker on 2024-02-16 22:57_
+_@PeterParker_
 
 On an internet connection with slow downloads a `uv pip install` often seems to lead to a timeout.
 

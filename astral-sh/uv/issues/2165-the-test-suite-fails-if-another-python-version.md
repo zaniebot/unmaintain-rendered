@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T17:22:37Z
 updated_at: 2024-04-16T06:14:00Z
 url: https://github.com/astral-sh/uv/issues/2165
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # The test suite fails if another Python version than 3.11.7 is installed
 
 ---
 
-_Issue opened by @mgorny on 2024-03-04 17:22_
+_@mgorny_
 
 I'm trying to package `uv` for Gentoo Linux. While running the test suite for 0.1.13, I'm getting the following test failure:
 

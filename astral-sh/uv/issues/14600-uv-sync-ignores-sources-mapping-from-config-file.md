@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T06:41:43Z
 updated_at: 2025-08-04T17:53:43Z
 url: https://github.com/astral-sh/uv/issues/14600
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # uv sync ignores [sources] mapping from --config-file when a default index is present in pyproject.toml
 
 ---
 
-_Issue opened by @mrogowski11 on 2025-07-14 06:41_
+_@mrogowski11_
 
 ### Summary
 

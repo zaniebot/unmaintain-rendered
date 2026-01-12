@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-07T13:33:22Z
 updated_at: 2023-11-08T14:57:28Z
 url: https://github.com/astral-sh/uv/issues/356
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Default pubgrub no solution output doesn't give any information
 
 ---
 
-_Issue opened by @konstin on 2023-11-07 13:33_
+_@konstin_
 
 In place where we don't manually format pubgrub errors, such as resolving build environment, we don't get any context on the resolution failure:
 

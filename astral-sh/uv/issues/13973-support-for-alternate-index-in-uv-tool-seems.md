@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T17:22:52Z
 updated_at: 2025-06-11T20:38:12Z
 url: https://github.com/astral-sh/uv/issues/13973
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Support for alternate index in `uv tool` seems incomplete
 
 ---
 
-_Issue opened by @ukalwa on 2025-06-11 17:22_
+_@ukalwa_
 
 ### Question
 

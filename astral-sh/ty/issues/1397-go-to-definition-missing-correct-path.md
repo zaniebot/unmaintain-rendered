@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-19T09:55:45Z
 updated_at: 2025-11-18T16:10:40Z
 url: https://github.com/astral-sh/ty/issues/1397
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Go to Definition Missing correct path
 
 ---
 
-_Issue opened by @YoniChechik on 2025-10-19 09:55_
+_@YoniChechik_
 
 ## Summary
 When using "Go to Definition" (Ctrl+Click) on a function in a Python project with git worktrees, ty navigates to the definition in a different worktree instead of the current worktree.

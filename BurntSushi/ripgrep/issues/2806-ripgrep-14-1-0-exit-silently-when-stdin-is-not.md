@@ -1,0 +1,421 @@
+```yaml
+number: 2806
+title: ripgrep 14.1.0 exit silently when stdin is not connected (GNU parallel without --tty)
+type: issue
+state: closed
+author: aktau
+labels:
+  - wontfix
+assignees: []
+created_at: 2024-05-13T10:18:49Z
+updated_at: 2024-12-24T14:49:13Z
+url: https://github.com/BurntSushi/ripgrep/issues/2806
+synced_at: 2026-01-12T16:13:24Z
+```
+
+# ripgrep 14.1.0 exit silently when stdin is not connected (GNU parallel without --tty)
+
+---
+
+_@aktau_
+
+### Please tick this box to confirm you have reviewed the above.
+
+- [X] I have a different issue.
+
+### What version of ripgrep are you using?
+
+```
+$ rg --version
+ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+```
+
+### How did you install ripgrep?
+
+I ran
+
+```
+sudo apt install ripgrep
+```
+
+### What operating system are you using ripgrep on?
+
+Debian Testing
+
+### Describe your bug.
+
+When run inside of GNU parallel, ripgrep produces nothing. Running the same command outside of parallel (copying the output of its `-v` does work).
+
+Passing the `--tty` flag to GNU parallel avoids the issue. I'm reasonably certain this used to work
+
+### What are the steps to reproduce the behavior?
+
+```
+$ echo foojitzu > bar
+$ rg foojitzu | cat -
+bar:foojitzu
+$ parallel -v 'rg foojitzu ; echo done {}' ::: bar
+rg foojitzu ; echo done bar
+done bar
+```
+
+### What is the actual behavior?
+
+See above, output is included.
+
+I expected the same output in parallel as without parallel. AFAIK this used to work. I'm unsure when it broke. The problem appears to be stdin detection. Turning it off with the `./` trick (appending to the end) makes things work. An strace of a bad run with `-j 1`:
+
+```
+1279757 execve("/usr/bin/rg", ["rg", "-j", "1", "."], 0x7ffeb50c6bd0 /* 68 vars */) = 0
+1279757 brk(NULL)                       = 0x5616e7628000
+1279757 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f1f55a1b000
+1279757 access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+1279757 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+1279757 newfstatat(3, "", {st_mode=S_IFREG|0644, st_size=95919, ...}, AT_EMPTY_PATH) = 0
+1279757 mmap(NULL, 95919, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f1f55a03000
+1279757 close(3)                        = 0
+1279757 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libpcre2-8.so.0", O_RDONLY|O_CLOEXEC) = 3
+1279757 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0\0\0\0\0\0\0\0"..., 832) = 832
+1279757 newfstatat(3, "", {st_mode=S_IFREG|0644, st_size=633480, ...}, AT_EMPTY_PATH) = 0
+1279757 mmap(NULL, 631688, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f1f55968000
+1279757 mmap(0x7f1f5596a000, 442368, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2000) = 0x7f1f5596a000
+1279757 mmap(0x7f1f559d6000, 176128, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x6e000) = 0x7f1f559d6000
+1279757 mmap(0x7f1f55a01000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x99000) = 0x7f1f55a01000
+1279757 close(3)                        = 0
+1279757 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
+1279757 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0\0\0\0\0\0\0\0"..., 832) = 832
+1279757 newfstatat(3, "", {st_mode=S_IFREG|0644, st_size=141720, ...}, AT_EMPTY_PATH) = 0
+1279757 mmap(NULL, 144232, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f1f55944000
+1279757 mmap(0x7f1f55947000, 110592, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x3000) = 0x7f1f55947000
+1279757 mmap(0x7f1f55962000, 16384, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e000) = 0x7f1f55962000
+1279757 mmap(0x7f1f55966000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x21000) = 0x7f1f55966000
+1279757 close(3)                        = 0
+1279757 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+1279757 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\220x\2\0\0\0\0\0"..., 832) = 832
+1279757 pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 784, 64) = 784
+1279757 newfstatat(3, "", {st_mode=S_IFREG|0755, st_size=1926256, ...}, AT_EMPTY_PATH) = 0
+1279757 pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 784, 64) = 784
+1279757 mmap(NULL, 1974096, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f1f55762000
+1279757 mmap(0x7f1f55788000, 1396736, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x26000) = 0x7f1f55788000
+1279757 mmap(0x7f1f558dd000, 344064, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x17b000) = 0x7f1f558dd000
+1279757 mmap(0x7f1f55931000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1cf000) = 0x7f1f55931000
+1279757 mmap(0x7f1f55937000, 53072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f1f55937000
+1279757 close(3)                        = 0
+1279757 mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f1f5575f000
+1279757 arch_prctl(ARCH_SET_FS, 0x7f1f5575f800) = 0
+1279757 set_tid_address(0x7f1f5575fad0) = 1279757
+1279757 set_robust_list(0x7f1f5575fae0, 24) = 0
+1279757 rseq(0x7f1f55760120, 0x20, 0, 0x53053053) = 0
+1279757 mprotect(0x7f1f55931000, 16384, PROT_READ) = 0
+1279757 mprotect(0x7f1f55966000, 4096, PROT_READ) = 0
+1279757 mprotect(0x7f1f55a01000, 4096, PROT_READ) = 0
+1279757 mprotect(0x5616e607f000, 339968, PROT_READ) = 0
+1279757 mprotect(0x7f1f55a4d000, 8192, PROT_READ) = 0
+1279757 prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+1279757 munmap(0x7f1f55a03000, 95919)   = 0
+1279757 poll([{fd=0, events=0}, {fd=1, events=0}, {fd=2, events=0}], 3, 0) = 1 ([{fd=0, revents=POLLHUP}])
+1279757 rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f1f5579e510}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+1279757 rt_sigaction(SIGSEGV, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+1279757 rt_sigaction(SIGSEGV, {sa_handler=0x5616e5f06100, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f1f5579e510}, NULL, 8) = 0
+1279757 rt_sigaction(SIGBUS, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+1279757 rt_sigaction(SIGBUS, {sa_handler=0x5616e5f06100, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f1f5579e510}, NULL, 8) = 0
+1279757 sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+1279757 mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f1f55a18000
+1279757 mprotect(0x7f1f55a18000, 4096, PROT_NONE) = 0
+1279757 sigaltstack({ss_sp=0x7f1f55a19000, ss_flags=0, ss_size=8192}, NULL) = 0
+1279757 getrandom("\x87\x48\xdc\xe5\xf2\x8b\x10\x92", 8, GRND_NONBLOCK) = 8
+1279757 brk(NULL)                       = 0x5616e7628000
+1279757 brk(0x5616e7649000)             = 0x5616e7649000
+1279757 openat(AT_FDCWD, "/proc/self/maps", O_RDONLY|O_CLOEXEC) = 3
+1279757 prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+1279757 newfstatat(3, "", {st_mode=S_IFREG|0444, st_size=0, ...}, AT_EMPTY_PATH) = 0
+1279757 read(3, "5616e5be3000-5616e5c6f000 r--p 0"..., 1024) = 1024
+1279757 read(3, "d3000 fd:01 22414222            "..., 1024) = 1024
+1279757 read(3, "gnu/libpcre2-8.so.0.11.2\n7f1f55a"..., 1024) = 1024
+1279757 read(3, "            [stack]\n7ffd3956d000"..., 1024) = 180
+1279757 close(3)                        = 0
+1279757 sched_getaffinity(1279757, 32, [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127]) = 16
+1279757 getrandom("\x0a\x9e\xb6\x65\xa8\x81\x2e\x73\x6d\xcf\x1a\x3b\x4a\xcd\xeb\x3f", 16, GRND_INSECURE) = 16
+1279757 ioctl(1, TCGETS, 0x7ffd3954f950) = -1 ENOTTY (Inappropriate ioctl for device)
+1279757 getcwd("/home/aktau/tmp", 512) = 50
+1279757 ioctl(0, TCGETS, 0x7ffd3954f7c0) = -1 ENOTTY (Inappropriate ioctl for device)
+1279757 fcntl(0, F_DUPFD_CLOEXEC, 3)    = 3
+1279757 statx(3, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFIFO|0600, stx_size=0, ...}) = 0
+1279757 close(3)                        = 0
+1279757 uname({sysname="Linux", nodename="ryz", ...}) = 0
+1279757 brk(0x5616e766a000)             = 0x5616e766a000
+1279757 statx(AT_FDCWD, "-", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7ffd3954f500) = -1 ENOENT (No such file or directory)
+1279757 statx(0, NULL, AT_STATX_SYNC_AS_STAT, STATX_ALL, NULL) = -1 EFAULT (Bad address)
+1279757 statx(1, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0600, stx_size=109, ...}) = 0
+1279757 statx(1, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0600, stx_size=109, ...}) = 0
+1279757 openat(AT_FDCWD, "/home/aktau/.gitconfig", O_RDONLY|O_CLOEXEC) = 3
+1279757 statx(3, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=2063, ...}) = 0
+1279757 lseek(3, 0, SEEK_CUR)           = 0
+1279757 read(3, "[user]\n\tname = ..."..., 2063) = 2063
+1279757 read(3, "", 32)                 = 0
+1279757 close(3)                        = 0
+1279757 openat(AT_FDCWD, "/home/aktau/.config/git/config", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+1279757 statx(AT_FDCWD, "/home/aktau/.config/git/ignore", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7ffd3954eb40) = -1 ENOENT (No such file or directory)
+1279757 mmap(NULL, 323584, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f1f55710000
+1279757 munmap(0x7f1f55710000, 323584)  = 0
+1279757 brk(0x5616e7694000)             = 0x5616e7694000
+1279757 read(0, "", 8192)               = 0
+1279757 read(0, "", 65536)              = 0
+1279757 sigaltstack({ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=8192}, NULL) = 0
+1279757 munmap(0x7f1f55a18000, 12288)   = 0
+1279757 exit_group(1)                   = ?
+1279757 +++ exited with 1 +++
+```
+
+This is what the last part looks like in a "good" run (outside of parallel):
+
+```
+1477678 ioctl(1, TCGETS, 0x7ffe1f31a7e0) = -1 ENOTTY (Inappropriate ioctl for device)
+1477678 getcwd("/home/aktau/tmp", 512) = 50
+1477678 ioctl(0, TCGETS, {c_iflag=ICRNL|IXON|IUTF8, c_oflag=NL0|CR0|TAB0|BS0|VT0|FF0|OPOST|ONLCR, c_cflag=B38400|CS8|CREAD, c_lflag=ISIG|ICANON|ECHO|ECHOE|ECHOK|IEXTEN|ECHOCTL|ECHOKE, ...}) = 0
+1477678 uname({sysname="Linux", nodename="ryz", ...}) = 0
+1477678 brk(0x55de0b952000)             = 0x55de0b952000
+1477678 statx(AT_FDCWD, "./", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=0, ...}) = 0
+1477678 statx(1, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFIFO|0600, stx_size=0, ...}) = 0
+1477678 statx(1, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFIFO|0600, stx_size=0, ...}) = 0
+1477678 statx(AT_FDCWD, "./", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=0, ...}) = 0
+1477678 openat(AT_FDCWD, "/home/aktau/.gitconfig", O_RDONLY|O_CLOEXEC) = 3
+1477678 statx(3, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=2063, ...}) = 0
+1477678 lseek(3, 0, SEEK_CUR)           = 0
+1477678 read(3, "[user]\n\tname = ..."..., 2063) = 2063
+1477678 read(3, "", 32)                 = 0
+1477678 close(3)                        = 0
+1477678 openat(AT_FDCWD, "/home/aktau/.config/git/config", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+1477678 statx(AT_FDCWD, "/home/aktau/.config/git/ignore", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7ffe1f3199c0) = -1 ENOENT (No such file or directory)
+1477678 statx(0, NULL, AT_STATX_SYNC_AS_STAT, STATX_ALL, NULL) = -1 EFAULT (Bad address)
+1477678 mmap(NULL, 323584, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5fee4d2000
+1477678 munmap(0x7f5fee4d2000, 323584)  = 0
+1477678 brk(0x55de0b97c000)             = 0x55de0b97c000
+1477678 statx(AT_FDCWD, "./", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=0, ...}) = 0
+1477678 getcwd("/home/aktau/tmp", 1024) = 50
+1477678 statx(AT_FDCWD, "/.git", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7ffe1f319270) = -1 ENOENT (No such file or directory)
+```
+
+### What is the expected behavior?
+
+I expected ripgrep to just ignore stdin, continue functioning, and print to stdout. As far as I can recall, this used to work (ripgrep inside parallel without any changes). It's possible that parallel changed its implementation, perhaps it used to have a dummy stdin connected. Still, I believe it should work. The workaround of adding `./` as the last argument does work, but the silence of the error makes it difficult to track down what's the problem. Ideally it should work automatically.
+
+---
+
+_Comment by @BurntSushi on 2024-05-13 11:51_
+
+This is the logic that detects whether stdin is readable or not:
+
+https://github.com/BurntSushi/ripgrep/blob/b6ef99ee554346a0870245c92112aad3838c8edd/crates/cli/src/lib.rs#L152-L201
+
+This was the most recent change to the stdin detection as far as I know: [020c5453a5880257c87949030550d24c596f5c8d](https://github.com/BurntSushi/ripgrep/commit/020c5453a5880257c87949030550d24c596f5c8d)
+
+Dealing with stdin is fundamentally a heuristic. And many programs do process control in a way that leaves stdin looking like there's something to read on it. This happened with neovim in https://github.com/BurntSushi/ripgrep/issues/1892 and culminated in a change to neovim itself in https://github.com/neovim/neovim/pull/14812.
+
+> Ideally it should work automatically.
+
+It just can't. This is the downside of making `rg foo` work. You are not the first to report an issue like this.
+
+---
+
+_Closed by @BurntSushi on 2024-05-13 11:51_
+
+---
+
+_Label `wontfix` added by @BurntSushi on 2024-05-13 11:51_
+
+---
+
+_Comment by @ltrzesniewski on 2024-05-13 12:05_
+
+I don't understand where that `1:foojitzu` line comes from (I mean, there's nothing that goes through stdin). I don't get it when trying to reproduce, the only output I get is `bar:foojitzu` when running `rg foojitzu | cat -`.
+
+---
+
+_Comment by @aktau on 2024-05-13 12:48_
+
+> I don't understand where that 1:foojitzu line comes from (I mean, there's nothing that goes through stdin). I don't get it when trying to reproduce, the only output I get is bar:foojitzu when running rg foojitzu | cat -.
+
+Yes, that must've been a copy/paste error on my part. I had originally invoked without `| cat -`, but decided to do so as it would make the output more similar (if it had appeared).
+
+> And many programs do process control in a way that leaves stdin looking like there's something to read on it. 
+
+But in this case, I suspect that parallel doesn't connect a stdin at all. In this case, why not stop reading from stdin?
+
+> This is the logic that detects whether stdin is readable or not:
+
+At the very least, I don't believe it should exit with -1 without stating what's wrong to the user. It took me too long to find that the workaround is to pass `./` as an extra argument. It appears the exit comes quickly after the following two lines (extract from strace):
+
+```
+1279757 read(0, "", 8192)               = 0
+1279757 read(0, "", 65536)              = 0
+```
+
+I'm not sure why it tries to do this (twice?) and then exit(1) afterwards. I can't get `strace -k` to work in order to find the source of the exit(1) syscall (I tried installing the debian dbgsym package, to no avail).
+
+Would it not be possible to just fall back to "don't read from stdin" if one cannot read from stdin?
+
+---
+
+_Comment by @BurntSushi on 2024-05-13 13:42_
+
+With #2807, I added some extra details to `--debug` logging:
+
+```
+$ rg --debug foojitzu | cat -
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: ["--max-columns-preview", "--colors=match:bg:0xff,0x7f,0x00", "--colors=match:fg:0xff,0xff,0xff", "--colors=line:none", "--colors=line:fg:magenta", "--colors=path:fg:green", "--type-add=got:*_test.go"]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: duff
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: ""
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+bar:foojitzu
+
+$ parallel -v 'rg --debug foojitzu ; echo done {}' ::: bar
+rg --debug foojitzu ; echo done bar
+done bar
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: ["--max-columns-preview", "--colors=match:bg:0xff,0x7f,0x00", "--colors=match:fg:0xff,0xff,0xff", "--colors=line:none", "--colors=line:fg:magenta", "--colors=path:fg:green", "--type-add=got:*_test.go"]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|grep_cli|crates/cli/src/lib.rs:209: for heuristic stdin detection on Unix, found that is_file=false, is_fifo=true and is_socket=false, and thus concluded that is_stdin_readable=true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1121: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: duff
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: ""
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+```
+
+The relevant lines for the `parallel ...` command are:
+
+```
+rg: DEBUG|grep_cli|crates/cli/src/lib.rs:209: for heuristic stdin detection on Unix, found that is_file=false, is_fifo=true and is_socket=false, and thus concluded that is_stdin_readable=true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1121: heuristic chose to search stdin
+```
+
+Specifically, notice that `is_fifo=true`. `parallel` is specifically advertising `stdin` as a readable file descriptor.
+
+> I suspect that parallel doesn't connect a stdin at all.
+
+The above logging demonstrates otherwise unfortunately.
+
+> At the very least, I don't believe it should exit with -1 without stating what's wrong to the user.
+
+ripgrep cannot tell the difference between "ripgrep searched something the user did not intend and thus should produce an error" and "ripgrep searched something the user intended and could not find a match."
+
+> I'm not sure why it tries to do this (twice?) and then exit(1) afterwards.
+
+Because `parallel` advertises `stdin` as a fifo. So ripgrep tries to search it. Apparently there is nothing there to read, so it is indistinguishable from piping an empty file on to stdin. ripgrep doesn't find what you asked for, and thus returns with no match (and a corresponding error exit code as a result).
+
+There is no "crashing" here. I'm not sure why you reported it that way...
+
+Let's _please_ flip the script here. Instead of saying "the current behavior is not ideal" (which I would absolutely agree with), please instead suggest concrete changes. And please do so after reading the linked neovim issue.
+
+---
+
+_Comment by @aktau on 2024-05-14 06:12_
+
+First of, thanks for engaging on this. I appreciate it. I apologize if I came off as curt, it was not my intention.
+
+Replying: 
+
+On Neovim. I read the Neovim issue, and see that they added a stdin closing option on the job API for that. I think I experienced a similar issue on another CLI that had to do with Neovim. The issue in that case was that the application did not expect to be passed a socket pair (libuv which Neovim uses creates subprocess connecting pipes with [socketpair(2)](https://man7.org/linux/man-pages/man2/socketpair.2.html), not [pipe(2)](https://man7.org/linux/man-pages/man2/pipe.2.html)). AFAIK using socket pairs for stdio is the default on some OSes (the BSDs? I can't recall). Back then I investigated whether we couldn't just switch to pipe(2) which would have made the application I was dealing with work. I forgot why, but eventually I decided this had a low chance of success, libuv switched to socketpair(2) for a reason, and if I recall correctly the commit message isn't very clear about it, so chesterons fence applies.
+
+Anyway, back to the issue: perhaps we should ask: what is the use of passing an empty file? Can ripgrep ever do anything useful if it gets passed an empty file? If the answer is no, perhaps it could be considered to just act as if stdin is not connected if reading from it succeeds but produces 0 bytes.
+
+I also changed the issue title to s/crash/exit/, as it's clear now that this behaviour is intentional.
+
+---
+
+_Renamed from "ripgrep 14.1.0 crashes silently when stdin is not connected (GNU parallel without --tty)" to "ripgrep 14.1.0 exit silently when stdin is not connected (GNU parallel without --tty)" by @aktau on 2024-05-14 06:13_
+
+---
+
+_Comment by @BurntSushi on 2024-05-14 11:51_
+
+> Anyway, back to the issue: perhaps we should ask: what is the use of passing an empty file? Can ripgrep ever do anything useful if it gets passed an empty file? If the answer is no, perhaps it could be considered to just act as if stdin is not connected if reading from it succeeds but produces 0 bytes.
+
+There is no way that will ever happen. Passing an empty file isn't necessarily something someone does intentionally. An empty file is still a valid haystack to search. Doing `rg foo < empty-file` and having ripgrep ignore `< empty-file` to search the current working directory is completely unexpected behavior. If I were to allow that change, I'd be the first curse it. It would also have unexpected behavior in shell pipelines when there is no input being piped in. For example, maybe `rg foo log.2024-05-14 | rg bar` works because `foo` is in `log.2024-05-14`, but maybe `foo` isn't in `log.2024-05-15`. So instead of `rg foo log.2024-05-15 | rg bar` producing no output like you'd expect, `rg bar` would just search the current working directory instead. That's _bonkers_.
+
+I appreciate that you're trying to make a concrete suggestion here, but I'm pretty sure there is nothing to be done here because the user's intent cannot be discerned. It is a failing of the Unix CLI conventions (of which, stdin detection is part of it). You have two choices. First is to make the calling program stop advertising stdin as a readable file descriptor. Second is to disable ripgrep's heuristic stdin detection by passing `./`.
+
+The only real way to avoid something like this is to build a program that doesn't change its behavior based on what stdin is. But then common usage scenarios get more verbose. ripgrep does the intuitive thing correctly 99% of the time in exchange for doing the unintuitive thing with a bad failure mode in certain cases. And usually that's because of the parent process doing something they probably shouldn't be doing... Like advertising a readable stdin.
+
+---
+
+_Comment by @aktau on 2024-05-14 15:24_
+
+You're right, I hadn't thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search "everything". 
+
+It doesn't make sense to break existing users of this, even if it were somehow decided that ignoring empty files were reasonable.
+
+> And usually that's because of the parent process doing something they probably shouldn't be doing... Like advertising a readable stdin.
+
+Hopefully I can get around to writing this up for the GNU parallel author. But something tells me that changing its behaviour to supplying a closed stdin would trigger other types of unpalatable failures in other programs. Can't please everyone.
+
+Thanks for your thoughts.
+
+---
+
+_Comment by @BurntSushi on 2024-05-14 15:43_
+
+> You're right, I hadn't thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search "everything".
+
+Yeah, I very specifically designed ripgrep to be able to drop-in for grep in most cases. Obviously it has some different behaviors and flags, but in most cases, you should be able to replace `grep` with `rg`---including in a shell pipeline---without issue. This was a very intentional act on my part that stood in contrast to a tool like `ag` which does have weird quirks and failings when you try to use it like it grep.
+
+> But something tells me that changing its behaviour to supplying a closed stdin would trigger other types of unpalatable failures in other programs.
+
+I think this is likely, yes, although I don't know what it is. If you do go through with this and get a concrete answer to this, I'd be most appreciative if you could share it here. Because it would complete the "nothing can be done" picture here. neovim, for example, I believe added an _option_ to not pass a readable stdin, but I don't believe it changed its default behavior. So there is likely something here. Whether it's just another form of legacy or something more "legitimate" though, I dunno.
+
+---
+
+_Comment by @treatmesubj on 2024-12-23 20:27_
+
+EDIT: wrong
+_for Google/posterity - I think based on what the smart people said above, because you must use `parallel --tty` to spawn terminals with ripgrep, it's likely faster to to use regular old `grep` with `parallel` than use ripgrep with `parallel`_
+
+---
+
+_Comment by @BurntSushi on 2024-12-23 21:08_
+
+What? No. Just tell ripgrep what to search and it will behave like grep. The only reason any of this is an issue is because ripgrep tries to guess the user's intent _when a file or directory are not specified_. But you can remove ripgrep's guess work by treating it like grep and _providing an explicit file or directory to search_. For example, `rg foo ./` or `rg foo -`.
+
+---
+
+_Comment by @treatmesubj on 2024-12-24 00:08_
+
+whoops, sorry, I was confused. I was sillily using `rg --glob {relative-file}` which must still need a tty to guess cwd?
+Doing something like this instead as you say, worked just fine. Thank you
+```bash
+f=$(cat files.txt); parallel rg -io {1} $f :::: strings.txt
+```
+
+---
+In a codebase, I wanted to find which files queried a database table, and whether or not they mentioned any fields from a list of fields to be deprecated from the table.
+I found these 2 approaches worked for my needs
+```bash
+time ( parallel rg -io {2} {1} :::: <(rg -il 'SCHEMA\.TABLE\w+' .) dep-fields.txt )
+time ( f=$(rg -il 'SCHEMA\.TABLE\w+' .); parallel rg -io {1} $f :::: dep-fields.txt )
+
+time ( parallel grep -iHno {2} {1} :::: <(grep -irl -E 'SCHEMA\.TABLE\w+' .) dep-fields.txt )
+time ( f=$(grep -irl -E 'SCHEMA\.TABLE\w+' .); parallel grep -iHno {1} $f :::: dep-fields.txt )
+
+```
+
+---
+
+_Comment by @BurntSushi on 2024-12-24 00:12_
+
+Yeah you got it!
+
+---

@@ -13,14 +13,14 @@ head: zb/fix-python-dir
 created_at: 2025-06-16T14:31:44Z
 updated_at: 2025-07-25T22:04:36Z
 url: https://github.com/astral-sh/uv/pull/14074
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Fix test isolation from managed Python installations
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-16 14:31_
+_@zanieb_
 
 _No description provided._
 

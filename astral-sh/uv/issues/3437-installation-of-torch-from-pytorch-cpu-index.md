@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T20:24:42Z
 updated_at: 2024-11-22T20:35:26Z
 url: https://github.com/astral-sh/uv/issues/3437
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Installation of torch from pytorch CPU index fails with 'no wheels are available with a matching Python ABI'
 
 ---
 
-_Issue opened by @matthewfeickert on 2024-05-07 20:24_
+_@matthewfeickert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

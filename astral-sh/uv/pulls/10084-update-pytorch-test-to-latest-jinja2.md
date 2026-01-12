@@ -13,14 +13,14 @@ head: charlie/pt
 created_at: 2024-12-21T20:49:30Z
 updated_at: 2024-12-21T21:01:11Z
 url: https://github.com/astral-sh/uv/pull/10084
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Update PyTorch test to latest `jinja2`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 20:49_
+_@charliermarsh_
 
 ## Summary
 

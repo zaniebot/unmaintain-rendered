@@ -13,14 +13,14 @@ head: konsti/install-and-export
 created_at: 2025-05-13T13:28:26Z
 updated_at: 2025-05-13T13:53:12Z
 url: https://github.com/astral-sh/uv/pull/13430
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # uv export docs: "export" instead of "install"
 
 ---
 
-_Pull request opened by @konstin on 2025-05-13 13:28_
+_@konstin_
 
 Change the two missing places in the `uv export` docs to say "export" instead of "install".
 

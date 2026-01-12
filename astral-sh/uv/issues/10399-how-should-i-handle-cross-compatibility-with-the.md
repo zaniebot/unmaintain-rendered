@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-08T16:30:20Z
 updated_at: 2025-01-24T16:12:07Z
 url: https://github.com/astral-sh/uv/issues/10399
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # How should I handle cross compatibility with the torch dependency?
 
 ---
 
-_Issue opened by @MattTheCuber on 2025-01-08 16:30_
+_@MattTheCuber_
 
 Note, this seems to be an question with all Python dependency tools. However, I wasn't able to find any documentation on the problem online.
 

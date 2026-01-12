@@ -13,14 +13,14 @@ head: david/simplify-tuple-containing-never
 created_at: 2024-12-02T21:51:41Z
 updated_at: 2024-12-03T11:29:19Z
 url: https://github.com/astral-sh/ruff/pull/14744
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Simplify tuples containing `Never`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-02 21:51_
+_@sharkdp_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-08-11T21:14:15Z
 updated_at: 2021-08-12T21:46:15Z
 url: https://github.com/clap-rs/clap/issues/2680
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Need a debug assert for AllowInvalidUtf8 requiring TakesValue
 
 ---
 
-_Issue opened by @pksunkara on 2021-08-11 21:14_
+_@pksunkara_
 
 Need a debug assert for this at https://github.com/clap-rs/clap/blob/master/src/build/arg/debug_asserts.rs#L89
 

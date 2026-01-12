@@ -12,14 +12,14 @@ head: remove-functor-from-autofix-title
 created_at: 2023-05-05T12:46:09Z
 updated_at: 2023-05-10T07:45:07Z
 url: https://github.com/astral-sh/ruff/pull/4245
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove functor from autofix title
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-05 12:46_
+_@MichaReiser_
 
 This PR renames the `autofix_title_functor` method to `autofix_title` and returns an `Option<String>` instead of a function. 
 

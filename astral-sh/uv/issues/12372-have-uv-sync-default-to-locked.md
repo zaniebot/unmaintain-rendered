@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T17:08:54Z
 updated_at: 2025-03-21T17:13:49Z
 url: https://github.com/astral-sh/uv/issues/12372
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Have `uv sync` default to `--locked`
 
 ---
 
-_Issue opened by @johnthagen on 2025-03-21 17:08_
+_@johnthagen_
 
 ### Summary
 

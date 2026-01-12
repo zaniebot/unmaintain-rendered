@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-26T12:49:19Z
 updated_at: 2024-06-28T16:42:34Z
 url: https://github.com/clap-rs/clap/issues/5552
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Fish completions include --no-files on subcommands
 
 ---
 
-_Issue opened by @maddawik on 2024-06-26 12:49_
+_@maddawik_
 
 Hello! I first reported this issue downstream in https://github.com/MilesCranmer/rip2. The issue is that the completions generated for fish include `-f` which prevents files from being included in completion, which in this case is not desired.
 

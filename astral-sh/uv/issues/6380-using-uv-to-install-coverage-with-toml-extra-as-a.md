@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T21:38:46Z
 updated_at: 2024-08-21T22:34:14Z
 url: https://github.com/astral-sh/uv/issues/6380
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Using uv to install coverage with toml extra as a dev dep gives error when generating lock file
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-08-21 21:38_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

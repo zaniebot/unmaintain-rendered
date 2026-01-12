@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T16:40:39Z
 updated_at: 2024-08-14T16:41:23Z
 url: https://github.com/astral-sh/uv/issues/6089
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Python 3.12.5 "No download found for request"
 
 ---
 
-_Issue opened by @pdpark on 2024-08-14 16:40_
+_@pdpark_
 
 I can see 3.12.5 builds in the latest [release](https://github.com/indygreg/python-build-standalone/releases/tag/20240814) but I am unable to install it:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T00:38:30Z
 updated_at: 2024-08-29T02:08:32Z
 url: https://github.com/astral-sh/uv/issues/6785
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `uv add` treats valid `pyproject.toml` as invalid
 
 ---
 
-_Issue opened by @metaist on 2024-08-29 00:38_
+_@metaist_
 
 ```
 $ lsb_release -a

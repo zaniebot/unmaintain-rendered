@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-23T15:12:06Z
 updated_at: 2023-05-24T14:34:49Z
 url: https://github.com/astral-sh/ruff/issues/4606
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Investigate performance regression for 100,000s of violations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-23 15:12_
+_@charliermarsh_
 
 As of #3931, most rule categories (on the CPython benchmark) got faster, but a few got slower, especially D, ANN, PT, and Q. So running `cargo build --release && hyperfine --ignore-failure --warmup 10 "./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache --silent --select D,ANN,PT,Q"` went from ~436ms to ~2s on my machine.
 

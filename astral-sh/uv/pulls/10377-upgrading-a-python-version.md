@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2025-01-07T20:37:03Z
 updated_at: 2025-05-27T16:26:17Z
 url: https://github.com/astral-sh/uv/pull/10377
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Upgrading a Python version
 
 ---
 
-_Pull request opened by @simonw on 2025-01-07 20:37_
+_@simonw_
 
 ## Summary
 

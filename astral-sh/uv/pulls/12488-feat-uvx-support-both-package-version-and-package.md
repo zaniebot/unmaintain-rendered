@@ -12,14 +12,14 @@ head: feature/uvx-with-package-version-syntax
 created_at: 2025-03-26T14:32:53Z
 updated_at: 2025-05-21T11:27:02Z
 url: https://github.com/astral-sh/uv/pull/12488
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # feat(uvx): support both package@version and package==version syntaxes
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-03-26 14:32_
+_@Aditya-PS-05_
 
 # Support both package@version and package==version syntaxes for --with
 

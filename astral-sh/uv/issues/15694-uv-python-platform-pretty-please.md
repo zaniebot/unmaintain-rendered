@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T07:51:00Z
 updated_at: 2025-11-09T16:51:52Z
 url: https://github.com/astral-sh/uv/issues/15694
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # UV_PYTHON_PLATFORM pretty please?
 
 ---
 
-_Issue opened by @hynek on 2025-09-05 07:51_
+_@hynek_
 
 ### Summary
 

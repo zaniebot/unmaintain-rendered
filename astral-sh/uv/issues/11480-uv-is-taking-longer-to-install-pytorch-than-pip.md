@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T15:07:54Z
 updated_at: 2025-02-13T15:43:34Z
 url: https://github.com/astral-sh/uv/issues/11480
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # uv is taking longer to install pytorch than pip
 
 ---
 
-_Issue opened by @tanishy7777 on 2025-02-13 15:07_
+_@tanishy7777_
 
 ### Summary
 

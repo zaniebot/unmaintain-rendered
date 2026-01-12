@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T08:28:16Z
 updated_at: 2025-05-10T13:06:07Z
 url: https://github.com/astral-sh/ruff/issues/11318
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Rule request] [`pydocstyle`] no-blank-line-after-last-section
 
 ---
 
-_Issue opened by @MatthijsBurgh on 2024-05-07 08:28_
+_@MatthijsBurgh_
 
 I would like to request the a rule, which is the opposite of D413, [`blank-line-after-last-section`](https://docs.astral.sh/ruff/rules/blank-line-after-last-section/). This rule should remove all the blank lines after the docstring section.
 

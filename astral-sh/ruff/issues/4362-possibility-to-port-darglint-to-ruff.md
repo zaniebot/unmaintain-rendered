@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-10T23:16:44Z
 updated_at: 2023-05-11T03:03:13Z
 url: https://github.com/astral-sh/ruff/issues/4362
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Possibility to port darglint to ruff?
 
 ---
 
-_Issue opened by @jsh9 on 2023-05-10 23:16_
+_@jsh9_
 
 Hi, would it be possible to port [darglint](https://github.com/terrencepreilly/darglint) to ruff?
 

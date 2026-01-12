@@ -12,14 +12,14 @@ head: renovate/resvg-0.x
 created_at: 2024-06-03T01:35:25Z
 updated_at: 2024-06-03T01:46:04Z
 url: https://github.com/astral-sh/uv/pull/3975
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Update Rust crate resvg to 0.42.0
 
 ---
 
-_Pull request opened by @renovate on 2024-06-03 01:35_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

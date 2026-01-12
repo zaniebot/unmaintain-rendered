@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-06T17:06:19Z
 updated_at: 2025-05-27T17:02:27Z
 url: https://github.com/clap-rs/clap/issues/3410
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Short options with arguments conflicts with `allow_hyphen_values`
 
 ---
 
-_Issue opened by @197g on 2022-02-06 17:06_
+_@197g_
 
 ### Please complete the following tasks
 

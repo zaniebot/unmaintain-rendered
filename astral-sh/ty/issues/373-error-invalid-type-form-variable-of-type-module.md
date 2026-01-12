@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T23:44:22Z
 updated_at: 2025-05-21T19:38:57Z
 url: https://github.com/astral-sh/ty/issues/373
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # error[invalid-type-form]: Variable of type `<module 'PIL.Image'>` is not allowed in a type expression
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-05-13 23:44_
+_@Ryang20718_
 
 ### Summary
 

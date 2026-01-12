@@ -12,14 +12,14 @@ head: charlie/pt-name
 created_at: 2023-04-12T15:20:05Z
 updated_at: 2023-04-12T15:45:26Z
 url: https://github.com/astral-sh/ruff/pull/3948
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use identifier range for pytest rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-12 15:20_
+_@charliermarsh_
 
 See: #1469.
 

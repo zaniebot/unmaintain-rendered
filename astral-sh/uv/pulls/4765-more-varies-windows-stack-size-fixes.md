@@ -14,14 +14,14 @@ head: konsti/fix-windows-stack-size-again
 created_at: 2024-07-03T12:14:31Z
 updated_at: 2024-07-03T18:52:43Z
 url: https://github.com/astral-sh/uv/pull/4765
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # More varies windows stack size fixes
 
 ---
 
-_Pull request opened by @konstin on 2024-07-03 12:14_
+_@konstin_
 
 Fix windows stack sizes in debug mode for https://github.com/astral-sh/uv/pull/4708
 

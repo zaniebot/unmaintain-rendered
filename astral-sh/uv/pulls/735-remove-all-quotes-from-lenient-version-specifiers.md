@@ -12,14 +12,14 @@ head: remove-quotes-from-version-specifiers
 created_at: 2023-12-28T14:36:20Z
 updated_at: 2023-12-28T14:40:43Z
 url: https://github.com/astral-sh/uv/pull/735
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Remove all quotes from (lenient) version specifiers
 
 ---
 
-_Pull request opened by @konstin on 2023-12-28 14:36_
+_@konstin_
 
 Found in https://pypi.org/simple/algoliasearch/?format=application/vnd.pypi.simple.v1+json and https://pypi.org/simple/okta/?format=application/vnd.pypi.simple.v1+json
 

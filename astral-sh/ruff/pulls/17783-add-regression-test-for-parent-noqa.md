@@ -13,14 +13,14 @@ head: brent/delete-parent-fields
 created_at: 2025-05-01T21:36:39Z
 updated_at: 2025-05-03T15:38:33Z
 url: https://github.com/astral-sh/ruff/pull/17783
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # Add regression test for parent `noqa`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-01 21:36_
+_@ntBre_
 
 Summary
 --

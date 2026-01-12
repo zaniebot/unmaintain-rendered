@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T11:49:19Z
 updated_at: 2023-01-26T14:53:26Z
 url: https://github.com/astral-sh/ruff/issues/2191
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Wrong `respect-gitignore` example in Readme/Reference
 
 ---
 
-_Issue opened by @johbrust on 2023-01-26 11:49_
+_@johbrust_
 
 Hi,
 

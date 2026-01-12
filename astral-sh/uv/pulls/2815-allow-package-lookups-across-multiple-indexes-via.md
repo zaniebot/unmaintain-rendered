@@ -14,14 +14,14 @@ head: charlie/multi-index
 created_at: 2024-04-03T19:43:50Z
 updated_at: 2024-04-08T13:24:11Z
 url: https://github.com/astral-sh/uv/pull/2815
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Allow package lookups across multiple indexes via explicit opt-in
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 19:43_
+_@charliermarsh_
 
 ## Summary
 

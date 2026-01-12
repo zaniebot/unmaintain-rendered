@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-18T18:16:03Z
 updated_at: 2024-07-08T15:17:55Z
 url: https://github.com/clap-rs/clap/issues/3198
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # verbatim_doc_comment should provide ability to escape newlines with \ like in string literals
 
 ---
 
-_Issue opened by @I60R on 2021-12-18 18:16_
+_@I60R_
 
 ### Please complete the following tasks
 

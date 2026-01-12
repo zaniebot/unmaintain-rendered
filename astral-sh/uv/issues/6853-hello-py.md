@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T04:23:27Z
 updated_at: 2024-08-30T12:47:23Z
 url: https://github.com/astral-sh/uv/issues/6853
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # hello.py
 
 ---
 
-_Issue opened by @eisenhowerj on 2024-08-30 04:23_
+_@eisenhowerj_
 
 It is a pain (slight, but consistent) to have to remove this file before pushing my "initial" commit. It looks like this has been acknowledged here:
 

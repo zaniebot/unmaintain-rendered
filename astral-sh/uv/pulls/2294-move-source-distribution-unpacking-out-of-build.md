@@ -14,14 +14,14 @@ head: charlie/unpack
 created_at: 2024-03-08T03:23:10Z
 updated_at: 2024-03-08T03:40:12Z
 url: https://github.com/astral-sh/uv/pull/2294
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Move source distribution unpacking out of `build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 03:23_
+_@charliermarsh_
 
 ## Summary
 

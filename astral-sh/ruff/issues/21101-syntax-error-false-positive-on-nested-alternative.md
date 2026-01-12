@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T19:37:00Z
 updated_at: 2025-10-30T17:40:05Z
 url: https://github.com/astral-sh/ruff/issues/21101
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Syntax error false positive on nested alternative patterns
 
 ---
 
-_Issue opened by @ntBre on 2025-10-27 19:37_
+_@ntBre_
 
 This change seems to now cause a SyntaxError on the following valid code that doesn't use different names:
 

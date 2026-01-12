@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-17T09:51:55Z
 updated_at: 2024-05-20T07:47:06Z
 url: https://github.com/astral-sh/ruff/issues/11458
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [nvim/server] code action popup menu does not appear 
 
 ---
 
-_Issue opened by @baggiponte on 2024-05-17 09:51_
+_@baggiponte_
 
 Ciao!
 

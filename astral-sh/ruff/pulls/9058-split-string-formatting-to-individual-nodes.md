@@ -13,14 +13,14 @@ head: dhruv/split-string-formatting
 created_at: 2023-12-08T20:38:28Z
 updated_at: 2023-12-14T18:55:11Z
 url: https://github.com/astral-sh/ruff/pull/9058
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Split string formatting to individual nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-08 20:38_
+_@dhruvmanila_
 
 This PR splits the string formatting code in the formatter to be handled by the respective nodes.
 

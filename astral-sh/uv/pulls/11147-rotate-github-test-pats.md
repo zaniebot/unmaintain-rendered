@@ -13,14 +13,14 @@ head: zb/rotate
 created_at: 2025-01-31T22:44:55Z
 updated_at: 2025-01-31T23:03:58Z
 url: https://github.com/astral-sh/uv/pull/11147
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Rotate GitHub test PATs
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-31 22:44_
+_@zanieb_
 
 As before, these are fine-grained PATs and will expire in 366 days.
 

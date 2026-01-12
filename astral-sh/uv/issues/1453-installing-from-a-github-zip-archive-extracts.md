@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:38:09Z
 updated_at: 2024-02-20T15:57:52Z
 url: https://github.com/astral-sh/uv/issues/1453
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Installing from a github zip archive extracts files with zero permissions.
 
 ---
 
-_Issue opened by @bloodearnest on 2024-02-16 08:38_
+_@bloodearnest_
 
 OS: Ubuntu 22.04
 

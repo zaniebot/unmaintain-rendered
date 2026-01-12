@@ -14,14 +14,14 @@ head: fix-FURB116pt2
 created_at: 2025-04-28T21:31:15Z
 updated_at: 2025-05-12T20:22:14Z
 url: https://github.com/astral-sh/ruff/pull/17692
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`refurb`] Mark autofix as safe only for number literals in `FURB116`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-28 21:31_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

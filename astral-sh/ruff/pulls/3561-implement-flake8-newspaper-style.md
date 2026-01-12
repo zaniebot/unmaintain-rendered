@@ -11,14 +11,14 @@ head: sasanjac/2436-Implement-`flake8-newspaper-style`
 created_at: 2023-03-16T17:17:07Z
 updated_at: 2023-06-12T22:01:12Z
 url: https://github.com/astral-sh/ruff/pull/3561
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Implement `flake8-newspaper-style`
 
 ---
 
-_Pull request opened by @sasanjac on 2023-03-16 17:17_
+_@sasanjac_
 
 Fixes #2436
 

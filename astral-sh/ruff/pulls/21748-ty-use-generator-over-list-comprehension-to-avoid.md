@@ -14,14 +14,14 @@ head: micha/benchmarks-remove-cast
 created_at: 2025-12-02T07:33:42Z
 updated_at: 2025-12-02T07:47:49Z
 url: https://github.com/astral-sh/ruff/pull/21748
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Use generator over list comprehension to avoid cast
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-02 07:33_
+_@MichaReiser_
 
 ## Summary
 

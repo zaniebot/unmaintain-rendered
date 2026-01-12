@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T18:44:34Z
 updated_at: 2024-08-06T01:52:13Z
 url: https://github.com/astral-sh/uv/issues/5797
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # `uvx` doesn't upgrade when existing tool is installed
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-05 18:44_
+_@charliermarsh_
 
 This is a confusing workflow:
 

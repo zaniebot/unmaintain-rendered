@@ -12,14 +12,14 @@ head: zb/arch-request
 created_at: 2025-05-29T21:27:44Z
 updated_at: 2025-05-29T22:04:58Z
 url: https://github.com/astral-sh/uv/pull/13723
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Differentiate between implicit vs explicit architecture requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-29 21:27_
+_@zanieb_
 
 In https://github.com/astral-sh/uv/pull/13721#issuecomment-2920530601 I presumed that all the installation problems in https://github.com/astral-sh/uv/pull/13722 were solved by https://github.com/astral-sh/uv/pull/13709 but they were not because we don't differentiate between implicit and explicit architecture requests so a request for `aarch64` is considered satisfied by an existing `x86-64` installation even if the user explicitly requested that architecture.
 

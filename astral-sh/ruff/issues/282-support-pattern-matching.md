@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-29T09:26:20Z
 updated_at: 2023-02-22T14:28:57Z
 url: https://github.com/astral-sh/ruff/issues/282
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support pattern matching
 
 ---
 
-_Issue opened by @sobolevn on 2022-09-29 09:26_
+_@sobolevn_
 
 As I am learning the source code, it seems to me that python's pattern matching is not supported at all.
 

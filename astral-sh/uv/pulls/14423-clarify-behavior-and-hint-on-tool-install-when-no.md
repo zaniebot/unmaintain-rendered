@@ -13,14 +13,14 @@ head: zb/tool-no-exec
 created_at: 2025-07-02T14:42:58Z
 updated_at: 2025-07-02T18:11:18Z
 url: https://github.com/astral-sh/uv/pull/14423
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Clarify behavior and hint on tool install when no executables are available
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 14:42_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14416
 

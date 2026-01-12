@@ -14,14 +14,14 @@ head: charlie/min-requires-python
 created_at: 2024-07-31T00:10:41Z
 updated_at: 2025-12-09T14:19:34Z
 url: https://github.com/astral-sh/uv/pull/5644
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Use intersection rather than union for `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 00:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: push-uxrvqtqnuvtx
 created_at: 2025-12-23T00:28:59Z
 updated_at: 2025-12-23T08:01:53Z
 url: https://github.com/astral-sh/ruff/pull/22152
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # Decrease Markdown heading level
 
 ---
 
-_Pull request opened by @cenviity on 2025-12-23 00:28_
+_@cenviity_
 
 ## Summary
 

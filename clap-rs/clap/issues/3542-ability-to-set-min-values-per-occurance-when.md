@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-03-07T07:40:56Z
 updated_at: 2022-08-09T22:05:26Z
 url: https://github.com/clap-rs/clap/issues/3542
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Ability to set min_values per occurance when multiple_occurances is used
 
 ---
 
-_Issue opened by @tmccombs on 2022-03-07 07:40_
+_@tmccombs_
 
 ### Please complete the following tasks
 

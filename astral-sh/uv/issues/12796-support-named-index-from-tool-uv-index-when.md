@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T01:47:31Z
 updated_at: 2025-04-10T14:03:38Z
 url: https://github.com/astral-sh/uv/issues/12796
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Support named index from `tool.uv.index` When running the `uv add` command
 
 ---
 
-_Issue opened by @EATSTEAK on 2025-04-10 01:47_
+_@EATSTEAK_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-14T05:31:41Z
 updated_at: 2025-09-12T15:50:19Z
 url: https://github.com/astral-sh/ruff/issues/17386
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive reports for F821 lint rule
 
 ---
 
-_Issue opened by @chenzhekl on 2025-04-14 05:31_
+_@chenzhekl_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-13T12:07:37Z
 updated_at: 2023-05-13T15:17:14Z
 url: https://github.com/astral-sh/ruff/issues/4410
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLW3301: incorrect autofix when using generator expression
 
 ---
 
-_Issue opened by @oefe on 2023-05-13 12:07_
+_@oefe_
 
 The autofix for `PLW3301` generates incorrect code if the nested call is using a generator expression.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:39:40Z
 updated_at: 2024-11-11T18:54:17Z
 url: https://github.com/astral-sh/uv/issues/8891
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # ModuleNotFoundError: No module named 'mymodule' from jupyter notebook 
 
 ---
 
-_Issue opened by @AlexAtCCRI on 2024-11-07 16:39_
+_@AlexAtCCRI_
 
 **context**: i have a project called `mymodule`  that i am using `uv` to manage. i would like to use `mymodule`'s   venv to test out some notebooks that make use of `mymodule` (but the notebooks live in a different repo). 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T15:06:54Z
 updated_at: 2026-01-09T03:25:28Z
 url: https://github.com/astral-sh/ty/issues/1483
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type variables defined in typeshed's `builtins.pyi` are usable in all files
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-05 15:06_
+_@AlexWaygood_
 
 ### Summary
 

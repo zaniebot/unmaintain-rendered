@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T10:24:16Z
 updated_at: 2025-01-07T19:49:50Z
 url: https://github.com/astral-sh/uv/issues/9381
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # [Feature Request] Make it default to read from .env-files
 
 ---
 
-_Issue opened by @dest1n1s on 2024-11-23 10:24_
+_@dest1n1s_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

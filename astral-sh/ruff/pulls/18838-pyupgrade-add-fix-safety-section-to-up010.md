@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-06-20T22:24:18Z
 updated_at: 2025-06-23T16:56:41Z
 url: https://github.com/astral-sh/ruff/pull/18838
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`pyupgrade`] Add fix safety section to `UP010`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 22:24_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

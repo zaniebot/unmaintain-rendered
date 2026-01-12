@@ -12,14 +12,14 @@ head: charlie/scope-structs
 created_at: 2023-05-25T00:31:33Z
 updated_at: 2023-05-25T19:53:55Z
 url: https://github.com/astral-sh/ruff/pull/4648
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove dedicated ScopeKind structs in favor of AST nodes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-25 00:31_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T08:28:06Z
 updated_at: 2024-04-16T12:54:41Z
 url: https://github.com/astral-sh/uv/issues/3057
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Can the `--help` output be wrapped differently?
 
 ---
 
-_Issue opened by @bluetech on 2024-04-16 08:28_
+_@bluetech_
 
 The `uv pip install --help` output looks like this for me:
 

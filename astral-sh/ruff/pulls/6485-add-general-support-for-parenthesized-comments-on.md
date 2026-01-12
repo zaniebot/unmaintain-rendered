@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-08-10T21:10:46Z
 updated_at: 2023-08-15T19:16:24Z
 url: https://github.com/astral-sh/ruff/pull/6485
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add general support for parenthesized comments on expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-10 21:10_
+_@charliermarsh_
 
 ## Summary
 

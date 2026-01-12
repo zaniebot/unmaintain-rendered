@@ -14,14 +14,14 @@ head: micha/default-to-latest-python-version
 created_at: 2025-05-08T08:49:33Z
 updated_at: 2025-05-08T14:58:43Z
 url: https://github.com/astral-sh/ruff/pull/17938
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Default to latest supported python version
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-08 08:49_
+_@MichaReiser_
 
 ## Summary
 

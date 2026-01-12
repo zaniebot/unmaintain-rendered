@@ -13,14 +13,14 @@ head: F722
 created_at: 2025-01-02T00:12:13Z
 updated_at: 2025-01-04T09:54:58Z
 url: https://github.com/astral-sh/ruff/pull/15215
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pyflakes`] Ignore errors in `@no_type_check` string annotations (`F722`, `F821`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-02 00:12_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T15:33:44Z
 updated_at: 2025-05-24T16:28:35Z
 url: https://github.com/astral-sh/uv/issues/13556
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Add shorthand for --directory command option
 
 ---
 
-_Issue opened by @wray27 on 2025-05-20 15:33_
+_@wray27_
 
 ### Summary
 

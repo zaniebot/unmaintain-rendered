@@ -12,14 +12,14 @@ head: charlie/ret
 created_at: 2023-02-16T17:44:30Z
 updated_at: 2023-02-20T21:45:47Z
 url: https://github.com/astral-sh/ruff/pull/2962
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid trying to fix implicit returns with control flow
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 17:44_
+_@charliermarsh_
 
 # Summary
 

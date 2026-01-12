@@ -14,14 +14,14 @@ head: gankra/stmt-types
 created_at: 2025-12-02T19:45:00Z
 updated_at: 2025-12-03T22:34:27Z
 url: https://github.com/astral-sh/ruff/pull/21762
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] implement goto-type and display types in hovers for the remaining non-expression identifiers
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-02 19:45_
+_@Gankra_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-26T14:59:44Z
 updated_at: 2022-06-28T13:06:10Z
 url: https://github.com/clap-rs/clap/issues/3872
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Environment variable sometimes overrides global arg, new in 3.2
 
 ---
 
-_Issue opened by @pbevin on 2022-06-26 14:59_
+_@pbevin_
 
 ### Please complete the following tasks
 

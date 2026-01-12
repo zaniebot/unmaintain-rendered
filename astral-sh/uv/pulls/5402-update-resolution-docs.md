@@ -13,14 +13,14 @@ head: konsti/update-resolution-docs
 created_at: 2024-07-24T11:29:02Z
 updated_at: 2024-07-24T11:39:49Z
 url: https://github.com/astral-sh/uv/pull/5402
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Update `Resolution` docs
 
 ---
 
-_Pull request opened by @konstin on 2024-07-24 11:29_
+_@konstin_
 
 They didn't reflect the recent nodes/edges changes.
 

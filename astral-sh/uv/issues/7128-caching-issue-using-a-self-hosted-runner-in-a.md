@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-06T16:04:57Z
 updated_at: 2024-09-06T17:57:14Z
 url: https://github.com/astral-sh/uv/issues/7128
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Caching issue using a self-hosted runner in a GitHub action
 
 ---
 
-_Issue opened by @mobidyc on 2024-09-06 16:04_
+_@mobidyc_
 
 Very strange behavior,
 resolved using the `--no-cache` flag for both `uv pip compile` and `sync`.

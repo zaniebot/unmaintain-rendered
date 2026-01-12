@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-24T15:40:11Z
 updated_at: 2024-02-25T02:57:59Z
 url: https://github.com/clap-rs/clap/issues/5373
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [Meta] No github release for `v4.5.0`
 
 ---
 
-_Issue opened by @hasezoey on 2024-02-24 15:40_
+_@hasezoey_
 
 I just noticed that there is not github release for tag `v4.5.0`, but there is for `v4.5.1` and before that the last being `v4.4.18`.
 But the release exists in the [CHANGELOG](https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#450---2024-02-08).

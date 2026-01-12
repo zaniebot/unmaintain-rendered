@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-04T14:41:48Z
 updated_at: 2024-04-05T06:42:01Z
 url: https://github.com/astral-sh/ruff/issues/10775
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # D403 does not trigger for a single-word docstring that ends with a period
 
 ---
 
-_Issue opened by @jbmoorhouse on 2024-04-04 14:41_
+_@jbmoorhouse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

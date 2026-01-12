@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T23:29:01Z
 updated_at: 2025-12-02T10:42:51Z
 url: https://github.com/astral-sh/uv/issues/1384
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Support .env-files
 
 ---
 
-_Issue opened by @woutervh on 2024-02-15 23:29_
+_@woutervh_
 
 In my workflow I make heavy use of env-files.
 

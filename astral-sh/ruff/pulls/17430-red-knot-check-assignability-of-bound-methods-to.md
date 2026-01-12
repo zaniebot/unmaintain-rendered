@@ -13,14 +13,14 @@ head: dhruv/bound-method-assignability
 created_at: 2025-04-16T17:52:40Z
 updated_at: 2025-04-16T18:52:01Z
 url: https://github.com/astral-sh/ruff/pull/17430
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Check assignability of bound methods to callables
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-16 17:52_
+_@dhruvmanila_
 
 ## Summary
 

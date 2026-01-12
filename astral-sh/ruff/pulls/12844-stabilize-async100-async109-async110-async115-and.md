@@ -14,14 +14,14 @@ head: stabilize-ASYNC-behavior
 created_at: 2024-08-12T12:35:34Z
 updated_at: 2024-08-12T13:58:02Z
 url: https://github.com/astral-sh/ruff/pull/12844
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Stabilize `ASYNC100`, `ASYNC109`, `ASYNC110`, `ASYNC115` and `ASYNC116` behavior changes
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 12:35_
+_@MichaReiser_
 
 ## Summary
 

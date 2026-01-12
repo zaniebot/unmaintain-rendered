@@ -13,14 +13,14 @@ head: cjm/disjoint
 created_at: 2024-12-14T05:47:15Z
 updated_at: 2024-12-14T14:48:53Z
 url: https://github.com/astral-sh/ruff/pull/14967
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] type[] is disjoint from None, LiteralString
 
 ---
 
-_Pull request opened by @carljm on 2024-12-14 05:47_
+_@carljm_
 
 ## Summary
 

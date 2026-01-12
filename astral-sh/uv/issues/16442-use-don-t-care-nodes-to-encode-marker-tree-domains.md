@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-24T17:08:54Z
 updated_at: 2025-10-24T17:39:14Z
 url: https://github.com/astral-sh/uv/issues/16442
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Use don't care nodes to encode marker tree domains
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-24 17:08_
+_@ibraheemdev_
 
 A realization I came to when reading over the marker tree code (while reviewing https://github.com/astral-sh/ruff/pull/21050). We currently impose two domain constraints on a given marker tree:
 - The `requires-python` range.

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-04-10T18:12:10Z
 updated_at: 2025-04-10T19:58:29Z
 url: https://github.com/astral-sh/uv/pull/12818
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Replace `--frozen` with `--locked` in Docker integration guide
 
 ---
 
-_Pull request opened by @johnthagen on 2025-04-10 18:12_
+_@johnthagen_
 
 ## Summary
 

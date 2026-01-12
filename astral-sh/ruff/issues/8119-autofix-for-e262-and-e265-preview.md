@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-22T18:35:13Z
 updated_at: 2023-12-09T20:18:09Z
 url: https://github.com/astral-sh/ruff/issues/8119
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Autofix for `E262` and `E265` (preview)
 
 ---
 
-_Issue opened by @Skylion007 on 2023-10-22 18:35_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

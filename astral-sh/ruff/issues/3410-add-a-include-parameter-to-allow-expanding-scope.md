@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-08T21:52:09Z
 updated_at: 2023-08-24T00:10:30Z
 url: https://github.com/astral-sh/ruff/issues/3410
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add a `include` parameter to allow expanding scope of included files
 
 ---
 
-_Issue opened by @neingeist on 2023-03-08 21:52_
+_@neingeist_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

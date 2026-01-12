@@ -14,14 +14,14 @@ head: material-mkdcos-insiders
 created_at: 2025-07-15T19:12:57Z
 updated_at: 2025-07-16T08:42:25Z
 url: https://github.com/astral-sh/ruff/pull/19373
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # chore: Document Material for MkDocs Insiders limitations in CONTRIBUTING.md in more detail
 
 ---
 
-_Pull request opened by @corneliusroemer on 2025-07-15 19:12_
+_@corneliusroemer_
 
 ## Summary
 

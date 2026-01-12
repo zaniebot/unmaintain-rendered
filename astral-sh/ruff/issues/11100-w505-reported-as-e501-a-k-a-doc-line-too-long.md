@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T07:36:43Z
 updated_at: 2024-04-26T07:04:43Z
 url: https://github.com/astral-sh/ruff/issues/11100
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `W505` reported as `E501` a.k.a doc-line-too-long
 
 ---
 
-_Issue opened by @Borda on 2024-04-23 07:36_
+_@Borda_
 
 it could be just my wrong understanding or expectations but running formatting on https://github.com/unit8co/darts/pull/2341, and they would like to make 88 line-length for code only and docstring differently, so I found [`W505`](https://docs.astral.sh/ruff/rules/doc-line-too-long/)
 which I wanted to ignore, but it turned out it is not reported but `E501`. Well, `E501` is correct, but it is a superset, and `W505` would better describe the case...

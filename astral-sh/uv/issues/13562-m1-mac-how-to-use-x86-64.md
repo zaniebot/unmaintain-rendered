@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T19:33:42Z
 updated_at: 2025-05-20T20:12:40Z
 url: https://github.com/astral-sh/uv/issues/13562
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # M1 Mac, how to use x86_64?
 
 ---
 
-_Issue opened by @chengyjonathan on 2025-05-20 19:33_
+_@chengyjonathan_
 
 ### Question
 

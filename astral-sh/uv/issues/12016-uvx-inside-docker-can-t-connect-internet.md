@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T19:01:39Z
 updated_at: 2025-03-07T01:13:39Z
 url: https://github.com/astral-sh/uv/issues/12016
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # uvx inside docker can't connect internet
 
 ---
 
-_Issue opened by @gauraputu on 2025-03-06 19:01_
+_@gauraputu_
 
 ### Summary
 

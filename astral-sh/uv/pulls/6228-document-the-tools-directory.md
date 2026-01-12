@@ -14,14 +14,14 @@ head: zb/docs-tool-dir
 created_at: 2024-08-19T19:39:33Z
 updated_at: 2024-08-19T19:46:20Z
 url: https://github.com/astral-sh/uv/pull/6228
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Document the tools directory
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 19:39_
+_@zanieb_
 
 As in https://github.com/astral-sh/uv/pull/6227
 

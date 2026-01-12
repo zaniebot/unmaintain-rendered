@@ -13,14 +13,14 @@ head: charlie/activate
 created_at: 2024-05-04T21:48:30Z
 updated_at: 2024-05-04T23:30:01Z
 url: https://github.com/astral-sh/uv/pull/3376
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:36Z
 ```
 
 # Update activation scripts from virtualenv
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 21:48_
+_@charliermarsh_
 
 ## Summary
 

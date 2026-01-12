@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-08T12:48:46Z
 updated_at: 2024-06-08T20:02:11Z
 url: https://github.com/astral-sh/ruff/issues/11801
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff added extra string to code when formating
 
 ---
 
-_Issue opened by @MRossa157 on 2024-06-08 12:48_
+_@MRossa157_
 
 This bug was on **Ruff version** ruff 0.4.7 and also on ruff 0.4.8
 

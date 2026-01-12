@@ -13,14 +13,14 @@ head: charlie/cwd
 created_at: 2024-07-29T20:50:07Z
 updated_at: 2024-08-23T14:57:05Z
 url: https://github.com/astral-sh/uv/pull/5574
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Use cached current directory everywhere
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-29 20:50_
+_@charliermarsh_
 
 _No description provided._
 

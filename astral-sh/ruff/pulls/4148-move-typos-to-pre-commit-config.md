@@ -12,14 +12,14 @@ head: move-typos
 created_at: 2023-04-29T10:08:29Z
 updated_at: 2023-05-10T14:55:05Z
 url: https://github.com/astral-sh/ruff/pull/4148
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Move typos to pre-commit config
 
 ---
 
-_Pull request opened by @calumy on 2023-04-29 10:08_
+_@calumy_
 
 For users of pre-commit, it would be useful to add the typos pre-commit check that currently runs in CI. With this proposed change, CI would run the typos check twice (in the pre-commit stage and its own stage), which is not necessary.
 

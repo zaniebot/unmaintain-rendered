@@ -14,14 +14,14 @@ head: fix-22088
 created_at: 2025-12-30T04:04:29Z
 updated_at: 2025-12-30T04:20:22Z
 url: https://github.com/astral-sh/ruff/pull/22296
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] increase the max number of diagnostics for `sympy` in `ty_walltime` benchmark
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-30 04:04_
+_@mtshiba_
 
 ## Summary
 

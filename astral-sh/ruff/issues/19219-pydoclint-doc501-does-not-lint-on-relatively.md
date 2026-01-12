@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-08T21:38:14Z
 updated_at: 2025-07-08T21:38:14Z
 url: https://github.com/astral-sh/ruff/issues/19219
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`pydoclint`] `DOC501` does not lint on relatively imported names
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-08 21:38_
+_@MeGaGiGaGon_
 
 ### Summary
 

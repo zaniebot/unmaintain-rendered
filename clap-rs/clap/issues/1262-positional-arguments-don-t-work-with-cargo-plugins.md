@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-27T23:24:45Z
 updated_at: 2018-08-02T03:30:23Z
 url: https://github.com/clap-rs/clap/issues/1262
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Positional arguments don't work with cargo plugins
 
 ---
 
-_Issue opened by @AdamNiederer on 2018-04-27 23:24_
+_@AdamNiederer_
 
 ### Rust Version
 

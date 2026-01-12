@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-20T11:31:08Z
 updated_at: 2025-01-29T07:08:57Z
 url: https://github.com/astral-sh/uv/pull/10053
-synced_at: 2026-01-10T11:44:32Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Fix formatting of `RUST_LOG` documentation
 
 ---
 
-_Pull request opened by @Viicos on 2024-12-20 11:31_
+_@Viicos_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

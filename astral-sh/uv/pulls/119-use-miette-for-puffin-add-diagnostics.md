@@ -12,14 +12,14 @@ head: charlie/miette
 created_at: 2023-10-18T18:12:22Z
 updated_at: 2023-10-18T18:24:11Z
 url: https://github.com/astral-sh/uv/pull/119
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Use `miette` for `puffin add` diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 18:12_
+_@charliermarsh_
 
 Experiment in using `miette` for better user-facing diagnostics in the CLI crate:
 

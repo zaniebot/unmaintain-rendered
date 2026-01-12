@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-30T14:19:44Z
 updated_at: 2024-03-30T14:55:36Z
 url: https://github.com/astral-sh/uv/issues/2734
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Update macOS cache test to use `actions/setup-python`
 
 ---
 
-_Issue opened by @zanieb on 2024-03-30 14:19_
+_@zanieb_
 
 No real reason for this test to use Brew's Python. It's probably faster to just install from the GitHub official setup-python action.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T13:51:40Z
 updated_at: 2025-01-22T07:48:36Z
 url: https://github.com/astral-sh/ruff/issues/15641
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Bring back issue template
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-21 13:51_
+_@MichaReiser_
 
 We removed the issue template because GitHub's new issue preview no longer supports the deprecated style issue template that we used. We didn't want to use the new style of issue templates because it introduces an unnecessary step to select the template --- where there's just one --- when creating a new issue (see https://github.com/astral-sh/ruff/issues/15135).
 

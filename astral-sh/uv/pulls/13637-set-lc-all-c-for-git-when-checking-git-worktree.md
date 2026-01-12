@@ -13,14 +13,14 @@ head: git-locale
 created_at: 2025-05-24T14:09:20Z
 updated_at: 2025-05-24T15:16:33Z
 url: https://github.com/astral-sh/uv/pull/13637
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Set `LC_ALL=C` for git when checking git worktree
 
 ---
 
-_Pull request opened by @j178 on 2025-05-24 14:09_
+_@j178_
 
 ## Summary
 

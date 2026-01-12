@@ -13,14 +13,14 @@ head: rk-invalid-return-type
 created_at: 2025-03-21T16:08:55Z
 updated_at: 2025-03-23T20:53:02Z
 url: https://github.com/astral-sh/ruff/pull/16900
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Do not emit `invalid-return-type` for abstract functions
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-21 16:08_
+_@InSyncWithFoo_
 
 ## Summary
 

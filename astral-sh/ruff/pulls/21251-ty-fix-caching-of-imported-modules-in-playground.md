@@ -14,14 +14,14 @@ head: micha/fix-playground-caching
 created_at: 2025-11-03T03:28:07Z
 updated_at: 2025-11-03T15:00:31Z
 url: https://github.com/astral-sh/ruff/pull/21251
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Fix caching of imported modules in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-03 03:28_
+_@MichaReiser_
 
 ## Summary
 

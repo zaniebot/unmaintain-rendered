@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T09:11:29Z
 updated_at: 2024-12-15T10:06:14Z
 url: https://github.com/astral-sh/uv/issues/8410
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Editable Install (-e .) Ignores Version from requirements.txt
 
 ---
 
-_Issue opened by @tzurgross on 2024-10-21 09:11_
+_@tzurgross_
 
 When using `uv pip install -e .`, uv installs an incorrect version of `smart_open` (7.0.5), even though requirements.txt specifies `smart_open==6.4.0`. This issue does not occur when running either `uv pip install .` or `pip install -e .`, where the correct version (6.4.0) is installed as expected.
 

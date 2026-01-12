@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-06-25T21:27:02Z
 updated_at: 2025-06-26T06:54:59Z
 url: https://github.com/astral-sh/ruff/pull/18947
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`playground`] Add ruff logo docs link to Header.tsx
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-25 21:27_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

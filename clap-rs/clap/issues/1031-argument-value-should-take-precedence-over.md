@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-08-16T14:14:43Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1031
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Argument value should take precedence over subcommand with the same name
 
 ---
 
-_Issue opened by @axelchalon on 2017-08-16 14:14_
+_@axelchalon_
 
 _rustc 1.18.0 / clap 2.26.0_
 

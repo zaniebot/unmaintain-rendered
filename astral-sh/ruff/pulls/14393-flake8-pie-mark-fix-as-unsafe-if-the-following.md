@@ -13,14 +13,14 @@ head: PIE790
 created_at: 2024-11-17T00:31:06Z
 updated_at: 2024-11-18T02:38:08Z
 url: https://github.com/astral-sh/ruff/pull/14393
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pie`] Mark fix as unsafe if the following statement is a string literal (`PIE790`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-17 00:31_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T12:34:06Z
 updated_at: 2024-08-21T23:52:03Z
 url: https://github.com/astral-sh/uv/issues/6323
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv cache populate / export cache
 
 ---
 
-_Issue opened by @adriangb on 2024-08-21 12:34_
+_@adriangb_
 
 It would be nice to have the ability to pre-cache dependencies. In particular I would find this useful in a monorepo context to:
 1. Have a docker layer where I populate the cache with all dependencies.

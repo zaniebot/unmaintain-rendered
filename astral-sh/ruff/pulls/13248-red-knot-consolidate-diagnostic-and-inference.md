@@ -13,14 +13,14 @@ head: cjm/tests-together
 created_at: 2024-09-04T22:05:00Z
 updated_at: 2024-09-05T16:15:24Z
 url: https://github.com/astral-sh/ruff/pull/13248
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] consolidate diagnostic and inference tests
 
 ---
 
-_Pull request opened by @carljm on 2024-09-04 22:05_
+_@carljm_
 
 Pull the tests from `types.rs` into `infer.rs`.
 

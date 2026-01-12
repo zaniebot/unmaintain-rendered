@@ -13,14 +13,14 @@ head: alex/truthy-bools
 created_at: 2025-01-14T14:03:49Z
 updated_at: 2025-01-14T18:15:40Z
 url: https://github.com/astral-sh/ruff/pull/15475
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Corrections and improvements to intersection simplification
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-14 14:03_
+_@AlexWaygood_
 
 ## Summary
 

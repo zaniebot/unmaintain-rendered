@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-13T22:24:17Z
 updated_at: 2023-06-13T23:19:17Z
 url: https://github.com/astral-sh/ruff/issues/5066
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff nested min max PYLW3301 autofix bug?
 
 ---
 
-_Issue opened by @Ryang20718 on 2023-06-13 22:24_
+_@Ryang20718_
 
 ruff version 0.0.272
 

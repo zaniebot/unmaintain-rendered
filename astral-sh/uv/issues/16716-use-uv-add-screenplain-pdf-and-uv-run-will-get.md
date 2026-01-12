@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T03:56:12Z
 updated_at: 2025-11-14T08:45:40Z
 url: https://github.com/astral-sh/uv/issues/16716
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # use uv add screenplain[pdf] and uv run will get ModuleNotFoundError: No module named 'screenplain'
 
 ---
 
-_Issue opened by @zhiquanchi on 2025-11-13 03:56_
+_@zhiquanchi_
 
 ### Summary
 

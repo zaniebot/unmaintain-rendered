@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-20T22:24:38Z
 updated_at: 2023-10-13T01:08:53Z
 url: https://github.com/astral-sh/ruff/issues/5933
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Simplify `key in dct and dct[key]` to `dct.get(key)`
 
 ---
 
-_Issue opened by @janosh on 2023-07-20 22:24_
+_@janosh_
 
 ```py
 # bad

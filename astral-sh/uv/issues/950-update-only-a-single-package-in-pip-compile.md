@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-17T17:16:07Z
 updated_at: 2024-01-17T19:31:53Z
 url: https://github.com/astral-sh/uv/issues/950
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Update only a single package in pip compile
 
 ---
 
-_Issue opened by @konstin on 2024-01-17 17:16_
+_@konstin_
 
 When running `puffin pip compile` with an existing lockfile the options are currently to not update any of the packages (default) or update all packages (`--upgrade`). There should also be an option to update only a selected package.
 

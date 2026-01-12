@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-01T07:49:36Z
 updated_at: 2024-07-24T20:25:02Z
 url: https://github.com/astral-sh/ruff/issues/9749
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # S113 only considers `timeout=` probable, unpacking is not recognised.
 
 ---
 
-_Issue opened by @rogier-stegeman on 2024-02-01 07:49_
+_@rogier-stegeman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

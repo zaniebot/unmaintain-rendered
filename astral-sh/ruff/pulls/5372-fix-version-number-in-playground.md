@@ -13,14 +13,14 @@ head: charlie/playground
 created_at: 2023-06-26T15:31:35Z
 updated_at: 2023-06-26T16:16:48Z
 url: https://github.com/astral-sh/ruff/pull/5372
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix version number in playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-26 15:31_
+_@charliermarsh_
 
 ## Summary
 

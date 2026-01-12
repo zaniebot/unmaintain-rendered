@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-21T12:56:46Z
 updated_at: 2025-10-22T22:11:52Z
 url: https://github.com/astral-sh/ruff/issues/21017
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP032 fix doesn’t account for underscores in decimal `int` literals
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-21 12:56_
+_@dscorbett_
 
 ### Summary
 

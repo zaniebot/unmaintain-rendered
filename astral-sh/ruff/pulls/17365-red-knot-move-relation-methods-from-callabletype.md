@@ -14,14 +14,14 @@ head: dhruv/move-callable-type-relation
 created_at: 2025-04-12T04:42:19Z
 updated_at: 2025-04-15T13:38:29Z
 url: https://github.com/astral-sh/ruff/pull/17365
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Move relation methods from `CallableType` to `Signature`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-12 04:42_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: formatspecifiers
 created_at: 2023-01-03T12:09:58Z
 updated_at: 2023-01-11T01:50:06Z
 url: https://github.com/astral-sh/ruff/pull/1594
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Pyupgrade: Format specifiers
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-03 12:09_
+_@colin99d_
 
 A part of #827. Posting this for visibility. Still has some work to do to be done.
 

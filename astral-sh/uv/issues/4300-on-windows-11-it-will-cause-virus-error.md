@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-13T03:42:00Z
 updated_at: 2024-06-14T04:02:35Z
 url: https://github.com/astral-sh/uv/issues/4300
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # On Windows 11, it will cause virus error.
 
 ---
 
-_Issue opened by @zengqiu on 2024-06-13 03:42_
+_@zengqiu_
 
 Platform: Windows 11
 Version: 0.2.11

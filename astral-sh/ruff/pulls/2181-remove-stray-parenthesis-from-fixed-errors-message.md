@@ -12,14 +12,14 @@ head: stray-paren
 created_at: 2023-01-25T23:10:01Z
 updated_at: 2023-01-26T12:33:30Z
 url: https://github.com/astral-sh/ruff/pull/2181
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove stray parenthesis from fixed errors message
 
 ---
 
-_Pull request opened by @andersk on 2023-01-25 23:10_
+_@andersk_
 
 _No description provided._
 

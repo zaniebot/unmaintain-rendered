@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-11T08:13:07Z
 updated_at: 2025-12-09T18:49:56Z
 url: https://github.com/astral-sh/ruff/issues/17347
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [`pylint`] Extend `PLW0133` to also detect user-defined exceptions
 
 ---
 
-_Issue opened by @LoicRiegel on 2025-04-11 08:13_
+_@LoicRiegel_
 
 ### Summary
 

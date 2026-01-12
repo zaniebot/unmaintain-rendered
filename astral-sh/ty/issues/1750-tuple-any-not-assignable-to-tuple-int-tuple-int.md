@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T21:46:12Z
 updated_at: 2025-12-05T19:04:25Z
 url: https://github.com/astral-sh/ty/issues/1750
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `tuple[Any, ...]` not assignable to `tuple[int, *tuple[int, ...]]`
 
 ---
 
-_Issue opened by @jorenham on 2025-12-03 21:46_
+_@jorenham_
 
 ### Summary
 

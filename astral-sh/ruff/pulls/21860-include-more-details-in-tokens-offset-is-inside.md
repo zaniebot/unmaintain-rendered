@@ -13,14 +13,14 @@ head: micha/improve-inside-token-panic-message
 created_at: 2025-12-09T08:42:02Z
 updated_at: 2025-12-09T10:12:36Z
 url: https://github.com/astral-sh/ruff/pull/21860
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # Include more details in Tokens 'offset is inside token' panic message
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-09 08:42_
+_@MichaReiser_
 
 ## Summary
 

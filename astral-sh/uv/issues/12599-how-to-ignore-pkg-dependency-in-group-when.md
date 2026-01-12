@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T16:05:07Z
 updated_at: 2025-04-01T16:12:41Z
 url: https://github.com/astral-sh/uv/issues/12599
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # How to ignore pkg dependency in group when collision with another group
 
 ---
 
-_Issue opened by @mikel-brostrom on 2025-04-01 16:05_
+_@mikel-brostrom_
 
 ### Summary
 

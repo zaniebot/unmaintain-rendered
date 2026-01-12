@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T07:58:54Z
 updated_at: 2024-10-02T14:23:05Z
 url: https://github.com/clap-rs/clap/issues/5762
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Show default subcommand for `--help` when using `#[default]`
 
 ---
 
-_Issue opened by @gd0st on 2024-10-02 07:58_
+_@gd0st_
 
 ### Please complete the following tasks
 

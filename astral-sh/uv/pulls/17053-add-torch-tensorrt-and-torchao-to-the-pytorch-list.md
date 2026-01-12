@@ -13,14 +13,14 @@ head: charlie/torch-tensorrt
 created_at: 2025-12-09T19:35:24Z
 updated_at: 2025-12-09T20:29:33Z
 url: https://github.com/astral-sh/uv/pull/17053
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Add `torch-tensorrt` and `torchao` to the PyTorch list
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-09 19:35_
+_@charliermarsh_
 
 ## Summary
 

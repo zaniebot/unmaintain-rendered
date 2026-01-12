@@ -13,14 +13,14 @@ head: micha/place-table-inline-definitions
 created_at: 2025-07-17T18:57:42Z
 updated_at: 2025-07-18T16:57:36Z
 url: https://github.com/astral-sh/ruff/pull/19409
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Reduce number of inline stored definitions per place
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-17 18:57_
+_@MichaReiser_
 
 ## Summary
 

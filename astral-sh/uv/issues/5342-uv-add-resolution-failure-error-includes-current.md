@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T15:58:38Z
 updated_at: 2024-08-16T13:23:06Z
 url: https://github.com/astral-sh/uv/issues/5342
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv add` resolution failure error includes current project version
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 15:58_
+_@zanieb_
 
 ```
 $ uv add 'httpx>9999'

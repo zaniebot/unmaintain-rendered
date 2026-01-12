@@ -14,14 +14,14 @@ head: redundant-backslash
 created_at: 2024-03-08T04:03:50Z
 updated_at: 2024-04-30T18:12:20Z
 url: https://github.com/astral-sh/ruff/pull/10292
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Implement `redundant-backslash` (`E502`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-08 04:03_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

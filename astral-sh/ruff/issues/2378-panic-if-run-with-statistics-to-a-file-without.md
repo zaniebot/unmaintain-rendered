@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T05:37:54Z
 updated_at: 2023-01-31T12:53:30Z
 url: https://github.com/astral-sh/ruff/issues/2378
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [Panic] if run with --statistics to a file without linter errors
 
 ---
 
-_Issue opened by @ded42r on 2023-01-31 05:37_
+_@ded42r_
 
 I ran the command `ruff --statistics main.py` and got an error. File _main.py_ is empty.
 

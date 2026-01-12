@@ -13,14 +13,14 @@ head: alex/class-literal-type
 created_at: 2024-11-05T13:43:09Z
 updated_at: 2024-11-05T22:25:48Z
 url: https://github.com/astral-sh/ruff/pull/14108
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Introduce a new `ClassLiteralType` struct
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-05 13:43_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: feat/hide-index-urls-if-not-emited
 created_at: 2024-02-21T21:40:46Z
 updated_at: 2024-02-23T10:17:13Z
 url: https://github.com/astral-sh/uv/pull/1835
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Hide index URLs from header if not emitted
 
 ---
 
-_Pull request opened by @drjackild on 2024-02-21 21:40_
+_@drjackild_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

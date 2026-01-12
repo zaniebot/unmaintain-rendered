@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T22:28:16Z
 updated_at: 2025-02-06T15:11:37Z
 url: https://github.com/astral-sh/uv/issues/11266
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # uv pip install editable fails with bad interpreter
 
 ---
 
-_Issue opened by @tamaralyne on 2025-02-05 22:28_
+_@tamaralyne_
 
 ### Summary
 

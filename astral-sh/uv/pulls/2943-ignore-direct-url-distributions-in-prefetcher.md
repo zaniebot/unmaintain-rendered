@@ -13,14 +13,14 @@ head: charlie/prefetch
 created_at: 2024-04-09T18:57:40Z
 updated_at: 2024-04-09T19:11:09Z
 url: https://github.com/astral-sh/uv/pull/2943
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Ignore direct URL distributions in prefetcher
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 18:57_
+_@charliermarsh_
 
 ## Summary
 

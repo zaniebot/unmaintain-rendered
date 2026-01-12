@@ -13,14 +13,14 @@ head: konsti/git-root-for-dist
 created_at: 2024-10-15T14:36:00Z
 updated_at: 2024-10-15T17:29:52Z
 url: https://github.com/astral-sh/uv/pull/8220
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Run `uv build` builds in the source distribution bucket
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 14:36_
+_@konstin_
 
 When building a source distribution to a wheels, we perform the build inside a temporary directory inside the output directory. By default, the output directory is `dist/` in the repository root. This temp dir placement allows us to move the final wheel to the output directory instead of copying it (a temp dir might be on another device, which means we need to copy instead of moving).
 

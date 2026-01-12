@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-11-25T06:31:20Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/757
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Indentation of App.about() and other App messages
 
 ---
 
-_Issue opened by @mandeep on 2016-11-25 06:31_
+_@mandeep_
 
 ### Rust Version
 

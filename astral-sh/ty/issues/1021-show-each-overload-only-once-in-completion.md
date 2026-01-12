@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-16T15:17:26Z
 updated_at: 2026-01-09T15:24:21Z
 url: https://github.com/astral-sh/ty/issues/1021
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Show each overload only once in completion suggestions
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-08-16 15:17_
+_@JaRoSchm_
 
 ### Summary
 

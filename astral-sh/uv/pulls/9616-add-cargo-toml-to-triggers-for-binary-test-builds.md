@@ -13,14 +13,14 @@ head: zb/ci-binary-
 created_at: 2024-12-03T18:50:17Z
 updated_at: 2024-12-03T20:13:35Z
 url: https://github.com/astral-sh/uv/pull/9616
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Add `Cargo.toml` to triggers for binary test builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-03 18:50_
+_@zanieb_
 
 _No description provided._
 

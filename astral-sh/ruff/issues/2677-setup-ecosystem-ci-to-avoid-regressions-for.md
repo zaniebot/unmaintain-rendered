@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T02:27:43Z
 updated_at: 2023-03-10T22:39:09Z
 url: https://github.com/astral-sh/ruff/issues/2677
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Setup "ecosystem CI" to avoid regressions for existing users
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-09 02:27_
+_@charliermarsh_
 
 I'd like to setup a CI job to run Ruff over some open-source projects that use it already (and are known to have "passing" Ruff configurations). For example, we could have a job that checks out a known-to-be-passing commit of Pandas, and runs latest Ruff over the codebase.
 

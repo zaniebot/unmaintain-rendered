@@ -13,14 +13,14 @@ head: charlie/tool
 created_at: 2025-12-12T22:43:34Z
 updated_at: 2025-12-13T15:39:03Z
 url: https://github.com/astral-sh/uv/pull/17114
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Enforce latest-version in `@latest` requests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-12 22:43_
+_@charliermarsh_
 
 ## Summary
 

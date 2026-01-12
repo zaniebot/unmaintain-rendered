@@ -12,14 +12,14 @@ head: duplicate-argument-name
 created_at: 2023-02-08T00:58:44Z
 updated_at: 2023-02-08T12:41:15Z
 url: https://github.com/astral-sh/ruff/pull/2649
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # [`pylint`]: duplicate-argument-name
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-08 00:58_
+_@colin99d_
 
 @charliermarsh, I have a quick question for you. This lint is supposed to detect duplicate arguments in a function. This is a SyntaxError in python:
 ```

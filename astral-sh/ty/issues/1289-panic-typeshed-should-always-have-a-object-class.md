@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T22:04:17Z
 updated_at: 2025-10-06T15:45:32Z
 url: https://github.com/astral-sh/ty/issues/1289
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] Typeshed should always have a `object` class in `builtins.pyi`
 
 ---
 
-_Issue opened by @copdips on 2025-09-30 22:04_
+_@copdips_
 
 ### Summary
 

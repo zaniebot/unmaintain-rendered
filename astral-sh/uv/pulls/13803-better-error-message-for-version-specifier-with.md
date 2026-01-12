@@ -12,14 +12,14 @@ head: jmw/missing-operator-hint-error
 created_at: 2025-06-03T12:36:52Z
 updated_at: 2025-06-03T19:18:19Z
 url: https://github.com/astral-sh/uv/pull/13803
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Better error message for version specifier with missing operator
 
 ---
 
-_Pull request opened by @jmwoliver on 2025-06-03 12:36_
+_@jmwoliver_
 
 ## Summary
 

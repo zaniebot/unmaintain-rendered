@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-06-08T17:30:57Z
 updated_at: 2021-06-08T23:08:18Z
 url: https://github.com/clap-rs/clap/issues/2528
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Derived ArgEnum::from_str should not panic on invalid input 
 
 ---
 
-_Issue opened by @edlanglois on 2021-06-08 17:30_
+_@edlanglois_
 
 ### Please complete the following tasks
 

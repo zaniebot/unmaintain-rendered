@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-23T18:26:44Z
 updated_at: 2024-08-23T20:13:07Z
 url: https://github.com/astral-sh/uv/issues/6537
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Can't `uv run --with` private package index
 
 ---
 
-_Issue opened by @jacob-bush-shopify on 2024-08-23 18:26_
+_@jacob-bush-shopify_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

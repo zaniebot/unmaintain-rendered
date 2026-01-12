@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T04:09:59Z
 updated_at: 2025-04-29T21:37:07Z
 url: https://github.com/astral-sh/uv/issues/13117
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Better error message when a non-PEP-751-compatible filename lock file is used
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2025-04-26 04:09_
+_@ReinforcedKnowledge_
 
 ### Summary
 

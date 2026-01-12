@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T17:23:30Z
 updated_at: 2024-07-30T17:48:07Z
 url: https://github.com/astral-sh/uv/issues/5612
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Error messages should omit `a==1`-to-`a==1{marker}` relationships
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-30 17:23_
+_@charliermarsh_
 
 See: https://github.com/orgs/astral-sh/projects/11/views/8?pane=issue&itemId=70300371
 

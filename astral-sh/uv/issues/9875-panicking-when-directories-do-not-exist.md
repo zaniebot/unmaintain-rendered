@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T19:10:36Z
 updated_at: 2024-12-13T21:39:47Z
 url: https://github.com/astral-sh/uv/issues/9875
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Panicking when directories do not exist
 
 ---
 
-_Issue opened by @bepri on 2024-12-13 19:10_
+_@bepri_
 
 uv can panic from any command if your current directory no longer exists.
 

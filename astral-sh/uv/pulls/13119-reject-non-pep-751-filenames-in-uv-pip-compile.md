@@ -14,14 +14,14 @@ head: charlie/err
 created_at: 2025-04-26T14:30:31Z
 updated_at: 2025-04-28T20:42:05Z
 url: https://github.com/astral-sh/uv/pull/13119
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Reject non-PEP 751 filenames in `uv pip compile` and `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-26 14:30_
+_@charliermarsh_
 
 ## Summary
 

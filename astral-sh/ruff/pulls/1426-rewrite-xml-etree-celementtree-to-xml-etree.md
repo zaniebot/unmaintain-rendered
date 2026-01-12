@@ -12,14 +12,14 @@ head: cElementTree
 created_at: 2022-12-28T15:58:29Z
 updated_at: 2022-12-28T21:30:36Z
 url: https://github.com/astral-sh/ruff/pull/1426
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Rewrite xml.etree.cElementTree to xml.etree.ElementTree
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-28 15:58_
+_@colin99d_
 
 Another check for #827 
 

@@ -12,14 +12,14 @@ head: p
 created_at: 2025-09-11T17:12:28Z
 updated_at: 2025-09-11T20:20:42Z
 url: https://github.com/clap-rs/clap/pull/6126
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs(cookbook): Provide a custom TypedValueParser example
 
 ---
 
-_Pull request opened by @epage on 2025-09-11 17:12_
+_@epage_
 
 Inspired by #6124
 

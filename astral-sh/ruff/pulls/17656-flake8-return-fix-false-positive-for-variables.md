@@ -12,14 +12,14 @@ head: fix-RET504
 created_at: 2025-04-27T20:41:41Z
 updated_at: 2025-06-02T19:51:43Z
 url: https://github.com/astral-sh/ruff/pull/17656
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`flake8-return`] Fix false-positive for variables used inside nested functions in `RET504`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-27 20:41_
+_@LaBatata101_
 
 
 <!--

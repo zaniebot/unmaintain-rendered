@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-09T17:14:04Z
 updated_at: 2023-10-09T17:55:04Z
 url: https://github.com/clap-rs/clap/issues/5166
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # RFC: Adding Support for Flag Arguments Without Values
 
 ---
 
-_Issue opened by @wiseaidev on 2023-10-09 17:14_
+_@wiseaidev_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T20:57:12Z
 updated_at: 2025-09-15T21:33:27Z
 url: https://github.com/astral-sh/uv/issues/15882
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # `uv tool run` fails to use GitHub repo
 
 ---
 
-_Issue opened by @Winand on 2025-09-15 20:57_
+_@Winand_
 
 ### Summary
 

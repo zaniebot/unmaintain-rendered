@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-11-06T09:23:11Z
 updated_at: 2024-11-07T23:34:11Z
 url: https://github.com/astral-sh/uv/pull/8858
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # docs: document how to mimic --verbose with environment variable RUST_LOG
 
 ---
 
-_Pull request opened by @Phlogistique on 2024-11-06 09:23_
+_@Phlogistique_
 
 The doc was unclear to me and I had to dig in the code to understand that RUST_LOG could do the same as adding `--verbose`
 

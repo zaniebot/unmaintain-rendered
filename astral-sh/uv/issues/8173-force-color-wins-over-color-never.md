@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T11:27:52Z
 updated_at: 2024-11-07T20:29:56Z
 url: https://github.com/astral-sh/uv/issues/8173
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # FORCE_COLOR wins over `--color never`
 
 ---
 
-_Issue opened by @aberres on 2024-10-14 11:27_
+_@aberres_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

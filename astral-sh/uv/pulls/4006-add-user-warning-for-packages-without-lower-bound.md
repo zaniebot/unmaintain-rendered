@@ -11,14 +11,14 @@ head: thartman/warning-for-resolution-lowest
 created_at: 2024-06-04T01:46:25Z
 updated_at: 2024-07-18T14:34:26Z
 url: https://github.com/astral-sh/uv/pull/4006
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:58Z
 ```
 
 # Add user warning for packages without lower bound with `--resolution=lowest` or `lowest-direct`
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-06-04 01:46_
+_@ottaviohartman_
 
 ## Summary
 

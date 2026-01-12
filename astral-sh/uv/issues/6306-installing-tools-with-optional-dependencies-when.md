@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T07:37:44Z
 updated_at: 2024-08-21T07:49:34Z
 url: https://github.com/astral-sh/uv/issues/6306
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Installing tools with optional dependencies, when we want to install all of them, fail
 
 ---
 
-_Issue opened by @KhazAkar on 2024-08-21 07:37_
+_@KhazAkar_
 
 Hi,
 I wanted to test `uvx` portion with installing `python-lsp-server`, which is possible to install with various 'options', most notably with `[all]`, but uvx complains about name being invalid

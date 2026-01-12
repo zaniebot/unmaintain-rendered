@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T16:36:03Z
 updated_at: 2025-04-16T13:45:00Z
 url: https://github.com/astral-sh/uv/issues/1705
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv should install packages without requiring a venv
 
 ---
 
-_Issue opened by @radupotop on 2024-02-19 16:36_
+_@radupotop_
 
 I'm installing packages inside a Docker container (via a Dockerfile) and wish to install them globally so that they're always available. This should be similar to running `pip` with root privileges. Unfortunately `uv pip install` doesn't let me install packages without an existing `venv` created via `uv venv`.
 

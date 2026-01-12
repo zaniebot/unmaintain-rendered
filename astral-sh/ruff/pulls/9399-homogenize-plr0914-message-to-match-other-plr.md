@@ -13,14 +13,14 @@ head: homogenize_PLR_err_msg_round2
 created_at: 2024-01-05T09:40:14Z
 updated_at: 2024-01-05T12:33:06Z
 url: https://github.com/astral-sh/ruff/pull/9399
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # homogenize PLR0914 message to match other PLR 09XX rules and pylint message
 
 ---
 
-_Pull request opened by @mikaelarguedas on 2024-01-05 09:40_
+_@mikaelarguedas_
 
 Similar to https://github.com/astral-sh/ruff/pull/9308 for PLR0914
 

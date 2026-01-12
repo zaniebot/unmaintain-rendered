@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:27:58Z
 updated_at: 2025-08-22T19:00:10Z
 url: https://github.com/astral-sh/uv/issues/15445
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # uv lock does not re-evaluate constraints
 
 ---
 
-_Issue opened by @janbernloehr on 2025-08-22 06:27_
+_@janbernloehr_
 
 ### Summary
 

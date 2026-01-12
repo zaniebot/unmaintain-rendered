@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-08-11T09:25:41Z
 updated_at: 2022-08-11T16:59:11Z
 url: https://github.com/clap-rs/clap/issues/4064
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Shorthand for boolean attributes: `#[clap(boolean_attribute = true)]` should be shortened to `#[clap(boolean_attribute)]` (unless it was `true` by default)
 
 ---
 
-_Issue opened by @KSXGitHub on 2022-08-11 09:25_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

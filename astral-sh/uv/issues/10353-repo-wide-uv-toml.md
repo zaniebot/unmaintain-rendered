@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-07T10:06:16Z
 updated_at: 2025-01-07T12:35:09Z
 url: https://github.com/astral-sh/uv/issues/10353
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Repo wide uv.toml
 
 ---
 
-_Issue opened by @sebastian-cradle on 2025-01-07 10:06_
+_@sebastian-cradle_
 
 Hi, we have a mono repo and have multiple packages each with their own `pyproject.toml`.
 There are some configuration I'd like to share between these (namely our private index, and the keyring-provider = "subprocess" setting).

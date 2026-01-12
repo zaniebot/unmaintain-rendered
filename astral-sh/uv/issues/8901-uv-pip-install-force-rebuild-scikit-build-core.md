@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-07T22:41:07Z
 updated_at: 2024-11-07T23:06:06Z
 url: https://github.com/astral-sh/uv/issues/8901
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv-pip-install: force-rebuild scikit-build-core based projects on changes to the source files?
 
 ---
 
-_Issue opened by @Thibaulltt on 2024-11-07 22:41_
+_@Thibaulltt_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

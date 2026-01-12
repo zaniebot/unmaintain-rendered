@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-10T16:21:57Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/526
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Display visible aliases on the next line when they'd significantly widen display
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-10 16:21_
+_@joshtriplett_
 
 Visible aliases for subcommands (from #522) can significantly widen the help display, and move subcommand descriptions far away from the subcommand name, making it harder to pair them up.  For example:
 

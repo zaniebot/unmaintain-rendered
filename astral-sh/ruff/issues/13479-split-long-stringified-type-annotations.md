@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T08:55:57Z
 updated_at: 2024-11-07T13:19:06Z
 url: https://github.com/astral-sh/ruff/issues/13479
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Split long stringified type annotations
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-23 08:55_
+_@MichaReiser_
 
 Black automatically splits long stringified type annotations:
 

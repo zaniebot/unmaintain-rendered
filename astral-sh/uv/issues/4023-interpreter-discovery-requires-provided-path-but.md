@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-04T21:10:22Z
 updated_at: 2024-06-05T14:52:36Z
 url: https://github.com/astral-sh/uv/issues/4023
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Interpreter discovery requires `provided path` but it is not selected when running unit tests
 
 ---
 
-_Issue opened by @ottaviohartman on 2024-06-04 21:10_
+_@ottaviohartman_
 
 Hi folks, while trying to run the tests with
 ```sh

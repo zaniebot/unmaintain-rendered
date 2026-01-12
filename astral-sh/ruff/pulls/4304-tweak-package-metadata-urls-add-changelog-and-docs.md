@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-05-09T08:52:50Z
 updated_at: 2023-05-09T15:32:48Z
 url: https://github.com/astral-sh/ruff/pull/4304
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Tweak package metadata URLs, add changelog and docs
 
 ---
 
-_Pull request opened by @intgr on 2023-05-09 08:52_
+_@intgr_
 
 These links are visible on the package's PyPI page. The lowercase "repository" is currently a bit awkward.
 

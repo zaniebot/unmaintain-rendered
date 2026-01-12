@@ -13,14 +13,14 @@ head: nbsp
 created_at: 2023-08-31T17:46:43Z
 updated_at: 2023-09-01T12:55:39Z
 url: https://github.com/astral-sh/ruff/pull/7030
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Match Black's formatting of trailing comments containing NBSP
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-31 17:46_
+_@cnpryer_
 
 ## Summary
 

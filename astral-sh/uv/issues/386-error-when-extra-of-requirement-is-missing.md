@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T13:29:26Z
 updated_at: 2023-12-13T17:36:29Z
 url: https://github.com/astral-sh/uv/issues/386
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Error when extra of requirement is missing
 
 ---
 
-_Issue opened by @konstin on 2023-11-10 13:29_
+_@konstin_
 
 I tried to resolve `torch[transformers]` (it's the other way round) and got a very confusing error:
 

@@ -13,14 +13,14 @@ head: charlie/expr
 created_at: 2023-02-20T17:44:14Z
 updated_at: 2023-02-20T17:49:23Z
 url: https://github.com/astral-sh/ruff/pull/3062
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid assert() to assert statement conversion in expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 17:44_
+_@charliermarsh_
 
 Closes #3056.
 

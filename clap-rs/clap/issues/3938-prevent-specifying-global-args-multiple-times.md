@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-07-15T16:11:43Z
 updated_at: 2022-11-08T04:30:33Z
 url: https://github.com/clap-rs/clap/issues/3938
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Prevent specifying global args multiple times
 
 ---
 
-_Issue opened by @cd-work on 2022-07-15 16:11_
+_@cd-work_
 
 ### Please complete the following tasks
 

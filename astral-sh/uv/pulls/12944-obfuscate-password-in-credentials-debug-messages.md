@@ -13,14 +13,14 @@ head: jtfm/obfuscate-password
 created_at: 2025-04-17T13:18:03Z
 updated_at: 2025-04-20T16:01:15Z
 url: https://github.com/astral-sh/uv/pull/12944
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Obfuscate password in credentials debug messages
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-17 13:18_
+_@jtfmumm_
 
 I noticed in the trace output that we weren't obfuscating the `Credentials` password in a trace message. This PR creates a `Password` newtype with a custom `Debug` implementation.
 

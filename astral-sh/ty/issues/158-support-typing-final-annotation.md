@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:04:01Z
 updated_at: 2025-07-22T14:35:45Z
 url: https://github.com/astral-sh/ty/issues/158
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support typing.Final annotation
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:04_
+_@carljm_
 
 Doc: https://docs.python.org/3/library/typing.html#typing.Final
 Spec: https://typing.python.org/en/latest/spec/qualifiers.html#uppercase-final

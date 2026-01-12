@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-13T17:33:23Z
 updated_at: 2023-03-28T16:48:46Z
 url: https://github.com/clap-rs/clap/issues/2011
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Help subcommand behaves different than help flags when `App::replace` is used
 
 ---
 
-_Issue opened by @nickelc on 2020-07-13 17:33_
+_@nickelc_
 
 Using clap `master`
 ### Code

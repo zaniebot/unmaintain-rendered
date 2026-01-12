@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T08:37:51Z
 updated_at: 2023-10-29T18:31:56Z
 url: https://github.com/astral-sh/uv/issues/191
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Don't select a prerelease if a stable version is available
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 08:37_
+_@konstin_
 
 We currently select prereleases when we shouldn't, e.g. `defusedxml==0.8.0rc2` over `defusedxml==0.7.1` for `python3-openid`.
 

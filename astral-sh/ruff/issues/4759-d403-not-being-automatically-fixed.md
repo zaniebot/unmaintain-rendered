@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T15:39:16Z
 updated_at: 2023-06-01T01:15:17Z
 url: https://github.com/astral-sh/ruff/issues/4759
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # D403 not being automatically fixed
 
 ---
 
-_Issue opened by @alexdauenhauer on 2023-05-31 15:39_
+_@alexdauenhauer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

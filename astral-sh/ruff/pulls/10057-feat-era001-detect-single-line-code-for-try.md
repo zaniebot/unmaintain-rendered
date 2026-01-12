@@ -13,14 +13,14 @@ head: thartman/era-add-single-line
 created_at: 2024-02-20T04:11:53Z
 updated_at: 2024-02-20T17:40:19Z
 url: https://github.com/astral-sh/ruff/pull/10057
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # feat(ERA001): detect single-line code for try:, except:, etc.
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-02-20 04:11_
+_@ottaviohartman_
 
 ## Summary
 

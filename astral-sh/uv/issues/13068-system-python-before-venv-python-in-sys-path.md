@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T13:17:43Z
 updated_at: 2025-04-23T15:35:13Z
 url: https://github.com/astral-sh/uv/issues/13068
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # System python before venv python in sys.path leading to Pillow crash.
 
 ---
 
-_Issue opened by @csd4ni3l on 2025-04-23 13:17_
+_@csd4ni3l_
 
 ### Summary
 

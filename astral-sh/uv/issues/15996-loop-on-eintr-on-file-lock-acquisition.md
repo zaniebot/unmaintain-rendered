@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T21:48:16Z
 updated_at: 2025-11-11T17:50:08Z
 url: https://github.com/astral-sh/uv/issues/15996
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Loop on `EINTR` on file lock acquisition
 
 ---
 
-_Issue opened by @zanieb on 2025-09-22 21:48_
+_@zanieb_
 
 > We should loop on `EINTR`, and probably in the blocking cases too, unless I'm missing something that already does that.
 

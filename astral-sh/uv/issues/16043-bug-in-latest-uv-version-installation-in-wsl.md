@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T18:12:13Z
 updated_at: 2025-09-27T18:14:37Z
 url: https://github.com/astral-sh/uv/issues/16043
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # bug in latest uv version installation in wsl ubuntu 24.04
 
 ---
 
-_Issue opened by @Dr-Aniekan-Udo on 2025-09-26 18:12_
+_@Dr-Aniekan-Udo_
 
 ### Summary
 

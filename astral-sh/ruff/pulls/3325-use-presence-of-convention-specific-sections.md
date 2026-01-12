@@ -12,14 +12,14 @@ head: charlie/docstrings
 created_at: 2023-03-03T21:35:45Z
 updated_at: 2023-03-07T08:29:25Z
 url: https://github.com/astral-sh/ruff/pull/3325
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use presence of convention-specific sections during docstring inference
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-03 21:35_
+_@charliermarsh_
 
 Previously, if you had a docstring like:
 

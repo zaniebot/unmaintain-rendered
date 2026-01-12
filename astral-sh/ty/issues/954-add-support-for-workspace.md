@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T14:02:39Z
 updated_at: 2025-11-14T09:45:57Z
 url: https://github.com/astral-sh/ty/issues/954
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add support for `workspace/didChangeWorkspaceFolders`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-08-07 14:02_
+_@dhruvmanila_
 
 This is dependent on #89.
 

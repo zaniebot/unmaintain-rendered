@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-08T08:34:35Z
 updated_at: 2022-10-09T01:19:30Z
 url: https://github.com/clap-rs/clap/issues/4357
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Improve documentation for `args_override_self`
 
 ---
 
-_Issue opened by @tmccombs on 2022-10-08 08:34_
+_@tmccombs_
 
 The documentation for `args_override_self` states:
 

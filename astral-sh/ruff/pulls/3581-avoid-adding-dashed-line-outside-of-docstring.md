@@ -12,14 +12,14 @@ head: charlie/underline
 created_at: 2023-03-17T18:07:36Z
 updated_at: 2023-03-17T19:01:23Z
 url: https://github.com/astral-sh/ruff/pull/3581
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid adding dashed line outside of docstring
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 18:07_
+_@charliermarsh_
 
 If you have a docstring like:
 

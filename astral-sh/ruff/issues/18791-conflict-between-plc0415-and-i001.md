@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T12:00:47Z
 updated_at: 2025-07-24T19:27:47Z
 url: https://github.com/astral-sh/ruff/issues/18791
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Conflict between PLC0415 and I001
 
 ---
 
-_Issue opened by @cdce8p on 2025-06-19 12:00_
+_@cdce8p_
 
 ### Summary
 

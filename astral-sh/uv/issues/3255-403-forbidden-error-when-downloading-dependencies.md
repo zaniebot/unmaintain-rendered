@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T21:00:07Z
 updated_at: 2024-05-08T14:54:10Z
 url: https://github.com/astral-sh/uv/issues/3255
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # 403 Forbidden Error when downloading dependencies from AWS/Gemfury with uv pip compile
 
 ---
 
-_Issue opened by @fernando-freitas-alves on 2024-04-24 21:00_
+_@fernando-freitas-alves_
 
 I'm trying to use uv to compile a list of requirements, but it's resulting in the following 403 error:
 

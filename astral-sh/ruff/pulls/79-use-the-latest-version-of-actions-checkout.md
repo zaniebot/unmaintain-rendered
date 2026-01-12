@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-09-01T16:53:12Z
 updated_at: 2022-09-01T17:18:31Z
 url: https://github.com/astral-sh/ruff/pull/79
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use the latest version of `actions/checkout`
 
 ---
 
-_Pull request opened by @sobolevn on 2022-09-01 16:53_
+_@sobolevn_
 
 _No description provided._
 

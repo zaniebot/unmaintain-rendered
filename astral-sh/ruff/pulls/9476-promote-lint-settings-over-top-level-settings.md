@@ -13,14 +13,14 @@ head: promote-lint-options-over-top-level-settings
 created_at: 2024-01-11T19:09:50Z
 updated_at: 2024-01-29T17:42:32Z
 url: https://github.com/astral-sh/ruff/pull/9476
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Promote `lint.` settings over top-level settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-11 19:09_
+_@MichaReiser_
 
 ## Summary
 

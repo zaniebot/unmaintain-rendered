@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T16:47:07Z
 updated_at: 2024-03-26T07:36:47Z
 url: https://github.com/astral-sh/ruff/issues/10101
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Confusing error message for C401 and C416
 
 ---
 
-_Issue opened by @runfalk on 2024-02-23 16:47_
+_@runfalk_
 
 I ran into this oddity. The suggested fix for `C401` actually results in `C416` because `i` isn't transformed in any way. Is there a better way to indicate this in the error message?
 

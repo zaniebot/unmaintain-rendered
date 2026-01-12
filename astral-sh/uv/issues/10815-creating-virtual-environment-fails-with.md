@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T13:50:13Z
 updated_at: 2025-01-21T14:25:02Z
 url: https://github.com/astral-sh/uv/issues/10815
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Creating virtual environment fails with "`_sysconfigdata_` is missing a header comment"
 
 ---
 
-_Issue opened by @observingClouds on 2025-01-21 13:50_
+_@observingClouds_
 
 Hi :wave:
 

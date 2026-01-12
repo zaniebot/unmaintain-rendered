@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T12:36:06Z
 updated_at: 2022-12-08T14:19:22Z
 url: https://github.com/astral-sh/ruff/issues/1140
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add support for PEP634: `match` and `case`/structural pattern matching
 
 ---
 
-_Issue opened by @ashb on 2022-12-08 12:36_
+_@ashb_
 
 I'm trying out ruff on a greenfield project (loving it so far! Thank you for it!) where I get to use all the latest python goodies, and I've discovered that it doesn't seem like ruff (v0.0.169) likes `match`/`case`:
 

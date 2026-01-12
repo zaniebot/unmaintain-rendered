@@ -13,14 +13,14 @@ head: flake8-pyi-Y033-type-comments-in-stub-files
 created_at: 2023-03-02T12:18:21Z
 updated_at: 2023-03-03T15:50:32Z
 url: https://github.com/astral-sh/ruff/pull/3302
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add flake-pyi PYI033 "Do not use type comments in stubs"
 
 ---
 
-_Pull request opened by @konstin on 2023-03-02 12:18_
+_@konstin_
 
 I think this is also a case where people like want this for .py files, too, at least on 3.7+ (https://docs.python.org/3/whatsnew/3.7.html#pep-563-postponed-evaluation-of-annotations)
 

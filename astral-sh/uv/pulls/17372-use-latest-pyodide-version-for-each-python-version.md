@@ -11,14 +11,14 @@ head: pyodide-version-fetch
 created_at: 2026-01-09T06:40:20Z
 updated_at: 2026-01-11T03:40:18Z
 url: https://github.com/astral-sh/uv/pull/17372
-synced_at: 2026-01-12T02:26:33Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Use latest Pyodide version for each python version
 
 ---
 
-_Pull request opened by @ryanking13 on 2026-01-09 06:40_
+_@ryanking13_
 
 ## Summary
 

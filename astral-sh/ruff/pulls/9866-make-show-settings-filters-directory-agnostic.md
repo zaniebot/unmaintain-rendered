@@ -13,14 +13,14 @@ head: charlie/filters
 created_at: 2024-02-06T21:40:09Z
 updated_at: 2024-02-07T03:28:35Z
 url: https://github.com/astral-sh/ruff/pull/9866
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Make show-settings filters directory-agnostic
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-06 21:40_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9864.
 

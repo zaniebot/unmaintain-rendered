@@ -13,14 +13,14 @@ head: zb/pre-2
 created_at: 2025-10-09T16:17:19Z
 updated_at: 2025-10-09T16:39:29Z
 url: https://github.com/astral-sh/uv/pull/16210
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Ignore pre-release Python versions when a patch version is requested
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-09 16:17_
+_@zanieb_
 
 I think this is ostensively breaking, though I think the impact would be small given this will go out in 0.9.1 and should only affect people using pre-release Python versions.
 

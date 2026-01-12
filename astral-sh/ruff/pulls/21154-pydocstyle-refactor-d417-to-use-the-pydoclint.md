@@ -11,14 +11,14 @@ head: d417-refactor
 created_at: 2025-10-30T23:52:24Z
 updated_at: 2025-11-13T22:12:08Z
 url: https://github.com/astral-sh/ruff/pull/21154
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [`pydocstyle`] Refactor `D417` to use the `pydoclint` docstring processing
 
 ---
 
-_Pull request opened by @augustelalande on 2025-10-30 23:52_
+_@augustelalande_
 
 ## Summary
 

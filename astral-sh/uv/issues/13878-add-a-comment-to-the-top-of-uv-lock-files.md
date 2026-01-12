@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T03:56:17Z
 updated_at: 2025-10-21T23:45:07Z
 url: https://github.com/astral-sh/uv/issues/13878
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Add a comment to the top of uv.lock files containing the string @generated
 
 ---
 
-_Issue opened by @roganartu on 2025-06-06 03:56_
+_@roganartu_
 
 ### Summary
 

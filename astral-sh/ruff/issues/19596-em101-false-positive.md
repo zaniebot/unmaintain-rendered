@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-28T12:37:09Z
 updated_at: 2025-08-01T17:37:45Z
 url: https://github.com/astral-sh/ruff/issues/19596
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # EM101 false positive
 
 ---
 
-_Issue opened by @aspizu on 2025-07-28 12:37_
+_@aspizu_
 
 ### Summary
 

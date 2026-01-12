@@ -14,14 +14,14 @@ head: gankra/mdblock2
 created_at: 2026-01-05T19:07:34Z
 updated_at: 2026-01-06T15:44:34Z
 url: https://github.com/astral-sh/ruff/pull/22408
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] improve indented codefence rendering in docstrings
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-05 19:07_
+_@Gankra_
 
 By stripping leading indents from codefence lines to ensure they're properly understood by markdown (but otherwise preserving the indent in the codeblock so all the code renders roughly at the right indent).
 

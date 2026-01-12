@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T15:55:36Z
 updated_at: 2025-01-22T21:56:07Z
 url: https://github.com/astral-sh/uv/issues/10753
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv python spec vs pip - small differences of note?
 
 ---
 
-_Issue opened by @EdmundsEcho on 2025-01-19 15:55_
+_@EdmundsEcho_
 
 I now use `uv` as my build tool for python.  A team member needed to have my code base operate on Render, an online web hosting service that only supports `pip`.  To coordinate the two, I ran `uv pip freeze > requirements.txt` to enable an install using `pip install -r requirements.txt`.  Surprisingly, there were a few "errors" (strictly speaking), that `pip` raised where my `uv run...` workflow worked just fine.
 

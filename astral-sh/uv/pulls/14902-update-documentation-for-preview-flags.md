@@ -13,14 +13,14 @@ head: zb/preview-docs
 created_at: 2025-07-25T18:11:51Z
 updated_at: 2025-07-25T20:19:25Z
 url: https://github.com/astral-sh/uv/pull/14902
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Update documentation for preview flags
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 18:11_
+_@zanieb_
 
 Follows #14823 
 

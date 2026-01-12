@@ -12,14 +12,14 @@ head: nextest
 created_at: 2023-08-29T14:45:51Z
 updated_at: 2023-08-29T19:23:08Z
 url: https://github.com/astral-sh/ruff/pull/6979
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use nextest to run tests in CI
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-29 14:45_
+_@zanieb_
 
 _No description provided._
 

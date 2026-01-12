@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-20T20:52:17Z
 updated_at: 2025-04-05T11:43:38Z
 url: https://github.com/astral-sh/uv/issues/10066
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # `uv build` produces empty wheels when using hatchling (in some cases)
 
 ---
 
-_Issue opened by @jsnel-ct on 2024-12-20 20:52_
+_@jsnel-ct_
 
 When using `uv build` to produce distributable wheels I get an empty wheel, as opposed to when using hatch directly `uvx hatch build`. 
 

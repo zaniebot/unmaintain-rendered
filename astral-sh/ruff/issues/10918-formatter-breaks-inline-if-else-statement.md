@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-13T12:25:51Z
 updated_at: 2024-04-18T17:56:30Z
 url: https://github.com/astral-sh/ruff/issues/10918
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Formatter breaks inline `if/else` statement different than Black when used on function argument
 
 ---
 
-_Issue opened by @kikefdezl on 2024-04-13 12:25_
+_@kikefdezl_
 
 Hey! 
 

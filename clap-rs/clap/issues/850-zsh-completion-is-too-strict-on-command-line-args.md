@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-02-15T00:39:14Z
 updated_at: 2020-04-08T17:22:42Z
 url: https://github.com/clap-rs/clap/issues/850
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # zsh completion is too strict on command line args
 
 ---
 
-_Issue opened by @laishulu on 2017-02-15 00:39_
+_@laishulu_
 
 ### Rust Version
 

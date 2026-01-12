@@ -14,14 +14,14 @@ head: charlie/delimit
 created_at: 2024-03-03T18:54:54Z
 updated_at: 2024-03-03T19:01:08Z
 url: https://github.com/astral-sh/uv/pull/2140
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Use space as delimiter for `UV_EXTRA_INDEX_URL`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 18:54_
+_@charliermarsh_
 
 ## Summary
 

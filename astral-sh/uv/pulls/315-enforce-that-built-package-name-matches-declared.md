@@ -12,14 +12,14 @@ head: charlie/name
 created_at: 2023-11-03T22:54:49Z
 updated_at: 2023-11-03T22:58:13Z
 url: https://github.com/astral-sh/uv/pull/315
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Enforce that built package name matches declared package name
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 22:54_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/306.
 

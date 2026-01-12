@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-06T08:22:55Z
 updated_at: 2022-10-07T00:14:50Z
 url: https://github.com/clap-rs/clap/issues/4353
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Clap derive is missing "hide" option
 
 ---
 
-_Issue opened by @Firstyear on 2022-10-06 08:22_
+_@Firstyear_
 
 ### Please complete the following tasks
 

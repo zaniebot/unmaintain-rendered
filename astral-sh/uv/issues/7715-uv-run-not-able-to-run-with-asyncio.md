@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T16:25:55Z
 updated_at: 2024-09-26T16:39:51Z
 url: https://github.com/astral-sh/uv/issues/7715
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv run not able to run with asyncio
 
 ---
 
-_Issue opened by @ClementWalter on 2024-09-26 16:25_
+_@ClementWalter_
 
 ```
 uv --version

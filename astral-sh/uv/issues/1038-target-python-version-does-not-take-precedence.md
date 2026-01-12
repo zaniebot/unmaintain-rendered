@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-22T17:22:47Z
 updated_at: 2024-01-24T17:12:04Z
 url: https://github.com/astral-sh/uv/issues/1038
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Target Python version does not take precedence when determining build interpreter
 
 ---
 
-_Issue opened by @zanieb on 2024-01-22 17:22_
+_@zanieb_
 
 When providing a target version to `pip compile` we must determine two things:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T09:32:25Z
 updated_at: 2026-01-06T17:16:49Z
 url: https://github.com/astral-sh/ty/issues/2359
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # No bidirectional inference for inferring the parameter types of `lambda` functions
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-06 09:32_
+_@hyperkai_
 
 ### Summary
 

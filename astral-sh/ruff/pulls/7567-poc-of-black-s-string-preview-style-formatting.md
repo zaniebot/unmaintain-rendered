@@ -12,14 +12,14 @@ head: string-preview-style
 created_at: 2023-09-21T10:38:32Z
 updated_at: 2023-12-14T10:50:33Z
 url: https://github.com/astral-sh/ruff/pull/7567
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # POC of Black's string preview style formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-21 10:38_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

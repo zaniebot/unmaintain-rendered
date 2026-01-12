@@ -12,14 +12,14 @@ head: SIM115-pathlib
 created_at: 2023-07-27T08:05:55Z
 updated_at: 2023-07-27T18:20:55Z
 url: https://github.com/astral-sh/ruff/pull/6118
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Update `SIM115` to cover `pathlib.Path.open`
 
 ---
 
-_Pull request opened by @harupy on 2023-07-27 08:05_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

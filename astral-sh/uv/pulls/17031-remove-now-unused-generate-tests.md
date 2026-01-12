@@ -12,14 +12,14 @@ head: zb/gen-tests
 created_at: 2025-12-08T15:35:46Z
 updated_at: 2025-12-08T15:50:42Z
 url: https://github.com/astral-sh/uv/pull/17031
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Remove now unused generate tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-08 15:35_
+_@zanieb_
 
 I missed this in #16969
 

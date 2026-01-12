@@ -13,14 +13,14 @@ head: backwards-compat-ssl-cert-file
 created_at: 2024-03-13T02:02:43Z
 updated_at: 2024-03-13T12:54:23Z
 url: https://github.com/astral-sh/uv/pull/2401
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:01Z
 ```
 
 # feat: keep backwards compatibility with `SSL_CERT_FILE` without requiring `--native-tls`
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-13 02:02_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

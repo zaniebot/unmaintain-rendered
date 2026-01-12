@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T20:12:11Z
 updated_at: 2025-12-03T05:07:02Z
 url: https://github.com/astral-sh/ty/issues/1731
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Implement rust-analyzer's "Click for full compiler diagnostic" feature
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-02 20:12_
+_@AlexWaygood_
 
 Rust-analyzer has a great feature in VSCode that I use _extensively_ when writing Rust, where you can click to see the full compiler diagnostic in a new tab:
 

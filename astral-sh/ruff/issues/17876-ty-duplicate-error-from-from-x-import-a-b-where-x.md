@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-06T01:46:09Z
 updated_at: 2025-05-06T11:37:11Z
 url: https://github.com/astral-sh/ruff/issues/17876
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [ty] Duplicate error from `from X import A, B` where X is unresolved
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-06 01:46_
+_@JelleZijlstra_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: ag/completion-scopes
 created_at: 2025-05-23T16:27:18Z
 updated_at: 2025-05-29T14:31:32Z
 url: https://github.com/astral-sh/ruff/pull/18281
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Improve completions by leveraging scopes
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-23 16:27_
+_@BurntSushi_
 
 This PR improves completions by leveraging scopes. That is, we try to
 identify an expression corresponding to the cursor's current position.

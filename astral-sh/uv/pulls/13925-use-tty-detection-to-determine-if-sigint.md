@@ -13,14 +13,14 @@ head: zb/sigint-tty
 created_at: 2025-06-09T16:43:37Z
 updated_at: 2025-06-11T13:28:35Z
 url: https://github.com/astral-sh/uv/pull/13925
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Use TTY detection to determine if SIGINT forwarding is enabled
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-09 16:43_
+_@zanieb_
 
 Use TTY detection to determine when we should forward SIGINT instead of counting signals, which can lead to various problems where multiple SIGINTs are sent to a child after the first signal. Counting does not make sense in interactive situations that do not exit on interrupt, e.g., the Python REPL.
 

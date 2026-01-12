@@ -12,14 +12,14 @@ head: pointy-comparison
 created_at: 2022-11-06T00:03:26Z
 updated_at: 2022-11-06T01:35:42Z
 url: https://github.com/astral-sh/ruff/pull/616
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix B015 false positive on comparison deep inside expression statement
 
 ---
 
-_Pull request opened by @andersk on 2022-11-06 00:03_
+_@andersk_
 
 We only want to complain about a “pointless comparison” if the comparison is the entire statement, not if it’s just part of a statement.
 

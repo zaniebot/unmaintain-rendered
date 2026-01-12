@@ -13,14 +13,14 @@ head: zb/docs-nav-height
 created_at: 2024-11-15T16:14:51Z
 updated_at: 2024-11-19T19:53:27Z
 url: https://github.com/astral-sh/uv/pull/9153
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Use the full screen height for the main content to stabilize the nav
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-15 16:14_
+_@zanieb_
 
 On large screens, we require scrolling below the fold for the next page / prev page navigation footer. This dramatically improves visibility of the left nav when looking at small pages like section overviews. Critically, this stops the height of the navigation from jumping around depending on the page you're on. On small screens, the positioning is unchanged since the nav is in a hamburger menu and it'd be annoying to scroll.
 

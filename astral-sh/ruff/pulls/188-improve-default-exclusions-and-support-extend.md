@@ -12,14 +12,14 @@ head: charlie/extend
 created_at: 2022-09-14T21:30:12Z
 updated_at: 2022-09-15T02:52:53Z
 url: https://github.com/astral-sh/ruff/pull/188
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Improve default exclusions and support extend-exclude
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-14 21:30_
+_@charliermarsh_
 
 This PR changes `--exclude` to use regular expressions rather than globs, which matches Black's behavior. We also now match Black's default list of exclusions, and support a `--extend-exclude` command-line argument and `pyproject.toml` field.
 

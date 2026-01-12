@@ -13,14 +13,14 @@ head: renovate/salsa-digest
 created_at: 2025-12-01T00:43:21Z
 updated_at: 2025-12-01T07:02:46Z
 url: https://github.com/astral-sh/ruff/pull/21708
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # Update salsa digest to 59aa107
 
 ---
 
-_Pull request opened by @renovate on 2025-12-01 00:43_
+_@renovate_
 
 This PR contains the following updates:
 

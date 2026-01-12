@@ -14,14 +14,14 @@ head: trailing-end-of-line-body-commnts
 created_at: 2023-06-02T12:57:02Z
 updated_at: 2023-06-03T13:17:35Z
 url: https://github.com/astral-sh/ruff/pull/4811
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Handle trailing body end-of-line comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-02 12:57_
+_@MichaReiser_
 
 ### Summary
 

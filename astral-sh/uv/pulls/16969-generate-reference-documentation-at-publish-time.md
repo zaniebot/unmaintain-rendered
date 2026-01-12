@@ -13,14 +13,14 @@ head: zb/gen-all
 created_at: 2025-12-03T14:58:29Z
 updated_at: 2025-12-08T12:38:28Z
 url: https://github.com/astral-sh/uv/pull/16969
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Generate reference documentation at publish-time and the JSON schema at release-time
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-03 14:58_
+_@zanieb_
 
 It'd be nice to avoid churn for contributors. This is a pretty frequent cause of CI failures and I don't think we really need to have the reference documentation committed. 
 

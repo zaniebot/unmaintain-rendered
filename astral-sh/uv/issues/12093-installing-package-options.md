@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T11:51:52Z
 updated_at: 2025-04-09T16:08:14Z
 url: https://github.com/astral-sh/uv/issues/12093
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Installing package options
 
 ---
 
-_Issue opened by @Barrowcroft on 2025-03-10 11:51_
+_@Barrowcroft_
 
 ### Question
 

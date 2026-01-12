@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T20:16:19Z
 updated_at: 2024-05-22T21:39:20Z
 url: https://github.com/astral-sh/uv/issues/3769
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv 0.2.0 no longer working inside conda environments
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-22 20:16_
+_@notatallshaw-gts_
 
 First install conda and activate base environment:
 

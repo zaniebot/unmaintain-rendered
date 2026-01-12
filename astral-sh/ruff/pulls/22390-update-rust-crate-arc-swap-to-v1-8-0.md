@@ -13,14 +13,14 @@ head: renovate/arc-swap-1.x-lockfile
 created_at: 2026-01-05T07:53:55Z
 updated_at: 2026-01-05T08:08:34Z
 url: https://github.com/astral-sh/ruff/pull/22390
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # Update Rust crate arc-swap to v1.8.0
 
 ---
 
-_Pull request opened by @renovate on 2026-01-05 07:53_
+_@renovate_
 
 This PR contains the following updates:
 

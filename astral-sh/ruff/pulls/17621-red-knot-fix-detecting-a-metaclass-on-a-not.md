@@ -13,14 +13,14 @@ head: cjm/genmeta
 created_at: 2025-04-25T01:37:06Z
 updated_at: 2025-04-25T13:55:57Z
 url: https://github.com/astral-sh/ruff/pull/17621
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] fix detecting a metaclass on a not-explicitly-specialized generic base
 
 ---
 
-_Pull request opened by @carljm on 2025-04-25 01:37_
+_@carljm_
 
 ## Summary
 

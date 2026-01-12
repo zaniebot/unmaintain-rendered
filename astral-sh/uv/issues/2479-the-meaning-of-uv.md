@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T17:46:27Z
 updated_at: 2025-08-23T18:18:12Z
 url: https://github.com/astral-sh/uv/issues/2479
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # The meaning of UV
 
 ---
 
-_Issue opened by @wssf812 on 2024-03-15 17:46_
+_@wssf812_
 
 
 Sorry, I have a rather childish question. Why is this new generation pyhton package management tool called UV?

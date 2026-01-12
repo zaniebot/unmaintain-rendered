@@ -11,14 +11,14 @@ head: pd-vet-autofixes
 created_at: 2023-02-10T21:01:17Z
 updated_at: 2023-07-12T08:49:31Z
 url: https://github.com/astral-sh/ruff/pull/2741
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`pandas-vet`] autofixes for PD003, PD004, PD008, PD009 and PD011
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-10 21:01_
+_@sbrugman_
 
 Autofixes for PD003, PD004, PD008, PD009 and PD011
 

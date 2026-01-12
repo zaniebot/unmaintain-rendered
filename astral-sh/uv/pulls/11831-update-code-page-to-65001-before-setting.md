@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2025-02-27T11:33:34Z
 updated_at: 2025-03-03T05:19:42Z
 url: https://github.com/astral-sh/uv/pull/11831
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Update code page to 65001 before setting environment variables, fix #11828
 
 ---
 
-_Pull request opened by @flaribbit on 2025-02-27 11:33_
+_@flaribbit_
 
 ## Summary
 

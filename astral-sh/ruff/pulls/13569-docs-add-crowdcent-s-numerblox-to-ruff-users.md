@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-30T13:49:17Z
 updated_at: 2024-11-01T13:31:51Z
 url: https://github.com/astral-sh/ruff/pull/13569
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [DOCS] Add CrowdCent's `numerblox` to Ruff users.
 
 ---
 
-_Pull request opened by @CarloLepelaars on 2024-09-30 13:49_
+_@CarloLepelaars_
 
 Hi, our open source project [NumerBlox](https://github.com/crowdcent/numerblox) migrated to `uv` and `ruff`. Would appreciate the project being included in the list of Ruff users.
 

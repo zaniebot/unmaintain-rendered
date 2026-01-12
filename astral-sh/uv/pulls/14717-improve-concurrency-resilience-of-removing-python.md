@@ -14,14 +14,14 @@ head: konsti/more-resilient-registry-removal
 created_at: 2025-07-18T12:25:00Z
 updated_at: 2025-07-18T12:47:57Z
 url: https://github.com/astral-sh/uv/pull/14717
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Improve concurrency resilience of removing Python versions from the Windows registry
 
 ---
 
-_Pull request opened by @konstin on 2025-07-18 12:25_
+_@konstin_
 
 With the previous order of operations, there could be warnings from race conditions between two process A and B removing and installing Python versions.
 

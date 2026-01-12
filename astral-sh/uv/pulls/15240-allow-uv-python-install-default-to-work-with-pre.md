@@ -11,14 +11,14 @@ head: default-with-release-candidates
 created_at: 2025-08-12T15:09:16Z
 updated_at: 2025-08-12T20:13:22Z
 url: https://github.com/astral-sh/uv/pull/15240
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Allow `uv python install --default` to work with pre-release versions
 
 ---
 
-_Pull request opened by @tdhopper on 2025-08-12 15:09_
+_@tdhopper_
 
 _I am not a rust dev and this is my first attempted contribution. Feel free to ignore!_
 

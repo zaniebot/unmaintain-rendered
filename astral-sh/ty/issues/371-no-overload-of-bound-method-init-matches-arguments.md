@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-13T23:18:24Z
 updated_at: 2025-05-13T23:24:06Z
 url: https://github.com/astral-sh/ty/issues/371
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # No overload of bound method `__init__` matches arguments
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-05-13 23:18_
+_@Ryang20718_
 
 ### Summary
 

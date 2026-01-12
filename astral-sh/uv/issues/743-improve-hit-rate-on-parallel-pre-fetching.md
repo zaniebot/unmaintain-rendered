@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-02T16:38:51Z
 updated_at: 2024-01-03T10:37:46Z
 url: https://github.com/astral-sh/uv/issues/743
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Improve hit-rate on parallel pre-fetching
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-02 16:38_
+_@charliermarsh_
 
 Right now, we try to pre-fetch version metadata for packages, but in practice, it looks like we're missing those opportunities as we don't yet have the _package_-level metadata in the vast majority of cases.
 

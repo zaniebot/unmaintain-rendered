@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T07:46:50Z
 updated_at: 2023-03-10T22:57:15Z
 url: https://github.com/astral-sh/ruff/issues/2845
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RUF100 may leave an empty line behind
 
 ---
 
-_Issue opened by @scop on 2023-02-13 07:46_
+_@scop_
 
 ruff 0.0.246
 

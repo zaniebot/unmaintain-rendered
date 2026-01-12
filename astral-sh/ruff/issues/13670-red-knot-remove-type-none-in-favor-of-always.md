@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T18:52:34Z
 updated_at: 2024-11-04T13:00:07Z
 url: https://github.com/astral-sh/ruff/issues/13670
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] remove `Type::None` in favor of always using `Type::Instance(_typeshed_.NoneType)`
 
 ---
 
-_Issue opened by @carljm on 2024-10-07 18:52_
+_@carljm_
 
 _No description provided._
 

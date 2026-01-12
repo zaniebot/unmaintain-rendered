@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-15T16:24:07Z
 updated_at: 2024-03-15T17:16:56Z
 url: https://github.com/astral-sh/ruff/issues/10423
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # SIM300: fix and check are not aligned
 
 ---
 
-_Issue opened by @Borda on 2024-03-15 16:24_
+_@Borda_
 
 using the latest `0.3.2` together with precommit
 ```yaml

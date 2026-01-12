@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T04:34:49Z
 updated_at: 2023-11-14T04:37:38Z
 url: https://github.com/astral-sh/ruff/issues/6586
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # B018 false positive for notebooks
 
 ---
 
-_Issue opened by @david-waterworth on 2023-08-15 04:34_
+_@david-waterworth_
 
 Commonly with notebooks the `result` of a calculation is often implicitly printed, i.e.
 

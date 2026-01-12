@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T01:07:45Z
 updated_at: 2023-09-19T00:01:45Z
 url: https://github.com/astral-sh/ruff/issues/5497
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Use MkDocs `not_in_nav` to hide huge list of `docs/rules/` files
 
 ---
 
-_Issue opened by @MicaelJarniac on 2023-07-04 01:07_
+_@MicaelJarniac_
 
 [`not_in_nav`](https://github.com/mkdocs/mkdocs/blob/master/docs/user-guide/configuration.md#not_in_nav)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-28T14:47:41Z
 updated_at: 2025-01-23T17:12:11Z
 url: https://github.com/astral-sh/ruff/issues/9663
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PIE810 autofix changes raw strings to backslashes
 
 ---
 
-_Issue opened by @JelleZijlstra on 2024-01-28 14:47_
+_@JelleZijlstra_
 
 Start with this code:
 

@@ -13,14 +13,14 @@ head: konsti/refactor-pip-scenario-tests
 created_at: 2024-01-31T20:14:35Z
 updated_at: 2024-02-02T17:01:38Z
 url: https://github.com/astral-sh/uv/pull/1212
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Refactor pip scenario tests
 
 ---
 
-_Pull request opened by @konstin on 2024-01-31 20:14_
+_@konstin_
 
 Mostly a mechanical refactor to use the `puffin_snapshot!` and `TestContext` infrastructure in the pip compile and pip install scenarios, in preparation for adding programmatic windows testing filters.
 

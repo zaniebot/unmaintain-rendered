@@ -12,14 +12,14 @@ head: charlie/useless
 created_at: 2023-04-01T02:56:57Z
 updated_at: 2023-04-01T03:21:57Z
 url: https://github.com/astral-sh/ruff/pull/3838
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move f-string identification into rule module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 02:56_
+_@charliermarsh_
 
 _No description provided._
 

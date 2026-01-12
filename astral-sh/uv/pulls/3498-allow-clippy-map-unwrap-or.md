@@ -13,14 +13,14 @@ head: konsti/allow-map-unwrap-or
 created_at: 2024-05-09T19:55:58Z
 updated_at: 2024-05-09T20:24:10Z
 url: https://github.com/astral-sh/uv/pull/3498
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Allow clippy map-unwrap-or
 
 ---
 
-_Pull request opened by @konstin on 2024-05-09 19:55_
+_@konstin_
 
 `map_or` is harder too read than the `.map().unwrap()` versions.
 

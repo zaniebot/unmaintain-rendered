@@ -12,14 +12,14 @@ head: uv-schema/default-groups
 created_at: 2025-11-03T06:57:26Z
 updated_at: 2025-11-03T14:00:38Z
 url: https://github.com/astral-sh/uv/pull/16575
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Fix missing value_type for `default-groups` in schema
 
 ---
 
-_Pull request opened by @fllesser on 2025-11-03 06:57_
+_@fllesser_
 
 ## Summary
 

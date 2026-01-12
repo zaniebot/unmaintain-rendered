@@ -13,14 +13,14 @@ head: source-location
 created_at: 2023-05-09T20:23:30Z
 updated_at: 2023-05-16T07:22:49Z
 url: https://github.com/astral-sh/ruff/pull/4328
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Impl `Default` for `SourceLocation`
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-09 20:23_
+_@youknowone_
 
 `MIN` is useful for fallback values.
 

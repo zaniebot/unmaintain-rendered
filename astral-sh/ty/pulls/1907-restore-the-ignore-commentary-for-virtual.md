@@ -13,14 +13,14 @@ head: zb/caveat-gitignore
 created_at: 2025-12-15T21:03:01Z
 updated_at: 2025-12-15T21:24:52Z
 url: https://github.com/astral-sh/ty/pull/1907
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Restore the ignore commentary for virtual environment diagnostics
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 21:03_
+_@zanieb_
 
 I dropped this in https://github.com/astral-sh/ty/pull/1894/files#diff-b4d68dc855d0f9476d3f2ee343853bd21bf82ea9960d0cf06661baa244439dd6L52-L54
 

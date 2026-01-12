@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-12T05:02:48Z
 updated_at: 2023-02-12T16:07:26Z
 url: https://github.com/astral-sh/ruff/issues/2802
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Document how to build the mkdocs documentation
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-12 05:02_
+_@not-my-profile_
 
 `CONTRIBUTING.md` should explain how you can build our mkdocs documentation so that you can preview your local changes.
 

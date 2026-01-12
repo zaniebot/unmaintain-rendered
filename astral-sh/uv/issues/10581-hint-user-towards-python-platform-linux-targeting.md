@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T02:55:35Z
 updated_at: 2025-01-14T16:57:55Z
 url: https://github.com/astral-sh/uv/issues/10581
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Hint user towards `--python-platform linux` targeting glibc 2.17
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-14 02:55_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/10527#discussion_r1913939026
 

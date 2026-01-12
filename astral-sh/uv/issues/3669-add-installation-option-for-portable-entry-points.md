@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-20T05:08:08Z
 updated_at: 2025-06-26T12:37:27Z
 url: https://github.com/astral-sh/uv/issues/3669
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Add installation option for portable entry points
 
 ---
 
-_Issue opened by @ofek on 2024-05-20 05:08_
+_@ofek_
 
 I have a use case where I need to pre-build an entire installation which will be distributed to any number of machines. When installing packages that have entry points, the location becomes hardcoded to an absolute path.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T16:52:19Z
 updated_at: 2024-06-26T21:09:31Z
 url: https://github.com/astral-sh/uv/issues/4553
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Tag platform doesn't work
 
 ---
 
-_Issue opened by @matheushrc on 2024-06-26 16:52_
+_@matheushrc_
 
 * I'm unable to set the platform.
 `uv pip install --python-platform=linux -r .\src\requirements.txt`

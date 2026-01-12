@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T09:46:52Z
 updated_at: 2025-03-17T14:12:57Z
 url: https://github.com/astral-sh/ruff/issues/6190
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [meta][feature] more of `isort`
 
 ---
 
-_Issue opened by @yozachar on 2023-07-31 09:46_
+_@yozachar_
 
 I'd like to aggregate feature request related specifically to `isort` here:
 

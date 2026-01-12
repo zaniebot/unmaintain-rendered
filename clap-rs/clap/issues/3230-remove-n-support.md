@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-30T17:44:37Z
 updated_at: 2022-06-01T21:12:53Z
 url: https://github.com/clap-rs/clap/issues/3230
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Remove `{n}` support
 
 ---
 
-_Issue opened by @epage on 2021-12-30 17:44_
+_@epage_
 
 Maintainer's notes
 - Blocked on #2389

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-21T14:46:46Z
 updated_at: 2024-06-21T15:44:38Z
 url: https://github.com/astral-sh/ruff/issues/11969
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff check needs --range
 
 ---
 
-_Issue opened by @cam-laf on 2024-06-21 14:46_
+_@cam-laf_
 
 I want to be able to use the following command to check existence of type hints across a range in a python file, specifically to prevent _new_ callables from being added without type hints:
 ```bash

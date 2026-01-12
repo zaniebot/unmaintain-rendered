@@ -13,14 +13,14 @@ head: brent/fuzz
 created_at: 2025-11-15T02:55:59Z
 updated_at: 2025-11-15T18:12:12Z
 url: https://github.com/astral-sh/ruff/pull/21468
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # Fix default test executable in py-fuzzer
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-15 02:55_
+_@ntBre_
 
 Summary
 --

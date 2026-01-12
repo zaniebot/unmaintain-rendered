@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T09:07:46Z
 updated_at: 2024-02-23T12:34:15Z
 url: https://github.com/astral-sh/uv/issues/1458
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Authentication for index-url not being used
 
 ---
 
-_Issue opened by @inigohidalgo on 2024-02-16 09:07_
+_@inigohidalgo_
 
 I am running 
 ```bash

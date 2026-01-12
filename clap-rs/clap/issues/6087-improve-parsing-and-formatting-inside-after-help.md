@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-04T07:51:38Z
 updated_at: 2025-08-04T15:35:42Z
 url: https://github.com/clap-rs/clap/issues/6087
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Improve parsing and formatting inside  after_help
 
 ---
 
-_Issue opened by @Agent-Hellboy on 2025-08-04 07:51_
+_@Agent-Hellboy_
 
 ### Please complete the following tasks
 

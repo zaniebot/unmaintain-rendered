@@ -14,14 +14,14 @@ head: charlie/d
 created_at: 2025-03-19T17:02:28Z
 updated_at: 2025-03-19T17:15:13Z
 url: https://github.com/astral-sh/uv/pull/12319
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Make deserialization non-fatal when assessing source tree revisions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-19 17:02_
+_@charliermarsh_
 
 ## Summary
 

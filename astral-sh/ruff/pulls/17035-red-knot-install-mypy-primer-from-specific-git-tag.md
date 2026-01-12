@@ -14,14 +14,14 @@ head: david/mypy_primer-install-from-tag
 created_at: 2025-03-28T12:57:23Z
 updated_at: 2025-03-28T13:05:19Z
 url: https://github.com/astral-sh/ruff/pull/17035
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Install mypy_primer from specific Git tag
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-28 12:57_
+_@sharkdp_
 
 ## Summary
 

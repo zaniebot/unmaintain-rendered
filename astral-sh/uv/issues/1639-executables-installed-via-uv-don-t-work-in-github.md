@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T11:03:38Z
 updated_at: 2024-02-19T13:12:39Z
 url: https://github.com/astral-sh/uv/issues/1639
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Executables installed via `uv` don't work in GitHub Actions on Windows
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-02-18 11:03_
+_@AlexWaygood_
 
 Following #1523, standalone executables installed via `uv` seem to work fine on Windows locally. However, they still _don't_ seem to be working on Windows in the context of GitHub Actions. (By "standalone executables", I mean simply invoking `black` rather than `python -m black`, or simply invoking `coverage` rather than `python -m coverage`.) For a repro, see this PR, where CI is passing on MacOS and Linux, but not Windows:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-20T02:41:50Z
 updated_at: 2024-02-07T15:33:20Z
 url: https://github.com/astral-sh/ruff/issues/9588
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter seems to ignore `#fmt: off`
 
 ---
 
-_Issue opened by @mkismy on 2024-01-20 02:41_
+_@mkismy_
 
 `ruff format` seems to ignore `#fmt: off/on` and formatting everything on v0.1.8.
 

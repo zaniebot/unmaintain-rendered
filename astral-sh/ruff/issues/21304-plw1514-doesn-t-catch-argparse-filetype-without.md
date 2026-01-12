@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-06T19:39:52Z
 updated_at: 2025-11-11T23:48:08Z
 url: https://github.com/astral-sh/ruff/issues/21304
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLW1514 doesn't catch argparse.FileType without encoding
 
 ---
 
-_Issue opened by @novas0x2a on 2025-11-06 19:39_
+_@novas0x2a_
 
 ### Summary
 

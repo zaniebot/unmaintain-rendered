@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T01:57:09Z
 updated_at: 2025-04-18T13:42:29Z
 url: https://github.com/astral-sh/uv/issues/12797
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # uv add torch very slow
 
 ---
 
-_Issue opened by @Youjin1985 on 2025-04-10 01:57_
+_@Youjin1985_
 
 ### Summary
 

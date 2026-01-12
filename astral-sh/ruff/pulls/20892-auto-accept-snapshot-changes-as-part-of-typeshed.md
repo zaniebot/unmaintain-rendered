@@ -14,14 +14,14 @@ head: alex/sync-typeshed-snapshots
 created_at: 2025-10-15T13:51:40Z
 updated_at: 2025-11-15T14:26:56Z
 url: https://github.com/astral-sh/ruff/pull/20892
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Auto-accept snapshot changes as part of typeshed-sync PRs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-15 13:51_
+_@AlexWaygood_
 
 ## Summary
 

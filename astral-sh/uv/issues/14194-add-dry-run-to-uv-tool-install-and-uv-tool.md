@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T22:47:22Z
 updated_at: 2025-06-21T22:48:25Z
 url: https://github.com/astral-sh/uv/issues/14194
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Add `--dry-run` to `uv tool install` and `uv tool uninstall`
 
 ---
 
-_Issue opened by @muzimuzhi on 2025-06-21 22:47_
+_@muzimuzhi_
 
 ### Summary
 

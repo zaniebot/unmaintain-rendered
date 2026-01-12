@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T12:51:06Z
 updated_at: 2025-02-13T15:14:28Z
 url: https://github.com/astral-sh/uv/issues/7494
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Bug: extra indexes break uv add, uv remove without manual intervention
 
 ---
 
-_Issue opened by @Mateuscvieira on 2024-09-18 12:51_
+_@Mateuscvieira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

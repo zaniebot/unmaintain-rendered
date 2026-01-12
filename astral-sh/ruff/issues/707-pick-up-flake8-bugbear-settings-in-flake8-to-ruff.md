@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-12T21:09:04Z
 updated_at: 2022-11-12T21:46:13Z
 url: https://github.com/astral-sh/ruff/issues/707
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Pick up `flake8-bugbear` settings in `flake8-to-ruff`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 21:09_
+_@charliermarsh_
 
 _No description provided._
 

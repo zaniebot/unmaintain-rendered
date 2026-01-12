@@ -14,14 +14,14 @@ head: octal-escape
 created_at: 2023-10-30T13:21:08Z
 updated_at: 2023-10-30T13:47:21Z
 url: https://github.com/astral-sh/ruff/pull/8356
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix panic with 8 in octal escape
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 13:21_
+_@konstin_
 
 **Summary** The digits for an octal escape are 0 to 7, not 0 to 8, fixing the panic in #8355
 

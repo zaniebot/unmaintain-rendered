@@ -14,14 +14,14 @@ head: zb/docs-venv-cli
 created_at: 2024-08-09T16:53:11Z
 updated_at: 2024-08-09T17:15:24Z
 url: https://github.com/astral-sh/uv/pull/5963
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Improve the `uv venv` CLI documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 16:53_
+_@zanieb_
 
 This was actually in pretty good shape already!
 

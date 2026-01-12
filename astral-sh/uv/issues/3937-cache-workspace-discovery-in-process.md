@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T12:12:50Z
 updated_at: 2024-09-14T22:23:48Z
 url: https://github.com/astral-sh/uv/issues/3937
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Cache workspace discovery in-process
 
 ---
 
-_Issue opened by @konstin on 2024-05-31 12:12_
+_@konstin_
 
 Currently, every time we compute a `Metadata` instance, we performance workspace discovery anew. Instead, we should cache the paths we know are part of a workspace and reuse them. 
 

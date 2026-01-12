@@ -12,14 +12,14 @@ head: index-out-of-bounds
 created_at: 2023-11-07T11:41:03Z
 updated_at: 2023-11-07T11:44:41Z
 url: https://github.com/astral-sh/uv/pull/353
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Fix index out of bounds in SourceDistributionFilename::parse
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 11:41_
+_@konstin_
 
 Found this one in the top 8k pypi tests too
 

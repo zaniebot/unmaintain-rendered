@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-05T05:18:09Z
 updated_at: 2025-06-05T16:04:57Z
 url: https://github.com/astral-sh/uv/issues/13854
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # "uv python pin --global" Should Automatically Use Latest or Current Project Version
 
 ---
 
-_Issue opened by @zyads on 2025-06-05 05:18_
+_@zyads_
 
 ### Summary
 

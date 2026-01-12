@@ -12,14 +12,14 @@ head: master
 created_at: 2025-02-21T16:42:32Z
 updated_at: 2025-02-24T15:24:09Z
 url: https://github.com/clap-rs/clap/pull/5923
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: Avoid using `gen` for rust 2024 preserved keyword
 
 ---
 
-_Pull request opened by @Reverier-Xu on 2025-02-21 16:42_
+_@Reverier-Xu_
 
 In the rust 2024 edition, [`gen` has been a reserved keyword](https://doc.rust-lang.org/edition-guide/rust-2024/gen-keyword.html), so we should avoid using it.
 

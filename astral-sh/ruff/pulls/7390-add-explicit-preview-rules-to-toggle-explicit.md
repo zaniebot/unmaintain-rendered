@@ -14,14 +14,14 @@ head: zanie/preview-explicit
 created_at: 2023-09-14T17:37:36Z
 updated_at: 2023-09-28T20:00:35Z
 url: https://github.com/astral-sh/ruff/pull/7390
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add `explicit-preview-rules` to toggle explicit selection of preview rules
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-14 17:37_
+_@zanieb_
 
 Closes #7434 
 

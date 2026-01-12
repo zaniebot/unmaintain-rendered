@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-26T04:54:14Z
 updated_at: 2024-10-28T04:59:56Z
 url: https://github.com/astral-sh/uv/issues/8586
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Dependency source path and uv venv
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2024-10-26 04:54_
+_@CharlesPerrotMinot_
 
 Hi,
 

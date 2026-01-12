@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-15T15:10:52Z
 updated_at: 2025-12-16T13:43:38Z
 url: https://github.com/astral-sh/uv/issues/17133
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # handling constraints with dependency groups
 
 ---
 
-_Issue opened by @karanr-invent on 2025-12-15 15:10_
+_@karanr-invent_
 
 ### Question
 

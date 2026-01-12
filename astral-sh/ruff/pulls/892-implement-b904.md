@@ -12,14 +12,14 @@ head: B904
 created_at: 2022-11-23T14:04:25Z
 updated_at: 2022-11-24T14:50:02Z
 url: https://github.com/astral-sh/ruff/pull/892
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement B904
 
 ---
 
-_Pull request opened by @harupy on 2022-11-23 14:04_
+_@harupy_
 
 #389 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-29T09:26:30Z
 updated_at: 2026-01-09T01:26:25Z
 url: https://github.com/astral-sh/ruff/issues/3792
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Apply `ruff` to `markdown` code blocks
 
 ---
 
-_Issue opened by @paddyroddy on 2023-03-29 09:26_
+_@paddyroddy_
 
 It would be cool to have the functionality to run `ruff` over `python` codeblocks like this does for `black` https://github.com/adamchainz/blacken-docs
 

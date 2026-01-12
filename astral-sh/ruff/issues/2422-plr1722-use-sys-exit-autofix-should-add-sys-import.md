@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T21:56:22Z
 updated_at: 2023-01-31T22:00:03Z
 url: https://github.com/astral-sh/ruff/issues/2422
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PLR1722 use-sys-exit autofix should add sys import
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 21:56_
+_@spaceone_
 
 `PLR1722` transform `exit()` → `sys.exit()`.
 

@@ -13,14 +13,14 @@ head: custom-ca-docs
 created_at: 2024-03-01T23:38:23Z
 updated_at: 2024-03-11T22:21:52Z
 url: https://github.com/astral-sh/uv/pull/2124
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # docs: add note about ssl_cert_file env var
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-01 23:38_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T15:09:32Z
 updated_at: 2023-02-20T17:49:24Z
 url: https://github.com/astral-sh/ruff/issues/3060
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] - self.assertIsNotNone one-liner with if/else
 
 ---
 
-_Issue opened by @bmrobin on 2023-02-20 15:09_
+_@bmrobin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

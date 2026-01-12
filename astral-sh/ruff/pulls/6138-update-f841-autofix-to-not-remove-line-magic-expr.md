@@ -11,14 +11,14 @@ head: dhruv/F841-line-magic-expr
 created_at: 2023-07-28T01:10:47Z
 updated_at: 2023-07-28T01:52:18Z
 url: https://github.com/astral-sh/ruff/pull/6138
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Update `F841` autofix to not remove line magic expr
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-28 01:10_
+_@dhruvmanila_
 
 ## Summary
 

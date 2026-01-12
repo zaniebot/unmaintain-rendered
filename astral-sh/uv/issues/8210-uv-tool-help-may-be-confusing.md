@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T10:51:06Z
 updated_at: 2024-10-15T15:24:30Z
 url: https://github.com/astral-sh/uv/issues/8210
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # uv tool help may be confusing
 
 ---
 
-_Issue opened by @callegar on 2024-10-15 10:51_
+_@callegar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

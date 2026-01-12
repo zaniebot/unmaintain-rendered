@@ -13,14 +13,14 @@ head: cjm/mdformat
 created_at: 2024-10-31T15:10:18Z
 updated_at: 2024-10-31T21:09:53Z
 url: https://github.com/astral-sh/ruff/pull/14020
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] have mdformat wrap mdtest files to 100 columns
 
 ---
 
-_Pull request opened by @carljm on 2024-10-31 15:10_
+_@carljm_
 
 This makes it easier to read and edit (and review changes to) these files as source, even though it doesn't affect the rendering.
 

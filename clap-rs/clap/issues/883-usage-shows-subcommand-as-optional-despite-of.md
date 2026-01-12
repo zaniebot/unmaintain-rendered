@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-01T16:51:59Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/883
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # USAGE shows SUBCOMMAND as optional despite of SubcommandRequiredElseHelp option
 
 ---
 
-_Issue opened by @nagisa on 2017-03-01 16:51_
+_@nagisa_
 
 ### Rust Version
 

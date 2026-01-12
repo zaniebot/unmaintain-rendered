@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-06-06T15:46:23Z
 updated_at: 2020-06-10T07:23:21Z
 url: https://github.com/clap-rs/clap/issues/1963
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Remove `_clap_count_exprs` macro
 
 ---
 
-_Issue opened by @pksunkara on 2020-06-06 15:46_
+_@pksunkara_
 
 We don't need it to be public anymore.
 

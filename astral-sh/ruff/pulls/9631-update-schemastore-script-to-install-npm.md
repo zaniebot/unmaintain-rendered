@@ -14,14 +14,14 @@ head: charlie/schemars
 created_at: 2024-01-24T03:30:41Z
 updated_at: 2024-01-24T04:19:37Z
 url: https://github.com/astral-sh/ruff/pull/9631
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Update SchemaStore script to install npm dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 03:30_
+_@charliermarsh_
 
 ## Summary
 

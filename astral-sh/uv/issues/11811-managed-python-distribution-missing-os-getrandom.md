@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T21:22:56Z
 updated_at: 2025-02-26T21:46:51Z
 url: https://github.com/astral-sh/uv/issues/11811
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Managed Python distribution missing `os.getrandom`
 
 ---
 
-_Issue opened by @wbilal-c on 2025-02-26 21:22_
+_@wbilal-c_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T10:27:56Z
 updated_at: 2024-09-05T10:24:18Z
 url: https://github.com/astral-sh/uv/issues/7003
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv add keyring` breaks private index auth
 
 ---
 
-_Issue opened by @EdAyers on 2024-09-04 10:27_
+_@EdAyers_
 
 # Reproduction steps
 

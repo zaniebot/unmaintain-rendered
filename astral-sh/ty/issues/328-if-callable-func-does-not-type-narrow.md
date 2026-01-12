@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T13:01:22Z
 updated_at: 2025-05-12T13:15:07Z
 url: https://github.com/astral-sh/ty/issues/328
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `if callable(func)` does not type narrow
 
 ---
 
-_Issue opened by @janosh on 2025-05-12 13:01_
+_@janosh_
 
 ### Summary
 

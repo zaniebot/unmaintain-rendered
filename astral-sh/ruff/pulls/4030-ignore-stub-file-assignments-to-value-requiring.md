@@ -13,14 +13,14 @@ head: charlie/pyi-all
 created_at: 2023-04-19T19:15:49Z
 updated_at: 2023-04-19T19:45:10Z
 url: https://github.com/astral-sh/ruff/pull/4030
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore stub file assignments to value-requiring targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 19:15_
+_@charliermarsh_
 
 ## Summary
 

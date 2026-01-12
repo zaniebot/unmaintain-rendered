@@ -12,14 +12,14 @@ head: make_running_ruff_on_ruff_possible
 created_at: 2023-05-31T16:03:10Z
 updated_at: 2023-05-31T16:37:31Z
 url: https://github.com/astral-sh/ruff/pull/4760
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Make running ruff on ruff possible
 
 ---
 
-_Pull request opened by @konstin on 2023-05-31 16:03_
+_@konstin_
 
 I was wondering why `pip install -U ruff && ruff .` in the ruff repo would result in only noise while the pre-commit ruff works. Turns out the pre-commit has an exclude for the resources directories.
 

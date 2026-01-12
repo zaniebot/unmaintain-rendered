@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T12:47:03Z
 updated_at: 2025-07-17T20:34:22Z
 url: https://github.com/astral-sh/uv/issues/14022
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # `uv pip` does not respect $UV_PROJECT_ENVIRONMENT
 
 ---
 
-_Issue opened by @xoolive on 2025-06-13 12:47_
+_@xoolive_
 
 ### Summary
 

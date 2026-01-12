@@ -13,14 +13,14 @@ head: charlie/module-not-found
 created_at: 2023-03-01T04:25:28Z
 updated_at: 2023-03-01T23:08:38Z
 url: https://github.com/astral-sh/ruff/pull/3288
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Ignore unused imports in ModuleNotFoundError blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-01 04:25_
+_@charliermarsh_
 
 I'm actually not sold on this being a good change, but it would close #3279.
 

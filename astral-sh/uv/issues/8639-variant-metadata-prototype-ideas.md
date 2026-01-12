@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-28T16:37:06Z
 updated_at: 2024-10-31T17:35:44Z
 url: https://github.com/astral-sh/uv/issues/8639
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Variant metadata prototype ideas
 
 ---
 
-_Issue opened by @msarahan on 2024-10-28 16:37_
+_@msarahan_
 
 Greetings Astral team! I'm looking to build a prototype of the variant metadata idea proposed in https://discuss.python.org/t/selecting-variant-wheels-according-to-a-semi-static-specification/53446/111. I'm doing so with `uv` to start with because the existing "first match" index priority strategy is necessary for this plan.
 

@@ -13,14 +13,14 @@ head: docs/zed-editor
 created_at: 2025-10-24T09:55:56Z
 updated_at: 2025-10-24T16:18:19Z
 url: https://github.com/astral-sh/ty/pull/1432
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # docs: add Zed editor support
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-10-24 09:55_
+_@LoicRiegel_
 
 ## Summary
 

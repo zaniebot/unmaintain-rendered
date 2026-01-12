@@ -13,14 +13,14 @@ head: protocol-property-check
 created_at: 2025-06-29T16:31:03Z
 updated_at: 2025-08-26T15:56:53Z
 url: https://github.com/astral-sh/ruff/pull/19029
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Implement protocol property check
 
 ---
 
-_Pull request opened by @mtshiba on 2025-06-29 16:31_
+_@mtshiba_
 
 ## Summary
 

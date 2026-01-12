@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T12:23:03Z
 updated_at: 2024-08-12T12:23:34Z
 url: https://github.com/astral-sh/uv/issues/6034
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Improve resolver conclusion when only a single version is available
 
 ---
 
-_Issue opened by @zanieb on 2024-08-12 12:23_
+_@zanieb_
 
 From https://github.com/astral-sh/uv/issues/6028
 

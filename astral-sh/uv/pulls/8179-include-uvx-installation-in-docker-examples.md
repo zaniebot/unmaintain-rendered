@@ -13,14 +13,14 @@ head: docs/docker-uv-integration
 created_at: 2024-10-14T17:27:49Z
 updated_at: 2024-10-14T18:23:11Z
 url: https://github.com/astral-sh/uv/pull/8179
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Include `uvx` installation in Docker examples
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-14 17:27_
+_@Aditya-PS-05_
 
 closes #7947
 

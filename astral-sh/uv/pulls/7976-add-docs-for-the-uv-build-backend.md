@@ -14,14 +14,14 @@ head: konsti/build-backend3
 created_at: 2024-10-07T16:04:47Z
 updated_at: 2025-04-25T14:37:04Z
 url: https://github.com/astral-sh/uv/pull/7976
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Add docs for the uv build backend
 
 ---
 
-_Pull request opened by @konstin on 2024-10-07 16:04_
+_@konstin_
 
 Documentation for the uv build backend. To be merged last since we can't hide it in preview.
 

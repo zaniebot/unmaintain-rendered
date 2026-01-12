@@ -13,14 +13,14 @@ head: zb/macos-subset
 created_at: 2025-01-22T19:33:13Z
 updated_at: 2025-01-22T19:54:07Z
 url: https://github.com/astral-sh/uv/pull/10871
-synced_at: 2026-01-10T11:45:15Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Enable less test features on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-22 19:33_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dhruv/changelog
 created_at: 2024-07-18T16:14:18Z
 updated_at: 2024-07-18T16:17:09Z
 url: https://github.com/astral-sh/ruff/pull/12383
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update 0.5.3 changelog caption
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-18 16:14_
+_@dhruvmanila_
 
 As suggested in https://github.com/astral-sh/ruff/pull/12381#discussion_r1683123202
 

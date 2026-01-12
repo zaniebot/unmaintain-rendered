@@ -14,14 +14,14 @@ head: micha/semantic-tokens-fix
 created_at: 2025-11-01T23:00:37Z
 updated_at: 2025-11-02T14:58:37Z
 url: https://github.com/astral-sh/ruff/pull/21193
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Fix range filtering for tokens starting at the end of the requested range
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-01 23:00_
+_@MichaReiser_
 
 ## Summary
 

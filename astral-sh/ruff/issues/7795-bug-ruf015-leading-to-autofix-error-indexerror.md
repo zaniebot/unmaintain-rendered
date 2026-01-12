@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-04T00:43:00Z
 updated_at: 2023-10-18T16:13:39Z
 url: https://github.com/astral-sh/ruff/issues/7795
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Bug: RUF015 leading to autofix error (`IndexError` gets changed to `StopIteration`)
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-04 00:43_
+_@jamesbraza_
 
 I am using `ruff==0.0.292`:
 

@@ -13,14 +13,14 @@ head: zb/token-obf
 created_at: 2025-10-07T21:27:31Z
 updated_at: 2025-10-13T13:28:22Z
 url: https://github.com/astral-sh/uv/pull/16164
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Obfuscate Bearer Token values in logs
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 21:27_
+_@zanieb_
 
 Sometimes a credential's `Debug` formatted value appears in tracing logs - make sure the credential doesn't appear there.
 

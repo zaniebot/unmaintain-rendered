@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T06:24:39Z
 updated_at: 2025-05-18T21:25:39Z
 url: https://github.com/astral-sh/uv/issues/13504
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # uv sync  any project :hatchling.build.get_requires_for_build_editable
 
 ---
 
-_Issue opened by @yanzengyun on 2025-05-17 06:24_
+_@yanzengyun_
 
 ### Question
 

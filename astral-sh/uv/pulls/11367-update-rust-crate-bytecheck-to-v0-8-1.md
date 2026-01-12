@@ -13,14 +13,14 @@ head: renovate/bytecheck-0.x-lockfile
 created_at: 2025-02-10T01:06:54Z
 updated_at: 2025-02-10T01:33:10Z
 url: https://github.com/astral-sh/uv/pull/11367
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Update Rust crate bytecheck to v0.8.1
 
 ---
 
-_Pull request opened by @renovate on 2025-02-10 01:06_
+_@renovate_
 
 This PR contains the following updates:
 

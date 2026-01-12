@@ -15,14 +15,14 @@ head: ag/squash-false-positive-log
 created_at: 2025-12-11T16:34:23Z
 updated_at: 2025-12-11T17:50:10Z
 url: https://github.com/astral-sh/ruff/pull/21923
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Squash false positive logs for failing to find `builtins` as a real module
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-11 16:34_
+_@BurntSushi_
 
 I recently started noticing this showing up in the logs for every scope
 based completion request:

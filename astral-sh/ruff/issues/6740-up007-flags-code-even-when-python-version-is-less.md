@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-21T20:56:25Z
 updated_at: 2024-09-18T14:27:20Z
 url: https://github.com/astral-sh/ruff/issues/6740
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # UP007: Flags code even when python version is less than 3.10
 
 ---
 
-_Issue opened by @bgianfo on 2023-08-21 20:56_
+_@bgianfo_
 
 The documentation for `UP007` points to [PEP 604](https://peps.python.org/pep-0604/), which claims it targets python 3.10.
 

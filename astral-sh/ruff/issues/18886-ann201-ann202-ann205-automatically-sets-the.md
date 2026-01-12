@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T10:10:01Z
 updated_at: 2025-11-05T10:28:10Z
 url: https://github.com/astral-sh/ruff/issues/18886
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ANN201, ANN202, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError
 
 ---
 
-_Issue opened by @spaceby on 2025-06-23 10:10_
+_@spaceby_
 
 ### Summary
 

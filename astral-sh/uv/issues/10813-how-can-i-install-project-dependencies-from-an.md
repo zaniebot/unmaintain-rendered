@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T13:16:27Z
 updated_at: 2026-01-10T12:29:52Z
 url: https://github.com/astral-sh/uv/issues/10813
-synced_at: 2026-01-10T12:30:12Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # How can I install project dependencies from an existing pyproject.toml?
 
 ---
 
-_Issue opened by @alexted on 2025-01-21 13:16_
+_@alexted_
 
 The official documentation doesn't clearly explain how to install project dependencies. It's all vague and indirect, with no concrete example/instructions!
 How am I supposed to install project dependencies from an existing pyproject.toml? 

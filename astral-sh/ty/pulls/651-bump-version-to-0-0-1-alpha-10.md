@@ -13,14 +13,14 @@ head: cjm/alpha10
 created_at: 2025-06-13T20:04:51Z
 updated_at: 2025-06-13T20:19:50Z
 url: https://github.com/astral-sh/ty/pull/651
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1-alpha.10
 
 ---
 
-_Pull request opened by @carljm on 2025-06-13 20:04_
+_@carljm_
 
 _No description provided._
 

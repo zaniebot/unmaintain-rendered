@@ -13,14 +13,14 @@ head: zb/rk-int-div-zero
 created_at: 2024-09-30T21:00:53Z
 updated_at: 2024-10-01T10:31:26Z
 url: https://github.com/astral-sh/ruff/pull/13576
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Add diagnostic for integer division by zero
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-30 21:00_
+_@zanieb_
 
 Adds a diagnostic for division by the integer zero in `//`, `/`, and `%`.
 

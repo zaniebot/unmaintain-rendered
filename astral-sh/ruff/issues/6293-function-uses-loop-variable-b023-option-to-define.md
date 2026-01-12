@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-03T01:14:07Z
 updated_at: 2023-09-12T22:39:34Z
 url: https://github.com/astral-sh/ruff/issues/6293
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `function-uses-loop-variable` (`B023`) - option to define functions where lambda is executed immediately
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-03 01:14_
+_@DetachHead_
 
 in my codebase there's a `find` function where the lambda is executed immediately which means it's safe to use the loop variable this way, so i have to suppress this rule on all of its usages:
 ```py

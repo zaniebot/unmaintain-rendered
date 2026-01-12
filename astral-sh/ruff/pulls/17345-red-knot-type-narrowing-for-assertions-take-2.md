@@ -13,14 +13,14 @@ head: cjm/reapply-assert-narrowing
 created_at: 2025-04-11T03:45:56Z
 updated_at: 2025-04-18T15:11:09Z
 url: https://github.com/astral-sh/ruff/pull/17345
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Type narrowing for assertions (take 2)
 
 ---
 
-_Pull request opened by @carljm on 2025-04-11 03:45_
+_@carljm_
 
 ## Summary
 

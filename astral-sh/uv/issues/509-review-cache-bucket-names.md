@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-28T17:21:03Z
 updated_at: 2024-01-11T16:53:56Z
 url: https://github.com/astral-sh/uv/issues/509
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Review cache bucket names
 
 ---
 
-_Issue opened by @konstin on 2023-11-28 17:21_
+_@konstin_
 
 Once we have the cache structure finished we should make a pass over the cache buckets and give them clearer (likely longer) names (https://github.com/astral-sh/puffin/pull/507#discussion_r1408097404)
 

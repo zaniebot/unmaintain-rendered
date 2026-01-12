@@ -13,14 +13,14 @@ head: drop-nursery
 created_at: 2024-02-29T14:29:04Z
 updated_at: 2024-06-24T13:50:26Z
 url: https://github.com/astral-sh/ruff/pull/10172
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Drop deprecated `nursery` rule group
 
 ---
 
-_Pull request opened by @T-256 on 2024-02-29 14:29_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

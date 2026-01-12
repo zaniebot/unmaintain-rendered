@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-14T19:17:26Z
 updated_at: 2025-05-15T07:59:33Z
 url: https://github.com/astral-sh/ruff/issues/18106
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule Request: change call args to keywords
 
 ---
 
-_Issue opened by @ilius on 2025-05-14 19:17_
+_@ilius_
 
 When there are many arguments (3+) in a function/class call, using keyword arguments improves readability.
 It would be nice to add an option to linter or formatter (min argument count) to change function/class calls to keywords (default `0` = disabled)

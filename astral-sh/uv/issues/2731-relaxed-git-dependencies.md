@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T11:55:20Z
 updated_at: 2024-05-16T13:23:00Z
 url: https://github.com/astral-sh/uv/issues/2731
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Relaxed git dependencies
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-03-30 11:55_
+_@mjclarke94_
 
 We have a project structure where we have a `core` library, and then a number of projects which depend on this core library, and install it as a git dependency pinned either to `main` or a feature branch.
 

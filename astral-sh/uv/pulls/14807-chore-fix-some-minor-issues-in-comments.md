@@ -13,14 +13,14 @@ head: main
 created_at: 2025-07-22T10:03:12Z
 updated_at: 2025-07-22T10:13:05Z
 url: https://github.com/astral-sh/uv/pull/14807
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # chore: fix some minor issues in comments
 
 ---
 
-_Pull request opened by @pingshuijie on 2025-07-22 10:03_
+_@pingshuijie_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

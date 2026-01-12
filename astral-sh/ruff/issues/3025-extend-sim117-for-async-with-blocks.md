@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T08:15:38Z
 updated_at: 2023-06-12T14:33:20Z
 url: https://github.com/astral-sh/ruff/issues/3025
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Extend SIM117 for async with blocks
 
 ---
 
-_Issue opened by @thatlittleboy on 2023-02-19 08:15_
+_@thatlittleboy_
 
 ## Request
 

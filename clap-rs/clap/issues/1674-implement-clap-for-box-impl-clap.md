@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-02-05T08:34:23Z
 updated_at: 2020-02-13T16:09:20Z
 url: https://github.com/clap-rs/clap/issues/1674
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Implement Clap for Box<impl Clap>
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-05 08:34_
+_@CreepySkeleton_
 
 _No description provided._
 

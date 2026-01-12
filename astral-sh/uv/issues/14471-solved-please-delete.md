@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-06T20:14:48Z
 updated_at: 2025-07-07T07:50:03Z
 url: https://github.com/astral-sh/uv/issues/14471
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Solved. Please delete
 
 ---
 
-_Issue opened by @Githubbelknubbel on 2025-07-06 20:14_
+_@Githubbelknubbel_
 
 Has been solved. Please delete
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-24T21:02:02Z
 updated_at: 2025-11-24T21:02:35Z
 url: https://github.com/astral-sh/ty/issues/1624
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # use type context to inform default specialization of bare generic class name
 
 ---
 
-_Issue opened by @carljm on 2025-11-24 21:02_
+_@carljm_
 
 Example code (derived from [psycopg2](https://github.com/psycopg/psycopg/blob/47b4dec61a8fc0df5559d9037463f945af042796/psycopg/psycopg/connection.py#L78)):
 

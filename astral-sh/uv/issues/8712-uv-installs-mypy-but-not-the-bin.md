@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T23:10:07Z
 updated_at: 2025-01-25T02:52:37Z
 url: https://github.com/astral-sh/uv/issues/8712
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # uv installs mypy but not the bin?
 
 ---
 
-_Issue opened by @jbcpollak on 2024-10-30 23:10_
+_@jbcpollak_
 
 In a linux devcontainer using uv `0.4.28`, when I run:
 

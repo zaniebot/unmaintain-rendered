@@ -13,14 +13,14 @@ head: fix/typo
 created_at: 2024-08-23T08:52:17Z
 updated_at: 2024-08-23T10:43:21Z
 url: https://github.com/astral-sh/uv/pull/6500
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Two small typo fixes
 
 ---
 
-_Pull request opened by @svlandeg on 2024-08-23 08:52_
+_@svlandeg_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-31T16:40:12Z
 updated_at: 2025-08-15T20:29:22Z
 url: https://github.com/astral-sh/uv/issues/15000
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Better handling of multiple uv-build versions for repackagers / distros
 
 ---
 
-_Issue opened by @geofft on 2025-07-31 16:40_
+_@geofft_
 
 We recommend adding an upper bound to your `uv_build` dependency in `build-system.requires`: https://docs.astral.sh/uv/concepts/build-backend/#using-the-uv-build-backend This is a generally good thing to do: setting an upper bound means that if there's a backwards-incompatible change in uv_build 0.9.0, people who release code today, using uv_build 0.8.x, will not be broken.
 

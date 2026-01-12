@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T13:05:04Z
 updated_at: 2025-01-20T21:36:19Z
 url: https://github.com/astral-sh/uv/issues/10777
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # [tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker
 
 ---
 
-_Issue opened by @campanya on 2025-01-20 13:05_
+_@campanya_
 
 My dev platform is Windows; trying to deploy to a linux docker image.
 

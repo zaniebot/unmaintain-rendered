@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T20:01:17Z
 updated_at: 2025-04-24T13:31:39Z
 url: https://github.com/astral-sh/ruff/issues/14442
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # D100 with `--add-noqa` breaks shebang lines
 
 ---
 
-_Issue opened by @pjspereira on 2024-11-18 20:01_
+_@pjspereira_
 
 The `—add-noqa` breaks shebang lines with the D100 rule on files with no module documentation. Can the shebang line be ignored and the D100 error be assigned to the second line, if it exists?
 

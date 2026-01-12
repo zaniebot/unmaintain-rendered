@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-16T11:12:46Z
 updated_at: 2025-05-16T12:08:14Z
 url: https://github.com/astral-sh/ty/issues/422
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `error[unresolved-attribute]: Type '<module 'os'>' has no attribute 'sys'` - but `os.sys.winver` is there
 
 ---
 
-_Issue opened by @gr7ffo on 2025-05-16 11:12_
+_@gr7ffo_
 
 ### Summary
 

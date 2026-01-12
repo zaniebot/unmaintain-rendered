@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T07:54:12Z
 updated_at: 2024-04-26T01:48:26Z
 url: https://github.com/astral-sh/ruff/issues/11101
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff format converts tabs into 8 spaces in docstring
 
 ---
 
-_Issue opened by @ibrokemypie on 2024-04-23 07:54_
+_@ibrokemypie_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

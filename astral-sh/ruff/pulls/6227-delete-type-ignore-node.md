@@ -12,14 +12,14 @@ head: delete-type-ignore
 created_at: 2023-08-01T07:15:25Z
 updated_at: 2023-08-01T10:39:44Z
 url: https://github.com/astral-sh/ruff/pull/6227
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Delete type-ignore node
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-01 07:15_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

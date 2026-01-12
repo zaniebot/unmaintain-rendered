@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-16T02:50:58Z
 updated_at: 2023-12-16T20:58:29Z
 url: https://github.com/astral-sh/ruff/issues/9156
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PYI055's "safe" fix breaks type annotation semantics
 
 ---
 
-_Issue opened by @tooruu on 2023-12-16 02:50_
+_@tooruu_
 
 Ruff 0.1.8
 `ruff check --isolated --select PYI055 --fix`

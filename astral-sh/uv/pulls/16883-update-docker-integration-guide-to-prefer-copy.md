@@ -13,14 +13,14 @@ head: update-docs-docker-integration-guide
 created_at: 2025-11-28T15:17:19Z
 updated_at: 2025-12-03T15:16:43Z
 url: https://github.com/astral-sh/uv/pull/16883
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Update Docker integration guide to prefer `COPY` over `ADD` for simple cases
 
 ---
 
-_Pull request opened by @MatthijsKok on 2025-11-28 15:17_
+_@MatthijsKok_
 
 ## Summary
 

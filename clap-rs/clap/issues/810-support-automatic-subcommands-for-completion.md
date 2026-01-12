@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-01-07T23:48:52Z
 updated_at: 2024-08-10T00:31:54Z
 url: https://github.com/clap-rs/clap/issues/810
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Support automatic subcommands for completion
 
 ---
 
-_Issue opened by @colemickens on 2017-01-07 23:48_
+_@colemickens_
 
 It seems to be something of a pattern for apps to support completion via the following:
 

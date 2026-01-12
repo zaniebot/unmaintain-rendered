@@ -13,14 +13,14 @@ head: invalid-bool-return
 created_at: 2024-03-13T05:19:12Z
 updated_at: 2024-03-14T00:55:26Z
 url: https://github.com/astral-sh/ruff/pull/10377
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Implement `invalid-bool-return-type` (`E304`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-13 05:19_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

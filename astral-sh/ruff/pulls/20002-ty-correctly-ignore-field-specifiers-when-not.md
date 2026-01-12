@@ -14,14 +14,14 @@ head: issue-890
 created_at: 2025-08-20T12:44:06Z
 updated_at: 2025-08-20T19:01:18Z
 url: https://github.com/astral-sh/ruff/pull/20002
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] correctly ignore field specifiers when not specified
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-08-20 12:44_
+_@leandrobbraga_
 
 This commit corrects the type checker's behavior when handling `dataclass_transform` decorators that don't explicitly specify `field_specifiers`. According to [PEP 681 (Data Class Transforms)](https://peps.python.org/pep-0681/#dataclass-transform-parameters), when `field_specifiers` is not provided, it defaults to an empty tuple, meaning no field specifiers are supported and `dataclasses.field`/`dataclasses.Field` calls should be ignored.
 

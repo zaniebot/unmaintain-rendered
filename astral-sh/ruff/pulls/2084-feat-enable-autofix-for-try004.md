@@ -12,14 +12,14 @@ head: tryceratops-try004-autofix
 created_at: 2023-01-22T09:14:43Z
 updated_at: 2023-01-22T12:25:11Z
 url: https://github.com/astral-sh/ruff/pull/2084
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: enable autofix for TRY004
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-22 09:14_
+_@sbrugman_
 
 functionality was already implemented, just the trait needed to be added
 

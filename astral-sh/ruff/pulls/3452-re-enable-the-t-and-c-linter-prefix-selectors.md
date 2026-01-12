@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2023-03-11T20:38:59Z
 updated_at: 2023-03-13T12:20:31Z
 url: https://github.com/astral-sh/ruff/pull/3452
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Re-enable the T and C linter prefix selectors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-11 20:38_
+_@charliermarsh_
 
 ## Summary
 

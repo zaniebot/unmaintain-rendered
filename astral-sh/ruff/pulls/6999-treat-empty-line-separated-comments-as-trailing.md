@@ -13,14 +13,14 @@ head: charlie/newlines
 created_at: 2023-08-30T02:15:14Z
 updated_at: 2025-10-27T10:25:27Z
 url: https://github.com/astral-sh/ruff/pull/6999
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Treat empty-line separated comments as trailing statement comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-30 02:15_
+_@charliermarsh_
 
 ## Summary
 

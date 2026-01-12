@@ -14,14 +14,14 @@ head: affix-unicode
 created_at: 2024-10-04T16:24:43Z
 updated_at: 2024-10-07T15:36:24Z
 url: https://github.com/astral-sh/ruff/pull/13631
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [refurb] Count codepoints not bytes for `slice-to-remove-prefix-or-suffix (FURB188)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-10-04 16:24_
+_@dylwil3_
 
 This PR fixes the calculation of string length for the purposes of verifying when to suggest `removeprefix`/`removesuffix` (FURB188). Before, we used `text_len` which was counting bytes rather than codepoints (chars) and therefore disagreed with Python's `len` for non-ASCII text.
 

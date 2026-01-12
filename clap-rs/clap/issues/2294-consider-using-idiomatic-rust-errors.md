@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-01-17T04:11:59Z
 updated_at: 2021-01-17T16:06:58Z
 url: https://github.com/clap-rs/clap/issues/2294
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Consider using idiomatic Rust errors
 
 ---
 
-_Issue opened by @sharpvik on 2021-01-17 04:11_
+_@sharpvik_
 
 ### Describe your use case
 

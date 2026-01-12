@@ -14,14 +14,14 @@ head: literal-assignability-with-nominal-instance
 created_at: 2025-05-28T10:56:47Z
 updated_at: 2025-06-28T23:12:39Z
 url: https://github.com/astral-sh/ruff/pull/18351
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Ensure `Literal` types are considered assignable to anything their `Instance` supertypes are assignable to
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-28 10:56_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

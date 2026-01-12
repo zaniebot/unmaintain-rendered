@@ -12,14 +12,14 @@ head: zb/assert-compile
 created_at: 2024-01-25T23:56:11Z
 updated_at: 2024-02-02T02:41:43Z
 url: https://github.com/astral-sh/uv/pull/1112
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:26Z
 ```
 
 # Add assertions that `pip compile` scenario test matches expected outcome
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 23:56_
+_@zanieb_
 
 This was kind of a pain, but basically we could not make assertions about the `pip compile` results (beyond the snapshot) since the standard output is hidden inside `assert_cmd_snapshot`. We want to make sure we're actually conforming to the scenario's expectations, so we now have an extra assertion on whether resolution failed or succeeded as well as that it includes the given packages.
 

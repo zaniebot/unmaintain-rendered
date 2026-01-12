@@ -12,14 +12,14 @@ head: ww/clippy
 created_at: 2025-10-29T15:34:52Z
 updated_at: 2025-10-29T15:38:28Z
 url: https://github.com/astral-sh/uv/pull/16499
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Fix a small clippy warning
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-29 15:34_
+_@woodruffw_
 
 ## Summary
 

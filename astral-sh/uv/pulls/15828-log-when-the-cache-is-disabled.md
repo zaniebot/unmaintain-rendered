@@ -13,14 +13,14 @@ head: charlie/dis
 created_at: 2025-09-14T01:06:38Z
 updated_at: 2025-09-14T01:57:11Z
 url: https://github.com/astral-sh/uv/pull/15828
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Log when the cache is disabled
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-14 01:06_
+_@charliermarsh_
 
 ## Summary
 

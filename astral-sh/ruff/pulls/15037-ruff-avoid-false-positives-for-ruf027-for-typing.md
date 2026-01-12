@@ -14,14 +14,14 @@ head: bugfix/ruf027-typing-context
 created_at: 2024-12-17T13:39:04Z
 updated_at: 2024-12-18T08:30:54Z
 url: https://github.com/astral-sh/ruff/pull/15037
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Avoid false positives for RUF027 for typing context bindings.
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-17 13:39_
+_@Daverball_
 
 Closes #14000 
 

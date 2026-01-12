@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T18:53:32Z
 updated_at: 2024-02-11T20:48:52Z
 url: https://github.com/astral-sh/ruff/issues/9933
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # 0.2.1: build fail
 
 ---
 
-_Issue opened by @kloczek on 2024-02-11 18:53_
+_@kloczek_
 
 Looks like something is wrong and ..
 <details>

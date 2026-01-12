@@ -13,14 +13,14 @@ head: rooster-update
 created_at: 2025-09-18T18:33:34Z
 updated_at: 2025-09-18T18:46:17Z
 url: https://github.com/astral-sh/ruff/pull/20472
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # Upgrade to the latest rooster version and include contributors in CHANGELOG
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-18 18:33_
+_@dylwil3_
 
 What it says on the tin!
 

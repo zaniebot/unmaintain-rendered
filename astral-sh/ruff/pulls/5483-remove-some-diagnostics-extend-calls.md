@@ -14,14 +14,14 @@ head: charlie/extends
 created_at: 2023-07-03T16:41:06Z
 updated_at: 2023-07-04T02:39:36Z
 url: https://github.com/astral-sh/ruff/pull/5483
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove some `diagnostics.extend` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 16:41_
+_@charliermarsh_
 
 ## Summary
 

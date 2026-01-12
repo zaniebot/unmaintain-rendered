@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T07:44:15Z
 updated_at: 2025-12-29T15:56:35Z
 url: https://github.com/astral-sh/ruff/issues/19983
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # File path not clickable in PyCharm
 
 ---
 
-_Issue opened by @CorneiZeR on 2025-08-19 07:44_
+_@CorneiZeR_
 
 ### Summary
 

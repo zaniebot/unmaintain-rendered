@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T13:00:02Z
 updated_at: 2025-07-04T02:08:48Z
 url: https://github.com/astral-sh/uv/issues/14187
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Which environment variable should be adjusted if venv cannot be created on the Chinese network
 
 ---
 
-_Issue opened by @Ryden-kai on 2025-06-21 13:00_
+_@Ryden-kai_
 
 ### Question
 

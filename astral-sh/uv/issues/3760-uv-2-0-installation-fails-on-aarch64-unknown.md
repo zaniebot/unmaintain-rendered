@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-22T19:28:12Z
 updated_at: 2024-05-22T20:47:21Z
 url: https://github.com/astral-sh/uv/issues/3760
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `UV 2.0` installation fails on `aarch64-unknown-linux-gnu` (inside docker basically) 
 
 ---
 
-_Issue opened by @ArshanKhanifar on 2024-05-22 19:28_
+_@ArshanKhanifar_
 
 Hello hello! Congrats on the new release! 🎉  
 

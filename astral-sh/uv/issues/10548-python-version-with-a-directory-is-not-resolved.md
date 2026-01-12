@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T21:56:17Z
 updated_at: 2025-04-29T22:29:12Z
 url: https://github.com/astral-sh/uv/issues/10548
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # `.python-version` with a directory is not resolved relative to the version file
 
 ---
 
-_Issue opened by @zanieb on 2025-01-12 21:56_
+_@zanieb_
 
 > The parent directory has that .python-version file (which I'm assuming tells uv add to add packages to the correct virtual env). I did try to add a version file to subdirectories to see if it'd allow me to run uv run within child folders
 > 

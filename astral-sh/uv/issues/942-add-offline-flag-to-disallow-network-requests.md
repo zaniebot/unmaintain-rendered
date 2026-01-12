@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-16T19:15:22Z
 updated_at: 2025-03-17T07:49:11Z
 url: https://github.com/astral-sh/uv/issues/942
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Add `--offline` flag to disallow network requests
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-16 19:15_
+_@charliermarsh_
 
 This is like `--no-index`, but it should disallow _all_ network requests (including for distributions and `--find-links`).
 

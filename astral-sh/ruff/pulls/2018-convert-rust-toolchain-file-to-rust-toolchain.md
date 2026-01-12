@@ -11,14 +11,14 @@ head: toolchain-file
 created_at: 2023-01-20T09:45:53Z
 updated_at: 2023-01-20T10:50:24Z
 url: https://github.com/astral-sh/ruff/pull/2018
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Convert rust-toolchain file to rust-toolchain.toml (with nightly)
 
 ---
 
-_Pull request opened by @akx on 2023-01-20 09:45_
+_@akx_
 
 This makes IDEA IDEs realize they should use `nightly` as documented in `CONTRIBUTING.md`.
 

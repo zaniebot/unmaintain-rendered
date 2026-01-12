@@ -14,14 +14,14 @@ head: alex/import-debug-info
 created_at: 2025-11-21T12:32:53Z
 updated_at: 2025-11-21T13:45:58Z
 url: https://github.com/astral-sh/ruff/pull/21555
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Improve debug messages when imports fail
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-21 12:32_
+_@AlexWaygood_
 
 ## Summary
 

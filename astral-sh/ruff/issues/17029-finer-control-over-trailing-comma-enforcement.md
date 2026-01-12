@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T03:01:30Z
 updated_at: 2025-03-29T05:27:29Z
 url: https://github.com/astral-sh/ruff/issues/17029
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Finer control over trailing comma enforcement
 
 ---
 
-_Issue opened by @Hawk777 on 2025-03-28 03:01_
+_@Hawk777_
 
 ### Summary
 

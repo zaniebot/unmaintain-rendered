@@ -14,14 +14,14 @@ head: update-black-fixtures
 created_at: 2026-01-05T17:58:07Z
 updated_at: 2026-01-06T15:09:08Z
 url: https://github.com/astral-sh/ruff/pull/22405
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Update Black tests
 
 ---
 
-_Pull request opened by @dylwil3 on 2026-01-05 17:58_
+_@dylwil3_
 
 I am updating these because we didn't have test coverage for the different handling of `fmt: skip` comments applied to multiple statements on the same line. This is in preparation for #22119 (to show before/after deviations).
 

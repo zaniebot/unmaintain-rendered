@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T16:31:32Z
 updated_at: 2025-06-06T10:17:23Z
 url: https://github.com/astral-sh/uv/issues/13456
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # VIRTUAL_ENV_PROMPT format in uv differs from venv or virtualenv
 
 ---
 
-_Issue opened by @ericbn on 2025-05-14 16:31_
+_@ericbn_
 
 ### Summary
 

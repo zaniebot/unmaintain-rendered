@@ -13,14 +13,14 @@ head: cjm/cleanup
 created_at: 2024-08-09T23:28:46Z
 updated_at: 2024-08-12T19:15:18Z
 url: https://github.com/astral-sh/ruff/pull/12792
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] cleanup doc comments and attributes
 
 ---
 
-_Pull request opened by @carljm on 2024-08-09 23:28_
+_@carljm_
 
 Make `cargo doc -p red_knot_python_semantic --document-private-items` run warning-free. I'd still like to do this for all of ruff and start enforcing it in CI (https://github.com/astral-sh/ruff/issues/12372) but haven't gotten to it yet. But in the meantime I'm trying to maintain it for at least `red_knot_python_semantic`, as it helps to ensure our doc comments stay up to date.
 

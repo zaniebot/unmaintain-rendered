@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T09:22:07Z
 updated_at: 2025-05-30T13:45:55Z
 url: https://github.com/astral-sh/uv/issues/13505
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # uv python list is showing same python instance twice on windows
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-17 09:22_
+_@Andrej730_
 
 ### Summary
 

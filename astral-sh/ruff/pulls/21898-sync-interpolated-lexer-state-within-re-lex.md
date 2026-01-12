@@ -12,14 +12,14 @@ head: micha/relex-interpolated-state
 created_at: 2025-12-10T16:18:20Z
 updated_at: 2025-12-26T11:49:35Z
 url: https://github.com/astral-sh/ruff/pull/21898
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Sync interpolated lexer state within `re_lex_logical_token`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-10 16:18_
+_@MichaReiser_
 
 ## Summary
 

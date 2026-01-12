@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T19:05:36Z
 updated_at: 2025-12-13T03:41:37Z
 url: https://github.com/astral-sh/uv/issues/17108
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # torch and torchvision do not install correctly when multiple index are used
 
 ---
 
-_Issue opened by @ZidongLiu on 2025-12-12 19:05_
+_@ZidongLiu_
 
 ### Summary
 

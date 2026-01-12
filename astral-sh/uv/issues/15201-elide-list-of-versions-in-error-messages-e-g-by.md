@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T11:51:18Z
 updated_at: 2025-08-10T11:51:18Z
 url: https://github.com/astral-sh/uv/issues/15201
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Elide list of versions in error messages, e.g. by using exclusive ranges
 
 ---
 
-_Issue opened by @konstin on 2025-08-10 11:51_
+_@konstin_
 
 
 In resolution errors, we often show the full list of versions. We should elide wherever possible, as for real packages, these lists can become long and distract from the actual error. We usually show those lists because we otherwise have a hole in the trace where a version could be. We however know the lists of versions and know that no version can be in there, so we can just talk about ranges. One trick is to change inclusive ranges to exclusive ranges using the next package version as reference.

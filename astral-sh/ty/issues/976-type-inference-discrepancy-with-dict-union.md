@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-13T11:42:27Z
 updated_at: 2025-08-13T11:44:51Z
 url: https://github.com/astral-sh/ty/issues/976
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type inference discrepancy with dict union operator: Ty returns dict[Unknown, Unknown] | Unknown while mypy correctly infers dict[str, str]
 
 ---
 
-_Issue opened by @VanyaDNDZ on 2025-08-13 11:42_
+_@VanyaDNDZ_
 
 ### Summary
 

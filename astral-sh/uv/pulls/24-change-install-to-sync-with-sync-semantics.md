@@ -12,14 +12,14 @@ head: charlie/sync
 created_at: 2023-10-06T19:37:53Z
 updated_at: 2023-10-06T19:43:00Z
 url: https://github.com/astral-sh/uv/pull/24
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Change `install` to `sync` (with sync semantics)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 19:37_
+_@charliermarsh_
 
 For better separate at this stage (and following `pip-tools`), it's now `puffin sync`, and it assumes `--no-deps`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-20T17:16:45Z
 updated_at: 2025-02-28T15:18:54Z
 url: https://github.com/astral-sh/ruff/issues/16282
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Excludes match against parent directories outside of the project when formatting through the language server
 
 ---
 
-_Issue opened by @kageurufu on 2025-02-20 17:16_
+_@kageurufu_
 
 ### Description
 

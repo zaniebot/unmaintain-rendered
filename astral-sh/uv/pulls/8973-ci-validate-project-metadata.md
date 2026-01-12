@@ -13,14 +13,14 @@ head: ci/validate-pyproject
 created_at: 2024-11-09T14:04:14Z
 updated_at: 2024-11-09T17:48:36Z
 url: https://github.com/astral-sh/uv/pull/8973
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # ci: validate project metadata
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-11-09 14:04_
+_@mkniewallner_
 
 ## Summary
 

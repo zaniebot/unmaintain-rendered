@@ -13,14 +13,14 @@ head: micha/admonition-docs
 created_at: 2025-05-18T15:55:16Z
 updated_at: 2025-07-15T19:38:29Z
 url: https://github.com/astral-sh/ruff/pull/18163
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Fix rendering of admonition in docs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-18 15:55_
+_@MichaReiser_
 
 ## Summary
 

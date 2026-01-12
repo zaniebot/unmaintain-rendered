@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-15T16:24:28Z
 updated_at: 2022-11-15T16:52:13Z
 url: https://github.com/astral-sh/ruff/issues/755
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # U007 Use `X | Y` for type annotations, does not respect target-version
 
 ---
 
-_Issue opened by @lovetox on 2022-11-15 16:24_
+_@lovetox_
 
 Hi,
 

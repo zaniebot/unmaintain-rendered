@@ -13,14 +13,14 @@ head: dependabot/github_actions/CodSpeedHQ/action-2
 created_at: 2023-12-04T08:22:34Z
 updated_at: 2023-12-05T00:00:41Z
 url: https://github.com/astral-sh/ruff/pull/8989
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump CodSpeedHQ/action from 1 to 2
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-04 08:22_
+_@dependabot_
 
 Bumps [CodSpeedHQ/action](https://github.com/codspeedhq/action) from 1 to 2.
 <details>

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-10-22T23:08:10Z
 updated_at: 2021-02-22T16:08:07Z
 url: https://github.com/clap-rs/clap/issues/2181
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # clap_derive does not respect name attribute for enums
 
 ---
 
-_Issue opened by @newAM on 2020-10-22 23:08_
+_@newAM_
 
 ### Code
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T21:37:19Z
 updated_at: 2024-08-30T22:08:52Z
 url: https://github.com/astral-sh/uv/issues/6464
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Running on Windows in a virtualenv: stubs in .venv/Scripts crash when run from cmake
 
 ---
 
-_Issue opened by @ghost on 2024-08-22 21:37_
+_@ghost_
 
 Sorry, this is a bit complicated, and I don't have a compact repro case for you. But here's the situation:
 * Windows 11, msys64 zsh, cmake 3.28, and a big cmake setup.

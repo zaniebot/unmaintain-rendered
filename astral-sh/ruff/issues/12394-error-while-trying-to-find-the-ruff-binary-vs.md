@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T20:48:25Z
 updated_at: 2024-12-30T18:16:05Z
 url: https://github.com/astral-sh/ruff/issues/12394
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Error while trying to find the Ruff binary - VS Code Ruff Extension
 
 ---
 
-_Issue opened by @DG119 on 2024-07-18 20:48_
+_@DG119_
 
 * The current Ruff settings: all default with Lint disabled
 * The current Ruff version: 2024.32.0

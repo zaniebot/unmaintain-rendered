@@ -13,14 +13,14 @@ head: zb/consistent-location
 created_at: 2024-08-27T01:17:16Z
 updated_at: 2024-08-27T01:39:26Z
 url: https://github.com/astral-sh/uv/pull/6665
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Improve consistency of directory lookup instructions in Docker
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 01:17_
+_@zanieb_
 
 _No description provided._
 

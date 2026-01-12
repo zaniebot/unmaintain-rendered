@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T19:53:36Z
 updated_at: 2023-08-28T20:49:42Z
 url: https://github.com/astral-sh/ruff/issues/6951
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for UnnecessaryMap: Should have two arguments
 
 ---
 
-_Issue opened by @qarmin on 2023-08-28 19:53_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

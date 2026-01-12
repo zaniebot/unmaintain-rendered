@@ -13,14 +13,14 @@ head: charlie/prefix
 created_at: 2025-04-26T14:47:14Z
 updated_at: 2025-04-26T16:16:59Z
 url: https://github.com/astral-sh/uv/pull/13121
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Loosen `github.repository` match in `ci.yml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-26 14:47_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T22:38:57Z
 updated_at: 2025-01-14T23:26:17Z
 url: https://github.com/astral-sh/uv/issues/10615
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # FastAPI not being found in PATH after installing with uv in a Docker container
 
 ---
 
-_Issue opened by @carrollpaul on 2025-01-14 22:38_
+_@carrollpaul_
 
 I'm attempting to use `uv` with Docker for my hobby project. I'm following yall's [guide](https://docs.astral.sh/uv/guides/integration/docker/) and copied the Dockerfile from the [example project](https://github.com/astral-sh/uv-docker-example) (with the exception of changing the `CMD` to use "main"):
 

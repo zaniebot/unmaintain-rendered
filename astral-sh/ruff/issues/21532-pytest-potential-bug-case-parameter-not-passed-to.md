@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T21:32:03Z
 updated_at: 2025-12-10T17:26:04Z
 url: https://github.com/astral-sh/ruff/issues/21532
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Pytest potential bug case - parameter not passed to a function
 
 ---
 
-_Issue opened by @DeflateAwning on 2025-11-19 21:32_
+_@DeflateAwning_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: add-cargo-udeps-in-ci
 created_at: 2023-03-21T13:00:42Z
 updated_at: 2023-03-22T16:56:49Z
 url: https://github.com/astral-sh/ruff/pull/3646
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add cargo-udeps in CI
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-21 13:00_
+_@JonathanPlasse_
 
 - Close #3643
 

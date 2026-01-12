@@ -13,14 +13,14 @@ head: micha/use-cycle-dedector-fx-hashset
 created_at: 2026-01-04T18:13:28Z
 updated_at: 2026-01-10T13:31:57Z
 url: https://github.com/astral-sh/ruff/pull/22367
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Use regular hash-set in cycle detector
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-04 18:13_
+_@MichaReiser_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/ignore-noqa
 created_at: 2023-03-02T03:08:34Z
 updated_at: 2023-03-02T03:28:14Z
 url: https://github.com/astral-sh/ruff/pull/3296
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add a CLI flag to force-ignore noqa directives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-02 03:08_
+_@charliermarsh_
 
 Closes #3070.
 

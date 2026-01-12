@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T06:24:28Z
 updated_at: 2025-05-22T22:33:41Z
 url: https://github.com/astral-sh/uv/issues/8164
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # uv tool install does not respect index-url from pyproject.toml
 
 ---
 
-_Issue opened by @benjs on 2024-10-14 06:24_
+_@benjs_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

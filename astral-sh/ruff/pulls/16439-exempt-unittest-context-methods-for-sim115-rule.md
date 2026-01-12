@@ -14,14 +14,14 @@ head: adamchainz/sim115
 created_at: 2025-02-28T11:59:26Z
 updated_at: 2025-02-28T16:48:21Z
 url: https://github.com/astral-sh/ruff/pull/16439
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Exempt unittest context methods for SIM115 rule
 
 ---
 
-_Pull request opened by @adamchainz on 2025-02-28 11:59_
+_@adamchainz_
 
 ## Summary
 

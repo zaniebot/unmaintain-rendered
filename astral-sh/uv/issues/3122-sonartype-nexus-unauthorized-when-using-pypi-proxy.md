@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-18T14:02:50Z
 updated_at: 2024-04-19T15:12:01Z
 url: https://github.com/astral-sh/uv/issues/3122
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Sonartype Nexus - Unauthorized when using PyPi Proxy
 
 ---
 
-_Issue opened by @alelavml3 on 2024-04-18 14:02_
+_@alelavml3_
 
 Hi, with `v0.1.33`  release we are facing an authentication problems. We use a private `Sonatype Nexus` repository server which uses a private PyPi Repo to store our company private Python packages.
 The command for compiling and install are the following:

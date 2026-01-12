@@ -13,14 +13,14 @@ head: amy/contributing-release
 created_at: 2025-10-07T19:55:49Z
 updated_at: 2025-10-07T20:18:50Z
 url: https://github.com/astral-sh/ruff/pull/20752
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`ruff`] update the release process documentation
 
 ---
 
-_Pull request opened by @amyreese on 2025-10-07 19:55_
+_@amyreese_
 
 _No description provided._
 

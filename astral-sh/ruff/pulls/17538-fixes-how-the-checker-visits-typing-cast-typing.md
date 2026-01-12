@@ -13,14 +13,14 @@ head: bugfix/checker-visit-cast-args
 created_at: 2025-04-22T07:44:33Z
 updated_at: 2025-04-23T09:00:43Z
 url: https://github.com/astral-sh/ruff/pull/17538
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Fixes how the checker visits `typing.cast`/`typing.NewType` arguments
 
 ---
 
-_Pull request opened by @Daverball on 2025-04-22 07:44_
+_@Daverball_
 
 Closes: #17442
 

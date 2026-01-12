@@ -15,14 +15,14 @@ head: zb/auth-win-safety
 created_at: 2025-08-27T21:18:17Z
 updated_at: 2025-08-27T21:42:38Z
 url: https://github.com/astral-sh/uv/pull/15564
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Ensure we get the last error from Windows on the same thread
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 21:18_
+_@zanieb_
 
 Reverts #15552
 Closes https://github.com/astral-sh/uv/pull/15562

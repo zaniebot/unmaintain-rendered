@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T12:46:19Z
 updated_at: 2024-10-22T13:44:16Z
 url: https://github.com/astral-sh/uv/issues/8448
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # unable to pull package from private artifactory registry
 
 ---
 
-_Issue opened by @danieleades on 2024-10-22 12:46_
+_@danieleades_
 
 see discussion here - https://github.com/astral-sh/uv/pull/7481#issuecomment-2428423927
 

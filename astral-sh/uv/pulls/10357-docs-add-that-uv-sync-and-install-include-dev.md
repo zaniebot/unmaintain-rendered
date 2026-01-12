@@ -11,14 +11,14 @@ head: mentionWhichDependenciesAreInstalledByDefault
 created_at: 2025-01-07T12:03:18Z
 updated_at: 2025-01-07T22:46:06Z
 url: https://github.com/astral-sh/uv/pull/10357
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # docs: add that uv sync and install include dev dependencies by default
 
 ---
 
-_Pull request opened by @clintonsteiner on 2025-01-07 12:03_
+_@clintonsteiner_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

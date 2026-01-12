@@ -13,14 +13,14 @@ head: m.pylint-E1205-E1206
 created_at: 2023-02-21T05:02:06Z
 updated_at: 2023-02-22T03:53:11Z
 url: https://github.com/astral-sh/ruff/pull/3084
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat: pylint codes E1205-E106
 
 ---
 
-_Pull request opened by @md384 on 2023-02-21 05:02_
+_@md384_
 
 Adds support for pylint [E1205](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/logging-too-many-args.html) and [E1206](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/logging-too-few-args.html) for https://github.com/charliermarsh/ruff/issues/970.
 

@@ -14,14 +14,14 @@ head: charlie/parenthesized-fix
 created_at: 2023-09-03T20:51:11Z
 updated_at: 2023-09-03T21:09:30Z
 url: https://github.com/astral-sh/ruff/pull/7110
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Expand F841 fixes to handle parenthesized targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 20:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7094.
 

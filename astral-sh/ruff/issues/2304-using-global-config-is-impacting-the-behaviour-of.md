@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-28T17:19:05Z
 updated_at: 2023-01-28T18:32:51Z
 url: https://github.com/astral-sh/ruff/issues/2304
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Using global config is impacting the behaviour of the tests
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-28 17:19_
+_@JonathanPlasse_
 
 When running the tests with this as global config.
 ```toml

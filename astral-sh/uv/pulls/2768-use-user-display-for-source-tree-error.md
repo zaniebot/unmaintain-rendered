@@ -13,14 +13,14 @@ head: charlie/allowed
 created_at: 2024-04-02T00:35:47Z
 updated_at: 2024-04-02T00:42:12Z
 url: https://github.com/astral-sh/uv/pull/2768
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Use `user_display` for source tree error
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 00:35_
+_@charliermarsh_
 
 _No description provided._
 

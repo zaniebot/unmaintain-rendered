@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T11:36:05Z
 updated_at: 2025-03-06T03:42:17Z
 url: https://github.com/astral-sh/uv/issues/11974
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # Installation is restricted due to regional limitations.
 
 ---
 
-_Issue opened by @lsp84ch83 on 2025-03-05 11:36_
+_@lsp84ch83_
 
 ### Summary
 

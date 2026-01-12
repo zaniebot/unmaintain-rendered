@@ -12,14 +12,14 @@ head: change-forced-separate-type-in-docs
 created_at: 2023-03-07T06:18:16Z
 updated_at: 2023-03-07T18:54:05Z
 url: https://github.com/astral-sh/ruff/pull/3380
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Updated forced-separate type from Rust to abstract
 
 ---
 
-_Pull request opened by @aacunningham on 2023-03-07 06:18_
+_@aacunningham_
 
 Really small documentation change. I noticed that most of the types listed in the docs aren't Rust types but more generic, except for `forced-separate` (https://beta.ruff.rs/docs/settings/#forced-separate). It looks like the only that was `Vec<String>` instead of `list[str]`, and I _think_ this is how that is generated?
 

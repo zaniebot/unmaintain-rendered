@@ -13,14 +13,14 @@ head: charlie/ruff.toml
 created_at: 2023-05-30T17:27:07Z
 updated_at: 2023-05-30T17:54:07Z
 url: https://github.com/astral-sh/ruff/pull/4732
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Clarify that [tool.ruff] must be omitted for ruff.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 17:27_
+_@charliermarsh_
 
 Closes #4725.
 

@@ -12,14 +12,14 @@ head: charlie/bom
 created_at: 2023-07-28T17:52:00Z
 updated_at: 2023-07-29T12:07:26Z
 url: https://github.com/astral-sh/ruff/pull/6159
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Skip BOM when determining Locator's line starts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-28 17:52_
+_@charliermarsh_
 
 ## Summary
 

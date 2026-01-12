@@ -14,14 +14,14 @@ head: gankra/implort3
 created_at: 2025-10-14T04:59:26Z
 updated_at: 2025-10-31T14:42:14Z
 url: https://github.com/astral-sh/ruff/pull/20855
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Support implicit imports of submodules in `__init__.pyi`
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-14 04:59_
+_@Gankra_
 
 This is a second take at the implicit imports approach, allowing `from . import submodule` in an `__init__.pyi` to create the `mypackage.submodule` attribute everyhere.
 

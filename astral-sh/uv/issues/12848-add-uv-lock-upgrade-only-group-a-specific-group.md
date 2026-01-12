@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-12T01:15:48Z
 updated_at: 2025-12-19T18:57:02Z
 url: https://github.com/astral-sh/uv/issues/12848
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Add uv lock --upgrade --only-group a_specific_group
 
 ---
 
-_Issue opened by @Tom-Boscher on 2025-04-12 01:15_
+_@Tom-Boscher_
 
 ### Summary
 

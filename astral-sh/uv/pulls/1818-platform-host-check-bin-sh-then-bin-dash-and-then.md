@@ -13,14 +13,14 @@ head: ag/fix-i1810
 created_at: 2024-02-21T16:02:52Z
 updated_at: 2024-02-21T16:49:56Z
 url: https://github.com/astral-sh/uv/pull/1818
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # platform-host: check /bin/sh, then /bin/dash and then /bin/ls
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-21 16:02_
+_@BurntSushi_
 
 Previously, we were only checking /bin/sh. While that works in most
 cases, it seems like there are still scenarios where /bin/sh isn't an

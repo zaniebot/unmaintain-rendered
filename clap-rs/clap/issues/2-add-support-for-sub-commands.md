@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-01T16:29:12Z
 updated_at: 2018-08-02T03:29:35Z
 url: https://github.com/clap-rs/clap/issues/2
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add support for sub-commands
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-01 16:29_
+_@kbknapp_
 
 _No description provided._
 

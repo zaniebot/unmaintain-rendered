@@ -13,14 +13,14 @@ head: alex/no-issues-here
 created_at: 2025-10-20T18:13:39Z
 updated_at: 2025-10-20T19:00:07Z
 url: https://github.com/astral-sh/ruff/pull/21002
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # remove `playground/issue.py`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-20 18:13_
+_@AlexWaygood_
 
 Pretty sure we don't need this file :-)
 

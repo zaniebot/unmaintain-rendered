@@ -12,14 +12,14 @@ head: git_sub_modules
 created_at: 2025-03-13T23:22:10Z
 updated_at: 2025-12-19T20:33:05Z
 url: https://github.com/astral-sh/uv/pull/12156
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # fixed git submodule bug when using relative paths
 
 ---
 
-_Pull request opened by @Choudhry18 on 2025-03-13 23:22_
+_@Choudhry18_
 
 ## Summary
 

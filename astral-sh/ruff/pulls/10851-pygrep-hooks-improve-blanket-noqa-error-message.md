@@ -13,14 +13,14 @@ head: improve-pgh004
 created_at: 2024-04-09T23:23:20Z
 updated_at: 2024-04-10T15:10:20Z
 url: https://github.com/astral-sh/ruff/pull/10851
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pygrep-hooks`] Improve `blanket-noqa` error message (`PGH004`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-09 23:23_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

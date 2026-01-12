@@ -13,14 +13,14 @@ head: fix_rules_names
 created_at: 2025-10-13T12:06:55Z
 updated_at: 2025-10-13T13:14:51Z
 url: https://github.com/astral-sh/ty/pull/1343
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Rename "possibly unbound" diagnostics to "possibly missing"
 
 ---
 
-_Pull request opened by @artefactop on 2025-10-13 12:06_
+_@artefactop_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dhruv/plw3301
 created_at: 2023-09-06T02:30:13Z
 updated_at: 2023-09-06T07:30:07Z
 url: https://github.com/astral-sh/ruff/pull/7177
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Copy the starred argument as is for `PLW3301` autofix
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-06 02:30_
+_@dhruvmanila_
 
 ## Summary
 

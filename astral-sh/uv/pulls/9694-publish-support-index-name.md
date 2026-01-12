@@ -13,14 +13,14 @@ head: konsti/upload-index
 created_at: 2024-12-06T19:20:48Z
 updated_at: 2024-12-10T21:17:49Z
 url: https://github.com/astral-sh/uv/pull/9694
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Publish: Support --index <name>
 
 ---
 
-_Pull request opened by @konstin on 2024-12-06 19:20_
+_@konstin_
 
 When publishing, we currently ask the user to set `--publish-url` to the upload URL and `--check-url` to the simple index URL, or the equivalent configuration keys. But that's redundant with the `[[tool.uv.index]]` declaration. Instead, we extend `[[tool.uv.index]]` with a `publish-url` entry and allow passing `uv publish --index <name>`.
 

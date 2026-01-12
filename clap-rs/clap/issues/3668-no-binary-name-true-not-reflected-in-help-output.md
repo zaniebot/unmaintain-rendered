@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-30T07:56:23Z
 updated_at: 2022-05-03T18:26:13Z
 url: https://github.com/clap-rs/clap/issues/3668
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `no_binary_name(true)` not reflected in help output of subcommand
 
 ---
 
-_Issue opened by @RustyJoeM on 2022-04-30 07:56_
+_@RustyJoeM_
 
 ### Please complete the following tasks
 

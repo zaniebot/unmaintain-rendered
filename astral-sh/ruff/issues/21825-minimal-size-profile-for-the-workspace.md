@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-06T16:58:56Z
 updated_at: 2025-12-06T19:29:51Z
 url: https://github.com/astral-sh/ruff/issues/21825
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # `minimal-size` profile for the workspace
 
 ---
 
-_Issue opened by @lmmx on 2025-12-06 16:58_
+_@lmmx_
 
 Can we add a `minimal-size` profile for the workspace like `uv` has? I just built with it and it was very effective (2x smaller uv than the prebuilt via `uv tool install`)!
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-03-26T19:24:09Z
 updated_at: 2025-04-10T21:36:23Z
 url: https://github.com/astral-sh/uv/issues/12494
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Show aliases in the CLI reference and long help
 
 ---
 
-_Issue opened by @zanieb on 2025-03-26 19:24_
+_@zanieb_
 
 ### Summary
 

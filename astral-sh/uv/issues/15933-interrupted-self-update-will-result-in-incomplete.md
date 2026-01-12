@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T14:05:37Z
 updated_at: 2026-01-12T11:29:55Z
 url: https://github.com/astral-sh/uv/issues/15933
-synced_at: 2026-01-12T11:55:20Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Interrupted self update will result in incomplete binary file
 
 ---
 
-_Issue opened by @criyle on 2025-09-18 14:05_
+_@criyle_
 
 ### Summary
 

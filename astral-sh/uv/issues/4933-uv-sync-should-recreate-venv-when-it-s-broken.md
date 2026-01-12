@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T18:09:11Z
 updated_at: 2024-07-09T19:25:24Z
 url: https://github.com/astral-sh/uv/issues/4933
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv sync` should recreate venv when it's broken
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 18:09_
+_@konstin_
 
 I have a venv that's broken because i removed the python patch version it was pointing. `uv sync` then fails with the error:
 

@@ -11,14 +11,14 @@ head: fix-20425
 created_at: 2025-09-17T03:27:08Z
 updated_at: 2025-10-21T07:26:47Z
 url: https://github.com/astral-sh/ruff/pull/20448
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [`ruff`] Flag fmt: off/on comments around class signatures as invalid (`RUF028`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-17 03:27_
+_@danparizher_
 
 ## Summary
 

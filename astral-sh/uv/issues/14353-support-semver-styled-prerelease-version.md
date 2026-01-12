@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-29T21:54:15Z
 updated_at: 2025-12-05T14:12:25Z
 url: https://github.com/astral-sh/uv/issues/14353
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Support semver-styled prerelease version formatting in `uv version`
 
 ---
 
-_Issue opened by @emann on 2025-06-29 21:54_
+_@emann_
 
 ### Summary
 

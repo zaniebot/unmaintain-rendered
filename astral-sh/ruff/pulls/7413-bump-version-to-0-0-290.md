@@ -12,14 +12,14 @@ head: release/290
 created_at: 2023-09-15T18:00:50Z
 updated_at: 2023-09-15T18:51:48Z
 url: https://github.com/astral-sh/ruff/pull/7413
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump version to 0.0.290
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-15 18:00_
+_@zanieb_
 
 See also:
 - https://github.com/astral-sh/astral-sh/pull/41

@@ -14,14 +14,14 @@ head: jane/server/settings/custom-configuration-toml
 created_at: 2024-04-25T02:35:58Z
 updated_at: 2024-04-26T23:51:49Z
 url: https://github.com/astral-sh/ruff/pull/11140
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # `ruff server`: Support a custom TOML configuration file
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-25 02:35_
+_@snowsignal_
 
 ## Summary
 

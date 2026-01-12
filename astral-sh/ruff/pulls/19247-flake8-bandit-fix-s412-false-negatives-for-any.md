@@ -13,14 +13,14 @@ head: fix-19242
 created_at: 2025-07-09T22:25:18Z
 updated_at: 2025-07-11T17:47:19Z
 url: https://github.com/astral-sh/ruff/pull/19247
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [`flake8_bandit`] Fix S412 false negatives for any imports from `wsgiref.handlers` and `twisted.web.twcgi`
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-09 22:25_
+_@danparizher_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: more-py38
 created_at: 2025-05-31T15:49:57Z
 updated_at: 2025-06-02T07:40:18Z
 url: https://github.com/astral-sh/uv/pull/13755
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Update more tests not to use Python 3.8
 
 ---
 
-_Pull request opened by @mgorny on 2025-05-31 15:49_
+_@mgorny_
 
 ## Summary
 

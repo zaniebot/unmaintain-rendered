@@ -14,14 +14,14 @@ head: brent/fix-annotations
 created_at: 2025-04-04T13:50:36Z
 updated_at: 2025-04-04T17:48:55Z
 url: https://github.com/astral-sh/ruff/pull/17206
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Allow `yield` in base classes and annotations
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-04 13:50_
+_@ntBre_
 
 Summary
 --

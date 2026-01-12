@@ -13,14 +13,14 @@ head: renovate/console-0.x-lockfile
 created_at: 2025-09-15T00:11:55Z
 updated_at: 2025-09-15T07:42:56Z
 url: https://github.com/astral-sh/uv/pull/15846
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:58Z
 ```
 
 # Update Rust crate console to v0.16.1
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 00:11_
+_@renovate_
 
 This PR contains the following updates:
 

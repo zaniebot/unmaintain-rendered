@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T12:19:21Z
 updated_at: 2025-02-24T15:33:20Z
 url: https://github.com/astral-sh/uv/issues/11664
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Resolution error for pywin32 with tool.uv.environments constraints
 
 ---
 
-_Issue opened by @Winand on 2025-02-20 12:19_
+_@Winand_
 
 ### Question
 

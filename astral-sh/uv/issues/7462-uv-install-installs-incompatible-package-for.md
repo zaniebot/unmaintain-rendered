@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T14:24:55Z
 updated_at: 2024-09-17T15:05:24Z
 url: https://github.com/astral-sh/uv/issues/7462
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # `uv install` installs incompatible package for python version
 
 ---
 
-_Issue opened by @timvink on 2024-09-17 14:24_
+_@timvink_
 
 First of all, `uv` is 🔥 ! Really enjoying working with it!
 

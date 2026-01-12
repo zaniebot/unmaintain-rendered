@@ -13,14 +13,14 @@ head: dependabot/cargo/once_cell-1.19.0
 created_at: 2023-12-18T08:59:17Z
 updated_at: 2023-12-18T09:16:03Z
 url: https://github.com/astral-sh/ruff/pull/9183
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump once_cell from 1.18.0 to 1.19.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-18 08:59_
+_@dependabot_
 
 Bumps [once_cell](https://github.com/matklad/once_cell) from 1.18.0 to 1.19.0.
 <details>

@@ -13,14 +13,14 @@ head: fix/sync-no-sources-editable-switch
 created_at: 2025-08-12T09:25:18Z
 updated_at: 2025-09-17T11:35:32Z
 url: https://github.com/astral-sh/uv/pull/15234
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 #  Fix `uv sync --no-sources` not switching from editable to registry installations
 
 ---
 
-_Pull request opened by @yumeminami on 2025-08-12 09:25_
+_@yumeminami_
 
  ## Summary
 

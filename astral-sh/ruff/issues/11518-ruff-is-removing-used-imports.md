@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T17:46:21Z
 updated_at: 2024-05-28T18:47:07Z
 url: https://github.com/astral-sh/ruff/issues/11518
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff is removing used imports
 
 ---
 
-_Issue opened by @lcsvcn on 2024-05-23 17:46_
+_@lcsvcn_
 
 Removing used imports (probably wrong classified as "unused"
 

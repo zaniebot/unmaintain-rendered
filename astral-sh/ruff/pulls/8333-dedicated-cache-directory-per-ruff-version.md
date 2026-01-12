@@ -13,14 +13,14 @@ head: 10-30-Dedicated_cache_directory_per_ruff_version
 created_at: 2023-10-30T02:21:07Z
 updated_at: 2023-10-30T09:08:39Z
 url: https://github.com/astral-sh/ruff/pull/8333
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Dedicated cache directory per ruff version
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-30 02:21_
+_@MichaReiser_
 
 ## Summary
 

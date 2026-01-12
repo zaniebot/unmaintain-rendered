@@ -14,14 +14,14 @@ head: dhruv/symbol-not-a-query
 created_at: 2025-02-13T10:03:47Z
 updated_at: 2025-02-14T09:56:30Z
 url: https://github.com/astral-sh/ruff/pull/16136
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # TEST: Make `symbol_by_id` not a salsa query
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-13 10:03_
+_@dhruvmanila_
 
 Just testing this out, I did see a 4% regression on the incremental benchmark locally but wanted to get a more accurate number.
 

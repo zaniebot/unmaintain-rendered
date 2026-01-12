@@ -11,14 +11,14 @@ head: tokenizer-derive-clone-debug
 created_at: 2025-07-23T09:14:37Z
 updated_at: 2025-10-03T21:15:53Z
 url: https://github.com/astral-sh/ruff/pull/19504
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # Derive `Clone` and `Debug` for tokenizer structs
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-07-23 09:14_
+_@ShaharNaveh_
 
 ## Summary
 When tried to use `SimpleTokenizer` as an attribute inside a struct that derives both `Clone` and `Debug` I got an error, so I thought I'll fix it upstream.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T16:38:07Z
 updated_at: 2025-11-30T15:46:08Z
 url: https://github.com/astral-sh/ty/issues/1681
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add diagnostic warning about unsound subclassing of `order=True` dataclasses
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 16:38_
+_@AlexWaygood_
 
 It's unsound to subclass an `order=True` dataclass, because the generated comparison methods raise an exception if you try to compare an instance of the subclass with an instance of the superclass:
 

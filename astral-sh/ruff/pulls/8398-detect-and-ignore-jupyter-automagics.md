@@ -13,14 +13,14 @@ head: charlie/magics
 created_at: 2023-10-31T23:25:08Z
 updated_at: 2023-11-03T01:21:56Z
 url: https://github.com/astral-sh/ruff/pull/8398
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Detect and ignore Jupyter automagics
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 23:25_
+_@charliermarsh_
 
 ## Summary
 

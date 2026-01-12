@@ -13,14 +13,14 @@ head: brent/ambiguous-unicode-characters
 created_at: 2025-07-29T01:09:02Z
 updated_at: 2025-07-29T20:07:57Z
 url: https://github.com/astral-sh/ruff/pull/19609
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Add `Checker::context` method, deduplicate Unicode checks
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-29 01:09_
+_@ntBre_
 
 Summary
 --

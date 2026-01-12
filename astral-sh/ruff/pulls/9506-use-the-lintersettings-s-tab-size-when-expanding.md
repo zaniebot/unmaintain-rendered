@@ -13,14 +13,14 @@ head: use_tab_size_setting
 created_at: 2024-01-13T12:59:02Z
 updated_at: 2024-01-14T02:06:54Z
 url: https://github.com/astral-sh/ruff/pull/9506
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Use the `LinterSettings`'s tab size when expanding indent
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-01-13 12:59_
+_@hoel-bagard_
 
 ## Summary
 In the `logical_lines`'s  `expand_indent` , respect the `LinterSettings::tab_size` setting instead of  hardcoding the size of tabs to 8.

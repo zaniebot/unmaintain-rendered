@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T17:26:16Z
 updated_at: 2024-05-26T17:42:49Z
 url: https://github.com/astral-sh/ruff/issues/11534
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [ruff server] LSP treats pyi/stub files as regular python files instead of stub files. ruff-lsp does the right thing.
 
 ---
 
-_Issue opened by @akshetpandey on 2024-05-24 17:26_
+_@akshetpandey_
 
 version: 0.4.5
 

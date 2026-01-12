@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-06T10:44:53Z
 updated_at: 2022-05-06T14:40:01Z
 url: https://github.com/clap-rs/clap/issues/3697
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Bash completion no longer completes arg possible_values
 
 ---
 
-_Issue opened by @vincentdephily on 2022-05-06 10:44_
+_@vincentdephily_
 
 ### Please complete the following tasks
 

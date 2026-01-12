@@ -13,14 +13,14 @@ head: module-name-compact-string
 created_at: 2024-07-01T08:05:55Z
 updated_at: 2024-07-01T08:29:12Z
 url: https://github.com/astral-sh/ruff/pull/12131
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `CompactString` for `ModuleName`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-01 08:05_
+_@MichaReiser_
 
 ## Summary
 

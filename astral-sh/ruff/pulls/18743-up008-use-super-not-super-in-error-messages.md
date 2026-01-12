@@ -13,14 +13,14 @@ head: UP008-error-message
 created_at: 2025-06-18T06:35:50Z
 updated_at: 2025-06-18T17:57:57Z
 url: https://github.com/astral-sh/ruff/pull/18743
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [UP008]: use `super()`, not `__super__` in error messages
 
 ---
 
-_Pull request opened by @sobolevn on 2025-06-18 06:35_
+_@sobolevn_
 
 When I try to grep CPython with `__super__` I get 0 results:
 

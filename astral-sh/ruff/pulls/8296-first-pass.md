@@ -11,14 +11,14 @@ head: import-outside-toplevel
 created_at: 2023-10-28T05:33:55Z
 updated_at: 2023-10-28T06:04:44Z
 url: https://github.com/astral-sh/ruff/pull/8296
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # First pass.
 
 ---
 
-_Pull request opened by @dankleeman on 2023-10-28 05:33_
+_@dankleeman_
 
 _No description provided._
 

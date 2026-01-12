@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T23:42:12Z
 updated_at: 2024-02-20T00:15:03Z
 url: https://github.com/astral-sh/uv/issues/1722
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # [Feature request] Respect `VIRTUAL_ENV` env var when running `uv venv` without an arg
 
 ---
 
-_Issue opened by @dwreeves on 2024-02-19 23:42_
+_@dwreeves_
 
 Running `uv venv` does not respect the `VIRTUAL_ENV` env var, even though it feels like it should.
 

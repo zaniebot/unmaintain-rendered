@@ -13,14 +13,14 @@ head: konsti/split-out-uv-metadata
 created_at: 2024-09-09T20:36:55Z
 updated_at: 2024-09-10T13:31:04Z
 url: https://github.com/astral-sh/uv/pull/7231
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Extract METADATA reading into a crate
 
 ---
 
-_Pull request opened by @konstin on 2024-09-09 20:36_
+_@konstin_
 
 This is preparatory work for the upload functionality, which needs to read the METADATA file and attach its parsed contents to the POST request: We move finding the `.dist-info` from `install-wheel-rs` and `uv-client` to a new `uv-metadata` crate, so it can be shared with the publish crate.
 

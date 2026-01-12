@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-15T18:36:22Z
 updated_at: 2023-03-15T23:34:26Z
 url: https://github.com/astral-sh/ruff/issues/3547
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # An argument named `raises` confuses ruff's pydocstyle rules
 
 ---
 
-_Issue opened by @Julian on 2023-03-15 18:36_
+_@Julian_
 
 Running:
 

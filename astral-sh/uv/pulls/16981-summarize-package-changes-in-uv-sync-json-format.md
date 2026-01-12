@@ -13,14 +13,14 @@ head: tk/sync-summary
 created_at: 2025-12-04T15:39:33Z
 updated_at: 2025-12-18T19:37:04Z
 url: https://github.com/astral-sh/uv/pull/16981
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Summarize package changes in `uv sync` json format output
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-04 15:39_
+_@EliteTK_
 
 ## Summary
 

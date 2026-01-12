@@ -13,14 +13,14 @@ head: zb/uv-run-python
 created_at: 2024-04-22T16:44:13Z
 updated_at: 2024-04-24T16:03:51Z
 url: https://github.com/astral-sh/uv/pull/3189
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Add `--python` support to `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-22 16:44_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: bugbear-b028
 created_at: 2023-03-15T20:21:53Z
 updated_at: 2023-03-17T19:44:07Z
 url: https://github.com/astral-sh/ruff/pull/3550
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8-bugbear`] Add `no-explicit-stacklevel` (`B028`)
 
 ---
 
-_Pull request opened by @johnor on 2023-03-15 20:21_
+_@johnor_
 
 Part of #2954.
 

@@ -12,14 +12,14 @@ head: 4404_fix_e703_w293
 created_at: 2023-06-19T02:13:39Z
 updated_at: 2023-06-20T03:25:07Z
 url: https://github.com/astral-sh/ruff/pull/5172
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix corner case involving terminal backslash after fixing `W293`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-19 02:13_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

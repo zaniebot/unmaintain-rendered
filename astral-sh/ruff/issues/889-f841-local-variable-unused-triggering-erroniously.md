@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T07:34:13Z
 updated_at: 2022-11-23T23:30:13Z
 url: https://github.com/astral-sh/ruff/issues/889
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # "F841 local variable unused" triggering erroniously
 
 ---
 
-_Issue opened by @jhallard on 2022-11-23 07:34_
+_@jhallard_
 
 Example code below:
 

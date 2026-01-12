@@ -13,14 +13,14 @@ head: fix-status-output
 created_at: 2025-11-20T09:54:10Z
 updated_at: 2025-11-20T14:33:13Z
 url: https://github.com/astral-sh/uv/pull/16785
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Fix status messages without TTY
 
 ---
 
-_Pull request opened by @rzblue on 2025-11-20 09:54_
+_@rzblue_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

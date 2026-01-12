@@ -13,14 +13,14 @@ head: zb/keyring
 created_at: 2024-06-05T18:29:29Z
 updated_at: 2024-06-07T00:02:48Z
 url: https://github.com/astral-sh/uv/pull/4061
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Include non-standard ports in keyring host queries
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 18:29_
+_@zanieb_
 
 Partially addresses https://github.com/astral-sh/uv/issues/4056
 

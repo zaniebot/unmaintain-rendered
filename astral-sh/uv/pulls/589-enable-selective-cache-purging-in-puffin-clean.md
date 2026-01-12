@@ -13,14 +13,14 @@ head: charlie/purge
 created_at: 2023-12-08T01:55:03Z
 updated_at: 2023-12-08T19:51:33Z
 url: https://github.com/astral-sh/uv/pull/589
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Enable selective cache purging in `puffin clean`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-08 01:55_
+_@charliermarsh_
 
 ## Summary
 

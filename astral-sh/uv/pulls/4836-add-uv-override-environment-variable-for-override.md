@@ -13,14 +13,14 @@ head: charlie/con
 created_at: 2024-07-05T20:34:34Z
 updated_at: 2024-07-05T21:03:19Z
 url: https://github.com/astral-sh/uv/pull/4836
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Add `UV_OVERRIDE` environment variable for `--override`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-05 20:34_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/4827
 

@@ -13,14 +13,14 @@ head: david/while-loop-narrowing
 created_at: 2024-12-12T21:05:07Z
 updated_at: 2024-12-13T06:40:16Z
 url: https://github.com/astral-sh/ruff/pull/14947
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Add narrowing for 'while' loops
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-12 21:05_
+_@sharkdp_
 
 ## Summary
 

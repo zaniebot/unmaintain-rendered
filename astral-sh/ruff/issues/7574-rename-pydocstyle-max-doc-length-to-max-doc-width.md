@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-21T11:37:14Z
 updated_at: 2023-10-24T07:55:22Z
 url: https://github.com/astral-sh/ruff/issues/7574
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rename `pydocstyle.max-doc-length` to `max-doc-width`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-21 11:37_
+_@MichaReiser_
 
 Rename `pydocstyle.max-doc-length` to `doc-width` to align with other text width options and clarify that the option is about the text width and not character or byte length. 
 

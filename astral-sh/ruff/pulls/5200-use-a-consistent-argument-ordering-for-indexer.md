@@ -12,14 +12,14 @@ head: charlie/args
 created_at: 2023-06-20T02:52:54Z
 updated_at: 2023-06-20T03:30:08Z
 url: https://github.com/astral-sh/ruff/pull/5200
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use a consistent argument ordering for `Indexer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 02:52_
+_@charliermarsh_
 
 _No description provided._
 

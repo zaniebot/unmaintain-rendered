@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-20T23:51:18Z
 updated_at: 2023-05-21T01:55:19Z
 url: https://github.com/clap-rs/clap/issues/4927
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add ability to remove a subcommand
 
 ---
 
-_Issue opened by @kvece on 2023-05-20 23:51_
+_@kvece_
 
 ### Please complete the following tasks
 

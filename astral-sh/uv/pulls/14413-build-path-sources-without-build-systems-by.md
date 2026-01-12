@@ -14,14 +14,14 @@ head: jtfm/package-default
 created_at: 2025-07-02T09:28:38Z
 updated_at: 2025-07-16T21:17:03Z
 url: https://github.com/astral-sh/uv/pull/14413
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Build `path` sources without build systems by default
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-02 09:28_
+_@jtfmumm_
 
 We currently treat path sources as virtual if they do not specify a build system, which is surprising behavior. This PR updates the behavior to treat path sources as packages unless the path source is explicitly marked as `package = false` or its own `tool.uv.package` is set to `false`.
 

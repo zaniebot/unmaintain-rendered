@@ -14,14 +14,14 @@ head: david/normalize-single-member-enums
 created_at: 2025-07-23T07:17:21Z
 updated_at: 2025-07-23T08:14:22Z
 url: https://github.com/astral-sh/ruff/pull/19502
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Normalize single-member enums to their instance type
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-23 07:17_
+_@sharkdp_
 
 ## Summary
 

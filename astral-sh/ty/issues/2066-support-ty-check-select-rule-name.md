@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T12:28:46Z
 updated_at: 2025-12-18T12:59:34Z
 url: https://github.com/astral-sh/ty/issues/2066
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # support `ty check --select ${RULE_NAME}`
 
 ---
 
-_Issue opened by @spaceone on 2025-12-18 12:28_
+_@spaceone_
 
 It would be very nice, if one can go through all of the same issues.
 

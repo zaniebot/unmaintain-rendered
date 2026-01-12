@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-05-27T01:13:58Z
 updated_at: 2022-05-27T19:10:41Z
 url: https://github.com/clap-rs/clap/issues/3761
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # default_missing_value does not respect delimiter
 
 ---
 
-_Issue opened by @epage on 2022-05-27 01:13_
+_@epage_
 
 ### Please complete the following tasks
 

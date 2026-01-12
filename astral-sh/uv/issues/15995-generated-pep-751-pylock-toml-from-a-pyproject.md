@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T21:42:22Z
 updated_at: 2025-10-02T14:29:02Z
 url: https://github.com/astral-sh/uv/issues/15995
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Generated PEP 751 pylock.toml from a pyproject.toml source does not match the source's requires-python value
 
 ---
 
-_Issue opened by @AndydeCleyre on 2025-09-22 21:42_
+_@AndydeCleyre_
 
 ### Summary
 

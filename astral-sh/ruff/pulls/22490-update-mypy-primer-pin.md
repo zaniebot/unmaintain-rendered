@@ -13,14 +13,14 @@ head: micha/update-mypy-primer
 created_at: 2026-01-10T12:41:44Z
 updated_at: 2026-01-10T13:00:02Z
 url: https://github.com/astral-sh/ruff/pull/22490
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Update mypy primer pin
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-10 12:41_
+_@MichaReiser_
 
 [mypy primer changes](https://github.com/hauntsaninja/mypy_primer/compare/a81360123447a9409ab72f6b4f9684c02a9768e7..ea7c45364a129b9a556b08a6285f8df0e5aedf0a)
 

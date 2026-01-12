@@ -12,14 +12,14 @@ head: charlie/extends
 created_at: 2023-07-05T04:33:31Z
 updated_at: 2023-07-05T23:21:43Z
 url: https://github.com/astral-sh/ruff/pull/5525
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor tokens-based rules to take an `&mut Vec<Diagnostic>`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 04:33_
+_@charliermarsh_
 
 _No description provided._
 

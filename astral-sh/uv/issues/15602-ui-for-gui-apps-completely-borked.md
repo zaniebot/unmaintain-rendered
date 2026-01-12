@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-31T04:40:05Z
 updated_at: 2025-09-01T07:36:27Z
 url: https://github.com/astral-sh/uv/issues/15602
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # UI for gui apps completely borked
 
 ---
 
-_Issue opened by @RuggedPineapple on 2025-08-31 04:40_
+_@RuggedPineapple_
 
 ### Summary
 

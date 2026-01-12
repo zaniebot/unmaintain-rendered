@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T02:09:31Z
 updated_at: 2024-04-23T02:53:34Z
 url: https://github.com/astral-sh/uv/issues/3176
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Intermittent errors when installing from git reference
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-04-22 02:09_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: alan/integration
 created_at: 2023-11-17T02:22:32Z
 updated_at: 2023-11-22T00:38:26Z
 url: https://github.com/astral-sh/ruff/pull/8733
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Factor out a builder to handle common integration test arguments
 
 ---
 
-_Pull request opened by @alanhdu on 2023-11-17 02:22_
+_@alanhdu_
 
 ## Summary
 

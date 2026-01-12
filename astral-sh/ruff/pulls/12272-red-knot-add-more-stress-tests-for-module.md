@@ -13,14 +13,14 @@ head: module-resolver-salsa-bug
 created_at: 2024-07-10T11:48:01Z
 updated_at: 2024-07-10T14:43:19Z
 url: https://github.com/astral-sh/ruff/pull/12272
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add more stress tests for module resolver invalidation
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-10 11:48_
+_@AlexWaygood_
 
 ## Summary
 

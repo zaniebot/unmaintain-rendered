@@ -14,14 +14,14 @@ head: gankra/type-print
 created_at: 2025-11-20T05:07:46Z
 updated_at: 2025-11-20T14:46:02Z
 url: https://github.com/astral-sh/ruff/pull/21533
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Implement goto-type for inlay type hints
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-20 05:07_
+_@Gankra_
 
 This PR generalizes the signature_help system's SignatureWriter which could get the subspans of function parameters.
 We now have TypeDetailsWriter which is threaded between type's display implementations via a new `fmt_detailed` method that many of the Display types now have.

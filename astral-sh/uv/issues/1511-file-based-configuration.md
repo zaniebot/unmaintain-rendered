@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T16:29:38Z
 updated_at: 2024-05-01T16:34:25Z
 url: https://github.com/astral-sh/uv/issues/1511
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # File-based configuration
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 16:29_
+_@zanieb_
 
 We should support configuration via a file, but what this looks like exactly is not yet determined.
 

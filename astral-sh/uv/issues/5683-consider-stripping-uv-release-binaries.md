@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T12:53:16Z
 updated_at: 2024-08-03T12:18:30Z
 url: https://github.com/astral-sh/uv/issues/5683
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Consider stripping `uv` release binaries
 
 ---
 
-_Issue opened by @edmorley on 2024-08-01 12:53_
+_@edmorley_
 
 Hi 👋 
 

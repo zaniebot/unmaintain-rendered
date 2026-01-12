@@ -12,14 +12,14 @@ head: pick-up-isort-settings-in-flake8-to-ruff
 created_at: 2023-05-27T15:11:37Z
 updated_at: 2023-10-17T11:07:13Z
 url: https://github.com/astral-sh/ruff/pull/4680
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Pick up isort settings in flake8-to-ruff
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-27 15:11_
+_@JonathanPlasse_
 
 - Close #1749
 <!--

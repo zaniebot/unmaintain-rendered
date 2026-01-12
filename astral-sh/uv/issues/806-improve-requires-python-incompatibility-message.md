@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T22:20:50Z
 updated_at: 2024-01-22T06:32:04Z
 url: https://github.com/astral-sh/uv/issues/806
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Improve `requires-python` incompatibility message
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 22:20_
+_@zanieb_
 
 e.g. in the following test case
 

@@ -11,14 +11,14 @@ head: workspace_version
 created_at: 2025-02-18T11:25:13Z
 updated_at: 2025-02-18T12:51:54Z
 url: https://github.com/astral-sh/ruff/pull/16227
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Workspace versioning
 
 ---
 
-_Pull request opened by @KGrewal1 on 2025-02-18 11:25_
+_@KGrewal1_
 
 Move "0.0.0" versions and "publish = false" to top level Cargo.toml and inherit from there - steps towards #43 (see https://github.com/astral-sh/ruff/issues/43#issuecomment-2628873363 - as means all the ruff internal packages can be versioned together)
 

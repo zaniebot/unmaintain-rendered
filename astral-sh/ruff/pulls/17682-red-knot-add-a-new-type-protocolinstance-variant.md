@@ -13,14 +13,14 @@ head: alex/protocol-variant-2
 created_at: 2025-04-28T15:00:34Z
 updated_at: 2025-04-30T14:40:51Z
 url: https://github.com/astral-sh/ruff/pull/17682
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Add a new `Type::ProtocolInstance` variant (take 2!)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-28 15:00_
+_@AlexWaygood_
 
 ## Summary
 

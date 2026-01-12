@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T16:09:50Z
 updated_at: 2025-03-04T15:14:48Z
 url: https://github.com/astral-sh/uv/issues/8099
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv init` should generate a skeleton test suite
 
 ---
 
-_Issue opened by @paveldikov on 2024-10-10 16:09_
+_@paveldikov_
 
 What it says on the tin, really. Just like we have `src/myproj/__init__.py::hello()`, why not also have `tests/test_placeholder.py::test_hello()` and maybe even `tests/conftest.py`?
 

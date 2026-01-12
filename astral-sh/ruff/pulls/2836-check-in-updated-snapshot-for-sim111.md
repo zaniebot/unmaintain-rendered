@@ -12,14 +12,14 @@ head: charlie/snapshot
 created_at: 2023-02-12T23:35:16Z
 updated_at: 2023-02-12T23:37:53Z
 url: https://github.com/astral-sh/ruff/pull/2836
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Check-in updated snapshot for SIM111
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 23:35_
+_@charliermarsh_
 
 _No description provided._
 

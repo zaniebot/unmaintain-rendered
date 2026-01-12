@@ -14,14 +14,14 @@ head: charlie/upgrade-cache
 created_at: 2024-08-08T23:14:04Z
 updated_at: 2024-08-08T23:22:17Z
 url: https://github.com/astral-sh/uv/pull/5941
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Respect `--upgrade-package` in tool install
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 23:14_
+_@charliermarsh_
 
 ## Summary
 

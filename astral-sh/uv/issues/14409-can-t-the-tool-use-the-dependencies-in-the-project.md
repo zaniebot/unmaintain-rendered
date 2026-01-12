@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T08:00:36Z
 updated_at: 2025-07-03T02:50:31Z
 url: https://github.com/astral-sh/uv/issues/14409
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Can't the tool use the dependencies in the project?
 
 ---
 
-_Issue opened by @KQDtianxiaK on 2025-07-02 08:00_
+_@KQDtianxiaK_
 
 ### Question
 

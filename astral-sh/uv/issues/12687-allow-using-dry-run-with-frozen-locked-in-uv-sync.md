@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-06T03:24:56Z
 updated_at: 2025-04-14T13:08:27Z
 url: https://github.com/astral-sh/uv/issues/12687
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Allow using `--dry-run` with `--frozen` / `--locked` in `uv sync`
 
 ---
 
-_Issue opened by @aldanor on 2025-04-06 03:24_
+_@aldanor_
 
 ### Question
 

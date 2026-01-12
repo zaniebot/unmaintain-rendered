@@ -13,14 +13,14 @@ head: charlie/loc
 created_at: 2023-07-03T15:23:08Z
 updated_at: 2023-07-03T16:21:03Z
 url: https://github.com/astral-sh/ruff/pull/5480
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Audit `remove_argument` usages to use end-of-function
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 15:23_
+_@charliermarsh_
 
 ## Summary
 

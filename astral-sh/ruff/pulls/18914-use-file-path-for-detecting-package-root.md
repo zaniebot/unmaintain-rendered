@@ -13,14 +13,14 @@ head: dhruv/use-file-path
 created_at: 2025-06-24T12:29:24Z
 updated_at: 2025-06-24T12:39:18Z
 url: https://github.com/astral-sh/ruff/pull/18914
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Use file path for detecting package root
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-24 12:29_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/18910#discussion_r2163847956
 

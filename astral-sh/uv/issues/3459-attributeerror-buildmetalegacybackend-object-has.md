@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T13:20:28Z
 updated_at: 2025-01-20T09:03:42Z
 url: https://github.com/astral-sh/uv/issues/3459
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # AttributeError: '_BuildMetaLegacyBackend' object has no attribute 'build_editable'
 
 ---
 
-_Issue opened by @adminy on 2024-05-08 13:20_
+_@adminy_
 
 I have a pyproject.toml with a couple of optional dependencies.
 

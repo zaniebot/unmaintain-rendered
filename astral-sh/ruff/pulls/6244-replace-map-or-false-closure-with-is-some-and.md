@@ -12,14 +12,14 @@ head: is_some_and
 created_at: 2023-08-01T14:53:53Z
 updated_at: 2023-08-01T17:29:43Z
 url: https://github.com/astral-sh/ruff/pull/6244
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Replace `.map_or(false, $closure)` with `.is_some_and(closure)`
 
 ---
 
-_Pull request opened by @konstin on 2023-08-01 14:53_
+_@konstin_
 
 **Summary** [Option::is_some_and](https://doc.rust-lang.org/stable/std/option/enum.Option.html#method.is_some_and) and [Result::is_ok_and](https://doc.rust-lang.org/std/result/enum.Result.html#method.is_ok_and) are new methods is rust 1.70. I find them way more readable than `.map_or(false, ...)`.
 

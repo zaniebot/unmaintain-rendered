@@ -13,14 +13,14 @@ head: import-spaces
 created_at: 2023-10-09T08:18:20Z
 updated_at: 2023-10-11T11:35:42Z
 url: https://github.com/astral-sh/ruff/pull/7859
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove spaces from import statements
 
 ---
 
-_Pull request opened by @konstin on 2023-10-09 08:18_
+_@konstin_
 
 **Summary** Remove spaces from import statements such as 
 

@@ -14,14 +14,14 @@ head: alex/py-fuzzer-output
 created_at: 2025-05-01T12:29:30Z
 updated_at: 2025-05-01T12:39:03Z
 url: https://github.com/astral-sh/ruff/pull/17764
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # Improve messages outputted by py-fuzzer
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-01 12:29_
+_@AlexWaygood_
 
 ## Summary
 

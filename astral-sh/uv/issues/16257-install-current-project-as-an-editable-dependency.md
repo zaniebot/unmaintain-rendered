@@ -3,21 +3,21 @@ number: 16257
 title: Install current project as an editable dependency
 type: issue
 state: open
-author: cpita-mutt
+author: cpita-work
 labels:
   - question
 assignees: []
 created_at: 2025-10-12T18:37:23Z
 updated_at: 2025-10-22T12:10:51Z
 url: https://github.com/astral-sh/uv/issues/16257
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Install current project as an editable dependency
 
 ---
 
-_Issue opened by @cpita-mutt on 2025-10-12 18:37_
+_@cpita-work_
 
 ### Question
 
@@ -60,11 +60,11 @@ macOS 15.5
 
 ---
 
-_Label `question` added by @cpita-mutt on 2025-10-12 18:37_
+_Label `question` added by @cpita-work on 2025-10-12 18:37_
 
 ---
 
-_Comment by @cpita-mutt on 2025-10-12 20:08_
+_Comment by @cpita-work on 2025-10-12 20:08_
 
 I found out that the uv_build backend may be using to achieve what I want:
 
@@ -99,7 +99,7 @@ What do the verbose logs of `uv sync -v` say? If the logs don't clear it up, can
 
 ---
 
-_Comment by @cpita-mutt on 2025-10-14 12:31_
+_Comment by @cpita-work on 2025-10-14 12:31_
 
 As the following series of examples shows, the problem is the missing build backend spec in pyproject.toml. So I guess the way to get the current project as an editable dependency will be backend dependant. I know how to do it for the uv backend alone. And since the current project is just another installable project, perhaps uv could have done it even without a backend spec, just like it does with every other dependency?
 
@@ -422,7 +422,7 @@ For any project that you want to install, you should specify a `[build-system]` 
 
 ---
 
-_Comment by @cpita-mutt on 2025-10-14 12:41_
+_Comment by @cpita-work on 2025-10-14 12:41_
 
 Ok, I get that. The remaining question is: shouldn't uv install the current project as editable given a spec like this? (even if no build backend is set).
 

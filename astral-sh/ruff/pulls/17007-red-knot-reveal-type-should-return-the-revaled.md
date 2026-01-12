@@ -14,14 +14,14 @@ head: micha/reveal-type
 created_at: 2025-03-27T02:45:51Z
 updated_at: 2025-03-27T03:04:59Z
 url: https://github.com/astral-sh/ruff/pull/17007
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] `reveal-type` should return the revaled type
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-27 02:45_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: 06-21-Format_Compare_Op
 created_at: 2023-06-22T08:58:40Z
 updated_at: 2023-06-23T07:46:42Z
 url: https://github.com/astral-sh/ruff/pull/5292
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format Compare Op
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-22 08:58_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

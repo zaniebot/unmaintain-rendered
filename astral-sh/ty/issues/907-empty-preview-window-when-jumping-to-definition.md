@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-28T06:59:27Z
 updated_at: 2025-07-28T08:13:01Z
 url: https://github.com/astral-sh/ty/issues/907
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Empty preview window when jumping to definition of `dataclasses.field`
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-28 06:59_
+_@sharkdp_
 
 Go to https://play.ty.dev/a9c085a2-f7d2-4998-8bc5-4540c5c3d826 and ctrl-click on `field`. It shows empty previews:
 

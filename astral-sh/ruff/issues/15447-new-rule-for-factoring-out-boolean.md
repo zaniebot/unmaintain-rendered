@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T00:59:49Z
 updated_at: 2025-01-26T10:16:57Z
 url: https://github.com/astral-sh/ruff/issues/15447
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New rule for factoring out boolean
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-13 00:59_
+_@nickdrozd_
 
 New rule to distribute `and` across `or` and vice versa.
 

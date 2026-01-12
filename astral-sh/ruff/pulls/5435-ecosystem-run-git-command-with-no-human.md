@@ -13,14 +13,14 @@ head: ecosystem-no-human-interaction
 created_at: 2023-06-29T06:43:08Z
 updated_at: 2023-06-29T07:30:36Z
 url: https://github.com/astral-sh/ruff/pull/5435
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # ecosystem: Run `git` command with no human interaction flag
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-29 06:43_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

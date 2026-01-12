@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T12:08:12Z
 updated_at: 2023-08-17T15:51:11Z
 url: https://github.com/astral-sh/ruff/issues/4925
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # E712: Invalid parentheses removal
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-07 12:08_
+_@addisoncrump_
 
 E712 fix may remove parentheses in a way which causes invalid syntax:
 

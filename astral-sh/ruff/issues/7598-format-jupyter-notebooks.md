@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T13:35:26Z
 updated_at: 2023-10-02T14:44:21Z
 url: https://github.com/astral-sh/ruff/issues/7598
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Format jupyter notebooks
 
 ---
 
-_Issue opened by @konstin on 2023-09-22 13:35_
+_@konstin_
 
 We currently lint and fix python files and jupyter notebook but only format python files.
 

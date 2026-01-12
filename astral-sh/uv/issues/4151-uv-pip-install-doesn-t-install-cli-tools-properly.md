@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T22:55:34Z
 updated_at: 2025-05-27T10:10:49Z
 url: https://github.com/astral-sh/uv/issues/4151
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv pip install` doesn't install CLI tools properly
 
 ---
 
-_Issue opened by @Malix-Labs on 2024-06-07 22:55_
+_@Malix-Labs_
 
 `uv pip install` doesn't install CLI tools properly
 

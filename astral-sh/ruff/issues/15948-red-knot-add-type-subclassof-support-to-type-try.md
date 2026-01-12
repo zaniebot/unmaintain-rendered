@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T20:35:44Z
 updated_at: 2025-05-07T15:21:40Z
 url: https://github.com/astral-sh/ruff/issues/15948
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] add `Type::SubclassOf` support to `Type::try_call`
 
 ---
 
-_Issue opened by @carljm on 2025-02-04 20:35_
+_@carljm_
 
 ### Description
 

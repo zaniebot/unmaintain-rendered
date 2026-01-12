@@ -13,14 +13,14 @@ head: alex/dont-simplify-constraints
 created_at: 2025-11-02T04:33:59Z
 updated_at: 2025-11-02T04:49:46Z
 url: https://github.com/astral-sh/ruff/pull/21198
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Less eager simplification of intersections that include constrained type variables
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-02 04:33_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

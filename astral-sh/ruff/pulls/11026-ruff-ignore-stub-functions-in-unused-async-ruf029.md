@@ -13,14 +13,14 @@ head: charlie/async
 created_at: 2024-04-19T03:49:33Z
 updated_at: 2024-04-19T04:03:53Z
 url: https://github.com/astral-sh/ruff/pull/11026
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`ruff]` Ignore stub functions in `unused-async` (`RUF029`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 03:49_
+_@charliermarsh_
 
 ## Summary
 

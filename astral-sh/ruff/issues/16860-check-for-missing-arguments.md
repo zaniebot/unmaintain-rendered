@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T21:53:01Z
 updated_at: 2025-03-20T03:18:52Z
 url: https://github.com/astral-sh/ruff/issues/16860
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Check for missing arguments
 
 ---
 
-_Issue opened by @DamyanBG on 2025-03-19 21:53_
+_@DamyanBG_
 
 ### Question
 

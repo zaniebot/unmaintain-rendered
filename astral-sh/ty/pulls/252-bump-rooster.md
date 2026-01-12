@@ -12,14 +12,14 @@ head: zb/rooster-f6e61d2
 created_at: 2025-05-07T18:34:42Z
 updated_at: 2025-05-07T18:44:44Z
 url: https://github.com/astral-sh/ty/pull/252
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump rooster
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-07 18:34_
+_@zanieb_
 
 Adds `ignore-labels`
 

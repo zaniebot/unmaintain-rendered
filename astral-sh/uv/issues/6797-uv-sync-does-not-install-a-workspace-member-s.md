@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T09:04:44Z
 updated_at: 2024-10-30T20:37:44Z
 url: https://github.com/astral-sh/uv/issues/6797
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `uv sync` does not install a workspace member's dependency with extra
 
 ---
 
-_Issue opened by @shunichironomura on 2024-08-29 09:04_
+_@shunichironomura_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T19:13:51Z
 updated_at: 2024-11-14T19:41:47Z
 url: https://github.com/astral-sh/uv/issues/9128
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Feature Request: Add a `--format json` option to output the command's result in json
 
 ---
 
-_Issue opened by @DeflateAwning on 2024-11-14 19:13_
+_@DeflateAwning_
 
 It would be awesome if there was a way to force the output of the command to be in JSON.
 

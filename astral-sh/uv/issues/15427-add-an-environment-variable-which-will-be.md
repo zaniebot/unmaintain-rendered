@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T19:24:42Z
 updated_at: 2025-08-21T22:39:05Z
 url: https://github.com/astral-sh/uv/issues/15427
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Add an environment variable, which will be equivalent to the `--isolated` command-line argument for `uv run`.
 
 ---
 
-_Issue opened by @pygarap on 2025-08-21 19:24_
+_@pygarap_
 
 ### Summary
 

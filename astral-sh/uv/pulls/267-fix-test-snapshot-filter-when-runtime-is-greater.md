@@ -12,14 +12,14 @@ head: zanie/test-sec
 created_at: 2023-11-01T04:47:17Z
 updated_at: 2023-11-01T13:15:07Z
 url: https://github.com/astral-sh/uv/pull/267
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Fix test snapshot filter when runtime is greater than 1s
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 04:47_
+_@zanieb_
 
 Tests would sometimes flake with this locally e.g. "1.50s" was not filtered correctly.
 

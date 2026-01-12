@@ -13,14 +13,14 @@ head: charlie/arg-comments
 created_at: 2023-02-27T23:38:10Z
 updated_at: 2023-02-27T23:41:42Z
 url: https://github.com/astral-sh/ruff/pull/3264
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Preserve comments on non-defaulted arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-27 23:38_
+_@charliermarsh_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-31T12:10:52Z
 updated_at: 2024-10-30T19:12:25Z
 url: https://github.com/astral-sh/uv/issues/3936
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Stop workspace discovery for git and other cache entries at cache entry root
 
 ---
 
-_Issue opened by @konstin on 2024-05-31 12:10_
+_@konstin_
 
 Currently, workspace discovery walks from the project `pyproject.toml` to the file system root to find a workspace pyproject.toml. For cache entries such as git checkout and temporary directories, we should only walk up to the cache entry boundary; we don't want to consider any `pyproject.toml` files the user may have above the cache root.
 

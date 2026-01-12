@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T05:48:58Z
 updated_at: 2023-07-24T15:54:13Z
 url: https://github.com/astral-sh/ruff/issues/6024
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Empty Lines Left After Stripping All Imports
 
 ---
 
-_Issue opened by @kmcentush on 2023-07-24 05:48_
+_@kmcentush_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

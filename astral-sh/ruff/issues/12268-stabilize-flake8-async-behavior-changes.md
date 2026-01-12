@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T06:41:40Z
 updated_at: 2024-08-13T15:53:43Z
 url: https://github.com/astral-sh/ruff/issues/12268
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Stabilize `flake8-async` behavior changes
 
 ---
 
-_Issue opened by @MichaReiser on 2024-07-10 06:41_
+_@MichaReiser_
 
 * [ ] https://github.com/astral-sh/ruff/pull/12221
 * [ ] https://github.com/astral-sh/ruff/pull/12236

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-04T14:23:13Z
 updated_at: 2025-12-04T20:24:11Z
 url: https://github.com/astral-sh/uv/issues/16978
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # BUG(?): uv fails to resolve astropy's dependency graph in CI (circular dependency), but succeeds locally.
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-12-04 14:23_
+_@neutrinoceros_
 
 ### Summary
 

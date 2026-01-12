@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T18:00:12Z
 updated_at: 2025-05-02T19:51:44Z
 url: https://github.com/astral-sh/uv/issues/13271
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # uv pip compile --format pylock.toml with github based dependencies leave the github token in the resultant pylock.toml
 
 ---
 
-_Issue opened by @gary-wall-hpe on 2025-05-02 18:00_
+_@gary-wall-hpe_
 
 ### Summary
 

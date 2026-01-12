@@ -13,14 +13,14 @@ head: format_function_argument_separator_comments
 created_at: 2023-06-20T15:14:40Z
 updated_at: 2023-06-21T18:16:11Z
 url: https://github.com/astral-sh/ruff/pull/5211
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format function argument separator comments
 
 ---
 
-_Pull request opened by @konstin on 2023-06-20 15:14_
+_@konstin_
 
 ## Summary
 

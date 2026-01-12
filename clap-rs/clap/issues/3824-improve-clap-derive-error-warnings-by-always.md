@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-13T19:36:49Z
 updated_at: 2022-10-02T09:48:44Z
 url: https://github.com/clap-rs/clap/issues/3824
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Improve `clap_derive` error/warnings by always adding spans
 
 ---
 
-_Issue opened by @epage on 2022-06-13 19:36_
+_@epage_
 
 In another issue, a user pointed out a [misattributing of a warning](https://github.com/clap-rs/clap/issues/3822#issuecomment-1154342341).  Sometimes, they'll even point to doc comments!
 

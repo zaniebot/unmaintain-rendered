@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T21:00:56Z
 updated_at: 2025-07-17T21:00:29Z
 url: https://github.com/astral-sh/uv/issues/13060
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # `uv pip compile --format pylock.toml` option to preserve extras & dependency groups
 
 ---
 
-_Issue opened by @paveldikov on 2025-04-22 21:00_
+_@paveldikov_
 
 ### Summary
 

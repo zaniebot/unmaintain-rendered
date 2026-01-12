@@ -14,14 +14,14 @@ head: add-W0128
 created_at: 2023-12-24T22:54:52Z
 updated_at: 2024-03-15T14:44:02Z
 url: https://github.com/astral-sh/ruff/pull/9268
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] - implement `redeclared-assigned-name` (`W0128`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-24 22:54_
+_@diceroll123_
 
 ## Summary
 

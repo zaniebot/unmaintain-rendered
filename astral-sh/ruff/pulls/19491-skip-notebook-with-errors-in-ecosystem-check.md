@@ -13,14 +13,14 @@ head: brent/fix-ecosystem-format
 created_at: 2025-07-22T15:56:23Z
 updated_at: 2025-07-22T16:29:40Z
 url: https://github.com/astral-sh/ruff/pull/19491
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Skip notebook with errors in ecosystem check
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-22 15:56_
+_@ntBre_
 
 Summary
 --

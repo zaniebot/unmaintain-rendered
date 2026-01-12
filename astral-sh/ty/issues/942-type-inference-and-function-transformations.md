@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T17:35:43Z
 updated_at: 2025-08-05T20:01:26Z
 url: https://github.com/astral-sh/ty/issues/942
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type inference and function transformations
 
 ---
 
-_Issue opened by @syrkis on 2025-08-05 17:35_
+_@syrkis_
 
 ### Question
 

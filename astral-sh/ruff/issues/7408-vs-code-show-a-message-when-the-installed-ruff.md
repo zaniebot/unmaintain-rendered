@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-15T14:13:34Z
 updated_at: 2023-10-02T01:13:09Z
 url: https://github.com/astral-sh/ruff/issues/7408
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # VS Code: Show a message when the installed ruff version does not support formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-15 14:13_
+_@MichaReiser_
 
 _No description provided._
 

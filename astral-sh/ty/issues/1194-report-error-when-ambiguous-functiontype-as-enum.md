@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T05:57:21Z
 updated_at: 2025-11-18T16:10:37Z
 url: https://github.com/astral-sh/ty/issues/1194
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # report error when ambiguous `FunctionType` as `Enum` value
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-17 05:57_
+_@KotlinIsland_
 
 ### Summary
 

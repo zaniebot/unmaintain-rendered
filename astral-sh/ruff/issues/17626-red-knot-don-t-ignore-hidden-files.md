@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T13:34:19Z
 updated_at: 2025-04-28T06:58:54Z
 url: https://github.com/astral-sh/ruff/issues/17626
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] don't ignore hidden files
 
 ---
 
-_Issue opened by @thejchap on 2025-04-25 13:34_
+_@thejchap_
 
 see: https://github.com/astral-sh/ruff/pull/17569#discussion_r2059648418
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-06T12:49:51Z
 updated_at: 2024-04-06T14:27:50Z
 url: https://github.com/astral-sh/uv/issues/2851
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv pip install -r is not completely compatible with the original pip install -r - does not accept extra options
 
 ---
 
-_Issue opened by @flyaroundme on 2024-04-06 12:49_
+_@flyaroundme_
 
 I have a requirements.txt file which starts with extra options for `pip install`, like extra pypi index url and actually contains something like this:
 ```

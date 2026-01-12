@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T02:03:46Z
 updated_at: 2025-03-18T02:03:46Z
 url: https://github.com/astral-sh/uv/issues/12257
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Publish official `UvPythonFunction` CDK construct
 
 ---
 
-_Issue opened by @garysassano on 2025-03-18 02:03_
+_@garysassano_
 
 ### Summary
 

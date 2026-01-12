@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-22T17:04:47Z
 updated_at: 2024-04-22T21:09:48Z
 url: https://github.com/astral-sh/uv/issues/3190
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Provide an API that client programs can use
 
 ---
 
-_Issue opened by @pfmoore on 2024-04-22 17:04_
+_@pfmoore_
 
 I've been writing a number of small utilities based around uv, both in Python and in Rust. While the command line interface is mostly fine for this, it can be a bit messy to use (especially if I want to get information *back* from uv, where parsing the command output is clumsy).
 

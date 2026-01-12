@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T23:32:20Z
 updated_at: 2025-06-19T09:49:35Z
 url: https://github.com/astral-sh/ruff/issues/18772
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-pytest-style] PT023/PT026 do not check that pytest is pytest
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 23:32_
+_@MeGaGiGaGon_
 
 ### Summary
 

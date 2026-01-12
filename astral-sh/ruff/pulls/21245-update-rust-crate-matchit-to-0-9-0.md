@@ -13,14 +13,14 @@ head: renovate/matchit-0.x
 created_at: 2025-11-03T03:15:31Z
 updated_at: 2025-11-03T04:34:00Z
 url: https://github.com/astral-sh/ruff/pull/21245
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update Rust crate matchit to 0.9.0
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 03:15_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T13:22:24Z
 updated_at: 2025-10-31T03:34:15Z
 url: https://github.com/astral-sh/uv/issues/11619
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Disable dependency groups via environment variable
 
 ---
 
-_Issue opened by @abhiaagarwal on 2025-02-19 13:22_
+_@abhiaagarwal_
 
 ### Summary
 

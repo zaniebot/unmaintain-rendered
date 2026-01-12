@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-24T01:03:31Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/597
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Automatically use NextLineHelp with long option names/values
 
 ---
 
-_Issue opened by @joshtriplett on 2016-07-24 01:03_
+_@joshtriplett_
 
 Based on discussion in https://github.com/kbknapp/clap-rs/issues/587 .
 

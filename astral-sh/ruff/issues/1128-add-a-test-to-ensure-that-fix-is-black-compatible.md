@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-07T19:39:11Z
 updated_at: 2022-12-15T20:27:08Z
 url: https://github.com/astral-sh/ruff/issues/1128
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add a test to ensure that `--fix` is Black-compatible
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-07 19:39_
+_@charliermarsh_
 
 We introduced a bug whereby one of the docstring fixes was incompatible with Black, and led to continuous reformatting when running Ruff, then Black, then Ruff, etc.
 

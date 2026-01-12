@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T07:43:41Z
 updated_at: 2025-01-07T13:32:30Z
 url: https://github.com/astral-sh/ruff/issues/14766
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [`ruff`] Formatting hex codes changes output with f-string debug
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2024-12-04 07:43_
+_@MeGaGiGaGon_
 
 I had this idea while reading https://github.com/psf/black/issues/4522 when @MichaReiser said ruff had already stabilized hex code formatting.
 

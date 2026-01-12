@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T18:39:28Z
 updated_at: 2024-05-21T19:59:01Z
 url: https://github.com/astral-sh/uv/issues/3715
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Panic with relative path beyond base directory
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 18:39_
+_@zanieb_
 
 ```
 ❯ echo "/../test" | uv pip compile -

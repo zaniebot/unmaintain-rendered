@@ -13,14 +13,14 @@ head: ibraheem/setitem-dunder-tcx
 created_at: 2025-12-22T22:52:37Z
 updated_at: 2025-12-30T23:30:22Z
 url: https://github.com/astral-sh/ruff/pull/22148
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Use key and value parameter types as type context for `__setitem__` dunder calls
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-22 22:52_
+_@ibraheemdev_
 
 ## Summary
 

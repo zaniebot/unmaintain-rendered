@@ -12,14 +12,14 @@ head: charlie/unquote
 created_at: 2023-08-01T12:46:08Z
 updated_at: 2023-08-01T13:25:06Z
 url: https://github.com/astral-sh/ruff/pull/6237
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Revert "Expand scope of `quoted-annotation` rule (#5766)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 12:46_
+_@charliermarsh_
 
 This is causing some problems, so we'll just revert for now.
 

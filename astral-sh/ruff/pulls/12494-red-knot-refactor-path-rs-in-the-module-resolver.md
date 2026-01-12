@@ -13,14 +13,14 @@ head: alex/refactor-path
 created_at: 2024-07-24T16:34:47Z
 updated_at: 2024-07-25T18:45:06Z
 url: https://github.com/astral-sh/ruff/pull/12494
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Refactor `path.rs` in the module resolver
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-24 16:34_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/version-title
 created_at: 2025-09-20T16:07:01Z
 updated_at: 2025-09-22T13:56:09Z
 url: https://github.com/astral-sh/uv/pull/15964
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Tweak title for viewing version in project guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-20 16:07_
+_@zanieb_
 
 _No description provided._
 

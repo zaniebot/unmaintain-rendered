@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T00:50:37Z
 updated_at: 2024-12-18T05:11:14Z
 url: https://github.com/astral-sh/uv/issues/9987
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # packaged installed with uv are noticeably smaller than when installing with pip
 
 ---
 
-_Issue opened by @streamnsight on 2024-12-18 00:50_
+_@streamnsight_
 
 Packaged installed with uv are noticeably smaller than when installing with pip
 

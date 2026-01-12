@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-10-03T14:01:56Z
 updated_at: 2024-10-09T22:42:48Z
 url: https://github.com/astral-sh/uv/pull/7897
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Fix handling of != intersections in `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-03 14:01_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-04T09:32:56Z
 updated_at: 2024-07-04T13:42:31Z
 url: https://github.com/astral-sh/ruff/issues/12184
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Potential conflict S603 and unused noqa directive in `0.5.0` version
 
 ---
 
-_Issue opened by @shaneahmed on 2024-07-04 09:32_
+_@shaneahmed_
 
 Upgrade to 0.5.0 removes `# noqa: S603` during formatting as an unused noqa directive but then generates S603 error.
 

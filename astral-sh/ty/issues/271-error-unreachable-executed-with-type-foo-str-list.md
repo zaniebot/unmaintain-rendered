@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T12:46:51Z
 updated_at: 2025-05-08T14:03:15Z
 url: https://github.com/astral-sh/ty/issues/271
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Error unreachable executed with `type Foo = str | list[Foo]` in playground
 
 ---
 
-_Issue opened by @arjenzorgdoc on 2025-05-08 12:46_
+_@arjenzorgdoc_
 
 ### Summary
 

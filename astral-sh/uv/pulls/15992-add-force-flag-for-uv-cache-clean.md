@@ -13,14 +13,14 @@ head: zb/cache-force
 created_at: 2025-09-22T20:52:54Z
 updated_at: 2025-09-22T22:15:15Z
 url: https://github.com/astral-sh/uv/pull/15992
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # Add `--force` flag for `uv cache clean`
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-22 20:52_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/15990 to address concerns there.
 

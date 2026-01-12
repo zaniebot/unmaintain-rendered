@@ -13,14 +13,14 @@ head: C417
 created_at: 2025-02-02T00:47:48Z
 updated_at: 2025-03-17T08:03:20Z
 url: https://github.com/astral-sh/ruff/pull/15876
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-comprehensions`] Report and fix even when there are multiple iterables (`C417`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-02 00:47_
+_@InSyncWithFoo_
 
 ## Summary
 

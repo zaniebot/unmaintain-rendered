@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T16:30:10Z
 updated_at: 2023-02-11T23:29:38Z
 url: https://github.com/astral-sh/ruff/issues/2198
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `noqa: E402` not detected
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 16:30_
+_@spaceone_
 
 ```
 print(1)

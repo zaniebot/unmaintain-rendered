@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T18:34:52Z
 updated_at: 2024-08-27T13:02:27Z
 url: https://github.com/astral-sh/uv/issues/6647
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Read dependencies from `requires.txt` if it exists
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-26 18:34_
+_@charliermarsh_
 
 See: https://setuptools.pypa.io/en/latest/deprecated/python_eggs.html#dependency-metadata
 

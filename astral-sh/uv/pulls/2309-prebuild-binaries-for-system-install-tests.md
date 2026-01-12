@@ -14,14 +14,14 @@ head: zb/system-install-build
 created_at: 2024-03-08T22:10:19Z
 updated_at: 2024-03-11T23:28:14Z
 url: https://github.com/astral-sh/uv/pull/2309
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Prebuild binaries for `system-install` tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-08 22:10_
+_@zanieb_
 
 Rather than build the binaries in every test case, we build the necessary binaries up-front then perform the tests on downloaded artifacts.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T12:39:10Z
 updated_at: 2023-11-15T16:47:05Z
 url: https://github.com/astral-sh/ruff/issues/8693
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP032 fix can shadow INT002 violation
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-15 12:39_
+_@ThiefMaster_
 
 ### Python file
 ```py

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-16T17:00:13Z
 updated_at: 2025-02-13T16:27:12Z
 url: https://github.com/astral-sh/uv/issues/9941
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `torchaudio` installed with `uv` fails to find audio backend on macOS when debugging
 
 ---
 
-_Issue opened by @ThomasHezard on 2024-12-16 17:00_
+_@ThomasHezard_
 
 Hello,
 

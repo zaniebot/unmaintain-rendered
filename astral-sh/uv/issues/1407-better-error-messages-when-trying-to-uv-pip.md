@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T01:27:47Z
 updated_at: 2024-03-22T21:24:18Z
 url: https://github.com/astral-sh/uv/issues/1407
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Better error messages when trying to `uv pip install` a wheel file without a package name
 
 ---
 
-_Issue opened by @carlosperate on 2024-02-16 01:27_
+_@carlosperate_
 
 In the spirit of PR https://github.com/astral-sh/uv/pull/669, it'd be nice if some of the error messages when trying to install a wheel without specifiying the package name were a bit more helpful.
 

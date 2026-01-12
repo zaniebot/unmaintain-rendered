@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-02-04T16:15:34Z
 updated_at: 2021-12-08T17:39:16Z
 url: https://github.com/clap-rs/clap/issues/1671
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Validate error messages in clap_derive
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-04 16:15_
+_@CreepySkeleton_
 
 Some of them link to `docs.rs/structopt`. We can't fix it just now because we have no docs currently, but we need to get back to it once we have
 

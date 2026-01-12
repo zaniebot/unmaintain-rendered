@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T20:44:56Z
 updated_at: 2025-05-20T15:44:03Z
 url: https://github.com/astral-sh/ruff/issues/13765
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Update PyCharm Configuration
 
 ---
 
-_Issue opened by @IdoPort on 2024-10-15 20:44_
+_@IdoPort_
 
 Since not specifying the check is deprecated we should change the picture to this one:
 ![PyCharmRuffConfiguration](https://github.com/user-attachments/assets/1eb617e1-5ec4-45cc-ac1c-10d80033213f)

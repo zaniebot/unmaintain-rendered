@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T16:56:13Z
 updated_at: 2023-08-18T03:30:40Z
 url: https://github.com/astral-sh/ruff/issues/6600
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatting breaks in `with` statement with leading comments on `as`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-15 16:56_
+_@dhruvmanila_
 
 ```python
 with test as (

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T11:30:37Z
 updated_at: 2025-03-16T12:23:29Z
 url: https://github.com/astral-sh/uv/issues/11796
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Failed to spawn error with `uv run python3.12`
 
 ---
 
-_Issue opened by @gmsya on 2025-02-26 11:30_
+_@gmsya_
 
 ### Summary
 

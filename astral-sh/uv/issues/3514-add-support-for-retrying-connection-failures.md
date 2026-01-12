@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-10T17:59:01Z
 updated_at: 2024-10-12T11:22:12Z
 url: https://github.com/astral-sh/uv/issues/3514
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Add support for retrying connection failures
 
 ---
 
-_Issue opened by @yeswalrus on 2024-05-10 17:59_
+_@yeswalrus_
 
 Tested with uv 0.1.41
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-04T00:39:48Z
 updated_at: 2023-02-04T07:58:16Z
 url: https://github.com/astral-sh/ruff/issues/2561
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # noqa: F821 does not work reliably
 
 ---
 
-_Issue opened by @FranzForstmayr on 2023-02-04 00:39_
+_@FranzForstmayr_
 
 Hi, 
 

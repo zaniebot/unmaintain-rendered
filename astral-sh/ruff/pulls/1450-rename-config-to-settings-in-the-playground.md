@@ -12,14 +12,14 @@ head: charlie/settings
 created_at: 2022-12-29T21:59:34Z
 updated_at: 2022-12-29T21:59:39Z
 url: https://github.com/astral-sh/ruff/pull/1450
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Rename config to settings in the playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-29 21:59_
+_@charliermarsh_
 
 _No description provided._
 

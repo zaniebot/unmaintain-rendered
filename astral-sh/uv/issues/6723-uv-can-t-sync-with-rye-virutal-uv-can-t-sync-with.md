@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-27T21:28:38Z
 updated_at: 2024-08-28T01:39:27Z
 url: https://github.com/astral-sh/uv/issues/6723
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # uv can't sync with rye --virutal / uv can't sync with data-style layouts
 
 ---
 
-_Issue opened by @dream-dasher on 2024-08-27 21:28_
+_@dream-dasher_
 
 `uv sync` does not seem to support a layout like the following:
 - root

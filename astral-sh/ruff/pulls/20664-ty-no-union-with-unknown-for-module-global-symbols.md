@@ -14,14 +14,14 @@ head: david/no-unknown-union-no-promotion
 created_at: 2025-10-01T08:59:11Z
 updated_at: 2025-10-01T14:40:32Z
 url: https://github.com/astral-sh/ruff/pull/20664
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] No union with `Unknown` for module-global symbols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-01 08:59_
+_@sharkdp_
 
 ## Summary
 

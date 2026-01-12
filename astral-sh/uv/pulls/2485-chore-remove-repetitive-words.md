@@ -13,14 +13,14 @@ head: main
 created_at: 2024-03-16T10:55:36Z
 updated_at: 2024-03-16T14:13:48Z
 url: https://github.com/astral-sh/uv/pull/2485
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # chore: remove repetitive words
 
 ---
 
-_Pull request opened by @hishope on 2024-03-16 10:55_
+_@hishope_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

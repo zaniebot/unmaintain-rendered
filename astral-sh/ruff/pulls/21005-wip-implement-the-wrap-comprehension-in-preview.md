@@ -14,14 +14,14 @@ head: brent/wrap-comprehension-in
 created_at: 2025-10-20T21:27:32Z
 updated_at: 2025-10-24T13:09:15Z
 url: https://github.com/astral-sh/ruff/pull/21005
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [WIP] Implement the `wrap_comprehension_in` preview style from Black
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-20 21:27_
+_@ntBre_
 
 This is a rough draft with a naive fix. We still disagree with Black on some formatting, for example this snippet from our docstring formatting tests:
 

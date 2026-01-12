@@ -14,14 +14,14 @@ head: zb/debug-integ
 created_at: 2024-10-07T18:07:45Z
 updated_at: 2024-10-07T18:39:23Z
 url: https://github.com/astral-sh/uv/pull/7982
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Show verbose output during integration tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 18:07_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-30T15:45:16Z
 updated_at: 2025-11-14T21:42:59Z
 url: https://github.com/astral-sh/ty/issues/1287
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Completions should be suppressed in all locations that are unambiguously definitions
 
 ---
 
-_Issue opened by @pyscripter on 2025-09-30 15:45_
+_@pyscripter_
 
 ### Summary
 

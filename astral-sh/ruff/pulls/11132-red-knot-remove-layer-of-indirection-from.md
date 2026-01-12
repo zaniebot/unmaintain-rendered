@@ -13,14 +13,14 @@ head: cjm/red-knot/symbols-types
 created_at: 2024-04-24T15:59:20Z
 updated_at: 2024-04-26T20:06:09Z
 url: https://github.com/astral-sh/ruff/pull/11132
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [red-knot] remove layer of indirection from SymbolTable
 
 ---
 
-_Pull request opened by @carljm on 2024-04-24 15:59_
+_@carljm_
 
 ## Summary
 

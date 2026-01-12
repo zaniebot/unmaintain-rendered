@@ -13,14 +13,14 @@ head: zb/requires-python-field
 created_at: 2024-07-22T18:12:07Z
 updated_at: 2024-07-23T18:05:22Z
 url: https://github.com/astral-sh/uv/pull/5304
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Stylize `Requires-Python` consistently in CLI output
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 18:12_
+_@zanieb_
 
 _No description provided._
 

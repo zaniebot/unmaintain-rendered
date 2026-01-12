@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-12T23:38:32Z
 updated_at: 2025-03-03T12:28:47Z
 url: https://github.com/astral-sh/ruff/issues/13341
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add a rule-specific equivalent of the `--ignore-noqa` flag
 
 ---
 
-_Issue opened by @Zac-HD on 2024-09-12 23:38_
+_@Zac-HD_
 
 Some linter rules are advisory: they warn about a code pattern which is _usually_ bad, but sometimes it's better for the code (or at least the project) if you slap on a `# noqa` and keep going.
 

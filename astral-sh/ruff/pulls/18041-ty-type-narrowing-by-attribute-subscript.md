@@ -13,14 +13,14 @@ head: narrow_by_assignment
 created_at: 2025-05-12T12:31:25Z
 updated_at: 2025-06-06T03:43:14Z
 url: https://github.com/astral-sh/ruff/pull/18041
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] type narrowing by attribute/subscript assignments
 
 ---
 
-_Pull request opened by @mtshiba on 2025-05-12 12:31_
+_@mtshiba_
 
 ## Summary
 

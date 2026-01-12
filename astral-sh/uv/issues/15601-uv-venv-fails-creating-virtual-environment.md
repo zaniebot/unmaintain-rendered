@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-30T22:30:30Z
 updated_at: 2025-09-05T18:50:52Z
 url: https://github.com/astral-sh/uv/issues/15601
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # `uv venv` fails Creating virtual environment
 
 ---
 
-_Issue opened by @paulchubatyy on 2025-08-30 22:30_
+_@paulchubatyy_
 
 ### Summary
 

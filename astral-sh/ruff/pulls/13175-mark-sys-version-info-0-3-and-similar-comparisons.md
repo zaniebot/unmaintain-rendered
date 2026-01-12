@@ -13,14 +13,14 @@ head: charlie/sys
 created_at: 2024-08-30T23:19:35Z
 updated_at: 2024-08-30T23:38:48Z
 url: https://github.com/astral-sh/ruff/pull/13175
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Mark `sys.version_info[0] < 3` and similar comparisons as outdated
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 23:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T16:05:02Z
 updated_at: 2025-05-14T18:44:48Z
 url: https://github.com/astral-sh/uv/issues/13453
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # native-tls=true option in user uv.toml?
 
 ---
 
-_Issue opened by @tazr on 2025-05-14 16:05_
+_@tazr_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-16T21:02:58Z
 updated_at: 2025-12-04T18:14:29Z
 url: https://github.com/astral-sh/ruff/issues/12352
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Feature: Extend ruff configuration from external file
 
 ---
 
-_Issue opened by @yeoffrey on 2024-07-16 21:02_
+_@yeoffrey_
 
 # TD;LR
 Enable the ability to import ruff.toml configurations from external sources such as URLs or git repositories.

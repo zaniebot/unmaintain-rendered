@@ -14,14 +14,14 @@ head: info-async-with
 created_at: 2025-05-25T20:06:42Z
 updated_at: 2025-05-26T21:45:32Z
 url: https://github.com/astral-sh/ruff/pull/18299
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Add hint if async context manager is used in non-async with statement
 
 ---
 
-_Pull request opened by @lipefree on 2025-05-25 20:06_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

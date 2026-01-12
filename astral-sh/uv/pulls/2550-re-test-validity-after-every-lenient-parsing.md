@@ -13,14 +13,14 @@ head: charlie/lenient
 created_at: 2024-03-19T19:21:19Z
 updated_at: 2024-03-19T19:41:50Z
 url: https://github.com/astral-sh/uv/pull/2550
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Re-test validity after every lenient parsing change
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 19:21_
+_@charliermarsh_
 
 ## Summary
 

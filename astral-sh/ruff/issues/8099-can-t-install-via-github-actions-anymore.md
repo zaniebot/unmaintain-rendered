@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T20:58:37Z
 updated_at: 2023-10-20T21:02:47Z
 url: https://github.com/astral-sh/ruff/issues/8099
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # can't install via github actions anymore
 
 ---
 
-_Issue opened by @earonesty on 2023-10-20 20:58_
+_@earonesty_
 
  • Installing ruff (0.1.1)
 

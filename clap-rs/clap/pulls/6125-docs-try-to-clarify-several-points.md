@@ -12,14 +12,14 @@ head: docs
 created_at: 2025-09-09T20:15:00Z
 updated_at: 2025-09-09T20:40:03Z
 url: https://github.com/clap-rs/clap/pull/6125
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Try to clarify several points
 
 ---
 
-_Pull request opened by @epage on 2025-09-09 20:15_
+_@epage_
 
 Inspired by #6124
 

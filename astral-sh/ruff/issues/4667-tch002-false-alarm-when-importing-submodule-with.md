@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-26T09:23:32Z
 updated_at: 2023-05-30T11:52:53Z
 url: https://github.com/astral-sh/ruff/issues/4667
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TCH002 false alarm when importing submodule with import..as
 
 ---
 
-_Issue opened by @jakkdl on 2023-05-26 09:23_
+_@jakkdl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

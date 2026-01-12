@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T15:44:24Z
 updated_at: 2025-12-05T16:27:22Z
 url: https://github.com/astral-sh/ruff/issues/21753
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # EXE003 - allows "uv run" but errors on "uv --quiet run"
 
 ---
 
-_Issue opened by @Jamie-BitFlight on 2025-12-02 15:44_
+_@Jamie-BitFlight_
 
 ### Summary
 

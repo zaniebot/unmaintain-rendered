@@ -14,14 +14,14 @@ head: micha/cyclic-small-cleanup
 created_at: 2025-08-08T09:55:41Z
 updated_at: 2025-08-08T11:05:14Z
 url: https://github.com/astral-sh/ruff/pull/19824
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Improve performance of subtyping and assignability checks for protocols
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-08 09:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: feat/tc008-typing-execution-context
 created_at: 2024-12-29T08:34:55Z
 updated_at: 2025-01-08T13:23:45Z
 url: https://github.com/astral-sh/ruff/pull/15180
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Apply `TC008` more eagerly in `TYPE_CHECKING` blocks and disapply it in stubs
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-29 08:34_
+_@Daverball_
 
 ## Summary
 

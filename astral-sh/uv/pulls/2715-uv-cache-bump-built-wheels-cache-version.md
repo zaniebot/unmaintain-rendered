@@ -12,14 +12,14 @@ head: ag/bump-built-wheel-cache
 created_at: 2024-03-28T18:14:14Z
 updated_at: 2024-03-28T18:26:07Z
 url: https://github.com/astral-sh/uv/pull/2715
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # uv-cache: bump built-wheels cache version
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-28 18:14_
+_@BurntSushi_
 
 It turns out that #2712 did _not_ fix #2711. After I put up #2712, I
 started trying to track down the specific change that caused the

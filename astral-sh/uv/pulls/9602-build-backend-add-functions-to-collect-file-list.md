@@ -13,14 +13,14 @@ head: konsti/build-backend-list
 created_at: 2024-12-03T10:46:32Z
 updated_at: 2024-12-03T15:20:38Z
 url: https://github.com/astral-sh/uv/pull/9602
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Build backend: Add functions to collect file list
 
 ---
 
-_Pull request opened by @konstin on 2024-12-03 10:46_
+_@konstin_
 
 Using the directory writer trait, we can collect the files instead of writing them to a real sink. This builds up to a `uv build --list` similar to `cargo package --list`. It is not connected to the cli yet.
 

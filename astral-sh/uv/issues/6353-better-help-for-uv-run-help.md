@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T16:37:30Z
 updated_at: 2024-09-05T00:29:28Z
 url: https://github.com/astral-sh/uv/issues/6353
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Better help for `uv run --help`
 
 ---
 
-_Issue opened by @simonw on 2024-08-21 16:37_
+_@simonw_
 
 Currently:
 ```bash

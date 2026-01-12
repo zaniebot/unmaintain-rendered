@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T13:36:58Z
 updated_at: 2025-08-06T15:56:07Z
 url: https://github.com/astral-sh/uv/issues/4270
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Request: Download "official" (vanilla) Python binaries in toolchains
 
 ---
 
-_Issue opened by @hoechenberger on 2024-06-12 13:36_
+_@hoechenberger_
 
 Hello, I was trying out `toolchain install` and it seems the binaries are pulled from https://github.com/indygreg/python-build-standalone
 

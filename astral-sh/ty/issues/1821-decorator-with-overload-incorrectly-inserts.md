@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T07:07:07Z
 updated_at: 2025-12-12T03:33:59Z
 url: https://github.com/astral-sh/ty/issues/1821
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # decorator with overload incorrectly inserts `Unknown` into the decorated function's type
 
 ---
 
-_Issue opened by @DetachHead on 2025-12-09 07:07_
+_@DetachHead_
 
 ### Summary
 

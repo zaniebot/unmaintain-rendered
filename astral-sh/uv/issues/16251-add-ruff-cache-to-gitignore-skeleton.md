@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T10:32:58Z
 updated_at: 2025-11-08T03:11:32Z
 url: https://github.com/astral-sh/uv/issues/16251
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Add .ruff_cache to .gitignore skeleton
 
 ---
 
-_Issue opened by @butchergraters0e on 2025-10-11 10:32_
+_@butchergraters0e_
 
 ### Summary
 

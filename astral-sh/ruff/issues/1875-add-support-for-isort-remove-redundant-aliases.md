@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-14T20:28:38Z
 updated_at: 2023-01-15T15:39:24Z
 url: https://github.com/astral-sh/ruff/issues/1875
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add support for isort remove_redundant_aliases option
 
 ---
 
-_Issue opened by @nefrob on 2023-01-14 20:28_
+_@nefrob_
 
 Ref: https://pycqa.github.io/isort/docs/configuration/options.html.
 > Tells isort to remove redundant aliases from imports, such as import os as os. This defaults to False simply because some projects use these seemingly useless aliases to signify intent and change behaviour.

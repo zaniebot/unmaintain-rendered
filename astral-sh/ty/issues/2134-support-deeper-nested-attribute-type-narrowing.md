@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T19:55:10Z
 updated_at: 2025-12-27T00:41:06Z
 url: https://github.com/astral-sh/ty/issues/2134
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support deeper-nested attribute type narrowing
 
 ---
 
-_Issue opened by @pasky on 2025-12-20 19:55_
+_@pasky_
 
 ### Summary
 

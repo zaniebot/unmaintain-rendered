@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-03-08T22:51:23Z
 updated_at: 2025-03-09T04:19:59Z
 url: https://github.com/astral-sh/uv/pull/12069
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Update projects.md
 
 ---
 
-_Pull request opened by @thedatacurious on 2025-03-08 22:51_
+_@thedatacurious_
 
 
 <!--

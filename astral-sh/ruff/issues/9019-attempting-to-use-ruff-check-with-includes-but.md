@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-06T02:25:22Z
 updated_at: 2025-04-16T10:03:38Z
 url: https://github.com/astral-sh/ruff/issues/9019
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects
 
 ---
 
-_Issue opened by @eli-schwartz on 2023-12-06 02:25_
+_@eli-schwartz_
 
 ... such as git worktree clones.
 

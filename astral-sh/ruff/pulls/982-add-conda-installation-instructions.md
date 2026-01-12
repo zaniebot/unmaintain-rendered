@@ -12,14 +12,14 @@ head: charlie/conda
 created_at: 2022-12-01T17:19:35Z
 updated_at: 2022-12-01T17:19:40Z
 url: https://github.com/astral-sh/ruff/pull/982
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add Conda installation instructions
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-01 17:19_
+_@charliermarsh_
 
 Closes #894.
 

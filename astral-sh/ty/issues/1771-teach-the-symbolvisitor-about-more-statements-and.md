@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T13:03:19Z
 updated_at: 2025-12-05T13:03:19Z
 url: https://github.com/astral-sh/ty/issues/1771
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Teach the `SymbolVisitor` about more statements and expressions that can define symbols
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 13:03_
+_@AlexWaygood_
 
 The `SymbolVisitor` in the ty_ide crate is much less exhaustive than the `ExportFinder` in the ty_python_semantic crate:
 - It does not recognise that `type X = int` defines a symbol `X`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-20T22:08:02Z
 updated_at: 2024-05-21T01:01:12Z
 url: https://github.com/astral-sh/uv/issues/3675
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # uv adds dependency for newer version of python where pip does not
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-20 22:08_
+_@notatallshaw-gts_
 
 Upon reconciling the output of my uv and pip commands at work I found a curious additional dependency appear, I have narrowed it down, and I _think_ it's a bug in uv:
 

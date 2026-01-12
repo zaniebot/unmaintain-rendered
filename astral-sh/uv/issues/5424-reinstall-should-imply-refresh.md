@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T20:30:49Z
 updated_at: 2024-07-25T13:46:00Z
 url: https://github.com/astral-sh/uv/issues/5424
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `--reinstall` should imply `--refresh`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-24 20:30_
+_@charliermarsh_
 
 _No description provided._
 

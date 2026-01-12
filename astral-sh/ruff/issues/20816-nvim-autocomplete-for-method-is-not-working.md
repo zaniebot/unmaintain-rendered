@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-12T05:21:39Z
 updated_at: 2025-10-12T22:53:13Z
 url: https://github.com/astral-sh/ruff/issues/20816
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # nvim autocomplete for `"".<method>` is not working?
 
 ---
 
-_Issue opened by @tyoc213 on 2025-10-12 05:21_
+_@tyoc213_
 
 ### Summary
 

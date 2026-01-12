@@ -13,14 +13,14 @@ head: charlie/pip-sync
 created_at: 2024-05-14T01:45:13Z
 updated_at: 2024-05-14T01:53:49Z
 url: https://github.com/astral-sh/uv/pull/3566
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Remove unused `installed` field from `Plan`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 01:45_
+_@charliermarsh_
 
 _No description provided._
 

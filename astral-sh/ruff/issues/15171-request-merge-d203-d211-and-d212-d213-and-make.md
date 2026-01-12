@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-28T21:32:21Z
 updated_at: 2025-01-02T05:36:59Z
 url: https://github.com/astral-sh/ruff/issues/15171
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Request: Merge `D203`+`D211` and `D212`+`D213` and make them configurable instead
 
 ---
 
-_Issue opened by @Avasam on 2024-12-28 21:32_
+_@Avasam_
 
 The rule `one-blank-line-before-class (D203)` and `blank-line-before-class (D211)` are directly opposed. Same for `multi-line-summary-first-line (D212)` with `multi-line-summary-second-line (D213)`.
 I believe these should instead be a single rule that is configurable to act either one way or another. It is very odd and a bit unwieldy that a rule is configurable by having to disable a code, within the same group. If you're extending from another configuration, you have to re-select a rule *and* disable the other.

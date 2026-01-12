@@ -13,14 +13,14 @@ head: docs/update-docckerfile-to-bookworm
 created_at: 2024-08-22T14:50:32Z
 updated_at: 2024-08-22T16:16:46Z
 url: https://github.com/astral-sh/uv/pull/6441
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Update docs dockerfile (bullseye -> bookworm)
 
 ---
 
-_Pull request opened by @alti3 on 2024-08-22 14:50_
+_@alti3_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

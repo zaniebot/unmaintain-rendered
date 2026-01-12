@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-20T04:00:00Z
 updated_at: 2024-10-20T17:20:09Z
 url: https://github.com/astral-sh/uv/pull/8376
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Fix typos in new `uv self` help messages
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-10-20 04:00_
+_@InSyncWithFoo_
 
 [Originally reported](https://discord.com/channels/1039017663004942429/1060247592765759518/1297405236599591004) by dice on Discord.
 

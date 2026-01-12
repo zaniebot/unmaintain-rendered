@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-17T02:44:06Z
 updated_at: 2023-03-17T21:57:47Z
 url: https://github.com/astral-sh/ruff/issues/3568
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ruff check file.py output is unreadable
 
 ---
 
-_Issue opened by @copperfield42 on 2023-03-17 02:44_
+_@copperfield42_
 
 Hello, I just hear of this project so I installed to test it, following the usage indication on some file I got this
 

@@ -13,14 +13,14 @@ head: zb/fixup
 created_at: 2024-02-02T18:03:39Z
 updated_at: 2024-02-02T18:08:26Z
 url: https://github.com/astral-sh/uv/pull/1236
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Fix direct use of `range.simplify`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-02 18:03_
+_@zanieb_
 
 _No description provided._
 

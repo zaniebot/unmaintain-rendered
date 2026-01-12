@@ -11,14 +11,14 @@ head: private_locks
 created_at: 2024-06-28T04:52:34Z
 updated_at: 2025-04-28T12:26:32Z
 url: https://github.com/astral-sh/uv/pull/4610
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Private locks
 
 ---
 
-_Pull request opened by @idlsoft on 2024-06-28 04:52_
+_@idlsoft_
 
 ## Summary
 

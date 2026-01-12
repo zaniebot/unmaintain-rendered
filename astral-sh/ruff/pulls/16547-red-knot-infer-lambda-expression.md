@@ -13,14 +13,14 @@ head: dhruv/infer-lambda-expr
 created_at: 2025-03-07T07:19:55Z
 updated_at: 2025-03-11T05:55:22Z
 url: https://github.com/astral-sh/ruff/pull/16547
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Infer `lambda` expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-07 07:19_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T16:38:45Z
 updated_at: 2025-09-19T22:26:34Z
 url: https://github.com/astral-sh/ruff/issues/8361
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Bash completion emits error about invalid nosort option after installing ruff
 
 ---
 
-_Issue opened by @gbelouze on 2023-10-30 16:38_
+_@gbelouze_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

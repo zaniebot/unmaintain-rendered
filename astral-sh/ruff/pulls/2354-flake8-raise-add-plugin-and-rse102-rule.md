@@ -14,14 +14,14 @@ head: flake8-raise
 created_at: 2023-01-30T14:15:49Z
 updated_at: 2023-02-01T03:31:54Z
 url: https://github.com/astral-sh/ruff/pull/2354
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`flake8-raise`] Add Plugin and `RSE102` Rule
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-30 14:15_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/2347
 

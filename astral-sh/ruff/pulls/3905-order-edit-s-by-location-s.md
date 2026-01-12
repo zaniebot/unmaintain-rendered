@@ -13,14 +13,14 @@ head: edit-operation
 created_at: 2023-04-07T17:22:21Z
 updated_at: 2023-04-11T09:17:32Z
 url: https://github.com/astral-sh/ruff/pull/3905
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Order `Edit`s by `Location`s
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-07 17:22_
+_@MichaReiser_
 
 This PR changes the Ordering of `Edit`s from `content` > `location` > `end_location` to `location` > `end_location` > `content`. 
 

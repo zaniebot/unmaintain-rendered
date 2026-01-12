@@ -13,14 +13,14 @@ head: zb/fix-panic-version
 created_at: 2024-09-06T17:19:32Z
 updated_at: 2024-09-06T23:23:17Z
 url: https://github.com/astral-sh/uv/pull/7131
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Avoid panicking when encountering an invalid Python version during `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-06 17:19_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7129
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T15:45:44Z
 updated_at: 2025-12-17T22:02:12Z
 url: https://github.com/astral-sh/ty/issues/2019
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unresolved reference on default function argument that gets a class attribute
 
 ---
 
-_Issue opened by @benruijl on 2025-12-17 15:45_
+_@benruijl_
 
 ### Summary
 

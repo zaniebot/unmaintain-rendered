@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T15:48:32Z
 updated_at: 2024-06-12T17:58:40Z
 url: https://github.com/clap-rs/clap/issues/5530
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Quoted argument gets treated as multiple arguments
 
 ---
 
-_Issue opened by @PacifiK2460 on 2024-06-12 15:48_
+_@PacifiK2460_
 
 ### Please complete the following tasks
 

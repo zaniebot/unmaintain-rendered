@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T16:48:41Z
 updated_at: 2024-02-19T18:52:41Z
 url: https://github.com/astral-sh/uv/issues/1706
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv pip install is unable to locate wheels built with pip wheel --no-binary
 
 ---
 
-_Issue opened by @radupotop on 2024-02-19 16:48_
+_@radupotop_
 
 I have a private wheelhouse where wheels are compiled with:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-16T09:40:22Z
 updated_at: 2023-09-16T14:22:25Z
 url: https://github.com/astral-sh/ruff/issues/7433
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruff needs to formats files 2 times until there is nothing to format
 
 ---
 
-_Issue opened by @qarmin on 2023-09-16 09:40_
+_@qarmin_
 
 Ruff 0.0.289
 

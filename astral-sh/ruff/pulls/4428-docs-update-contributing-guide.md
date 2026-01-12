@@ -12,14 +12,14 @@ head: docs/contributing
 created_at: 2023-05-14T09:55:01Z
 updated_at: 2023-05-15T02:40:29Z
 url: https://github.com/astral-sh/ruff/pull/4428
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # docs: update contributing guide
 
 ---
 
-_Pull request opened by @yanksyoon on 2023-05-14 09:55_
+_@yanksyoon_
 
 This is a simple documentation update PR that updates `CONTRIBUTING.md` to match the file path for `mod.rs`.
 

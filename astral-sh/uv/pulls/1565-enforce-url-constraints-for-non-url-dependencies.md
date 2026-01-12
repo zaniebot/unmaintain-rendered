@@ -13,14 +13,14 @@ head: charlie/constraint
 created_at: 2024-02-17T03:07:37Z
 updated_at: 2024-02-17T03:11:29Z
 url: https://github.com/astral-sh/uv/pull/1565
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Enforce URL constraints for non-URL dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 03:07_
+_@charliermarsh_
 
 ## Summary
 

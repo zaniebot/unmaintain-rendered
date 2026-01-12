@@ -13,14 +13,14 @@ head: zb/download-list
 created_at: 2024-10-10T01:01:54Z
 updated_at: 2024-12-10T18:52:41Z
 url: https://github.com/astral-sh/uv/pull/8062
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Add `--show-urls` and `--only-downloads` to `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 01:01_
+_@zanieb_
 
 These are useful for creating a mirror of the Python downloads for a given uv version, e.g.:
 

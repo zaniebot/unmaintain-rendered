@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T22:42:31Z
 updated_at: 2022-12-06T01:46:39Z
 url: https://github.com/astral-sh/ruff/issues/1083
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug?] 0.0.161 removes blank lines under indented import blocks
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 22:42_
+_@smackesey_
 
 Ruff 0.0.161 seemed to change the handling of blank lines around imports significantly. This block was sorted with `0.0.160`:
 

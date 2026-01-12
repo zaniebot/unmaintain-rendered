@@ -12,14 +12,14 @@ head: konsti/dont-revalidate-python
 created_at: 2025-01-07T13:52:08Z
 updated_at: 2025-03-10T23:06:19Z
 url: https://github.com/astral-sh/uv/pull/10361
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Don't revalidate Python interpreter cache entry with `--upgrade`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 13:52_
+_@konstin_
 
 We were always revalidating the Python interpreter cache entry when using `--upgrade`, since the cache timestamp is too recent. Instead, we ignore the usual caching semantics for packages and only compare the timestamp of the interpreter with the recorded timestamp. This avoids the cost for querying the Python interpreter, at the expense of being slightly inconsistent with `Cache` behaving different for python alone (which is imho acceptable since interpreter metadata is already different from package metadata).
 

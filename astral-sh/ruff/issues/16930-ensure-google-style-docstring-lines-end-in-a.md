@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T23:28:29Z
 updated_at: 2025-03-27T20:10:26Z
 url: https://github.com/astral-sh/ruff/issues/16930
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ensure Google-style docstring lines end in a correct character
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-23 23:28_
+_@gtkacz_
 
 ### Summary
 

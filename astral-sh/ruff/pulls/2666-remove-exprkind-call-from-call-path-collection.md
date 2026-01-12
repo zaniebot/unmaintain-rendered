@@ -13,14 +13,14 @@ head: charlie/call
 created_at: 2023-02-08T18:17:15Z
 updated_at: 2023-02-08T18:35:20Z
 url: https://github.com/astral-sh/ruff/pull/2666
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Remove ExprKind::Call from call path collection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 18:17_
+_@charliermarsh_
 
 This is a more thorough fix for the issue seen in #2632 and elsewhere.
 

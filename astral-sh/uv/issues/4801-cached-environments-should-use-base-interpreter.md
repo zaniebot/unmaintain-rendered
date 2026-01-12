@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T12:28:40Z
 updated_at: 2024-07-04T17:38:54Z
 url: https://github.com/astral-sh/uv/issues/4801
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Cached environments should use base interpreter, if in a virtualenv
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-04 12:28_
+_@charliermarsh_
 
 Makes them much more likely to be long-term durable within the cache.
 

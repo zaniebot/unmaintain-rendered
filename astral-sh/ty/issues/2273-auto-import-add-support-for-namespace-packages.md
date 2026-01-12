@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-30T09:24:44Z
 updated_at: 2026-01-06T14:20:18Z
 url: https://github.com/astral-sh/ty/issues/2273
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Auto Import: Add support for namespace packages 
 
 ---
 
-_Issue opened by @Zhmjharmgal on 2025-12-30 09:24_
+_@Zhmjharmgal_
 
 ### Summary
 

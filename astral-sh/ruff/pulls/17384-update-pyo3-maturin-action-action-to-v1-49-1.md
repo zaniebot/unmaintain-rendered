@@ -13,14 +13,14 @@ head: renovate/pyo3-maturin-action-1.x
 created_at: 2025-04-14T03:27:34Z
 updated_at: 2025-04-15T11:54:55Z
 url: https://github.com/astral-sh/ruff/pull/17384
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Update PyO3/maturin-action action to v1.49.1
 
 ---
 
-_Pull request opened by @renovate on 2025-04-14 03:27_
+_@renovate_
 
 This PR contains the following updates:
 

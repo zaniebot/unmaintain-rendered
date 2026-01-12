@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T16:30:33Z
 updated_at: 2024-11-02T02:08:53Z
 url: https://github.com/astral-sh/uv/issues/8755
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # uv should have commands to manage and/or display the version of the current project
 
 ---
 
-_Issue opened by @tconbeer on 2024-11-01 16:30_
+_@tconbeer_
 
 In CD workflows, it's handy to have a tool that can read and write the version of the project in its `pyproject.toml` file.
 

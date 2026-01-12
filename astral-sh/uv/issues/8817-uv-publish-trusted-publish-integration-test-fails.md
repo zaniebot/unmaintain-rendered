@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T20:34:36Z
 updated_at: 2025-01-28T12:09:12Z
 url: https://github.com/astral-sh/uv/issues/8817
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # `uv publish` trusted publish integration test fails with 400 (already exists)
 
 ---
 
-_Issue opened by @zanieb on 2024-11-04 20:34_
+_@zanieb_
 
 ```
 DEBUG Upload error response: {"message": "The server could not comply with the request since it is either malformed or otherwise incorrect.\n\n\nFile already exists ('astral_test_trusted_publishing-0.1.532-py3-none-any.whl', with blake2_256 hash 'd97b4758301f66fcdaea1b956f8175d2619aa12c5016fbbab940a117bbee752d'). See https://test.pypi.org/help/#file-name-reuse for more information.\n\n", "code": "400 File already exists ('astral_test_trusted_publishing-0.1.532-py3-none-any.whl', with blake2_256 hash 'd97b4758301f66fcdaea1b956f8175d2619aa12c5016fbbab940a117bbee752d'). See https://test.pypi.org/help/#file-name-reuse for more information.", "title": "Bad Request"}

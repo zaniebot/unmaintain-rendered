@@ -13,14 +13,14 @@ head: ruff-formatter-docs
 created_at: 2023-08-11T17:36:29Z
 updated_at: 2023-08-11T18:13:43Z
 url: https://github.com/astral-sh/ruff/pull/6508
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix typo in MeasureMode comment
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-11 17:36_
+_@cnpryer_
 
 _No description provided._
 

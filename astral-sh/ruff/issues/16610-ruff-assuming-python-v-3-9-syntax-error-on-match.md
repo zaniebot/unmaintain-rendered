@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T21:16:37Z
 updated_at: 2025-03-11T09:59:27Z
 url: https://github.com/astral-sh/ruff/issues/16610
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff assuming python v 3.9 - syntax error on 'match'
 
 ---
 
-_Issue opened by @leonlonsdale on 2025-03-10 21:16_
+_@leonlonsdale_
 
 ### Summary
 

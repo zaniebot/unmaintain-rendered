@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T02:14:39Z
 updated_at: 2024-05-29T13:31:17Z
 url: https://github.com/astral-sh/uv/issues/1412
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Track invalid distributions as incompatibilities
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 02:14_
+_@zanieb_
 
 e.g. in https://github.com/astral-sh/uv/issues/1402 we say no versions exist if the distributions have invalid `requires-python` specifiers.
 

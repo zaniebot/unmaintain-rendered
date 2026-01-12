@@ -13,14 +13,14 @@ head: charlie/double-git
 created_at: 2024-03-27T01:28:28Z
 updated_at: 2024-03-27T01:39:02Z
 url: https://github.com/astral-sh/uv/pull/2682
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Add an in-memory cache for Git references
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 01:28_
+_@charliermarsh_
 
 ## Summary
 

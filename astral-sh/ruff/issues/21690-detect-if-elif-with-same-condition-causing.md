@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T10:05:10Z
 updated_at: 2025-11-30T12:02:21Z
 url: https://github.com/astral-sh/ruff/issues/21690
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Detect `if-elif` with same condition causing unreachable branch
 
 ---
 
-_Issue opened by @injust on 2025-11-29 10:05_
+_@injust_
 
 ### Summary
 

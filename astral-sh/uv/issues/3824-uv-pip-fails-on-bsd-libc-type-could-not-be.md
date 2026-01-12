@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T15:02:38Z
 updated_at: 2024-05-25T10:33:24Z
 url: https://github.com/astral-sh/uv/issues/3824
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv pip fails on BSD: Libc type could not be detected
 
 ---
 
-_Issue opened by @lcheylus on 2024-05-24 15:02_
+_@lcheylus_
 
 Success to build of `uv` version 0.2.2 on OpenBSD current/amd64 with Rust version 1.78.0:
 ```bash

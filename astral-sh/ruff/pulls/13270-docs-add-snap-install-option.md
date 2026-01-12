@@ -11,14 +11,14 @@ head: docs/snap-install
 created_at: 2024-09-06T13:26:55Z
 updated_at: 2024-09-08T07:41:58Z
 url: https://github.com/astral-sh/ruff/pull/13270
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # docs: add snap install option
 
 ---
 
-_Pull request opened by @lengau on 2024-09-06 13:26_
+_@lengau_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

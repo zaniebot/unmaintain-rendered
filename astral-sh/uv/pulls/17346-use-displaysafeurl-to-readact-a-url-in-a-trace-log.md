@@ -13,14 +13,14 @@ head: ww/redact-url
 created_at: 2026-01-07T15:42:39Z
 updated_at: 2026-01-07T15:55:10Z
 url: https://github.com/astral-sh/uv/pull/17346
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Use DisplaySafeUrl to readact a URL in a trace log
 
 ---
 
-_Pull request opened by @woodruffw on 2026-01-07 15:42_
+_@woodruffw_
 
 ## Summary
 

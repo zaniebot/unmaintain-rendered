@@ -13,14 +13,14 @@ head: dependabot/cargo/colored-2.1.0
 created_at: 2023-12-25T08:22:33Z
 updated_at: 2023-12-25T13:12:29Z
 url: https://github.com/astral-sh/ruff/pull/9271
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump colored from 2.0.4 to 2.1.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-25 08:22_
+_@dependabot_
 
 Bumps [colored](https://github.com/mackwic/colored) from 2.0.4 to 2.1.0.
 <details>

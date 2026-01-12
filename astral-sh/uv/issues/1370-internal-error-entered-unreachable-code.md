@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:10:30Z
 updated_at: 2024-02-17T14:37:07Z
 url: https://github.com/astral-sh/uv/issues/1370
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # internal error: entered unreachable code
 
 ---
 
-_Issue opened by @Redoubts on 2024-02-15 22:10_
+_@Redoubts_
 
 First, very excited about this project.
 

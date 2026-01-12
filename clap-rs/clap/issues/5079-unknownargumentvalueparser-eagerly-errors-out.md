@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-18T11:22:07Z
 updated_at: 2023-08-18T21:06:34Z
 url: https://github.com/clap-rs/clap/issues/5079
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `UnknownArgumentValueParser` eagerly errors out
 
 ---
 
-_Issue opened by @weihanglo on 2023-08-18 11:22_
+_@weihanglo_
 
 ### Please complete the following tasks
 

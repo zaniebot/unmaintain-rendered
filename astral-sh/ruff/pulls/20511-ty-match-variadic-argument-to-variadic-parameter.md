@@ -14,14 +14,14 @@ head: dhruv/match-variadic-parameter
 created_at: 2025-09-22T09:22:25Z
 updated_at: 2025-09-25T07:51:58Z
 url: https://github.com/astral-sh/ruff/pull/20511
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Match variadic argument to variadic parameter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-09-22 09:22_
+_@dhruvmanila_
 
 ## Summary
 

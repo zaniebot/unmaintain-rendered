@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T07:34:00Z
 updated_at: 2025-06-26T08:38:20Z
 url: https://github.com/astral-sh/ruff/issues/18952
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # formatting empty lines in multi-line arrays
 
 ---
 
-_Issue opened by @vghej on 2025-06-26 07:34_
+_@vghej_
 
 ### Summary
 

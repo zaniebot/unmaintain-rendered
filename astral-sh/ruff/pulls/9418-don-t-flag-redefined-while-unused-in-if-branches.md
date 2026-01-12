@@ -13,14 +13,14 @@ head: charlie/same-branch
 created_at: 2024-01-07T01:40:57Z
 updated_at: 2024-01-08T22:06:56Z
 url: https://github.com/astral-sh/ruff/pull/9418
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Don't flag `redefined-while-unused` in if branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-07 01:40_
+_@charliermarsh_
 
 ## Summary
 

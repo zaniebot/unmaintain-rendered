@@ -13,14 +13,14 @@ head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
 updated_at: 2026-01-07T04:19:40Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
 
 ---
 
-_Pull request opened by @sjyangkevin on 2026-01-04 21:44_
+_@sjyangkevin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

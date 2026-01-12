@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T06:06:52Z
 updated_at: 2025-12-22T18:12:59Z
 url: https://github.com/astral-sh/uv/issues/14210
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # uv build does not validate entry points in "project.scripts"
 
 ---
 
-_Issue opened by @stmlange on 2025-06-23 06:06_
+_@stmlange_
 
 ### Summary
 

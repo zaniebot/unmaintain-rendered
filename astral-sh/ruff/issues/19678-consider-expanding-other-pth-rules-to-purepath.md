@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T02:21:18Z
 updated_at: 2025-08-01T16:47:52Z
 url: https://github.com/astral-sh/ruff/issues/19678
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Consider expanding other `PTH` rules to `PurePath` subclasses
 
 ---
 
-_Issue opened by @ntBre on 2025-08-01 02:21_
+_@ntBre_
 
 We noticed this in #19440, which expanded `PTH201` to check `PurePath` subclasses. I don't think every `PurePath` subclass is applicable for every `PTH` rule, but I think some of the rules also differ in whether or not they try to resolve bindings to a `Path`.
 

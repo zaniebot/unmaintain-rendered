@@ -13,14 +13,14 @@ head: py314-docker
 created_at: 2025-10-07T14:03:30Z
 updated_at: 2025-10-07T23:10:11Z
 url: https://github.com/astral-sh/uv/pull/16150
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Publish Python 3.14 Docker Images
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-07 14:03_
+_@samypr100_
 
 ## Summary
 

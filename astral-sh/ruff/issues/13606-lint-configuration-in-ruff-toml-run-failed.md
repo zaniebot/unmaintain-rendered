@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T13:31:37Z
 updated_at: 2024-10-03T06:41:42Z
 url: https://github.com/astral-sh/ruff/issues/13606
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `[lint.[*]]` configuration in .ruff.toml run failed.
 
 ---
 
-_Issue opened by @YaoJusheng on 2024-10-02 13:31_
+_@YaoJusheng_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

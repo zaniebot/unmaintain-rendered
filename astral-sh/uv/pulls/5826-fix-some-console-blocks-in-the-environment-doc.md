@@ -14,14 +14,14 @@ head: zb/docs-fixup
 created_at: 2024-08-06T18:35:29Z
 updated_at: 2024-08-06T18:47:50Z
 url: https://github.com/astral-sh/uv/pull/5826
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Fix some console blocks in the environment doc
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 18:35_
+_@zanieb_
 
 _No description provided._
 

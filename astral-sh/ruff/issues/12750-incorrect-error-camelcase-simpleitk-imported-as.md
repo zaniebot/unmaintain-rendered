@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T12:30:04Z
 updated_at: 2024-08-09T15:18:27Z
 url: https://github.com/astral-sh/ruff/issues/12750
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Incorrect error: Camelcase `SimpleITK` imported as lowercase `sitk` Ruff N813
 
 ---
 
-_Issue opened by @MattTheCuber on 2024-08-08 12:30_
+_@MattTheCuber_
 
 Example code:
 ```python

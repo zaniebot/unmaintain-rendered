@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-13T10:56:24Z
 updated_at: 2025-04-03T10:21:43Z
 url: https://github.com/astral-sh/ruff/issues/12856
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Nested expression formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-13 10:56_
+_@MichaReiser_
 
 I was surprised that there's no existing issue for this. 
 

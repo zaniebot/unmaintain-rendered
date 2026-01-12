@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-03T16:27:50Z
 updated_at: 2024-01-08T03:43:57Z
 url: https://github.com/astral-sh/ruff/issues/8981
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule Suggestion: explict-dataclasses
 
 ---
 
-_Issue opened by @sbdchd on 2023-12-03 16:27_
+_@sbdchd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

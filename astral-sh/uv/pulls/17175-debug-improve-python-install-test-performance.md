@@ -13,14 +13,14 @@ head: zb/python-test-perf
 created_at: 2025-12-18T14:24:51Z
 updated_at: 2025-12-18T15:10:06Z
 url: https://github.com/astral-sh/uv/pull/17175
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # DEBUG: Improve Python install test performance
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-18 14:24_
+_@zanieb_
 
 _No description provided._
 

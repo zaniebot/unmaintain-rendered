@@ -13,14 +13,14 @@ head: alex/map-callable-incorrectness
 created_at: 2024-07-30T13:08:14Z
 updated_at: 2024-07-30T13:30:26Z
 url: https://github.com/astral-sh/ruff/pull/12580
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove several incorrect uses of `map_callable()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 13:08_
+_@AlexWaygood_
 
 None of these decorators can ever be called as e.g. `@decorator()`; they all have to always be called without parens, e.g. `@decorator`. As such, these `map_callable()` calls are unnecessary and slightly confusing.
 

@@ -12,14 +12,14 @@ head: fbt003-allowlist
 created_at: 2023-06-05T16:38:36Z
 updated_at: 2023-06-05T17:11:57Z
 url: https://github.com/astral-sh/ruff/pull/4867
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add some exceptions for FBT003 (#3247)
 
 ---
 
-_Pull request opened by @allisonkarlitskaya on 2023-06-05 16:38_
+_@allisonkarlitskaya_
 
 Hardcode a few exceptions for FBT003 (passing a boolean constant to a function):
 

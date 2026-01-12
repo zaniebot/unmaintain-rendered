@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T12:23:23Z
 updated_at: 2025-10-01T07:10:07Z
 url: https://github.com/astral-sh/ty/issues/1252
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty infers literals and fails `assert_type`, opposed to other type checkers
 
 ---
 
-_Issue opened by @Bobronium on 2025-09-25 12:23_
+_@Bobronium_
 
 ### Alternative title: 
 ## `ty` is superior at interpreting type variables and it's causing problems

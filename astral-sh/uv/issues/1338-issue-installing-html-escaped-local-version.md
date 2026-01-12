@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T20:57:29Z
 updated_at: 2024-02-16T06:15:52Z
 url: https://github.com/astral-sh/uv/issues/1338
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Issue installing HTML-escaped local version
 
 ---
 
-_Issue opened by @stefanvanburen on 2024-02-15 20:57_
+_@stefanvanburen_
 
 Hey! `uv` looks great; nice work. Not sure if this issue is on my end or yours:
 

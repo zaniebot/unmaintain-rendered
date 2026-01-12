@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T22:05:43Z
 updated_at: 2024-03-05T16:39:39Z
 url: https://github.com/astral-sh/uv/issues/2182
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Where should dev-dependancies go in pyproject.toml file?
 
 ---
 
-_Issue opened by @teaxio on 2024-03-04 22:05_
+_@teaxio_
 
 In my pyproject.toml file I added:
 ```

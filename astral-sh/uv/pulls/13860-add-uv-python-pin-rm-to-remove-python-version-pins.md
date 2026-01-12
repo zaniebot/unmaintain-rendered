@@ -13,14 +13,14 @@ head: zb/pin-rm
 created_at: 2025-06-05T14:47:58Z
 updated_at: 2025-06-05T17:05:44Z
 url: https://github.com/astral-sh/uv/pull/13860
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Add `uv python pin --rm` to remove `.python-version` pins
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-05 14:47_
+_@zanieb_
 
 I realized it is non-trivial to delete the global Python version pin, and that we were missing this simple functionality
 

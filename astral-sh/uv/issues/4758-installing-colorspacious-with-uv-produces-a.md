@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T06:47:08Z
 updated_at: 2024-07-03T13:11:55Z
 url: https://github.com/astral-sh/uv/issues/4758
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # installing `colorspacious` with uv produces a broken env
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-07-03 06:47_
+_@neutrinoceros_
 
 Using uv 0.18.0:
 

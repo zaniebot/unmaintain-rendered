@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-10-25T11:28:01Z
 updated_at: 2021-10-26T21:26:19Z
 url: https://github.com/clap-rs/clap/issues/2940
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # No way to really hide an argument
 
 ---
 
-_Issue opened by @ctrlcctrlv on 2021-10-25 11:28_
+_@ctrlcctrlv_
 
 ### Please complete the following tasks
 

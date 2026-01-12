@@ -14,14 +14,14 @@ head: alex/assert-type-diagnostic
 created_at: 2025-12-05T12:23:00Z
 updated_at: 2025-12-05T12:33:32Z
 url: https://github.com/astral-sh/ruff/pull/21811
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Minor improvements to `assert_type` diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-05 12:23_
+_@AlexWaygood_
 
 ## Summary
 

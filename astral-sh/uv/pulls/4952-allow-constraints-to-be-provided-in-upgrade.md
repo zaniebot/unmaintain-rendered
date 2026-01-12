@@ -14,14 +14,14 @@ head: charlie/up
 created_at: 2024-07-10T02:44:50Z
 updated_at: 2024-07-10T10:50:57Z
 url: https://github.com/astral-sh/uv/pull/4952
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Allow constraints to be provided in `--upgrade-package`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-10 02:44_
+_@charliermarsh_
 
 ## Summary
 

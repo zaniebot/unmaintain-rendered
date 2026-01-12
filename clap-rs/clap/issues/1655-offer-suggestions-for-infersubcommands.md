@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-02-02T03:05:59Z
 updated_at: 2020-03-01T15:19:34Z
 url: https://github.com/clap-rs/clap/issues/1655
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Offer suggestions for InferSubcommands
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-02 03:05_
+_@CreepySkeleton_
 
 Imagine we have this app
 ```rust

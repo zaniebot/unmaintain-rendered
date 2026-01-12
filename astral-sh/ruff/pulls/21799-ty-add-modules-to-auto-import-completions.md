@@ -14,14 +14,14 @@ head: ag/auto-import-includes-modules
 created_at: 2025-12-04T20:13:25Z
 updated_at: 2025-12-08T13:07:01Z
 url: https://github.com/astral-sh/ruff/pull/21799
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Add modules to auto-import completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-04 20:13_
+_@BurntSushi_
 
 Basically, when one writes `rando<CURSOR>`, ty should
 suggest `import random` as a completion. And similarly,

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T00:21:50Z
 updated_at: 2024-02-26T11:33:09Z
 url: https://github.com/astral-sh/uv/issues/1401
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add `uv pip list`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 00:21_
+_@zanieb_
 
 This is a really helpful command :)
 

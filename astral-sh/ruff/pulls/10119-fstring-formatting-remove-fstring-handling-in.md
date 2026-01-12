@@ -13,14 +13,14 @@ head: normalize-fstring
 created_at: 2024-02-25T12:06:49Z
 updated_at: 2024-02-25T17:28:47Z
 url: https://github.com/astral-sh/ruff/pull/10119
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # FString formatting: remove fstring handling in `normalize_string`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-25 12:06_
+_@MichaReiser_
 
 ## Summary
 

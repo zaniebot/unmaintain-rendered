@@ -13,14 +13,14 @@ head: zb/project-venv-warn
 created_at: 2024-08-30T13:05:36Z
 updated_at: 2024-09-04T02:59:54Z
 url: https://github.com/astral-sh/uv/pull/6864
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Add warning when `VIRTUAL_ENV` is set but will not be respected in project commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-30 13:05_
+_@zanieb_
 
 Following https://github.com/astral-sh/uv/pull/6834
 

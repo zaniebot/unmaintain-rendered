@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-11-30T07:33:59Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/352
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # allow delimited values to be turned OFF
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-30 07:33_
+_@kbknapp_
 
 Relates to and requires #348 to be implemented first.
 

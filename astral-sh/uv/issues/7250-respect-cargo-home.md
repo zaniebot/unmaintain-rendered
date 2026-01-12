@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T09:58:54Z
 updated_at: 2024-09-30T10:44:36Z
 url: https://github.com/astral-sh/uv/issues/7250
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Respect $CARGO_HOME
 
 ---
 
-_Issue opened by @yochem on 2024-09-10 09:58_
+_@yochem_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

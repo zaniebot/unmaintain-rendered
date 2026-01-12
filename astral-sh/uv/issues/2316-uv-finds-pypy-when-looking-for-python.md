@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T05:37:25Z
 updated_at: 2024-05-23T16:17:42Z
 url: https://github.com/astral-sh/uv/issues/2316
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # UV finds PyPy when looking for Python
 
 ---
 
-_Issue opened by @henryiii on 2024-03-09 05:37_
+_@henryiii_
 
 If you have both CPython and PyPy installed, it seems like `uv` can find the wrong one when you ask for `-p python3.7` (up to 3.10, since that's the highest version of PyPy):
 

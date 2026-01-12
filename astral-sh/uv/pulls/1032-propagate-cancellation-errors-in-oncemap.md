@@ -13,14 +13,14 @@ head: charlie/cancellation
 created_at: 2024-01-22T01:13:44Z
 updated_at: 2024-01-22T14:00:23Z
 url: https://github.com/astral-sh/uv/pull/1032
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Propagate cancellation errors in `OnceMap`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-22 01:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-29T17:35:21Z
 updated_at: 2025-04-22T20:54:27Z
 url: https://github.com/astral-sh/ruff/issues/43
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Enable installation via cargo
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-29 17:35_
+_@charliermarsh_
 
 We can't upload to crates.io because we're using an unreleased version of RustPython.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-21T21:31:47Z
 updated_at: 2025-05-22T14:42:30Z
 url: https://github.com/astral-sh/ty/issues/481
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect literal math with positive and negative operands
 
 ---
 
-_Issue opened by @correctmost on 2025-05-21 21:31_
+_@correctmost_
 
 ### Summary
 

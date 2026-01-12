@@ -13,14 +13,14 @@ head: comments-any-into-AnyNodeRef
 created_at: 2023-06-20T07:45:06Z
 updated_at: 2023-06-20T17:36:48Z
 url: https://github.com/astral-sh/ruff/pull/5205
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Accept any `Into<AnyNodeRef>` as `Comments` arguments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-20 07:45_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

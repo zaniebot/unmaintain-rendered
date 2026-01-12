@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-04T15:17:51Z
 updated_at: 2024-07-04T15:26:21Z
 url: https://github.com/astral-sh/uv/issues/4809
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Feature Request: uv pip download
 
 ---
 
-_Issue opened by @stephanebertrand on 2024-07-04 15:17_
+_@stephanebertrand_
 
 And i can elimate pip :)
 

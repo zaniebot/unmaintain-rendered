@@ -13,14 +13,14 @@ head: ecosystem-indico
 created_at: 2024-02-06T00:24:00Z
 updated_at: 2024-02-06T00:51:57Z
 url: https://github.com/astral-sh/ruff/pull/9850
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # ruff-ecosystem: Add indico/indico repo
 
 ---
 
-_Pull request opened by @ThiefMaster on 2024-02-06 00:24_
+_@ThiefMaster_
 
 It's a pretty big codebase using lots of different stuff, so a good candidate for finding obscure problems.
 

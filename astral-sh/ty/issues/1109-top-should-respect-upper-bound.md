@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-31T16:56:16Z
 updated_at: 2025-09-02T15:34:42Z
 url: https://github.com/astral-sh/ty/issues/1109
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `Top[]` should respect upper bound
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-08-31 16:56_
+_@InSyncWithFoo_
 
 Minimal reproducible example ([playground](https://play.ty.dev/64e41ddb-8baf-43e0-abfd-64c45f0004c5)):
 

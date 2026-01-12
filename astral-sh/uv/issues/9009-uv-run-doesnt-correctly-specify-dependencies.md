@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-11T08:37:30Z
 updated_at: 2024-11-11T08:38:45Z
 url: https://github.com/astral-sh/uv/issues/9009
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # `uv run` doesn’t correctly specify dependencies
 
 ---
 
-_Issue opened by @flying-sheep on 2024-11-11 08:37_
+_@flying-sheep_
 
 `foo.py`:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-31T13:56:37Z
 updated_at: 2025-10-31T15:00:31Z
 url: https://github.com/astral-sh/ty/issues/1463
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Literal promotion should not affect negated types
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-31 13:56_
+_@sharkdp_
 
 Consider the following example. I think what's happening is that we turn `str & ~Literal["a"]` into `str & ~str = Never` when performing literal promotion.
 ```py

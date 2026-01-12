@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T18:54:58Z
 updated_at: 2023-11-03T08:29:46Z
 url: https://github.com/astral-sh/uv/issues/207
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Build fails when there are requires but no build backend
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 18:54_
+_@konstin_
 
 tokenizers 0.0.11 specifies
 

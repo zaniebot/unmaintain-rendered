@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-12T05:24:56Z
 updated_at: 2024-09-17T14:08:37Z
 url: https://github.com/astral-sh/ruff/issues/13336
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # E731 Doesn't Ignore Dataclass Attributes
 
 ---
 
-_Issue opened by @max-muoto on 2024-09-12 05:24_
+_@max-muoto_
 
 While `E731` correctly flags class attributes that are assigned to lambdas:
 

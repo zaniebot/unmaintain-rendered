@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-10T20:13:32Z
 updated_at: 2025-11-18T16:10:22Z
 url: https://github.com/astral-sh/ty/issues/202
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Disjointness of complements
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-10 20:13_
+_@sharkdp_
 
 ### Description
 

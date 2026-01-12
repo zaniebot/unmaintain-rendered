@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T06:42:56Z
 updated_at: 2025-03-18T15:13:27Z
 url: https://github.com/astral-sh/ruff/issues/6591
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Emit diagnostics for new syntax as per the target Python version
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-15 06:42_
+_@dhruvmanila_
 
 Our parser doesn't take into account the Python version aka [`target-version`](https://beta.ruff.rs/docs/settings/#target-version) setting while parsing the source code. This means that we would allow having a match statement when the target Python version is 3.9 or lower. We want to signal this to the user.
 

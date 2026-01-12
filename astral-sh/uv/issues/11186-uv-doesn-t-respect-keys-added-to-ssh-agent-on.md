@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T17:08:56Z
 updated_at: 2025-02-10T14:05:36Z
 url: https://github.com/astral-sh/uv/issues/11186
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # uv doesn't respect keys added to ssh-agent on windows
 
 ---
 
-_Issue opened by @Mithrandir2k18 on 2025-02-03 17:08_
+_@Mithrandir2k18_
 
 ### Summary
 

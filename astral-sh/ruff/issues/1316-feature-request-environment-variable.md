@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-21T23:03:06Z
 updated_at: 2022-12-22T03:12:30Z
 url: https://github.com/astral-sh/ruff/issues/1316
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Environment variable interpolation for config paths
 
 ---
 
-_Issue opened by @smackesey on 2022-12-21 23:03_
+_@smackesey_
 
 Environment variable interpolation in certain config settings could be very useful, specifically in the `extend` field.
 

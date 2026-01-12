@@ -14,14 +14,14 @@ head: semantic_tokens
 created_at: 2025-07-02T22:45:03Z
 updated_at: 2025-07-07T22:34:52Z
 url: https://github.com/astral-sh/ruff/pull/19108
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] First cut at semantic token provider
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-02 22:45_
+_@UnboundVariable_
 
 This PR implements a basic semantic token provider for ty's language server. This allows for more accurate semantic highlighting / coloring within editors that support this LSP functionality.
 

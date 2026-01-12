@@ -13,14 +13,14 @@ head: konsti/packse-0.3.36
 created_at: 2024-09-04T10:17:51Z
 updated_at: 2024-09-05T08:14:36Z
 url: https://github.com/astral-sh/uv/pull/7002
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Update packse
 
 ---
 
-_Pull request opened by @konstin on 2024-09-04 10:17_
+_@konstin_
 
 Add additional tests for https://github.com/astral-sh/uv/pull/6959 and https://github.com/astral-sh/uv/pull/6961
 

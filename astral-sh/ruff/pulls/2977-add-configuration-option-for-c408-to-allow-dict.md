@@ -13,14 +13,14 @@ head: allow_dict_calls_with_keyword_arguments
 created_at: 2023-02-17T00:41:24Z
 updated_at: 2023-02-19T14:47:04Z
 url: https://github.com/astral-sh/ruff/pull/2977
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add configuration option for C408 to allow dict calls with keyword arguments.
 
 ---
 
-_Pull request opened by @manueljacob on 2023-02-17 00:41_
+_@manueljacob_
 
 When creating a dict with string keys, some prefer to call dict instead of writing a dict literal. For example: `dict(a=1, b=2, c=3)` instead of `{"a": 1, "b": 2, "c": 3}`.
 

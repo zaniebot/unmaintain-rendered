@@ -14,14 +14,14 @@ head: rule-noqa
 created_at: 2025-04-02T03:20:33Z
 updated_at: 2025-04-04T21:16:26Z
 url: https://github.com/astral-sh/ruff/pull/17138
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Implement `Invalid rule provided` as rule RUF102 with `--fix`
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-02 03:20_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

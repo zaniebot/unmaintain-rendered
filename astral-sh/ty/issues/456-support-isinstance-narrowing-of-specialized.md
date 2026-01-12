@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-19T23:51:48Z
 updated_at: 2025-09-25T16:21:38Z
 url: https://github.com/astral-sh/ty/issues/456
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support `isinstance` narrowing of specialized generic classes
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-05-19 23:51_
+_@MatthewMckee4_
 
 We currently narrow like this:
 ```py

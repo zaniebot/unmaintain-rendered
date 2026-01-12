@@ -13,14 +13,14 @@ head: dylan/stabilize-slices-in-concat
 created_at: 2025-06-06T15:30:28Z
 updated_at: 2025-06-06T17:40:13Z
 url: https://github.com/astral-sh/ruff/pull/18500
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`ruff`] Stabilize checking in presence of slices for `collection-literal-concatenation` (`RUF005`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 15:30_
+_@dylwil3_
 
 _No description provided._
 

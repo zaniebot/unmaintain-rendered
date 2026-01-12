@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-28T05:58:02Z
 updated_at: 2024-12-28T14:38:09Z
 url: https://github.com/astral-sh/uv/issues/10213
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Update failure on Win10 64-bit
 
 ---
 
-_Issue opened by @farzbood on 2024-12-28 05:58_
+_@farzbood_
 
 Hi everyone,
 Attempting update with (uv self update) command to the latest version (0.5.13), failed with following error.

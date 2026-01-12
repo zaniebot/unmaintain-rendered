@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T14:55:50Z
 updated_at: 2025-01-30T16:58:02Z
 url: https://github.com/astral-sh/uv/issues/3883
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Configure pip compile via pyproject.toml or uv.toml
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-05-28 14:55_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

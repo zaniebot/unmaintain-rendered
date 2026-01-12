@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-16T16:49:56Z
 updated_at: 2025-09-17T07:22:50Z
 url: https://github.com/astral-sh/ruff/issues/20438
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # feat: support --output-format "filename"
 
 ---
 
-_Issue opened by @spaceone on 2025-09-16 16:49_
+_@spaceone_
 
 I would like to only get the filenames with violations printed, so I can easily open all of them in a editor like:
 

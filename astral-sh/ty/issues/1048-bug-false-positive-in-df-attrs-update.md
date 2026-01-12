@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-19T06:12:54Z
 updated_at: 2025-08-20T12:55:28Z
 url: https://github.com/astral-sh/ty/issues/1048
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # BUG: false positive in `df.attrs.update()`
 
 ---
 
-_Issue opened by @janosh on 2025-08-19 06:12_
+_@janosh_
 
 ### Summary
 

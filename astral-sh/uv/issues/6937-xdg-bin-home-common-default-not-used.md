@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-02T12:44:17Z
 updated_at: 2025-02-18T15:49:01Z
 url: https://github.com/astral-sh/uv/issues/6937
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `XDG_BIN_HOME` common default not used
 
 ---
 
-_Issue opened by @thernstig on 2024-09-02 12:44_
+_@thernstig_
 
 In case someone has not set `XDG_BIN_HOME`, it installs into `~/.cargo/bin/` on Linux.
 

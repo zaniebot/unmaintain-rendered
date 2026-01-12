@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T01:05:48Z
 updated_at: 2024-12-02T01:50:11Z
 url: https://github.com/astral-sh/ruff/issues/14650
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Confusing setting A incompatible with setting B warning
 
 ---
 
-_Issue opened by @dimaqq on 2024-11-28 01:05_
+_@dimaqq_
 
 ```command
 > uvx ruff -v format --preview tests/unit/test_proxy.py

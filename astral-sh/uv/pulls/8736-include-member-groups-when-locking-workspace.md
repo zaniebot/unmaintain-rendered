@@ -13,14 +13,14 @@ head: charlie/g
 created_at: 2024-10-31T23:51:28Z
 updated_at: 2024-11-01T00:04:35Z
 url: https://github.com/astral-sh/uv/pull/8736
-synced_at: 2026-01-10T12:08:45Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Include member groups when locking workspace
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-31 23:51_
+_@charliermarsh_
 
 ## Summary
 

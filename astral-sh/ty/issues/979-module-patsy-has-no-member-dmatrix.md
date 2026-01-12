@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-13T22:42:26Z
 updated_at: 2025-08-15T17:23:23Z
 url: https://github.com/astral-sh/ty/issues/979
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Module `patsy` has no member `dmatrix`
 
 ---
 
-_Issue opened by @MamadouSDiallo on 2025-08-13 22:42_
+_@MamadouSDiallo_
 
 ### Summary
 

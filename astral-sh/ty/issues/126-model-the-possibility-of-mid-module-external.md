@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T23:03:04Z
 updated_at: 2025-11-18T16:10:23Z
 url: https://github.com/astral-sh/ty/issues/126
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # model the possibility of mid-module external mutation of module globals?
 
 ---
 
-_Issue opened by @carljm on 2025-04-14 23:03_
+_@carljm_
 
 It is possible for module-level code to execute some code (via call and/or import) which in turn mutates the currently-executing module's globals.
 

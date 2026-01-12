@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-20T21:25:42Z
 updated_at: 2023-08-24T20:02:28Z
 url: https://github.com/astral-sh/ruff/issues/5931
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Format type parameters on functions and classes
 
 ---
 
-_Issue opened by @konstin on 2023-07-20 21:25_
+_@konstin_
 
 [PEP 695](https://peps.python.org/pep-0695/) introduces type parameters on function and classes in python 3.12, which are currently not considered when formatting, but should be added:
 

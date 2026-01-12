@@ -13,14 +13,14 @@ head: zb/lfs-true
 created_at: 2025-08-27T20:13:30Z
 updated_at: 2025-12-13T15:44:07Z
 url: https://github.com/astral-sh/uv/pull/15563
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Add `lfs = true` support in Git source declarations
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 20:13_
+_@zanieb_
 
 Incomplete draft for https://github.com/astral-sh/uv/issues/13485
 

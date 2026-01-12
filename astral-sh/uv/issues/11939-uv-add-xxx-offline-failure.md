@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T01:43:50Z
 updated_at: 2025-04-13T11:34:55Z
 url: https://github.com/astral-sh/uv/issues/11939
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # uv add xxx  --offline failure
 
 ---
 
-_Issue opened by @miaomiao1992 on 2025-03-04 01:43_
+_@miaomiao1992_
 
 ### Summary
 

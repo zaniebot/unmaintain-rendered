@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-05-07T09:24:09Z
 updated_at: 2024-05-07T10:40:04Z
 url: https://github.com/astral-sh/ruff/pull/11320
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # chore(comment): Define HIR
 
 ---
 
-_Pull request opened by @Abdur-rahmaanJ on 2024-05-07 09:24_
+_@Abdur-rahmaanJ_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

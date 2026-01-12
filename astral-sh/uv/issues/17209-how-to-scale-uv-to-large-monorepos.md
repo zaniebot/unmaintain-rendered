@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T21:09:49Z
 updated_at: 2025-12-28T22:09:02Z
 url: https://github.com/astral-sh/uv/issues/17209
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # How to scale uv to large monorepos?
 
 ---
 
-_Issue opened by @danijar on 2025-12-21 21:09_
+_@danijar_
 
 ## Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-24T05:14:25Z
 updated_at: 2025-05-14T14:31:44Z
 url: https://github.com/astral-sh/ruff/issues/17599
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PT019 should not recommend usefixtures for parametrize values
 
 ---
 
-_Issue opened by @Hawk777 on 2025-04-24 05:14_
+_@Hawk777_
 
 ### Summary
 

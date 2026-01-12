@@ -14,14 +14,14 @@ head: codex/fix-issue-14723-in-uv
 created_at: 2025-07-18T16:51:39Z
 updated_at: 2025-07-20T16:12:02Z
 url: https://github.com/astral-sh/uv/pull/14733
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Fix tests requiring patch-level Python
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-18 16:51_
+_@zanieb_
 
 Closes #14723
 

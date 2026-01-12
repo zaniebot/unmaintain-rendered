@@ -13,14 +13,14 @@ head: fix_b006_import
 created_at: 2023-09-24T11:53:16Z
 updated_at: 2023-09-27T08:27:28Z
 url: https://github.com/astral-sh/ruff/pull/7629
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ensure that B006 autofixes are inserted after imports
 
 ---
 
-_Pull request opened by @hoxbro on 2023-09-24 11:53_
+_@hoxbro_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

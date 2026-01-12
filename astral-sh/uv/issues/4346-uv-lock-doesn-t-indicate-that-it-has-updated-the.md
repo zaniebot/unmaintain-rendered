@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-16T23:35:27Z
 updated_at: 2024-07-17T01:14:21Z
 url: https://github.com/astral-sh/uv/issues/4346
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv lock` doesn't indicate that it has updated the lock file
 
 ---
 
-_Issue opened by @zanieb on 2024-06-16 23:35_
+_@zanieb_
 
 The output is just "Resolved ... packages in ...", maybe we should indicate that we've updated the file or locked dependencies?
 

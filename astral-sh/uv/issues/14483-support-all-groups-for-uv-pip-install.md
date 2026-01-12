@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T09:22:18Z
 updated_at: 2025-12-16T07:54:10Z
 url: https://github.com/astral-sh/uv/issues/14483
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Support `--all-groups` for `uv pip install`
 
 ---
 
-_Issue opened by @mikeweltevrede on 2025-07-07 09:22_
+_@mikeweltevrede_
 
 ### Summary
 

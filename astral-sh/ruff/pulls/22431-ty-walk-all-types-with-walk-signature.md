@@ -13,14 +13,14 @@ head: walk-signature
 created_at: 2026-01-07T05:19:20Z
 updated_at: 2026-01-09T06:19:37Z
 url: https://github.com/astral-sh/ruff/pull/22431
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] walk all types with `walk_signature`
 
 ---
 
-_Pull request opened by @mtshiba on 2026-01-07 05:19_
+_@mtshiba_
 
 ## Summary
 

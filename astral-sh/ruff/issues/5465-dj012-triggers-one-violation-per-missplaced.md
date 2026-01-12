@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-02T19:33:44Z
 updated_at: 2023-07-03T06:08:42Z
 url: https://github.com/astral-sh/ruff/issues/5465
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # DJ012 triggers one violation per missplaced database field. Could be grouped as one single one?
 
 ---
 
-_Issue opened by @EricDepagne on 2023-07-02 19:33_
+_@EricDepagne_
 
 Hi all.
 I' m using Ruff with a django project.

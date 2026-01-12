@@ -14,14 +14,14 @@ head: charlie/show-fix
 created_at: 2023-02-08T19:05:33Z
 updated_at: 2023-02-08T23:47:38Z
 url: https://github.com/astral-sh/ruff/pull/2668
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add `--exit-non-zero-on-fix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 19:05_
+_@charliermarsh_
 
 When enabled, we exit zero if any errors are fixed, even if the fixes result in there being no remaining lint violations.
 

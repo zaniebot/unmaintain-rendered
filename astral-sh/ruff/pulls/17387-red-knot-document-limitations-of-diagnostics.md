@@ -13,14 +13,14 @@ head: david/document-unreachable-code-limitations
 created_at: 2025-04-14T07:57:29Z
 updated_at: 2025-04-14T10:55:15Z
 url: https://github.com/astral-sh/ruff/pull/17387
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Document limitations of diagnostics-silencing in unreachable code
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-14 07:57_
+_@sharkdp_
 
 ## Summary
 

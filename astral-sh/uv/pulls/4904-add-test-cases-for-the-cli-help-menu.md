@@ -13,14 +13,14 @@ head: zb/cli-help-test
 created_at: 2024-07-08T18:43:22Z
 updated_at: 2024-07-09T14:07:45Z
 url: https://github.com/astral-sh/uv/pull/4904
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Add test cases for the CLI help menu
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-08 18:43_
+_@zanieb_
 
 No changes in behavior here, adding these test cases to demonstrate changes to come.
 

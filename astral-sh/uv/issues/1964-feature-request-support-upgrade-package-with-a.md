@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-25T12:25:38Z
 updated_at: 2024-07-10T03:09:14Z
 url: https://github.com/astral-sh/uv/issues/1964
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # [Feature Request] Support `--upgrade-package` with a specific version
 
 ---
 
-_Issue opened by @hongqn on 2024-02-25 12:25_
+_@hongqn_
 
 `pip-compile --upgrade-package` allows you to upgrade a specific package to a specific version instead of the latest version. For example, you can use the following command to update the `django` package to the latest version and `requests` to version `2.0.0`:
 

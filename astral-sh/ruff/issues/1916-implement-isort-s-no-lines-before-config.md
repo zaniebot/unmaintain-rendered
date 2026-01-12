@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-16T13:45:02Z
 updated_at: 2023-01-18T16:09:49Z
 url: https://github.com/astral-sh/ruff/issues/1916
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement isort's no_lines_before config
 
 ---
 
-_Issue opened by @harpener on 2023-01-16 13:45_
+_@harpener_
 
 Hi guys,
 

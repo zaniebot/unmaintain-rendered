@@ -13,14 +13,14 @@ head: zb/uv-toolchain
 created_at: 2024-04-05T22:08:45Z
 updated_at: 2024-04-10T16:22:42Z
 url: https://github.com/astral-sh/uv/pull/2842
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Replace Python bootstrapping script with Rust implementation
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-05 22:08_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/2617
 

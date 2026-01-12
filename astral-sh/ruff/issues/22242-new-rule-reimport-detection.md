@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-29T12:31:57Z
 updated_at: 2025-12-29T13:36:10Z
 url: https://github.com/astral-sh/ruff/issues/22242
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # New rule - Reimport detection
 
 ---
 
-_Issue opened by @spaceby on 2025-12-29 12:31_
+_@spaceby_
 
 ### Summary
 

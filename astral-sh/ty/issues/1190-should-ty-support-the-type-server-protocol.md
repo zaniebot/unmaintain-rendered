@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T06:27:44Z
 updated_at: 2025-10-06T23:20:40Z
 url: https://github.com/astral-sh/ty/issues/1190
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Should ty  support the Type Server Protocol?
 
 ---
 
-_Issue opened by @MichaReiser on 2025-09-16 06:27_
+_@MichaReiser_
 
 
 ### Discussed in https://github.com/astral-sh/ruff/discussions/20424

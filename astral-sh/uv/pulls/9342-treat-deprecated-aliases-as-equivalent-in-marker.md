@@ -13,14 +13,14 @@ head: charlie/lower-i
 created_at: 2024-11-22T00:32:05Z
 updated_at: 2024-11-26T14:27:25Z
 url: https://github.com/astral-sh/uv/pull/9342
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Treat deprecated aliases as equivalent in marker algebra
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-22 00:32_
+_@charliermarsh_
 
 ## Summary
 

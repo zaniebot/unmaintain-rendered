@@ -13,14 +13,14 @@ head: charlie/yield
 created_at: 2023-08-15T21:17:35Z
 updated_at: 2023-08-16T14:03:26Z
 url: https://github.com/astral-sh/ruff/pull/6603
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix comment formatting for yielded tuples
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-15 21:17_
+_@charliermarsh_
 
 ## Summary
 Closes https://github.com/astral-sh/ruff/issues/6384, although I think the issue was fixed already on main, for the most part.

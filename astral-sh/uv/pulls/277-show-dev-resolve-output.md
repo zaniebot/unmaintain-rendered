@@ -12,14 +12,14 @@ head: show-dev-resolve-output
 created_at: 2023-11-01T15:52:45Z
 updated_at: 2023-11-01T15:54:48Z
 url: https://github.com/astral-sh/uv/pull/277
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Show dev resolve output
 
 ---
 
-_Pull request opened by @konstin on 2023-11-01 15:52_
+_@konstin_
 
 Show the resolution in a concise format for puffin-dev. Note that this doesn't affect the main puffin output, it's just more convenient for me when developing.
 

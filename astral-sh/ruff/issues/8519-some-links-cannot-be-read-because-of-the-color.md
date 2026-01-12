@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-06T16:19:47Z
 updated_at: 2023-11-07T21:41:35Z
 url: https://github.com/astral-sh/ruff/issues/8519
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Some links cannot be read because of the color contrast in dark mode
 
 ---
 
-_Issue opened by @etiennebacher on 2023-11-06 16:19_
+_@etiennebacher_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

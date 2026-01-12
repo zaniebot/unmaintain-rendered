@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T16:17:23Z
 updated_at: 2024-05-01T16:24:23Z
 url: https://github.com/astral-sh/uv/issues/3327
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # no execution permission on activating files
 
 ---
 
-_Issue opened by @playgithub on 2024-05-01 16:17_
+_@playgithub_
 
 ## Env
 Linux 6.8.8

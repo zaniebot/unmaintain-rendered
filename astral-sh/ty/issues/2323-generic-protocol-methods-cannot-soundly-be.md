@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-04T21:36:58Z
 updated_at: 2026-01-04T22:11:54Z
 url: https://github.com/astral-sh/ty/issues/2323
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Generic protocol methods cannot soundly be implemented by a non-generic method
 
 ---
 
-_Issue opened by @carljm on 2026-01-04 21:36_
+_@carljm_
 
 > I've come across an interesting case: how is `Self` handled when used in a protocol? Based on the logic, the code below should trigger a type error, but surprisingly, neither `mypy` nor `pyright` or `ty` flag it. What’s the reasoning behind this?
 > 

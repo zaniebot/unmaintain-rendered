@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T07:22:13Z
 updated_at: 2025-10-19T12:21:17Z
 url: https://github.com/astral-sh/uv/issues/13914
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # `uv build` in a workspace: output directory is weird/inconsistent
 
 ---
 
-_Issue opened by @dimaqq on 2025-06-09 07:22_
+_@dimaqq_
 
 ### Summary
 

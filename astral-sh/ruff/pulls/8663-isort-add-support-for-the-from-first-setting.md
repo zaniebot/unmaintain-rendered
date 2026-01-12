@@ -13,14 +13,14 @@ head: isort-from-first
 created_at: 2023-11-13T19:41:40Z
 updated_at: 2025-03-27T15:34:53Z
 url: https://github.com/astral-sh/ruff/pull/8663
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # isort: Add support for the ``from-first`` setting
 
 ---
 
-_Pull request opened by @jelmer on 2023-11-13 19:41_
+_@jelmer_
 
 # Summary
 

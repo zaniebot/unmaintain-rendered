@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2024-08-29T02:01:28Z
 updated_at: 2024-08-29T02:08:32Z
 url: https://github.com/astral-sh/uv/pull/6787
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Support inline optional tables in `uv add` and `uv remove`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 02:01_
+_@charliermarsh_
 
 ## Summary
 

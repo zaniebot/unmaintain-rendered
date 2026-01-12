@@ -13,14 +13,14 @@ head: zb/fix-auth
 created_at: 2024-08-24T05:52:24Z
 updated_at: 2024-08-24T05:59:15Z
 url: https://github.com/astral-sh/uv/pull/6569
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Fix basic authentication tests to reflect proxy changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-24 05:52_
+_@zanieb_
 
 Updates the snapshot for the deployment from https://github.com/astral-sh/pypi-proxy/pull/9 — for a while now, we've only been failing on file requests not registry requests because the proxy auth was setup wrong.
 

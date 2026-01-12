@@ -13,14 +13,14 @@ head: remove-semicolon
 created_at: 2025-01-30T13:11:45Z
 updated_at: 2025-01-30T15:10:17Z
 url: https://github.com/astral-sh/ruff/pull/15827
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Remove semicolon after TypeScript interface definition
 
 ---
 
-_Pull request opened by @leotaku on 2025-01-30 13:11_
+_@leotaku_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

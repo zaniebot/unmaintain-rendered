@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T03:22:40Z
 updated_at: 2025-04-30T06:25:04Z
 url: https://github.com/astral-sh/ruff/issues/17726
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Warn for misplaced `# ruff: noqa: ` directives
 
 ---
 
-_Issue opened by @aaron-skydio on 2025-04-30 03:22_
+_@aaron-skydio_
 
 ### Summary
 

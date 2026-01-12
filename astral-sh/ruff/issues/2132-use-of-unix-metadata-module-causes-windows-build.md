@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-24T15:16:48Z
 updated_at: 2023-01-24T15:46:29Z
 url: https://github.com/astral-sh/ruff/issues/2132
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Use of Unix metadata module causes Windows build to fail
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-24 15:16_
+_@charliermarsh_
 
 This caused the latest release build to fail.
 

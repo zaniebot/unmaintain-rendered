@@ -13,14 +13,14 @@ head: charlie/pt-sys
 created_at: 2025-01-30T18:55:09Z
 updated_at: 2025-01-30T19:01:53Z
 url: https://github.com/astral-sh/uv/pull/11113
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Use `sys_platform` in lieu of `platform_system` in PyTorch docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 18:55_
+_@charliermarsh_
 
 ## Summary
 

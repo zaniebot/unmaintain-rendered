@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-04T06:33:12Z
 updated_at: 2024-07-17T06:52:08Z
 url: https://github.com/astral-sh/ruff/issues/12181
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot]: Handle cancellation in main loop
 
 ---
 
-_Issue opened by @MichaReiser on 2024-07-04 06:33_
+_@MichaReiser_
 
 The program currently panics when Salsa cancels a pending query. I [reached out in the Salsa zulip](https://salsa.zulipchat.com/#narrow/stream/145099-general/topic/How.20to.20use.20.60Cancelled.3A.3Acatch.60) to learn out how to use Cancelled::catch correctly.
 

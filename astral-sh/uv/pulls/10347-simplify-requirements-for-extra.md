@@ -13,14 +13,14 @@ head: konsti/simplify-requirements-for-extras
 created_at: 2025-01-07T09:34:22Z
 updated_at: 2025-01-07T13:50:24Z
 url: https://github.com/astral-sh/uv/pull/10347
-synced_at: 2026-01-10T11:44:44Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Simplify `requirements_for_extra`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-07 09:34_
+_@konstin_
 
 Ref https://github.com/astral-sh/uv/issues/10344
 

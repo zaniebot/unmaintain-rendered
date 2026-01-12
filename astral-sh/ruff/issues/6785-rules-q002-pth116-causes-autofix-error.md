@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-22T17:53:31Z
 updated_at: 2024-03-18T01:31:26Z
 url: https://github.com/astral-sh/ruff/issues/6785
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules Q002,PTH116 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-22 17:53_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T21:26:43Z
 updated_at: 2024-10-23T16:32:53Z
 url: https://github.com/astral-sh/uv/issues/7936
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Docker build with workspace package
 
 ---
 
-_Issue opened by @idinsmore1 on 2024-10-04 21:26_
+_@idinsmore1_
 
 Thanks for such an amazing tool in `uv`, it has been an awesome addition in my work as an analyst in academic research. I'm trying to build out a docker image of the workspace using the docker guide in the docs, but I'm running into the following error while trying to build the image. 
 

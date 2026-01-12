@@ -13,14 +13,14 @@ head: alex/enum-nmtpl-type-expr
 created_at: 2025-05-05T22:45:18Z
 updated_at: 2025-05-05T23:37:26Z
 url: https://github.com/astral-sh/ruff/pull/17873
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Do not emit errors if enums or NamedTuples constructed using functional syntax are used in type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-05 22:45_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: codspeed-2.6
 created_at: 2024-04-25T20:54:28Z
 updated_at: 2024-04-26T00:22:37Z
 url: https://github.com/astral-sh/ruff/pull/11153
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Upgrade codspeed-criterion-compat to 2.6.0
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-25 20:54_
+_@ibraheemdev_
 
 ## Summary
 

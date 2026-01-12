@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T15:35:31Z
 updated_at: 2024-08-20T20:09:58Z
 url: https://github.com/astral-sh/uv/issues/5338
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` should support creating a workspace
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 15:35_
+_@zanieb_
 
 I want to create a workspace layout quickly :)
 

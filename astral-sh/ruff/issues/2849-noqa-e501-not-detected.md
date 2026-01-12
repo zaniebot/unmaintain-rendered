@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-13T11:12:09Z
 updated_at: 2023-02-13T13:45:58Z
 url: https://github.com/astral-sh/ruff/issues/2849
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # noqa: E501 not detected
 
 ---
 
-_Issue opened by @spaceone on 2023-02-13 11:12_
+_@spaceone_
 
 ```python
     """

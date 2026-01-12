@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T07:48:59Z
 updated_at: 2024-08-17T14:37:11Z
 url: https://github.com/astral-sh/ruff/issues/10901
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Extra parentheses in a simple assignation
 
 ---
 
-_Issue opened by @enriquesanchezb on 2024-04-12 07:48_
+_@enriquesanchezb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

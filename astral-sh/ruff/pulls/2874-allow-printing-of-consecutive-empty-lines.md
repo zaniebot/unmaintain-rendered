@@ -13,14 +13,14 @@ head: charlie/formatter-iii
 created_at: 2023-02-13T23:34:49Z
 updated_at: 2023-02-15T03:35:03Z
 url: https://github.com/astral-sh/ruff/pull/2874
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Allow printing of consecutive empty lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 23:34_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T22:42:35Z
 updated_at: 2025-08-04T07:39:06Z
 url: https://github.com/astral-sh/uv/issues/14983
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Incorrect Package version being installed
 
 ---
 
-_Issue opened by @arun0908 on 2025-07-30 22:42_
+_@arun0908_
 
 ### Summary
 

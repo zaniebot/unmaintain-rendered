@@ -12,14 +12,14 @@ head: fopro
 created_at: 2024-10-12T21:24:06Z
 updated_at: 2024-12-04T01:39:01Z
 url: https://github.com/astral-sh/uv/pull/8153
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Try out fopro?
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-10-12 21:24_
+_@fasterthanlime_
 
 ## Summary
 

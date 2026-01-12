@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-15T06:32:36Z
 updated_at: 2023-12-15T14:15:48Z
 url: https://github.com/astral-sh/ruff/issues/9145
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Panic] byte index 2 is not a char boundary
 
 ---
 
-_Issue opened by @yuuuxt on 2023-12-15 06:32_
+_@yuuuxt_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

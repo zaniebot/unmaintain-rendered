@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-21T12:35:02Z
 updated_at: 2022-05-25T20:03:39Z
 url: https://github.com/clap-rs/clap/issues/3201
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Introduce possible_values_t
 
 ---
 
-_Issue opened by @Gordon01 on 2021-12-21 12:35_
+_@Gordon01_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T17:50:02Z
 updated_at: 2024-07-08T14:03:39Z
 url: https://github.com/astral-sh/uv/issues/4813
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv toolchain uninstall` repeats "No installations" message
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-04 17:50_
+_@charliermarsh_
 
 Can we omit this in most cases? All cases?
 

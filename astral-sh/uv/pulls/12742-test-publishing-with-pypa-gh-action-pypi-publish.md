@@ -13,14 +13,14 @@ head: konsti/publishing-with-the-official-gh-action
 created_at: 2025-04-08T12:27:54Z
 updated_at: 2025-04-25T16:27:42Z
 url: https://github.com/astral-sh/uv/pull/12742
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Test publishing with pypa/gh-action-pypi-publish
 
 ---
 
-_Pull request opened by @konstin on 2025-04-08 12:27_
+_@konstin_
 
 A publish testing for #11652
 

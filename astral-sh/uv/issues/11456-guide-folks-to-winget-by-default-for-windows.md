@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T18:02:03Z
 updated_at: 2025-11-14T09:41:17Z
 url: https://github.com/astral-sh/uv/issues/11456
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Guide folks to WinGet by default for Windows installations in README
 
 ---
 
-_Issue opened by @localden on 2025-02-12 18:02_
+_@localden_
 
 ### Summary
 

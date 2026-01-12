@@ -12,14 +12,14 @@ head: konsti/which-lock
 created_at: 2023-12-19T12:14:58Z
 updated_at: 2023-12-19T13:39:25Z
 url: https://github.com/astral-sh/uv/pull/700
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Name the directory whose lock we're waiting on
 
 ---
 
-_Pull request opened by @konstin on 2023-12-19 12:14_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: micha/parametes-return-ty
 created_at: 2024-11-07T07:42:37Z
 updated_at: 2024-11-18T06:53:41Z
 url: https://github.com/astral-sh/ruff/pull/14148
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Prefer breaking return-type over parameters
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-07 07:42_
+_@MichaReiser_
 
 ## Summary
 

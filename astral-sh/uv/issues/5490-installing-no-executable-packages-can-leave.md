@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-26T19:43:51Z
 updated_at: 2024-07-31T19:27:25Z
 url: https://github.com/astral-sh/uv/issues/5490
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Installing no-executable packages can leave lingering executables around
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-26 19:43_
+_@charliermarsh_
 
 On main, if you run:
 

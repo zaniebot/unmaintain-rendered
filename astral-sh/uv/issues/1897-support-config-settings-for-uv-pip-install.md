@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T03:46:41Z
 updated_at: 2024-02-23T04:21:05Z
 url: https://github.com/astral-sh/uv/issues/1897
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Support `--config-settings` for `uv pip install`
 
 ---
 
-_Issue opened by @gotmax23 on 2024-02-23 03:46_
+_@gotmax23_
 
 * A minimal code snippet that reproduces the bug.
 

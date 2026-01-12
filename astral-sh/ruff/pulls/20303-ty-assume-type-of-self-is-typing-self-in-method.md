@@ -14,14 +14,14 @@ head: david/signature-implicit-self
 created_at: 2025-09-08T11:04:11Z
 updated_at: 2025-09-22T18:08:33Z
 url: https://github.com/astral-sh/ruff/pull/20303
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Assume type of self is typing.Self in method calls (pt2)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-08 11:04_
+_@sharkdp_
 
 an extension of https://github.com/astral-sh/ruff/pull/18007:
 

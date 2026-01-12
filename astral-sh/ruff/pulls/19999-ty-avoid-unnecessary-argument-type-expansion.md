@@ -14,14 +14,14 @@ head: dhruv/avoid-argument-type-expansion
 created_at: 2025-08-20T06:29:08Z
 updated_at: 2025-08-21T06:13:12Z
 url: https://github.com/astral-sh/ruff/pull/19999
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Avoid unnecessary argument type expansion
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-20 06:29_
+_@dhruvmanila_
 
 ## Summary
 

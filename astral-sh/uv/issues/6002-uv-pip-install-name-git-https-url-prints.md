@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T05:47:29Z
 updated_at: 2024-08-11T20:16:11Z
 url: https://github.com/astral-sh/uv/issues/6002
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv pip install "NAME @ git+https://URL"` prints extraneous warning
 
 ---
 
-_Issue opened by @gotmax23 on 2024-08-11 05:47_
+_@gotmax23_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

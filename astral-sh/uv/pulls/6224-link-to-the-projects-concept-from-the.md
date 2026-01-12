@@ -14,14 +14,14 @@ head: zb/link-deps
 created_at: 2024-08-19T19:07:11Z
 updated_at: 2024-08-19T19:22:29Z
 url: https://github.com/astral-sh/uv/pull/6224
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Link to the projects concept from the dependencies concept
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 19:07_
+_@zanieb_
 
 _No description provided._
 

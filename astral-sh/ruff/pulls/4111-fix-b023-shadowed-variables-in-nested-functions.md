@@ -12,14 +12,14 @@ head: fix-b023-shadow
 created_at: 2023-04-26T04:43:50Z
 updated_at: 2023-04-26T21:01:32Z
 url: https://github.com/astral-sh/ruff/pull/4111
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix B023 shadowed variables in nested functions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-26 04:43_
+_@MichaReiser_
 
 Fixes #4090
 

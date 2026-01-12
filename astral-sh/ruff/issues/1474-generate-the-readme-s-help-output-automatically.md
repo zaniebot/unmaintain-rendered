@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T12:33:11Z
 updated_at: 2022-12-30T20:06:33Z
 url: https://github.com/astral-sh/ruff/issues/1474
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Generate the README's `--help` output automatically via `cargo +nightly dev generate-all`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-30 12:33_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-16T14:38:46Z
 updated_at: 2024-01-09T20:30:32Z
 url: https://github.com/astral-sh/ruff/issues/8721
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # New rule suggestion: Force parentheses in `A or B and C`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-11-16 14:38_
+_@JelleZijlstra_
 
 When I see code like `A or B and C`, I never know immediately whether it means `(A or B) and C` or `A or (B and C)`. (The answer is the latter; `and` has higher precedence than `or`.) I would suggest adding a lint rule that triggers if an `and` operation contains an unparenthesized `or`, or if an `or` contains an unparenthesized `and`.
 

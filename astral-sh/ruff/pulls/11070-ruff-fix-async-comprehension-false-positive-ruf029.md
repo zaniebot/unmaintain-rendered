@@ -13,14 +13,14 @@ head: fix-ruf029-async-comprehension
 created_at: 2024-04-21T12:04:56Z
 updated_at: 2024-04-21T12:30:52Z
 url: https://github.com/astral-sh/ruff/pull/11070
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [ruff] fix async comprehension false positive (RUF029)
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2024-04-21 12:04_
+_@JonathanPlasse_
 
 ## Summary
 

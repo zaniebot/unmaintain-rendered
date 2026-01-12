@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-29T08:03:48Z
 updated_at: 2026-01-04T21:39:20Z
 url: https://github.com/astral-sh/ty/issues/2255
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Self should be equivalent to bound typevar, but only Self causes Liskov violation
 
 ---
 
-_Issue opened by @kamalfarahani on 2025-12-29 08:03_
+_@kamalfarahani_
 
 ### Question
 

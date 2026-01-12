@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T13:58:07Z
 updated_at: 2025-07-08T13:01:28Z
 url: https://github.com/astral-sh/uv/issues/12545
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Pycharm does not recognize python from .venv
 
 ---
 
-_Issue opened by @soldatov-ss on 2025-03-29 13:58_
+_@soldatov-ss_
 
 ### Question
 

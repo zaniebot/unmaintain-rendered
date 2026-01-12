@@ -12,14 +12,14 @@ head: mangen-respect-display-order
 created_at: 2025-09-26T14:05:36Z
 updated_at: 2025-09-26T14:29:40Z
 url: https://github.com/clap-rs/clap/pull/6141
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Respect the configured display order
 
 ---
 
-_Pull request opened by @thomas-zahner on 2025-09-26 14:05_
+_@thomas-zahner_
 
 This is an attempt to make mangen respect the display order for args. (not yet for subcommands) The implementation is minimalistic with as few changes as possible. It's probably not be quite what we want to merge, which is why I've marked it as draft.
 

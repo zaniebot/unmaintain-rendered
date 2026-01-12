@@ -14,14 +14,14 @@ head: charlie/p
 created_at: 2024-08-08T02:49:37Z
 updated_at: 2024-08-08T03:03:26Z
 url: https://github.com/astral-sh/ruff/pull/12737
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Parenthesize conditions based on precedence when merging if arms
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 02:49_
+_@charliermarsh_
 
 ## Summary
 

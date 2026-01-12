@@ -13,14 +13,14 @@ head: david/dataclasses-pt2
 created_at: 2025-04-15T09:50:59Z
 updated_at: 2025-05-02T08:23:01Z
 url: https://github.com/astral-sh/ruff/pull/17406
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Dataclasses: support `order=True`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-15 09:50_
+_@sharkdp_
 
 ## Summary
 

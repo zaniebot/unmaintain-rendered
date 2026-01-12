@@ -11,14 +11,14 @@ head: zb/offlinepi
 created_at: 2023-12-11T21:17:45Z
 updated_at: 2024-01-18T17:51:12Z
 url: https://github.com/astral-sh/uv/pull/609
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Add tooling for recording and replaying PyPI interactions
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-11 21:17_
+_@zanieb_
 
 Uses mitmproxy to record and replay interactions with a PyPI server. For example:
 

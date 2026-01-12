@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T03:47:45Z
 updated_at: 2025-10-21T17:51:02Z
 url: https://github.com/astral-sh/uv/issues/16326
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # How to make uvx prioritize local wheels from --find-links instead of PyPI?
 
 ---
 
-_Issue opened by @pratica0044 on 2025-10-16 03:47_
+_@pratica0044_
 
 ### Question
 

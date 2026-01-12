@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T16:34:55Z
 updated_at: 2024-03-27T14:37:47Z
 url: https://github.com/astral-sh/ruff/issues/3831
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive: B018
 
 ---
 
-_Issue opened by @AA-Turner on 2023-03-31 16:34_
+_@AA-Turner_
 
 Ruff 0.0.260
 

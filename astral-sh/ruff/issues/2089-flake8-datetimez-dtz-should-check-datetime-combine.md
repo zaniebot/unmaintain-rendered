@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T17:26:55Z
 updated_at: 2023-01-24T00:12:29Z
 url: https://github.com/astral-sh/ruff/issues/2089
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # flake8-datetimez (DTZ) should check datetime.combine
 
 ---
 
-_Issue opened by @hofrob on 2023-01-22 17:26_
+_@hofrob_
 
 One thing upfront, this is already missing in the `flake8` plugin. The [`datetime.combine`](https://docs.python.org/3.11/library/datetime.html?highlight=combine#datetime.datetime.combine) method accepts a timezone as an optional third parameter. It would make sense to create a rule that checks if that parameter is used, just like the other `flake8-datetimez` rules.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-11T00:53:50Z
 updated_at: 2025-05-12T22:06:52Z
 url: https://github.com/astral-sh/ruff/issues/18011
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ignore `no-explicit-stacklevel`/B028 if `skip_file_prefixes` is used
 
 ---
 
-_Issue opened by @apple1417 on 2025-05-11 00:53_
+_@apple1417_
 
 ### Summary
 

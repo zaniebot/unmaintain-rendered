@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T22:13:49Z
 updated_at: 2024-05-08T14:54:10Z
 url: https://github.com/astral-sh/uv/issues/2025
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `uv pip install` returning 403 from private pypi cloud instance backed by s3
 
 ---
 
-_Issue opened by @philiplinden on 2024-02-27 22:13_
+_@philiplinden_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

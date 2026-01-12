@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T16:30:10Z
 updated_at: 2025-05-09T19:22:51Z
 url: https://github.com/astral-sh/ruff/issues/16418
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Default Python version and version detection
 
 ---
 
-_Issue opened by @ntBre on 2025-02-27 16:30_
+_@ntBre_
 
 As brought up in https://github.com/astral-sh/ruff/issues/16417, the default Python version of 3.9 in ruff can be quite confusing, especially with the new version-related syntax errors. It would be nice if we could improve the no-config experience here. 
 

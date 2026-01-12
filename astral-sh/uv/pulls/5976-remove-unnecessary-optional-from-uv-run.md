@@ -13,14 +13,14 @@ head: charlie/opt
 created_at: 2024-08-09T20:08:16Z
 updated_at: 2024-08-09T20:13:49Z
 url: https://github.com/astral-sh/uv/pull/5976
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Remove unnecessary optional from `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 20:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T10:36:34Z
 updated_at: 2025-08-14T10:47:30Z
 url: https://github.com/astral-sh/uv/issues/15273
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # uv fails to install packages on non-Windows when win32-specific dependencies are missing from private index
 
 ---
 
-_Issue opened by @bombedhair on 2025-08-14 10:36_
+_@bombedhair_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/runtime-checkable
 created_at: 2026-01-12T13:54:20Z
 updated_at: 2026-01-12T14:51:40Z
 url: https://github.com/astral-sh/ruff/pull/22532
-synced_at: 2026-01-12T15:03:37Z
+synced_at: 2026-01-12T15:57:52Z
 ```
 
 # [ty] Apply `@runtime_checkable` across ancestors
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-12 13:54_
+_@charliermarsh_
 
 ## Summary
 

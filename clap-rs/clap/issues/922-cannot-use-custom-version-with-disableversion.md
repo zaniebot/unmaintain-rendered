@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-04-04T08:06:23Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/922
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cannot use custom --version with DisableVersion
 
 ---
 
-_Issue opened by @anna-is-cute on 2017-04-04 08:06_
+_@anna-is-cute_
 
 ### Rust Version
 

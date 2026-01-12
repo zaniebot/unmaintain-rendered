@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T12:39:18Z
 updated_at: 2025-10-14T10:31:44Z
 url: https://github.com/astral-sh/uv/issues/12713
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # uvx git+.. failing when trying to run a package from a subfolder.
 
 ---
 
-_Issue opened by @RonanKMcGovern on 2025-04-07 12:39_
+_@RonanKMcGovern_
 
 ### Summary
 

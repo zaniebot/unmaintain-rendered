@@ -13,14 +13,14 @@ head: jtfm/update-upgrade-tests
 created_at: 2025-06-23T16:00:22Z
 updated_at: 2025-06-23T16:19:38Z
 url: https://github.com/astral-sh/uv/pull/14219
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Update upgrade tests to use 3.10.17 instead of 3.10.8
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-23 16:00_
+_@jtfmumm_
 
 @oconnor663 discovered that executing `3.10.8` on Arch Linux ran into an error loading `libcrypt.so.1`. This caused uv to install the latest patch version on `uv venv` operations during upgrade tests, which undermined their purpose (since they are checking that if you first install `3.10.8` and then upgrade, virtual environments are transparently upgraded). This PR updates the test to use `3.10.17` instead to avoid this issue.
 

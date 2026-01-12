@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-18T23:40:37Z
 updated_at: 2023-11-20T21:18:23Z
 url: https://github.com/astral-sh/ruff/issues/8761
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule SIM401 should only trigger for immutable literals and variables
 
 ---
 
-_Issue opened by @ofek on 2023-11-18 23:40_
+_@ofek_
 
 If I were to make this change then the dictionary would be created regardless of key membership. This would be particularly costly if the default was the result of a function call.
 

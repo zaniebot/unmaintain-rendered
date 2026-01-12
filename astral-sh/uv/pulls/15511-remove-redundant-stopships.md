@@ -15,14 +15,14 @@ head: charlie/stop
 created_at: 2025-08-25T12:30:14Z
 updated_at: 2025-08-25T12:34:49Z
 url: https://github.com/astral-sh/uv/pull/15511
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Remove redundant STOPSHIPs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-25 12:30_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: command-groups
 created_at: 2024-11-14T23:22:11Z
 updated_at: 2025-10-31T17:57:20Z
 url: https://github.com/clap-rs/clap/pull/5819
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add Subcommand help headings
 
 ---
 
-_Pull request opened by @Fiedzia on 2024-11-14 23:22_
+_@Fiedzia_
 
 Group subcommands displayed in help (https://github.com/clap-rs/clap/issues/1553)
 This is for help only, does not affect matching.

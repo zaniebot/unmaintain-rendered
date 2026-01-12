@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-19T09:57:44Z
 updated_at: 2023-12-20T16:03:04Z
 url: https://github.com/astral-sh/ruff/issues/9196
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty
 
 ---
 
-_Issue opened by @picnixz on 2023-12-19 09:57_
+_@picnixz_
 
 I'm not sure that it's the place to ask since this bug appears to be caused by `[tool.ruff.lint.flake8-type-checking]`. Anyway, with the configuration
 

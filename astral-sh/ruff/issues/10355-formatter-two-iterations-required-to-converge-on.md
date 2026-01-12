@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T06:56:01Z
 updated_at: 2024-03-20T17:12:11Z
 url: https://github.com/astral-sh/ruff/issues/10355
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # formatter: Two iterations required to converge on specific comment + slice case
 
 ---
 
-_Issue opened by @aneeshusa on 2024-03-12 06:56_
+_@aneeshusa_
 
 Tested on ruff v0.3.2 and `main` (dacec7377c436fc85e380f7cc69a007824fa08bc). No ruff config.
 Minimized from a file at $WORK; this cropped up during one of my final rebases to switch to ruff.

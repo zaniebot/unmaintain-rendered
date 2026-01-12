@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-13T23:26:10Z
 updated_at: 2025-08-14T14:15:51Z
 url: https://github.com/astral-sh/ruff/issues/19907
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter makes code less readable with dict get and function call in conditional
 
 ---
 
-_Issue opened by @pythonweb2 on 2025-08-13 23:26_
+_@pythonweb2_
 
 ### Summary
 

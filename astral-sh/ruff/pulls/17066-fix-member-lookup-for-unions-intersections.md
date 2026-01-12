@@ -13,14 +13,14 @@ head: fix-member-lookup-with-policy-for-unions-intersections
 created_at: 2025-03-31T00:39:54Z
 updated_at: 2025-03-31T16:42:59Z
 url: https://github.com/astral-sh/ruff/pull/17066
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Fix member lookup for unions & intersections ignoring policy
 
 ---
 
-_Pull request opened by @mishamsk on 2025-03-31 00:39_
+_@mishamsk_
 
 ## Summary
 

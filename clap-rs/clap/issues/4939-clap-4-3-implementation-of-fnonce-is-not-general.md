@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-24T19:46:05Z
 updated_at: 2024-08-19T14:12:16Z
 url: https://github.com/clap-rs/clap/issues/4939
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap 4.3: Implementation of `FnOnce` is not general enough
 
 ---
 
-_Issue opened by @lukesneeringer on 2023-05-24 19:46_
+_@lukesneeringer_
 
 ### Please complete the following tasks
 

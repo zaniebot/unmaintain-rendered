@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T14:15:00Z
 updated_at: 2024-05-07T17:30:03Z
 url: https://github.com/astral-sh/uv/issues/3421
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Reconcile `uv run --isolated` with `uv pip install --isolated`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-07 14:15_
+_@charliermarsh_
 
 The flags have different meanings, let's make the interface a little more consistent.
 

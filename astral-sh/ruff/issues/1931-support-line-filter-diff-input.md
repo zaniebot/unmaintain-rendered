@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-17T10:29:01Z
 updated_at: 2023-01-17T15:40:04Z
 url: https://github.com/astral-sh/ruff/issues/1931
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support line filter / diff input
 
 ---
 
-_Issue opened by @xmo-odoo on 2023-01-17 10:29_
+_@xmo-odoo_
 
 This is probably a use case which is more relevant for large (and old) codebases, when trying to "ratchet" rules progressively: in CI, it's useful to only check / fail on failures of the code which has been modified, as it allows progressively improving code-state without needing massive one-shot rewrites which can make history traversal and blames a lot more complicated.
 

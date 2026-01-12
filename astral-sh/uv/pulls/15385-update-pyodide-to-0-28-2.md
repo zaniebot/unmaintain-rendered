@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-08-20T00:26:48Z
 updated_at: 2025-08-21T01:04:16Z
 url: https://github.com/astral-sh/uv/pull/15385
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 #  Update Pyodide to 0.28.2
 
 ---
 
-_Pull request opened by @github-actions on 2025-08-20 00:26_
+_@github-actions_
 
 Automated update for Python releases.
 

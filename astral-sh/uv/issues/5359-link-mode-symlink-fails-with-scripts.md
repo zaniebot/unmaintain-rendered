@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T18:07:37Z
 updated_at: 2024-07-24T14:21:42Z
 url: https://github.com/astral-sh/uv/issues/5359
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `--link-mode=symlink` fails with scripts
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-23 18:07_
+_@charliermarsh_
 
 For example:
 

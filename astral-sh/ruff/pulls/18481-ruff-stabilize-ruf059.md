@@ -14,14 +14,14 @@ head: codex/stabilize-ruf059-rule-for-python-linter
 created_at: 2025-06-05T16:33:29Z
 updated_at: 2025-09-03T12:59:21Z
 url: https://github.com/astral-sh/ruff/pull/18481
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [`ruff`] Stabilize `RUF059`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-05 16:33_
+_@ntBre_
 
 ## Summary
 - mark `unused-unpacked-variable` (RUF059) as stable in the rule registry

@@ -14,14 +14,14 @@ head: fix-7603
 created_at: 2023-10-09T13:41:28Z
 updated_at: 2023-10-12T15:50:14Z
 url: https://github.com/astral-sh/ruff/pull/7870
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Format comment before parameter default correctly
 
 ---
 
-_Pull request opened by @konstin on 2023-10-09 13:41_
+_@konstin_
 
 **Summary** Handle comment before the default values of function parameters correctly by inserting a line break instead of space after the equals sign where required.
 

@@ -14,14 +14,14 @@ head: fix-pytest-parametrize
 created_at: 2024-11-21T12:57:13Z
 updated_at: 2024-11-25T12:58:29Z
 url: https://github.com/astral-sh/ruff/pull/14515
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix `pytest.mark.parametrize` rules to check calls instead of decorators
 
 ---
 
-_Pull request opened by @harupy on 2024-11-21 12:57_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T10:01:35Z
 updated_at: 2025-01-07T05:17:22Z
 url: https://github.com/astral-sh/ruff/issues/12778
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Unable to set lineLength from nvim lua config
 
 ---
 
-_Issue opened by @SafetyMary on 2024-08-09 10:01_
+_@SafetyMary_
 
 Not sure if I did this correctly but i couldnt set --line-length arg in my neovim config (setting it to 1 just for testing). I am using kickstart vim.
 

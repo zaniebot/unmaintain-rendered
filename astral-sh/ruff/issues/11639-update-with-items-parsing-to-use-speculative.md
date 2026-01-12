@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T14:23:31Z
 updated_at: 2024-06-06T08:59:57Z
 url: https://github.com/astral-sh/ruff/issues/11639
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Update with-items parsing to use speculative parsing
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-31 14:23_
+_@dhruvmanila_
 
 https://github.com/astral-sh/ruff/pull/11457 added the ability to do speculative parsing via checkpoint - rewind infrastructure and is currently being used for `match` statement via https://github.com/astral-sh/ruff/pull/11443.
 

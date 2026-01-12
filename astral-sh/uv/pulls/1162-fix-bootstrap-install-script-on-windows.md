@@ -12,14 +12,14 @@ head: konsti/fix-bootstrap-install-script-windows
 created_at: 2024-01-29T08:59:11Z
 updated_at: 2024-02-20T06:18:57Z
 url: https://github.com/astral-sh/uv/pull/1162
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Fix bootstrap install script on windows
 
 ---
 
-_Pull request opened by @konstin on 2024-01-29 08:59_
+_@konstin_
 
 Windows doesn't support symlinks, doesn't use a `bin` directory and all pythons are called `python.exe`.
 

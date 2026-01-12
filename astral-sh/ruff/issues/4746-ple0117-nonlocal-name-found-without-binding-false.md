@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T08:04:51Z
 updated_at: 2023-06-06T18:49:38Z
 url: https://github.com/astral-sh/ruff/issues/4746
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLE0117 - nonlocal name found without binding - false possitive
 
 ---
 
-_Issue opened by @rmorshea on 2023-05-31 08:04_
+_@rmorshea_
 
 - version - 0.0.270
 - command `ruff .`

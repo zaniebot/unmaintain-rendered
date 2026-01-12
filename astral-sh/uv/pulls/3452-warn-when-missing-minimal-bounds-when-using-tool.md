@@ -13,14 +13,14 @@ head: konsti/ensure-bound
 created_at: 2024-05-08T07:41:18Z
 updated_at: 2024-08-23T11:05:43Z
 url: https://github.com/astral-sh/uv/pull/3452
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Warn when missing minimal bounds when using `tool.uv.sources`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-08 07:41_
+_@konstin_
 
 When using `tool.uv.sources`, we warn that requirements have a bound, i.e. at least a lower version constraint.
 

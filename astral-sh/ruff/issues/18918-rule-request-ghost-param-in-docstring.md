@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-24T15:09:09Z
 updated_at: 2025-06-25T08:07:59Z
 url: https://github.com/astral-sh/ruff/issues/18918
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # rule request: ghost param in docstring
 
 ---
 
-_Issue opened by @DaniBodor on 2025-06-24 15:09_
+_@DaniBodor_
 
 ### Summary
 

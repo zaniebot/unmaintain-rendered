@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T12:19:08Z
 updated_at: 2024-08-22T13:22:04Z
 url: https://github.com/astral-sh/ruff/issues/13054
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F841: Unused variable with boolean expression not entirely deleted by --fix --unsafe-fixes
 
 ---
 
-_Issue opened by @Liritt on 2024-08-22 12:19_
+_@Liritt_
 
 Hello,
 

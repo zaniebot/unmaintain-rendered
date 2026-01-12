@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-20T07:26:42Z
 updated_at: 2025-10-20T13:54:22Z
 url: https://github.com/astral-sh/ruff/issues/20984
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DOC102: false positive
 
 ---
 
-_Issue opened by @mhindery on 2025-10-20 07:26_
+_@mhindery_
 
 ### Summary
 

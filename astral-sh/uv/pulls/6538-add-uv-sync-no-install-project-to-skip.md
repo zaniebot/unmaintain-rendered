@@ -13,14 +13,14 @@ head: zb/no-install-root
 created_at: 2024-08-23T18:46:49Z
 updated_at: 2024-08-24T15:44:49Z
 url: https://github.com/astral-sh/uv/pull/6538
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Add `uv sync --no-install-project` to skip installation of the project
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 18:46_
+_@zanieb_
 
 See #4028
 

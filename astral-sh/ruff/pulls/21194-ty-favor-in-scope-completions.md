@@ -14,14 +14,14 @@ head: scope-ordering-completions
 created_at: 2025-11-01T23:19:04Z
 updated_at: 2025-11-06T11:48:50Z
 url: https://github.com/astral-sh/ruff/pull/21194
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Favor in scope completions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-01 23:19_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

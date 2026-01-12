@@ -13,14 +13,14 @@ head: alex/more-hydra-deps
 created_at: 2025-06-18T14:54:39Z
 updated_at: 2025-06-18T15:14:02Z
 url: https://github.com/astral-sh/ruff/pull/18757
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [ty] Install more dependencies before benchmarking hydra-zen
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-18 14:54_
+_@AlexWaygood_
 
 ## Summary
 

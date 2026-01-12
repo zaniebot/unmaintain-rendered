@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T18:17:46Z
 updated_at: 2024-08-09T18:17:51Z
 url: https://github.com/astral-sh/uv/issues/5972
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # DRY up tool installation tests
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-09 18:17_
+_@charliermarsh_
 
 _No description provided._
 

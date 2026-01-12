@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-25T17:10:31Z
 updated_at: 2024-06-25T22:59:15Z
 url: https://github.com/astral-sh/ruff/issues/12031
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Request: allowlist setting for `N812`/`N817`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-06-25 17:10_
+_@jamesbraza_
 
 There are certain libraries like [PyTorch's FSDP](https://pytorch.org/docs/stable/fsdp.html) that standardized on being imported with all caps:
 

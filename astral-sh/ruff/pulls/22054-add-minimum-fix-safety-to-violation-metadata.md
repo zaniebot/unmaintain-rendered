@@ -12,14 +12,14 @@ head: brent/document-safety
 created_at: 2025-12-18T17:47:22Z
 updated_at: 2025-12-19T15:45:28Z
 url: https://github.com/astral-sh/ruff/pull/22054
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # Add minimum fix safety to violation metadata
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-18 17:47_
+_@ntBre_
 
 Summary
 --

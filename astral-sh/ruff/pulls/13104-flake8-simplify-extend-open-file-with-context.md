@@ -14,14 +14,14 @@ head: extend-sim115-for-py3.13
 created_at: 2024-08-26T04:57:16Z
 updated_at: 2024-08-26T07:11:03Z
 url: https://github.com/astral-sh/ruff/pull/13104
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`flake8-simplify`] - extend open-file-with-context-handler to work with dbm.sqlite3 (`SIM115`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-26 04:57_
+_@diceroll123_
 
 ## Summary
 

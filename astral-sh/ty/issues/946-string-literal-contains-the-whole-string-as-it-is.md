@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-06T13:47:41Z
 updated_at: 2025-08-06T13:49:46Z
 url: https://github.com/astral-sh/ty/issues/946
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # String Literal Contains the whole string as it is
 
 ---
 
-_Issue opened by @AnirudhG07 on 2025-08-06 13:47_
+_@AnirudhG07_
 
 Hi, I am using `ty` in neovim. Thanks for `ty`, as a rust user, I liked this idea so much(as a fellow rust user)!
 

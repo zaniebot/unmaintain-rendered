@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-01T11:33:19Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/555
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Auto-generate manpages
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-07-01 11:33_
+_@matthiasbeyer_
 
 Related to #376 in some way. Maybe it would also be a cool achivement to auto-generate manpages from clap input, wouldn't it?
 

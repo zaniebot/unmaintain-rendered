@@ -13,14 +13,14 @@ head: charlie/sync
 created_at: 2024-01-30T05:19:29Z
 updated_at: 2024-01-30T13:48:56Z
 url: https://github.com/astral-sh/uv/pull/1185
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Add compatibility arguments for `pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 05:19_
+_@charliermarsh_
 
 ## Summary
 

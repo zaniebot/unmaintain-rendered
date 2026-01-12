@@ -14,14 +14,14 @@ head: body-comment-placement
 created_at: 2023-05-26T18:16:30Z
 updated_at: 2023-06-01T06:12:55Z
 url: https://github.com/astral-sh/ruff/pull/4671
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Correctly associate own-line comments in bodies
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-26 18:16_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T03:55:05Z
 updated_at: 2025-10-23T10:59:16Z
 url: https://github.com/astral-sh/uv/issues/16415
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Add support for managing embedded Python (from https://www.python.org/ftp/python)
 
 ---
 
-_Issue opened by @CoderTCY on 2025-10-23 03:55_
+_@CoderTCY_
 
 ### Summary
 

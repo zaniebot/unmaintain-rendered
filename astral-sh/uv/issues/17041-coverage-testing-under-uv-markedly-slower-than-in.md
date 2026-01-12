@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T02:02:40Z
 updated_at: 2026-01-09T12:53:23Z
 url: https://github.com/astral-sh/uv/issues/17041
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # coverage testing under uv markedly slower than in traditional venv
 
 ---
 
-_Issue opened by @jepler on 2025-12-09 02:02_
+_@jepler_
 
 ### Summary
 

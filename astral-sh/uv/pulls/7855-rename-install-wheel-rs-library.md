@@ -13,14 +13,14 @@ head: charlie/i
 created_at: 2024-10-02T00:38:04Z
 updated_at: 2024-10-02T00:45:41Z
 url: https://github.com/astral-sh/uv/pull/7855
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Rename `install-wheel-rs` library
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-02 00:38_
+_@charliermarsh_
 
 ## Summary
 

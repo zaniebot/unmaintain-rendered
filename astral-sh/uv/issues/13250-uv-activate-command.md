@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T09:29:46Z
 updated_at: 2025-05-01T18:16:37Z
 url: https://github.com/astral-sh/uv/issues/13250
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # uv activate command
 
 ---
 
-_Issue opened by @benedikt-schesch on 2025-05-01 09:29_
+_@benedikt-schesch_
 
 ### Summary
 

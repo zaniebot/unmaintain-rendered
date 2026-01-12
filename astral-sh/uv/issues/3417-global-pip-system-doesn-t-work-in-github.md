@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T13:10:01Z
 updated_at: 2024-06-05T12:16:25Z
 url: https://github.com/astral-sh/uv/issues/3417
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # global pip (`--system` ...) doesn't work in GitHub Codespaces
 
 ---
 
-_Issue opened by @Malix-Labs on 2024-05-07 13:10_
+_@Malix-Labs_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

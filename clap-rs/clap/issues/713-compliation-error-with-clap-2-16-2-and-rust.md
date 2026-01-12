@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-28T03:05:17Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/713
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Compliation error with Clap 2.16.2 and Rust 
 
 ---
 
-_Issue opened by @disconsented on 2016-10-28 03:05_
+_@disconsented_
 
 Similar to #663 however this is running with latest stable (1.12.1) on Windows
 

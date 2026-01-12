@@ -13,14 +13,14 @@ head: brent/default-python-version
 created_at: 2025-04-21T21:05:08Z
 updated_at: 2025-05-06T14:19:15Z
 url: https://github.com/astral-sh/ruff/pull/17529
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Default to latest supported Python version for version-related syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-21 21:05_
+_@ntBre_
 
 ## Summary
 

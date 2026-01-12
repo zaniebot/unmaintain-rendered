@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-18T19:02:31Z
 updated_at: 2023-10-19T00:14:21Z
 url: https://github.com/astral-sh/ruff/issues/8051
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [formatter] target-python option
 
 ---
 
-_Issue opened by @smackesey on 2023-10-18 19:02_
+_@smackesey_
 
 Working on migrating our formatter setup to `ruff`. I noticed this does not work:
 

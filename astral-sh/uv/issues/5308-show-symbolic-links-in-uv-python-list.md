@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T20:26:03Z
 updated_at: 2024-10-24T09:56:31Z
 url: https://github.com/astral-sh/uv/issues/5308
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Show symbolic links in `uv python list`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-22 20:26_
+_@zanieb_
 
 Per comment at https://github.com/astral-sh/uv/issues/5210#issuecomment-2243750947 we should show if a path links to another to help identify duplicates that are the same interpreter.
 

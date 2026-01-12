@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T14:41:02Z
 updated_at: 2023-07-10T12:32:17Z
 url: https://github.com/astral-sh/ruff/issues/5613
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Format assignment expressions (`FormatExprNamedExpr`)
 
 ---
 
-_Issue opened by @konstin on 2023-07-08 14:41_
+_@konstin_
 
 Assignment expressions are those using the "walrus operator" `:=`:
 ```python

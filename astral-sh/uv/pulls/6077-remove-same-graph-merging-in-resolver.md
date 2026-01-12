@@ -15,14 +15,14 @@ head: charlie/same-graph
 created_at: 2024-08-14T01:55:37Z
 updated_at: 2024-08-14T14:06:19Z
 url: https://github.com/astral-sh/uv/pull/6077
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Remove `same-graph` merging in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-14 01:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T13:32:26Z
 updated_at: 2023-06-09T15:21:20Z
 url: https://github.com/astral-sh/ruff/issues/4983
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Bug in number line with --show-source
 
 ---
 
-_Issue opened by @victorcrrd on 2023-06-09 13:32_
+_@victorcrrd_
 
 When printing the code fragment with a violation with the `--show-source` option, it always happens (unless it's on the first line as I can see) that the number at the beginning of each source line doesn't match the actual line number. For example, here
 ```

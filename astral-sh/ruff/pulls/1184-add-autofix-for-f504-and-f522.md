@@ -12,14 +12,14 @@ head: 1144-autofix-f504-f522
 created_at: 2022-12-10T19:02:14Z
 updated_at: 2022-12-27T05:42:56Z
 url: https://github.com/astral-sh/ruff/pull/1184
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add autofix for F504 and F522
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-10 19:02_
+_@squiddy_
 
 Refs: #1144
 

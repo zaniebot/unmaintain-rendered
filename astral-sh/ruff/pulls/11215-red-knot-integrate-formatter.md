@@ -12,14 +12,14 @@ head: red-knot-format
 created_at: 2024-04-30T14:58:46Z
 updated_at: 2024-07-22T07:44:55Z
 url: https://github.com/astral-sh/ruff/pull/11215
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Integrate formatter
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-30 14:58_
+_@MichaReiser_
 
 ## Summary
 

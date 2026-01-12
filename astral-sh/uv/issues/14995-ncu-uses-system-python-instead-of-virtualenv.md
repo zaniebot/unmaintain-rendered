@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T14:07:32Z
 updated_at: 2025-07-31T14:38:18Z
 url: https://github.com/astral-sh/uv/issues/14995
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # `ncu` uses system Python instead of virtualenv Python created by `uv`
 
 ---
 
-_Issue opened by @yuxuan-z19 on 2025-07-31 14:07_
+_@yuxuan-z19_
 
 ### Question
 

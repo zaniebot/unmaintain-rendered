@@ -13,14 +13,14 @@ head: dependabot/cargo/uuid-1.6.1
 created_at: 2023-11-27T08:49:46Z
 updated_at: 2023-11-27T10:05:52Z
 url: https://github.com/astral-sh/ruff/pull/8851
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump uuid from 1.6.0 to 1.6.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-27 08:49_
+_@dependabot_
 
 Bumps [uuid](https://github.com/uuid-rs/uuid) from 1.6.0 to 1.6.1.
 <details>

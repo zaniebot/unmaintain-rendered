@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T13:27:53Z
 updated_at: 2025-12-10T14:04:06Z
 url: https://github.com/astral-sh/uv/issues/17070
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # New test failure in 0.9.17: uv-resolver exclude_newer::tests::test_exclude_newer_timestamp_absolute
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-12-10 13:27_
+_@musicinmybrain_
 
 ### Summary
 

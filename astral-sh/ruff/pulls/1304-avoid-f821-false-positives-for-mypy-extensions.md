@@ -12,14 +12,14 @@ head: charlie/default-named-arg
 created_at: 2022-12-20T21:29:20Z
 updated_at: 2022-12-20T21:29:34Z
 url: https://github.com/astral-sh/ruff/pull/1304
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid F821 false positives for Mypy extensions
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-20 21:29_
+_@charliermarsh_
 
 Resolves #1303.
 

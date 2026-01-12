@@ -13,14 +13,14 @@ head: micha/unclosed-string
 created_at: 2025-10-13T17:15:16Z
 updated_at: 2025-10-15T07:50:58Z
 url: https://github.com/astral-sh/ruff/pull/20848
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Improved error recovery for unclosed strings (including f- and t-strings)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-13 17:15_
+_@MichaReiser_
 
 ## Summary
 

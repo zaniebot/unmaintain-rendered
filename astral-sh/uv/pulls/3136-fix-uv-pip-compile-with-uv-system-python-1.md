@@ -12,14 +12,14 @@ head: fix/uv-pip-compile-bool
 created_at: 2024-04-19T04:27:07Z
 updated_at: 2024-04-20T13:54:41Z
 url: https://github.com/astral-sh/uv/pull/3136
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Fix `uv pip compile` with `UV_SYSTEM_PYTHON=1`
 
 ---
 
-_Pull request opened by @jfcherng on 2024-04-19 04:27_
+_@jfcherng_
 
 ## Summary
 

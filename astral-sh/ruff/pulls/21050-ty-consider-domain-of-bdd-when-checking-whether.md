@@ -14,14 +14,14 @@ head: dcreager/simplify
 created_at: 2025-10-23T18:30:23Z
 updated_at: 2025-10-24T17:37:58Z
 url: https://github.com/astral-sh/ruff/pull/21050
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Consider domain of BDD when checking whether always satisfiable
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-23 18:30_
+_@dcreager_
 
 That PR title might be a bit inscrutable.
 

@@ -14,14 +14,14 @@ head: konsti/uv-run-error-messages
 created_at: 2024-05-21T11:17:05Z
 updated_at: 2024-05-21T11:24:19Z
 url: https://github.com/astral-sh/uv/pull/3691
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Better error message for `uv run` failures
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 11:17_
+_@konstin_
 
 Attach path context to `uv run` failures since those function calls are not covered by `fs_err`.
 

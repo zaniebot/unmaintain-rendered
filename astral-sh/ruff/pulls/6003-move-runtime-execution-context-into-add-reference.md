@@ -12,14 +12,14 @@ head: charlie/ref
 created_at: 2023-07-23T02:23:34Z
 updated_at: 2023-07-23T02:58:16Z
 url: https://github.com/astral-sh/ruff/pull/6003
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Move runtime execution context into add_reference calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 02:23_
+_@charliermarsh_
 
 _No description provided._
 

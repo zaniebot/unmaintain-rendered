@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-05-05T04:02:05Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/946
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Flag also parsed as positional argument
 
 ---
 
-_Issue opened by @Mark-Simulacrum on 2017-05-05 04:02_
+_@Mark-Simulacrum_
 
 ### Rust Version
 

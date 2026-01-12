@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-26T21:13:28Z
 updated_at: 2025-10-28T17:49:27Z
 url: https://github.com/astral-sh/ruff/issues/21081
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff format on multiple directories returns inconsistent results
 
 ---
 
-_Issue opened by @OBarronCS on 2025-10-26 21:13_
+_@OBarronCS_
 
 ### Summary
 

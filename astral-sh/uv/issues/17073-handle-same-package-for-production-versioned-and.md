@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T15:07:57Z
 updated_at: 2025-12-19T08:43:19Z
 url: https://github.com/astral-sh/uv/issues/17073
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # handle same package for production(versioned) and development (editable)
 
 ---
 
-_Issue opened by @donniedarko-zen on 2025-12-10 15:07_
+_@donniedarko-zen_
 
 ### Question
 

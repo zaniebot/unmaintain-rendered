@@ -13,14 +13,14 @@ head: konsti/fix-trailing-version-error-message
 created_at: 2024-05-08T09:07:40Z
 updated_at: 2024-05-08T12:50:30Z
 url: https://github.com/astral-sh/uv/pull/3453
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Improve trailing version string error message
 
 ---
 
-_Pull request opened by @konstin on 2024-05-08 09:07_
+_@konstin_
 
 We would previously show the parsed version when erroring due to trailing content after a valid version, which can look different than the input. E.g. when encountering `0.1-bulbasaur`, we would display:
 

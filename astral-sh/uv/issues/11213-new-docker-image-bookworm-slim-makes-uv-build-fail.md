@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T12:11:01Z
 updated_at: 2025-02-04T17:38:24Z
 url: https://github.com/astral-sh/uv/issues/11213
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # new docker image bookworm-slim makes `uv build` fail
 
 ---
 
-_Issue opened by @Morgadoooo on 2025-02-04 12:11_
+_@Morgadoooo_
 
 ### Summary
 

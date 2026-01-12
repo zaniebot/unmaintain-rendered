@@ -13,14 +13,14 @@ head: david/ty-renaming-2
 created_at: 2025-01-20T13:53:02Z
 updated_at: 2025-01-20T14:23:36Z
 url: https://github.com/astral-sh/ruff/pull/15618
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Rename `bindings_ty`, `declarations_ty`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-20 13:53_
+_@sharkdp_
 
 ## Summary
 

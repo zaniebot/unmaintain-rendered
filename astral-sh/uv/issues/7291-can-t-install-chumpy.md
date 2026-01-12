@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T14:05:38Z
 updated_at: 2024-09-14T12:24:50Z
 url: https://github.com/astral-sh/uv/issues/7291
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Can't install `chumpy`
 
 ---
 
-_Issue opened by @YouJiacheng on 2024-09-11 14:05_
+_@YouJiacheng_
 
 uv version
 ```

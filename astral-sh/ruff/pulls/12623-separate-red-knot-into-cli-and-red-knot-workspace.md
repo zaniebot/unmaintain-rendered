@@ -13,14 +13,14 @@ head: dhruv/red-knot-lsp-0
 created_at: 2024-08-02T09:38:36Z
 updated_at: 2024-08-02T11:38:42Z
 url: https://github.com/astral-sh/ruff/pull/12623
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Separate `red_knot` into CLI and `red_knot_workspace` crates
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-02 09:38_
+_@dhruvmanila_
 
 ## Summary
 

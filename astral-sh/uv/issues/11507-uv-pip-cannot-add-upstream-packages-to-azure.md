@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T12:17:57Z
 updated_at: 2025-04-29T21:37:05Z
 url: https://github.com/astral-sh/uv/issues/11507
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv pip cannot add upstream packages to Azure DevOps feed while authenticated
 
 ---
 
-_Issue opened by @thomasaarholt on 2025-02-14 12:17_
+_@thomasaarholt_
 
 ### Summary
 

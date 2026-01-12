@@ -13,14 +13,14 @@ head: docs-fix-typo
 created_at: 2025-03-11T11:59:17Z
 updated_at: 2025-03-11T14:03:01Z
 url: https://github.com/astral-sh/uv/pull/12112
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Docs : Quote versions string in python-versions.md
 
 ---
 
-_Pull request opened by @GCHQDeveloper314 on 2025-03-11 11:59_
+_@GCHQDeveloper314_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

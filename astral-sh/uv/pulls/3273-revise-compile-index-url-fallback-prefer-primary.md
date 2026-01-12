@@ -13,14 +13,14 @@ head: charlie/comp
 created_at: 2024-04-25T23:25:46Z
 updated_at: 2024-04-25T23:30:45Z
 url: https://github.com/astral-sh/uv/pull/3273
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Revise `compile_index_url_fallback_prefer_primary`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 23:25_
+_@charliermarsh_
 
 ## Summary
 

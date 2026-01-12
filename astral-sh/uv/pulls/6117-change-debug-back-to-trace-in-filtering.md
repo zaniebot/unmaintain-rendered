@@ -14,14 +14,14 @@ head: charlie/trace
 created_at: 2024-08-15T16:00:44Z
 updated_at: 2024-08-15T16:07:03Z
 url: https://github.com/astral-sh/uv/pull/6117
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Change `debug!` back to `trace!` in filtering
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-15 16:00_
+_@charliermarsh_
 
 ## Summary
 

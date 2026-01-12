@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T21:25:47Z
 updated_at: 2024-02-17T18:53:39Z
 url: https://github.com/astral-sh/uv/issues/1355
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Fails `uv pip install --no-deps -e .` missing module `pathspec`
 
 ---
 
-_Issue opened by @Tomperez98 on 2024-02-15 21:25_
+_@Tomperez98_
 
 Version `uv 0.1.0`
 

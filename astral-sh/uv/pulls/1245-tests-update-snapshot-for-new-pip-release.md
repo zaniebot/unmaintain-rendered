@@ -12,14 +12,14 @@ head: ag/update-snapshot
 created_at: 2024-02-03T20:39:51Z
 updated_at: 2024-02-03T20:44:14Z
 url: https://github.com/astral-sh/uv/pull/1245
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # tests: update snapshot for new `pip` release
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-03 20:39_
+_@BurntSushi_
 
 See: https://pypi.org/project/pip/#history
 

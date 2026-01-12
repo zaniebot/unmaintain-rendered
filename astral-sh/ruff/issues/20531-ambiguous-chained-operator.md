@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-23T12:14:43Z
 updated_at: 2025-09-29T20:43:47Z
 url: https://github.com/astral-sh/ruff/issues/20531
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ambiguous-chained-operator
 
 ---
 
-_Issue opened by @kapkekes on 2025-09-23 12:14_
+_@kapkekes_
 
 ### Summary
 

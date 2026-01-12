@@ -14,14 +14,14 @@ head: charlie/UP007
 created_at: 2023-09-04T21:44:21Z
 updated_at: 2023-09-05T11:51:43Z
 url: https://github.com/astral-sh/ruff/pull/7137
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use generator for UP007 autofix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-04 21:44_
+_@charliermarsh_
 
 ## Summary
 

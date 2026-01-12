@@ -14,14 +14,14 @@ head: charlie/req-txt
 created_at: 2024-07-23T18:40:50Z
 updated_at: 2024-07-23T20:06:19Z
 url: https://github.com/astral-sh/uv/pull/5362
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # Support `requirements.txt` files in `uv tool install` and `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-23 18:40_
+_@charliermarsh_
 
 ## Summary
 

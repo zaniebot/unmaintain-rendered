@@ -14,14 +14,14 @@ head: micha/ty-playground-version
 created_at: 2025-05-26T09:20:49Z
 updated_at: 2025-05-26T11:55:13Z
 url: https://github.com/astral-sh/ruff/pull/18314
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # Use git-commit as ty playground version instead of 0.0.0
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-26 09:20_
+_@MichaReiser_
 
 ## Summary
 

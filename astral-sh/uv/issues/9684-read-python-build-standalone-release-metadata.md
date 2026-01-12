@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T14:37:02Z
 updated_at: 2024-12-06T14:49:49Z
 url: https://github.com/astral-sh/uv/issues/9684
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Read `python-build-standalone` release metadata from `atom` feed
 
 ---
 
-_Issue opened by @zanieb on 2024-12-06 14:37_
+_@zanieb_
 
 It seems like we would benefit from reading the `release.atom` file instead of reading the GitHub release API? At least worth investigating. It loads way faster.
 

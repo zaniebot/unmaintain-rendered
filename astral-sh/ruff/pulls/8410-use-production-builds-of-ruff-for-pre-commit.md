@@ -13,14 +13,14 @@ head: zanie/pre-commit
 created_at: 2023-11-01T16:51:19Z
 updated_at: 2023-11-01T21:33:11Z
 url: https://github.com/astral-sh/ruff/pull/8410
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use production builds of Ruff for pre-commit
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 16:51_
+_@zanieb_
 
 Requiring `cargo build` per commit is way too slow. Instead, we use the production Ruff version. Additionally, Black is replaced with the Ruff formatter.
 

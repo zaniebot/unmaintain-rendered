@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T02:14:34Z
 updated_at: 2024-04-29T14:41:20Z
 url: https://github.com/astral-sh/ruff/issues/11022
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server`: No diagnostics in Neovim
 
 ---
 
-_Issue opened by @MithicSpirit on 2024-04-19 02:14_
+_@MithicSpirit_
 
 ## Description
 

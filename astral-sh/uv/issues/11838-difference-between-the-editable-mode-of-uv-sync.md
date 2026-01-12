@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T19:43:42Z
 updated_at: 2025-02-28T07:40:22Z
 url: https://github.com/astral-sh/uv/issues/11838
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Difference between the Editable Mode of uv sync and uv pip install -e .
 
 ---
 
-_Issue opened by @lmanc on 2025-02-27 19:43_
+_@lmanc_
 
 ### Question
 

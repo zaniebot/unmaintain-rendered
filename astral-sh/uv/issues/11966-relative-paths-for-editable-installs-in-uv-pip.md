@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T00:34:15Z
 updated_at: 2025-04-08T09:12:32Z
 url: https://github.com/astral-sh/uv/issues/11966
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # relative paths for editable installs in `uv pip compile`
 
 ---
 
-_Issue opened by @bantucaravan on 2025-03-05 00:34_
+_@bantucaravan_
 
 ### Summary
 

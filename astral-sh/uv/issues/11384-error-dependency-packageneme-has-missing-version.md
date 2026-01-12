@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T13:57:17Z
 updated_at: 2025-02-10T20:21:03Z
 url: https://github.com/astral-sh/uv/issues/11384
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Error `Dependency `packageneme` has missing `version` field but has more than one matching package` when using conflicting optional dependencies.
 
 ---
 
-_Issue opened by @jenshnielsen on 2025-02-10 13:57_
+_@jenshnielsen_
 
 ### Summary
 

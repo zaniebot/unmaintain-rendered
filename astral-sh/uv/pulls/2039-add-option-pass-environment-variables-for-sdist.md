@@ -13,14 +13,14 @@ head: feat/env-variables-for-sdist-building
 created_at: 2024-02-28T08:45:43Z
 updated_at: 2024-02-29T11:03:49Z
 url: https://github.com/astral-sh/uv/pull/2039
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Add option pass environment variables for SDist building
 
 ---
 
-_Pull request opened by @tdejager on 2024-02-28 08:45_
+_@tdejager_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

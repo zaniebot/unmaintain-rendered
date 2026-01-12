@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-13T22:14:23Z
 updated_at: 2022-11-02T19:43:10Z
 url: https://github.com/astral-sh/ruff/issues/423
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement `ruff config-convert` to generate `pyproject.toml` from Flake8 configs
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-13 22:14_
+_@charliermarsh_
 
 See: #414.
 

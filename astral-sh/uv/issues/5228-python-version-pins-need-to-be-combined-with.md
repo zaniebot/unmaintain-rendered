@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T19:19:06Z
 updated_at: 2024-07-19T19:22:08Z
 url: https://github.com/astral-sh/uv/issues/5228
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Python version pins need to be combined with `Requires-Python`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-19 19:19_
+_@zanieb_
 
 As briefly discussed at https://github.com/astral-sh/uv/pull/4989#discussion_r1684805329
 

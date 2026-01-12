@@ -13,14 +13,14 @@ head: fa-reword
 created_at: 2024-05-12T19:47:38Z
 updated_at: 2024-05-13T01:45:40Z
 url: https://github.com/astral-sh/ruff/pull/11381
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Reword `future-rewritable-type-annotation` (`FA100`) message
 
 ---
 
-_Pull request opened by @tjkuson on 2024-05-12 19:47_
+_@tjkuson_
 
 ## Summary
 

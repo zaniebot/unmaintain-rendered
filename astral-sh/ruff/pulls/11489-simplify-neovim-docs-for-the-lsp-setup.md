@@ -13,14 +13,14 @@ head: dhruv/neovim-docs
 created_at: 2024-05-22T04:16:04Z
 updated_at: 2024-05-22T04:21:03Z
 url: https://github.com/astral-sh/ruff/pull/11489
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Simplify Neovim docs for the LSP setup
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-22 04:16_
+_@dhruvmanila_
 
 Similar to what we have at https://github.com/astral-sh/ruff-lsp#example-neovim
 

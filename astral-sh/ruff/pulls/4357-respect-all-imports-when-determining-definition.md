@@ -12,14 +12,14 @@ head: charlie/__all__
 created_at: 2023-05-10T19:10:13Z
 updated_at: 2023-05-11T18:01:47Z
 url: https://github.com/astral-sh/ruff/pull/4357
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Respect `__all__` imports when determining definition visibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-10 19:10_
+_@charliermarsh_
 
 ## Summary
 

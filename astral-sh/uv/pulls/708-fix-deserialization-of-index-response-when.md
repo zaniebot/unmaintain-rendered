@@ -12,14 +12,14 @@ head: zb/fix-req-missing
 created_at: 2023-12-19T19:07:14Z
 updated_at: 2023-12-20T10:53:49Z
 url: https://github.com/astral-sh/uv/pull/708
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Fix deserialization of index response when `requires_python` field is missing
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-19 19:07_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/707
 

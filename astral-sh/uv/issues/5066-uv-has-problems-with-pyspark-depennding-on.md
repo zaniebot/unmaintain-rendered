@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-15T08:27:01Z
 updated_at: 2024-07-16T15:03:20Z
 url: https://github.com/astral-sh/uv/issues/5066
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv has problems with pyspark depennding on whether it comes via a private feed or not
 
 ---
 
-_Issue opened by @fralik on 2024-07-15 08:27_
+_@fralik_
 
 Hi!
 I observed an interesting bevavior that uv fails to install pyspark depending on whether distribution comes directly from pip or from our private feed. Both downloaded packages are identical (I checked by manually downloading them from both indices and comparing).

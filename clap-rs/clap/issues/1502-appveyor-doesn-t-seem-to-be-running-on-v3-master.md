@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-06-20T15:11:44Z
 updated_at: 2020-02-01T19:41:31Z
 url: https://github.com/clap-rs/clap/issues/1502
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # appveyor doesn't seem to be running on v3-master
 
 ---
 
-_Issue opened by @erickt on 2019-06-20 15:11_
+_@erickt_
 
 It appears that [appveyor](https://ci.appveyor.com/project/kbknapp/clap-rs/history) is not running on the v3-master, which is how I suspect the windows target broke. Would it be possible to fix this?
 

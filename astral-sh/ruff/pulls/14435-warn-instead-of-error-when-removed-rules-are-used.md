@@ -13,14 +13,14 @@ head: micha/warn-about-ignored-removed-rules
 created_at: 2024-11-18T15:27:05Z
 updated_at: 2024-11-19T07:36:48Z
 url: https://github.com/astral-sh/ruff/pull/14435
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Warn instead of error when removed rules are used in ignore
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-18 15:27_
+_@MichaReiser_
 
 ## Summary
 

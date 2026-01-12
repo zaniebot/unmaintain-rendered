@@ -11,14 +11,14 @@ head: custim-proper-without-return
 created_at: 2026-01-12T01:24:13Z
 updated_at: 2026-01-12T01:34:05Z
 url: https://github.com/astral-sh/ruff/pull/22515
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Respect `lint.pydocstyle.property-decorators` in `RUF066`
 
 ---
 
-_Pull request opened by @terror on 2026-01-12 01:24_
+_@terror_
 
 Resolves #22216.
 

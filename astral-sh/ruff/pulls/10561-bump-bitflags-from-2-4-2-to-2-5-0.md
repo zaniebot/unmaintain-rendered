@@ -13,14 +13,14 @@ head: dependabot/cargo/bitflags-2.5.0
 created_at: 2024-03-25T08:55:25Z
 updated_at: 2024-03-25T13:55:42Z
 url: https://github.com/astral-sh/ruff/pull/10561
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bump bitflags from 2.4.2 to 2.5.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-25 08:55_
+_@dependabot_
 
 Bumps [bitflags](https://github.com/bitflags/bitflags) from 2.4.2 to 2.5.0.
 <details>

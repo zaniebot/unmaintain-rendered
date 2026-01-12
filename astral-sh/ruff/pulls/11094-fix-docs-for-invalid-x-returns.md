@@ -13,14 +13,14 @@ head: integer
 created_at: 2024-04-23T00:09:07Z
 updated_at: 2024-04-23T00:21:03Z
 url: https://github.com/astral-sh/ruff/pull/11094
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # (📚) fix docs for `invalid-X-returns`
 
 ---
 
-_Pull request opened by @KotlinIsland on 2024-04-23 00:09_
+_@KotlinIsland_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

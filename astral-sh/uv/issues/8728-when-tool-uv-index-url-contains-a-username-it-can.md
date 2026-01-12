@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T15:29:13Z
 updated_at: 2024-10-31T20:08:24Z
 url: https://github.com/astral-sh/uv/issues/8728
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # When tool.uv.index.url contains a username, it can't be overridden in UV_INDEX
 
 ---
 
-_Issue opened by @torarvid on 2024-10-31 15:29_
+_@torarvid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

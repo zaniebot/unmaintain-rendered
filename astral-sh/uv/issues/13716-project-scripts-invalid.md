@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T10:51:13Z
 updated_at: 2025-06-02T00:13:00Z
 url: https://github.com/astral-sh/uv/issues/13716
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # [project.scripts] invalid
 
 ---
 
-_Issue opened by @thcpdd on 2025-05-29 10:51_
+_@thcpdd_
 
 ### Question
 

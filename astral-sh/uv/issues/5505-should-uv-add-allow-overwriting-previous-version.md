@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-27T03:00:32Z
 updated_at: 2024-08-20T18:21:32Z
 url: https://github.com/astral-sh/uv/issues/5505
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Should `uv add` allow overwriting previous version specifiers?
 
 ---
 
-_Issue opened by @eth3lbert on 2024-07-27 03:00_
+_@eth3lbert_
 
 Let consider the following process:
 

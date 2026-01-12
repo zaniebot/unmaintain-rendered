@@ -13,14 +13,14 @@ head: charlie/call-chains
 created_at: 2023-08-10T21:54:07Z
 updated_at: 2023-08-11T13:59:36Z
 url: https://github.com/astral-sh/ruff/pull/6488
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid breaking call chains unnecessarily
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-10 21:54_
+_@charliermarsh_
 
 ## Summary
 

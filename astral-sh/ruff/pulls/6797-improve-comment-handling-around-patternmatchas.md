@@ -13,14 +13,14 @@ head: charlie/pattern-match-as
 created_at: 2023-08-22T23:54:39Z
 updated_at: 2023-08-23T05:08:32Z
 url: https://github.com/astral-sh/ruff/pull/6797
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Improve comment handling around `PatternMatchAs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 23:54_
+_@charliermarsh_
 
 ## Summary
 

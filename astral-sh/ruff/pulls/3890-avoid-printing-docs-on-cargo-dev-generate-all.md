@@ -12,14 +12,14 @@ head: charlie/print
 created_at: 2023-04-05T17:59:12Z
 updated_at: 2023-04-05T18:26:29Z
 url: https://github.com/astral-sh/ruff/pull/3890
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Avoid printing docs on cargo dev generate-all
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-05 17:59_
+_@charliermarsh_
 
 _No description provided._
 

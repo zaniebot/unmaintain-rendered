@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T09:46:28Z
 updated_at: 2024-09-03T14:56:05Z
 url: https://github.com/astral-sh/uv/issues/6598
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Shims like in pyenv or rye
 
 ---
 
-_Issue opened by @martenlienen on 2024-08-25 09:46_
+_@martenlienen_
 
 Does uv plan to add shims as they exist in rye or pyenv? With this, I mean a bunch of executables that dispatch to the correct executable when called depending on a local `.python-version` file or an environment variable. For example, in pyenv I can run `cd ~/src/some-project; pyenv local project-venv` and then, whenever I change into `~/src/some-project` or a subdirectory, running `python` or another executable from some package will automatically dispatch to the environment `project-venv` without me having to explicitly activate it.
 

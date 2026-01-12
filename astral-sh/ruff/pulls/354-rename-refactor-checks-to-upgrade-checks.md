@@ -12,14 +12,14 @@ head: charlie/r-to-u
 created_at: 2022-10-07T20:53:33Z
 updated_at: 2022-10-07T20:54:56Z
 url: https://github.com/astral-sh/ruff/pull/354
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Rename refactor checks to upgrade checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-07 20:53_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: stabilize-up031
 created_at: 2024-11-17T18:36:42Z
 updated_at: 2024-11-18T11:45:39Z
 url: https://github.com/astral-sh/ruff/pull/14406
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pyupgrade`] Stabilize behavior to show diagnostic even when unfixable in `printf-string-formatting (UP031)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-17 18:36_
+_@dylwil3_
 
 This PR stabilizes the behavior to show a diagnostic even when no autofix is available for [`printf-string-formatting` (UP031)](https://docs.astral.sh/ruff/rules/printf-string-formatting/#printf-string-formatting-up031), which was introduced in #11229.
 

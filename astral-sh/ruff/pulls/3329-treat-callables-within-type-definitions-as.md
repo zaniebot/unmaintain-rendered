@@ -12,14 +12,14 @@ head: charlie/call
 created_at: 2023-03-03T22:54:55Z
 updated_at: 2023-03-03T23:07:32Z
 url: https://github.com/astral-sh/ruff/pull/3329
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Treat callables within type definitions as default-non-types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-03 22:54_
+_@charliermarsh_
 
 We need to avoid treating `"FILE_PATH"`, below, as an undefined reference.
 

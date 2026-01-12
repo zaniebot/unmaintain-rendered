@@ -13,14 +13,14 @@ head: charlie/lambda
 created_at: 2023-07-15T02:01:28Z
 updated_at: 2023-07-15T02:39:27Z
 url: https://github.com/astral-sh/ruff/pull/5769
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move lambda visitation into recurse phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 02:01_
+_@charliermarsh_
 
 ## Summary
 

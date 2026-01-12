@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T12:35:46Z
 updated_at: 2025-11-13T06:33:07Z
 url: https://github.com/astral-sh/ty/issues/592
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `invalid-parameter-default` error from generic with default of `None`
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-06-06 12:35_
+_@samuelcolvin_
 
 ### Summary
 

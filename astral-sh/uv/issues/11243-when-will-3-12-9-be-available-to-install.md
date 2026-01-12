@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T13:02:06Z
 updated_at: 2025-02-07T20:58:54Z
 url: https://github.com/astral-sh/uv/issues/11243
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # When will 3.12.9 be available to install?
 
 ---
 
-_Issue opened by @peterbe on 2025-02-05 13:02_
+_@peterbe_
 
 ### Question
 

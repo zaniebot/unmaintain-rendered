@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-21T06:07:13Z
 updated_at: 2023-10-16T04:25:13Z
 url: https://github.com/astral-sh/ruff/issues/5241
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # new rule - ban all usages of `NoReturn` in favor of `Never`
 
 ---
 
-_Issue opened by @DetachHead on 2023-06-21 06:07_
+_@DetachHead_
 
 discussed in https://github.com/astral-sh/ruff/issues/5111#issuecomment-1593892209, which was closed:
 

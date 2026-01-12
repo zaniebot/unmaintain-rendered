@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T12:57:25Z
 updated_at: 2025-02-07T08:57:32Z
 url: https://github.com/astral-sh/uv/issues/11279
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # How to run `uv pip compile` for PyPy (and CPython)
 
 ---
 
-_Issue opened by @alexprengere on 2025-02-06 12:57_
+_@alexprengere_
 
 ### Summary
 

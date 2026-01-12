@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T15:25:09Z
 updated_at: 2025-11-17T15:29:35Z
 url: https://github.com/astral-sh/uv/issues/16761
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Support proactive cache pruning
 
 ---
 
-_Issue opened by @paveldikov on 2025-11-17 15:25_
+_@paveldikov_
 
 ### Summary
 

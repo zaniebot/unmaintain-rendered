@@ -13,14 +13,14 @@ head: ag/fix-tool-install-home
 created_at: 2024-07-08T12:47:50Z
 updated_at: 2024-07-08T13:39:29Z
 url: https://github.com/astral-sh/uv/pull/4891
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # uv/tests: fix tool_install_home test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-08 12:47_
+_@BurntSushi_
 
 This test was, I believe, relying on the XDG_DATA_HOME environment
 variable not being set. When it is set, as is the case in my

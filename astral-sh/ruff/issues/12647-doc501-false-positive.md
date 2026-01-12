@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T21:44:28Z
 updated_at: 2024-08-08T16:58:27Z
 url: https://github.com/astral-sh/ruff/issues/12647
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC501 False Positive
 
 ---
 
-_Issue opened by @will-schneble on 2024-08-02 21:44_
+_@will-schneble_
 
 **Describe the bug**
 DOC501 rule violation when the docstring includes the exception.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T19:40:46Z
 updated_at: 2025-02-14T20:28:26Z
 url: https://github.com/astral-sh/uv/issues/11518
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Provide --with-pydebug builds of Python
 
 ---
 
-_Issue opened by @nickelpro on 2025-02-14 19:40_
+_@nickelpro_
 
 ### Summary
 

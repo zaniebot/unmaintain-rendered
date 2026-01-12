@@ -13,14 +13,14 @@ head: charlie/expand-parent
 created_at: 2023-08-07T14:09:56Z
 updated_at: 2023-08-08T12:45:22Z
 url: https://github.com/astral-sh/ruff/pull/6389
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Expand parents whenever open-parenthesis comments are present
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 14:09_
+_@charliermarsh_
 
 ## Summary
 

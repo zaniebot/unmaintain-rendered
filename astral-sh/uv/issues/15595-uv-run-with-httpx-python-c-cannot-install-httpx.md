@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-30T15:35:35Z
 updated_at: 2025-08-30T17:50:13Z
 url: https://github.com/astral-sh/uv/issues/15595
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # uv run --with httpx python -c "" cannot install httpx in isolated env if already installed
 
 ---
 
-_Issue opened by @copdips on 2025-08-30 15:35_
+_@copdips_
 
 ### Summary
 

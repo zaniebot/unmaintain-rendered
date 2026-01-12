@@ -12,14 +12,14 @@ head: readme-babel
 created_at: 2023-01-25T20:14:07Z
 updated_at: 2023-01-25T20:21:27Z
 url: https://github.com/astral-sh/ruff/pull/2170
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add Babel to readme
 
 ---
 
-_Pull request opened by @akx on 2023-01-25 20:14_
+_@akx_
 
 See https://github.com/python-babel/babel/pull/949 :) 🎉 
 

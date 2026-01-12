@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T10:34:41Z
 updated_at: 2025-05-02T10:49:53Z
 url: https://github.com/astral-sh/uv/issues/13263
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Create a wheelhouse with only runtime wheels
 
 ---
 
-_Issue opened by @gsemet on 2025-05-02 10:34_
+_@gsemet_
 
 ### Summary
 

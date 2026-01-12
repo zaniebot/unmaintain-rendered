@@ -14,14 +14,14 @@ head: dhruv/fstring-formatting
 created_at: 2024-01-25T14:25:39Z
 updated_at: 2024-02-16T14:58:32Z
 url: https://github.com/astral-sh/ruff/pull/9642
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Preview minimal f-string formatting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-01-25 14:25_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/crate-ci-typos-1.x
 created_at: 2025-10-06T00:50:22Z
 updated_at: 2025-10-06T20:45:39Z
 url: https://github.com/astral-sh/uv/pull/16130
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Update crate-ci/typos action to v1.37.3
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 00:50_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

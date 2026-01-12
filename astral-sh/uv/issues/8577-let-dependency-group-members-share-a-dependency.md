@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T21:39:07Z
 updated_at: 2024-10-25T22:00:07Z
 url: https://github.com/astral-sh/uv/issues/8577
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Let dependency-group members share a dependency source
 
 ---
 
-_Issue opened by @ealap on 2024-10-25 21:39_
+_@ealap_
 
 I have just read the recent release that added supported for PEP-735 and immediately went on to try it on my project. So far I have something like this:
 ```toml

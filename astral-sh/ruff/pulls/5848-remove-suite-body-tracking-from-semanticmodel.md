@@ -13,14 +13,14 @@ head: charlie/body
 created_at: 2023-07-17T23:47:08Z
 updated_at: 2023-07-18T22:58:32Z
 url: https://github.com/astral-sh/ruff/pull/5848
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove suite body tracking from `SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-17 23:47_
+_@charliermarsh_
 
 ## Summary
 

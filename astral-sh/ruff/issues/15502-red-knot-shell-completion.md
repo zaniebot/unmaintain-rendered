@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T14:28:39Z
 updated_at: 2025-05-07T01:04:58Z
 url: https://github.com/astral-sh/ruff/issues/15502
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Shell completion
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:28_
+_@MichaReiser_
 
 Add a command to generate the shell completion. The name is TBD but we discussed `completion` or `generate-shell-completion` (similar to ruff/uv)
 

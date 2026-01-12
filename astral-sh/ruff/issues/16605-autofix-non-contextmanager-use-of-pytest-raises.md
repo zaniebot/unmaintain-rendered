@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-10T15:36:13Z
 updated_at: 2025-06-16T17:03:55Z
 url: https://github.com/astral-sh/ruff/issues/16605
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Autofix non-contextmanager use of `pytest.raises` & friends
 
 ---
 
-_Issue opened by @jakkdl on 2025-03-10 15:36_
+_@jakkdl_
 
 ### Summary
 

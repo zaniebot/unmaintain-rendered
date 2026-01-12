@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-04-25T18:19:06Z
 updated_at: 2022-05-06T19:45:41Z
 url: https://github.com/clap-rs/clap/issues/3660
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Prevent user from using both `required` and `required_unless_present`
 
 ---
 
-_Issue opened by @imlazyeye on 2022-04-25 18:19_
+_@imlazyeye_
 
 ### Please complete the following tasks
 

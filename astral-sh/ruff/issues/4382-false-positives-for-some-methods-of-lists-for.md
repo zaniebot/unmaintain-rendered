@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-11T21:23:36Z
 updated_at: 2023-05-11T22:00:56Z
 url: https://github.com/astral-sh/ruff/issues/4382
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positives for some methods of lists for boolean trap rule FBT003
 
 ---
 
-_Issue opened by @namurphy on 2023-05-11 21:23_
+_@namurphy_
 
 When providing `True` or `False` as an argument to the `append`, `count`, `insert`, and `remove` methods of a `list`, the rule for catching boolean traps (`FBT003`) yields false positives even though the arguments are positional-only.
 

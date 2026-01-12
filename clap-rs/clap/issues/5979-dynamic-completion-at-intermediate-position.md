@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-27T13:14:02Z
 updated_at: 2025-05-30T15:42:30Z
 url: https://github.com/clap-rs/clap/issues/5979
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Dynamic completion at intermediate position erroneously completes the following argument on bash and zsh
 
 ---
 
-_Issue opened by @jgreitemann on 2025-04-27 13:14_
+_@jgreitemann_
 
 ### Please complete the following tasks
 

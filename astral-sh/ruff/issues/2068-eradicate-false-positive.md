@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-21T19:16:57Z
 updated_at: 2023-01-22T18:26:02Z
 url: https://github.com/astral-sh/ruff/issues/2068
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Eradicate false positive
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-21 19:16_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

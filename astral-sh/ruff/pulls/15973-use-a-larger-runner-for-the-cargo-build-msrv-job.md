@@ -13,14 +13,14 @@ head: zb/depot-msrv
 created_at: 2025-02-05T14:56:52Z
 updated_at: 2025-02-05T15:06:03Z
 url: https://github.com/astral-sh/ruff/pull/15973
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Use a larger runner for the `cargo build (msrv)` job
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 14:56_
+_@zanieb_
 
 _No description provided._
 

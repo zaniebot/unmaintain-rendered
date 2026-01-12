@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T01:56:24Z
 updated_at: 2023-01-20T02:57:20Z
 url: https://github.com/astral-sh/ruff/issues/2007
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Autofix for SIM401 produces broken code
 
 ---
 
-_Issue opened by @henryiii on 2023-01-20 01:56_
+_@henryiii_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

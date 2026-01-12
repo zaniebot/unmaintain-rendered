@@ -13,14 +13,14 @@ head: jane/server/shutdown
 created_at: 2024-04-30T23:07:26Z
 updated_at: 2024-05-03T01:14:34Z
 url: https://github.com/astral-sh/ruff/pull/11222
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server` no longer hangs after shutdown
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-30 23:07_
+_@snowsignal_
 
 ## Summary
 

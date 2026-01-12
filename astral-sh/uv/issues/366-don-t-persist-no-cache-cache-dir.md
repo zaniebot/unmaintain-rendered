@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T16:21:45Z
 updated_at: 2023-11-16T20:53:11Z
 url: https://github.com/astral-sh/uv/issues/366
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Don't persist no-cache cache dir 
 
 ---
 
-_Issue opened by @konstin on 2023-11-08 16:21_
+_@konstin_
 
 `into_path()` persists the cache dir, which we want to avoid.
 

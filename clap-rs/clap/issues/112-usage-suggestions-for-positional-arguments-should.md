@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-08T01:53:25Z
 updated_at: 2015-05-08T14:46:56Z
 url: https://github.com/clap-rs/clap/issues/112
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Usage suggestions for positional arguments should be in index order
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-08 01:53_
+_@kbknapp_
 
 The order is displayed correctly everywhere except "suggested usage" (i.e. when a typo is made and the usage string is re-generated for _current_ usage). In this string it appears in alphabetical order which can be confusing.
 

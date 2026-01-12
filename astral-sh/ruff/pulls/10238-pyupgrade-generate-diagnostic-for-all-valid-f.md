@@ -13,14 +13,14 @@ head: fstring-generate-diagnostic-for-all-possible-conversions
 created_at: 2024-03-05T14:55:57Z
 updated_at: 2024-03-07T03:34:59Z
 url: https://github.com/astral-sh/ruff/pull/10238
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pyupgrade`] Generate diagnostic for all valid f-string conversions regardless of line-length (`UP032`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-05 14:55_
+_@MichaReiser_
 
 ## Summary
 

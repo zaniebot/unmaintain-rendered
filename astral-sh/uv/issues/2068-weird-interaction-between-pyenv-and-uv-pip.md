@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T00:46:45Z
 updated_at: 2024-02-29T02:32:54Z
 url: https://github.com/astral-sh/uv/issues/2068
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Weird interaction between pyenv and `uv pip install --python ...`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-02-29 00:46_
+_@edgarrmondragon_
 
 The `--python` flag seems to be following some form of symlink for the python interpreter, which is causing packages to be installed outside of the desired virtual environment. Here's a reproducible example:
 

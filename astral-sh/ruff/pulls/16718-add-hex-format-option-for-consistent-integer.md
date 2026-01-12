@@ -12,14 +12,14 @@ head: ovior/hex-format
 created_at: 2025-03-13T23:14:14Z
 updated_at: 2025-04-23T15:39:24Z
 url: https://github.com/astral-sh/ruff/pull/16718
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # Add Hex Format Option for Consistent Integer Representation
 
 ---
 
-_Pull request opened by @dgagn on 2025-03-13 23:14_
+_@dgagn_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

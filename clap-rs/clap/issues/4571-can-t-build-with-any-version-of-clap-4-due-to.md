@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T18:13:15Z
 updated_at: 2022-12-22T19:07:13Z
 url: https://github.com/clap-rs/clap/issues/4571
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Can't build with any version of Clap 4 due to rustix dependency
 
 ---
 
-_Issue opened by @ghuh on 2022-12-22 18:13_
+_@ghuh_
 
 ### Please complete the following tasks
 

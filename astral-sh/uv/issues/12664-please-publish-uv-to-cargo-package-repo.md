@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-04T08:37:07Z
 updated_at: 2025-11-21T01:54:01Z
 url: https://github.com/astral-sh/uv/issues/12664
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Please publish uv to cargo package repo
 
 ---
 
-_Issue opened by @vuongtuha on 2025-04-04 08:37_
+_@vuongtuha_
 
 ### Summary
 

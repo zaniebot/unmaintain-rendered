@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T21:16:20Z
 updated_at: 2025-12-05T21:17:12Z
 url: https://github.com/astral-sh/uv/issues/17005
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # bad behavior when combining `UV_PYTHON_INSTALL_MIRROR` and `--python-downloads-json-url`
 
 ---
 
-_Issue opened by @MeitarR on 2025-12-05 21:16_
+_@MeitarR_
 
 ### Summary
 

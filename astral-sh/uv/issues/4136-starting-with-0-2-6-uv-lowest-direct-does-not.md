@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T16:11:25Z
 updated_at: 2024-06-08T12:46:16Z
 url: https://github.com/astral-sh/uv/issues/4136
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Starting with 0.2.6+ uv `lowest-direct` does not respect all limits that are specified conditionally
 
 ---
 
-_Issue opened by @potiuk on 2024-06-07 16:11_
+_@potiuk_
 
 As of recently, we are using uv to generate lowest-direct dependencies in airflow. We do it at scale (we generate separate lowest-direct dependencies for every provider we have - we have 90 of them. And it works very well, or rather worked very well till 0.2.5.  Something changed in 0.2.6 that causes uv to stop respecting at least some limits specified to be installed and attempt to install much lower versions of dependencies than the limits are.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-11T17:40:15Z
 updated_at: 2023-09-29T01:52:11Z
 url: https://github.com/astral-sh/ruff/issues/7275
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff Isort line between import and from import
 
 ---
 
-_Issue opened by @MehulBatra on 2023-09-11 17:40_
+_@MehulBatra_
 
 
 I saw Ruff insert a line between import and from import statements:

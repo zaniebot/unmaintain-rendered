@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T23:42:51Z
 updated_at: 2025-08-01T17:35:10Z
 url: https://github.com/astral-sh/ruff/issues/19675
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Rule Request] Equivalent of `RUF032` for `Fraction`
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-31 23:42_
+_@MeGaGiGaGon_
 
 ### Summary
 

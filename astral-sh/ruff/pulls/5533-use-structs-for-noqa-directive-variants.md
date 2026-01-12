@@ -13,14 +13,14 @@ head: charlie/noqa
 created_at: 2023-07-05T16:05:22Z
 updated_at: 2023-07-05T21:52:53Z
 url: https://github.com/astral-sh/ruff/pull/5533
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use structs for noqa `Directive` variants
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 16:05_
+_@charliermarsh_
 
 ## Summary
 

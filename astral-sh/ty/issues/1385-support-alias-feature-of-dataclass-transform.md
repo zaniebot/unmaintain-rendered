@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T14:14:24Z
 updated_at: 2025-10-18T18:20:41Z
 url: https://github.com/astral-sh/ty/issues/1385
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support `alias` feature of `dataclass_transform`
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-17 14:14_
+_@sharkdp_
 
 _No description provided._
 

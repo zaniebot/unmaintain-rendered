@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T12:41:59Z
 updated_at: 2025-06-13T21:24:17Z
 url: https://github.com/astral-sh/ruff/issues/13307
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `FURB180` should consider allowlisting some classes
 
 ---
 
-_Issue opened by @robsdedude on 2024-09-10 12:41_
+_@robsdedude_
 
 Please consider
 ```python

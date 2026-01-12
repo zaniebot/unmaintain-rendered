@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-26T06:05:41Z
 updated_at: 2025-12-30T11:43:48Z
 url: https://github.com/astral-sh/ruff/issues/22201
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Warn or autofix "return <Exception>"
 
 ---
 
-_Issue opened by @andrewwillowen on 2025-12-26 06:05_
+_@andrewwillowen_
 
 ### Summary
 

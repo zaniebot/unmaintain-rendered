@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-25T05:51:00Z
 updated_at: 2023-10-25T18:01:11Z
 url: https://github.com/astral-sh/ruff/issues/8199
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Docs: Readme docs mistake
 
 ---
 
-_Issue opened by @ran-isenberg on 2023-10-25 05:51_
+_@ran-isenberg_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

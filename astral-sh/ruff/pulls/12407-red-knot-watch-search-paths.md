@@ -13,14 +13,14 @@ head: watch-search-paths
 created_at: 2024-07-19T15:29:27Z
 updated_at: 2024-07-24T07:53:23Z
 url: https://github.com/astral-sh/ruff/pull/12407
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Watch search paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-19 15:29_
+_@MichaReiser_
 
 ## Summary
 

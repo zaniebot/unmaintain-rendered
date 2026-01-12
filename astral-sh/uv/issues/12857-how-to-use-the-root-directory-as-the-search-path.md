@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T03:17:52Z
 updated_at: 2025-04-14T08:20:13Z
 url: https://github.com/astral-sh/uv/issues/12857
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # How to use the root directory as the search path
 
 ---
 
-_Issue opened by @mushengLenzer on 2025-04-14 03:17_
+_@mushengLenzer_
 
 ### Question
 

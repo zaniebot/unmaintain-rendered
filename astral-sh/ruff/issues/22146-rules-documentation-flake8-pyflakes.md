@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T18:21:37Z
 updated_at: 2025-12-22T23:41:06Z
 url: https://github.com/astral-sh/ruff/issues/22146
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rules documentation flake8 pyflakes
 
 ---
 
-_Issue opened by @fulminemizzega on 2025-12-22 18:21_
+_@fulminemizzega_
 
 Hello, I believe there is a typo in the tutorial documentation and rules (or I do not understand them correctly).
 In some places the `F` rule set is said to be a part of Flake8:

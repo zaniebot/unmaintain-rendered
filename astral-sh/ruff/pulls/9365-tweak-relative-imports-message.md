@@ -13,14 +13,14 @@ head: improve-message
 created_at: 2024-01-02T20:05:01Z
 updated_at: 2024-01-02T20:17:39Z
 url: https://github.com/astral-sh/ruff/pull/9365
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Tweak `relative-imports` message
 
 ---
 
-_Pull request opened by @tjkuson on 2024-01-02 20:05_
+_@tjkuson_
 
 ## Summary
 

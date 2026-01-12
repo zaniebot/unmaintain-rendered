@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T13:20:49Z
 updated_at: 2023-09-01T11:27:38Z
 url: https://github.com/astral-sh/ruff/issues/6197
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Pragma comments
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-31 13:20_
+_@MichaReiser_
 
 See https://github.com/astral-sh/ruff/discussions/6670 for the proposal for the details:
 

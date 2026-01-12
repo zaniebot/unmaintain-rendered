@@ -14,14 +14,14 @@ head: zb/install-path
 created_at: 2024-11-19T14:00:44Z
 updated_at: 2024-11-19T15:14:30Z
 url: https://github.com/astral-sh/ruff/pull/14457
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use XDG (i.e. `~/.local/bin`) instead of the Cargo home directory in the installer
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 14:00_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13927
 

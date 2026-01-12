@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-03T09:15:51Z
 updated_at: 2024-11-04T18:33:15Z
 url: https://github.com/astral-sh/uv/pull/8772
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Fix indentation in `projects.md`
 
 ---
 
-_Pull request opened by @exag on 2024-11-03 09:15_
+_@exag_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/d200
 created_at: 2022-10-10T20:04:43Z
 updated_at: 2022-10-10T20:07:52Z
 url: https://github.com/astral-sh/ruff/pull/397
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement D200 (OneLinerDocstring)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-10 20:04_
+_@charliermarsh_
 
 See: #274.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T10:34:30Z
 updated_at: 2023-02-03T18:05:57Z
 url: https://github.com/astral-sh/ruff/issues/2523
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RUF005 autofix causes an endless loop
 
 ---
 
-_Issue opened by @bluetech on 2023-02-03 10:34_
+_@bluetech_
 
 The following code
 

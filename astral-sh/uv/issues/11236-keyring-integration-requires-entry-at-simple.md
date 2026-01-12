@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T07:54:33Z
 updated_at: 2025-04-29T21:37:04Z
 url: https://github.com/astral-sh/uv/issues/11236
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Keyring integration requires entry at /simple/package/, not /simple/
 
 ---
 
-_Issue opened by @Willem-J-an on 2025-02-05 07:54_
+_@Willem-J-an_
 
 ### Summary
 

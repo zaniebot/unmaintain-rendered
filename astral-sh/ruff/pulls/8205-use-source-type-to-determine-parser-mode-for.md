@@ -14,14 +14,14 @@ head: dhruv/formatter-source-type
 created_at: 2023-10-25T08:55:36Z
 updated_at: 2023-10-25T13:50:04Z
 url: https://github.com/astral-sh/ruff/pull/8205
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use source type to determine parser mode for formatting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-25 08:55_
+_@dhruvmanila_
 
 ## Summary
 

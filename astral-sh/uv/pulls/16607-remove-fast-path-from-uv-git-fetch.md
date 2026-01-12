@@ -13,14 +13,14 @@ head: charlie/fast
 created_at: 2025-11-06T02:26:14Z
 updated_at: 2025-11-07T04:18:07Z
 url: https://github.com/astral-sh/uv/pull/16607
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Remove fast path from `uv-git` fetch
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-06 02:26_
+_@charliermarsh_
 
 ## Summary
 

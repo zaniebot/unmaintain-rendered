@@ -13,14 +13,14 @@ head: docs/PLW1508
 created_at: 2023-08-15T20:08:13Z
 updated_at: 2023-08-15T20:45:04Z
 url: https://github.com/astral-sh/ruff/pull/6602
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix docs for `PLW1508`
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-15 20:08_
+_@zanieb_
 
 _No description provided._
 

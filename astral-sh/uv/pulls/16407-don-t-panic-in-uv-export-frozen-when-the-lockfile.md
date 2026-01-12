@@ -13,14 +13,14 @@ head: konsti/dont-panic-when-the-lockfile-is-outdated
 created_at: 2025-10-22T10:47:58Z
 updated_at: 2025-10-23T20:07:15Z
 url: https://github.com/astral-sh/uv/pull/16407
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Don't panic in `uv export --frozen` when the lockfile is outdated
 
 ---
 
-_Pull request opened by @konstin on 2025-10-22 10:47_
+_@konstin_
 
 Provide a good error message when the discovered workspace members mismatch with the locked workspace members in `uv export --frozen`, instead of panicking.
 

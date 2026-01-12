@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T10:29:05Z
 updated_at: 2025-11-08T03:08:55Z
 url: https://github.com/astral-sh/uv/issues/16609
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Issue Installing uv on AIX via pip
 
 ---
 
-_Issue opened by @shenxianpeng on 2025-11-06 10:29_
+_@shenxianpeng_
 
 ### Question
 

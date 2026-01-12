@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T08:48:23Z
 updated_at: 2023-09-12T06:39:58Z
 url: https://github.com/astral-sh/ruff/issues/7004
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Trailing end of line comments in binary like expressions
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-30 08:48_
+_@MichaReiser_
 
 ```python
 # Input

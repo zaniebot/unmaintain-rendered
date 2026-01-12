@@ -13,14 +13,14 @@ head: charlie/zlib-ng
 created_at: 2025-01-07T16:28:42Z
 updated_at: 2025-01-07T18:04:36Z
 url: https://github.com/astral-sh/uv/pull/10370
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Re-enable zlib-ng on all platforms (except s390x, PowerPC, and FreeBSD)
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 16:28_
+_@charliermarsh_
 
 PowerPC seems to build without errors if we upgrade `zlib-ng`, but upgrading `zlib-ng` causes Windows to break (https://github.com/rust-lang/libz-sys/issues/225), and Cargo doesn't let us include two different versions.
 

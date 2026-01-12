@@ -13,14 +13,14 @@ head: config-global-option
 created_at: 2024-02-28T13:07:26Z
 updated_at: 2024-07-01T10:29:58Z
 url: https://github.com/astral-sh/ruff/pull/10150
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Make `--config` and `--isolated` global flags
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-02-28 13:07_
+_@AlexWaygood_
 
 ## Summary
 

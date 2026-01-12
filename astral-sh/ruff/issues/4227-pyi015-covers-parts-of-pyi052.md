@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-04T18:27:30Z
 updated_at: 2023-05-16T01:59:10Z
 url: https://github.com/astral-sh/ruff/issues/4227
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PYI015 covers parts of PYI052
 
 ---
 
-_Issue opened by @twoertwein on 2023-05-04 18:27_
+_@twoertwein_
 
 flake8-pyi
 > Y015 | Only simple default values are allowed for assignments. Similar to Y011, but for assignments rather than parameter annotations.

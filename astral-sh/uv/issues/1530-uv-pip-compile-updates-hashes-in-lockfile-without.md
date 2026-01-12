@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T19:25:30Z
 updated_at: 2024-03-19T01:02:20Z
 url: https://github.com/astral-sh/uv/issues/1530
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv pip compile` updates hashes in lockfile without `--upgrade`
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-16 19:25_
+_@hauntsaninja_
 
 pip-compile does not do this. I think this also undermines one of the two main security benefits of hashes in lock files (that it helps with the fact PyPI releases are open-ended)
 

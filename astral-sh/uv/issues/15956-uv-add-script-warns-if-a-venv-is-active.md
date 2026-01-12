@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T21:14:28Z
 updated_at: 2025-09-25T16:29:58Z
 url: https://github.com/astral-sh/uv/issues/15956
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv add --script` warns if a venv is active
 
 ---
 
-_Issue opened by @konstin on 2025-09-19 21:14_
+_@konstin_
 
 `uv add --script` shows a warning that we're not matching the script environment path, but we shouldn't activate that environment, we should `uv run` the script.
 

@@ -13,14 +13,14 @@ head: quotestyle-tokenizer
 created_at: 2024-03-06T19:39:57Z
 updated_at: 2024-03-08T23:13:25Z
 url: https://github.com/astral-sh/ruff/pull/10256
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Track quoting style in the tokenizer
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-06 19:39_
+_@AlexWaygood_
 
 ## Summary
 

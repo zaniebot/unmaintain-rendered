@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T14:22:57Z
 updated_at: 2025-10-17T08:17:47Z
 url: https://github.com/astral-sh/ty/issues/96
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Stack overflow for large chain of inter-dependent definitions
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-05 14:22_
+_@sharkdp_
 
 EDIT to summarize discussion below: the issue is related to large chains of dependent bindings, which (if analyzed lazily from last to first) are inferred recursively, potentially leading to large stack usage, especially in debug builds. We increased our max stack size and can now handle up to around 2500 such chained definitions in a release build (~500 in a debug build.) Low priority to do more here unless we see this as an issue in real-world codebases.
 

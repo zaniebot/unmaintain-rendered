@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T13:38:07Z
 updated_at: 2025-11-04T19:22:38Z
 url: https://github.com/astral-sh/uv/issues/16589
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Spurious lock failure combining no-build with env specifications
 
 ---
 
-_Issue opened by @ncoghlan on 2025-11-04 13:38_
+_@ncoghlan_
 
 Resolution: `platform_machine` `AMD64` tag needs to be uppercase on Windows due to the quirks of how the `platform.machine()` API works (`arm64` is still lowercase, though).
 

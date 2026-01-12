@@ -14,14 +14,14 @@ head: zb/fixup-contrib-docs
 created_at: 2024-07-16T20:37:07Z
 updated_at: 2024-07-16T20:49:48Z
 url: https://github.com/astral-sh/uv/pull/5127
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Fix reference to file in docs contributing guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 20:37_
+_@zanieb_
 
 _No description provided._
 

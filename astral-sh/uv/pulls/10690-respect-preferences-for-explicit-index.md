@@ -13,14 +13,14 @@ head: charlie/index-pref
 created_at: 2025-01-16T17:44:22Z
 updated_at: 2025-01-16T18:10:01Z
 url: https://github.com/astral-sh/uv/pull/10690
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Respect preferences for explicit index dependencies from `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-16 17:44_
+_@charliermarsh_
 
 ## Summary
 

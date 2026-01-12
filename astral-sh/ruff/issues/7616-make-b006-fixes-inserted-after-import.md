@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-23T12:52:38Z
 updated_at: 2023-09-27T01:26:30Z
 url: https://github.com/astral-sh/ruff/issues/7616
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Make B006 fixes inserted after import
 
 ---
 
-_Issue opened by @hoxbro on 2023-09-23 12:52_
+_@hoxbro_
 
 When running `ruff --select=B006 b006.py --fix` on a function like this
 ``` python

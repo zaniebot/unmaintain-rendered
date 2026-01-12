@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T20:37:14Z
 updated_at: 2023-11-28T05:02:54Z
 url: https://github.com/astral-sh/ruff/issues/8182
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: No wrap in long return
 
 ---
 
-_Issue opened by @henribru on 2023-10-24 20:37_
+_@henribru_
 
 [Black:](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AD7AGZdAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXyg7Vbzvz0jlNR2_bpXU07f205BRmTbXczRtImDQGwvxVeZ0igpjl1qY5GjsPOvWAo45rNmyDKffTMdBonyq7OakaQnjgdtL9VEwdljVCAAAAABNrGxsCFLuyAAGCAfwBAACWiz9gscRn-wIAAAAABFla)
 ```

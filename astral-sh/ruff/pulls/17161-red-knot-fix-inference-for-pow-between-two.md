@@ -14,14 +14,14 @@ head: alex/pow-pow
 created_at: 2025-04-02T21:21:25Z
 updated_at: 2025-04-03T06:19:17Z
 url: https://github.com/astral-sh/ruff/pull/17161
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix inference for `pow` between two literal integers
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-02 21:21_
+_@AlexWaygood_
 
 ## Summary
 

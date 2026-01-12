@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T08:18:26Z
 updated_at: 2025-08-12T18:16:48Z
 url: https://github.com/astral-sh/uv/issues/4539
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Installing requirement fails when installing from pyproject.toml
 
 ---
 
-_Issue opened by @BenediktMaag on 2024-06-26 08:18_
+_@BenediktMaag_
 
 Installing the example plugin works when directly declaring it in the prompt:
 

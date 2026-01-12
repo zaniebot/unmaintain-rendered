@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-25T03:21:39Z
 updated_at: 2025-06-16T17:54:52Z
 url: https://github.com/astral-sh/ruff/issues/16360
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF045 on dataclass method assignment
 
 ---
 
-_Issue opened by @beskep on 2025-02-25 03:21_
+_@beskep_
 
 ### Description
 

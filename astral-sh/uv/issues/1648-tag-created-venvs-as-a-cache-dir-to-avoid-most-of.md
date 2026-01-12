@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T14:31:50Z
 updated_at: 2024-02-18T18:32:12Z
 url: https://github.com/astral-sh/uv/issues/1648
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Tag created venvs as a cache dir to avoid most of in-project venv downsides
 
 ---
 
-_Issue opened by @hynek on 2024-02-18 14:31_
+_@hynek_
 
 Some people prefer their virtualenvs in a central place which has its valid reasons.
 

@@ -13,14 +13,14 @@ head: gankra/recursive-tarball
 created_at: 2025-06-09T15:23:38Z
 updated_at: 2025-06-12T15:23:12Z
 url: https://github.com/astral-sh/ty/pull/617
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # update cargo-dist and use the recursive-tarball feature
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-09 15:23_
+_@Gankra_
 
 Fixes #372 
 

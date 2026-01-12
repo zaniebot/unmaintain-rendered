@@ -13,14 +13,14 @@ head: charlie/show-fix
 created_at: 2023-02-10T03:27:13Z
 updated_at: 2023-02-13T02:29:42Z
 url: https://github.com/astral-sh/ruff/pull/2707
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Add `--show-fixes` flag to show applied fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 03:27_
+_@charliermarsh_
 
 # Summary
 

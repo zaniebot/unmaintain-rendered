@@ -12,14 +12,14 @@ head: SIM300-autofix
 created_at: 2023-01-03T07:42:58Z
 updated_at: 2023-01-03T12:19:09Z
 url: https://github.com/astral-sh/ruff/pull/1588
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add autofix for SIM300
 
 ---
 
-_Pull request opened by @PedramNavid on 2023-01-03 07:42_
+_@PedramNavid_
 
 I think this is right! I ran it locally on the test cases and it worked, but admittedly I wasn't really sure what I was doing when creating an Expr instance or even the values I used for SourceCodeGenerator.
 

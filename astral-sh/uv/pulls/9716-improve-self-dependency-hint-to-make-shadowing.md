@@ -13,14 +13,14 @@ head: charlie/workspace-hint
 created_at: 2024-12-08T13:34:39Z
 updated_at: 2024-12-10T14:50:19Z
 url: https://github.com/astral-sh/uv/pull/9716
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Improve self-dependency hint to make shadowing clear
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-08 13:34_
+_@charliermarsh_
 
 _No description provided._
 

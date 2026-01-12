@@ -12,14 +12,14 @@ head: fix-up032-auto-fix-with-integers
 created_at: 2023-05-19T10:43:00Z
 updated_at: 2023-05-19T19:08:19Z
 url: https://github.com/astral-sh/ruff/pull/4525
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix UP032 auto-fix with integers
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-19 10:43_
+_@JonathanPlasse_
 
 - Related to #4523
 

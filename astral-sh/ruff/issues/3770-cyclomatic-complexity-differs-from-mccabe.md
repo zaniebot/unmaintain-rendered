@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T14:19:02Z
 updated_at: 2023-03-28T15:20:24Z
 url: https://github.com/astral-sh/ruff/issues/3770
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Cyclomatic complexity differs from mccabe
 
 ---
 
-_Issue opened by @nijel on 2023-03-28 14:19_
+_@nijel_
 
 When trying to migrate Weblate from flake8 to ruff, I've noticed several differences in cyclomatic complexity counting. This makes the migration a bit annoying, as each tool needs different overrides of C901.
 

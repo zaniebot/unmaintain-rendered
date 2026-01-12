@@ -11,14 +11,14 @@ head: B030-pipe-support
 created_at: 2023-04-25T15:09:00Z
 updated_at: 2023-04-25T18:35:32Z
 url: https://github.com/astral-sh/ruff/pull/4095
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [B030] Add support for Union usage in except expression
 
 ---
 
-_Pull request opened by @ticosax on 2023-04-25 15:09_
+_@ticosax_
 
 Conforming to https://peps.python.org/pep-0604/
 Except expressions can be written with Unions

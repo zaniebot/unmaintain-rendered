@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-04T04:57:48Z
 updated_at: 2023-12-04T16:26:16Z
 url: https://github.com/astral-sh/uv/issues/537
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Invalid unpack operation when building source distribution
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-04 04:57_
+_@charliermarsh_
 
 Running `cargo run -p puffin-cli -- pip-sync ../ruff-lsp/requirements-dev.txt` is giving me:
 

@@ -14,14 +14,14 @@ head: feature/transparent-python-upgrades
 created_at: 2025-06-10T19:47:38Z
 updated_at: 2025-06-21T09:22:27Z
 url: https://github.com/astral-sh/uv/pull/13954
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Support transparent Python patch version upgrades
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-10 19:47_
+_@jtfmumm_
 
 > NOTE: The PRs that were merged into this feature branch have all been independently reviewed. But it's also useful to see all of the changes in their final form. I've added comments to significant changes throughout the PR to aid discussion.
 

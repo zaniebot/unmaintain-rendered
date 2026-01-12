@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T03:28:00Z
 updated_at: 2024-08-22T17:16:24Z
 url: https://github.com/astral-sh/uv/issues/6404
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # question for feature request: is there a way to "pin" a specific dependency to the latest?
 
 ---
 
-_Issue opened by @qci-amos on 2024-08-22 03:28_
+_@qci-amos_
 
 I'm looking for a way to do the equivalent of: specify a pin of a dependency to whatever the latest currently is.
 

@@ -11,14 +11,14 @@ head: refactor
 created_at: 2024-12-06T11:12:23Z
 updated_at: 2024-12-06T11:14:16Z
 url: https://github.com/astral-sh/uv/pull/9674
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Refactor: check.rs into manageable functions
 
 ---
 
-_Pull request opened by @srinivasreddy on 2024-12-06 11:12_
+_@srinivasreddy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

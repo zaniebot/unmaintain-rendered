@@ -12,14 +12,14 @@ head: rm-tuple-constant
 created_at: 2023-07-17T20:55:57Z
 updated_at: 2023-07-17T23:06:52Z
 url: https://github.com/astral-sh/ruff/pull/5840
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # upgrade rustpython to remove tuple-constants
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-17 20:55_
+_@davidszotten_
 
 c.f. https://github.com/astral-sh/RustPython-Parser/pull/28
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-11T14:09:40Z
 updated_at: 2025-11-24T19:48:32Z
 url: https://github.com/astral-sh/ty/issues/317
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support double clicking to insert inlay hints in the editor ("bake inlay hints")
 
 ---
 
-_Issue opened by @DetachHead on 2025-05-11 14:09_
+_@DetachHead_
 
 before:
 

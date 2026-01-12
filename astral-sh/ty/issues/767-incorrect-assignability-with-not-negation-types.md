@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-05T15:34:15Z
 updated_at: 2025-10-10T11:10:19Z
 url: https://github.com/astral-sh/ty/issues/767
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect assignability with Not[] (negation types) and gradual types
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-07-05 15:34_
+_@JelleZijlstra_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T11:54:51Z
 updated_at: 2025-06-12T06:16:29Z
 url: https://github.com/astral-sh/ruff/issues/18625
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Is there a way for Ruff to notify when a `per-file-ignores` item is unnecessary?
 
 ---
 
-_Issue opened by @fabcor-maxiv on 2025-06-11 11:54_
+_@fabcor-maxiv_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-01T09:02:02Z
 updated_at: 2025-08-01T09:05:33Z
 url: https://github.com/astral-sh/ty/issues/923
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Recursive type panics
 
 ---
 
-_Issue opened by @zdxerr on 2025-08-01 09:02_
+_@zdxerr_
 
 ### Summary
 

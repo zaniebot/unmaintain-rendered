@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T18:57:17Z
 updated_at: 2024-06-19T17:04:25Z
 url: https://github.com/astral-sh/uv/issues/4399
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Support interpreter requests with wheel platform compatibility tags
 
 ---
 
-_Issue opened by @zanieb on 2024-06-18 18:57_
+_@zanieb_
 
 As specified in https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/ e.g. `cp38`
 

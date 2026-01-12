@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T07:08:34Z
 updated_at: 2025-08-14T18:38:40Z
 url: https://github.com/astral-sh/ty/issues/970
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Waterfall effect in `ProjectFilesWalker::collect_vec`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-12 07:08_
+_@MichaReiser_
 
 <img width="3360" height="1055" alt="Image" src="https://github.com/user-attachments/assets/cf325c22-fb1b-469f-a175-61b96150e44c" />
 

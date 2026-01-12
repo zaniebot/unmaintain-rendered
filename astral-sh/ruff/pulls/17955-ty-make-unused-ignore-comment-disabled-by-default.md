@@ -14,14 +14,14 @@ head: alex/unused-ignore
 created_at: 2025-05-08T16:07:37Z
 updated_at: 2025-05-08T16:24:03Z
 url: https://github.com/astral-sh/ruff/pull/17955
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Make `unused-ignore-comment` disabled by default for now
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 16:07_
+_@AlexWaygood_
 
 ## Summary
 

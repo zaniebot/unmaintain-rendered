@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-06-13T13:58:46Z
 updated_at: 2024-06-17T09:04:15Z
 url: https://github.com/astral-sh/uv/pull/4305
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Ignore `compile_invalid_pyc_invalidation_mode` on macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 13:58_
+_@charliermarsh_
 
 ## Summary
 

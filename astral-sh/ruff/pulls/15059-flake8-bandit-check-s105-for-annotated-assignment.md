@@ -13,14 +13,14 @@ head: fix-S105-false-negative
 created_at: 2024-12-19T12:00:45Z
 updated_at: 2024-12-19T12:28:33Z
 url: https://github.com/astral-sh/ruff/pull/15059
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-bandit`] Check `S105` for annotated assignment
 
 ---
 
-_Pull request opened by @tarasmatsyk on 2024-12-19 12:00_
+_@tarasmatsyk_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

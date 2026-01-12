@@ -14,14 +14,14 @@ head: dcreager/consraint-bdd
 created_at: 2025-09-23T13:40:44Z
 updated_at: 2025-09-26T01:55:37Z
 url: https://github.com/astral-sh/ruff/pull/20533
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Change to BDD representation for constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-23 13:40_
+_@dcreager_
 
 While working on #20093, I kept running into test failures due to constraint sets not simplifying as much as they could, and therefore not being easily testable against "always true" and "always false".
 

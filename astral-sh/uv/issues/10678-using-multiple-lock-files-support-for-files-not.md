@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T13:46:53Z
 updated_at: 2025-01-16T17:57:21Z
 url: https://github.com/astral-sh/uv/issues/10678
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Using multiple lock files / support for files not called `uv.lock`
 
 ---
 
-_Issue opened by @dionhaefner on 2025-01-16 13:46_
+_@dionhaefner_
 
 I want to keep a lock file that represents a reproducible single-source truth for a tested and validated environment, so we can use it during deployment. For this, we have several CI jobs that use it in tests and publish (via `uv sync --locked`), with a cron job that updates the environment periodically (via `uv lock --upgrade`).
 

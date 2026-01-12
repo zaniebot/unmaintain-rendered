@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-27T21:29:16Z
 updated_at: 2024-06-05T01:00:52Z
 url: https://github.com/clap-rs/clap/issues/5510
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Adding a line to command help makes every option help multiline
 
 ---
 
-_Issue opened by @stepancheg on 2024-05-27 21:29_
+_@stepancheg_
 
 ### Please complete the following tasks
 

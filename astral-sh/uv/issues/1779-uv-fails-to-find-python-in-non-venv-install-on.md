@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T19:35:40Z
 updated_at: 2024-02-28T02:10:30Z
 url: https://github.com/astral-sh/uv/issues/1779
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # uv fails to find python in non-venv install on Windows
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-20 19:35_
+_@gaborbernat_
 
 When trying to run the tool on Windows, I get this rust like stack trace:
 

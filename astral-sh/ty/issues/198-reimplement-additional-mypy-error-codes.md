@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-14T16:07:10Z
 updated_at: 2025-05-12T10:38:40Z
 url: https://github.com/astral-sh/ty/issues/198
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # reimplement additional mypy error codes
 
 ---
 
-_Issue opened by @ngnpope on 2025-02-14 16:07_
+_@ngnpope_
 
 ### Description
 

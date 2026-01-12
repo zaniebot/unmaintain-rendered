@@ -13,14 +13,14 @@ head: charlie/ra
 created_at: 2025-01-17T04:49:22Z
 updated_at: 2025-01-17T16:41:18Z
 url: https://github.com/astral-sh/uv/pull/10705
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Avoid returning `Some` for narrowing no-ops
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 04:49_
+_@charliermarsh_
 
 The net effect here is (I think) just that we end up logging more "narrowing" outcomes than we have in practice.
 

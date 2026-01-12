@@ -14,14 +14,14 @@ head: fix-TC008-fix-syntax-error
 created_at: 2025-07-04T20:19:01Z
 updated_at: 2025-07-07T20:37:58Z
 url: https://github.com/astral-sh/ruff/pull/19150
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [`flake8-type-checking`] Fix syntax error introduced by fix (`TC008`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-04 20:19_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

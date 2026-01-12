@@ -13,14 +13,14 @@ head: zb/ty-warning-include
 created_at: 2025-12-15T20:44:40Z
 updated_at: 2025-12-15T21:23:10Z
 url: https://github.com/astral-sh/ty/pull/1903
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Use a "warning" admonition for expensive prefix includes
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 20:44_
+_@zanieb_
 
 _No description provided._
 

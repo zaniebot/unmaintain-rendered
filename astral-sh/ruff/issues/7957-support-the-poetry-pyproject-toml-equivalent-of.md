@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-14T02:57:17Z
 updated_at: 2023-10-14T19:26:25Z
 url: https://github.com/astral-sh/ruff/issues/7957
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Support the Poetry pyproject.toml equivalent of `requires-python`
 
 ---
 
-_Issue opened by @newbery on 2023-10-14 02:57_
+_@newbery_
 
 The docs on the `target-version` setting, 
 https://docs.astral.sh/ruff/settings/#target-version,

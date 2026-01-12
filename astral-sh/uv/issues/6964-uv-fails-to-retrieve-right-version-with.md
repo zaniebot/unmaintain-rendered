@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T10:03:21Z
 updated_at: 2024-09-10T07:32:03Z
 url: https://github.com/astral-sh/uv/issues/6964
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv` fails to retrieve right version with `setuptools_scm` in clone after new release
 
 ---
 
-_Issue opened by @lkstrp on 2024-09-03 10:03_
+_@lkstrp_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T08:15:03Z
 updated_at: 2025-01-13T22:50:06Z
 url: https://github.com/astral-sh/uv/issues/5952
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # feature request: support `uv pip freeze --path <path>`
 
 ---
 
-_Issue opened by @charles-cooper on 2024-08-09 08:15_
+_@charles-cooper_
 
 uv 0.2.34
 

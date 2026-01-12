@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T23:00:53Z
 updated_at: 2025-02-19T00:20:26Z
 url: https://github.com/astral-sh/uv/issues/11608
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # `uv run --prerelease=allow script.py` with in-line index seems to fail
 
 ---
 
-_Issue opened by @bluecoconut on 2025-02-18 23:00_
+_@bluecoconut_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: micha/rust-toolchain-sdist
 created_at: 2025-05-07T16:56:25Z
 updated_at: 2025-06-12T07:20:05Z
 url: https://github.com/astral-sh/ruff/pull/17925
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Remove rust-toolchain.toml from sdist
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 16:56_
+_@MichaReiser_
 
 ## Summary
 The `rust-toolchain.toml` specifies the rust toolchain version that we use for development. 

@@ -13,14 +13,14 @@ head: dhruv/unpack-diagnostics-bug
 created_at: 2025-06-23T10:27:46Z
 updated_at: 2025-06-24T05:53:33Z
 url: https://github.com/astral-sh/ruff/pull/18890
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Create `Definition` for all place expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-23 10:27_
+_@dhruvmanila_
 
 ## Summary
 

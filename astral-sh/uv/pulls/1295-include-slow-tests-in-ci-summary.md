@@ -14,14 +14,14 @@ head: zb/slow-tests
 created_at: 2024-02-13T04:23:51Z
 updated_at: 2024-02-13T19:52:56Z
 url: https://github.com/astral-sh/uv/pull/1295
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Include slow tests in CI summary
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-13 04:23_
+_@zanieb_
 
 Show me the slow tests! ref https://github.com/astral-sh/puffin/issues/878
 

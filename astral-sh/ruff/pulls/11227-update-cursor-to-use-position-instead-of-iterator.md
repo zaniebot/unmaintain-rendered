@@ -12,14 +12,14 @@ head: dhruv/cursor-position
 created_at: 2024-05-01T03:55:48Z
 updated_at: 2024-05-02T02:02:17Z
 url: https://github.com/astral-sh/ruff/pull/11227
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Update `Cursor` to use position instead of iterator
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-01 03:55_
+_@dhruvmanila_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

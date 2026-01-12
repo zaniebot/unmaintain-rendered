@@ -15,14 +15,14 @@ head: AIR311-fix
 created_at: 2025-08-25T14:30:30Z
 updated_at: 2025-08-25T15:15:35Z
 url: https://github.com/astral-sh/ruff/pull/20081
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`airflow`] replace wrong path `airflow.io.stroage` as `airflow.io.store` (`AIR311`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-08-25 14:30_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-24T20:45:58Z
 updated_at: 2023-03-25T16:18:35Z
 url: https://github.com/astral-sh/ruff/issues/3722
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Isort option `src_path` is renamed to `src` and moved to tool.ruff section
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2023-03-24 20:45_
+_@Cjkjvfnby_
 
 Isort option `src_path` is renamed to `src` and moved to `[tool.ruff]` section.  It took me some time to find it. 
 

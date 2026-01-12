@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-10T14:08:45Z
 updated_at: 2024-04-10T14:29:00Z
 url: https://github.com/astral-sh/uv/issues/2960
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Support -e Flag in requirements.in for pip compile/install?
 
 ---
 
-_Issue opened by @brberry on 2024-04-10 14:08_
+_@brberry_
 
 [uv 0.1.31, Windows]
 

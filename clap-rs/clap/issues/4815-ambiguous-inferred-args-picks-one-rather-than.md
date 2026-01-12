@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-31T18:35:30Z
 updated_at: 2023-07-19T14:51:50Z
 url: https://github.com/clap-rs/clap/issues/4815
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Ambiguous inferred args picks one, rather than errors
 
 ---
 
-_Issue opened by @SUPERCILEX on 2023-03-31 18:35_
+_@SUPERCILEX_
 
 ### Please complete the following tasks
 

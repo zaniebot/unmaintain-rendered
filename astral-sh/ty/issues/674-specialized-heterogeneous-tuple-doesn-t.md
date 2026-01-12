@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-17T23:59:52Z
 updated_at: 2025-06-23T06:37:10Z
 url: https://github.com/astral-sh/ty/issues/674
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # specialized heterogeneous tuple doesn't specialize its methods
 
 ---
 
-_Issue opened by @carljm on 2025-06-17 23:59_
+_@carljm_
 
 ### Summary
 

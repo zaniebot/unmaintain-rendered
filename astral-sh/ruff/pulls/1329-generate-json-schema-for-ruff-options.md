@@ -12,14 +12,14 @@ head: toml-json-schema
 created_at: 2022-12-22T06:29:52Z
 updated_at: 2022-12-24T23:33:45Z
 url: https://github.com/astral-sh/ruff/pull/1329
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Generate JSON schema for Ruff options
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-12-22 06:29_
+_@edgarrmondragon_
 
 See https://github.com/charliermarsh/ruff/issues/1217
 

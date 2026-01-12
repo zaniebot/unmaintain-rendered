@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-07T17:40:39Z
 updated_at: 2024-08-20T18:21:35Z
 url: https://github.com/astral-sh/uv/issues/5882
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Test coverage for multi-index scenarios for `uv.lock`
 
 ---
 
-_Issue opened by @konstin on 2024-08-07 17:40_
+_@konstin_
 
 Currently, there is only one scenarios for the lockfile with multiple registries (`add_lower_bound_local`) and that is testing something else. We should add at least a basic test for multi-index cases.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-24T04:28:46Z
 updated_at: 2025-07-25T04:04:24Z
 url: https://github.com/astral-sh/ty/issues/879
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Signature help shows up even after completing the call
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-24 04:28_
+_@dhruvmanila_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: ICN001-check-from-imports-no-alias
 created_at: 2023-01-21T22:03:43Z
 updated_at: 2023-01-22T04:14:49Z
 url: https://github.com/astral-sh/ruff/pull/2072
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # ICN001 check from imports that have no alias
 
 ---
 
-_Pull request opened by @Zeddicus414 on 2023-01-21 22:03_
+_@Zeddicus414_
 
 Add tests.
 

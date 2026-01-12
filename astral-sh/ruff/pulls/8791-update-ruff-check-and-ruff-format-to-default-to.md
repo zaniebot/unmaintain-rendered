@@ -13,14 +13,14 @@ head: zanie/default
 created_at: 2023-11-20T16:35:58Z
 updated_at: 2023-11-21T17:34:23Z
 url: https://github.com/astral-sh/ruff/pull/8791
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update `ruff check` and `ruff format` to default to the current directory
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-20 16:35_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/7347
 Closes #3970 via use of `include`

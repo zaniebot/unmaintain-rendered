@@ -13,14 +13,14 @@ head: feature/__debug__-support
 created_at: 2025-06-07T20:28:53Z
 updated_at: 2025-06-11T10:45:41Z
 url: https://github.com/astral-sh/ruff/pull/18540
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Add support for global `__debug__` constant
 
 ---
 
-_Pull request opened by @suneettipirneni on 2025-06-07 20:28_
+_@suneettipirneni_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

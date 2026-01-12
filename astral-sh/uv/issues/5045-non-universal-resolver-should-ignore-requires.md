@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T14:23:35Z
 updated_at: 2024-09-02T18:23:44Z
 url: https://github.com/astral-sh/uv/issues/5045
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Non-universal resolver should ignore requires-python upper bound
 
 ---
 
-_Issue opened by @konstin on 2024-07-14 14:23_
+_@konstin_
 
 Without universal resolution, we fail to resolve colabfold 1.5.5 on python 3.12, since it [only supports python 3.9 to 3.11](https://inspector.pypi.io/project/colabfold/1.5.5/packages/8e/74/52a6580a05c4f85980d449fbf71ead514bef0d0548c218abb808106f1a41/colabfold-1.5.5-py3-none-any.whl/colabfold-1.5.5.dist-info/METADATA#line.9):
 

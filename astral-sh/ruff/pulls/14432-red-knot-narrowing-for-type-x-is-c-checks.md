@@ -13,14 +13,14 @@ head: david/type-x-is-c-narrowing
 created_at: 2024-11-18T12:27:20Z
 updated_at: 2024-11-18T15:21:48Z
 url: https://github.com/astral-sh/ruff/pull/14432
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Narrowing for `type(x) is C` checks
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-18 12:27_
+_@sharkdp_
 
 ## Summary
 

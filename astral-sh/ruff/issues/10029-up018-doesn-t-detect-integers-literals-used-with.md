@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T19:59:13Z
 updated_at: 2024-02-20T18:21:08Z
 url: https://github.com/astral-sh/ruff/issues/10029
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `UP018` doesn't detect integers literals used with unary operators
 
 ---
 
-_Issue opened by @dosisod on 2024-02-18 19:59_
+_@dosisod_
 
 UP018 doesn't warn about integer literals when prefixed with unary operators:
 

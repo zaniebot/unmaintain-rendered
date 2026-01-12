@@ -13,14 +13,14 @@ head: charlie/rust
 created_at: 2023-02-03T19:12:00Z
 updated_at: 2023-02-03T19:31:55Z
 url: https://github.com/astral-sh/ruff/pull/2551
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Update RustPython to pull in lexer optimizations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 19:12_
+_@charliermarsh_
 
 Before:
 

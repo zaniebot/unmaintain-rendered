@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-08T20:45:17Z
 updated_at: 2025-03-14T14:51:15Z
 url: https://github.com/astral-sh/ruff/issues/16570
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `FURB140 `: `reimplemented-starmap` and static type analysis
 
 ---
 
-_Issue opened by @tpgillam on 2025-03-08 20:45_
+_@tpgillam_
 
 A small question/discussion point (relevant as-of ruff 0.9.10 preview). Pertains to how `reimplemented-starmap` [FURB140](https://docs.astral.sh/ruff/rules/reimplemented-starmap/) recommends code that interacts less well with certain static type checkers.
 

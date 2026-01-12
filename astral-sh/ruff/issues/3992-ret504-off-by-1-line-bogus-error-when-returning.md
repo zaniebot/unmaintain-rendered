@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-17T06:37:39Z
 updated_at: 2023-04-18T03:22:40Z
 url: https://github.com/astral-sh/ruff/issues/3992
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RET504 off-by-1  line / bogus error when returning an argument
 
 ---
 
-_Issue opened by @hynek on 2023-04-17 06:37_
+_@hynek_
 
 Consider the following file `t.py`:
 

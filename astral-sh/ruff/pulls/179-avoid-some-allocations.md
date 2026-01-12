@@ -12,14 +12,14 @@ head: dd/fewer-allocations
 created_at: 2022-09-13T09:12:48Z
 updated_at: 2022-09-13T14:35:38Z
 url: https://github.com/astral-sh/ruff/pull/179
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Avoid some allocations
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-13 09:12_
+_@Stranger6667_
 
 These are minor performance-related things
 

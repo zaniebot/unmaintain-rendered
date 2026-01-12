@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-01-31T01:23:40Z
 updated_at: 2024-01-31T01:26:12Z
 url: https://github.com/astral-sh/uv/pull/1201
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Add missing `--exclude-newer` to executable tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 01:23_
+_@charliermarsh_
 
 A new version of `platformdirs` came out, which broke these.
 

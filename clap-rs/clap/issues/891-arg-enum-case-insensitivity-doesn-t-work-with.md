@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-07T19:53:43Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/891
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # arg_enum! case insensitivity doesn't work with `possible_values`
 
 ---
 
-_Issue opened by @LegNeato on 2017-03-07 19:53_
+_@LegNeato_
 
 Enum case insensitivity was add in https://github.com/kbknapp/clap-rs/issues/104.
 

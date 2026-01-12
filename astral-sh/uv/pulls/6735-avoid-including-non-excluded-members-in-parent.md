@@ -13,14 +13,14 @@ head: charlie/roots
 created_at: 2024-08-28T01:30:28Z
 updated_at: 2024-08-28T01:39:47Z
 url: https://github.com/astral-sh/uv/pull/6735
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Avoid including non-excluded members in parent workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-28 01:30_
+_@charliermarsh_
 
 ## Summary
 

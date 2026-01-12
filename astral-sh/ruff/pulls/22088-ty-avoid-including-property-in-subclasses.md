@@ -14,14 +14,14 @@ head: charlie/property-fix
 created_at: 2025-12-19T16:24:28Z
 updated_at: 2025-12-30T03:28:05Z
 url: https://github.com/astral-sh/ruff/pull/22088
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Avoid including `property` in subclasses properties
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-19 16:24_
+_@charliermarsh_
 
 ## Summary
 

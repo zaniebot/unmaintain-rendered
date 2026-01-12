@@ -12,14 +12,14 @@ head: hardcoded-url-transform-readme
 created_at: 2023-02-02T17:53:42Z
 updated_at: 2023-02-02T19:24:07Z
 url: https://github.com/astral-sh/ruff/pull/2487
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix hardcoded url in transform_readme.py
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-02 17:53_
+_@JonathanPlasse_
 
 Store benchmark URLs in a global variable to facilitate updating the benchmark.
 

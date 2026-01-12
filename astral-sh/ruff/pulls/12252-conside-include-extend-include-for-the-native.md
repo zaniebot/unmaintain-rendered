@@ -14,14 +14,14 @@ head: dhruv/server-include
 created_at: 2024-07-09T06:15:26Z
 updated_at: 2024-07-10T04:27:14Z
 url: https://github.com/astral-sh/ruff/pull/12252
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Conside `include`, `extend-include` for the native server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-09 06:15_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: ag/fix-disjointness-commutative
 created_at: 2024-10-09T19:11:12Z
 updated_at: 2024-10-12T18:14:20Z
 url: https://github.com/astral-sh/uv/pull/8053
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # fix bug where MarkerTree::is_disjoint was sometimes not commutative
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-10-09 19:11_
+_@BurntSushi_
 
 This PR fixes a bug where disjointness checking didn't always
 satisfy commutativity. And it *should*. The `is_disjoint_commutative`

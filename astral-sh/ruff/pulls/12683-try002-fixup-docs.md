@@ -13,14 +13,14 @@ head: try-docs
 created_at: 2024-08-05T08:52:03Z
 updated_at: 2024-08-05T09:05:24Z
 url: https://github.com/astral-sh/ruff/pull/12683
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # TRY002: fixup docs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-05 08:52_
+_@AlexWaygood_
 
 I realised almost as soon as I merged #12620 that the docs should also have been updated (cc. @epenet)
 

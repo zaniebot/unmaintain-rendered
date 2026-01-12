@@ -12,14 +12,14 @@ head: fix-safety-check-and-remove-from-set
 created_at: 2025-09-04T12:14:36Z
 updated_at: 2025-09-09T14:59:37Z
 url: https://github.com/astral-sh/ruff/pull/20227
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [`refurb`] Fix safety section (`FURB132`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-09-04 12:14_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `FURB132` (#15584 )
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-08T13:39:49Z
 updated_at: 2025-11-13T17:55:05Z
 url: https://github.com/astral-sh/ty/issues/272
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Recognize user intent when using `--python 3.13`
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-08 13:39_
+_@sharkdp_
 
 For some reason I do this wrong all the time. I run `ty check --python 3.13` and press enter before I realize that it should be `--python-version`, not `--python`. It would be nice to detect this (directory "3.13" does not exist and it successfully parses as a python version) and to show a nice error message ("did you mean `--python-version 3.13`")?
 ```

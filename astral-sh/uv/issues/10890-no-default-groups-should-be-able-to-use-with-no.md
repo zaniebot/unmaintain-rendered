@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T09:16:07Z
 updated_at: 2025-02-05T20:31:24Z
 url: https://github.com/astral-sh/uv/issues/10890
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # `--no-default-groups` should be able to use with `--no-group` and `--all-groups`
 
 ---
 
-_Issue opened by @j178 on 2025-01-23 09:16_
+_@j178_
 
 ### Summary
 

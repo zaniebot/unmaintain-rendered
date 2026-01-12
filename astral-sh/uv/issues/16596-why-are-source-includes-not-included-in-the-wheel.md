@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T19:18:19Z
 updated_at: 2025-11-07T16:06:15Z
 url: https://github.com/astral-sh/uv/issues/16596
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Why are source includes not included in the wheel with `uv_build`?
 
 ---
 
-_Issue opened by @rzuckerm on 2025-11-04 19:18_
+_@rzuckerm_
 
 ### Question
 

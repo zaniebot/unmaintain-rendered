@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-06T09:54:35Z
 updated_at: 2026-01-06T19:01:34Z
 url: https://github.com/astral-sh/ty/issues/2360
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stack overflow on generic type with forward reference
 
 ---
 
-_Issue opened by @lsorber on 2026-01-06 09:54_
+_@lsorber_
 
 ### Summary
 

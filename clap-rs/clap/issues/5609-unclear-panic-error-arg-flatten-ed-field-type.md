@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T08:45:36Z
 updated_at: 2024-07-31T20:30:29Z
 url: https://github.com/clap-rs/clap/issues/5609
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Unclear panic error: "`#[arg(flatten)]`ed field type implements `Args::group_id`"
 
 ---
 
-_Issue opened by @noc7c9 on 2024-07-31 08:45_
+_@noc7c9_
 
 ### Please complete the following tasks
 

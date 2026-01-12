@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-28T06:40:03Z
 updated_at: 2024-03-28T13:52:18Z
 url: https://github.com/astral-sh/ruff/issues/10645
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `D100` should be ignored on test modules (at least with Google convention)
 
 ---
 
-_Issue opened by @sbrudenell on 2024-03-28 06:40_
+_@sbrudenell_
 
 I have:
 ```

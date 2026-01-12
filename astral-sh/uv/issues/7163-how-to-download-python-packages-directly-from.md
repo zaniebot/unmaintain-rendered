@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T09:56:22Z
 updated_at: 2024-09-10T02:12:24Z
 url: https://github.com/astral-sh/uv/issues/7163
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # How to download Python packages directly from cache to avoid having to download them from the network every time
 
 ---
 
-_Issue opened by @WangZhongDian on 2024-09-07 09:56_
+_@WangZhongDian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

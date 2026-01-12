@@ -14,14 +14,14 @@ head: dhruv/ci-no-tests
 created_at: 2024-11-27T04:23:01Z
 updated_at: 2025-01-22T08:29:16Z
 url: https://github.com/astral-sh/ruff/pull/14622
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Allow disabling (most of) CI with `no-test` label
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 04:23_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/uv/pull/9456
 

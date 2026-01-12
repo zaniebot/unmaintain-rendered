@@ -12,14 +12,14 @@ head: charlie/named-expr-parens
 created_at: 2023-07-29T13:53:54Z
 updated_at: 2023-07-29T14:19:40Z
 url: https://github.com/astral-sh/ruff/pull/6173
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove parentheses around some walrus operators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-29 13:53_
+_@charliermarsh_
 
 ## Summary
 

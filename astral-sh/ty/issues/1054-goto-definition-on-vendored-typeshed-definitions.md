@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T17:19:31Z
 updated_at: 2025-10-21T17:38:42Z
 url: https://github.com/astral-sh/ty/issues/1054
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # goto-definition on vendored typeshed definitions doesn't work
 
 ---
 
-_Issue opened by @Gankra on 2025-08-19 17:19_
+_@Gankra_
 
 This is a followup to #1004. 
 

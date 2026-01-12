@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-02T06:44:43Z
 updated_at: 2024-09-02T07:43:27Z
 url: https://github.com/astral-sh/uv/issues/6927
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Help: Overriding package source
 
 ---
 
-_Issue opened by @lambda-science on 2024-09-02 06:44_
+_@lambda-science_
 
 Hey
 I work on a monolith repo, that I set up with UV workspace.

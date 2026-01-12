@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T21:23:37Z
 updated_at: 2025-12-31T15:35:20Z
 url: https://github.com/astral-sh/ty/issues/1565
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # LSP panic: assertion failed: old_memo.revisions.changed_at <= revisions.changed_atquery
 
 ---
 
-_Issue opened by @correctmost on 2025-11-14 21:23_
+_@correctmost_
 
 ### Summary
 

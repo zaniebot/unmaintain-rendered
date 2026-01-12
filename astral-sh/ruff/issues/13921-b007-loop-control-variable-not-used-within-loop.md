@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T08:28:12Z
 updated_at: 2024-10-26T16:05:43Z
 url: https://github.com/astral-sh/ruff/issues/13921
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B007 Loop control variable '_' not used within loop body
 
 ---
 
-_Issue opened by @montanarograziano on 2024-10-25 08:28_
+_@montanarograziano_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

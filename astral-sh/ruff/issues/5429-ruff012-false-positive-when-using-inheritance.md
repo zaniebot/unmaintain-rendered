@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-28T21:02:44Z
 updated_at: 2025-11-28T15:42:09Z
 url: https://github.com/astral-sh/ruff/issues/5429
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUFF012: False positive when using inheritance 
 
 ---
 
-_Issue opened by @frenck on 2023-06-28 21:02_
+_@frenck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

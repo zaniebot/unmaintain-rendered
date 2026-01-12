@@ -12,14 +12,14 @@ head: micha/dunder-call-possibly-unbound
 created_at: 2025-02-12T14:48:16Z
 updated_at: 2025-02-12T16:27:48Z
 url: https://github.com/astral-sh/ruff/pull/16120
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Handle `PossiblyUndefinedDunder` as an error
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-12 14:48_
+_@MichaReiser_
 
 ## Summary
 

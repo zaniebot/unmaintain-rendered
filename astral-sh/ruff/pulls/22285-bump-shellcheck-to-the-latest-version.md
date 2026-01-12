@@ -13,14 +13,14 @@ head: alex/bump-shellcheck
 created_at: 2025-12-29T18:12:42Z
 updated_at: 2026-01-09T19:25:28Z
 url: https://github.com/astral-sh/ruff/pull/22285
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Bump shellcheck to the latest version
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-29 18:12_
+_@AlexWaygood_
 
 ## Summary
 

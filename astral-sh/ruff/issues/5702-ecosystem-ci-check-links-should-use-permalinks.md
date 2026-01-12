@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-12T04:18:23Z
 updated_at: 2023-07-12T06:26:39Z
 url: https://github.com/astral-sh/ruff/issues/5702
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ecosystem CI check links should use permalinks
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-12 04:18_
+_@charliermarsh_
 
 I notice that one of the Airflow links pointed to an irrelevant line of code. I'm guessing that the code changed between the ecosystem CI run and my clicking through. Could we instead use permalinks, so that they point to the relevant violations in perpetuity? (Is that even possible?)
 

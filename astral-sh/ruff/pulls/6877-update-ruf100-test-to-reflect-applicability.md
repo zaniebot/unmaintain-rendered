@@ -13,14 +13,14 @@ head: fix/ruff-era
 created_at: 2023-08-25T16:26:09Z
 updated_at: 2023-08-25T17:12:07Z
 url: https://github.com/astral-sh/ruff/pull/6877
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update RUF100 test to reflect applicability
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-25 16:26_
+_@zanieb_
 
 Broken on merge of #6822 due to new test cases conflicting with the addition of an applicability to RUF100 in #6827
 

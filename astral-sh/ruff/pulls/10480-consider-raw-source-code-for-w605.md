@@ -13,14 +13,14 @@ head: dhruv/fix-w605
 created_at: 2024-03-19T18:23:07Z
 updated_at: 2024-03-19T18:46:36Z
 url: https://github.com/astral-sh/ruff/pull/10480
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Consider raw source code for `W605`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-19 18:23_
+_@dhruvmanila_
 
 ## Summary
 

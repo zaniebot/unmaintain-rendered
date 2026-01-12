@@ -13,14 +13,14 @@ head: 3297_itertools_pairwise
 created_at: 2023-03-14T03:58:24Z
 updated_at: 2023-03-17T13:42:45Z
 url: https://github.com/astral-sh/ruff/pull/3501
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Prefer `itertools.pairwise()` over `zip()` for successive pairs (`RUF007`)
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-03-14 03:58_
+_@evanrittenhouse_
 
 Fixes #3297. 
 

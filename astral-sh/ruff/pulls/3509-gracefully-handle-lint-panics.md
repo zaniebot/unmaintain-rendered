@@ -14,14 +14,14 @@ head: feat/gracefully-handle-lint-panics
 created_at: 2023-03-14T12:50:00Z
 updated_at: 2023-03-19T16:08:40Z
 url: https://github.com/astral-sh/ruff/pull/3509
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Gracefully handle lint panics
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-14 12:50_
+_@MichaReiser_
 
 This PR wraps the linting of every file in a [`catch_unwind`](https://blog.rust-lang.org/2016/05/26/Rust-1.9.html#controlled-unwinding) to catch potential panics (due to a bug in ruff) and prints a warning instead of crashing ruff. Catching panics on a per-file basis has the advantage that it doesn't prevent users from adopting or continuing using Ruff because of a bug triggered by a specific code snipped. The catch handler also includes the name of the problematic file to ease identifying the bug. 
 

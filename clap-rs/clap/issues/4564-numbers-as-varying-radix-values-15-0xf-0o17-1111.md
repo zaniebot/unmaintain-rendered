@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-20T02:43:54Z
 updated_at: 2025-08-07T20:08:42Z
 url: https://github.com/clap-rs/clap/issues/4564
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # numbers as varying radix values, 15 0xF 0o17 1111
 
 ---
 
-_Issue opened by @epage on 2022-12-20 02:43_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/4563
 

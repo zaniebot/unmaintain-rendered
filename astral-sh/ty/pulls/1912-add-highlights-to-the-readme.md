@@ -13,14 +13,14 @@ head: zb/highlights
 created_at: 2025-12-16T01:34:56Z
 updated_at: 2025-12-16T13:45:53Z
 url: https://github.com/astral-sh/ty/pull/1912
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add "highlights" to the README
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 01:34_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/ty/tree/zb/highlights?tab=readme-ov-file#highlights)
 

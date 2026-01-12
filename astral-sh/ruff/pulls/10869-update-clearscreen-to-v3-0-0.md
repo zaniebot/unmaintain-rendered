@@ -13,14 +13,14 @@ head: charlie/nix
 created_at: 2024-04-11T04:19:29Z
 updated_at: 2024-04-11T04:45:58Z
 url: https://github.com/astral-sh/ruff/pull/10869
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Update `clearscreen` to v3.0.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 04:19_
+_@charliermarsh_
 
 ## Summary
 

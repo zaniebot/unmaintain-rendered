@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-20T11:53:16Z
 updated_at: 2025-11-14T08:53:51Z
 url: https://github.com/astral-sh/ty/issues/1219
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Document support for `PYTHONPATH`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-09-20 11:53_
+_@MichaReiser_
 
 Update the https://docs.astral.sh/ty/modules/#python-environment to account for https://github.com/astral-sh/ruff/pull/20441 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-22T17:41:40Z
 updated_at: 2025-02-23T21:22:15Z
 url: https://github.com/astral-sh/ruff/issues/16317
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # unnecessary-literal-union (PYI030) can remove comments without being marked as unsafe
 
 ---
 
-_Issue opened by @Avasam on 2025-02-22 17:41_
+_@Avasam_
 
 ### Description
 

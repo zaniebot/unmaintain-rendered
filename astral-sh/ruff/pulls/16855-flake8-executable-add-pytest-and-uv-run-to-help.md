@@ -13,14 +13,14 @@ head: shebang-uv-followup
 created_at: 2025-03-19T18:01:01Z
 updated_at: 2025-03-19T18:12:32Z
 url: https://github.com/astral-sh/ruff/pull/16855
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`flake8-executable`] Add pytest and uv run to help message for `shebang-missing-python` (`EXE003`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-19 18:01_
+_@dylwil3_
 
 Followup to #16849 per https://github.com/astral-sh/ruff/pull/16849#issuecomment-2737316564
 

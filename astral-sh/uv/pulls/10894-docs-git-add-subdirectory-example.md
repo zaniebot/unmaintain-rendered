@@ -13,14 +13,14 @@ head: docs/add-subdirectory-example
 created_at: 2025-01-23T12:29:27Z
 updated_at: 2025-01-23T14:13:56Z
 url: https://github.com/astral-sh/uv/pull/10894
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # docs(git): add subdirectory example
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-23 12:29_
+_@mkniewallner_
 
 ## Summary
 

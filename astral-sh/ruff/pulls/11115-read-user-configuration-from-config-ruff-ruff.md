@@ -14,14 +14,14 @@ head: charlie/xdg
 created_at: 2024-04-23T20:08:24Z
 updated_at: 2024-06-24T13:21:45Z
 url: https://github.com/astral-sh/ruff/pull/11115
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Read user configuration from `~/.config/ruff/ruff.toml` on macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 20:08_
+_@charliermarsh_
 
 ## Summary
 

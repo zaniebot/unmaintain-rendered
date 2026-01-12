@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-09T21:15:55Z
 updated_at: 2023-08-12T19:01:05Z
 url: https://github.com/astral-sh/ruff/issues/6461
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Docs request: linking `target-version` setting in FA docs
 
 ---
 
-_Issue opened by @jamesbraza on 2023-08-09 21:15_
+_@jamesbraza_
 
 [`FA102`](https://beta.ruff.rs/docs/rules/future-required-type-annotation/) only happens if one has the [`target-version`](https://beta.ruff.rs/docs/settings/#target-version) set below Python 3.10.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-07T18:37:48Z
 updated_at: 2024-02-15T09:47:08Z
 url: https://github.com/astral-sh/ruff/issues/8546
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: long walrus operator expression introduces parentheses 
 
 ---
 
-_Issue opened by @tjkuson on 2023-11-07 18:37_
+_@tjkuson_
 
 This seems similar to #7246 which was closed as completed, but reproducible in the latest `0.1.4` release.
 

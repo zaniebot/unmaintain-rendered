@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T17:06:37Z
 updated_at: 2024-08-07T17:39:52Z
 url: https://github.com/astral-sh/uv/issues/5875
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Add `--locked` to all existing lock tests
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-07 17:06_
+_@charliermarsh_
 
 _No description provided._
 

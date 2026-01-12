@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T08:59:38Z
 updated_at: 2024-11-23T07:14:40Z
 url: https://github.com/astral-sh/ruff/issues/14521
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positive F821 and F841 for an exception object inside a lambda function
 
 ---
 
-_Issue opened by @dqd on 2024-11-22 08:59_
+_@dqd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

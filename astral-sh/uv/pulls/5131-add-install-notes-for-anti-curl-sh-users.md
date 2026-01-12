@@ -14,14 +14,14 @@ head: zb/docs-installing-standalone
 created_at: 2024-07-16T21:11:26Z
 updated_at: 2024-07-17T14:29:19Z
 url: https://github.com/astral-sh/uv/pull/5131
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Add install notes for anti-curl | sh users
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 21:11_
+_@zanieb_
 
 _No description provided._
 

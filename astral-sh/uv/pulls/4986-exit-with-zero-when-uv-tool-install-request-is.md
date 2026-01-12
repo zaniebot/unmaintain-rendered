@@ -12,14 +12,14 @@ head: feat/uv-tool-exit-0
 created_at: 2024-07-11T04:16:01Z
 updated_at: 2024-07-12T00:43:31Z
 url: https://github.com/astral-sh/uv/pull/4986
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Exit with zero when `uv tool install` request is already satisfied
 
 ---
 
-_Pull request opened by @billy-doyle on 2024-07-11 04:16_
+_@billy-doyle_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

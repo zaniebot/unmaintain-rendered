@@ -14,14 +14,14 @@ head: ag/fix-unresolved-important-range
 created_at: 2025-02-05T18:10:44Z
 updated_at: 2025-02-05T19:01:59Z
 url: https://github.com/astral-sh/ruff/pull/15976
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] fix unresolvable import range
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-05 18:10_
+_@BurntSushi_
 
 This causes the diagnostic to highlight the actual unresovable import
 instead of the entire `from ... import ...` statement.

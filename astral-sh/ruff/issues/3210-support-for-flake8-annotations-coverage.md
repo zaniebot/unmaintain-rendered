@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-24T18:14:55Z
 updated_at: 2023-07-10T01:26:06Z
 url: https://github.com/astral-sh/ruff/issues/3210
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Support for `flake8-annotations-coverage`
 
 ---
 
-_Issue opened by @szymonmaszke on 2023-02-24 18:14_
+_@szymonmaszke_
 
 Hey, we are currently using [`flake8-annotations-coverage`](https://github.com/best-doctor/flake8-annotations-coverage) in our FOSS [`py-template`](https://github.com/inovintell/py-template) project, but we would like to move to `ruff` exclusively from `flake8` + `flakeheaven`. 
 

@@ -14,14 +14,14 @@ head: alex/submodule-attr-global-scope
 created_at: 2025-11-23T22:31:01Z
 updated_at: 2025-11-23T22:41:30Z
 url: https://github.com/astral-sh/ruff/pull/21599
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Only add `import`ed modules to `imported_modules` if the `import` statement is in the global scope
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-23 22:31_
+_@AlexWaygood_
 
 ## Summary
 

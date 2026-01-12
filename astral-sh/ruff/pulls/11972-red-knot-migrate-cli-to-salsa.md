@@ -13,14 +13,14 @@ head: salsa-10-red-knot-cli
 created_at: 2024-06-21T16:15:04Z
 updated_at: 2024-07-04T07:38:19Z
 url: https://github.com/astral-sh/ruff/pull/11972
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Migrate CLI to Salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-21 16:15_
+_@MichaReiser_
 
 ## Summary
 

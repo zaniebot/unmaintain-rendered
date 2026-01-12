@@ -13,14 +13,14 @@ head: charlie/datetime
 created_at: 2025-04-21T22:39:02Z
 updated_at: 2025-04-21T22:49:43Z
 url: https://github.com/astral-sh/uv/pull/13028
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Clean up TOML-to-Jiff conversion
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-21 22:39_
+_@charliermarsh_
 
 ## Summary
 

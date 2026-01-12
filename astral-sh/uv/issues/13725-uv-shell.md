@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T23:43:30Z
 updated_at: 2025-05-29T23:46:45Z
 url: https://github.com/astral-sh/uv/issues/13725
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv shell
 
 ---
 
-_Issue opened by @0xrushi on 2025-05-29 23:43_
+_@0xrushi_
 
 ### Summary
 

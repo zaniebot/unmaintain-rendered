@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T23:56:08Z
 updated_at: 2023-10-02T01:38:58Z
 url: https://github.com/astral-sh/ruff/issues/2646
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add Markdown documentation for existing lint rules
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-07 23:56_
+_@charliermarsh_
 
 If we write documentation on the `#[violation]` macro:
 

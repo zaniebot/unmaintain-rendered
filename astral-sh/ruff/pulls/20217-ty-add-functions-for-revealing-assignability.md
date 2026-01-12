@@ -14,14 +14,14 @@ head: dcreager/reveal-when-constraints
 created_at: 2025-09-03T18:34:14Z
 updated_at: 2025-09-03T20:44:37Z
 url: https://github.com/astral-sh/ruff/pull/20217
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Add functions for revealing assignability/subtyping constraints
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-03 18:34_
+_@dcreager_
 
 This PR adds two new `ty_extensions` functions, `reveal_when_assignable_to` and `reveal_when_subtype_of`. These are closely related to the existing `is_assignable_to` and `is_subtype_of`, but instead of returning when the property (always) holds, it produces a diagnostic that describes _when_ the property holds. (This will let us construct mdtests that print out constraints that are not always true or always false — though we don't currently have any instances of those.)
 

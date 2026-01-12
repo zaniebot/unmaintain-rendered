@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T08:17:57Z
 updated_at: 2024-07-23T07:39:09Z
 url: https://github.com/astral-sh/ruff/issues/12200
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [New Rule][Django] Verify that `settings` is correctly imported
 
 ---
 
-_Issue opened by @bastian-wattro on 2024-07-05 08:17_
+_@bastian-wattro_
 
 I'd like to add a rule for Django projects. I'm not quite sure about where to add it (If backwards capability was not an issue, I would add it to DJ)
 

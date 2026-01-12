@@ -11,14 +11,14 @@ head: charlie/int
 created_at: 2024-01-24T17:30:30Z
 updated_at: 2024-01-24T19:26:03Z
 url: https://github.com/astral-sh/uv/pull/1078
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Restructure interpreter queries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 17:30_
+_@charliermarsh_
 
 This illustrates what I was thinking for the interpreter lookup. I think the only change in behavior here is that if a version is provided, and `python3` or `python.exe` satisfy the version, we now choose _that_ interpreter instead of looking for `python3.7` or similar.
 

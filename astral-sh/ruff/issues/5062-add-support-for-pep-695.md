@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-13T18:59:12Z
 updated_at: 2023-08-28T15:01:44Z
 url: https://github.com/astral-sh/ruff/issues/5062
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add support for PEP 695
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-13 18:59_
+_@charliermarsh_
 
 ## Summary
 

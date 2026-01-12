@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-25T21:57:28Z
 updated_at: 2023-01-25T23:29:57Z
 url: https://github.com/astral-sh/ruff/issues/2177
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Re-include licenses in distributed wheel
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-25 21:57_
+_@charliermarsh_
 
 _No description provided._
 

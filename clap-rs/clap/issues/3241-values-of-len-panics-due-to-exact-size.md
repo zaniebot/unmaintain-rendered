@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-02T12:10:26Z
 updated_at: 2022-01-03T18:13:17Z
 url: https://github.com/clap-rs/clap/issues/3241
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # values_of ... len() panics due to exact_size
 
 ---
 
-_Issue opened by @FauxFaux on 2022-01-02 12:10_
+_@FauxFaux_
 
 ### Please complete the following tasks
 

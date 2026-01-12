@@ -12,14 +12,14 @@ head: fix/e402-dunders
 created_at: 2022-10-01T10:41:48Z
 updated_at: 2022-10-01T13:45:07Z
 url: https://github.com/astral-sh/ruff/pull/294
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # fix: Make assigns to dunder exception for E402.
 
 ---
 
-_Pull request opened by @sgryjp on 2022-10-01 10:41_
+_@sgryjp_
 
 This commit allow assignments to dunder names to be placed after a before normal imports. PEP 8 says:
 

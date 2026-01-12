@@ -13,14 +13,14 @@ head: alex/more-__all__-3
 created_at: 2025-05-08T12:44:11Z
 updated_at: 2025-05-08T16:37:27Z
 url: https://github.com/astral-sh/ruff/pull/17948
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Support extending `__all__` with a literal tuple or set as well as a literal list
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 12:44_
+_@AlexWaygood_
 
 ## Summary
 

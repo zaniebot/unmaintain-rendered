@@ -12,14 +12,14 @@ head: fix-zsh-dynamic-completion
 created_at: 2025-05-11T22:14:24Z
 updated_at: 2025-05-31T15:43:14Z
 url: https://github.com/clap-rs/clap/pull/6000
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # zsh: fix passing arguments in dynamic completion
 
 ---
 
-_Pull request opened by @mernen on 2025-05-11 22:14_
+_@mernen_
 
 Fixes #5979 for good.
 

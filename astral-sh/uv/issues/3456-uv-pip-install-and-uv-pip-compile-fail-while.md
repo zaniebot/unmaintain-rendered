@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-08T12:27:51Z
 updated_at: 2024-11-26T11:43:52Z
 url: https://github.com/astral-sh/uv/issues/3456
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # uv pip install and uv pip compile fail while installing packages in container build process
 
 ---
 
-_Issue opened by @benniekiss on 2024-05-08 12:27_
+_@benniekiss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

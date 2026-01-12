@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T16:20:30Z
 updated_at: 2025-12-12T04:13:21Z
 url: https://github.com/astral-sh/uv/issues/13304
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # "uv download" to create local directory of distributions + ability to install from the same
 
 ---
 
-_Issue opened by @mdekstrand on 2025-05-05 16:20_
+_@mdekstrand_
 
 ### Summary
 

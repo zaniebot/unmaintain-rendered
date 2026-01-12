@@ -15,14 +15,14 @@ head: micha/server-db-trait
 created_at: 2025-11-03T03:01:00Z
 updated_at: 2025-11-05T13:44:21Z
 url: https://github.com/astral-sh/ruff/pull/21241
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Add `ty_server::Db` trait
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-03 03:01_
+_@MichaReiser_
 
 ## Summary
 

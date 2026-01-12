@@ -12,14 +12,14 @@ head: async-range-requests
 created_at: 2023-11-02T23:01:56Z
 updated_at: 2024-02-14T04:32:12Z
 url: https://github.com/astral-sh/uv/pull/301
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Fetch wheel metadata by async range requests on the remote wheel
 
 ---
 
-_Pull request opened by @konstin on 2023-11-02 23:01_
+_@konstin_
 
 Use range requests and async zip to extract the METADATA file from a remote wheel.
 

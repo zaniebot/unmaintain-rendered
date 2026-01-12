@@ -12,14 +12,14 @@ head: rework-cst-matchers
 created_at: 2023-05-19T22:50:32Z
 updated_at: 2023-05-23T07:06:49Z
 url: https://github.com/astral-sh/ruff/pull/4536
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Rework CST matchers
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-19 22:50_
+_@JonathanPlasse_
 
 - [x] Remove `match_expr()`
 - [x] Remove most `match_module()`

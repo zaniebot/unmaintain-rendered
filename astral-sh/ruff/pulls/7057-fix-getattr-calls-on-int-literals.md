@@ -14,14 +14,14 @@ head: B009-fix
 created_at: 2023-09-02T03:47:14Z
 updated_at: 2023-09-02T11:51:49Z
 url: https://github.com/astral-sh/ruff/pull/7057
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix `getattr` calls on int literals
 
 ---
 
-_Pull request opened by @density on 2023-09-02 03:47_
+_@density_
 
 ## Summary
 

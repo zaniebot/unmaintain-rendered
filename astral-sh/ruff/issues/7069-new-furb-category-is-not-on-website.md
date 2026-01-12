@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-03T05:35:43Z
 updated_at: 2023-09-03T11:58:12Z
 url: https://github.com/astral-sh/ruff/issues/7069
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # new `FURB` category is not on website
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-03 05:35_
+_@DetachHead_
 
 the new refurb category added in [v0.0.287](https://github.com/astral-sh/ruff/releases/tag/v0.0.287) is not on https://beta.ruff.rs/docs/rules/
 

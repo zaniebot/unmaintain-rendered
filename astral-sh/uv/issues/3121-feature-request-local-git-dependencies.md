@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-18T13:48:07Z
 updated_at: 2024-09-05T06:18:45Z
 url: https://github.com/astral-sh/uv/issues/3121
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Feature request: local git dependencies
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-04-18 13:48_
+_@patrick-kidger_
 
 `uv` doesn't seem to support local git dependencies:
 

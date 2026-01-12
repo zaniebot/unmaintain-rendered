@@ -12,14 +12,14 @@ head: renovate/actions-upload-artifact-digest
 created_at: 2025-07-11T07:30:20Z
 updated_at: 2025-07-11T08:24:16Z
 url: https://github.com/astral-sh/ty/pull/801
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update actions/upload-artifact digest to de65e23
 
 ---
 
-_Pull request opened by @renovate on 2025-07-11 07:30_
+_@renovate_
 
 This PR contains the following updates:
 

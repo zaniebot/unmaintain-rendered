@@ -12,14 +12,14 @@ head: charlie/dollar
 created_at: 2025-01-06T18:16:09Z
 updated_at: 2025-01-06T18:38:44Z
 url: https://github.com/astral-sh/uv/pull/10330
-synced_at: 2026-01-10T11:44:42Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Avoid prefixing comments with dollar sign
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-06 18:16_
+_@charliermarsh_
 
 ## Summary
 

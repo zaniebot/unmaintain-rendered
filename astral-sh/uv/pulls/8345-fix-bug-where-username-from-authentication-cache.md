@@ -13,14 +13,14 @@ head: zb/fix-auth-username
 created_at: 2024-10-18T18:33:10Z
 updated_at: 2024-10-18T23:45:33Z
 url: https://github.com/astral-sh/uv/pull/8345
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Fix bug where username from authentication cache could be ignored
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 18:33_
+_@zanieb_
 
 Basically, if username-only authentication came from the _cache_ instead of being present on the _request URL_ to start, we'd end up ignoring it during password lookups which breaks keyring.
 

@@ -13,14 +13,14 @@ head: dhruv/callable-is-gradual-equivalent-to
 created_at: 2025-03-11T16:29:15Z
 updated_at: 2025-03-13T02:46:53Z
 url: https://github.com/astral-sh/ruff/pull/16634
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Check gradual equivalence between callable types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-11 16:29_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/in
 created_at: 2024-12-31T01:46:48Z
 updated_at: 2024-12-31T06:23:05Z
 url: https://github.com/astral-sh/uv/pull/10246
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Accept directories with space names in `uv init`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-31 01:46_
+_@charliermarsh_
 
 ## Summary
 

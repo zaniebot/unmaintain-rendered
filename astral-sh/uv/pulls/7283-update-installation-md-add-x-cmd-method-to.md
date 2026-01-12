@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-09-11T08:09:13Z
 updated_at: 2024-09-11T19:39:06Z
 url: https://github.com/astral-sh/uv/pull/7283
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Update installation.md: Add x-cmd method to install uv
 
 ---
 
-_Pull request opened by @lunrenyi on 2024-09-11 08:09_
+_@lunrenyi_
 
 ## Summary
 

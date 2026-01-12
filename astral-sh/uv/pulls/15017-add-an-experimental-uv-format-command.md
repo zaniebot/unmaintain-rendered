@@ -13,14 +13,14 @@ head: zb/format-ruff
 created_at: 2025-08-01T19:05:04Z
 updated_at: 2025-08-26T19:42:59Z
 url: https://github.com/astral-sh/uv/pull/15017
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Add an experimental `uv format` command
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-01 19:05_
+_@zanieb_
 
 As a frontend to Ruff's formatter.
 

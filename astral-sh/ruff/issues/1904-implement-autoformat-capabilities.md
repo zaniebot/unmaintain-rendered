@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-16T03:02:39Z
 updated_at: 2024-02-18T19:29:04Z
 url: https://github.com/astral-sh/ruff/issues/1904
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement autoformat capabilities
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-16 03:02_
+_@charliermarsh_
 
 This issue is the public kickoff for Ruff's autoformatting effort.
 

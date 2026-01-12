@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T17:16:28Z
 updated_at: 2023-01-27T04:17:37Z
 url: https://github.com/astral-sh/ruff/issues/2203
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # configurable list for A001 exceptions
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 17:16_
+_@spaceone_
 
 the config could have a list of exceptions for A001, A002, A003 builtin-variable-shadowing.
 For example `license` and `copyright` are not very useful and can imho be overwritten.

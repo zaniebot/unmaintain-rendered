@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-25T18:20:24Z
 updated_at: 2024-02-25T19:20:41Z
 url: https://github.com/astral-sh/uv/issues/1967
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `pip sync` command as an option for `pip install`
 
 ---
 
-_Issue opened by @T-256 on 2024-02-25 18:20_
+_@T-256_
 
 We can consider `uv pip install -r <LOCKFILE>` instad of `uv pip sync <LOCKFILE>`:
 

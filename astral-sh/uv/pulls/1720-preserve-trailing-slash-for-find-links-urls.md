@@ -13,14 +13,14 @@ head: charlie/find-links
 created_at: 2024-02-19T21:20:54Z
 updated_at: 2024-02-19T21:26:13Z
 url: https://github.com/astral-sh/uv/pull/1720
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Preserve trailing slash for `--find-links` URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-19 21:20_
+_@charliermarsh_
 
 ## Summary
 

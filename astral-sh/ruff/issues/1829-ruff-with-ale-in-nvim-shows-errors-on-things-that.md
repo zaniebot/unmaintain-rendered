@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-12T18:50:15Z
 updated_at: 2023-01-14T01:48:19Z
 url: https://github.com/astral-sh/ruff/issues/1829
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ruff with Ale in Nvim Shows errors on things that should be ignored
 
 ---
 
-_Issue opened by @colin99d on 2023-01-12 18:50_
+_@colin99d_
 
 Not sure if this is an issue here or with Ale. From the output of `ruff .`, you can see that S101 is being ignored. However, in the file itself I still see the warning.
 <img width="1973" alt="Screenshot 2023-01-12 at 1 48 08 PM" src="https://user-images.githubusercontent.com/72827203/212153088-be007d18-ddf7-42fe-bbd5-2c1c7d4f4217.png">

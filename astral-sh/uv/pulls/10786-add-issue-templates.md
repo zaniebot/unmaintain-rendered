@@ -13,14 +13,14 @@ head: zb/templates
 created_at: 2025-01-20T17:54:07Z
 updated_at: 2025-01-21T17:25:11Z
 url: https://github.com/astral-sh/uv/pull/10786
-synced_at: 2026-01-10T11:45:10Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Add issue templates
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-20 17:54_
+_@zanieb_
 
 Demo at https://github.com/zanieb/uv/issues
 

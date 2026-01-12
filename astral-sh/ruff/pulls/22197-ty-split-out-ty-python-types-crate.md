@@ -14,14 +14,14 @@ head: micha/ty-python-types
 created_at: 2025-12-25T16:37:29Z
 updated_at: 2025-12-28T08:57:04Z
 url: https://github.com/astral-sh/ruff/pull/22197
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Split out `ty_python_types` crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-25 16:37_
+_@MichaReiser_
 
 ## Summary
 

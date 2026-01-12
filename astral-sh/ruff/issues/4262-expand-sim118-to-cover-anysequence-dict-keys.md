@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-06T23:25:43Z
 updated_at: 2023-07-10T01:29:24Z
 url: https://github.com/astral-sh/ruff/issues/4262
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Expand SIM118 to cover AnySequence(dict.keys())
 
 ---
 
-_Issue opened by @janosh on 2023-05-06 23:25_
+_@janosh_
 
 Would be nice if SIM118 could be expanded (or a new rule created) that not just covers iterating over dict keys but also converting them to any type of iterable:
 

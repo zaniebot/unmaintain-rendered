@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T18:50:00Z
 updated_at: 2024-10-21T21:55:15Z
 url: https://github.com/astral-sh/uv/issues/7987
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Cannot install piper-tts due to missing wheel (but pip install works fine)
 
 ---
 
-_Issue opened by @halflings on 2024-10-07 18:50_
+_@halflings_
 
 Repro steps:
 uv init

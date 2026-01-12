@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-08T07:00:45Z
 updated_at: 2023-10-18T11:55:07Z
 url: https://github.com/astral-sh/ruff/issues/7231
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Add an option to show formatting changes when running `--check`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 07:00_
+_@MichaReiser_
 
 There are two options:
 

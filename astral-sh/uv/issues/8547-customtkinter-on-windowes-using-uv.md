@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-24T22:03:47Z
 updated_at: 2024-10-25T08:11:56Z
 url: https://github.com/astral-sh/uv/issues/8547
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # CustomTKinter on WIndowes using UV
 
 ---
 
-_Issue opened by @Barrowcroft on 2024-10-24 22:03_
+_@Barrowcroft_
 
 I understand there is an issue with UV not finding the TCL files. 
 

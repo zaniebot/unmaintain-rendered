@@ -13,14 +13,14 @@ head: charlie/stabilize
 created_at: 2024-01-30T17:52:10Z
 updated_at: 2024-01-31T17:09:00Z
 url: https://github.com/astral-sh/ruff/pull/9712
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Stabilize some rules for v0.2.0 release
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 17:52_
+_@charliermarsh_
 
 ## Summary
 

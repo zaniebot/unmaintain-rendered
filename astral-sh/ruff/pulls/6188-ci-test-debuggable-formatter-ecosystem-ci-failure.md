@@ -12,14 +12,14 @@ head: debuggable-formatter-ecosystem-ci-failure
 created_at: 2023-07-31T09:38:14Z
 updated_at: 2023-08-24T12:39:17Z
 url: https://github.com/astral-sh/ruff/pull/6188
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # CI Test: Debuggable formatter ecosystem ci failure
 
 ---
 
-_Pull request opened by @konstin on 2023-07-31 09:38_
+_@konstin_
 
 (CI test)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T15:18:37Z
 updated_at: 2025-09-19T18:42:25Z
 url: https://github.com/astral-sh/uv/issues/14000
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # `uv pip install` picks wrong candidate when version is present on multiple indexes
 
 ---
 
-_Issue opened by @fabi125 on 2025-06-12 15:18_
+_@fabi125_
 
 ### Summary
 

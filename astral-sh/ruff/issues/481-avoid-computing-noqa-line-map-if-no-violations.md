@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-26T21:11:20Z
 updated_at: 2023-05-11T19:35:41Z
 url: https://github.com/astral-sh/ruff/issues/481
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Avoid computing noqa line map if no violations were found for a given file
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-26 21:11_
+_@charliermarsh_
 
 _No description provided._
 

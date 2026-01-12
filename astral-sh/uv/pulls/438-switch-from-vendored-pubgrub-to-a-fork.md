@@ -12,14 +12,14 @@ head: zanie/pubgrub-fork
 created_at: 2023-11-16T18:58:04Z
 updated_at: 2023-11-16T19:49:20Z
 url: https://github.com/astral-sh/uv/pull/438
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Switch from vendored PubGrub to a fork
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-16 18:58_
+_@zanieb_
 
 A fork will let us stay up to date with the upstream while replaying our work on top of it.
 

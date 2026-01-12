@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T12:43:15Z
 updated_at: 2024-07-26T14:09:52Z
 url: https://github.com/astral-sh/ruff/issues/12506
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # UP008 edge-case with slotted dataclasses
 
 ---
 
-_Issue opened by @alexandermalyga on 2024-07-25 12:43_
+_@alexandermalyga_
 
 When using dataclasses with `slots=True`, calling a no-arg `super()` raises a `TypeError`, the workaround of using the two-arg variant triggers a `UP008` rule error. Would be great if the rule took this edge-case into consideration.
 

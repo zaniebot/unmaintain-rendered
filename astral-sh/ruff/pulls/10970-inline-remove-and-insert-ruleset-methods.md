@@ -12,14 +12,14 @@ head: inline-rule-set-methods
 created_at: 2024-04-16T07:19:43Z
 updated_at: 2024-08-12T07:53:21Z
 url: https://github.com/astral-sh/ruff/pull/10970
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Inline `remove` and `insert` `RuleSet` methods
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-16 07:19_
+_@MichaReiser_
 
 _No description provided._
 

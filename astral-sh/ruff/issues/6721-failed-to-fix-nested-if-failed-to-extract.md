@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T09:20:24Z
 updated_at: 2023-10-01T08:21:42Z
 url: https://github.com/astral-sh/ruff/issues/6721
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to fix nested if: Failed to extract statement from source
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 09:20_
+_@qarmin_
 
 Ruff 0.0.285
 

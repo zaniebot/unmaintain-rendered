@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T07:04:56Z
 updated_at: 2025-08-15T01:25:13Z
 url: https://github.com/astral-sh/ty/issues/93
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Stack overflows for recursive protocols
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-07 07:04_
+_@sharkdp_
 
 astral-sh/ruff#17880 fixed one particular stack overflow involving `is_fully_static`-checks on recursive protocols, but there are other type properties that have the same problem (assignability, equivalence). To fix this, we probably need a more general solution that might also supersede the specific handling for `is_fully_static`.
 

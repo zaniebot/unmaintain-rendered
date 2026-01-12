@@ -13,14 +13,14 @@ head: fix_zulip_unstable_formatting
 created_at: 2023-08-07T11:01:00Z
 updated_at: 2023-08-08T09:42:28Z
 url: https://github.com/astral-sh/ruff/pull/6386
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix zulip unstable formatting with end-of-line comments
 
 ---
 
-_Pull request opened by @konstin on 2023-08-07 11:01_
+_@konstin_
 
 ## Bug
 

@@ -12,14 +12,14 @@ head: thomas/open_cache_in_parallel
 created_at: 2023-06-15T13:35:49Z
 updated_at: 2023-06-20T15:43:11Z
 url: https://github.com/astral-sh/ruff/pull/5120
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Open cache files in parallel
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-15 13:35_
+_@Thomasdezeeuw_
 
 ## Summary
 

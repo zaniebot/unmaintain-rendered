@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-09T16:36:35Z
 updated_at: 2022-04-09T19:29:15Z
 url: https://github.com/clap-rs/clap/issues/3620
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # derive: make boolean `clap()` args (`require`, `global`, ...) default to true if specified
 
 ---
 
-_Issue opened by @martinvonz on 2022-04-09 16:36_
+_@martinvonz_
 
 ### Please complete the following tasks
 

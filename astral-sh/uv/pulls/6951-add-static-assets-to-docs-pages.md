@@ -13,14 +13,14 @@ head: charlie/seo
 created_at: 2024-09-02T23:54:21Z
 updated_at: 2024-09-03T00:00:34Z
 url: https://github.com/astral-sh/uv/pull/6951
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Add `static` assets to docs pages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-02 23:54_
+_@charliermarsh_
 
 ## Summary
 

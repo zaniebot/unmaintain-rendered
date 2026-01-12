@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T09:25:16Z
 updated_at: 2025-06-24T09:39:08Z
 url: https://github.com/astral-sh/uv/issues/14234
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Best practice to install Python packages when developing on container with watch mode
 
 ---
 
-_Issue opened by @jsulopzs on 2025-06-24 09:25_
+_@jsulopzs_
 
 ### Question
 

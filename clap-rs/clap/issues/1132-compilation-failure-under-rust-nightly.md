@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-12-20T01:06:40Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1132
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Compilation failure under rust nightly webassembly target
 
 ---
 
-_Issue opened by @smarter on 2017-12-20 01:06_
+_@smarter_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

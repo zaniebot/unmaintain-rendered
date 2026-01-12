@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T10:24:00Z
 updated_at: 2025-07-24T11:52:43Z
 url: https://github.com/astral-sh/ty/issues/881
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # False positive `invalid-type-ignore` comment for a comment mentioning `type: ignore` comments
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-24 10:24_
+_@AlexWaygood_
 
 ### Summary
 

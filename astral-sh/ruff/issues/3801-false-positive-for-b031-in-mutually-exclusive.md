@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-29T22:42:18Z
 updated_at: 2023-04-04T12:45:31Z
 url: https://github.com/astral-sh/ruff/issues/3801
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive for `B031` in mutually exclusive branches
 
 ---
 
-_Issue opened by @janosh on 2023-03-29 22:42_
+_@janosh_
 
 Ruff v0.0.260
 

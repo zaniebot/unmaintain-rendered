@@ -13,14 +13,14 @@ head: charlie/f-string
 created_at: 2023-08-07T00:55:15Z
 updated_at: 2023-08-07T17:49:36Z
 url: https://github.com/astral-sh/ruff/pull/6379
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `JoinedStr` to `FString` in the AST
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 00:55_
+_@charliermarsh_
 
 ## Summary
 

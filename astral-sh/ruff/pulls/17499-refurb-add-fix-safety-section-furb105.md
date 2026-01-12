@@ -13,14 +13,14 @@ head: doc_fix_safety_for_print_empty_string
 created_at: 2025-04-20T15:41:55Z
 updated_at: 2025-08-29T13:41:06Z
 url: https://github.com/astral-sh/ruff/pull/17499
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`refurb`] Add fix safety section (`FURB105`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 15:41_
+_@Kalmaegi_
 
 ## Summary
 

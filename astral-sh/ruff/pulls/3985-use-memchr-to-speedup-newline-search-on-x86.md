@@ -13,14 +13,14 @@ head: Use_memchr_to_speedup_newline_search_on_x86
 created_at: 2023-04-16T10:37:04Z
 updated_at: 2023-04-26T19:35:33Z
 url: https://github.com/astral-sh/ruff/pull/3985
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use `memchr` to speedup newline search on x86
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-16 10:37_
+_@MichaReiser_
 
 Use `memchr` to find the newline characters in strings. I expect this to improve performance on X86 processors because `memchr` uses `SIMD` internally. 
 

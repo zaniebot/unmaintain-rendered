@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T23:35:20Z
 updated_at: 2024-05-22T13:22:28Z
 url: https://github.com/astral-sh/uv/issues/2661
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # `uv pip install` should create a virtualenv if no `venv` is found
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-25 23:35_
+_@charliermarsh_
 
 This seems like a better (and more beginner-friendly) default behavior than erroring.
 

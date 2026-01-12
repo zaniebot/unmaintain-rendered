@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T03:23:20Z
 updated_at: 2025-08-14T13:54:26Z
 url: https://github.com/astral-sh/uv/issues/15230
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Add Debian 13 "trixie" as a base image for uv mirrors
 
 ---
 
-_Issue opened by @anyidea on 2025-08-12 03:23_
+_@anyidea_
 
 ### Summary
 

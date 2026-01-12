@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T16:52:45Z
 updated_at: 2025-07-02T10:45:27Z
 url: https://github.com/astral-sh/uv/issues/8729
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Build a wheel using pinned/resolved dependencies from `uv.lock`?
 
 ---
 
-_Issue opened by @rahuliyer95 on 2024-10-31 16:52_
+_@rahuliyer95_
 
 _(I believe this question has probably been asked before, but for some reason I am not able to find the previous issue so please feel free to direct me that issue if you are able to find it)_
 

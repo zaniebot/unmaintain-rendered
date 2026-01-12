@@ -12,14 +12,14 @@ head: test-top-pypi-packages
 created_at: 2023-10-26T11:56:22Z
 updated_at: 2023-10-26T12:04:00Z
 url: https://github.com/astral-sh/uv/pull/198
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Add script to check the top 8k pypi packages
 
 ---
 
-_Pull request opened by @konstin on 2023-10-26 11:56_
+_@konstin_
 
 To check to top 1k (current state):
 

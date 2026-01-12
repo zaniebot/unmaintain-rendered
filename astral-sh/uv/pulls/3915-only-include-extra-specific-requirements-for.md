@@ -13,14 +13,14 @@ head: charlie/extras-only
 created_at: 2024-05-29T18:33:40Z
 updated_at: 2024-06-13T14:47:12Z
 url: https://github.com/astral-sh/uv/pull/3915
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Only include extra-specific requirements for extra packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 18:33_
+_@charliermarsh_
 
 ## Summary
 

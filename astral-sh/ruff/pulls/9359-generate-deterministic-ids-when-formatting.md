@@ -13,14 +13,14 @@ head: zb/notebook-id-fmt
 created_at: 2024-01-02T16:11:17Z
 updated_at: 2024-01-04T15:19:02Z
 url: https://github.com/astral-sh/ruff/pull/9359
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Generate deterministic ids when formatting notebooks
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-02 16:11_
+_@zanieb_
 
 When formatting notebooks, we populate the `id` field for cells that do not have one. Previously, we generated a UUID v4 which resulted in non-deterministic formatting. Here, we generate the UUID from a seeded random number generator instead of using true randomness. For example, here are the first five ids it would generate:
 

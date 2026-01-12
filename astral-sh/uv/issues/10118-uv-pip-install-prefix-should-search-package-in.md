@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T04:20:42Z
 updated_at: 2024-12-23T12:36:34Z
 url: https://github.com/astral-sh/uv/issues/10118
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv pip install --prefix should search package in prefix path
 
 ---
 
-_Issue opened by @Freed-Wu on 2024-12-23 04:20_
+_@Freed-Wu_
 
 ```
 ❯ uv pip install --break-system-packages --prefix ~/.local hyuga

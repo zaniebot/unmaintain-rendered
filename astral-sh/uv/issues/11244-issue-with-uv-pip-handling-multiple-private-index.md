@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T14:03:20Z
 updated_at: 2025-02-08T15:23:32Z
 url: https://github.com/astral-sh/uv/issues/11244
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Issue with `uv pip` Handling Multiple Private Index URLs Leading to 403 Errors
 
 ---
 
-_Issue opened by @Galdanwing on 2025-02-05 14:03_
+_@Galdanwing_
 
 ### Summary
 

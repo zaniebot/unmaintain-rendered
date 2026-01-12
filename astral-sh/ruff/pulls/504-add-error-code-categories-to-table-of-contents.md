@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2022-10-29T20:38:32Z
 updated_at: 2022-10-29T20:39:56Z
 url: https://github.com/astral-sh/ruff/pull/504
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add error code categories to table of contents
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-29 20:38_
+_@charliermarsh_
 
 _No description provided._
 

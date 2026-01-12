@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-18T20:33:11Z
 updated_at: 2024-02-19T07:32:32Z
 url: https://github.com/astral-sh/ruff/issues/10032
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Consider updating known rules that conflict with formatter
 
 ---
 
-_Issue opened by @ofek on 2024-02-18 20:33_
+_@ofek_
 
 This document https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-29T12:51:45Z
 updated_at: 2022-12-09T22:50:07Z
 url: https://github.com/astral-sh/ruff/issues/960
-synced_at: 2026-01-10T12:06:14Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 when using `global` 
 
 ---
 
-_Issue opened by @patrick91 on 2022-11-29 12:51_
+_@patrick91_
 
 I'm getting this error when running ruff on a code like this:
 

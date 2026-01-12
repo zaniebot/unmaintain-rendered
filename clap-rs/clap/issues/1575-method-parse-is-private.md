@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-18T17:41:55Z
 updated_at: 2020-09-16T17:17:09Z
 url: https://github.com/clap-rs/clap/issues/1575
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # method `parse` is private
 
 ---
 
-_Issue opened by @chris13524 on 2019-10-18 17:41_
+_@chris13524_
 
 I'm using the new v3 macro parsing feature. I want to put my options structure in a separate file and import it in another file. However, when I try to call `parse()` on it, I get the error ```method `parse` is private```. How do I make this parse function public?
 

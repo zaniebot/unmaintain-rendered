@@ -13,14 +13,14 @@ head: fix-21307
 created_at: 2025-11-06T22:57:12Z
 updated_at: 2025-11-07T17:00:00Z
 url: https://github.com/astral-sh/ruff/pull/21309
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [`pyupgrade`] Fix false positive on relative imports from local `.builtins` module (`UP029`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-06 22:57_
+_@danparizher_
 
 ## Summary
 

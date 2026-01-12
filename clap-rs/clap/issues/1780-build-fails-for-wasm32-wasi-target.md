@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-04T00:09:38Z
 updated_at: 2020-04-27T18:13:34Z
 url: https://github.com/clap-rs/clap/issues/1780
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # build fails for wasm32-wasi target
 
 ---
 
-_Issue opened by @wucke13 on 2020-04-04 00:09_
+_@wucke13_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

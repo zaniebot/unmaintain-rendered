@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-16T09:37:57Z
 updated_at: 2024-12-16T20:26:07Z
 url: https://github.com/astral-sh/uv/pull/9931
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Correctly document default value of `fork-strategy` setting
 
 ---
 
-_Pull request opened by @hoechenberger on 2024-12-16 09:37_
+_@hoechenberger_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

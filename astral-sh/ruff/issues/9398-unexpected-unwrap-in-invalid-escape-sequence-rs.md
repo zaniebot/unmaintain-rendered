@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T07:17:36Z
 updated_at: 2024-01-27T16:54:06Z
 url: https://github.com/astral-sh/ruff/issues/9398
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Unexpected unwrap in `invalid_escape_sequence.rs`
 
 ---
 
-_Issue opened by @th3w1zard1 on 2024-01-05 07:17_
+_@th3w1zard1_
 
 Been getting these errors in vs code as of late:
 ```

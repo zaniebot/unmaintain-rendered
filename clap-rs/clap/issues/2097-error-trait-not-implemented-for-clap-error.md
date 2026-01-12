@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-22T19:34:22Z
 updated_at: 2020-08-29T15:58:56Z
 url: https://github.com/clap-rs/clap/issues/2097
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Error trait not implemented for clap::Error
 
 ---
 
-_Issue opened by @jzrake on 2020-08-22 19:34_
+_@jzrake_
 
 ### Description
 Function should return a result with a generic error, `Result<(), Box<dyn std::error::Error>>`. Even though Clap seems to implement the `std::error::Error` trait, the following fails to compile:

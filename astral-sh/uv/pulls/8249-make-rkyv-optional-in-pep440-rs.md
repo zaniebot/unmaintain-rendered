@@ -13,14 +13,14 @@ head: konsti/pep440-rs-rkyv-optinal
 created_at: 2024-10-16T11:36:55Z
 updated_at: 2024-10-16T12:15:53Z
 url: https://github.com/astral-sh/uv/pull/8249
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Make rkyv optional in pep440-rs
 
 ---
 
-_Pull request opened by @konstin on 2024-10-16 11:36_
+_@konstin_
 
 This unblocks updating pep440_rs in ruff.
 

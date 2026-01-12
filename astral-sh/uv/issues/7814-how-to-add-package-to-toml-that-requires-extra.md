@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T16:06:17Z
 updated_at: 2024-10-04T13:22:31Z
 url: https://github.com/astral-sh/uv/issues/7814
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # How to add package to toml that requires extra scripts to install
 
 ---
 
-_Issue opened by @itrase on 2024-09-30 16:06_
+_@itrase_
 
 Apologies if I'm not phrasing this correctly. The [PyRosetta](https://www.pyrosetta.org/downloads) package has a very strange set of install instructions. Specifically, they are:
 

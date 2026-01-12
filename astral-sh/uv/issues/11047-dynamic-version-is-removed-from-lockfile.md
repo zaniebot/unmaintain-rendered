@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T01:12:32Z
 updated_at: 2025-01-29T01:27:10Z
 url: https://github.com/astral-sh/uv/issues/11047
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Dynamic version is removed from lockfile occasionally
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-29 01:12_
+_@charliermarsh_
 
 > @charliermarsh Use this repo: https://github.com/apollo13/uv-bug
 > 

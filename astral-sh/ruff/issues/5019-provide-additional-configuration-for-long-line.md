@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-12T07:38:37Z
 updated_at: 2023-06-12T15:22:14Z
 url: https://github.com/astral-sh/ruff/issues/5019
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Provide additional configuration for long-line exemptions (f.ex. via one or many regular expressions)
 
 ---
 
-_Issue opened by @exhuma on 2023-06-12 07:38_
+_@exhuma_
 
 Some of our docstrings contain raw HTTP examples:
 

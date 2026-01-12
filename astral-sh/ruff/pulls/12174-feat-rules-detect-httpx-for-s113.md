@@ -13,14 +13,14 @@ head: feat/detect-httpx-S113
 created_at: 2024-07-03T22:31:43Z
 updated_at: 2024-07-06T16:16:52Z
 url: https://github.com/astral-sh/ruff/pull/12174
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # feat(rules): detect `httpx` for `S113`
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-03 22:31_
+_@mkniewallner_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-27T11:27:24Z
 updated_at: 2023-12-09T03:52:02Z
 url: https://github.com/astral-sh/ruff/issues/7675
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule N806 and Django
 
 ---
 
-_Issue opened by @aqeelat on 2023-09-27 11:27_
+_@aqeelat_
 
 In django, you can access a model by importing it or by getting it from the registry (i.e. calling apps.get_model). The convention is to name the variable in title case to match the model's name.
 Example from the docs: https://docs.djangoproject.com/en/4.2/ref/applications/#django.apps.AppConfig.ready

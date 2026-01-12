@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T21:26:59Z
 updated_at: 2025-04-16T11:00:13Z
 url: https://github.com/astral-sh/ruff/issues/16859
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF009 misses function call in dataclass default
 
 ---
 
-_Issue opened by @bmyers-ozette on 2025-03-19 21:26_
+_@bmyers-ozette_
 
 ### Summary
 

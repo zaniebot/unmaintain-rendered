@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T21:07:30Z
 updated_at: 2025-10-01T16:01:43Z
 url: https://github.com/astral-sh/uv/issues/16067
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # `uv pip tree` lists `pylint`'s dep `dill` twice
 
 ---
 
-_Issue opened by @tropicoo on 2025-09-29 21:07_
+_@tropicoo_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: charlie/cargo-dist
 created_at: 2023-02-04T13:41:35Z
 updated_at: 2023-02-04T13:48:31Z
 url: https://github.com/astral-sh/ruff/pull/2566
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Generate distributable binaries with `cargo-dist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-04 13:41_
+_@charliermarsh_
 
 _No description provided._
 

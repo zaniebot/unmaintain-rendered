@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-17T23:32:48Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1001
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Positional arguments similar to command names get confused with commands
 
 ---
 
-_Issue opened by @g2p on 2017-07-17 23:32_
+_@g2p_
 
 ### Rust Version
 

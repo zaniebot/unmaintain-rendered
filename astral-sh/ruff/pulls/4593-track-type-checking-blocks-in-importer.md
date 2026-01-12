@@ -12,14 +12,14 @@ head: charlie/type-checking-blocks
 created_at: 2023-05-23T02:12:43Z
 updated_at: 2023-05-30T16:48:31Z
 url: https://github.com/astral-sh/ruff/pull/4593
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Track `TYPE_CHECKING` blocks in `Importer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 02:12_
+_@charliermarsh_
 
 ## Summary
 

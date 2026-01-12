@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-22T15:48:44Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/871
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Usage message is misleading when SubcommandsNegateReqs is used
 
 ---
 
-_Issue opened by @malbarbo on 2017-02-22 15:48_
+_@malbarbo_
 
 ### Affected Version of clap
 

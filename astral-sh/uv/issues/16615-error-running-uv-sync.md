@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T15:48:19Z
 updated_at: 2025-12-03T05:56:23Z
 url: https://github.com/astral-sh/uv/issues/16615
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Error running "uv sync"
 
 ---
 
-_Issue opened by @cabral2906 on 2025-11-06 15:48_
+_@cabral2906_
 
 ### Question
 

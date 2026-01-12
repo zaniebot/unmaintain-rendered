@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T19:07:33Z
 updated_at: 2025-06-06T20:25:11Z
 url: https://github.com/astral-sh/ruff/issues/18511
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # No LSP Completions on Neovim
 
 ---
 
-_Issue opened by @sghng on 2025-06-06 19:07_
+_@sghng_
 
 ### Summary
 

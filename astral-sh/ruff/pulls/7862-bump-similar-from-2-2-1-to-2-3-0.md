@@ -13,14 +13,14 @@ head: dependabot/cargo/similar-2.3.0
 created_at: 2023-10-09T08:29:57Z
 updated_at: 2023-10-09T11:44:43Z
 url: https://github.com/astral-sh/ruff/pull/7862
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump similar from 2.2.1 to 2.3.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-09 08:29_
+_@dependabot_
 
 Bumps [similar](https://github.com/mitsuhiko/similar) from 2.2.1 to 2.3.0.
 <details>

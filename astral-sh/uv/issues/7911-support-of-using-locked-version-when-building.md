@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T01:42:18Z
 updated_at: 2025-08-19T11:06:09Z
 url: https://github.com/astral-sh/uv/issues/7911
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Support of using locked version when building.
 
 ---
 
-_Issue opened by @Renkai on 2024-10-04 01:42_
+_@Renkai_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

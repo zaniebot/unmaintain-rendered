@@ -14,14 +14,14 @@ head: RUF008
 created_at: 2024-11-14T00:06:26Z
 updated_at: 2025-03-04T10:26:16Z
 url: https://github.com/astral-sh/ruff/pull/14327
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Also report problems for `attrs` dataclasses in preview mode (`RUF008`, `RUF009`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-14 00:06_
+_@InSyncWithFoo_
 
 ## Summary
 

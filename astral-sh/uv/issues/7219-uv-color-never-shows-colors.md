@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-09T15:18:42Z
 updated_at: 2025-04-06T21:48:03Z
 url: https://github.com/astral-sh/uv/issues/7219
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # uv --color=never shows colors :)
 
 ---
 
-_Issue opened by @mattiasb on 2024-09-09 15:18_
+_@mattiasb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

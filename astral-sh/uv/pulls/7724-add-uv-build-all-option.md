@@ -13,14 +13,14 @@ head: build-all
 created_at: 2024-09-26T19:24:10Z
 updated_at: 2024-09-27T07:58:33Z
 url: https://github.com/astral-sh/uv/pull/7724
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Add `uv build --all` option
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-26 19:24_
+_@blueraft_
 
 ## Summary
 

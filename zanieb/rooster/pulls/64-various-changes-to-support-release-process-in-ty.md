@@ -12,14 +12,14 @@ head: zb/version-update
 created_at: 2025-05-05T21:03:04Z
 updated_at: 2025-05-13T12:06:41Z
 url: https://github.com/zanieb/rooster/pull/64
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Various changes to support release process in ty
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 21:03_
+_@zanieb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: zb/ignore-virtual-env
 created_at: 2025-12-17T18:09:41Z
 updated_at: 2025-12-18T16:15:44Z
 url: https://github.com/astral-sh/ruff/pull/22032
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Add `--ignore-active-virtual-env` to ignore `VIRTUAL_ENV`
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-17 18:09_
+_@zanieb_
 
 The idea here is that this is useful in pre-commit which sets `VIRTUAL_ENV` to the environment ty is installed in rather than the project environment.
 

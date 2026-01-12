@@ -13,14 +13,14 @@ head: charlie/warn-user
 created_at: 2024-09-14T03:29:16Z
 updated_at: 2024-09-14T04:09:16Z
 url: https://github.com/astral-sh/uv/pull/7384
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Remove duplicate warning for settings discovery errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-14 03:29_
+_@charliermarsh_
 
 ## Summary
 

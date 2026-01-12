@@ -13,14 +13,14 @@ head: dhruv/migration
 created_at: 2025-02-10T09:21:44Z
 updated_at: 2025-02-10T11:00:05Z
 url: https://github.com/astral-sh/ruff/pull/16072
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Improve migration document
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-10 09:21_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-18T20:28:05Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/429
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Clarify documentation regarding AppSettings and child subcommand propagation
 
 ---
 
-_Issue opened by @andresv on 2016-02-18 20:28_
+_@andresv_
 
 Clap 2.1.0
 

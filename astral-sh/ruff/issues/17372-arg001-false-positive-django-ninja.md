@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-13T12:00:02Z
 updated_at: 2025-05-22T14:11:38Z
 url: https://github.com/astral-sh/ruff/issues/17372
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ARG001` False Positive (Django-Ninja)
 
 ---
 
-_Issue opened by @UnoYakshi on 2025-04-13 12:00_
+_@UnoYakshi_
 
 ### Summary
 

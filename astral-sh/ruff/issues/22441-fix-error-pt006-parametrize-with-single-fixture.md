@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T16:41:52Z
 updated_at: 2026-01-07T18:14:13Z
 url: https://github.com/astral-sh/ruff/issues/22441
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [Fix error] `PT006` parametrize with single fixture where one of the values is an empty tuple
 
 ---
 
-_Issue opened by @BlankSpruce on 2026-01-07 16:41_
+_@BlankSpruce_
 
 Minified example `tests/test_ruff_bug.py`:
 ```python

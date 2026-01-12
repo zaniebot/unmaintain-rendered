@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T21:12:46Z
 updated_at: 2025-06-13T06:45:31Z
 url: https://github.com/astral-sh/ruff/issues/13707
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule S320 should be removed
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-10-10 21:12_
+_@pythonweb2_
 
 [This comment](https://github.com/astral-sh/ruff/pull/10154#issuecomment-1995783400) seems to have been overlooked (at least was not responded to).
 

@@ -13,14 +13,14 @@ head: charlie/comma
 created_at: 2023-12-05T20:31:13Z
 updated_at: 2023-12-05T21:37:36Z
 url: https://github.com/astral-sh/ruff/pull/9015
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Respect trailing comma in unnecessary-dict-kwargs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 20:31_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9014.
 

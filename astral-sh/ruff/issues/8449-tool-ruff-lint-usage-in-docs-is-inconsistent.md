@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T22:10:08Z
 updated_at: 2024-02-06T20:17:52Z
 url: https://github.com/astral-sh/ruff/issues/8449
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `[tool.ruff.lint]` usage in docs is inconsistent
 
 ---
 
-_Issue opened by @jonprindiville on 2023-11-02 22:10_
+_@jonprindiville_
 
 Hey friends,
 

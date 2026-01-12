@@ -13,14 +13,14 @@ head: micha/suppression-comments
 created_at: 2025-05-09T16:04:49Z
 updated_at: 2025-05-10T10:40:39Z
 url: https://github.com/astral-sh/ty/pull/295
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Document suppressions and exit codes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-09 16:04_
+_@MichaReiser_
 
 This PR documents the different ways in which violations can be suppressed in ty.
 

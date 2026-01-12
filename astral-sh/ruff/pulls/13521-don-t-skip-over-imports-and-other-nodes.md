@@ -13,14 +13,14 @@ head: micha/fix-import-collector-skip
 created_at: 2024-09-26T09:53:29Z
 updated_at: 2024-09-26T12:06:24Z
 url: https://github.com/astral-sh/ruff/pull/13521
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Don't skip over imports and other nodes containing nested statements in import collector
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-26 09:53_
+_@MichaReiser_
 
 ## Summary
 

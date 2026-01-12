@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-27T05:15:47Z
 updated_at: 2023-08-05T00:45:03Z
 url: https://github.com/astral-sh/ruff/issues/6116
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Update `F481` autofix for Jupyter line magic expr
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-27 05:15_
+_@dhruvmanila_
 
 If the assignment value is a line magic expression, the statement shouldn't be removed entirely i.e., the assignment statement should be refactored to a line magic statement:
 

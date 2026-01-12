@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T22:45:59Z
 updated_at: 2025-12-18T15:02:04Z
 url: https://github.com/astral-sh/uv/issues/16527
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Unexpected dependency upgrades when downgrading a single package with uv add
 
 ---
 
-_Issue opened by @JuanCruzC97 on 2025-10-30 22:45_
+_@JuanCruzC97_
 
 ### Question
 

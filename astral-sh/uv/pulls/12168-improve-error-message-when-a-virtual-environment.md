@@ -13,14 +13,14 @@ head: konsti/hint-about-broken-venv
 created_at: 2025-03-14T14:02:27Z
 updated_at: 2025-05-07T18:24:55Z
 url: https://github.com/astral-sh/uv/pull/12168
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Improve error message when a virtual environment Python symlink is broken
 
 ---
 
-_Pull request opened by @konstin on 2025-03-14 14:02_
+_@konstin_
 
 When removing a Python interpreter underneath an existing venv, uv currently shows a not found error:
 

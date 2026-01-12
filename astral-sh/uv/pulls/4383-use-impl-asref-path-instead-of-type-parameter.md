@@ -13,14 +13,14 @@ head: zb/impl-as-ref
 created_at: 2024-06-18T14:50:47Z
 updated_at: 2024-06-18T15:54:08Z
 url: https://github.com/astral-sh/uv/pull/4383
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Use `impl AsRef<Path>` instead of type parameter
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 14:50_
+_@zanieb_
 
 _No description provided._
 

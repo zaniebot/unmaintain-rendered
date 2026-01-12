@@ -13,14 +13,14 @@ head: temp
 created_at: 2024-08-30T10:05:27Z
 updated_at: 2024-08-30T14:18:43Z
 url: https://github.com/astral-sh/uv/pull/6858
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # ci(windows): Introduce setup-dev-drive.ps1, maximize dev drive usage
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-08-30 10:05_
+_@fasterthanlime_
 
 As suggested by @samypr100 on #6680:
 https://github.com/astral-sh/uv/pull/6680#issuecomment-2313607984

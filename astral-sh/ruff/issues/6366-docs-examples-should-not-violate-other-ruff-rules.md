@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-05T14:12:50Z
 updated_at: 2023-08-05T16:05:35Z
 url: https://github.com/astral-sh/ruff/issues/6366
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # docs examples should not violate (other) ruff rules
 
 ---
 
-_Issue opened by @mmarras on 2023-08-05 14:12_
+_@mmarras_
 
 This repo is all about following consistent style, so I suggest even the docs should be educative and holistic. Therefore it is imho an anti-pattern to explain how to fix one ruff flag while introducing another. 
 

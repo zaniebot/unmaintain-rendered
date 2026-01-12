@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-02T10:43:58Z
 updated_at: 2024-05-03T10:11:22Z
 url: https://github.com/astral-sh/ruff/issues/11245
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False positive for `F821` on circular reference in `TYPE_CHECKING` block
 
 ---
 
-_Issue opened by @ngnpope on 2024-05-02 10:43_
+_@ngnpope_
 
 Keywords searched for before creating issue: `F821`, `TYPE_CHECKING`.
 

@@ -13,14 +13,14 @@ head: fix-module-import-not-at-top-of-file-e402
 created_at: 2025-02-05T20:31:40Z
 updated_at: 2025-02-06T08:10:57Z
 url: https://github.com/astral-sh/ruff/pull/15980
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [pycodestyle] Exempt `sys.path += ...` calls (E402)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-05 20:31_
+_@VascoSch92_
 
 ## Summary
 

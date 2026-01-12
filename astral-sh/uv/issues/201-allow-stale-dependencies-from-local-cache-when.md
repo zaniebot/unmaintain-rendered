@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T13:33:05Z
 updated_at: 2023-11-02T03:25:36Z
 url: https://github.com/astral-sh/uv/issues/201
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Allow stale dependencies from local cache when building source distributions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 13:33_
+_@charliermarsh_
 
 If a source distribution requires `hatching>=2.0.0`, and we have `2.0.1` in the cache, but `2.0.2` is available on PyPI, we should just use `2.0.1` (whereas the resolver would often choose `2.0.2`).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-08T13:34:25Z
 updated_at: 2024-01-08T17:41:28Z
 url: https://github.com/clap-rs/clap/issues/5288
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Expose inner error context to allow removing pieces of context, for consistency
 
 ---
 
-_Issue opened by @5HT2 on 2024-01-08 13:34_
+_@5HT2_
 
 ### Please complete the following tasks
 

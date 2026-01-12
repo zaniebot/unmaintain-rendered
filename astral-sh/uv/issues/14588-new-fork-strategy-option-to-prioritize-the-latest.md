@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-13T16:25:47Z
 updated_at: 2025-07-13T16:25:59Z
 url: https://github.com/astral-sh/uv/issues/14588
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # New `--fork-strategy` option to prioritize the latest version for each Python implementation
 
 ---
 
-_Issue opened by @vivodi on 2025-07-13 16:25_
+_@vivodi_
 
 **Summary**
 

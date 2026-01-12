@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T23:54:55Z
 updated_at: 2025-05-15T21:04:36Z
 url: https://github.com/astral-sh/uv/issues/6476
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Allow adding a dependency with no version constraint
 
 ---
 
-_Issue opened by @skykasko on 2024-08-22 23:54_
+_@skykasko_
 
 `uv add` adds a lower bound version constraint by default. For example, calling `uv add requests` currently adds the dependency `"requests>=2.32.3"` to `pyproject.toml`.
 

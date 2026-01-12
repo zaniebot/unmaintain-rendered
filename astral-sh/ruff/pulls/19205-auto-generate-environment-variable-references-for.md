@@ -14,14 +14,14 @@ head: charlie/env-var
 created_at: 2025-07-08T13:32:09Z
 updated_at: 2025-07-08T14:50:39Z
 url: https://github.com/astral-sh/ruff/pull/19205
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # Auto-generate environment variable references for ty
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-08 13:32_
+_@charliermarsh_
 
 ## Summary
 

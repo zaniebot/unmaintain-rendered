@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-12T13:50:31Z
 updated_at: 2025-12-16T03:31:05Z
 url: https://github.com/astral-sh/ty/issues/1865
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # panic: `no entry found for key` with stringified set comprehension in type expression
 
 ---
 
-_Issue opened by @correctmost on 2025-12-12 13:50_
+_@correctmost_
 
 ### Summary
 

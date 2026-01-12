@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T10:58:20Z
 updated_at: 2025-11-17T15:11:37Z
 url: https://github.com/astral-sh/ruff/issues/19350
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatter: Parenthesized expression with comment on right hand side in assignment produces invalid syntax
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-15 10:58_
+_@MichaReiser_
 
 > ```python
 > variable = (

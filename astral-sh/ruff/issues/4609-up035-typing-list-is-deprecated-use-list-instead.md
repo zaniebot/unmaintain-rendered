@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-23T17:02:27Z
 updated_at: 2023-05-23T20:46:30Z
 url: https://github.com/astral-sh/ruff/issues/4609
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP035 `typing.List` is deprecated, use `list` instead
 
 ---
 
-_Issue opened by @jackdesert on 2023-05-23 17:02_
+_@jackdesert_
 
 
 Ruff is raising UP035 (typing.List is deprecated, use list instead), but when I run `pyupgrade` on the same file, it says the file is fine. I actually prefer using `typing.List` over using `list` for type annotations. But I didn't want to simply disable UP035 since there may be other outdated import styles that also fall under rule UP035. I'm not sure if this is a bug or not. The docs for pyupgrade do not appear to mention that it alters `from typing import List`. 

@@ -13,14 +13,14 @@ head: rc-fix-false-positive-translation-strings
 created_at: 2024-02-25T11:52:04Z
 updated_at: 2024-02-26T05:05:03Z
 url: https://github.com/astral-sh/ruff/pull/10118
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`ruff`] Avoid f-string false positives in `gettext` calls (`RUF027`)
 
 ---
 
-_Pull request opened by @robincaloudis on 2024-02-25 11:52_
+_@robincaloudis_
 
 ## Summary
 

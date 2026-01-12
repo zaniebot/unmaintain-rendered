@@ -14,14 +14,14 @@ head: konsti/instability-tests
 created_at: 2024-07-26T15:54:09Z
 updated_at: 2024-07-31T15:39:17Z
 url: https://github.com/astral-sh/uv/pull/5485
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Check idempotence in packse lock scenarios
 
 ---
 
-_Pull request opened by @konstin on 2024-07-26 15:54_
+_@konstin_
 
 Add tests for the instabilities fix.
 

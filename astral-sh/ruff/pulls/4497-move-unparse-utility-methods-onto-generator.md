@@ -12,14 +12,14 @@ head: charlie/gen-methods
 created_at: 2023-05-18T14:51:33Z
 updated_at: 2023-05-18T15:24:46Z
 url: https://github.com/astral-sh/ruff/pull/4497
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move unparse utility methods onto Generator
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 14:51_
+_@charliermarsh_
 
 ## Summary
 

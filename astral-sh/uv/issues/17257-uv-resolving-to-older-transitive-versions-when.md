@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T22:03:09Z
 updated_at: 2026-01-07T18:12:12Z
 url: https://github.com/astral-sh/uv/issues/17257
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # uv resolving to older transitive versions when multiple valid solutions exist
 
 ---
 
-_Issue opened by @juanitosvq on 2025-12-29 22:03_
+_@juanitosvq_
 
 ### Summary
 

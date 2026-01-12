@@ -13,14 +13,14 @@ head: zb/github
 created_at: 2025-12-16T17:02:28Z
 updated_at: 2025-12-16T17:05:56Z
 url: https://github.com/astral-sh/ty/pull/1946
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Simplify image rendering for GitHub README
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 17:02_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/ty/tree/zb/github?tab=readme-ov-file#ty)
 

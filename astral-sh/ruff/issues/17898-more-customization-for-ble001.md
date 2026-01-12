@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T21:53:28Z
 updated_at: 2025-05-07T06:31:57Z
 url: https://github.com/astral-sh/ruff/issues/17898
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # More customization for BLE001
 
 ---
 
-_Issue opened by @sassanh on 2025-05-06 21:53_
+_@sassanh_
 
 ### Summary
 

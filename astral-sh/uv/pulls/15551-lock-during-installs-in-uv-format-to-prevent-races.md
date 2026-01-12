@@ -14,14 +14,14 @@ head: zb/lock-bin-install
 created_at: 2025-08-27T14:43:03Z
 updated_at: 2025-08-27T16:42:41Z
 url: https://github.com/astral-sh/uv/pull/15551
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Lock during installs in `uv format` to prevent races
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 14:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15513
 

@@ -12,14 +12,14 @@ head: charlie/abc
 created_at: 2023-06-22T19:42:06Z
 updated_at: 2023-06-22T20:12:42Z
 url: https://github.com/astral-sh/ruff/pull/5315
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Respect `abc` decorators when classifying function types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 19:42_
+_@charliermarsh_
 
 Closes #5307.
 

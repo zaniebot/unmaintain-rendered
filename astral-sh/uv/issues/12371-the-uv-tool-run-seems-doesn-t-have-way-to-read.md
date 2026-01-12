@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T17:07:13Z
 updated_at: 2025-03-22T15:36:44Z
 url: https://github.com/astral-sh/uv/issues/12371
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # The `uv tool run` seems doesn't have way to read `.env` file
 
 ---
 
-_Issue opened by @doggy8088 on 2025-03-21 17:07_
+_@doggy8088_
 
 ### Question
 

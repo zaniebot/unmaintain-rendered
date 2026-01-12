@@ -12,14 +12,14 @@ head: zb/env-index
 created_at: 2023-12-19T17:40:53Z
 updated_at: 2023-12-20T10:52:01Z
 url: https://github.com/astral-sh/uv/pull/704
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Allow the default index url to be configured with `PUFFIN_INDEX_URL`
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-19 17:40_
+_@zanieb_
 
 This allows the default index URL to be easily overridden with a local index e.g. a `packse` server
 

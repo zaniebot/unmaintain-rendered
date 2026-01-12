@@ -13,14 +13,14 @@ head: charlie/predefined-deps
 created_at: 2024-09-16T21:14:09Z
 updated_at: 2024-09-18T03:18:06Z
 url: https://github.com/astral-sh/uv/pull/7442
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Allow users to provide pre-defined metadata for resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-16 21:14_
+_@charliermarsh_
 
 ## Summary
 

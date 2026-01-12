@@ -14,14 +14,14 @@ head: more-zizmor
 created_at: 2024-12-10T17:30:19Z
 updated_at: 2025-02-06T18:59:55Z
 url: https://github.com/astral-sh/ruff/pull/14893
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Also have zizmor check for low-severity security issues
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-10 17:30_
+_@AlexWaygood_
 
 ## Summary
 

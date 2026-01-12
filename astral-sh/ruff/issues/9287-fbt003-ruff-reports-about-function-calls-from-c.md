@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-26T20:27:08Z
 updated_at: 2024-01-08T18:02:18Z
 url: https://github.com/astral-sh/ruff/issues/9287
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # FBT003: ruff reports about function calls from C-extentions
 
 ---
 
-_Issue opened by @Paciupa on 2023-12-26 20:27_
+_@Paciupa_
 
 In my case this is calls from `pygame`, for example:
 ```python

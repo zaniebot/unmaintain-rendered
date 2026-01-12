@@ -12,14 +12,14 @@ head: derive-markdown
 created_at: 2025-01-24T22:43:27Z
 updated_at: 2025-02-04T02:50:22Z
 url: https://github.com/clap-rs/clap/pull/5891
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Markdown parsing in doc comments
 
 ---
 
-_Pull request opened by @ModProg on 2025-01-24 22:43_
+_@ModProg_
 
 fixes #2389
 

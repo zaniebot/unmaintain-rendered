@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T19:30:39Z
 updated_at: 2025-03-17T21:27:34Z
 url: https://github.com/astral-sh/uv/issues/11986
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # Add support for constraints in `uv add`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-05 19:30_
+_@zanieb_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T18:04:28Z
 updated_at: 2025-04-01T12:17:09Z
 url: https://github.com/astral-sh/ruff/issues/16903
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Panic] ruff crashes when executed from a deleted folder on mac
 
 ---
 
-_Issue opened by @cbeauchesne on 2025-03-21 18:04_
+_@cbeauchesne_
 
 How to reproduce : 
 

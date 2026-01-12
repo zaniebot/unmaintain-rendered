@@ -13,14 +13,14 @@ head: charlie/builtin
 created_at: 2023-07-10T16:57:43Z
 updated_at: 2023-07-10T17:30:25Z
 url: https://github.com/astral-sh/ruff/pull/5659
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Audit some `SemanticModel#is_builtin` usages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 16:57_
+_@charliermarsh_
 
 ## Summary
 

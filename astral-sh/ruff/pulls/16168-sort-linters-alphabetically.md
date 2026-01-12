@@ -13,14 +13,14 @@ head: sort-rules
 created_at: 2025-02-14T18:41:31Z
 updated_at: 2025-02-14T21:32:15Z
 url: https://github.com/astral-sh/ruff/pull/16168
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Sort linters alphabetically
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-14 18:41_
+_@InSyncWithFoo_
 
 ## Summary
 

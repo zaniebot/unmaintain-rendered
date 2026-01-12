@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-27T15:26:39Z
 updated_at: 2022-12-27T16:50:29Z
 url: https://github.com/astral-sh/ruff/issues/1406
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False negative for D417
 
 ---
 
-_Issue opened by @PhilReinhold on 2022-12-27 15:26_
+_@PhilReinhold_
 
 It appears that ruff v0.0.195 fails to detect missing argument docs from a google-formatted docstring (D417) when a newline is present in the `Returns` block.
 

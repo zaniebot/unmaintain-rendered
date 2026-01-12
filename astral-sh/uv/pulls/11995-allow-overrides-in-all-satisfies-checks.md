@@ -13,14 +13,14 @@ head: charlie/overrides-ii
 created_at: 2025-03-06T01:51:43Z
 updated_at: 2025-03-06T02:54:21Z
 url: https://github.com/astral-sh/uv/pull/11995
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Allow overrides in all satisfies checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-06 01:51_
+_@charliermarsh_
 
 ## Summary
 

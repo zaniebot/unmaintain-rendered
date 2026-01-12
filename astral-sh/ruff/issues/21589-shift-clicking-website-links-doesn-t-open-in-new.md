@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-23T10:37:53Z
 updated_at: 2025-11-23T11:28:04Z
 url: https://github.com/astral-sh/ruff/issues/21589
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # shift-clicking website links doesn't open in new window
 
 ---
 
-_Issue opened by @injust on 2025-11-23 10:37_
+_@injust_
 
 ### Summary
 

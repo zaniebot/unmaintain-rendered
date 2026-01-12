@@ -13,14 +13,14 @@ head: charlie/externally-managed
 created_at: 2024-02-29T02:49:05Z
 updated_at: 2024-02-29T03:00:27Z
 url: https://github.com/astral-sh/uv/pull/2073
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Avoid truncating EXTERNALLY-MANAGED error message
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-29 02:49_
+_@charliermarsh_
 
 ## Summary
 

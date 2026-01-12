@@ -13,14 +13,14 @@ head: charlie/versioning
 created_at: 2024-04-19T23:26:05Z
 updated_at: 2024-04-21T16:02:42Z
 url: https://github.com/astral-sh/uv/pull/3151
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Add a versioning policy to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 23:26_
+_@charliermarsh_
 
 ## Summary
 

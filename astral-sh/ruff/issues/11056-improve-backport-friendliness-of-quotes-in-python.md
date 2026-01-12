@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-20T13:01:27Z
 updated_at: 2024-11-05T22:30:23Z
 url: https://github.com/astral-sh/ruff/issues/11056
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Improve backport friendliness of quotes in Python 3.12 f-string placeholders
 
 ---
 
-_Issue opened by @achimnol on 2024-04-20 13:01_
+_@achimnol_
 
 I'm maintaining a codebase with multiple release branches targeting different Python versions by release. The latest one uses Python 3.12 while prior versions use Python 3.10 or 3.11.
 

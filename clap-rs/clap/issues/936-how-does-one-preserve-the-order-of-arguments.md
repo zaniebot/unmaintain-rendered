@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-04-20T15:06:20Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/936
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # How does one preserve the order of arguments?
 
 ---
 
-_Issue opened by @fschutt on 2017-04-20 15:06_
+_@fschutt_
 
 ### Actual Behavior Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T20:54:00Z
 updated_at: 2025-09-30T07:15:07Z
 url: https://github.com/astral-sh/ruff/issues/20371
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff format parts of file using stdout/stdin (in the style of vim's filter command)
 
 ---
 
-_Issue opened by @kaddkaka on 2025-09-12 20:54_
+_@kaddkaka_
 
 ### Question
 

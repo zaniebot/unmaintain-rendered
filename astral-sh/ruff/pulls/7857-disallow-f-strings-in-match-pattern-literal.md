@@ -13,14 +13,14 @@ head: dhruv/fstring-disallowed-in-match-literal
 created_at: 2023-10-09T08:00:09Z
 updated_at: 2023-10-09T10:19:28Z
 url: https://github.com/astral-sh/ruff/pull/7857
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Disallow f-strings in match pattern literal
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-09 08:00_
+_@dhruvmanila_
 
 ## Summary
 

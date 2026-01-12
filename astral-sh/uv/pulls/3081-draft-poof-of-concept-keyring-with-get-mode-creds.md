@@ -12,14 +12,14 @@ head: feature/use-keyring-get-mode
 created_at: 2024-04-17T01:09:28Z
 updated_at: 2024-05-01T00:42:02Z
 url: https://github.com/astral-sh/uv/pull/3081
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # [DRAFT / Poof of Concept] keyring with `--get-mode creds`
 
 ---
 
-_Pull request opened by @BakerNet on 2024-04-17 01:09_
+_@BakerNet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

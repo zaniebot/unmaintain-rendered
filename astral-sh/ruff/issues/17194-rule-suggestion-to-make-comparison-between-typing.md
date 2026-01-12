@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T07:47:59Z
 updated_at: 2025-11-18T18:40:14Z
 url: https://github.com/astral-sh/ruff/issues/17194
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule suggestion to make comparison between typing_extensions vs. typing more future proof
 
 ---
 
-_Issue opened by @Daraan on 2025-04-04 07:47_
+_@Daraan_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: micha/ignore-codes
 created_at: 2024-12-20T10:23:47Z
 updated_at: 2024-12-23T09:52:46Z
 url: https://github.com/astral-sh/ruff/pull/15078
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # `type: ignore[codes]` and `knot: ignore`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 10:23_
+_@MichaReiser_
 
 ## Summary
 

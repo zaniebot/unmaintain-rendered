@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T23:19:18Z
 updated_at: 2025-07-25T13:14:23Z
 url: https://github.com/astral-sh/uv/issues/6283
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Autodetect dependencies mode for `uv run`
 
 ---
 
-_Issue opened by @mgaitan on 2024-08-20 23:19_
+_@mgaitan_
 
 I propose a  `--with-auto` (or `--auto` directly) flag  that does its best attempt to satisfy missing dependencies in a script/package being executed by `uv tool`. For example, [this lib](https://github.com/bndr/pipreqs) does that instrospection to generate a 
 `requirements.txt`. 

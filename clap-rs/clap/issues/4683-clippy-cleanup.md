@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T18:21:37Z
 updated_at: 2023-01-30T13:49:12Z
 url: https://github.com/clap-rs/clap/issues/4683
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clippy cleanup
 
 ---
 
-_Issue opened by @martinfrances107 on 2023-01-29 18:21_
+_@martinfrances107_
 
 ### Please complete the following tasks
 

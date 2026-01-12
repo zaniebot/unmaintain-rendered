@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-28T19:29:48Z
 updated_at: 2024-04-12T03:08:51Z
 url: https://github.com/astral-sh/ruff/issues/8877
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # New rule: Prefer in-place operators
 
 ---
 
-_Issue opened by @Avasam on 2023-11-28 19:29_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

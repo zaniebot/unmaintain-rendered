@@ -13,14 +13,14 @@ head: fix-doc-link
 created_at: 2025-01-17T14:07:23Z
 updated_at: 2025-01-17T18:39:56Z
 url: https://github.com/astral-sh/uv/pull/10710
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # fix: links in `configuring projects` doc
 
 ---
 
-_Pull request opened by @cr7258 on 2025-01-17 14:07_
+_@cr7258_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

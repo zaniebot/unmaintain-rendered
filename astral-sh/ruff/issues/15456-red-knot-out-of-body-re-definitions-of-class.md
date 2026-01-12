@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T13:52:33Z
 updated_at: 2025-01-22T09:42:49Z
 url: https://github.com/astral-sh/ruff/issues/15456
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Out-of-body (re-)definitions of class variables
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-13 13:52_
+_@sharkdp_
 
 (Re-)definitions of class variables outside the body of the class are currently not checked:
 

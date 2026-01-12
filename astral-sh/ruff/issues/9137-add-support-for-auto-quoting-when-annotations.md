@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:15:24Z
 updated_at: 2024-10-23T11:04:04Z
 url: https://github.com/astral-sh/ruff/issues/9137
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add support for auto-quoting when annotations contain quotes
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-14 18:15_
+_@charliermarsh_
 
 Right now, given:
 

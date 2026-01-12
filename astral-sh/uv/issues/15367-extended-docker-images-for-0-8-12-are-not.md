@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-19T00:02:35Z
 updated_at: 2025-08-19T16:45:43Z
 url: https://github.com/astral-sh/uv/issues/15367
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Extended Docker images for 0.8.12 are not published to DockerHub
 
 ---
 
-_Issue opened by @zanieb on 2025-08-19 00:02_
+_@zanieb_
 
 There was an authentication issue with Depot and DockerHub for the 0.8.12 release and the extended Docker images, e.g., `uv:alpine` or `uv:python3.12-trixie`, were not published to DockerHub for 0.8.12. Pinned images like `docker.io/astral/uv:0.8.12-alpine` will be missing. Images without a patch pin, like `docker.io/astral/uv:0.8-alpine`, will point to 0.8.11. The base uv images, e.g., `uv:latest`, `uv:0.8`, and `uv:0.8.12`, are not affected and are available on DockerHub.
 

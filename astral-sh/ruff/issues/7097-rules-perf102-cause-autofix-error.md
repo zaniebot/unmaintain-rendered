@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T18:34:21Z
 updated_at: 2023-09-20T23:33:55Z
 url: https://github.com/astral-sh/ruff/issues/7097
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules PERF102 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 18:34_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 ```

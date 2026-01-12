@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T15:56:25Z
 updated_at: 2025-11-30T13:40:34Z
 url: https://github.com/astral-sh/ty/issues/1678
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Autofix for `override-of-final-method` can introduce invalid syntax
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:56_
+_@AlexWaygood_
 
 If the user has something like this:
 

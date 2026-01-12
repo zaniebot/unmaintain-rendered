@@ -12,14 +12,14 @@ head: charlie/required-platforms
 created_at: 2024-12-20T22:00:55Z
 updated_at: 2025-02-18T13:44:04Z
 url: https://github.com/astral-sh/uv/pull/10067
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Allow users to mark platforms as "required" for wheel coverage
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-20 22:00_
+_@charliermarsh_
 
 ## Summary
 

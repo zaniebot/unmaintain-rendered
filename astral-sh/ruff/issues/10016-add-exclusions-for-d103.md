@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T06:51:13Z
 updated_at: 2025-09-05T02:37:30Z
 url: https://github.com/astral-sh/ruff/issues/10016
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add exclusions for D103
 
 ---
 
-_Issue opened by @clairem-sl on 2024-02-17 06:51_
+_@clairem-sl_
 
 With my current `ruff` (version **0.2.1**), it keeps warning me that `main()` has no docstring (rule `D103`).
 

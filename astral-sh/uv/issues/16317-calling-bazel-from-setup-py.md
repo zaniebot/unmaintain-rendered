@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T15:58:27Z
 updated_at: 2025-11-03T02:43:13Z
 url: https://github.com/astral-sh/uv/issues/16317
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Calling bazel from setup.py
 
 ---
 
-_Issue opened by @froody on 2025-10-15 15:58_
+_@froody_
 
 ### Question
 

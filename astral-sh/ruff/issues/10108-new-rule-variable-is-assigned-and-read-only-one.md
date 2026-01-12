@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-24T05:49:17Z
 updated_at: 2025-01-29T18:15:11Z
 url: https://github.com/astral-sh/ruff/issues/10108
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # new rule: variable is assigned and read only one time
 
 ---
 
-_Issue opened by @Tatsh on 2024-02-24 05:49_
+_@Tatsh_
 
 Example:
 

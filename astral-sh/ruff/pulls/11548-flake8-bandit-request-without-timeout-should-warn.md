@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-05-26T19:58:15Z
 updated_at: 2024-05-28T16:46:25Z
 url: https://github.com/astral-sh/ruff/pull/11548
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-bandit`] `request-without-timeout` should warn for `requests.request`
 
 ---
 
-_Pull request opened by @akshetpandey on 2024-05-26 19:58_
+_@akshetpandey_
 
 ## Summary
 Update [S113](https://docs.astral.sh/ruff/rules/request-without-timeout/) to also warns for missing timeout on when calling `requests.request`

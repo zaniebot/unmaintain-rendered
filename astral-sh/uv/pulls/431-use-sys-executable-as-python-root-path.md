@@ -12,14 +12,14 @@ head: sys-executable
 created_at: 2023-11-15T20:51:45Z
 updated_at: 2023-11-16T11:16:50Z
 url: https://github.com/astral-sh/uv/pull/431
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 #  Use `sys.executable` as python root path
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 20:51_
+_@konstin_
 
 Previously, we were assuming that `which <python>` return the path to the python executable. This is not true when using pyenv shims, which are bash scripts. Instead, we have to use `sys.executable`. Luckily, we're already querying the python interpreter and can do it in that pass.
 

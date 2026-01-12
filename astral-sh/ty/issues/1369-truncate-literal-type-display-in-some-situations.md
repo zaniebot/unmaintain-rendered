@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T14:09:17Z
 updated_at: 2025-10-17T11:50:59Z
 url: https://github.com/astral-sh/ty/issues/1369
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Truncate `Literal` type display in some situations
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-16 14:09_
+_@AlexWaygood_
 
 ### Summary
 

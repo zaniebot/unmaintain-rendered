@@ -13,14 +13,14 @@ head: red-knot-bench-use-check
 created_at: 2024-08-20T07:40:20Z
 updated_at: 2024-08-20T10:20:42Z
 url: https://github.com/astral-sh/ruff/pull/13004
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use `check` instead of `check_file` in benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-20 07:40_
+_@MichaReiser_
 
 ## Summary
 

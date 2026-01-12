@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-21T22:49:08Z
 updated_at: 2017-01-03T04:00:46Z
 url: https://github.com/clap-rs/clap/issues/782
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Feature request: allow specifying argument multiple value terminator
 
 ---
 
-_Issue opened by @vi on 2016-12-21 22:49_
+_@vi_
 
 ### Rust Version
 

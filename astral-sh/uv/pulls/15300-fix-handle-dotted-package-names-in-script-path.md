@@ -13,14 +13,14 @@ head: fix/windows-executable-dotted-names
 created_at: 2025-08-15T10:07:17Z
 updated_at: 2025-08-15T21:44:59Z
 url: https://github.com/astral-sh/uv/pull/15300
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # fix: Handle dotted package names in script path resolution
 
 ---
 
-_Pull request opened by @crh23 on 2025-08-15 10:07_
+_@crh23_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

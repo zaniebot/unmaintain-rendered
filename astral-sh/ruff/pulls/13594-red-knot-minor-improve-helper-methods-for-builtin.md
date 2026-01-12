@@ -13,14 +13,14 @@ head: alex/redknot-helpers
 created_at: 2024-10-01T17:03:16Z
 updated_at: 2024-10-01T17:38:35Z
 url: https://github.com/astral-sh/ruff/pull/13594
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] [minor] Improve helper methods for builtin types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-01 17:03_
+_@AlexWaygood_
 
 ## Summary
 

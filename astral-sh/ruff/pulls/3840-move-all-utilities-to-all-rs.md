@@ -12,14 +12,14 @@ head: charlie/useless-ii
 created_at: 2023-04-01T03:05:28Z
 updated_at: 2023-04-01T03:53:48Z
 url: https://github.com/astral-sh/ruff/pull/3840
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move `__all__` utilities to `all.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 03:05_
+_@charliermarsh_
 
 _No description provided._
 

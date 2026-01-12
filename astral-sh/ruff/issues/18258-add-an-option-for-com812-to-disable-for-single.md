@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-22T17:25:02Z
 updated_at: 2025-06-03T18:11:44Z
 url: https://github.com/astral-sh/ruff/issues/18258
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add an option for COM812 to disable for single-argument functions?
 
 ---
 
-_Issue opened by @davidt on 2025-05-22 17:25_
+_@davidt_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/better-warning-for-no-direct-build
 created_at: 2025-09-16T17:13:12Z
 updated_at: 2025-09-17T11:18:43Z
 url: https://github.com/astral-sh/uv/pull/15898
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Better warning for no direct build
 
 ---
 
-_Pull request opened by @konstin on 2025-09-16 17:13_
+_@konstin_
 
 **Setup**
 

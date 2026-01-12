@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-17T20:41:49Z
 updated_at: 2024-03-17T21:12:57Z
 url: https://github.com/astral-sh/uv/issues/2499
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # pip list shows more than uv pip list
 
 ---
 
-_Issue opened by @lkadin on 2024-03-17 20:41_
+_@lkadin_
 
 Not sure if this is really an issue.
 I installed uv on Windows 11 globally from your PS download 

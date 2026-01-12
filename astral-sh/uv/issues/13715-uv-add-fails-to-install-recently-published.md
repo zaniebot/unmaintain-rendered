@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T09:31:02Z
 updated_at: 2025-05-29T12:38:21Z
 url: https://github.com/astral-sh/uv/issues/13715
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv add fails to install recently published package version from PyPI
 
 ---
 
-_Issue opened by @DamyanBG on 2025-05-29 09:31_
+_@DamyanBG_
 
 ### Summary
 

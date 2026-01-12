@@ -14,14 +14,14 @@ head: micha/dedent-cursor-tests
 created_at: 2025-08-21T08:09:01Z
 updated_at: 2025-08-21T08:31:55Z
 url: https://github.com/astral-sh/ruff/pull/20019
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Use `dedent` in cursor tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-21 08:09_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-10T13:40:07Z
 updated_at: 2026-01-10T20:15:18Z
 url: https://github.com/astral-sh/ty/issues/2436
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Dict unpacking inside another dictionary ignores annotations
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-10 13:40_
+_@AndBoyS_
 
 ### Summary
 

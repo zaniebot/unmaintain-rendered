@@ -13,14 +13,14 @@ head: micha/remove-lint
 created_at: 2024-10-25T08:50:40Z
 updated_at: 2024-10-28T08:39:31Z
 url: https://github.com/astral-sh/ruff/pull/13922
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Remove lint-phase
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-25 08:50_
+_@MichaReiser_
 
 ## Summary
 

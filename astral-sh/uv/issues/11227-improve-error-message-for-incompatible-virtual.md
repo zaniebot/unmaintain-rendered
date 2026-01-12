@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T21:41:28Z
 updated_at: 2025-02-04T21:41:41Z
 url: https://github.com/astral-sh/uv/issues/11227
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Improve error message for incompatible virtual environment
 
 ---
 
-_Issue opened by @zanieb on 2025-02-04 21:41_
+_@zanieb_
 
 The test case for error messages when a virtual environment has a different Python version regressed, undoing the work from https://github.com/astral-sh/uv/pull/11143 if the interpreter is at the front of the PATH
 

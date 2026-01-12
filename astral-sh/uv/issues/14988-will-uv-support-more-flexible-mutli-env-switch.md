@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T07:48:14Z
 updated_at: 2025-07-31T13:43:32Z
 url: https://github.com/astral-sh/uv/issues/14988
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Will uv support more flexible mutli-env switch  like conda?
 
 ---
 
-_Issue opened by @FuRuF-11 on 2025-07-31 07:48_
+_@FuRuF-11_
 
 ### Summary
 

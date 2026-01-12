@@ -13,14 +13,14 @@ head: konsti/windows-regex-filters
 created_at: 2024-02-05T22:18:29Z
 updated_at: 2024-02-06T19:31:43Z
 url: https://github.com/astral-sh/uv/pull/1255
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Search and replace windows specific tests in deps
 
 ---
 
-_Pull request opened by @konstin on 2024-02-05 22:18_
+_@konstin_
 
 Remove windows-only dependencies from the snapshot output using regex. We now do the filtering entirely on our without relying on insta settings.
 

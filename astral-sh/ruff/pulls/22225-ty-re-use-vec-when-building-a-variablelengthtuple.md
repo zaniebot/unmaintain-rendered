@@ -14,14 +14,14 @@ head: micha/variable-length-tuple-reuse-vec
 created_at: 2025-12-27T15:53:21Z
 updated_at: 2025-12-27T16:30:50Z
 url: https://github.com/astral-sh/ruff/pull/22225
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Re-use vec when building a `VariableLengthTuple` with the builder
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-27 15:53_
+_@MichaReiser_
 
 _No description provided._
 

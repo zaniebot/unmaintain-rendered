@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-23T13:51:07Z
 updated_at: 2024-01-02T18:57:18Z
 url: https://github.com/astral-sh/ruff/issues/4600
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # flake8-to-ruff ignores nursery rules
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-05-23 13:51_
+_@ThiefMaster_
 
 I got warnings about unsupported rules during the conversion of [my flake8 config](https://raw.githubusercontent.com/indico/indico/master/.flake8), one of them being `E265` which is in fact supported, it's just in the "nursery" category.
 

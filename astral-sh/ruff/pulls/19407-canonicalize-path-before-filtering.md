@@ -13,14 +13,14 @@ head: brent/macos-filter
 created_at: 2025-07-17T17:37:35Z
 updated_at: 2025-07-17T18:02:18Z
 url: https://github.com/astral-sh/ruff/pull/19407
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # Canonicalize path before filtering
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-17 17:37_
+_@ntBre_
 
 ## Summary
 

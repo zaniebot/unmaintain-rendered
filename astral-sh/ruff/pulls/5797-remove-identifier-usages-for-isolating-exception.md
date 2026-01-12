@@ -13,14 +13,14 @@ head: charlie/except-handler-name
 created_at: 2023-07-16T04:37:02Z
 updated_at: 2023-07-16T05:16:38Z
 url: https://github.com/astral-sh/ruff/pull/5797
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove `Identifier` usages for isolating exception names
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-16 04:37_
+_@charliermarsh_
 
 ## Summary
 

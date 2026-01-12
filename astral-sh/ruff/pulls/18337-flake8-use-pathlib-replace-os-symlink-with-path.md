@@ -14,14 +14,14 @@ head: feat/pathlib_symlink
 created_at: 2025-05-27T18:01:01Z
 updated_at: 2025-05-28T10:39:06Z
 url: https://github.com/astral-sh/ruff/pull/18337
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [flake8_use_pathlib]: Replace os.symlink with Path.symlink_to (PTH211)
 
 ---
 
-_Pull request opened by @fennr on 2025-05-27 18:01_
+_@fennr_
 
 ## Summary
 

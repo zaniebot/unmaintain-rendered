@@ -11,14 +11,14 @@ head: hvh/gh-host-support
 created_at: 2025-09-14T15:51:51Z
 updated_at: 2025-10-31T11:13:30Z
 url: https://github.com/astral-sh/uv/pull/15841
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:58Z
 ```
 
 # Add GHE support for gist resolution with GH_HOST
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-14 15:51_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

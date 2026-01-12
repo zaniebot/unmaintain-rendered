@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T14:38:56Z
 updated_at: 2023-12-13T17:36:30Z
 url: https://github.com/astral-sh/uv/issues/423
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Resolving `transformers[tensorboard]` fails
 
 ---
 
-_Issue opened by @konstin on 2023-11-14 14:38_
+_@konstin_
 
 `transformers[tensorboard]` resolves with pip but not with puffin:
 

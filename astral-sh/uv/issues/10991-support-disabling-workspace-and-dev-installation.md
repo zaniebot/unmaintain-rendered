@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T16:25:59Z
 updated_at: 2025-01-27T18:55:37Z
 url: https://github.com/astral-sh/uv/issues/10991
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Support disabling workspace and dev installation of `uv pip install`
 
 ---
 
-_Issue opened by @potiuk on 2025-01-27 16:25_
+_@potiuk_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: issue-5854
 created_at: 2023-07-18T14:35:47Z
 updated_at: 2023-07-18T17:02:29Z
 url: https://github.com/astral-sh/ruff/pull/5862
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update `UP032` to autofix multi-line triple-quoted string
 
 ---
 
-_Pull request opened by @harupy on 2023-07-18 14:35_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

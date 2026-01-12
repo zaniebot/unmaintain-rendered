@@ -13,14 +13,14 @@ head: zb/entrypoints
 created_at: 2024-09-04T12:40:37Z
 updated_at: 2024-09-04T17:16:33Z
 url: https://github.com/astral-sh/uv/pull/7010
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Add project docs for `project.scripts`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-04 12:40_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6998
 

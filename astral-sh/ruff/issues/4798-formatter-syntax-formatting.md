@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-02T06:28:46Z
 updated_at: 2023-09-08T07:25:40Z
 url: https://github.com/astral-sh/ruff/issues/4798
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # 📋 Formatter: Syntax Formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-02 06:28_
+_@MichaReiser_
 
 This task coordinates the work on implementing formatting for the Python syntax. 
 

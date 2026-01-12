@@ -12,14 +12,14 @@ head: charlie/nbqa
 created_at: 2022-12-28T02:23:06Z
 updated_at: 2022-12-28T02:24:08Z
 url: https://github.com/astral-sh/ruff/pull/1417
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add nbQA support to the docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-28 02:23_
+_@charliermarsh_
 
 See: https://github.com/nbQA-dev/nbQA/pull/773.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-16T20:06:09Z
 updated_at: 2015-07-17T02:18:36Z
 url: https://github.com/clap-rs/clap/issues/161
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Arg::multiple prior to a position variable eats the position variable as well
 
 ---
 
-_Issue opened by @bbatha on 2015-07-16 20:06_
+_@bbatha_
 
 I have this matches:
 

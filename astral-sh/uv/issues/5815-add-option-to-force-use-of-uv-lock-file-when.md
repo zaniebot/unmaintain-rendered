@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T14:50:55Z
 updated_at: 2026-01-09T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/5815
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Add option to force use of `uv.lock` file when adding dependency or installing a tool
 
 ---
 
-_Issue opened by @my1e5 on 2024-08-06 14:50_
+_@my1e5_
 
 From 'The Cargo Book' - https://doc.rust-lang.org/cargo/commands/cargo-install.html#dealing-with-the-lockfile
 

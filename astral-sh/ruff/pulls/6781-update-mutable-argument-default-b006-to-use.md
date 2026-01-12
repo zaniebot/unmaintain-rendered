@@ -12,14 +12,14 @@ head: rule/b006-extend
 created_at: 2023-08-22T16:45:40Z
 updated_at: 2023-08-23T16:12:17Z
 url: https://github.com/astral-sh/ruff/pull/6781
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update `mutable-argument-default` (`B006`) to use `extend-immutable-calls` when determining if annotations are immutable
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 16:45_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ruff/issues/3762
 

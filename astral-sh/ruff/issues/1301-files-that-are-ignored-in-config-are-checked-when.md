@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-20T18:32:03Z
 updated_at: 2022-12-20T18:45:50Z
 url: https://github.com/astral-sh/ruff/issues/1301
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Files that are ignored in config are checked when passed explicitly on the command line
 
 ---
 
-_Issue opened by @cpcloud on 2022-12-20 18:32_
+_@cpcloud_
 
 When a file is ignored in config, but then explicitly passed on the command line `ruff` checks it anyway.
 

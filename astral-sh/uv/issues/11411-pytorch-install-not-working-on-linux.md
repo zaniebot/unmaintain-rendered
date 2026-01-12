@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T23:31:18Z
 updated_at: 2025-02-11T00:12:13Z
 url: https://github.com/astral-sh/uv/issues/11411
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Pytorch install not working on linux
 
 ---
 
-_Issue opened by @spkgyk on 2025-02-10 23:31_
+_@spkgyk_
 
 ### Summary
 

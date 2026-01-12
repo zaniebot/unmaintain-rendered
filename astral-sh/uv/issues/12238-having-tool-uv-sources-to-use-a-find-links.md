@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T11:52:13Z
 updated_at: 2025-06-21T12:25:24Z
 url: https://github.com/astral-sh/uv/issues/12238
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Having tool.uv.sources to use a "find-links" directive instead of direct indexes or urls
 
 ---
 
-_Issue opened by @jackmedda on 2025-03-17 11:52_
+_@jackmedda_
 
 ### Question
 

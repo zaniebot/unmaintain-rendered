@@ -13,14 +13,14 @@ head: david/enum-iteration
 created_at: 2025-07-22T13:15:54Z
 updated_at: 2025-07-22T18:10:31Z
 url: https://github.com/astral-sh/ruff/pull/19486
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Support iterating over enums
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 13:15_
+_@sharkdp_
 
 ## Summary
 

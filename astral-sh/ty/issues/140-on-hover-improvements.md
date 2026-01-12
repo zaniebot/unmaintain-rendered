@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T16:02:00Z
 updated_at: 2025-08-15T14:43:50Z
 url: https://github.com/astral-sh/ty/issues/140
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # On-hover improvements
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-02 16:02_
+_@MichaReiser_
 
 Our first implementation of "On hover" only shows the inferred type (without highlighting) at the hovered position. This is nice, but we should surface more information:
 

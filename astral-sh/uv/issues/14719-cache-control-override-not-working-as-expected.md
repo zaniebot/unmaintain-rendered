@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T12:50:55Z
 updated_at: 2025-07-19T07:04:26Z
 url: https://github.com/astral-sh/uv/issues/14719
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # cache-control override not working as expected
 
 ---
 
-_Issue opened by @davidszotten on 2025-07-18 12:50_
+_@davidszotten_
 
 ### Summary
 

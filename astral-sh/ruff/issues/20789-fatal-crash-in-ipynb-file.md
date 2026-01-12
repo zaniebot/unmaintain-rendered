@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-09T15:28:30Z
 updated_at: 2025-10-10T20:05:07Z
 url: https://github.com/astral-sh/ruff/issues/20789
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fatal crash in ipynb file
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-10-09 15:28_
+_@Matt-Ord_
 
 ### Summary
 

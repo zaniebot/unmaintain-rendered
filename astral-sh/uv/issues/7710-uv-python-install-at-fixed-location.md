@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T14:38:32Z
 updated_at: 2025-02-18T15:49:30Z
 url: https://github.com/astral-sh/uv/issues/7710
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv python install at fixed location?
 
 ---
 
-_Issue opened by @mikeckennedy on 2024-09-26 14:38_
+_@mikeckennedy_
 
 Hi team,
 

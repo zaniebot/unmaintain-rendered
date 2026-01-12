@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T03:42:09Z
 updated_at: 2025-10-11T20:49:26Z
 url: https://github.com/astral-sh/uv/issues/11876
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # uv init should add #!/usr/bin/env -S uv run
 
 ---
 
-_Issue opened by @hyperknot on 2025-03-01 03:42_
+_@hyperknot_
 
 ### Summary
 

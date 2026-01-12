@@ -12,14 +12,14 @@ head: charlie/M001-fix
 created_at: 2022-09-21T23:53:55Z
 updated_at: 2022-09-22T17:21:05Z
 url: https://github.com/astral-sh/ruff/pull/255
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable autofix for M001
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-21 23:53_
+_@charliermarsh_
 
 _No description provided._
 

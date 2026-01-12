@@ -12,14 +12,14 @@ head: subcommand-followups
 created_at: 2023-01-28T03:18:40Z
 updated_at: 2023-01-28T14:55:24Z
 url: https://github.com/astral-sh/ruff/pull/2288
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Subcommand followups
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-28 03:18_
+_@not-my-profile_
 
 (See the commit messages for the reasoning.)
 

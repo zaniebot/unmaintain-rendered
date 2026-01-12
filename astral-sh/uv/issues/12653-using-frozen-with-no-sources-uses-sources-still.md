@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T14:29:24Z
 updated_at: 2025-04-29T21:37:06Z
 url: https://github.com/astral-sh/uv/issues/12653
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Using `--frozen` with `--no-sources` uses sources still
 
 ---
 
-_Issue opened by @zanieb on 2025-04-03 14:29_
+_@zanieb_
 
 Presumably we should warn or something here?
 

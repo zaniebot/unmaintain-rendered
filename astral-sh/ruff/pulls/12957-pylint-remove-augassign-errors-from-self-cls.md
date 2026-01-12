@@ -14,14 +14,14 @@ head: remove-augassign-from-plw0642
 created_at: 2024-08-17T20:08:10Z
 updated_at: 2024-08-18T15:40:11Z
 url: https://github.com/astral-sh/ruff/pull/12957
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`pylint`] - remove AugAssign errors from `self-cls-assignment` (`W0642`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-17 20:08_
+_@diceroll123_
 
 ## Summary
 

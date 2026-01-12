@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-14T14:15:50Z
 updated_at: 2025-06-13T15:15:26Z
 url: https://github.com/astral-sh/uv/issues/10597
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # uv sync ignores non-existent extras given to `--extra` option
 
 ---
 
-_Issue opened by @danielhollas on 2025-01-14 14:15_
+_@danielhollas_
 
 I've made a typo in the name of the optional dependencies (extras) and was surprised that uv did not throw any error and simply seemed to ignore this.
 

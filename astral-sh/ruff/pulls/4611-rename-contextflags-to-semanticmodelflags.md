@@ -12,14 +12,14 @@ head: charlie/context
 created_at: 2023-05-23T20:05:33Z
 updated_at: 2023-05-23T21:47:08Z
 url: https://github.com/astral-sh/ruff/pull/4611
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Rename `ContextFlags` to `SemanticModelFlags`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 20:05_
+_@charliermarsh_
 
 We renamed `Context` to `SemanticModel`, but overlooked this struct.
 

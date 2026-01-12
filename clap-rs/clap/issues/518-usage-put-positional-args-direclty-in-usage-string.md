@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-01T11:25:03Z
 updated_at: 2020-04-12T10:09:27Z
 url: https://github.com/clap-rs/clap/issues/518
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # usage: Put positional args direclty in usage string
 
 ---
 
-_Issue opened by @kamalmarhubi on 2016-06-01 11:25_
+_@kamalmarhubi_
 
 If I have just one optional positional arg say `FILE`, it should show up directly in the usage string, instead of as `[ARGS]`. If it's required it shows up as `<FILE>`, but if it's optional I get `[ARGS]` with it listed under the `ARGS` section in help. I'd prefer `[FILE]` directly in usage.
 

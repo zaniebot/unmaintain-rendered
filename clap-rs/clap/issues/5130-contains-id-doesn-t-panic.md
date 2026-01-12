@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-19T16:50:42Z
 updated_at: 2023-09-19T17:59:18Z
 url: https://github.com/clap-rs/clap/issues/5130
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # contains_id doesn't panic
 
 ---
 
-_Issue opened by @Avgor46 on 2023-09-19 16:50_
+_@Avgor46_
 
 ### Please complete the following tasks
 

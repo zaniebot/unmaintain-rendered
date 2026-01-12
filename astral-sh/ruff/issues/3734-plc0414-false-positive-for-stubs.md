@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-25T22:02:13Z
 updated_at: 2023-03-27T18:39:03Z
 url: https://github.com/astral-sh/ruff/issues/3734
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `PLC0414` false positive for stubs
 
 ---
 
-_Issue opened by @Avasam on 2023-03-25 22:02_
+_@Avasam_
 
 `PLC0414` should not be applied to `.pyi`. Explicit re-exports are a valid convention to indicate that a type is meant to be exposed as re-exported, and isn't just used in the stub for typing reference.
 

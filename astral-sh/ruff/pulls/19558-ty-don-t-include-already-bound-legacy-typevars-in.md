@@ -13,14 +13,14 @@ head: dcreager/containing-legacy-typevar
 created_at: 2025-07-25T14:28:51Z
 updated_at: 2025-07-25T22:14:21Z
 url: https://github.com/astral-sh/ruff/pull/19558
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Don't include already-bound legacy typevars in function generic context
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-25 14:28_
+_@dcreager_
 
 We now correctly exclude legacy typevars from enclosing scopes when constructing the generic context for a generic function.
 

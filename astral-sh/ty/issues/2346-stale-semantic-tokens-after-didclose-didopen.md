@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-05T15:32:11Z
 updated_at: 2026-01-06T10:52:54Z
 url: https://github.com/astral-sh/ty/issues/2346
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stale Semantic Tokens After didClose/didOpen
 
 ---
 
-_Issue opened by @joaotavora on 2026-01-05 15:32_
+_@joaotavora_
 
 ### Summary
 

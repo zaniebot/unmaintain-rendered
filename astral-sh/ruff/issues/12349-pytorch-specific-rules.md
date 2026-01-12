@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T16:42:54Z
 updated_at: 2025-06-16T17:18:48Z
 url: https://github.com/astral-sh/ruff/issues/12349
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PyTorch-specific rules
 
 ---
 
-_Issue opened by @sbrugman on 2024-07-16 16:42_
+_@sbrugman_
 
 Introducing lints for pytorch expands `ruff` utility in the AI/machine learning space, in addition to [Numpy](https://github.com/astral-sh/ruff/issues/2455) and [Spark](https://github.com/astral-sh/ruff/issues/7272). Detecting potential errors during linting has the potential to save costly GPU compute.
 

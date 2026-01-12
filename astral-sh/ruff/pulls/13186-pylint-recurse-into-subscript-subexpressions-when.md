@@ -14,14 +14,14 @@ head: alex/index-lookups
 created_at: 2024-08-31T18:22:55Z
 updated_at: 2024-09-01T16:22:46Z
 url: https://github.com/astral-sh/ruff/pull/13186
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pylint`] Recurse into subscript subexpressions when searching for list/dict lookups (`PLR1733`, `PLR1736`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-31 18:22_
+_@AlexWaygood_
 
 ## Summary
 

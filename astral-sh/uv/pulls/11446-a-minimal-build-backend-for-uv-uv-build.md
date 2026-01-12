@@ -13,14 +13,14 @@ head: konsti/standalone-build-backend-package
 created_at: 2025-02-12T14:58:24Z
 updated_at: 2025-03-06T19:27:22Z
 url: https://github.com/astral-sh/uv/pull/11446
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # A minimal build backend for uv: uv_build
 
 ---
 
-_Pull request opened by @konstin on 2025-02-12 14:58_
+_@konstin_
 
 uv itself is a large package with many dependencies and lots of features. To build a package using the uv build backend, you shouldn't have to download and install the entirety of uv. For platform where we don't provide wheels, it should be possible and fast to compile the uv build backend. To that end, we're introducing a python package that contains a trimmed down version of uv that only contains the build backend, with a minimal dependency tree in rust.
 

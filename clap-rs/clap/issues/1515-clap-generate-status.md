@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-07-05T00:00:59Z
 updated_at: 2020-02-06T19:28:28Z
 url: https://github.com/clap-rs/clap/issues/1515
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Clap_Generate status?
 
 ---
 
-_Issue opened by @rharriso on 2019-07-05 00:00_
+_@rharriso_
 
 What is the plan for clap_generate? It’s currently not compatible with v3-master, hasn’t been released, and hasn’t had any activity in a year.
 

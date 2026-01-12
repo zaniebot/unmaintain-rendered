@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-03T15:26:07Z
 updated_at: 2024-06-05T15:55:15Z
 url: https://github.com/astral-sh/ruff/issues/11724
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Bug: formatting a multiline string twice gets changing results
 
 ---
 
-_Issue opened by @jasikpark on 2024-06-03 15:26_
+_@jasikpark_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

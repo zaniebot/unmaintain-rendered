@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T18:48:40Z
 updated_at: 2025-06-17T21:19:07Z
 url: https://github.com/astral-sh/ruff/issues/18732
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff detects and suggests fixes for invalid comparisons of `sys.version_info`
 
 ---
 
-_Issue opened by @IDrokin117 on 2025-06-17 18:48_
+_@IDrokin117_
 
 ### Summary
 

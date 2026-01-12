@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T14:11:31Z
 updated_at: 2025-04-01T19:23:16Z
 url: https://github.com/astral-sh/uv/issues/10498
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Revised `activate` script fails on `alpine:edge`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-11 14:11_
+_@charliermarsh_
 
 This change caused our CI to fail using `alpine:edge` image 
 

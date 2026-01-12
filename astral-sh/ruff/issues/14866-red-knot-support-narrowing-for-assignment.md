@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T11:36:08Z
 updated_at: 2025-04-18T00:28:07Z
 url: https://github.com/astral-sh/ruff/issues/14866
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Support narrowing for assignment expressions
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-09 11:36_
+_@sharkdp_
 
 Narrowing should also be supported if the target is inside an assignment expression. For example:
 

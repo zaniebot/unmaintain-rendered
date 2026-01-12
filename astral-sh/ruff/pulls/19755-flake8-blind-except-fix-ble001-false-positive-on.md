@@ -14,14 +14,14 @@ head: ble001-enhance
 created_at: 2025-08-05T08:00:28Z
 updated_at: 2025-08-13T17:49:39Z
 url: https://github.com/astral-sh/ruff/pull/19755
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`flake8-blind-except`] Fix `BLE001` false-positive on `raise ... from None`
 
 ---
 
-_Pull request opened by @deliro on 2025-08-05 08:00_
+_@deliro_
 
 ## Summary
 

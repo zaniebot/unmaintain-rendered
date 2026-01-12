@@ -14,14 +14,14 @@ head: charlie/bin
 created_at: 2024-07-17T18:13:45Z
 updated_at: 2024-07-18T14:30:25Z
 url: https://github.com/astral-sh/uv/pull/5160
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Add `uv tool dir --bin` to show executable directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 18:13_
+_@charliermarsh_
 
 ## Summary
 

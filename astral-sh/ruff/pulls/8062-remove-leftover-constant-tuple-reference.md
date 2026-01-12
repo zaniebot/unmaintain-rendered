@@ -13,14 +13,14 @@ head: dhruv/tuple-constant
 created_at: 2023-10-19T13:47:51Z
 updated_at: 2023-12-05T20:33:44Z
 url: https://github.com/astral-sh/ruff/pull/8062
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove leftover constant tuple reference
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-19 13:47_
+_@dhruvmanila_
 
 This PR removes the leftover reference to the tuple variant in `Constant`.
 

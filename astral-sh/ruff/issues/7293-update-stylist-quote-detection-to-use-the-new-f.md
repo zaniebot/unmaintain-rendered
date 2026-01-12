@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:04Z
 updated_at: 2023-09-15T07:32:24Z
 url: https://github.com/astral-sh/ruff/issues/7293
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `Stylist` quote detection to use the new f-string tokens
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 Update the [`detect_quote`](https://github.com/astral-sh/ruff/blob/a4a4616f0a49c6b1ff7da93a71308d897d27d21f/crates/ruff_python_codegen/src/stylist.rs#L52-L52) function to either use the `String` or `FStringStart` token to detect the quote (single or double).
 

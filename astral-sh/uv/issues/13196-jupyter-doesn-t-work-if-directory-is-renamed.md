@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T13:33:59Z
 updated_at: 2025-06-12T15:13:55Z
 url: https://github.com/astral-sh/uv/issues/13196
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # `jupyter` doesn't work if directory is renamed
 
 ---
 
-_Issue opened by @juhaszp95 on 2025-04-29 13:33_
+_@juhaszp95_
 
 ### Summary
 

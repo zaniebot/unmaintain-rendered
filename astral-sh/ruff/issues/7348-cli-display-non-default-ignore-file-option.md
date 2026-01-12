@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:04:35Z
 updated_at: 2023-09-13T16:04:35Z
 url: https://github.com/astral-sh/ruff/issues/7348
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Display non-default ignore file option
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:04_
+_@zanieb_
 
 We currently have `--respect-gitignore` / `--no-respect-gitignore` flags which toggle automatic exclusion of files listed in a `.gitignore` file and “other standard ignore files”. The CLI help menu displays `--respect-gitignore` but it is already the default behavior. Instead, it should display the negative option to clarify the default behavior.
 

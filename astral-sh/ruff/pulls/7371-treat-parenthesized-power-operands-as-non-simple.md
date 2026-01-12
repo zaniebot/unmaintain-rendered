@@ -13,14 +13,14 @@ head: charlie/pow
 created_at: 2023-09-13T23:00:00Z
 updated_at: 2023-09-14T15:36:23Z
 url: https://github.com/astral-sh/ruff/pull/7371
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Treat parenthesized power operands as non-simple
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 23:00_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7318.
 

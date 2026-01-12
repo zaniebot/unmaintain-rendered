@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-15T05:49:49Z
 updated_at: 2024-12-15T18:02:47Z
 url: https://github.com/astral-sh/ruff/issues/14981
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] support Literal[None] as a spelling for None
 
 ---
 
-_Issue opened by @carljm on 2024-12-15 05:49_
+_@carljm_
 
 Per the spec, `Literal[None]` is a valid spelling for `None` (that is, in red-knot terms, `Type::Instance(types.NoneType)`.) And e.g. `Literal[1, None]` is an alternate spelling for `Literal[1] | None`. We don't support this, but we should.
 

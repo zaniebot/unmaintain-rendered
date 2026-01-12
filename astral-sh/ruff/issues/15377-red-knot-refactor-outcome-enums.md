@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T17:48:28Z
 updated_at: 2025-02-19T20:35:24Z
 url: https://github.com/astral-sh/ruff/issues/15377
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] refactor Outcome enums
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 17:48_
+_@carljm_
 
 This in particular needs to include simplifying the `CallOutcome` API and making it more consistent in terms of which methods emit diagnostics and which just return a result for the caller to decide.
 

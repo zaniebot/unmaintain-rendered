@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T10:26:30Z
 updated_at: 2025-12-23T11:40:39Z
 url: https://github.com/astral-sh/ty/issues/2183
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Checking large Enum takes very long time
 
 ---
 
-_Issue opened by @ido123net on 2025-12-23 10:26_
+_@ido123net_
 
 ### Summary
 

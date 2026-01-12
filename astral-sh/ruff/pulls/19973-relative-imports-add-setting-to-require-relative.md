@@ -12,14 +12,14 @@ head: feat/require-relative-imports
 created_at: 2025-08-18T16:59:01Z
 updated_at: 2025-12-17T00:54:09Z
 url: https://github.com/astral-sh/ruff/pull/19973
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [relative-imports] Add setting to require relative imports
 
 ---
 
-_Pull request opened by @genevieve-me on 2025-08-18 16:59_
+_@genevieve-me_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

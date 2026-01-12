@@ -12,14 +12,14 @@ head: charlie/noqa
 created_at: 2022-08-16T01:56:07Z
 updated_at: 2022-08-16T02:00:51Z
 url: https://github.com/astral-sh/ruff/pull/11
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add support for noqa pragmas
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-16 01:56_
+_@charliermarsh_
 
 _No description provided._
 

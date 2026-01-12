@@ -13,14 +13,14 @@ head: refactor-place
 created_at: 2025-10-14T19:25:28Z
 updated_at: 2025-10-16T00:14:57Z
 url: https://github.com/astral-sh/ruff/pull/20871
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] refactor `Place`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-14 19:25_
+_@mtshiba_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: unnecessary-literal-within-set-call
 created_at: 2025-07-10T17:22:57Z
 updated_at: 2025-07-11T20:35:13Z
 url: https://github.com/astral-sh/ruff/pull/19268
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [flake8-comprehensions] add new rule C421 - unnecessary literal within `set` call
 
 ---
 
-_Pull request opened by @bluetech on 2025-07-10 17:22_
+_@bluetech_
 
 This corresponds to the existing similar rules for tuple, list and dict. The code closely follows unnecessary-literal-within-dict-call (C418).
 

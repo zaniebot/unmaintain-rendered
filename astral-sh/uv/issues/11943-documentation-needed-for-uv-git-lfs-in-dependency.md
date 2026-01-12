@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T09:19:25Z
 updated_at: 2025-04-29T12:31:52Z
 url: https://github.com/astral-sh/uv/issues/11943
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Documentation needed for UV_GIT_LFS in dependency management and clear error message for using Git LFS
 
 ---
 
-_Issue opened by @kubotty on 2025-03-04 09:19_
+_@kubotty_
 
 ### Summary
 

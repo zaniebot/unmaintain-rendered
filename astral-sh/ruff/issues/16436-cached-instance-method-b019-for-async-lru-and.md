@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T10:58:34Z
 updated_at: 2025-03-01T16:11:27Z
 url: https://github.com/astral-sh/ruff/issues/16436
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # cached-instance-method (B019) for async_lru and aiocache
 
 ---
 
-_Issue opened by @LuckySting on 2025-02-28 10:58_
+_@LuckySting_
 
 ### Summary
 

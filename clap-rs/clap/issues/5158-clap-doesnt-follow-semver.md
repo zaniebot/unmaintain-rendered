@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T18:15:31Z
 updated_at: 2023-10-04T18:21:39Z
 url: https://github.com/clap-rs/clap/issues/5158
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap doesnt follow semver
 
 ---
 
-_Issue opened by @labannah9125 on 2023-10-04 18:15_
+_@labannah9125_
 
 ### Please complete the following tasks
 

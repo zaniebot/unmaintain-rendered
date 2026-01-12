@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T07:43:05Z
 updated_at: 2024-04-25T10:16:24Z
 url: https://github.com/astral-sh/ruff/issues/10042
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Update line break heuristic when f-string has conversion flag
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-02-19 07:43_
+_@dhruvmanila_
 
 It seems that the following is an invalid syntax for pre 3.12 even for triple-quoted f-strings:
 

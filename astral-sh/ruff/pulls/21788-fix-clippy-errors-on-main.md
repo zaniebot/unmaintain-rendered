@@ -13,14 +13,14 @@ head: dhruv/fix-main
 created_at: 2025-12-04T10:45:49Z
 updated_at: 2025-12-04T10:50:39Z
 url: https://github.com/astral-sh/ruff/pull/21788
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # Fix clippy errors on `main`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-04 10:45_
+_@dhruvmanila_
 
 https://github.com/astral-sh/ruff/actions/runs/19922070773/job/57112827024#step:5:62
 

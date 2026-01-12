@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-10T14:37:14Z
 updated_at: 2023-06-08T17:19:58Z
 url: https://github.com/astral-sh/ruff/issues/4345
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLE0605 false positives on dynamically constructed lists
 
 ---
 
-_Issue opened by @Skylion007 on 2023-05-10 14:37_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

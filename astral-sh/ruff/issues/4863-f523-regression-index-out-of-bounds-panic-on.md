@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-05T12:57:19Z
 updated_at: 2023-06-05T18:31:49Z
 url: https://github.com/astral-sh/ruff/issues/4863
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F523: Regression: index out-of-bounds panic on invalid parameter indices
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-05 12:57_
+_@addisoncrump_
 
 Potentially, a `.format`'d string specifies a parameter outside of the number of real parameters:
 

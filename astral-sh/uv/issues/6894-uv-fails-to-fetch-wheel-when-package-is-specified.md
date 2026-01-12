@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-31T17:28:29Z
 updated_at: 2024-09-03T21:21:22Z
 url: https://github.com/astral-sh/uv/issues/6894
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # UV fails to fetch wheel when package is specified in build-system requires
 
 ---
 
-_Issue opened by @CosmicallyCosmo on 2024-08-31 17:28_
+_@CosmicallyCosmo_
 
 I've tested this with uv version 4.0.1 with `uv sync --reinstall`. It successfully installs the package when specified under `[dependencies]` but get the error below when it's under `[build-system] requires` (anonymized output):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T08:08:17Z
 updated_at: 2024-11-13T19:31:56Z
 url: https://github.com/astral-sh/ruff/issues/14305
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Asserts on invalid match pattern
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-13 08:08_
+_@sharkdp_
 
 Red knot currently runs into a failing debug assertion on the following invalid match pattern:
 ```py

@@ -12,14 +12,14 @@ head: django-support
 created_at: 2025-11-06T22:38:34Z
 updated_at: 2025-11-07T14:53:44Z
 url: https://github.com/astral-sh/ruff/pull/21308
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Add Django ORM type checking test coverage and comparison analysis
 
 ---
 
-_Pull request opened by @saada on 2025-11-06 22:38_
+_@saada_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-02T02:22:50Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/216
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow, or example using a build.rs to make YAML just as performant as traditional
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-02 02:22_
+_@kbknapp_
 
 Based on [this comment](https://www.reddit.com/r/rust/comments/3j9es2/clap_13_build_a_cli_from_yaml/cunnshc) in the subreddit, I'd like to look at using a `build.rs` to generate traditional code. This may also help #202 as well. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T17:07:55Z
 updated_at: 2025-11-18T16:10:41Z
 url: https://github.com/astral-sh/ty/issues/1559
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Emit a diagnostic if a `@type_check_only` symbol is imported in a runtime context
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-14 17:07_
+_@AlexWaygood_
 
 E.g.
 

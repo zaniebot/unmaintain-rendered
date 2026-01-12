@@ -15,14 +15,14 @@ head: konsti/basic-retry-tests
 created_at: 2025-05-21T21:15:17Z
 updated_at: 2025-06-10T10:00:07Z
 url: https://github.com/astral-sh/uv/pull/13585
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Add basic network error tests
 
 ---
 
-_Pull request opened by @konstin on 2025-05-21 21:15_
+_@konstin_
 
 Add basic tests for error messages on retryable network errors.
 

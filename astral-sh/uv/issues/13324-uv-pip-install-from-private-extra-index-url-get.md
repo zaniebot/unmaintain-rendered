@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T07:44:19Z
 updated_at: 2025-05-21T07:12:52Z
 url: https://github.com/astral-sh/uv/issues/13324
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # uv pip install from private extra index url get 401 Unauthorized
 
 ---
 
-_Issue opened by @OrhanYaz on 2025-05-07 07:44_
+_@OrhanYaz_
 
 ### Summary
 

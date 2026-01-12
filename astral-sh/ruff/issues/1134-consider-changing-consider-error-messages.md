@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T00:19:13Z
 updated_at: 2022-12-08T01:10:38Z
 url: https://github.com/astral-sh/ruff/issues/1134
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Consider changing "consider" error messages
 
 ---
 
-_Issue opened by @smackesey on 2022-12-08 00:19_
+_@smackesey_
 
 Something about this doesn't feel right:
 

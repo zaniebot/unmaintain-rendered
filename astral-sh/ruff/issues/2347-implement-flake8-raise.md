@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-30T11:29:21Z
 updated_at: 2023-01-31T23:09:41Z
 url: https://github.com/astral-sh/ruff/issues/2347
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-raise`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-30 11:29_
+_@ngnpope_
 
 [GitHub](https://github.com/jdufresne/flake8-raise), [PyPI](https://pypi.org/project/flake8-raise/).
 

@@ -13,14 +13,14 @@ head: zb/docs-collapsible
 created_at: 2024-11-13T18:44:52Z
 updated_at: 2024-11-15T23:00:25Z
 url: https://github.com/astral-sh/uv/pull/9095
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Update styles to support collapsible nav
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-13 18:44_
+_@zanieb_
 
 In preparation for adding collapsible sections, cleans up the CSS styling we apply to the nav.
 

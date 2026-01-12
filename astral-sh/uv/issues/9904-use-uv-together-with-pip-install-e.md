@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T06:06:37Z
 updated_at: 2024-12-15T14:22:21Z
 url: https://github.com/astral-sh/uv/issues/9904
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # use uv together with pip install -e
 
 ---
 
-_Issue opened by @ghost on 2024-12-15 06:06_
+_@ghost_
 
 is it possible to use uv together with pip install -e
 

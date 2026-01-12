@@ -13,14 +13,14 @@ head: alex/pyi019-docs
 created_at: 2025-02-18T12:49:13Z
 updated_at: 2025-02-18T12:55:46Z
 url: https://github.com/astral-sh/ruff/pull/16229
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Improve docs for PYI019
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-18 12:49_
+_@AlexWaygood_
 
 ## Summary
 

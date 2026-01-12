@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-13T22:35:25Z
 updated_at: 2024-10-14T12:02:05Z
 url: https://github.com/astral-sh/ruff/issues/13732
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] `mdtest` doesn't spot a new Markdown test file has been added until you force a rebuild of the crate being tested
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-13 22:35_
+_@AlexWaygood_
 
 I just did the following:
 - Wrote some new red-knot code in a new PR branch

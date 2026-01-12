@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T10:03:04Z
 updated_at: 2025-11-13T12:05:12Z
 url: https://github.com/astral-sh/ty/issues/633
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Do not fall back to behaving as if there is no `__get__` if call to `__get__` fails to type check
 
 ---
 
-_Issue opened by @n-gao on 2025-06-11 10:03_
+_@n-gao_
 
 ### Summary
 

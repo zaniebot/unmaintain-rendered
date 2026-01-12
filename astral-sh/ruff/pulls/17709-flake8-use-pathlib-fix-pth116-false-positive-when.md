@@ -14,14 +14,14 @@ head: fix-PTH116
 created_at: 2025-04-29T14:17:04Z
 updated_at: 2025-05-08T21:29:09Z
 url: https://github.com/astral-sh/ruff/pull/17709
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`flake8-use-pathlib`] Fix `PTH116` false positive when `stat` is passed a file descriptor
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-29 14:17_
+_@LaBatata101_
 
 
 

@@ -11,14 +11,14 @@ head: fixx
 created_at: 2025-02-06T16:39:47Z
 updated_at: 2025-02-06T16:46:57Z
 url: https://github.com/clap-rs/clap/pull/5904
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Typos fix
 
 ---
 
-_Pull request opened by @helicopter-1 on 2025-02-06 16:39_
+_@helicopter-1_
 
 Fix: Corrected typos in source files
 

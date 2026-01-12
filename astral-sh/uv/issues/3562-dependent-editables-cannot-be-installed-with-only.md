@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T20:37:24Z
 updated_at: 2024-05-14T00:03:55Z
 url: https://github.com/astral-sh/uv/issues/3562
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Dependent editables cannot be installed with `--only-binary`
 
 ---
 
-_Issue opened by @zanieb on 2024-05-13 20:37_
+_@zanieb_
 
 See test case in https://github.com/astral-sh/uv/pull/3561 prompted by #3513 
 

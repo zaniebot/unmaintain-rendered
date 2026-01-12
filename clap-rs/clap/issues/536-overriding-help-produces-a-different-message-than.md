@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-23T16:51:24Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/536
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Overriding --help produces a different message than the default
 
 ---
 
-_Issue opened by @brianp on 2016-06-23 16:51_
+_@brianp_
 
 When overriding the `help` flag using `long("help")`, the auto-generated help output is different from the default.
 

@@ -14,14 +14,14 @@ head: micha/rename-overload
 created_at: 2025-12-11T15:55:21Z
 updated_at: 2025-12-11T16:01:08Z
 url: https://github.com/astral-sh/ruff/pull/21920
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Handle overloads in rename
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-11 15:55_
+_@MichaReiser_
 
 - **[ty] Reduce size of ty-ide snapshots**
 - **[ty] Handle overloads in rename**

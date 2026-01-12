@@ -13,14 +13,14 @@ head: zb/toolchain-v
 created_at: 2024-06-07T17:53:57Z
 updated_at: 2024-06-10T15:45:08Z
 url: https://github.com/astral-sh/uv/pull/4138
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Implement `Toolchain::find_or_fetch` and use in `uv venv --preview`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-07 17:53_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/4121
 Part of #2607 

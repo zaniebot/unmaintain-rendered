@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-06-13T14:08:18Z
 updated_at: 2024-06-13T14:18:53Z
 url: https://github.com/astral-sh/uv/pull/4306
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Expand on pip compile default differences
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 14:08_
+_@charliermarsh_
 
 _No description provided._
 

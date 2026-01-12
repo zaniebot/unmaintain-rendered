@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T15:30:52Z
 updated_at: 2025-06-30T07:34:36Z
 url: https://github.com/astral-sh/ty/issues/716
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # GC AST nodes & `exported_names`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-27 15:30_
+_@MichaReiser_
 
 The `exported_names(file)` query is only called when another module imports `file` with a star import. Otherwise, the query never runs. 
 

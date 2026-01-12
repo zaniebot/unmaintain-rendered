@@ -14,14 +14,14 @@ head: brent/remove-report-diagnostics
 created_at: 2025-05-19T20:34:08Z
 updated_at: 2025-05-20T14:00:08Z
 url: https://github.com/astral-sh/ruff/pull/18206
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # Remove `Checker::report_diagnostics`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-19 20:34_
+_@ntBre_
 
 Summary
 --

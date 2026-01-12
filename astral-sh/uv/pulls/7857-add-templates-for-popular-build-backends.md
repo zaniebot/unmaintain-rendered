@@ -13,14 +13,14 @@ head: init-supports-more-build-backends
 created_at: 2024-10-02T04:03:04Z
 updated_at: 2024-12-28T17:07:23Z
 url: https://github.com/astral-sh/uv/pull/7857
-synced_at: 2026-01-10T11:44:29Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Add templates for popular build backends
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-02 04:03_
+_@samypr100_
 
 ## Summary
 

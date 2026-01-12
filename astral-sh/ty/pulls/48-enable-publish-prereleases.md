@@ -12,14 +12,14 @@ head: gankra/pubpre
 created_at: 2025-05-06T00:08:29Z
 updated_at: 2025-07-08T10:38:31Z
 url: https://github.com/astral-sh/ty/pull/48
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # enable publish-prereleases
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-06 00:08_
+_@Gankra_
 
 _No description provided._
 

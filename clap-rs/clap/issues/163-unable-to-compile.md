@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-07-18T05:38:56Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/163
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Unable to compile
 
 ---
 
-_Issue opened by @sirideain on 2015-07-18 05:38_
+_@sirideain_
 
 I get these errors whenever I try to compile any version after 0.11.0. I tried with Rust 1.1.0, 1.2.0, and 1.3.0.
 

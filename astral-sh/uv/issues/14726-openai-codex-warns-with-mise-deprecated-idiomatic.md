@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T14:07:28Z
 updated_at: 2025-07-22T12:07:58Z
 url: https://github.com/astral-sh/uv/issues/14726
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # OpenAI Codex warns with mise `deprecated [idiomatic_version_file_enable_tools]` on every command
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 14:07_
+_@zanieb_
 
 e.g.
 

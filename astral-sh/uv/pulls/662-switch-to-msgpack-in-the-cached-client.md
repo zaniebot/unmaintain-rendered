@@ -12,14 +12,14 @@ head: konsti/msgpack-cached-client
 created_at: 2023-12-15T13:08:36Z
 updated_at: 2023-12-16T21:01:36Z
 url: https://github.com/astral-sh/uv/pull/662
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Switch to msgpack in the cached client
 
 ---
 
-_Pull request opened by @konstin on 2023-12-15 13:08_
+_@konstin_
 
 This gives a 1.23 speedup on transformers-extras. We could change to msgpack for the entire cache if we want. I only tried this format and postcard so far, where postcard was much slower (like 1.6s).
 

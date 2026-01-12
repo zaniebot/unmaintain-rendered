@@ -12,14 +12,14 @@ head: charlie/foldhash
 created_at: 2024-08-16T22:06:21Z
 updated_at: 2024-11-12T21:40:21Z
 url: https://github.com/astral-sh/ruff/pull/12943
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use `FoldHash` instead of `FxHash`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-16 22:06_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/check-url
 created_at: 2025-09-16T03:11:40Z
 updated_at: 2025-09-16T14:12:34Z
 url: https://github.com/astral-sh/uv/pull/15886
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Infer check URL from publish URL when known
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-16 03:11_
+_@charliermarsh_
 
 ## Summary
 

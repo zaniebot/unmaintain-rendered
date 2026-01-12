@@ -12,14 +12,14 @@ head: zb/735-group-tree
 created_at: 2024-10-18T16:41:16Z
 updated_at: 2024-10-18T18:02:38Z
 url: https://github.com/astral-sh/uv/pull/8338
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Add `--group`, `--only-group`, and `--only-dev` support to `uv tree`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 16:41_
+_@zanieb_
 
 Part of #8090 
 

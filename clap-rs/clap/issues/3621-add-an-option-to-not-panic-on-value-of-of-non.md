@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-10T08:14:09Z
 updated_at: 2022-05-18T00:15:55Z
 url: https://github.com/clap-rs/clap/issues/3621
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add an option to not panic on value*of() of non valid arguments
 
 ---
 
-_Issue opened by @lu-zero on 2022-04-10 08:14_
+_@lu-zero_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: fix-RET505
 created_at: 2024-01-30T14:49:26Z
 updated_at: 2024-01-30T16:54:07Z
 url: https://github.com/astral-sh/ruff/pull/9705
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`flake8-return`] - fix indentation syntax error (`RET505`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-30 14:49_
+_@diceroll123_
 
 ## Summary
 

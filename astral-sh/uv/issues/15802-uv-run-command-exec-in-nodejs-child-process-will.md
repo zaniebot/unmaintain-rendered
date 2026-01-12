@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T04:05:29Z
 updated_at: 2025-09-13T07:58:47Z
 url: https://github.com/astral-sh/uv/issues/15802
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # uv run command exec in nodejs child process will trigger local dependency installation
 
 ---
 
-_Issue opened by @zshnb on 2025-09-12 04:05_
+_@zshnb_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: broaden-pyi
 created_at: 2023-08-03T04:09:05Z
 updated_at: 2023-08-03T15:40:48Z
 url: https://github.com/astral-sh/ruff/pull/6297
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Broaden appropriate flake8-pyi rules to check non-stub code too
 
 ---
 
-_Pull request opened by @andersk on 2023-08-03 04:09_
+_@andersk_
 
 Of the rules that flake8-pyi enforces for `.pyi` type stubs, many of them equally make sense to check in normal runtime code with type annotations.  Broaden these rules to check all files:
 

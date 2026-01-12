@@ -12,14 +12,14 @@ head: charlie/TYC
 created_at: 2023-01-25T21:22:11Z
 updated_at: 2023-01-25T21:26:23Z
 url: https://github.com/astral-sh/ruff/pull/2175
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Rename TYP rules to TYC
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 21:22_
+_@charliermarsh_
 
 See: #1785.
 

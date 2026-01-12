@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T21:11:54Z
 updated_at: 2023-02-14T22:25:01Z
 url: https://github.com/astral-sh/ruff/issues/2869
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Wrong fix for TID252
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-02-13 21:11_
+_@Olegt0rr_
 
 # File
 

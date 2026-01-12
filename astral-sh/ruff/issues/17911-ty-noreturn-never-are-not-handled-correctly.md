@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-07T12:39:53Z
 updated_at: 2025-05-07T12:47:24Z
 url: https://github.com/astral-sh/ruff/issues/17911
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [ty] `NoReturn`/`Never` are not handled correctly
 
 ---
 
-_Issue opened by @Bobronium on 2025-05-07 12:39_
+_@Bobronium_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: variance-comments
 created_at: 2025-09-01T04:36:49Z
 updated_at: 2025-09-05T22:46:21Z
 url: https://github.com/astral-sh/ruff/pull/20189
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # add doc-comments for some variance stuff
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-09-01 04:36_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

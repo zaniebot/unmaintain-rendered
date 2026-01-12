@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T17:21:30Z
 updated_at: 2025-12-18T17:29:49Z
 url: https://github.com/astral-sh/uv/issues/16671
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # `uv python list` does not respect `UV_PYTHON_INSTALL_MIRROR`
 
 ---
 
-_Issue opened by @cmarqu on 2025-11-10 17:21_
+_@cmarqu_
 
 ### Summary
 

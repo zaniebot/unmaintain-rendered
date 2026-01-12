@@ -13,14 +13,14 @@ head: github-v6
 created_at: 2025-07-07T19:01:18Z
 updated_at: 2025-07-07T19:04:48Z
 url: https://github.com/astral-sh/uv/pull/14490
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Update documentation for GHA to use v6
 
 ---
 
-_Pull request opened by @theirix on 2025-07-07 19:01_
+_@theirix_
 
 ## Summary
 

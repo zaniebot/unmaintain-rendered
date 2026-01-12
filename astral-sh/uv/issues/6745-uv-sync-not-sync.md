@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T12:03:55Z
 updated_at: 2024-08-29T14:10:42Z
 url: https://github.com/astral-sh/uv/issues/6745
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # uv sync - not sync
 
 ---
 
-_Issue opened by @emcek on 2024-08-28 12:03_
+_@emcek_
 
 uv 0.3.5 (6c62d9fbf 2024-08-27) Windows 11
 

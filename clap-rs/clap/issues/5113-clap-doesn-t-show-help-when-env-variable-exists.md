@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-06T15:56:14Z
 updated_at: 2023-09-06T16:05:29Z
 url: https://github.com/clap-rs/clap/issues/5113
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clap doesn't show help when env variable exists
 
 ---
 
-_Issue opened by @coltonhurst on 2023-09-06 15:56_
+_@coltonhurst_
 
 ### Please complete the following tasks
 

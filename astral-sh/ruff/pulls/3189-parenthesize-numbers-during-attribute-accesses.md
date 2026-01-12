@@ -12,14 +12,14 @@ head: charlie/attribute-number
 created_at: 2023-02-23T19:47:11Z
 updated_at: 2023-02-23T19:57:25Z
 url: https://github.com/astral-sh/ruff/pull/3189
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Parenthesize numbers during attribute accesses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 19:47_
+_@charliermarsh_
 
 _No description provided._
 

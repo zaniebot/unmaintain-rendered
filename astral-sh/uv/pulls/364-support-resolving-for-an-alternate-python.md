@@ -13,14 +13,14 @@ head: charlie/alternate-metadata
 created_at: 2023-11-08T04:27:33Z
 updated_at: 2023-11-08T23:19:17Z
 url: https://github.com/astral-sh/uv/pull/364
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Support resolving for an alternate Python distribution
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-08 04:27_
+_@charliermarsh_
 
 ## Summary
 

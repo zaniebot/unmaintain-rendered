@@ -13,14 +13,14 @@ head: charlie/b006
 created_at: 2024-04-24T03:10:04Z
 updated_at: 2025-12-10T17:44:14Z
 url: https://github.com/astral-sh/ruff/pull/11122
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Flag mutable defaults based on mutable annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-24 03:10_
+_@charliermarsh_
 
 ## Summary
 

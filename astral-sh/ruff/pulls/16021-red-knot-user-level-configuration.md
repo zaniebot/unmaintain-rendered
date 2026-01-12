@@ -13,14 +13,14 @@ head: micha/user-level-configuration
 created_at: 2025-02-07T14:34:49Z
 updated_at: 2025-02-10T15:44:26Z
 url: https://github.com/astral-sh/ruff/pull/16021
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] User-level configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-07 14:34_
+_@MichaReiser_
 
 ## Summary
 

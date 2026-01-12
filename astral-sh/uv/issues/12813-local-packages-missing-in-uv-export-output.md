@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T16:47:10Z
 updated_at: 2025-04-11T20:46:49Z
 url: https://github.com/astral-sh/uv/issues/12813
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Local packages missing in `uv export` output
 
 ---
 
-_Issue opened by @fepegar on 2025-04-10 16:47_
+_@fepegar_
 
 ### Summary
 

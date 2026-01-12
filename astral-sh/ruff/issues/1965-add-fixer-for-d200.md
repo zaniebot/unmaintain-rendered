@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-18T16:16:35Z
 updated_at: 2023-01-20T00:24:51Z
 url: https://github.com/astral-sh/ruff/issues/1965
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add fixer for D200
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 16:16_
+_@spaceone_
 
 It would be nice if there was a fixer for `D200` which transforms:
 ```python

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T19:10:18Z
 updated_at: 2025-05-09T14:49:19Z
 url: https://github.com/astral-sh/uv/issues/12658
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # `uv run` not running to completion
 
 ---
 
-_Issue opened by @amotl on 2025-04-03 19:10_
+_@amotl_
 
 ### Summary
 

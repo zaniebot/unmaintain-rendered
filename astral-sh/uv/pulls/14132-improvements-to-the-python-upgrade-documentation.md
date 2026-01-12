@@ -12,14 +12,14 @@ head: zb/pyup-docs
 created_at: 2025-06-18T16:17:32Z
 updated_at: 2025-06-20T13:40:15Z
 url: https://github.com/astral-sh/uv/pull/14132
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Improvements to the Python upgrade documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-18 16:17_
+_@zanieb_
 
 Some edits for #13954 
 

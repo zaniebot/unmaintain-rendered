@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-13T06:52:25Z
 updated_at: 2023-07-25T17:06:49Z
 url: https://github.com/astral-sh/ruff/issues/5726
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # EXE002 doesn't update when the file permissions change
 
 ---
 
-_Issue opened by @tom-mcdermott-morse on 2023-07-13 06:52_
+_@tom-mcdermott-morse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

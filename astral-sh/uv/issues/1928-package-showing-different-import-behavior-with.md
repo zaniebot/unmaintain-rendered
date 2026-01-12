@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T18:08:33Z
 updated_at: 2024-03-05T03:35:26Z
 url: https://github.com/astral-sh/uv/issues/1928
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # package showing different import behavior with `pip install` vs `uv pip install`
 
 ---
 
-_Issue opened by @jakekaplan on 2024-02-23 18:08_
+_@jakekaplan_
 
 When using `azure-mgmt-resource` there seems to be different import behavior between `uv pip install` and just `pip install`. I am only able to produce when modules are imported during a test session and I don't fully understand what is going on. Happy to provide more info if possible, thanks in advance!
 

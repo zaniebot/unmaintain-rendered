@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T17:10:16Z
 updated_at: 2025-02-05T09:57:29Z
 url: https://github.com/astral-sh/uv/issues/11187
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Hash (#) in password within UV_INDEX_URL causes "invalid port number" error
 
 ---
 
-_Issue opened by @RStreitfeld on 2025-02-03 17:10_
+_@RStreitfeld_
 
 ### Summary
 

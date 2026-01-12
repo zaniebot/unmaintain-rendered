@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T21:00:11Z
 updated_at: 2025-06-27T09:25:53Z
 url: https://github.com/astral-sh/uv/issues/12609
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Disable auditing when installing
 
 ---
 
-_Issue opened by @AustinScola on 2025-04-01 21:00_
+_@AustinScola_
 
 ### Question
 

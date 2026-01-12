@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T13:58:25Z
 updated_at: 2023-01-26T21:04:23Z
 url: https://github.com/astral-sh/ruff/issues/2193
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # TCH rules are stricter than flake8-type-checking, but not necessarily better
 
 ---
 
-_Issue opened by @GabDug on 2023-01-26 13:58_
+_@GabDug_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

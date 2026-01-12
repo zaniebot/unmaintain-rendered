@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-30T19:51:45Z
 updated_at: 2023-10-31T19:17:37Z
 url: https://github.com/astral-sh/uv/issues/241
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # `pip-compile` should error if specified extra is not found in any sources
 
 ---
 
-_Issue opened by @zanieb on 2023-10-30 19:51_
+_@zanieb_
 
 Per discussion in https://github.com/astral-sh/puffin/pull/239 — `pip-compile --extra <name>` should error if the name is not present in _any_ of the source files i.e. the name can be missing from one but not all. `requirements.txt` formatted files provide an empty set of extra names. `pyproject.toml` files provide extra names in the `optional-dependencies` keys.
 

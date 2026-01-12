@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-07T15:34:39Z
 updated_at: 2023-03-08T10:22:39Z
 url: https://github.com/astral-sh/ruff/issues/3386
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] UP012 fix fails if string consists of multiple parts
 
 ---
 
-_Issue opened by @mthuurne on 2023-03-07 15:34_
+_@mthuurne_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: feat/docs
 created_at: 2025-07-01T16:13:55Z
 updated_at: 2025-07-02T14:41:43Z
 url: https://github.com/astral-sh/ty/pull/744
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Switch to MkDocs and hosted documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 16:13_
+_@zanieb_
 
 This is a tracking branch for moving from GitHub markdown documentation to MkDocs and hosted documentation on `docs.astral.sh`.
 

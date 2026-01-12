@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-25T17:49:07Z
 updated_at: 2024-09-25T18:54:14Z
 url: https://github.com/astral-sh/uv/issues/7689
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Periodic compatibility issues with `uv` crates and `reqwest` crate
 
 ---
 
-_Issue opened by @fyusifov on 2024-09-25 17:49_
+_@fyusifov_
 
 I am using `uv` crates to resolve dependencies from `pyproject.toml` programatically and I am periodically having issues with compatibility between `reqwest` and `uv` creates.  Last time when I had similar issue, it was recommended to pin to some commit and it worked. Now I am having different compatibility issue: 
 

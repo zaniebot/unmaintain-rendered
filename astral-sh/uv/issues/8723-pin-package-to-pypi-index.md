@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T13:26:36Z
 updated_at: 2024-10-31T15:25:30Z
 url: https://github.com/astral-sh/uv/issues/8723
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Pin package to pypi index?
 
 ---
 
-_Issue opened by @TheWizier on 2024-10-31 13:26_
+_@TheWizier_
 
 Hey, I have encountered an issue where we have a package on our private package index that was published to pypi and further developed. So naturally UV refuses to install the newer version from pypi as it sees that we have an older version on our index. How can I pin the package to the pypi index?
 

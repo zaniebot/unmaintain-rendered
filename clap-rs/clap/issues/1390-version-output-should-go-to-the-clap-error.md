@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-12-02T17:13:04Z
 updated_at: 2019-11-26T17:39:12Z
 url: https://github.com/clap-rs/clap/issues/1390
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # --version output should go to the clap::Error instead of directly to stdout
 
 ---
 
-_Issue opened by @m-ou-se on 2018-12-02 17:13_
+_@m-ou-se_
 
 ### Affected Version of clap
 

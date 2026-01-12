@@ -14,14 +14,14 @@ head: konsti/dont-use-exclude-newer-explictly
 created_at: 2024-03-27T17:57:50Z
 updated_at: 2024-04-01T14:07:26Z
 url: https://github.com/astral-sh/uv/pull/2697
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Don't use exclude newer manually in test functions
 
 ---
 
-_Pull request opened by @konstin on 2024-03-27 17:57_
+_@konstin_
 
 With this change, all usages of `EXCLUDE_NEWER` are now in command wrappers, not in the test functions themselves. 
 

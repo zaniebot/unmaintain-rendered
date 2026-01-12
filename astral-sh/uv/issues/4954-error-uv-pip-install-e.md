@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T06:26:10Z
 updated_at: 2024-07-11T04:04:34Z
 url: https://github.com/astral-sh/uv/issues/4954
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # [Error] uv pip install -e .
 
 ---
 
-_Issue opened by @17Reset on 2024-07-10 06:26_
+_@17Reset_
 
 ```
 (llm_venv_autoawq) xlab@xlab:/mnt/Model/Qwen/AutoAWQ$ uv pip install -e .

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-26T21:16:14Z
 updated_at: 2023-12-28T14:44:52Z
 url: https://github.com/astral-sh/ruff/issues/9288
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # String-rendering bug in docs
 
 ---
 
-_Issue opened by @diceroll123 on 2023-12-26 21:16_
+_@diceroll123_
 
 It seems that the docs message for `FURB118` is cut off.
 

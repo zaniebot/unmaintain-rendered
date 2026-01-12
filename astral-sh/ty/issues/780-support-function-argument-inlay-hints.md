@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T13:38:59Z
 updated_at: 2025-08-14T23:25:15Z
 url: https://github.com/astral-sh/ty/issues/780
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support function argument inlay hints
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-07-08 13:38_
+_@MatthewMckee4_
 
 ![image](https://code.visualstudio.com/assets/docs/languages/rust/inlay-hints.png)
 

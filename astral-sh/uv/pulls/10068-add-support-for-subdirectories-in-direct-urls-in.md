@@ -13,14 +13,14 @@ head: charlie/subdir
 created_at: 2024-12-20T22:57:44Z
 updated_at: 2024-12-21T00:00:52Z
 url: https://github.com/astral-sh/uv/pull/10068
-synced_at: 2026-01-10T11:44:32Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Add support for subdirectories in direct URLs in `uv.lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-20 22:57_
+_@charliermarsh_
 
 ## Summary
 

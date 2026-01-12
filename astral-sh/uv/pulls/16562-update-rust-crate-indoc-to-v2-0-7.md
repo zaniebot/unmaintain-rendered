@@ -13,14 +13,14 @@ head: renovate/indoc-2.x-lockfile
 created_at: 2025-11-03T01:08:28Z
 updated_at: 2025-11-03T01:34:08Z
 url: https://github.com/astral-sh/uv/pull/16562
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Update Rust crate indoc to v2.0.7
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 01:08_
+_@renovate_
 
 This PR contains the following updates:
 

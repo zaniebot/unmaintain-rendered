@@ -14,14 +14,14 @@ head: update-AIR302-303-rules
 created_at: 2025-04-01T15:05:05Z
 updated_at: 2025-04-07T13:45:57Z
 url: https://github.com/astral-sh/ruff/pull/17123
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`airflow`] Update oudated `AIR301`, `AIR302` rules
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-01 15:05_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

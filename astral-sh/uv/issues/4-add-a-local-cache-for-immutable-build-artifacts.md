@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-05T15:24:46Z
 updated_at: 2023-10-07T14:24:54Z
 url: https://github.com/astral-sh/uv/issues/4
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add a local cache for immutable build artifacts
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-05 15:24_
+_@charliermarsh_
 
 Store the (zipped, and later unzipped?) wheels in a content-address store via `cache` using the known SHA.
 

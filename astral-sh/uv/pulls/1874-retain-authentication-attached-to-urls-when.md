@@ -13,14 +13,14 @@ head: zb/fix-auth
 created_at: 2024-02-22T15:37:51Z
 updated_at: 2024-02-22T17:56:39Z
 url: https://github.com/astral-sh/uv/pull/1874
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Retain authentication attached to URLs when making requests to the same host
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 15:37_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1860
 

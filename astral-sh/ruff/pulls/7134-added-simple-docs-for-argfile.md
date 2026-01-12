@@ -12,14 +12,14 @@ head: check-from-file
 created_at: 2023-09-04T21:14:58Z
 updated_at: 2023-09-04T23:10:00Z
 url: https://github.com/astral-sh/ruff/pull/7134
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Added simple docs for argfile
 
 ---
 
-_Pull request opened by @njgrisafi on 2023-09-04 21:14_
+_@njgrisafi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

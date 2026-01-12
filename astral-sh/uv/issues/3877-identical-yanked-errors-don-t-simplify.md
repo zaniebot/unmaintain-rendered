@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T12:38:33Z
 updated_at: 2024-06-27T11:25:27Z
 url: https://github.com/astral-sh/uv/issues/3877
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Identical yanked errors don't simplify
 
 ---
 
-_Issue opened by @konstin on 2024-05-28 12:38_
+_@konstin_
 
 ```toml
 dependencies = [

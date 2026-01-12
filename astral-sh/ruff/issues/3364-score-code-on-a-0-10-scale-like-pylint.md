@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-06T18:04:51Z
 updated_at: 2023-03-14T17:18:12Z
 url: https://github.com/astral-sh/ruff/issues/3364
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Score code on a 0-10 scale like pylint
 
 ---
 
-_Issue opened by @Beliavsky on 2023-03-06 18:04_
+_@Beliavsky_
 
 Pylint gives a score between 0 and 10 for code it analyzes? It's nice to have a simple metric that improves as you fix flaws. Could ruff add something similar?
 

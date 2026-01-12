@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T05:13:01Z
 updated_at: 2024-02-16T14:24:30Z
 url: https://github.com/astral-sh/uv/issues/1431
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Docs: `contributing.md` Python section anchor does not exist
 
 ---
 
-_Issue opened by @JacobCoffee on 2024-02-16 05:13_
+_@JacobCoffee_
 
 > See the [Python](#python) section for instructions on installing the Python versions.
 

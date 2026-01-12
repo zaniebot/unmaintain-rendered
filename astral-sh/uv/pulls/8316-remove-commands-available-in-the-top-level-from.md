@@ -13,14 +13,14 @@ head: zb/fix-suggestion
 created_at: 2024-10-18T00:55:34Z
 updated_at: 2024-10-18T15:57:11Z
 url: https://github.com/astral-sh/uv/pull/8316
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Remove commands available in the top-level from the suggested subcommand error
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 00:55_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/8313
 

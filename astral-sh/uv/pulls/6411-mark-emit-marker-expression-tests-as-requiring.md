@@ -13,14 +13,14 @@ head: expr-patch
 created_at: 2024-08-22T05:36:24Z
 updated_at: 2024-08-22T08:50:35Z
 url: https://github.com/astral-sh/uv/pull/6411
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Mark emit_marker_expression* tests as requiring python-patch
 
 ---
 
-_Pull request opened by @mgorny on 2024-08-22 05:36_
+_@mgorny_
 
 ## Summary
 

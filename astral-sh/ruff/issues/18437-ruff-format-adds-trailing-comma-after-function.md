@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T08:09:18Z
 updated_at: 2025-06-05T12:31:06Z
 url: https://github.com/astral-sh/ruff/issues/18437
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff format adds trailing comma after function call, silently turning return value into tuple
 
 ---
 
-_Issue opened by @keita00 on 2025-06-03 08:09_
+_@keita00_
 
 
 Ruff's formatter currently adds a trailing comma after a closing parenthesis ) of a nested function call — even when the result is not part of an argument list, which silently converts the return value into a tuple.

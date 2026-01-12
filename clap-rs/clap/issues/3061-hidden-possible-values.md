@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-12-05T13:45:11Z
 updated_at: 2021-12-06T13:54:02Z
 url: https://github.com/clap-rs/clap/issues/3061
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Hidden possible values
 
 ---
 
-_Issue opened by @dbrgn on 2021-12-05 13:45_
+_@dbrgn_
 
 ### Please complete the following tasks
 

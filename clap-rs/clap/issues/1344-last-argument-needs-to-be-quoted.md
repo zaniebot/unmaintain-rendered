@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-24T09:46:47Z
 updated_at: 2019-03-25T20:42:32Z
 url: https://github.com/clap-rs/clap/issues/1344
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Last argument needs to be quoted
 
 ---
 
-_Issue opened by @marceloboeira on 2018-09-24 09:46_
+_@marceloboeira_
 
 
 

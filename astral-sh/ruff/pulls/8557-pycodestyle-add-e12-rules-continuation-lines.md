@@ -14,14 +14,14 @@ head: hoel/add_E12_rules
 created_at: 2023-11-08T13:09:44Z
 updated_at: 2024-04-03T13:04:04Z
 url: https://github.com/astral-sh/ruff/pull/8557
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`pycodestyle`] Add E12 rules (continuation lines indentation rules)
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-11-08 13:09_
+_@hoel-bagard_
 
 ## Summary
 

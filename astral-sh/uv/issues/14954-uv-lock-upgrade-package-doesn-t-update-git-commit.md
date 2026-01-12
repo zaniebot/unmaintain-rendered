@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T13:11:54Z
 updated_at: 2025-11-04T08:28:47Z
 url: https://github.com/astral-sh/uv/issues/14954
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # uv lock --upgrade-package doesn't update git commit hash for individual subdirectory dependencies from the same repository
 
 ---
 
-_Issue opened by @redartera on 2025-07-29 13:11_
+_@redartera_
 
 ## Description
 

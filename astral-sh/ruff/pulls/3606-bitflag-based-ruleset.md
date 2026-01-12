@@ -13,14 +13,14 @@ head: rule-bitset
 created_at: 2023-03-19T12:26:58Z
 updated_at: 2023-03-19T19:16:51Z
 url: https://github.com/astral-sh/ruff/pull/3606
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Bitflag based RuleSet
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-19 12:26_
+_@MichaReiser_
 
 ## Summary
 

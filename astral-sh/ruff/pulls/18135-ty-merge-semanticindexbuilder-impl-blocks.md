@@ -14,14 +14,14 @@ head: alex/builder-merge-impls
 created_at: 2025-05-16T14:38:29Z
 updated_at: 2025-05-16T15:05:04Z
 url: https://github.com/astral-sh/ruff/pull/18135
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Merge `SemanticIndexBuilder` impl blocks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-16 14:38_
+_@AlexWaygood_
 
 ## Summary
 

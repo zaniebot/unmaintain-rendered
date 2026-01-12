@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-06T02:23:26Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/522
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Less hidden aliases
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-06 02:23_
+_@joshtriplett_
 
 `.alias` creates a hidden subcommand.  For user convenience, I'd like to create an un-hidden subcommand, shown in help (with a help string like "alias for othercmd").
 

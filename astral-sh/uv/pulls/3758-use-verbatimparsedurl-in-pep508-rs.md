@@ -13,14 +13,14 @@ head: konsti/parse-url-in-pep508-rs
 created_at: 2024-05-22T19:17:34Z
 updated_at: 2024-05-23T21:01:41Z
 url: https://github.com/astral-sh/uv/pull/3758
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Use `VerbatimParsedUrl` in `pep508_rs`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-22 19:17_
+_@konstin_
 
 When parsing requirements from any source, directly parse the url parts (and reject unsupported urls) instead of parsing url parts at a later stage. This removes a bunch of error branches and concludes the work parsing url parts once and passing them around everywhere.
 

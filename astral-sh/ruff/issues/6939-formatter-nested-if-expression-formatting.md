@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T12:06:26Z
 updated_at: 2023-08-30T04:12:00Z
 url: https://github.com/astral-sh/ruff/issues/6939
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Nested if expression formatting
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-28 12:06_
+_@MichaReiser_
 
 What I can tell from the Django diff is that Black uses newlines to separate all `if` and `else` branches if any `ExprIf` in the chain breaks:
 

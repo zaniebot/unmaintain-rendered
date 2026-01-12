@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-10-01T13:46:37Z
 updated_at: 2022-02-08T23:57:33Z
 url: https://github.com/clap-rs/clap/issues/2799
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Can `ArgEnum` be both more general and performant?
 
 ---
 
-_Issue opened by @epage on 2021-10-01 13:46_
+_@epage_
 
 #2762 initially had common API calls for `ArgValue` allocating a `Vec`.  We instead dropped that at the cost of adding the `Clone` super trait.
 

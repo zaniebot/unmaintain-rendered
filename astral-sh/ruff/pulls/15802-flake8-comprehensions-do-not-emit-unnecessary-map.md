@@ -13,14 +13,14 @@ head: C417
 created_at: 2025-01-29T01:14:09Z
 updated_at: 2025-01-29T19:00:40Z
 url: https://github.com/astral-sh/ruff/pull/15802
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-comprehensions`] Do not emit `unnecessary-map` diagnostic when lambda has different arity (`C417`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-29 01:14_
+_@InSyncWithFoo_
 
 ## Summary
 

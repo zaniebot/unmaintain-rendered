@@ -13,14 +13,14 @@ head: dhruv/tab-indentation-using-tok
 created_at: 2023-09-16T13:09:18Z
 updated_at: 2023-09-16T20:31:20Z
 url: https://github.com/astral-sh/ruff/pull/7435
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Refactor `tab-indentation` as a token-based rule
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-16 13:09_
+_@dhruvmanila_
 
 ## Summary
 

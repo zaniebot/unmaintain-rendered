@@ -14,14 +14,14 @@ head: alex/typeshed-docstrings
 created_at: 2025-07-13T21:00:18Z
 updated_at: 2025-07-14T16:23:38Z
 url: https://github.com/astral-sh/ruff/pull/19311
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Provide docstrings for stdlib APIs when hovering over them in an IDE
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-13 21:00_
+_@AlexWaygood_
 
 ## Summary
 

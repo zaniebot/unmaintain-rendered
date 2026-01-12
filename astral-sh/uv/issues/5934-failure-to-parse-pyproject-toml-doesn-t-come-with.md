@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T21:21:47Z
 updated_at: 2024-08-11T21:13:15Z
 url: https://github.com/astral-sh/uv/issues/5934
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Failure to parse `pyproject.toml` doesn't come with error even in verbose mode
 
 ---
 
-_Issue opened by @zanieb on 2024-08-08 21:21_
+_@zanieb_
 
 e.g.
 

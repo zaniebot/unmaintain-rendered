@@ -13,14 +13,14 @@ head: build-all-error
 created_at: 2024-09-27T11:54:43Z
 updated_at: 2024-09-27T14:08:02Z
 url: https://github.com/astral-sh/uv/pull/7736
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Indicate which package failed in the error message for `uv build --all`
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-27 11:54_
+_@blueraft_
 
 ## Summary
 

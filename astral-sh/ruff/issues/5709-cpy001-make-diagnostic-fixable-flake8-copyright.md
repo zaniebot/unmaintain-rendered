@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-12T13:11:21Z
 updated_at: 2025-12-18T09:31:50Z
 url: https://github.com/astral-sh/ruff/issues/5709
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # CPY001: Make diagnostic fixable (flake8_copyright)
 
 ---
 
-_Issue opened by @jvcop on 2023-07-12 13:11_
+_@jvcop_
 
 I would like to propose making `CPY001` (`flake8_copyright`) fixable. This would be a new feature, as the functionality is not available in the original. The main motivating factors are that as far as I can see, fixing the diagnostic is relatively straightforward, and it would increase the utility of the rule. For example, in the company I am working for, we have our own pre-commit hook that automatically adds the copyright notice if necessary.
 

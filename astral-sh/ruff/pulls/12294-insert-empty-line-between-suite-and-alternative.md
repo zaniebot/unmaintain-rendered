@@ -14,14 +14,14 @@ head: konsti/fix-def-end-of-block
 created_at: 2024-07-12T08:26:41Z
 updated_at: 2024-07-15T10:59:35Z
 url: https://github.com/astral-sh/ruff/pull/12294
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Insert empty line between suite and alternative branch after def/class
 
 ---
 
-_Pull request opened by @konstin on 2024-07-12 08:26_
+_@konstin_
 
 When there is a function or class definition at the end of a suite followed by the beginning of an alternative block, we have to insert a single empty line between them.
 

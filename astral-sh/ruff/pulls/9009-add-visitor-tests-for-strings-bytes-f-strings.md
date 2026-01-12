@@ -13,14 +13,14 @@ head: dhruv/visitor-tests
 created_at: 2023-12-05T15:33:50Z
 updated_at: 2023-12-06T16:52:23Z
 url: https://github.com/astral-sh/ruff/pull/9009
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add visitor tests for strings, bytes, f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-05 15:33_
+_@dhruvmanila_
 
 This PR adds tests for visitor implementation for string literals, bytes literals and f-strings.
 

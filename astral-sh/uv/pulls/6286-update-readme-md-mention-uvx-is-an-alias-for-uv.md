@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-21T00:01:06Z
 updated_at: 2024-08-21T03:01:27Z
 url: https://github.com/astral-sh/uv/pull/6286
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Update README.md: Mention uvx is an alias for uv tool run
 
 ---
 
-_Pull request opened by @Filimoa on 2024-08-21 00:01_
+_@Filimoa_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

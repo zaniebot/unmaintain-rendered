@@ -13,14 +13,14 @@ head: dhruv/changelog-label
 created_at: 2025-02-28T08:41:37Z
 updated_at: 2025-02-28T08:47:27Z
 url: https://github.com/astral-sh/ruff/pull/16433
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Prioritize "bug" label for changelog sections
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-28 08:41_
+_@dhruvmanila_
 
 ## Summary
 

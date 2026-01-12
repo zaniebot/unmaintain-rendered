@@ -13,14 +13,14 @@ head: ag/lock-file-format
 created_at: 2024-04-29T16:07:22Z
 updated_at: 2024-04-29T18:03:18Z
 url: https://github.com/astral-sh/uv/pull/3314
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # uv-resolver: add initial version of universal lock file format
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-04-29 16:07_
+_@BurntSushi_
 
 This is meant to be a base on which to build. There are some parts
 which are implicitly incomplete and others which are explicitly

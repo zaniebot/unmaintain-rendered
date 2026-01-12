@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-19T08:06:31Z
 updated_at: 2023-09-25T20:04:40Z
 url: https://github.com/astral-sh/ruff/issues/7509
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Should preview mode also contained important rule behavior changes?
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-19 08:06_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

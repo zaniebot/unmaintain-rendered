@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T20:49:35Z
 updated_at: 2025-08-19T12:51:28Z
 url: https://github.com/astral-sh/ty/issues/955
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # lazy snapshot sweeping needs to invalidate constraints in nested scopes
 
 ---
 
-_Issue opened by @oconnor663 on 2025-08-07 20:49_
+_@oconnor663_
 
 ### Summary
 

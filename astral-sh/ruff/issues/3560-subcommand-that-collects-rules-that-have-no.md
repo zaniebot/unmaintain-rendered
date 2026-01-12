@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-16T15:41:22Z
 updated_at: 2024-01-20T09:58:42Z
 url: https://github.com/astral-sh/ruff/issues/3560
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Subcommand that collects rules that have no violations
 
 ---
 
-_Issue opened by @konstin on 2023-03-16 15:41_
+_@konstin_
 
 Currently, you need to manually search for non-default rules that you already fulfill that could be activated. it would be great if there was a subcommand that checks all rules on your codebase and then tells you about which additional rules you could activate because they are already fulfilled anyway
 

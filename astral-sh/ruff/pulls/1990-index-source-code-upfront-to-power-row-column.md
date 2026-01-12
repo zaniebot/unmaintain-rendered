@@ -12,14 +12,14 @@ head: charlie/unrope
 created_at: 2023-01-19T05:10:44Z
 updated_at: 2023-01-23T19:20:21Z
 url: https://github.com/astral-sh/ruff/pull/1990
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Index source code upfront to power (row, column) lookups
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-19 05:10_
+_@charliermarsh_
 
 ## Summary
 

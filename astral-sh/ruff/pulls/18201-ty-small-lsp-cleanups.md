@@ -15,14 +15,14 @@ head: micha/lsp-refactor
 created_at: 2025-05-19T17:06:02Z
 updated_at: 2025-05-19T19:02:14Z
 url: https://github.com/astral-sh/ruff/pull/18201
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Small LSP cleanups
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-19 17:06_
+_@MichaReiser_
 
 ## Summary
 

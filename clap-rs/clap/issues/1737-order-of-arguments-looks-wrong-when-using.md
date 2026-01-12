@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-03-09T23:42:02Z
 updated_at: 2021-07-31T06:39:23Z
 url: https://github.com/clap-rs/clap/issues/1737
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Order of arguments looks wrong when using AllowMissingPositional
 
 ---
 
-_Issue opened by @jgilchrist on 2020-03-09 23:42_
+_@jgilchrist_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

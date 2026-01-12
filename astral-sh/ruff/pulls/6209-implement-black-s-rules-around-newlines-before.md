@@ -13,14 +13,14 @@ head: charlie/docstrings
 created_at: 2023-07-31T20:21:34Z
 updated_at: 2023-08-01T17:33:03Z
 url: https://github.com/astral-sh/ruff/pull/6209
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Implement Black's rules around newlines before and after class docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-31 20:21_
+_@charliermarsh_
 
 ## Summary
 

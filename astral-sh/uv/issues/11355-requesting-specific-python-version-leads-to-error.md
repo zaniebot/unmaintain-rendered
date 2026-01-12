@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T14:42:56Z
 updated_at: 2025-06-04T05:46:53Z
 url: https://github.com/astral-sh/uv/issues/11355
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Requesting specific Python version leads to error
 
 ---
 
-_Issue opened by @ImahnShekhzadeh on 2025-02-09 14:42_
+_@ImahnShekhzadeh_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dmvianna/docs/gcp-repository-url-must-be-simple
 created_at: 2025-06-25T04:27:08Z
 updated_at: 2025-06-25T20:41:52Z
 url: https://github.com/astral-sh/uv/pull/14251
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # GCP Artifact Registry download URLs must have /simple path
 
 ---
 
-_Pull request opened by @pasunboneleve on 2025-06-25 04:27_
+_@pasunboneleve_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

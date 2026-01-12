@@ -11,14 +11,14 @@ head: pyenv_compatybility
 created_at: 2024-10-04T21:23:17Z
 updated_at: 2025-04-19T16:17:30Z
 url: https://github.com/astral-sh/uv/pull/7935
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Add `pyenv-virtualenv` compatybility
 
 ---
 
-_Pull request opened by @Czaki on 2024-10-04 21:23_
+_@Czaki_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

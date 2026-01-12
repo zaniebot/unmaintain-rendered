@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-22T02:43:14Z
 updated_at: 2024-12-17T20:01:28Z
 url: https://github.com/astral-sh/uv/issues/9346
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Feature request - pre-build / pre-read hook for security scanning
 
 ---
 
-_Issue opened by @f3flight on 2024-11-22 02:43_
+_@f3flight_
 
 Hi UV devs! Is it possible to make uv call some external tool before it attempts to build a package from source? Essentially, I'm looking for a way to pass all artifacts that UV fetches from certain external indexes through a security scanner before they are passed to unzip and more importantly, to python for execution (in case of sdists). Is that possible? If not, would it be possible to add such a feature? I was not able to find much on hooks available in uv right now.
 

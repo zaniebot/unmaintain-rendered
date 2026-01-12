@@ -14,14 +14,14 @@ head: david/fix-928
 created_at: 2025-08-04T07:13:27Z
 updated_at: 2025-08-04T18:14:33Z
 url: https://github.com/astral-sh/ruff/pull/19728
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Support as-patterns in reachability analysis
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-04 07:13_
+_@sharkdp_
 
 ## Summary
 

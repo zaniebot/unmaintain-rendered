@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-02T19:06:43Z
 updated_at: 2017-02-03T20:46:27Z
 url: https://github.com/clap-rs/clap/issues/840
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # ArgGroup yaml creation does not allow multiple option
 
 ---
 
-_Issue opened by @ZoeyR on 2017-02-02 19:06_
+_@ZoeyR_
 
 ### Affected Version of clap
 2.20.1

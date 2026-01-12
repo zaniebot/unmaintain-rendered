@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T19:08:10Z
 updated_at: 2025-11-29T18:31:24Z
 url: https://github.com/astral-sh/ty/issues/1524
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] infer_definition_types(Id(b8df)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @peterHoburg on 2025-11-11 19:08_
+_@peterHoburg_
 
 Error:
 

@@ -12,14 +12,14 @@ head: charlie/zlib-ng
 created_at: 2025-01-07T18:25:59Z
 updated_at: 2025-01-09T14:26:48Z
 url: https://github.com/astral-sh/uv/pull/10375
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Upgrade zlib-ng
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 18:25_
+_@charliermarsh_
 
 ## Summary
 

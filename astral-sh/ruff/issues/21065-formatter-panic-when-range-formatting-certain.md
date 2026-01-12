@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T16:25:22Z
 updated_at: 2025-10-27T14:52:19Z
 url: https://github.com/astral-sh/ruff/issues/21065
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter panic when range formatting certain clause headers with semicolons
 
 ---
 
-_Issue opened by @dylwil3 on 2025-10-24 16:25_
+_@dylwil3_
 
 ### Summary
 

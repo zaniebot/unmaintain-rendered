@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-08-21T22:28:31Z
 updated_at: 2023-08-22T17:57:21Z
 url: https://github.com/astral-sh/ruff/pull/6742
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Parenthesize expressions prior to LibCST parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 22:28_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

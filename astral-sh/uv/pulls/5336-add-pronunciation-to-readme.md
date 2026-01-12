@@ -12,14 +12,14 @@ head: petergaultney-uv-pronunciation
 created_at: 2024-07-23T15:03:35Z
 updated_at: 2025-05-27T16:11:55Z
 url: https://github.com/astral-sh/uv/pull/5336
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # add pronunciation to README
 
 ---
 
-_Pull request opened by @petergaultney on 2024-07-23 15:03_
+_@petergaultney_
 
 ## Summary
 

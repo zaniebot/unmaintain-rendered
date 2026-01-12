@@ -13,14 +13,14 @@ head: charlie/cs
 created_at: 2025-08-14T13:25:02Z
 updated_at: 2025-08-14T14:07:49Z
 url: https://github.com/astral-sh/uv/pull/15278
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Move `--config-settings` structs into `uv-distribution-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-14 13:25_
+_@charliermarsh_
 
 ## Summary
 

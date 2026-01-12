@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T22:38:52Z
 updated_at: 2024-08-07T02:52:16Z
 url: https://github.com/astral-sh/uv/issues/5840
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `uv run --no-project` excludes virtual environments that are not in projects 
 
 ---
 
-_Issue opened by @zanieb on 2024-08-06 22:38_
+_@zanieb_
 
 e.g. when a virtual environment is active or discovered with a `pyproject.toml` alongside:
 

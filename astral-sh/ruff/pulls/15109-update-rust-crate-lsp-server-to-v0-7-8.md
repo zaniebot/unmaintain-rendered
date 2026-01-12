@@ -13,14 +13,14 @@ head: renovate/rust-analyzer-monorepo
 created_at: 2024-12-23T01:32:55Z
 updated_at: 2024-12-23T04:27:14Z
 url: https://github.com/astral-sh/ruff/pull/15109
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Update Rust crate lsp-server to v0.7.8
 
 ---
 
-_Pull request opened by @renovate on 2024-12-23 01:32_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-29T05:20:39Z
 updated_at: 2024-06-30T22:59:49Z
 url: https://github.com/astral-sh/uv/issues/4643
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Noob Question: How is it so fast?
 
 ---
 
-_Issue opened by @drisspg on 2024-06-29 05:20_
+_@drisspg_
 
 First of all I wanna say thank you for making such an amazing tool! It has greatly improved my work flow so can't thank you enough! 
 

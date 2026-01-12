@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T14:29:34Z
 updated_at: 2025-09-22T17:25:20Z
 url: https://github.com/astral-sh/uv/issues/15983
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Add `--all-variants` option to show debug builds in `uv python list`
 
 ---
 
-_Issue opened by @albanD on 2025-09-22 14:29_
+_@albanD_
 
 ### Summary
 

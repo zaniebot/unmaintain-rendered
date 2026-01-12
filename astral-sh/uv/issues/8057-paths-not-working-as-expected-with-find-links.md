@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T20:12:20Z
 updated_at: 2024-10-09T23:05:52Z
 url: https://github.com/astral-sh/uv/issues/8057
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Paths not working as expected with `--find-links`
 
 ---
 
-_Issue opened by @xenago on 2024-10-09 20:12_
+_@xenago_
 
 Hello,
 

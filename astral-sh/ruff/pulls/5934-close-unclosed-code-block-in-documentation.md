@@ -13,14 +13,14 @@ head: fix-docs
 created_at: 2023-07-20T23:08:41Z
 updated_at: 2023-07-20T23:34:39Z
 url: https://github.com/astral-sh/ruff/pull/5934
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Close unclosed code block in documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-20 23:08_
+_@tjkuson_
 
 ## Summary
 

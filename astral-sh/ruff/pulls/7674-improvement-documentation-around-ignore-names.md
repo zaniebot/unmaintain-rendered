@@ -13,14 +13,14 @@ head: charlie/ignore-names
 created_at: 2023-09-27T04:36:37Z
 updated_at: 2023-09-27T04:55:44Z
 url: https://github.com/astral-sh/ruff/pull/7674
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Improvement documentation around `ignore-names` globbing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-27 04:36_
+_@charliermarsh_
 
 ## Summary
 

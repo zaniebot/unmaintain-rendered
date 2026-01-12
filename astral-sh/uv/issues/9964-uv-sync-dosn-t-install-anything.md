@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T11:03:04Z
 updated_at: 2024-12-18T07:36:25Z
 url: https://github.com/astral-sh/uv/issues/9964
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # uv sync dosn't install anything
 
 ---
 
-_Issue opened by @cjdxhjj on 2024-12-17 11:03_
+_@cjdxhjj_
 
 ![Image](https://github.com/user-attachments/assets/780fb5f3-6aff-4395-b175-703b086acd75)
 

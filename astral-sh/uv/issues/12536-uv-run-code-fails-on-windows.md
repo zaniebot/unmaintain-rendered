@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T17:25:36Z
 updated_at: 2025-12-10T18:29:53Z
 url: https://github.com/astral-sh/uv/issues/12536
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # `uv run code` fails on Windows
 
 ---
 
-_Issue opened by @Ravencentric on 2025-03-28 17:25_
+_@Ravencentric_
 
 ### Summary
 

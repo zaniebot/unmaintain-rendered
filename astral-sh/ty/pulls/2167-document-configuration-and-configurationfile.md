@@ -13,14 +13,14 @@ head: micha/configuration-and-configuration-file
 created_at: 2025-12-22T16:42:08Z
 updated_at: 2025-12-23T09:10:42Z
 url: https://github.com/astral-sh/ty/pull/2167
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Document `configuration` and `configurationFile` editor settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-22 16:42_
+_@MichaReiser_
 
 <img width="1625" height="1561" alt="Screenshot 2025-12-23 at 10 06 58" src="https://github.com/user-attachments/assets/522c9279-dfc0-476f-a8a5-0504150cd71c" />
 

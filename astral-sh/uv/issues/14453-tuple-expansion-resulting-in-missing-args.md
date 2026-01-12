@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T01:49:44Z
 updated_at: 2025-07-04T01:50:05Z
 url: https://github.com/astral-sh/uv/issues/14453
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # tuple expansion resulting in missing args
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-07-04 01:49_
+_@Ryang20718_
 
 ### Summary
 

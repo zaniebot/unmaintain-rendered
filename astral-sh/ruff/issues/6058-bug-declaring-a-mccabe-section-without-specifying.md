@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-25T08:57:39Z
 updated_at: 2023-07-25T18:10:11Z
 url: https://github.com/astral-sh/ruff/issues/6058
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Bug] Declaring a `[mccabe]` section without specifying `max-complexity` defaults it to `0`
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-25 08:57_
+_@tylerlaprade_
 
 #### Repro:
 In my config, I had an empty `[mccabe]` section, i.e. I did not set `max-complexity`.

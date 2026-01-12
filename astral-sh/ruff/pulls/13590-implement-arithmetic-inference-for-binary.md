@@ -13,14 +13,14 @@ head: zb/rk-float-int
 created_at: 2024-10-01T14:57:08Z
 updated_at: 2024-10-19T15:23:38Z
 url: https://github.com/astral-sh/ruff/pull/13590
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Implement arithmetic inference for binary expressions with `float` and `int` instances
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-01 14:57_
+_@zanieb_
 
 Following #13576 adds more inference for binary expressions including `float` and `int` instances rather than just `IntLiteral`
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-19T15:05:15Z
 updated_at: 2025-05-19T15:52:41Z
 url: https://github.com/astral-sh/ty/issues/452
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Improve docs for how to configure settings in the playground
 
 ---
 
-_Issue opened by @danielhollas on 2025-05-19 15:05_
+_@danielhollas_
 
 What it says on the tin
 

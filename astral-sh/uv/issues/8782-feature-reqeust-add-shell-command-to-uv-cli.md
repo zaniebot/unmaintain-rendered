@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T20:12:10Z
 updated_at: 2024-11-03T21:25:09Z
 url: https://github.com/astral-sh/uv/issues/8782
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Feature Reqeust: Add shell command to uv cli
 
 ---
 
-_Issue opened by @tleonhardt on 2024-11-03 20:12_
+_@tleonhardt_
 
 I love how fast `uv` is and I am beginning to use it as a replacement for `pipenv`. The one thing I really miss is the ability to do something like `uv shell` to quickly and easily activate the venv.  This could be a very simple command that takes no arguments and just runs `source .venv/bin/activate` where `.venv` is the path to the virtual env created by `uv`.
 

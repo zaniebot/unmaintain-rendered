@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-13T13:55:54Z
 updated_at: 2025-01-08T12:48:02Z
 url: https://github.com/astral-sh/ruff/issues/14959
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # LSP ruff messages about logs, but the LspLog in nvim is empty, is there somewhere else to look?
 
 ---
 
-_Issue opened by @kaddkaka on 2024-12-13 13:55_
+_@kaddkaka_
 
 In Neovim when I open a python file in neovim with ruff server configured (in same as in other repo where don't see any error messages) I get this message:
 

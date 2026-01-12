@@ -13,14 +13,14 @@ head: charlie/split
 created_at: 2023-08-02T18:07:10Z
 updated_at: 2023-08-02T18:46:23Z
 url: https://github.com/astral-sh/ruff/pull/6283
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid `PTH206` with `maxsplit`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 18:07_
+_@charliermarsh_
 
 ## Summary
 

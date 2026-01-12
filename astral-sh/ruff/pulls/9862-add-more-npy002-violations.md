@@ -13,14 +13,14 @@ head: add-more-npy002-violations
 created_at: 2024-02-06T20:11:46Z
 updated_at: 2024-02-07T14:54:12Z
 url: https://github.com/astral-sh/ruff/pull/9862
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add more NPY002 violations
 
 ---
 
-_Pull request opened by @jack-mcivor on 2024-02-06 20:11_
+_@jack-mcivor_
 
 Fixes #9861
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-31T13:49:59Z
 updated_at: 2025-02-03T15:39:45Z
 url: https://github.com/astral-sh/uv/issues/5651
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # `uv venv` fails on Windows when using ramdisk
 
 ---
 
-_Issue opened by @Artalus on 2024-07-31 13:49_
+_@Artalus_
 
 I have a ramdisk created via [ImDisk](https://sourceforge.net/projects/imdisk-toolkit/) that I use as a temporary directory. Apparently `uv` does not like such setup:
 

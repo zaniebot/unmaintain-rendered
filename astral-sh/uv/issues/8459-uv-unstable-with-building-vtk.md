@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T14:35:57Z
 updated_at: 2024-12-26T16:53:43Z
 url: https://github.com/astral-sh/uv/issues/8459
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # uv unstable with building VTK
 
 ---
 
-_Issue opened by @ArkashJ on 2024-10-22 14:35_
+_@ArkashJ_
 
 
 I'm working on a remote machine doing 3D computer vision and needed to install VTK for pyvista for enabling a GPU implementation for generating movies. uv fails in this case and the kernel kept crashing. I read every documentation page to debug the error and ended up using mamba instead. I was using `uv pip install -e ".[dev, xformers,viz3d]"` and switched to a mamba environment with a python installation of `python3 -m pip install -e".[dev, xformers,viz3d]"` and it worked. Is this a uv issues?

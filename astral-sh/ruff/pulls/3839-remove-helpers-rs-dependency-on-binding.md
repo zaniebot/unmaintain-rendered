@@ -12,14 +12,14 @@ head: charlie/useless-i
 created_at: 2023-04-01T02:59:37Z
 updated_at: 2023-04-01T03:46:18Z
 url: https://github.com/astral-sh/ruff/pull/3839
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove `helpers.rs` dependency on `Binding`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 02:59_
+_@charliermarsh_
 
 _No description provided._
 

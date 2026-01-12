@@ -15,14 +15,14 @@ head: ag/diagnostic-render-tab-alignment-off
 created_at: 2025-06-26T16:24:01Z
 updated_at: 2025-06-26T16:36:09Z
 url: https://github.com/astral-sh/ruff/pull/18965
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Add regression test for leading tab mis-alignment in diagnostic rendering
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-26 16:24_
+_@BurntSushi_
 
 It turns out that astral-sh/ty#18692 also fixed astral-sh/ty#203. This
 PR adds a regression test for it. (Locally, I "unfixed" the bug and

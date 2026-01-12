@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T08:21:53Z
 updated_at: 2024-11-14T15:51:02Z
 url: https://github.com/astral-sh/uv/issues/7860
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # FR: Ability to publish to Azure Artifacts
 
 ---
 
-_Issue opened by @FauxPrada on 2024-10-02 08:21_
+_@FauxPrada_
 
 Hello,
 

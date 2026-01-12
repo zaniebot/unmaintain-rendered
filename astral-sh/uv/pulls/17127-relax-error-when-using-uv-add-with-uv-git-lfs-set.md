@@ -13,14 +13,14 @@ head: track-lfs-arg-vs-env
 created_at: 2025-12-13T19:01:05Z
 updated_at: 2025-12-15T20:58:49Z
 url: https://github.com/astral-sh/uv/pull/17127
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Relax error when using uv add with `UV_GIT_LFS` set
 
 ---
 
-_Pull request opened by @samypr100 on 2025-12-13 19:01_
+_@samypr100_
 
 ## Summary
 

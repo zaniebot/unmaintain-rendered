@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T13:40:12Z
 updated_at: 2025-03-31T12:21:59Z
 url: https://github.com/astral-sh/uv/issues/12428
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Find venv used for a script
 
 ---
 
-_Issue opened by @C-nit on 2025-03-24 13:40_
+_@C-nit_
 
 ### Summary
 

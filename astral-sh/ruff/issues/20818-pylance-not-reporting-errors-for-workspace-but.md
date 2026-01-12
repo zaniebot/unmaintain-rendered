@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-12T07:30:56Z
 updated_at: 2025-10-13T08:54:07Z
 url: https://github.com/astral-sh/ruff/issues/20818
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PyLance not reporting errors for workspace but only reporting for open files
 
 ---
 
-_Issue opened by @ScarletMcLearn on 2025-10-12 07:30_
+_@ScarletMcLearn_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: fix-20973
 created_at: 2025-10-21T02:08:16Z
 updated_at: 2025-10-24T20:54:10Z
 url: https://github.com/astral-sh/ruff/pull/21011
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`pydoclint`] Fix false positive on explicit exception re-raising (`DOC501`, `DOC502`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-21 02:08_
+_@danparizher_
 
 
 ## Summary

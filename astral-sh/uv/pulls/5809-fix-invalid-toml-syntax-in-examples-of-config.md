@@ -12,14 +12,14 @@ head: fix-syntax-toml
 created_at: 2024-08-06T08:08:44Z
 updated_at: 2024-08-06T08:17:55Z
 url: https://github.com/astral-sh/uv/pull/5809
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Fix invalid TOML syntax in examples of "config-settings" docs
 
 ---
 
-_Pull request opened by @Delgan on 2024-08-06 08:08_
+_@Delgan_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T13:05:46Z
 updated_at: 2024-06-18T16:43:24Z
 url: https://github.com/astral-sh/ruff/issues/11905
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Non-obvious behavior around notebook formatting
 
 ---
 
-_Issue opened by @mikolysz on 2024-06-17 13:05_
+_@mikolysz_
 
 Jupyter's behavior around notebook formatting (excluding notebooks by default unless an explicit option is present) is extremely non-obvious. It's only documented in the faq (not in `ruff check --help` or the integrations section, which seem like logical places to look for this information for a novice user.
 

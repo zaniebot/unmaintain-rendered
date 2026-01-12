@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T06:36:31Z
 updated_at: 2025-06-13T11:07:23Z
 url: https://github.com/astral-sh/uv/issues/14015
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # UV Behaving differently with administrator rights
 
 ---
 
-_Issue opened by @MCRE-BE on 2025-06-13 06:36_
+_@MCRE-BE_
 
 ### Summary
 

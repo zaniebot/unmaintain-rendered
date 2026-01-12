@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T08:33:48Z
 updated_at: 2025-07-16T21:21:01Z
 url: https://github.com/astral-sh/uv/issues/12231
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # uv sync consistently returns error  in combination with local repository
 
 ---
 
-_Issue opened by @MaartendeRuyter on 2025-03-17 08:33_
+_@MaartendeRuyter_
 
 ### Summary
 

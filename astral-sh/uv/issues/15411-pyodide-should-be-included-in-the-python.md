@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:28:08Z
 updated_at: 2025-11-09T16:20:29Z
 url: https://github.com/astral-sh/uv/issues/15411
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Pyodide should be included in the "Python implementation support" list
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:28_
+_@zanieb_
 
 At `uv/concepts/python-versions/#python-implementation-support`
 

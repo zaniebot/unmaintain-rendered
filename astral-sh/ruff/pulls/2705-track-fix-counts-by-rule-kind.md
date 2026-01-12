@@ -12,14 +12,14 @@ head: charlie/show-fix
 created_at: 2023-02-10T03:00:25Z
 updated_at: 2023-02-10T03:14:03Z
 url: https://github.com/astral-sh/ruff/pull/2705
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Track fix counts by rule kind
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 03:00_
+_@charliermarsh_
 
 This will enable us to report the number of fixes by rule in `Printer`, per #2661.
 

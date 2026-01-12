@@ -13,14 +13,14 @@ head: konsti/lock-pytorch-cpu
 created_at: 2025-01-02T10:36:03Z
 updated_at: 2025-01-02T14:40:24Z
 url: https://github.com/astral-sh/uv/pull/10271
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Fix `lock_pytorch_cpu`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-02 10:36_
+_@konstin_
 
 A new release of pillow broke the test. By pinning the upper versions, we make the test stable.
 

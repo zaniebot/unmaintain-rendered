@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-20T11:58:46Z
 updated_at: 2024-12-20T14:07:04Z
 url: https://github.com/astral-sh/uv/issues/10054
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Using git versioning with a workspace module yields unwanted changes to uv.lock
 
 ---
 
-_Issue opened by @wlach on 2024-12-20 11:58_
+_@wlach_
 
 I'm maintaining various libraries inside a monorepo using uv's wonderful [workspaces feature](https://docs.astral.sh/uv/concepts/projects/workspaces/).
 

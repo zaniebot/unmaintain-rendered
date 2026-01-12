@@ -12,14 +12,14 @@ head: main
 created_at: 2024-02-05T20:33:04Z
 updated_at: 2024-03-28T16:05:37Z
 url: https://github.com/astral-sh/ruff/pull/9844
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] - Implement `too-many-attributes rule` (`PLR0902`)
 
 ---
 
-_Pull request opened by @liushuyu on 2024-02-05 20:33_
+_@liushuyu_
 
 ## Summary
 

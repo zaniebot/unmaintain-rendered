@@ -15,14 +15,14 @@ head: dhruv/experimental-rename
 created_at: 2025-08-07T10:32:58Z
 updated_at: 2025-08-07T12:55:24Z
 url: https://github.com/astral-sh/ruff/pull/19800
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Add `ty.experimental.rename` server setting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-07 10:32_
+_@dhruvmanila_
 
 ## Summary
 

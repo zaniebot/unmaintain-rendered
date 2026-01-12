@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-25T10:43:10Z
 updated_at: 2023-10-25T10:57:31Z
 url: https://github.com/astral-sh/ruff/pull/8210
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix skipping formatting examples
 
 ---
 
-_Pull request opened by @dybi on 2023-10-25 10:43_
+_@dybi_
 
 Previously, `# fmt: off` was used instead of `# fmt: skip`
 

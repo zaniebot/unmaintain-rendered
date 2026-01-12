@@ -13,14 +13,14 @@ head: cu129
 created_at: 2025-08-21T14:01:15Z
 updated_at: 2025-08-21T15:05:45Z
 url: https://github.com/astral-sh/uv/pull/15416
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # add cuda 129 backend
 
 ---
 
-_Pull request opened by @youkaichao on 2025-08-21 14:01_
+_@youkaichao_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

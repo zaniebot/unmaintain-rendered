@@ -14,14 +14,14 @@ head: ibraheem/argument-inference
 created_at: 2025-09-29T18:06:04Z
 updated_at: 2025-10-03T21:21:26Z
 url: https://github.com/astral-sh/ruff/pull/20635
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Use annotated parameters as type context
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-29 18:06_
+_@ibraheemdev_
 
 ## Summary
 

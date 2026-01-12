@@ -13,14 +13,14 @@ head: triple-sort
 created_at: 2024-10-03T15:29:19Z
 updated_at: 2024-10-03T15:57:11Z
 url: https://github.com/astral-sh/uv/pull/7900
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Organize downloads by prioritizing the platform, then the architecture.
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 15:29_
+_@j178_
 
 ## Summary
 

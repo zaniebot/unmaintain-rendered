@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-07-04T18:49:19Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/994
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Make the Shell enum non-exhaustive
 
 ---
 
-_Issue opened by @PlasmaPower on 2017-07-04 18:49_
+_@PlasmaPower_
 
 (sorry for not using the template, but I don't think it's applicable here)
 

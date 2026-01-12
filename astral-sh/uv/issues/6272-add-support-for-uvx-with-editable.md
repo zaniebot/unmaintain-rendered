@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-20T20:22:27Z
 updated_at: 2024-09-17T20:51:35Z
 url: https://github.com/astral-sh/uv/issues/6272
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add support for `uvx --with-editable`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 20:22_
+_@zanieb_
 
 As in https://github.com/astral-sh/uv/pull/6262
 

@@ -14,14 +14,14 @@ head: alex/gototype-specialform
 created_at: 2025-11-20T17:48:03Z
 updated_at: 2025-11-20T18:14:31Z
 url: https://github.com/astral-sh/ruff/pull/21544
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Add type definitions for `Type::SpecialForm`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-20 17:48_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T03:12:54Z
 updated_at: 2025-02-15T13:53:50Z
 url: https://github.com/astral-sh/uv/issues/8067
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv tool install --reinstall` not working as documented
 
 ---
 
-_Issue opened by @dpoznik on 2024-10-10 03:12_
+_@dpoznik_
 
 The docs suggest that `uv tool install --reinstall` should reinstall _all_ packages:
 ```sh

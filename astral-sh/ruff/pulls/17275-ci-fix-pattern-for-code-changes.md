@@ -13,14 +13,14 @@ head: micha/fix-code-pattern
 created_at: 2025-04-07T13:59:53Z
 updated_at: 2025-04-07T14:11:20Z
 url: https://github.com/astral-sh/ruff/pull/17275
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [ci] Fix pattern for code changes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-07 13:59_
+_@MichaReiser_
 
 
 ## Summary

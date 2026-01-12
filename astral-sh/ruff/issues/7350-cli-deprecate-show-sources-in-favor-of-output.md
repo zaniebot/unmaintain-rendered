@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:11:34Z
 updated_at: 2024-02-01T19:35:06Z
 url: https://github.com/astral-sh/ruff/issues/7350
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Deprecate `--show-sources` in favor of `--output_format <concise|full>`
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:11_
+_@zanieb_
 
 The `--show-sources` / `--no-show-sources` flags should be replaced with `--output_format full` / `--format concise` options. Ruff's default format should change to `full`. These formats would replace the `text` format, which should undergo a deprecation period.
 

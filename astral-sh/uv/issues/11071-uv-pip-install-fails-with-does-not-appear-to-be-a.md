@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T17:02:40Z
 updated_at: 2025-01-29T18:58:30Z
 url: https://github.com/astral-sh/uv/issues/11071
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # uv pip install Fails with "does not appear to be a Python project" When Installing from Git Repository with Subdirectory
 
 ---
 
-_Issue opened by @alon710 on 2025-01-29 17:02_
+_@alon710_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-13T13:00:51Z
 updated_at: 2024-06-19T21:23:08Z
 url: https://github.com/astral-sh/ruff/issues/11857
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter: deviation from black: dict key split to multiline
 
 ---
 
-_Issue opened by @minusf on 2024-06-13 13:00_
+_@minusf_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

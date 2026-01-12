@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-15T21:10:10Z
 updated_at: 2021-12-13T22:37:26Z
 url: https://github.com/clap-rs/clap/issues/3031
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # 'Argument 'x' is required and can't have a default value' when using default_value_os with #[derive(Clap)]
 
 ---
 
-_Issue opened by @andrewhickman on 2021-11-15 21:10_
+_@andrewhickman_
 
 ### Please complete the following tasks
 

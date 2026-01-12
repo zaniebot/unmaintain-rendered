@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T17:53:03Z
 updated_at: 2024-06-27T11:34:09Z
 url: https://github.com/astral-sh/uv/issues/1604
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Document best practices for using in Dockerfile
 
 ---
 
-_Issue opened by @zanieb on 2024-02-17 17:53_
+_@zanieb_
 
 Originally posted by @batazor in https://github.com/astral-sh/uv/issues/1374#issuecomment-1949465565
             

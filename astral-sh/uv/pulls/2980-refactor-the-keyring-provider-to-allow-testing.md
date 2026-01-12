@@ -13,14 +13,14 @@ head: zb/refactor-keyring-provider
 created_at: 2024-04-10T21:48:12Z
 updated_at: 2024-04-11T14:16:36Z
 url: https://github.com/astral-sh/uv/pull/2980
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Refactor the keyring provider to allow testing
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 21:48_
+_@zanieb_
 
 An adaptation of the proposal in https://github.com/astral-sh/uv/pull/2570
 

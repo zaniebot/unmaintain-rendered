@@ -13,14 +13,14 @@ head: alex/subclass-of-to-instance
 created_at: 2025-01-05T15:08:05Z
 updated_at: 2025-01-05T15:15:55Z
 url: https://github.com/astral-sh/ruff/pull/15269
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] `Type::SubclassOf(SubclassOfType { base: ClassBase::Unknown }).to_instance()` should be `Unknown`, not `Any`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-05 15:08_
+_@AlexWaygood_
 
 ## Summary
 

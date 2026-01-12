@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T19:25:11Z
 updated_at: 2024-12-24T23:22:52Z
 url: https://github.com/astral-sh/uv/issues/10146
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # `--frozen` operations in non-project workspaces rely on "live" `pyproject.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-24 19:25_
+_@charliermarsh_
 
 If you modify a `pyproject.toml` and then run with `--frozen` (in a `pyproject.toml` without a `[project]` table), then you can run into confusing errors.
 

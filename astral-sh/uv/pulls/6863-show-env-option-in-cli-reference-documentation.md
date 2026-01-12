@@ -13,14 +13,14 @@ head: doc-reference-env
 created_at: 2024-08-30T12:55:52Z
 updated_at: 2024-09-03T17:12:16Z
 url: https://github.com/astral-sh/uv/pull/6863
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Show env option in CLI reference documentation
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-30 12:55_
+_@eth3lbert_
 
 ## Summary
 

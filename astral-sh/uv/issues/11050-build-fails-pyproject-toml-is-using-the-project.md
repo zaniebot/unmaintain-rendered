@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T02:46:42Z
 updated_at: 2025-01-29T06:23:25Z
 url: https://github.com/astral-sh/uv/issues/11050
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Build fails: `pyproject.toml` is using the `[project]` table, but the required `project.name` field is not set
 
 ---
 
-_Issue opened by @mxlei01 on 2025-01-29 02:46_
+_@mxlei01_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T17:11:05Z
 updated_at: 2022-12-26T02:55:08Z
 url: https://github.com/astral-sh/ruff/issues/1214
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add support for `ruff.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 17:11_
+_@charliermarsh_
 
 _No description provided._
 

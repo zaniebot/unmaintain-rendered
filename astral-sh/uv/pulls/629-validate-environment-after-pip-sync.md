@@ -12,14 +12,14 @@ head: charlie/validate-venv
 created_at: 2023-12-13T03:35:43Z
 updated_at: 2023-12-13T08:13:45Z
 url: https://github.com/astral-sh/uv/pull/629
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Validate environment after `pip-sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 03:35_
+_@charliermarsh_
 
 Not 100% sure that we actually want to do this, it seems reasonable though.
 

@@ -12,14 +12,14 @@ head: codeman/19006
 created_at: 2025-07-04T17:50:54Z
 updated_at: 2025-08-18T07:35:21Z
 url: https://github.com/astral-sh/ruff/pull/19149
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # fix(flake8_bandit): make S601 account for calls through clients
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-04 17:50_
+_@CodeMan62_
 
 ## Summary
 closes #19006 

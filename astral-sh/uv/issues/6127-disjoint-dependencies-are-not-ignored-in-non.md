@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-15T20:07:18Z
 updated_at: 2024-08-20T14:16:37Z
 url: https://github.com/astral-sh/uv/issues/6127
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Disjoint dependencies are not ignored in non-forked resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-15 20:07_
+_@charliermarsh_
 
 Given:
 

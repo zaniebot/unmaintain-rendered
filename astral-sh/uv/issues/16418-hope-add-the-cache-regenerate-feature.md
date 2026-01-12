@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T11:11:53Z
 updated_at: 2025-11-01T21:06:55Z
 url: https://github.com/astral-sh/uv/issues/16418
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # hope add the cache regenerate feature
 
 ---
 
-_Issue opened by @smallhousebythelake on 2025-10-23 11:11_
+_@smallhousebythelake_
 
 ### Summary
 

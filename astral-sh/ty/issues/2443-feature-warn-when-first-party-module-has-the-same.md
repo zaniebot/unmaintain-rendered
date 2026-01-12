@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-11T11:20:21Z
 updated_at: 2026-01-11T17:01:46Z
 url: https://github.com/astral-sh/ty/issues/2443
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Feature: warn when first-party module has the same name as third-party or builtin module
 
 ---
 
-_Issue opened by @AndBoyS on 2026-01-11 11:20_
+_@AndBoyS_
 
 When you have typing.py module defined in your code, ty will get confused (since typing is builtin). It can be difficult to debug the issue, so it would be nice to have a warning when this kind of shadowing occures
 

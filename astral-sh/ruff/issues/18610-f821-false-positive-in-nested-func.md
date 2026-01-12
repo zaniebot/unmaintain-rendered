@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T12:52:31Z
 updated_at: 2025-07-24T12:02:13Z
 url: https://github.com/astral-sh/ruff/issues/18610
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F821: false positive in nested func
 
 ---
 
-_Issue opened by @SoundDesignerToBe on 2025-06-10 12:52_
+_@SoundDesignerToBe_
 
 ### Summary
 

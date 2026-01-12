@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2023-02-07T22:16:46Z
 updated_at: 2023-02-07T22:23:30Z
 url: https://github.com/astral-sh/ruff/pull/2642
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Derive `explanation` method on Rule struct via rustdoc
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 22:16_
+_@charliermarsh_
 
 ```console
 ❯ cargo run rule B017

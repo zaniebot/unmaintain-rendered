@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T15:39:24Z
 updated_at: 2025-08-08T13:27:56Z
 url: https://github.com/astral-sh/uv/issues/14684
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # `--upgrade-package` does not upgrade GutHub-sourced packages
 
 ---
 
-_Issue opened by @msamo-n on 2025-07-17 15:39_
+_@msamo-n_
 
 ### Question
 

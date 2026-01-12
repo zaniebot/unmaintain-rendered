@@ -12,14 +12,14 @@ head: fix/C413/autofix-with-key
 created_at: 2023-06-06T04:32:01Z
 updated_at: 2023-06-08T03:08:04Z
 url: https://github.com/astral-sh/ruff/pull/4891
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Make `C413` fix as suggested for `reversed` call
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-06 04:32_
+_@dhruvmanila_
 
 ## Summary
 

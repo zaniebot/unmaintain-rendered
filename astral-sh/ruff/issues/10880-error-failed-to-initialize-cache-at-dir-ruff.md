@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T14:24:04Z
 updated_at: 2024-04-11T16:09:08Z
 url: https://github.com/astral-sh/ruff/issues/10880
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # error: Failed to initialize cache at <dir>/.ruff_cache: File exists (os error 17)
 
 ---
 
-_Issue opened by @pjonsson on 2024-04-11 14:24_
+_@pjonsson_
 
 Using Ruff 0.3.5 on Ubuntu 22.04 LTS, I just got this error:
 ```

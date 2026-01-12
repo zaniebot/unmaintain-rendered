@@ -13,14 +13,14 @@ head: charlie/comparable
 created_at: 2023-09-13T19:07:13Z
 updated_at: 2023-09-14T15:47:01Z
 url: https://github.com/astral-sh/ruff/pull/7362
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove `ExprContext` from `ComparableExpr`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 19:07_
+_@charliermarsh_
 
 `ComparableExpr` includes the `ExprContext` field on an expression, so, e.g., the two tuples in `(a, b) = (a, b)` won't be considered equal. Similarly, the tuples in `[(a, b) for (a, b) in c]` _also_ wouldn't be considered equal. I find this behavior surprising, since `ComparableExpr` is intended to allow you to compare two ASTs, but `ExprContext` is really encoding information about the broader context for the expression.
 

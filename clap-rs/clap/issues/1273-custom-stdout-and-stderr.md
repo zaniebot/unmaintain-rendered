@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-05-15T23:46:26Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1273
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Custom stdout and stderr
 
 ---
 
-_Issue opened by @Arcterus on 2018-05-15 23:46_
+_@Arcterus_
 
 Would it be possible to add support for custom `stdout` and `stderr`?  Something like so:
 ```rust

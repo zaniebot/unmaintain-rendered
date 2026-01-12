@@ -12,14 +12,14 @@ head: zb/rooster-up
 created_at: 2025-09-17T02:22:11Z
 updated_at: 2025-09-18T18:15:03Z
 url: https://github.com/astral-sh/ty/pull/1192
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Upgrade to the latest rooster commit
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-17 02:22_
+_@zanieb_
 
 Nothing pressing here, but gets us on the `main` branch and uses the same commit as uv.
 

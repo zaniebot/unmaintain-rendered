@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T02:36:06Z
 updated_at: 2024-11-01T13:33:06Z
 url: https://github.com/astral-sh/uv/issues/8744
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # 【Bug】 When uvx installed the package, I did not use the index-url I set 
 
 ---
 
-_Issue opened by @gcil125 on 2024-11-01 02:36_
+_@gcil125_
 
 My uv is installed through pip 
 

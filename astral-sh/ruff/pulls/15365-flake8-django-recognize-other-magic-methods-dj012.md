@@ -13,14 +13,14 @@ head: DJ012
 created_at: 2025-01-09T03:13:54Z
 updated_at: 2025-01-09T13:45:33Z
 url: https://github.com/astral-sh/ruff/pull/15365
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-django`] Recognize other magic methods (`DJ012`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-09 03:13_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/assignability-class-literal-callable
 created_at: 2025-04-29T12:55:32Z
 updated_at: 2025-04-29T13:04:28Z
 url: https://github.com/astral-sh/ruff/pull/17704
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Assignability of class literals to Callables
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-29 12:55_
+_@sharkdp_
 
 ## Summary
 

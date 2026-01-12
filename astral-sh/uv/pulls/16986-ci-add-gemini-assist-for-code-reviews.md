@@ -11,14 +11,14 @@ head: add-gemini-code-assist
 created_at: 2025-12-04T19:12:15Z
 updated_at: 2025-12-04T19:34:06Z
 url: https://github.com/astral-sh/uv/pull/16986
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # CI: add gemini assist for code reviews
 
 ---
 
-_Pull request opened by @mohamedawnallah on 2025-12-04 19:12_
+_@mohamedawnallah_
 
 ## Summary
 

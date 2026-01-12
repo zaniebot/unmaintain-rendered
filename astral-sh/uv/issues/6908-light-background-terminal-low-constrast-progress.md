@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T09:57:09Z
 updated_at: 2025-10-30T14:16:30Z
 url: https://github.com/astral-sh/uv/issues/6908
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # light background terminal: low constrast progress bars
 
 ---
 
-_Issue opened by @bluss on 2024-09-01 09:57_
+_@bluss_
 
 The progress bars are low contrast on light terminal backgrounds. They don't convey progress very well.
 

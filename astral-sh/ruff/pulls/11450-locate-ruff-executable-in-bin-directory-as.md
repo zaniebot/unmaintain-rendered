@@ -12,14 +12,14 @@ head: feature/honor-install-target-bin
 created_at: 2024-05-16T15:32:55Z
 updated_at: 2024-05-16T16:22:25Z
 url: https://github.com/astral-sh/ruff/pull/11450
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Locate ruff executable in 'bin' directory as installed by 'pip install --target'.
 
 ---
 
-_Pull request opened by @jaraco on 2024-05-16 15:32_
+_@jaraco_
 
 Fixes #11246
 

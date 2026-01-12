@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2024-08-29T14:30:15Z
 updated_at: 2024-08-29T16:57:15Z
 url: https://github.com/astral-sh/uv/pull/6814
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Omit `[pip]` section from configuration file docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 14:30_
+_@charliermarsh_
 
 ## Summary
 

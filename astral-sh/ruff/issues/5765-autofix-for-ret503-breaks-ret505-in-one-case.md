@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-14T19:15:28Z
 updated_at: 2024-08-14T07:47:47Z
 url: https://github.com/astral-sh/ruff/issues/5765
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Autofix for RET503 breaks RET505 (in one case)
 
 ---
 
-_Issue opened by @Jeremiah-England on 2023-07-14 19:15_
+_@Jeremiah-England_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

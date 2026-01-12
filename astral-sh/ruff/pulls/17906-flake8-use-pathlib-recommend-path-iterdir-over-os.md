@@ -12,14 +12,14 @@ head: PTH209
 created_at: 2025-05-07T03:48:38Z
 updated_at: 2025-05-07T12:47:07Z
 url: https://github.com/astral-sh/ruff/pull/17906
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [`flake8-use-pathlib`] Recommend `Path.iterdir()` over `os.scandir()` (`PTH209`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-07 03:48_
+_@InSyncWithFoo_
 
 ## Summary
 

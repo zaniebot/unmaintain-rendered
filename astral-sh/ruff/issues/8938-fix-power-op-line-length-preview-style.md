@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-01T03:25:08Z
 updated_at: 2023-12-02T00:35:37Z
 url: https://github.com/astral-sh/ruff/issues/8938
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `fix_power_op_line_length` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-12-01 03:25_
+_@MichaReiser_
 
 Implement Black's [`fix_power_op_line_length`](https://github.com/psf/black/pull/3942) style as a preview style in Ruff. 
 

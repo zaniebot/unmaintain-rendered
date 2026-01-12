@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-13T13:32:20Z
 updated_at: 2023-12-13T15:48:47Z
 url: https://github.com/astral-sh/ruff/issues/9114
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add rule to flag comments with #:
 
 ---
 
-_Issue opened by @Stigjb on 2023-12-13 13:32_
+_@Stigjb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

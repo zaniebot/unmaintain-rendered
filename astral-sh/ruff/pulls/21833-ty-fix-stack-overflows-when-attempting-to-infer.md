@@ -14,14 +14,14 @@ head: alex/truthiness-panic
 created_at: 2025-12-07T17:59:24Z
 updated_at: 2025-12-09T18:03:57Z
 url: https://github.com/astral-sh/ruff/pull/21833
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Fix stack overflows when attempting to infer the truthiness of a TypeVar with an invalid recursive bound or constraints
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-07 17:59_
+_@AlexWaygood_
 
 ## Summary
 

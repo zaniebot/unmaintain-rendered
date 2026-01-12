@@ -13,14 +13,14 @@ head: arbitrary-cli-overrides
 created_at: 2024-01-21T18:04:16Z
 updated_at: 2024-02-19T03:39:25Z
 url: https://github.com/astral-sh/ruff/pull/9599
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Allow arbitrary configuration options to be overridden via the CLI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-21 18:04_
+_@AlexWaygood_
 
 Fixes #8368
 Fixes https://github.com/astral-sh/ruff/issues/9186

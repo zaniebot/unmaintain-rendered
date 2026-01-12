@@ -13,14 +13,14 @@ head: charlie/function-returns-wrap
 created_at: 2023-08-09T04:15:05Z
 updated_at: 2023-08-11T18:42:49Z
 url: https://github.com/astral-sh/ruff/pull/6436
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Allow return type annotations to use their own parentheses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 04:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/never
 created_at: 2023-12-20T14:25:39Z
 updated_at: 2023-12-21T00:17:37Z
 url: https://github.com/astral-sh/ruff/pull/9213
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Prefer `Never` to `NoReturn` in auto-typing in Python >= 3.11
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 14:25_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9212.
 

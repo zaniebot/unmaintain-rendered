@@ -14,14 +14,14 @@ head: bug/insert-required-imports-after-continuation
 created_at: 2025-07-23T10:32:00Z
 updated_at: 2025-07-31T07:13:25Z
 url: https://github.com/astral-sh/ruff/pull/19505
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [`isort`] Fix syntax error after docstring ending with backslash (`I002`)
 
 ---
 
-_Pull request opened by @jimhoekstra on 2025-07-23 10:32_
+_@jimhoekstra_
 
 Issue: https://github.com/astral-sh/ruff/issues/19498
 

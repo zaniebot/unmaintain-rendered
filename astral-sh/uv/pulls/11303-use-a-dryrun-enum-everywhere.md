@@ -13,14 +13,14 @@ head: charlie/dry-run
 created_at: 2025-02-07T00:27:45Z
 updated_at: 2025-02-07T00:42:50Z
 url: https://github.com/astral-sh/uv/pull/11303
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Use a `DryRun` enum everywhere
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-07 00:27_
+_@charliermarsh_
 
 ## Summary
 

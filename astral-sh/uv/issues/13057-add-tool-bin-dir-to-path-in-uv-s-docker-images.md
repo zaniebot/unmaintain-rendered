@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T17:28:13Z
 updated_at: 2025-06-23T22:03:11Z
 url: https://github.com/astral-sh/uv/issues/13057
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Add tool bin dir to PATH in uv's docker images
 
 ---
 
-_Issue opened by @RazerM on 2025-04-22 17:28_
+_@RazerM_
 
 ### Summary
 

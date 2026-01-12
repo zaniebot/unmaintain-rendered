@@ -13,14 +13,14 @@ head: netrc-1.1.2
 created_at: 2024-10-21T18:32:48Z
 updated_at: 2024-10-21T18:43:08Z
 url: https://github.com/astral-sh/uv/pull/8424
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Switch from a git snapshot to released rust-netrc 1.1.2
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-10-21 18:32_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

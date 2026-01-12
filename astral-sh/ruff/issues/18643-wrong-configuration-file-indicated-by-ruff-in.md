@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T11:36:56Z
 updated_at: 2025-07-24T12:02:01Z
 url: https://github.com/astral-sh/ruff/issues/18643
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Wrong configuration file indicated by ruff in verbose mode
 
 ---
 
-_Issue opened by @pakal on 2025-06-12 11:36_
+_@pakal_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: micha/rename-knot-type-ignore-mdtests
 created_at: 2024-12-26T10:20:28Z
 updated_at: 2024-12-26T10:26:37Z
 url: https://github.com/astral-sh/ruff/pull/15147
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Rename the `knot|type-ignore` mdtest files
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-26 10:20_
+_@MichaReiser_
 
 _No description provided._
 

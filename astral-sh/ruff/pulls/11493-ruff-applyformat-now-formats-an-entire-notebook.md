@@ -14,14 +14,14 @@ head: jane/server/notebook/format/all-cells-cmd
 created_at: 2024-05-22T09:32:23Z
 updated_at: 2024-05-27T10:41:06Z
 url: https://github.com/astral-sh/ruff/pull/11493
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff.applyFormat` now formats an entire notebook document
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-22 09:32_
+_@snowsignal_
 
 ## Summary
 

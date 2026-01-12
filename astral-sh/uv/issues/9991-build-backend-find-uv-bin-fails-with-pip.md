@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T09:46:29Z
 updated_at: 2024-12-20T09:15:25Z
 url: https://github.com/astral-sh/uv/issues/9991
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # build backend: `find_uv_bin` fails with pip
 
 ---
 
-_Issue opened by @cthoyt on 2024-12-18 09:46_
+_@cthoyt_
 
 pip has an issue installing a project using the uv backend, both when installing in editable mode and not. My system uses the following:
 

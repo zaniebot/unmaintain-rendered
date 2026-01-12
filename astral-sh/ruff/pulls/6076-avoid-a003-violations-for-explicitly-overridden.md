@@ -12,14 +12,14 @@ head: charlie/typing-extensions
 created_at: 2023-07-25T16:05:55Z
 updated_at: 2023-07-25T16:24:33Z
 url: https://github.com/astral-sh/ruff/pull/6076
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid A003 violations for explicitly overridden methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-25 16:05_
+_@charliermarsh_
 
 ## Summary
 

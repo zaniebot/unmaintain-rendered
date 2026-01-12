@@ -13,14 +13,14 @@ head: dependabot/cargo/serde_json-1.0.108
 created_at: 2023-11-06T08:30:29Z
 updated_at: 2023-11-06T14:20:32Z
 url: https://github.com/astral-sh/ruff/pull/8510
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump serde_json from 1.0.107 to 1.0.108
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-06 08:30_
+_@dependabot_
 
 Bumps [serde_json](https://github.com/serde-rs/json) from 1.0.107 to 1.0.108.
 <details>

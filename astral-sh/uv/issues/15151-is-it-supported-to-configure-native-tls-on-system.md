@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T21:04:08Z
 updated_at: 2025-08-07T21:04:34Z
 url: https://github.com/astral-sh/uv/issues/15151
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Is it supported to configure `native-tls` on system-wide uv.toml
 
 ---
 
-_Issue opened by @DominicBortmes on 2025-08-07 21:04_
+_@DominicBortmes_
 
 ### Question
 

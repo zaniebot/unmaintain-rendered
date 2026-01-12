@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-02-25T20:04:38Z
 updated_at: 2024-03-19T01:06:15Z
 url: https://github.com/astral-sh/uv/pull/1968
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Add example for compile current env packages
 
 ---
 
-_Pull request opened by @T-256 on 2024-02-25 20:04_
+_@T-256_
 
 
 ## Summary

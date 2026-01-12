@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-05T08:00:55Z
 updated_at: 2024-11-17T15:26:57Z
 url: https://github.com/astral-sh/uv/issues/8824
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Sync error when depending on old Git commit
 
 ---
 
-_Issue opened by @disketten on 2024-11-05 08:00_
+_@disketten_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

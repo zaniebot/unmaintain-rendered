@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-28T02:00:58Z
 updated_at: 2025-08-27T19:15:45Z
 url: https://github.com/astral-sh/ruff/issues/19581
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF033 fix changes the default expression’s indentation
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-28 02:00_
+_@dscorbett_
 
 ### Summary
 

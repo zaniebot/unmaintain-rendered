@@ -13,14 +13,14 @@ head: add-build-constraints-to-pyproject-toml
 created_at: 2025-02-17T23:07:53Z
 updated_at: 2025-02-18T01:58:36Z
 url: https://github.com/astral-sh/uv/pull/11585
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Add `tool.uv.build-constraint-dependencies` to `pyproject.toml`
 
 ---
 
-_Pull request opened by @cning112 on 2025-02-17 23:07_
+_@cning112_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

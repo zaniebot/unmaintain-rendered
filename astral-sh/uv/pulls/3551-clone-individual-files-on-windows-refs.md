@@ -14,14 +14,14 @@ head: windows-reflink
 created_at: 2024-05-13T15:52:53Z
 updated_at: 2024-05-13T16:03:46Z
 url: https://github.com/astral-sh/uv/pull/3551
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Clone individual files on windows ReFS
 
 ---
 
-_Pull request opened by @bschoenmaeckers on 2024-05-13 15:52_
+_@bschoenmaeckers_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

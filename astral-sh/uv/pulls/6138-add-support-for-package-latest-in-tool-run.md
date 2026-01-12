@@ -14,14 +14,14 @@ head: charlie/latest-tool
 created_at: 2024-08-16T03:06:27Z
 updated_at: 2024-08-19T16:58:38Z
 url: https://github.com/astral-sh/uv/pull/6138
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Add support for `package@latest` in `tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-16 03:06_
+_@charliermarsh_
 
 ## Summary
 

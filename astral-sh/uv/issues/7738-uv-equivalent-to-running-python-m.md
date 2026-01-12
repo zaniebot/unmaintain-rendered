@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T13:09:13Z
 updated_at: 2024-09-27T14:34:44Z
 url: https://github.com/astral-sh/uv/issues/7738
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv equivalent to running "python -m"
 
 ---
 
-_Issue opened by @tomaszbk on 2024-09-27 13:09_
+_@tomaszbk_
 
 
 I want to migrate to uv, and my actual project is under an "app/" folder, and we use python -m app.main.py to run it.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-03T11:16:10Z
 updated_at: 2021-08-03T11:17:07Z
 url: https://github.com/clap-rs/clap/issues/2662
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Argument that requires command it is defined in is pointless (causes internal error)
 
 ---
 
-_Issue opened by @LizardWizzard on 2021-08-03 11:16_
+_@LizardWizzard_
 
 ### Please complete the following tasks
 

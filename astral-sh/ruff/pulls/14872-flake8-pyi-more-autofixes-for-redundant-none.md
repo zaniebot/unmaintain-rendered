@@ -13,14 +13,14 @@ head: flake8-pyi061-improvement
 created_at: 2024-12-09T13:51:39Z
 updated_at: 2024-12-12T19:45:27Z
 url: https://github.com/astral-sh/ruff/pull/14872
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-pyi`]: More autofixes for redundant-none-literal (`PYI061`)
 
 ---
 
-_Pull request opened by @kiran-4444 on 2024-12-09 13:51_
+_@kiran-4444_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

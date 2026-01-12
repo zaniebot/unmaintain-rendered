@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T11:50:41Z
 updated_at: 2025-04-30T12:59:24Z
 url: https://github.com/astral-sh/uv/issues/13226
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Implement HTTP Digest authentication
 
 ---
 
-_Issue opened by @eolo999 on 2025-04-30 11:50_
+_@eolo999_
 
 ### Summary
 

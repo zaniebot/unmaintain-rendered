@@ -13,14 +13,14 @@ head: dhruv/token-rules-with-syntax-errors
 created_at: 2024-06-20T11:46:30Z
 updated_at: 2024-07-02T09:11:40Z
 url: https://github.com/astral-sh/ruff/pull/11950
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Enable token-based rules on source with syntax errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-20 11:46_
+_@dhruvmanila_
 
 ## Summary
 

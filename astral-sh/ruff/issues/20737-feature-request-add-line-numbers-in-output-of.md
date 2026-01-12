@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-07T06:43:33Z
 updated_at: 2025-10-07T10:50:14Z
 url: https://github.com/astral-sh/ruff/issues/20737
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [feature request] Add line numbers in output of `ruff analyze graph`
 
 ---
 
-_Issue opened by @gwdekker on 2025-10-07 06:43_
+_@gwdekker_
 
 Would it be useful to add line numbers to the output of `ruff analyze graph`? This would make it possible to fully replace the functionality of `tach check` (tach is deprecated) by having all information needed to create error messages like [this](https://docs.gauge.sh/usage/commands/#dependency-errors):
 

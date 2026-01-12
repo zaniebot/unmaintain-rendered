@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T08:32:53Z
 updated_at: 2025-04-01T12:58:06Z
 url: https://github.com/astral-sh/uv/issues/12596
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Fails to parse `channels` in `environment.yml`
 
 ---
 
-_Issue opened by @lnicola on 2025-04-01 08:32_
+_@lnicola_
 
 ### Summary
 

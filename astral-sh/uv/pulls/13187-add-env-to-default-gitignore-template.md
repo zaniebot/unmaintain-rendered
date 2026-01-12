@@ -11,14 +11,14 @@ head: add-env-to-gitignore
 created_at: 2025-04-29T01:06:15Z
 updated_at: 2025-05-18T21:30:22Z
 url: https://github.com/astral-sh/uv/pull/13187
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Add .env to default .gitignore template  
 
 ---
 
-_Pull request opened by @AsharibAli on 2025-04-29 01:06_
+_@AsharibAli_
 
 This PR adds `.env` files to the default `.gitignore` template that's generated when initializing a new uv project.
   
