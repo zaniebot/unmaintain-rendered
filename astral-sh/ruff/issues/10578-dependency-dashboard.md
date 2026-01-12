@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T05:22:36Z
+updated_at: 2026-01-12T07:48:28Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T06:54:53Z
+synced_at: 2026-01-12T07:59:30Z
 ```
 
 # Dependency Dashboard
@@ -56,26 +56,14 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Awaiting Schedule
+## Rate-Limited
 
-The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
+The following updates are currently rate-limited. To force their creation now, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.5.2
- - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.11
- - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
- - [ ] <!-- unschedule-branch=renovate/imperative-1.x-lockfile -->Update Rust crate imperative to v1.0.7
- - [ ] <!-- unschedule-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.179
- - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.113
- - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
- - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.13
- - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
- - [ ] <!-- unschedule-branch=renovate/mkdocs-llmstxt-0.x -->Update dependency mkdocs-llmstxt to v0.5.0
- - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `typescript-eslint`)
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`crate-ci/typos`, `mdformat-mkdocs`, `rhysd/actionlint`)
- - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
- - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0
- - [ ] <!-- unschedule-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.0
- - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
+ - [ ] <!-- unlimit-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- unlimit-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
+ - [ ] <!-- unlimit-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0
+ - [ ] <!-- create-all-rate-limited-prs -->🔐 **Create all rate-limited PRs at once** 🔐
 
 ## Pending Status Checks
 
@@ -88,6 +76,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
  - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
+ - [ ] <!-- approvePr-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
@@ -100,7 +89,18 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
  - [ ] <!-- rebase-branch=renovate/salsa-digest -->[Update salsa digest to b6398ec](../pull/22514)
+ - [ ] <!-- rebase-branch=renovate/codspeedhq-action-4.x -->[Update CodSpeedHQ/action action to v4.5.2](../pull/22516)
+ - [ ] <!-- rebase-branch=renovate/ruff-0.x -->[Update dependency ruff to v0.14.11](../pull/22517)
+ - [ ] <!-- rebase-branch=renovate/clap-4.x-lockfile -->[Update Rust crate clap to v4.5.54](../pull/22518)
+ - [ ] <!-- rebase-branch=renovate/imperative-1.x-lockfile -->[Update Rust crate imperative to v1.0.7](../pull/22519)
+ - [ ] <!-- rebase-branch=renovate/libc-0.x-lockfile -->[Update Rust crate libc to v0.2.179](../pull/22520)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
+ - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.65.13](../pull/22522)
+ - [ ] <!-- rebase-branch=renovate/astral-sh-setup-uv-7.x -->[Update astral-sh/setup-uv action to v7.2.0](../pull/22523)
+ - [ ] <!-- rebase-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
+ - [ ] <!-- rebase-branch=renovate/npm-development-dependencies -->[Update NPM Development dependencies](../pull/22525) (`@cloudflare/workers-types`, `typescript-eslint`)
+ - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22526) (`crate-ci/typos`, `mdformat-mkdocs`, `rhysd/actionlint`)
+ - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/22527)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 

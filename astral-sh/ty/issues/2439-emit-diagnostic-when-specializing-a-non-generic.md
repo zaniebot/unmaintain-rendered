@@ -9,9 +9,9 @@ labels:
   - generics
 assignees: []
 created_at: 2026-01-11T03:56:05Z
-updated_at: 2026-01-12T05:48:58Z
+updated_at: 2026-01-12T06:56:58Z
 url: https://github.com/astral-sh/ty/issues/2439
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T07:59:26Z
 ```
 
 # Emit diagnostic when specializing a non-generic class
@@ -124,5 +124,39 @@ _Label `diagnostics` added by @dhruvmanila on 2026-01-12 05:48_
 ---
 
 _Added to milestone `Stable` by @dhruvmanila on 2026-01-12 05:48_
+
+---
+
+_Comment by @tamireinhorn on 2026-01-12 06:56_
+
+> In debug build, it gives me the `@Todo(specialized non-generic class)` type:
+> 
+> ```py
+> import typing as t
+> 
+> import sqlalchemy as sa
+> 
+> def _(x: sa.Sequence[sa.RowMapping[str, t.Any]]):
+>     # revealed: @Todo(specialized non-generic class)
+>     reveal_type(x)
+> ```
+> 
+> mypy and Pyright both error on the annotation:
+> ```
+> mypy: "Sequence" expects no type arguments, but 1 given  [type-arg]
+> mypy: "RowMapping" expects no type arguments, but 2 given  [type-arg]
+> Pyright: Expected no type arguments for class "RowMapping" [reportInvalidTypeArguments]
+> ```
+> 
+> ty doesn't raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer `Unknown` for these cases. In the code, it's marked as TODO:
+> 
+> https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L730-L732
+> 
+> https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L1066-L1068
+> 
+> I don't see any open issues for this so we can use this.
+
+I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.
+
 
 ---

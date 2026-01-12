@@ -9,9 +9,9 @@ labels:
   - testing
 assignees: []
 created_at: 2025-11-13T16:19:34Z
-updated_at: 2026-01-12T05:13:56Z
+updated_at: 2026-01-12T07:41:12Z
 url: https://github.com/astral-sh/ty/issues/1540
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T07:59:26Z
 ```
 
 # Flaky tests in CI
@@ -93,5 +93,11 @@ _Comment by @dhruvmanila on 2026-01-12 05:13_
 > they definitely still flake from time to time: [astral-sh/ruff/actions/runs/20860850768/job/59939819903?pr=22481](https://github.com/astral-sh/ruff/actions/runs/20860850768/job/59939819903?pr=22481) was just now
 
 But this is `test unix::symlink_inside_project`, the ones that Micha fixed is related to the LSP e2e tests, unless I'm misreading what you're saying?
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 07:41_
+
+Sorry, yes — I was responding to Carl rather than Micha but I made that very unclear!
 
 ---
