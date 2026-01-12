@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: add existence check for ignore files - BurntSushi/ripgrep #1381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: add existence check for ignore files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1381">#1381</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2019-09-17 18:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><p>This PR suggests to add a simple <code>.exists()</code> check for <code>.gitignore</code>, <code>.ignore</code>, and other similar files before actually calling <code>File::open(…)</code> in <code>GitIgnoreBuilder::add</code>.</p>
+<p>The reason is that a simple existence check via <code>stat</code> can be faster than actually trying to <code>open</code> the file (see https://stackoverflow.com/a/12774387/704831). As we typically expect the number of directories <em>without</em> ignore files to be much larger than the number of directories <em>with</em> ignore files, this leads to an overall speedup.</p>
+<p>The performance gain is not huge for <code>rg</code>, but can be quite significant if more <code>.gitignore</code>-like files are added via <code>add_custom_ignore_filename</code>. The speedup is <em>larger</em> for folders with <em>low</em> files-per-directory ratios.</p>
+<h2>Benchmark results</h2>
+<p><code>rg --files</code> in my home folder (200k results, 6.5 files per directory):</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./rg-master --files</code> | 396.4 ± 3.2 | 390.9 | 400.0 | 1.05 |
+| <code>./rg-feature --files</code> | 376.0 ± 3.6 | 369.3 | 383.5 | 1.00 |</p>
+<p><code>rg --files --hidden</code> in my home folder (800k results, 5.4 files per directory)</p>
+<p>| Command | Mean [s] | Min [s] | Max [s] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./rg-master --files --hidden</code> | 1.575 ± 0.012 | 1.560 | 1.597 | 1.06 |
+| <code>./rg-feature --files --hidden</code> | 1.479 ± 0.011 | 1.464 | 1.496 | 1.00 |</p>
+<p><code>rg --files</code> in the chromium-79.0.3915.2 source tree (300k results, 12.7 files per directory)</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>~/rg-master --files</code> | 445.2 ± 5.3 | 435.6 | 453.0 | 1.04 |
+| <code>~/rg-feature --files</code> | 428.9 ± 7.0 | 418.2 | 440.0 | 1.00 |</p>
+<p><code>rg --files</code> in the linux-5.3 source tree (65k results, 15.1 files per directory)</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./rg-master --files</code> | 94.5 ± 1.9 | 89.8 | 98.5 | 1.02 |
+| <code>./rg-feature --files</code> | 92.6 ± 2.7 | 88.4 | 98.7 | 1.00 |</p>
+<p>Running a <code>fd</code> search in my home directory (<code>fd</code> uses more <code>.gitignore</code>-like files):</p>
+<p>| Command | Mean [s] | Min [s] | Max [s] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./fd-master -H foobar</code> | 1.136 ± 0.012 | 1.122 | 1.158 | 1.10 |
+| <code>./fd-feature -H foobar</code> | 1.030 ± 0.006 | 1.022 | 1.041 | 1.00 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2019-09-23 17:58</div>
+            <div class="timeline-body"><p>(I am assuming that the CI failure is not related to my PR. If this is not the case, please let me know)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-15 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2020-02-15 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2020-02-15 13:26</div>
+            <div class="timeline-body"><p>I buy it, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-02-15 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2020-04-02 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:10 UTC
+    </footer>
+</body>
+</html>

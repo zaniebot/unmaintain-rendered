@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>harmonize ripgrep's -w|--word-regexp with grep's - BurntSushi/ripgrep #547</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>harmonize ripgrep's -w|--word-regexp with grep's</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/547">#547</a>
+        opened by <a href="https://github.com/kevinr">@kevinr</a>
+        on 2017-07-08 02:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kevinr">@kevinr</a></div>
+            <div class="timeline-body"><p>This fixes https://github.com/BurntSushi/ripgrep/issues/389</p>
+<p>grep (and git-grep) allow a match using --word-regexp to begin and end with
+non-word characters, by surrounding the match with <code>(^|[^[:alnum:]_])</code> and
+<code>([^[:alnum:]_]|$)</code>.</p>
+<p>Before this patch ripgrep, by surrounding the match with <code>\b</code>, implicitly
+required the match to start with a <code>\w</code> character, and would fail to match eg.
+the <code> - 2</code> in <code>1 - 2</code>, which intuitively should be allowed.</p>
+<p>This fixes this behavior by surrounding the match with <code>(?:^|\W)</code> and
+<code>(?:\W|$)</code>, using the Unicode non-word character class <code>\W</code> rather than the
+ASCII character class <code>[:alnum:]</code></p>
+<p>I have tested that this combines correctly with <code>--only-matching</code>, that is, leading non-word characters are not printed along with the match when that option is used.</p>
+<p>I have <em>not</em> tested that this combines correctly with <code>--replace</code>; however, use of non-capturing matches should ensure that references are numbered correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinr">@kevinr</a> on 2017-07-08 02:30</div>
+            <div class="timeline-body"><p>Ah. Let me fix the tests and I'll give it another shot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-08 17:44</div>
+            <div class="timeline-body"><p>I <em>think</em> that in order for this method to work correctly you'd have to change the printer so that when it prints the match it checks to see if <code>-w</code> is active, and if the match start/end is not equal to the line start/end it contracts the match by one character on each applicable side.</p>
+<p>That would account for the standard behaviour as well as the <code>-o</code> behaviour, anyway. Not sure about <code>--replace</code>, might be more complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-09 00:52</div>
+            <div class="timeline-body"><p>Unfortunately, I think @okdana is right. The key difference is that the <code>\b(pat)\b</code> formulation uses zero length assertions, so the surrounding <code>\b</code> assertions don't actually consume any input in the match. But when you start using <code>\W</code>, that might consume at most one Unicode codepoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinr">@kevinr</a> on 2017-07-10 20:54</div>
+            <div class="timeline-body"><p>Oh crud. I can reproduce, I wasn't seeing the issue before because of an unrelated issue.</p>
+<p>To check my understanding, it looks like the code around https://github.com/BurntSushi/ripgrep/blob/master/src/printer.rs#L252 is going to need to either pull the start and end of the target submatch from the match object in the presence of --word-regexp, rather than using the whole match, or increment and decrement the start and end of the whole match by the length of the beginning and ending submatches?</p>
+<p>I was trying to avoid capturing matches, but perhaps that can't be helped (and perhaps that's why GNU grep uses capturing matches too).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-11 06:52</div>
+            <div class="timeline-body"><p>If you were going to change the way it's printed, i think you'd have to change it in two different places (<code>write_match()</code> and <code>write_matched_line()</code>), because non-line-per-match matches (i.e. the default behaviour) have a second search performed on them to figure out where to place the colours. But in each case it's just something like:</p>
+<pre><code class="language-rust">let m_start = m.start() + (m.start() != 0) as usize;
+let m_end   = m.end() - (m.end() != buf.len() - 1) as usize;
+</code></pre>
+<p>I think probably a bigger issue though is the fact that <code>\W</code> not being zero-width means that you can't match two 'words' that are next to each other. For example:</p>
+<pre><code>given: rg -w bar &lt;&lt;&lt; foo-bar-bar-baz
+
+current method ([...] == match):
+  final pattern: \b(?:bar)\b
+  actual match:  foo-[bar]-[bar]-baz
+  printed match: foo-[bar]-[bar]-baz
+
+proposed method ([...] == match):
+  final pattern: (?:^|\W)(?:bar)(?:\W|$)
+  actual match:  foo[-bar-]bar-baz
+  printed match: foo-[bar]-bar-baz
+</code></pre>
+<p>So you'd have to deal with that somehow too. GNU <code>grep</code> seems to have some <a href="http://git.savannah.gnu.org/cgit/grep.git/tree/src/dfasearch.c#n376">special handling</a> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-29 21:09</div>
+            <div class="timeline-body"><p>@kevinr This PR seems to have gotten stalled, and that's mostly my fault for not staying on top of it. Based on the comments above, this issue appears to be a bit more complex than initially thought. For now, I'd like to consider fixing this issue as part of the libripgrep effort, so I'm going to close this PR. I will surely reference back to it for the tests though! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-29 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:52 UTC
+    </footer>
+</body>
+</html>

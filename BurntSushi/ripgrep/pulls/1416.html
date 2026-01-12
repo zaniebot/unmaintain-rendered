@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[RFC] ripgrep: expose custom ignore files via --ignore-file-name - BurntSushi/ripgrep #1416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[RFC] ripgrep: expose custom ignore files via --ignore-file-name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1416">#1416</a>
+        opened by <a href="https://github.com/akarle">@akarle</a>
+        on 2019-10-31 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akarle">@akarle</a></div>
+            <div class="timeline-body"><p>The ignore crate has the concept of &quot;custom ignore&quot; files. These files
+take precedence over all others and can be used to declare arbitrary
+file names as files which should be parsed for ignore patterns.</p>
+<p>This commit adds the <code>--ignore-file-name</code> switch to <code>ripgrep</code>, exposing this
+functionality to the user. For instance, if a user wanted to put their
+ignores in many files called <code>.my_ignore</code> they could:</p>
+<pre><code>rg --ignore-file-name .my_ignore</code></pre>
+<p>This can also be used as a hack to honor <code>.gitignore</code> files outside .git
+repositories (#1414), which can be useful if a git repo has been copied
+somewhere without the .git directory (i.e. downloaded as a zip from
+GitHub) or for SCM systems like Perforce which allow <code>.gitignore</code> files
+but are not valid git repositories. Note, however, that this tactic
+gives <code>.gitignore</code> precedence over <code>.ignore</code> and <code>.rgignore</code>, so consider
+using multiple flags:</p>
+<pre><code>rg --ignore-file-name .ignore --ignore-file-name .gitignore</code></pre>
+<hr />
+<p>Aside: this is discussed in #1414 .</p>
+<p>@BurntSushi : I have another branch on my fork, <a href="https://github.com/akarle/ripgrep/commit/efbed3298e9a5c2383c91e084012e0cbbda9e2ff">ignore_outside</a>, that implements the other possible way we discussed of solving this (via a <code>--force-gitignore</code> flag, which I called <code>--ignore-outside-git</code>, but am happy to change to whatever we find appropriate).</p>
+<p>I also came up with a <strong>third</strong> solution that would work for our use-case: creating a <code>--alt-git-root-file</code> switch which specifies a token that is determined to indicate the root of a git repo. This is the most intrusive implementation though (getting into the guts of the <code>ignore</code> crate), and I found my knowledge of asynchronous rust didn't cut it :)</p>
+<p>I'm proposing we merge the <code>--ignore-file-name</code> switch, even though it is the most hacky solution to #1414 , because it is the least change to the code, and could have other benefits / be considered a feature. However, I'm happy to go with either the <code>--ignore-outside-git</code> or <code>--alt-git-repo-files</code> solutions if you deem them more appropriate for the project.</p>
+<p>Rust is not my strongest language, so I appreciate any and all pointers / tips / corrections!</p>
+<p>Thanks for your time and help!
+Alex</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-17 19:49</div>
+            <div class="timeline-body"><p>Thanks for this PR! The idea was interesting, but I think a more explicit <code>--no-require-git</code> flag is probably better. I've added this flag in #1486, which will be in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-02-17 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akarle">@akarle</a> on 2020-02-17 23:01</div>
+            <div class="timeline-body"><p>@BurntSushi -- thank you so much for taking the time to revisit this!</p>
+<p>I agree, the <code>--no-require-git</code> flag is more explicit (and less likely to cause confusion). Thank you for implementing it! Looking forward to using it in the next release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:11 UTC
+    </footer>
+</body>
+</html>

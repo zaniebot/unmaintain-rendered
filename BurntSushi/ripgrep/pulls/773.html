@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[glob] Add tests for single-asterisk patterns - BurntSushi/ripgrep #773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[glob] Add tests for single-asterisk patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/773">#773</a>
+        opened by <a href="https://github.com/behnam">@behnam</a>
+        on 2018-02-05 02:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/behnam">@behnam</a></div>
+            <div class="timeline-body"><p>@Diggsey reported in <a href="https://github.com/rust-lang/cargo/issues/4268#issuecomment-362919612">https://github.com/rust-lang/cargo/issues/4268#issuecomment-362919612</a> that the single-asterisk patterns are over-matching into deeper directories.</p>
+<p>Looking at the resources I found, looks like that's a right claim, so here I've added the unit tests which show the problem. (The diff breaks the build as it is and should not be landed before a fix is in place.)</p>
+<p>I haven't looked into a fix yet, since I'm not 100% sure about the right behavior. If so, would be great to fix it. (Unfortunately, I cannot promise I'll find the time to work on it at the moment.)</p>
+<p>What do you think, @BurntSushi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-06 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-06 22:46</div>
+            <div class="timeline-body"><p>@behnam Thanks for reporting this! This would be <em>quite</em> a bad bug. Thankfully, this is expected behavior. By default, <code>*</code> matches a <code>/</code>. To disable that behavior, you need to enable the <a href="https://docs.rs/globset/0.2.1/globset/struct.GlobBuilder.html#method.literal_separator"><code>GlobBuilder::literal_separator</code></a> method. This is <a href="https://docs.rs/globset/0.2.1/globset/#syntax">documented in the syntax section of the <code>globset</code> docs</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-06 22:46</div>
+            <div class="timeline-body"><p>@behnam I fixed your commit by setting the appropriate option and merged it: https://github.com/BurntSushi/ripgrep/commit/706323ad8f2600db7d46482a7d95972b1416c0eb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2018-02-07 02:58</div>
+            <div class="timeline-body"><p>Thanks, @BurntSushi, for the info and committing the tests!</p>
+<p>I didn't realize that <code>literal_separator</code> is not default behavior. So, now wondering which ones's the most common behavior in the glob world?</p>
+<p>The reason I'm asking is for which one Cargo should use, if we use globs for in inclusion/exclusion logic.</p>
+<p>AFAIU, gitignore-style (<code>ignore</code>) doesn't have this issue and always behaves like <code>literal_separator</code>. Right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-07 03:15</div>
+            <div class="timeline-body"><p>Unfortunately, things are more subtle. Gitignore only enables this option when there is no literal <code>/</code> in the glob. That is, <code>*.rs</code> can match through a <code>/</code> but <code>a/*/b</code> cannot.</p>
+<p>globset has the same default behavior as glob.</p>
+<p>If you want gitignore style for Cargo, then it should be easy enough to just use the ignore crate. I don't know what the right choice is for Cargo though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2018-02-07 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2018-02-07 03:27</div>
+            <div class="timeline-body"><p>Thanks for the details, @BurntSushi! Got it.</p>
+<p>In Cargo, we're in the process to replace the glob-like matching with a gitignore-like one. We think it's easier to use because of similarity with git configurations, and provides more control, when needed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:58 UTC
+    </footer>
+</body>
+</html>

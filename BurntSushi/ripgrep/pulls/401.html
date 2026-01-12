@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add _rg.ps1 to windows zip - BurntSushi/ripgrep #401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add _rg.ps1 to windows zip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/401">#401</a>
+        opened by <a href="https://github.com/dstcruz">@dstcruz</a>
+        on 2017-03-09 13:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dstcruz">@dstcruz</a></div>
+            <div class="timeline-body"><p>Tested with local cargo build paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dstcruz">@dstcruz</a> on 2017-03-09 13:51</div>
+            <div class="timeline-body"><p>Apologies for the extra hassle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-09 13:54</div>
+            <div class="timeline-body"><p>No worries! This looks good. If something goes wrong at the next release I will deal with it. Thank you for doing the leg work on this. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-03-09 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-09 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-03-09 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-13 03:01</div>
+            <div class="timeline-body"><p>Sadly, I had to revert this because it didn't actually work. I don't have time at the moment to figure out how to do globbing on Windows, but apparently the obvious thing doesn't work? See logs here: https://ci.appveyor.com/project/BurntSushi/ripgrep/build/1.0.341/job/7o1jqicmtwm7oa00</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dstcruz">@dstcruz</a> on 2017-03-13 13:46</div>
+            <div class="timeline-body"><p>Ugh. That glob worked on my Win7 machine using Powershell.  I'll take a look at the referenced URL to see if I can determine what went wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-13 13:50</div>
+            <div class="timeline-body"><p>@dstcruz Thanks. :-) I will also eventually look into it, but it's such a pain to debug and I was trying to hurry off to bed last night. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leafgarland">@leafgarland</a> on 2017-03-14 01:45</div>
+            <div class="timeline-body"><p>Appveyor by default runs cmd scripts and cmd copy will not do directory globbing.</p>
+<p>Powershell copy will do directory globbing and you can ask appveyor to run a line as powershell by prepending <code>ps:</code> to the command line:</p>
+<pre><code class="language-yaml">before_deploy:
+  # Generate artifacts for release
+  # TODO(burntsushi): How can we enable SSSE3 on Windows?
+  - cargo build --release
+  - mkdir staging
+  - copy target\release\rg.exe staging
+  - ps: copy target\release\build\ripgrep-*\out\_rg.ps1 staging
+  - cd staging
+  - # release zipfile will look like 'rust-everywhere-v1.2.3-x86_64-pc-windows-msvc'
+  - 7z a ../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%.zip *
+  - appveyor PushArtifact ../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%.zip
+</code></pre>
+<p>I have tested the above on my own appveyor build and it works as expected.</p>
+<p>If you wanted to run the whole script in powershell then you can use this syntax (note the environment variables have been changed to use powershell syntax):</p>
+<pre><code class="language-yaml">before_deploy:
+  # Generate artifacts for release
+  # TODO(burntsushi): How can we enable SSSE3 on Windows?
+  - ps: |
+    cargo build --release
+    mkdir staging
+    copy target\release\rg.exe staging
+    copy target\release\build\ripgrep-*\out\_rg.ps1 staging
+    cd staging
+    # release zipfile will look like 'rust-everywhere-v1.2.3-x86_64-pc-windows-msvc'
+    7z a &quot;../$($env:PROJECT_NAME)-$($env:APPVEYOR_REPO_TAG_NAME)-$($env:TARGET).zip&quot; *
+    appveyor PushArtifact &quot;../$($env:PROJECT_NAME)-$($env:APPVEYOR_REPO_TAG_NAME)-$($env:TARGET).zip&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leafgarland">@leafgarland</a> on 2017-03-14 01:54</div>
+            <div class="timeline-body"><p>It was quicker to make the PR than edit the above post 😄</p>
+<p>See #408</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:49 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ignore] Add extensive test for gitignore matching - BurntSushi/ripgrep #551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ignore] Add extensive test for gitignore matching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/551">#551</a>
+        opened by <a href="https://github.com/behnam">@behnam</a>
+        on 2017-07-11 07:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/behnam">@behnam</a></div>
+            <div class="timeline-body"><p>The test data (gitignore rules and expected result) is based on the test
+repo at <a href="https://github.com/behnam/gitignore-test">https://github.com/behnam/gitignore-test</a>.</p>
+<p>This reveals a bug in gitignore matching:</p>
+<ul>
+<li>Rules of form <code>&lt;dir&gt;/*</code> result in ignoring only first-level files, but
+no deep files. This is not correct, as <code>&lt;dir&gt;/*</code> matches the first-level
+directories under <code>&lt;dir&gt;</code>, resulting all to be ignored.</li>
+</ul>
+<p>(UPDATE: Turns out the inline comments are not supported in gitignore, so I dropped the related tests.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-11 09:42</div>
+            <div class="timeline-body"><p>I expanded the tests to 64 rules and 158 assertions, out of which 30 is failing (marked with <code>FIXME</code>).</p>
+<p>Most of these are blockers for migrating Cargo's include/exclude rules to <code>ignore</code> crate. (https://github.com/rust-lang/cargo/pull/4270)</p>
+<p>I'm not sure if I'll find the time this week to dig deep into <code>ignore</code> crate to fix these, so please feel free to pick up the rest of the work here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-11 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Rules of form <code>&lt;dir&gt;/*</code> result in ignoring only first-level files, but
+no deep files. This is not correct, as <code>&lt;dir&gt;/*</code> matches the first-level
+directories under <code>&lt;dir&gt;</code>, resulting all to be ignored.</p>
+</blockquote>
+<p>This is an interesting case. The bug doesn't manifest in ripgrep because the ignore rules are applied iteratively at each directory level. That is, if <code>dir</code> is ignored, then <code>dir/foo</code> is also ignored because <code>dir/foo</code> is never actually visited.</p>
+<p>More generally, it's not actually clear what the right behavior is here. The fundamental issue is that ignoring files is based on globbing, and <code>dir/*</code> simply does not match <code>dir/foo/bar</code> because <code>*</code> does not match path separators when a literal path separator is present in the glob. (If you read <code>man gitignore</code> carefully, you'll note that <code>git</code> defines its semantics in terms of <code>fnmatch</code>. In particular, if the glob contains a literal <code>/</code>, then <code>fnmatch</code> with <code>FNM_PATHNAME</code> is set.)</p>
+<p>I think there's probably an impedance mismatch here. The implementation for resolving ignore rules fundamentally works via glob matching, but by doing this, it sacrifices correctness for some inputs because its primary use case doesn't need correctness for those inputs. A trivial resolution to this would be to match each ancestor of a path against the ignore rules, and if any one is ignored, then all children are subsequently ignored. This cannot be done by default because performance would suffer considerably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-11 11:15</div>
+            <div class="timeline-body"><p>To drive this point home, if you use <code>ignore</code>'s directory walker, then all of these ignore rules should be resolved correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-11 18:36</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi for looking into this. Right, now that I think about the API as how the walker calls into it, it all makes sense.</p>
+<p>This problem of matching globs with a path AND its parents is actually how I got here. I initially submitted a patch to Cargo to apply the include/exclude patterns (the current glob-based rules) to both a file and its parents (https://github.com/rust-lang/cargo/pull/4256), then we realized that we may be better off to not get into the details of matching in Cargo and use a library that supports matching a file path with a set of rules. (And, in this transition, make it better by also switching to gitignore rules instead of bare globs.)</p>
+<p>That said, I really like to add API to allow matching one path (usually file, but also could be a directory) with a gitignore ruleset. So that's what I did in the new commit here, which also allows all the tests to pass.</p>
+<p>I think it's a good thing to have this method here, because it's a common use case (when not using the built-in walker) and because we can use the helper methods here and the logic is pretty straightforward: start from the path and walk to the parents, return the first non-<code>Match::None</code> result, or <code>Match::None</code> otherwise.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-11 18:37</div>
+            <div class="timeline-body"><p>By the way, the implementation is broken for <code>rustc 1.12.0</code> and I'm working on a fix for it. Everything else should be fine.</p>
+<p><strong>UPDATE</strong>: It now works in <code>rustc 1.12.0</code>, as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/gitignore.rs</code>:196 on 2017-07-12 10:47</div>
+            <div class="timeline-body"><p>After the initial description, I think we should briefly explain what we mean by <code>parent</code>. That is, it is a transformation on the path itself and doesn't try to walk up the file system. I'm not sure how to say that succinctly and clearly though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/gitignore.rs</code>:209 on 2017-07-12 10:49</div>
+            <div class="timeline-body"><p>Can we think of another name? I feel like <code>matched_recursive</code>  doesn't really signal to the user what this is actually doing. But this is a super subtle method, so I'm not sure what to call it either. Maybe <code>matched_any_parent</code> or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-07-12 10:53</div>
+            <div class="timeline-body"><p>I agree we should add this method. I left a few comments mostly around the docs/naming. The implementation looks OK to me.</p>
+<p>My only remaining concern is that this might produce matches when there shouldn't be a match (i.e., a false positive). I can't actually think of a specific test case for it though, which maybe means we're OK. I think the fact that we assume the given path is relative to the directory containing the corresponding <code>.gitignore</code> file is what allows this to work. It's a very subtle point though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/behnam">@behnam</a> reviewed on 2017-07-12 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/behnam">@behnam</a> on <code>ignore/src/gitignore.rs</code>:196 on 2017-07-12 19:17</div>
+            <div class="timeline-body"><p>I know what you mean. Added some more text here. Please see how that look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/behnam">@behnam</a> reviewed on 2017-07-12 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/behnam">@behnam</a> on <code>ignore/src/gitignore.rs</code>:209 on 2017-07-12 19:18</div>
+            <div class="timeline-body"><p>Right. Renamed to <code>matched_path_or_any_parents()</code>. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-12 19:19</div>
+            <div class="timeline-body"><p>Thanks, @BurntSushi.</p>
+<p>Addressed the comments in the last commit. Also, updated the fn implementation to be more flat and easier to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-12 19:23</div>
+            <div class="timeline-body"><p>And, I have added more text about the path being expected to be under the root, and put a <code>debug_assert!()</code> for it.</p>
+<p>I think <code>gitignore</code> has undefined behavior otherwise, as it has an early assumption that <code>root == dirname(gitignore_path)</code> and only walks down from there.</p>
+<p>So, I think it's a fair assumption for this API, and we can always extend it later, if we need to.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-12 22:45</div>
+            <div class="timeline-body"><p>Looks like the appveyor test is failing because of different path handling on windows systems. I'm looking into that part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-12 23:06</div>
+            <div class="timeline-body"><p>This looks great. I think it's good to go once you figure out Windows. Thank you! If you get stuck let me know and I can take a look (but it might take me a while to get to it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-13 01:58</div>
+            <div class="timeline-body"><p>Using <code>!path.has_root()</code> instead of <code>path.is_relative()</code> solved the problem for windows and now all the tests are passing.</p>
+<p>I also made the walking loop even simpler. Please take another look, if you can: https://github.com/BurntSushi/ripgrep/pull/551/files#diff-6d0dbe450a74521a529608d3e56606b7R223</p>
+<p>And, we're going to need a crate release to use this in Cargo. Want me to add a commit to bump the version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-13 02:03</div>
+            <div class="timeline-body"><p>@behnam Great, thank you! LGTM.</p>
+<p>No need to add a version. My scripts do that! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-07-13 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-07-13 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-07-13 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-13 02:09</div>
+            <div class="timeline-body"><p><code>ignore 0.2.1</code> should now be on crates.io!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-13 02:33</div>
+            <div class="timeline-body"><p>Thanks for the quick help here, @BurntSushi!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:52 UTC
+    </footer>
+</body>
+</html>

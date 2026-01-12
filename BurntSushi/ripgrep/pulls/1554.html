@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crates/ignore: switch to depth first traversal - BurntSushi/ripgrep #1554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>crates/ignore: switch to depth first traversal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1554">#1554</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2020-04-18 15:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>This replaces the use of channels in the parallel directory traversal
+with a simple stack. The primary motivation for this change is to reduce
+peak memory usage. In particular, when using a channel (which is a
+queue), we wind up visiting files in a breadth first fashion. Using a
+stack switches us to a depth first traversal. While there are no real
+intrinsic differences, depth first traversal generally tends to use less
+memory because directory trees are more commonly wide than they are
+deep.</p>
+<p>In particular, the queue/stack size itself is not the only concern. In
+one recent case documented in #1550, a user wanted to search all Rust
+crates. The directory structure was shallow but extremely wide, with a
+single directory containing all crates. This in turn results is in
+descending into each of those directories and building a gitignore
+matcher for each (since most crates have <code>.gitignore</code> files) before ever
+searching a single file. This means that ripgrep has all such matchers
+in memory simultaneously, which winds up using quite a bit of memory.</p>
+<p>In a depth first traversal, peak memory usage is much lower because
+gitignore matches are built and discarded more quickly. In the case of
+searching all crates, the peak memory usage decrease is dramatic. On my
+system, it shrinks by an order magnitude, from almost 1GB to 50MB. The
+decline in peak memory usage is consistent across other use cases as
+well, but is typically more modest. For example, searching the Linux
+repo has a 50% decrease in peak memory usage and searching the Chromium
+repo has a 25% decrease in peak memory usage.</p>
+<p>Search times generally remain unchanged, although some ad hoc benchmarks
+that I typically run have gotten a bit slower. As far as I can tell,
+this appears to be result of scheduling changes. Namely, the depth first
+traversal seems to result in searching some very large files towards the
+end of the search, which reduces the effectiveness of parallelism and
+makes the overall search take longer. This seems to suggest that a stack
+isn't optimal. It would instead perhaps be better to prioritize
+searching larger files first, but it's not quite clear how to do this
+without introducing more overhead (getting the file size for each file
+requires a stat call).</p>
+<p>Fixes #1550</p>
+<p>cc @bmalehorn who attempted a similar change many moons ago!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2020-04-18 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-04-18 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2020-04-18 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2020-05-24 21:59</div>
+            <div class="timeline-body"><p>A few days ago, I released a new version of <code>fd</code> and <code>cargo update</code>d all dependencies without noticing (shame on me) that there was a new patch version of the <code>ignore</code> crate, which includes this change. The <code>ignore</code> crate is really the heart of the <code>fd</code> application, so I usually follow <code>ignore</code> releases very closely, but somehow I missed this.</p>
+<p>We have two open tickets in <code>fd</code> that concern high peak memory usage (https://github.com/sharkdp/fd/issues/378, https://github.com/sharkdp/fd/issues/471), so I'm really excited to see some work on this front (thanks!). I haven't checked if those issues would be resolved by this change, but it could very well be the case.</p>
+<p>I'm a bit &quot;concerned&quot; about the change to a depth-first traversal though. Sure, if users of <code>rg</code> or <code>fd</code> perform a full search, it doesn't really matter (except for the output order, which is non-deterministic anyway - especially if the search is not limited to a single thread). But how about the case where someone is just waiting for &quot;that one&quot; result in a longer search? Wouldn't we expect the breadth first search to result in a better experience?</p>
+<p>I found this PR after reading the report of a <code>fd</code> user who uses <code>fd</code> in combination with <code>fzf</code> to interactively search for files. With the previous breadth first search behavior, file system entries close to the start directory would show up very quickly. With the new depth first search, some of these entries appear at the very end of the (long running) search. I know that a lot of <code>ripgrep</code> users also use it in combination with <code>fzf</code>. Could this change also result in worse behavior for them? How about those users who perform a search for &quot;that single keyword that only appears once somewhere in my home folder&quot;? Isn't that file likely to be located at shallower depths?</p>
+<p>Sorry for this long post - I'd be glad to hear your thoughts!</p>
+<blockquote>
+<p>Search times generally remain unchanged, although some ad hoc benchmarks
+that I typically run have gotten a bit slower. As far as I can tell,
+this appears to be result of scheduling changes.</p>
+</blockquote>
+<p>The same user also reports significant performance regressions in the latest <code>fd</code> version that includes this change. I wasn't able to reproduce this myself, but I thought I would mention it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-24 22:07</div>
+            <div class="timeline-body"><p>@sharkdp Sure, this change is invariably going to make some cases worse. Not really sure if there's much to do about it though. The peak memory usage of breadth first traversal was really not acceptable, and was also significantly slower in some cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2020-07-06 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>The same user also reports significant performance regressions in the latest fd version that includes this change.</p>
+</blockquote>
+<p>I wonder if this has to do with the CPU cache. Specifically, if with breadth-first traversal, the entries for a directory were more likely to be in a nearby cache-line, but with depth-first traversal, the directory data might be flushed from the cache and has to be read from main memory on each iteration.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:13 UTC
+    </footer>
+</body>
+</html>

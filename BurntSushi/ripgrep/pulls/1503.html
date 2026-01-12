@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: handling of broken symlinks - BurntSushi/ripgrep #1503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: handling of broken symlinks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1503">#1503</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2020-02-28 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><p>This is maybe more of a question than a bug report.</p>
+<p>Currently, the <code>ignore</code> crate has the following behavior:</p>
+<ul>
+<li>If <code>.follow_links(false)</code>: both broken and normal symlinks are reported as directory entries. This is as expected.</li>
+<li>If <code>.follow_links(true)</code>: normal symlinks are reported as directory entries (and traversed, if they point to a directory), broken symlinks are not reported (an <code>ignore::Error::WithPath</code> is returned from the iterator).</li>
+</ul>
+<p>Question: in the <code>follow_links(true)</code> case, do we expect to see broken symlinks as normal directory entries?</p>
+<p>I would argue yes, they should be reported. Broken symlinks are file-like directory entries which should show up when &quot;walking a directory&quot; with <code>ignore</code>. This is backed by <code>find</code>s behavior, which does report broken symlinks, even when <code>-follow</code> is present.</p>
+<p>This is a PR which adds a (currently failing) unit test, which can be used as a basis to fix this, if desired. I tried to implement a fix myself, but didn't get very far:</p>
+<pre><code class="language-diff">diff --git a/crates/ignore/src/walk.rs b/crates/ignore/src/walk.rs
+index 6fd7087..c7bf039 100644
+--- a/crates/ignore/src/walk.rs
++++ b/crates/ignore/src/walk.rs
+@@ -958,6 +958,13 @@ impl Iterator for Walk {
+             };
+             match ev {
+                 Err(err) =&gt; {
++                    if err.io_error().map_or(false, |io_error| {
++                        io_error.kind() == io::ErrorKind::NotFound
++                    }) {
++                        // TODO: make sure this is actually caused by a broken symlink
++                        // TODO: how to create a `DirEntry` from `io_error`? We only have
++                        // io_error.path().
++                    }
+                     return Some(Err(Error::from_walkdir(err)));
+                 }
+                 Ok(WalkEvent::Exit) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-28 13:36</div>
+            <div class="timeline-body"><p>Interesting question. It kind of feels to me like the current API is probably right though? The user is asking for symlinks to be followed, so <code>ignore</code> will do just that. If an error occurs while attempting that, then that really should be reported as an error. This is also consistent with how the rest of the API is designed and is probably why you're having trouble creating a <code>DirEntry</code>. Namely, methods like <code>file_type()</code> and <code>metadata()</code> return the relevant value for the <em>target</em> of the link when <code>follow_links</code> is enabled. (Technically this isn't documented behavior in <code>ignore</code>, but it should be, and is <a href="https://docs.rs/walkdir/2.3.1/walkdir/struct.DirEntry.html">documented behavior in walkdir</a>.)</p>
+<p>So if the caller asked to follow symlinks, and you yield a dir entry with a symlink that could not be followed, then how are methods like <code>metadata</code> and <code>file_type</code> implemented? The only things you can really do here are return an error or <em>not</em> follow the symlink. But this could lead to surprising behavior. If you asked the traversal to follow symlinks, then I think it's reasonable to expect that every dir entry is <em>not</em> a symlink. If the symlink couldn't be followed, then that really seems like a proper error to me.</p>
+<p>Moreover, if we decided to return a <code>DirEntry</code> instead, and a symlink couldn't be followed because an error occurred, then how is that error reported to the caller? It sounds like you'd either have to squash it or otherwise attach the error to the <code>DirEntry</code>. Which seems not great.</p>
+<p>Your point about <code>find</code> is well taken, but it seems to me like you have all the tools with the current API to implement that behavior, no? That is, if your application wants to emit broken symlinks even when the user asked to follow them, then it should be possible to inspect the error. Maybe the problem here is that you don't have a way to detect whether the error is due to being unable to follow the symlink, then I'd be in favor of adding a method or something to detect that case specifically on the error type. Would that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2020-02-28 16:40</div>
+            <div class="timeline-body"><p>Thank you so much for your detailed response!</p>
+<blockquote>
+<p>This is also consistent with how the rest of the API is designed [...]. Namely, methods like <code>file_type()</code> and <code>metadata()</code> return the relevant value for the <em>target</em> of the link when <code>follow_links</code> is enabled.</p>
+</blockquote>
+<p>Right. I hadn't thought about that.</p>
+<blockquote>
+<p>So if the caller asked to follow symlinks, and you yield a dir entry with a symlink that could not be followed, then how are methods like <code>metadata</code> and <code>file_type</code> implemented?</p>
+</blockquote>
+<p>According to <code>find</code>, a broken symlink still has a &quot;file type&quot; of &quot;symlink&quot;:</p>
+<pre><code>❯ tree
+.
+├── broken_link -&gt; non-existing
+├── dir
+└── normal_link -&gt; dir
+
+❯ find -type l        
+./normal_link
+./broken_link
+
+❯ find -follow -type l
+./broken_link
+</code></pre>
+<p>So in this sense, I would expect a <code>DirEntry</code> with a <code>std::fs::FileType</code> that returns <code>true</code> for <code>.is_symlink()</code>.</p>
+<p>Since <code>.metadata()</code> returns a <code>Result&lt;MetaData&gt;</code>, I would expect an <code>Err(…)</code> in this case. This would be consistent with what <code>ls</code> does (prints a warning, but shows the entry with unknown metadata):</p>
+<pre><code>❯ ls -l   
+total 0
+lrwxrwxrwx 1 shark lxd 12 Feb 28 17:14 broken_link -&gt; non-existing
+drwxr-xr-x 2 shark lxd 40 Feb 28 17:14 dir
+lrwxrwxrwx 1 shark lxd  3 Feb 28 17:13 normal_link -&gt; dir
+
+/tmp/fooo                                                                        
+❯ ls -l -L
+ls: cannot access 'broken_link': No such file or directory
+total 0
+l????????? ? ?     ?    ?            ? broken_link
+drwxr-xr-x 2 shark lxd 40 Feb 28 17:14 dir
+drwxr-xr-x 2 shark lxd 40 Feb 28 17:14 normal_link
+</code></pre>
+<blockquote>
+<p>If you asked the traversal to follow symlinks, then I think it's reasonable to expect that every dir entry is <em>not</em> a symlink. If the symlink couldn't be followed, then that really seems like a proper error to me.</p>
+</blockquote>
+<blockquote>
+<p>Moreover, if we decided to return a <code>DirEntry</code> instead, and a symlink couldn't be followed because an error occurred, then how is that error reported to the caller? It sounds like you'd either have to squash it or otherwise attach the error to the <code>DirEntry</code>. Which seems not great.</p>
+</blockquote>
+<p>Agreed, I see your point.</p>
+<blockquote>
+<p>Your point about <code>find</code> is well taken, but it seems to me like you have all the tools with the current API to implement that behavior, no? That is, if your application wants to emit broken symlinks even when the user asked to follow them, then it should be possible to inspect the error.</p>
+</blockquote>
+<p>We had two failed attempts at fixing this bug (https://github.com/sharkdp/fd/issues/357) in <code>fd</code> (https://github.com/sharkdp/fd/pull/366, https://github.com/sharkdp/fd/pull/497), but that certainly doesn't mean it's not possible. I will try once again myself.</p>
+<blockquote>
+<p>Maybe the problem here is that you don't have a way to detect whether the error is due to being unable to follow the symlink, then I'd be in favor of adding a method or something to detect that case specifically on the error type. Would that work?</p>
+</blockquote>
+<p>We currently get a <code>ignore::Error::WithPath</code> with an internal <code>io::Error</code> of kind <code>io::ErrorKind::NotFound</code> (&quot;An entity was not found, often a file.&quot;). Subsequently, we can check if the path inside the error is a symlink (with <code>std::fs::symlink_metadata</code>, i.e. without following the link). This way, I think we should actually be able to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2020-02-28 19:56</div>
+            <div class="timeline-body"><p>I found a way to make this work: https://github.com/sharkdp/fd/compare/cc08493...9fe73baa</p>
+<p>I think we can close this(?). Maybe the only thing to note is that users of <code>ignore</code> which want to implement a <code>ls</code> or <code>find</code>-like tool will maybe not have the optimal API to handle broken symlinks. But I don't think this is enough of a reason to make a breaking change to <code>ignore</code>s current behavior. This is a rather weird use case anyway (combination of <code>follow</code> and broken symlinks).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2020-02-28 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lzm0">@lzm0</a> on 2022-03-07 23:15</div>
+            <div class="timeline-body"><p>As you probably know, VS Code depends on ripgrep to find files by name: https://github.com/microsoft/vscode/blob/ab49f4f310a014c9e03839f37c1ca3c48196aeca/src/vs/workbench/services/search/node/fileSearch.ts#L200
+Therefore, VS Code cannot find broken symbolic links in a workspace due to this issue.
+I just filed a bug to them: https://github.com/microsoft/vscode/issues/144610
+I looked into this issue on my own and traced it down to here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:13 UTC
+    </footer>
+</body>
+</html>

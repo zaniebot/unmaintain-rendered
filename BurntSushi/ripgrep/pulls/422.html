@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an option similar to -o, --only-matching #34 - BurntSushi/ripgrep #422</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an option similar to -o, --only-matching #34</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/422">#422</a>
+        opened by <a href="https://github.com/kpp">@kpp</a>
+        on 2017-03-28 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kpp">@kpp</a></div>
+            <div class="timeline-body"><p>Fixes #34</p>
+<p>Example:</p>
+<pre><code>~/ripgrep$ ./target/debug/rg &quot;only-matching&quot; -o --column
+doc/rg.1.md
+252:7:only-matching
+
+tests/tests.rs
+1145:16:only-matching
+1158:16:only-matching
+
+src/args.rs
+370:45:only-matching
+
+src/app.rs
+162:20:only-matching
+439:18:only-matching
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-28 22:46</div>
+            <div class="timeline-body"><p>@kpp Thank you! You're on a roll. I've wanted this for a while but just didn't get the chance to ever sit down and do it.</p>
+<p>I think things might be a bit trickier than this though. For example, what does it mean to combine the <code>--only-matching</code> flag with the various context flags? GNU grep seems to get <em>really</em> confused, for example:</p>
+<pre><code>$ cat /tmp/scratch
+foo foo foo
+foo foo foo
+foo foo foo
+foo bar foo
+foo foo foo
+foo foo foo
+foo foo foo
+foo bar foo
+foo foo foo
+foo bar foo
+foo foo foo
+foo foo foo
+foo foo foo
+foo foo foo
+$ grep -C2 -o bar /tmp/scratch
+bar
+bar
+bar
+$ grep -C1 -o bar /tmp/scratch
+bar
+--
+bar
+bar
+$ grep -A1 -o bar /tmp/scratch
+bar
+--
+bar
+bar
+$ grep -A2 -o bar /tmp/scratch
+bar
+--
+bar
+bar
+$ grep -B2 -o bar /tmp/scratch
+bar
+--
+bar
+bar
+$ grep -C2 -o bar /tmp/scratch
+bar
+bar
+bar
+grep -C1 -o bar /tmp/scratch -n
+4:bar
+--
+8:bar
+10:bar
+</code></pre>
+<p>So basically, GNU grep doesn't show any of the surrounding context lines, but it continues to print the context separators when applicable. What we need to do is decide if this behavior was actually intended or not, and think through what option actually makes sense to do.</p>
+<p>I think we should also address the interaction between this flag and others like <code>--replace</code> and <code>--vimgrep</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-29 05:51</div>
+            <div class="timeline-body"><p>Well, it depends on how it is documented ;D . Would you please prepare examples for me showing expected behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-29 05:57</div>
+            <div class="timeline-body"><p>Seems like this behavior even better for me:</p>
+<pre><code>humbug@home:~/ripgrep$ ./target/debug/rg &quot;only-matching&quot; -o  -C1
+doc/rg.1.md
+251-
+252:only-matching
+253-: Print only the matched (non-empty) parts of a matching line, with each such
+
+tests/tests.rs
+1144-|wd: WorkDir, mut cmd: Command| {
+1145:only-matching
+1146-
+--
+1157-|wd: WorkDir, mut cmd: Command| {
+1158:only-matching
+1159-
+
+src/args.rs
+369-            null: self.is_present(&quot;null&quot;),
+370:only-matching
+371-            path_separator: try!(self.path_separator()),
+
+src/app.rs
+161-        .arg(flag(&quot;null&quot;).short(&quot;0&quot;))
+162:only-matching
+163-        .arg(flag(&quot;path-separator&quot;).value_name(&quot;SEPARATOR&quot;).takes_value(true))
+--
+438-              with xargs.&quot;);
+439:only-matching
+440-             &quot;Print only the matched (non-empty) parts of a matching line, \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-29 05:58</div>
+            <div class="timeline-body"><p>From grep man page:</p>
+<pre><code>       -C NUM, -NUM, --context=NUM
+              Print NUM lines of output context.  Places a line containing a group separator (--) between contiguous
+              groups of matches.  With the -o or --only-matching option, this has no effect and a warning is given.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-29 11:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Well, it depends on how it is documented ;D . Would you please prepare examples for me showing expected behavior?</p>
+</blockquote>
+<p>Sure. Sorry I wasn't clear, but I'm not quite sure myself what the behavior should be.</p>
+<p>Looking at your examples, I'm inclined to agree with you. I guess I'm just nervous... Why does GNU grep stomp on context support when <code>--only-matching</code> is used?</p>
+<p>We still need to figure out <code>--replace</code> and <code>--vimgrep</code>. I'll try to mull it over at some point in the next day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-29 22:50</div>
+            <div class="timeline-body"><p>Seems like <code>--vimgrep</code> is handled properly.</p>
+<p><code>--vimgrep</code> without <code>-o</code>:</p>
+<pre><code>$ ./target/debug/rg &quot;only-matching&quot;   --vimgrep -C 1
+tests/tests.rs
+1144-|wd: WorkDir, mut cmd: Command| {
+1145:16:    cmd.arg(&quot;--only-matching&quot;);
+1146-
+--
+1157-|wd: WorkDir, mut cmd: Command| {
+1158:16:    cmd.arg(&quot;--only-matching&quot;).arg(&quot;--column&quot;).arg(&quot;--line-number&quot;);
+1159-
+
+doc/rg.1.md
+251-
+252:7:-o, --only-matching
+253-: Print only the matched (non-empty) parts of a matching line, with each such
+
+src/app.rs
+161-        .arg(flag(&quot;null&quot;).short(&quot;0&quot;))
+162:20:        .arg(flag(&quot;only-matching&quot;).short(&quot;o&quot;))
+163-        .arg(flag(&quot;path-separator&quot;).value_name(&quot;SEPARATOR&quot;).takes_value(true))
+--
+438-              with xargs.&quot;);
+439:18:        doc!(h, &quot;only-matching&quot;,
+440-             &quot;Print only the matched (non-empty) parts of a matching line, \
+
+src/args.rs
+369-            null: self.is_present(&quot;null&quot;),
+370:45:            only_matching: self.is_present(&quot;only-matching&quot;),
+371-            path_separator: try!(self.path_separator()),
+</code></pre>
+<p><code>--vimgrep</code> with <code>-o</code>:</p>
+<pre><code>$ ./target/debug/rg &quot;only-matching&quot; -o  --vimgrep -C 1
+doc/rg.1.md
+251-
+252:7:only-matching
+253-: Print only the matched (non-empty) parts of a matching line, with each such
+
+tests/tests.rs
+1144-|wd: WorkDir, mut cmd: Command| {
+1145:16:only-matching
+1146-
+--
+1157-|wd: WorkDir, mut cmd: Command| {
+1158:16:only-matching
+1159-
+
+src/args.rs
+369-            null: self.is_present(&quot;null&quot;),
+370:45:only-matching
+371-            path_separator: try!(self.path_separator()),
+
+src/app.rs
+161-        .arg(flag(&quot;null&quot;).short(&quot;0&quot;))
+162:20:only-matching
+163-        .arg(flag(&quot;path-separator&quot;).value_name(&quot;SEPARATOR&quot;).takes_value(true))
+--
+438-              with xargs.&quot;);
+439:18:only-matching
+440-             &quot;Print only the matched (non-empty) parts of a matching line, \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 11:41</div>
+            <div class="timeline-body"><p>[12:18] -ChanServ- [#gnu] Welcome to #gnu, the official channel of the GNU Project. Please read and follow http://www.gnu.org/server/irc-rules.html.
+[12:18] &lt;Learn_C&gt; Hi! Why doesnot grep support -A -B -C with -o ?
+[12:28] <AliciaC> Learn_C: well, the context doesn't match
+[14:22] &lt;Learn_C&gt; AliciaC: is there more reasonable answer?
+[14:24] <AliciaC> not really
+[14:24] <AliciaC> grep does exactly what you tell it to do, print only what matches, and that cannot include context
+[14:56] <bill-auger> A B and C print surrounding lines of context - but -o only prints partial lines - so they really do not fit any use case
+[14:57] <bill-auger> is that clear enough?
+[15:00] <bill-auger> -o says only print the parts of a line that match and the others say print extra stuff that does not match - so it is hard to imagine how to combine them or why would you want to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 12:20</div>
+            <div class="timeline-body"><p>Does not seem confusing to me</p>
+<pre><code>$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo -C 1 -n --column -o
+1-bar baz
+2:1:foo
+2:9:foo
+3-bar baz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 12:52</div>
+            <div class="timeline-body"><p>@kpp Yeah, I'm with you. I'm not really buying what they're selling, especially when the context separators are still printed.</p>
+<p>So I think the only thing left to think about is the <code>-r/--replace</code> flag. How does it interact with <code>-o/--only-matching</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 13:09</div>
+            <div class="timeline-body"><p>[15:13] &lt;Learn_C&gt; bill-auger, not clear enough. MAN page says &quot;grep, egrep, fgrep, rgrep - print lines matching a pattern&quot;, according to that, there should be no -A -B -C, because they don't match a pattern
+[15:14] <bill-auger> they show you the lines before and after the match
+[15:14] &lt;Learn_C&gt; &quot;-o Print  only  the  matched  (non-empty)  parts of a matching line, with each such part on a separate output line.&quot;
+[15:14] <bill-auger> just in case you want to see that
+[15:15] &lt;Learn_C&gt; So &quot;-o&quot; deals with matching lines, not with context
+[15:15] <bill-auger> yes
+[15:15] <bill-auger> try it
+[15:15] <bill-auger> echo &quot;foo bar food fed&quot; | grep foo
+[15:16] &lt;Learn_C&gt; why does not -A -B -C with -o print both context and matched parts of a matching line?
+[15:16] <bill-auger> that would be confusing
+[15:17] &lt;Learn_C&gt; according to grep definition, the existance of -A -B -C is confusing either
+[15:18] &lt;Learn_C&gt; I am not trolling, I want to deep inside
+[15:22] &lt;Learn_C&gt; bill-auger: does this behaviour seem confusing to you? https://pastebin.com/ExJgftai
+[15:35] <bill-auger> yes that is totally unclear
+[15:43] <AliciaC> not only unclear but contrary to the description of the option
+[15:45] <bill-auger> anynot only that - but that website made me watch a commercial before i could see the paste
+[15:59] <AliciaC> hm, I've never seen it do that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 13:14</div>
+            <div class="timeline-body"><p>Using the <code>-o/--only-matching</code> flag with GNU grep will show context separators without the context lines:</p>
+<pre><code>$ echo -e 'bar\nfoo\nfoo\nfoo\nbar\nfoo\n' | grep -o -C1 bar
+bar
+--
+bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 13:16</div>
+            <div class="timeline-body"><p>The man page for GNU grep says this about the <code>-o/--only-matching</code> flag:</p>
+<blockquote>
+<p>Print only the matched (non-empty) parts of a matching line, with  each  such  part  on  a  separate output line.</p>
+</blockquote>
+<p>To me, this doesn't imply anything about contexts. The option only applies to matching lines. It doesn't say, &quot;print only matching lines,&quot; it says, &quot;print only the non-empty matched parts of a matching line.&quot;</p>
+<p>... In any case, this navel gazing about whether GNU grep does the &quot;right&quot; thing or not is probably not going to go anywhere productive. I think what I'd like to know is if there's a practical purpose for the <code>-o/--only-matching</code> flag to effectively suppress the context flags. It seems to me like if you didn't want the context shown, then you shouldn't pass the flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 13:22</div>
+            <div class="timeline-body"><p>Well, I agree with you. Lets talk about <code>--replace</code>.</p>
+<p>no <code>-o</code></p>
+<pre><code>$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo --replace &quot;it_was_foo&quot; -C 1 -n --column --color always | hexdump -C
+00000000  1b 5b 6d 1b 5b 33 32 6d  31 1b 5b 6d 2d 62 61 72  |.[m.[32m1.[m-bar|
+00000010  20 62 61 7a 0a 1b 5b 6d  1b 5b 33 32 6d 32 1b 5b  | baz..[m.[32m2.[|
+00000020  6d 3a 31 3a 69 74 5f 77  61 73 5f 66 6f 6f 20 62  |m:1:it_was_foo b|
+00000030  61 72 20 69 74 5f 77 61  73 5f 66 6f 6f 64 20 66  |ar it_was_food f|
+00000040  65 64 0a 1b 5b 6d 1b 5b  33 32 6d 33 1b 5b 6d 2d  |ed..[m.[32m3.[m-|
+00000050  62 61 72 20 62 61 7a 0a                           |bar baz.|
+00000058
+</code></pre>
+<p>with <code>-o</code></p>
+<pre><code>$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo --replace &quot;it_was_foo&quot; -C 1 -n --column --color always -o | hexdump -C
+00000000  1b 5b 6d 1b 5b 33 32 6d  31 1b 5b 6d 2d 62 61 72  |.[m.[32m1.[m-bar|
+00000010  20 62 61 7a 0a 1b 5b 6d  1b 5b 33 32 6d 32 1b 5b  | baz..[m.[32m2.[|
+00000020  6d 3a 31 3a 69 74 5f 77  61 73 5f 66 6f 6f 20 62  |m:1:it_was_foo b|
+00000030  61 72 20 69 74 5f 77 61  73 5f 66 6f 6f 64 20 66  |ar it_was_food f|
+00000040  65 64 0a 1b 5b 6d 1b 5b  33 32 6d 32 1b 5b 6d 3a  |ed..[m.[32m2.[m:|
+00000050  39 3a 69 74 5f 77 61 73  5f 66 6f 6f 20 62 61 72  |9:it_was_foo bar|
+00000060  20 69 74 5f 77 61 73 5f  66 6f 6f 64 20 66 65 64  | it_was_food fed|
+00000070  0a 1b 5b 6d 1b 5b 33 32  6d 33 1b 5b 6d 2d 62 61  |..[m.[32m3.[m-ba|
+00000080  72 20 62 61 7a 0a                                 |r baz.|
+00000086
+
+</code></pre>
+<p>no <code>-o</code> no lines/columns:</p>
+<pre><code>$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '___' --color always -o | hexdump -C
+00000000  62 61 72 20 62 61 7a 0a  5f 5f 5f 20 62 61 72 20  |bar baz.___ bar |
+00000010  5f 5f 5f 64 20 66 65 64  0a 5f 5f 5f 20 62 61 72  |___d fed.___ bar|
+00000020  20 5f 5f 5f 64 20 66 65  64 0a 62 61 72 20 62 61  | ___d fed.bar ba|
+00000030  7a 0a                                             |z.|
+00000032
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 13:31</div>
+            <div class="timeline-body"><p>@kpp Sorry, but could you use simpler commands please? Drop the <code>hexdump</code>, colors, <code>--column</code>, etc...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 13:33</div>
+            <div class="timeline-body"><p>It tries to multiple lines by n found occurrences. Than it replaces found part with replacer and we get duplicate lines with no meaning.</p>
+<pre><code>$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '___' 
+bar baz
+___ bar ___d fed
+bar baz
+
+$ echo -e &quot;bar baz\nfoo bar food fed\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '___' -o
+bar baz
+___ bar ___d fed
+___ bar ___d fed
+bar baz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 13:39</div>
+            <div class="timeline-body"><p>I bet we should prohibit the use of <code>-o</code> with <code>--replace</code>. See example:</p>
+<pre><code>$ echo -e &quot;bar baz\na fofooo b\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '' 
+bar baz
+a foo b
+bar baz
+humbug@home:~/ripgrep$ echo -e &quot;bar baz\na fofooo b\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '' -o
+bar baz
+a foo b
+bar baz
+</code></pre>
+<p>Should we show only <code>foo</code> in the second example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 14:04</div>
+            <div class="timeline-body"><pre><code>$ echo -e &quot;bar baz\na fofooo b\nbar baz&quot; | ./target/debug/rg foo -C 1 --replace '' -o
+error: The argument '--only-matching' cannot be used with '--replace &lt;ARG&gt;'
+
+USAGE:
+    
+    rg [OPTIONS] &lt;pattern&gt; [&lt;path&gt; ...]
+    rg [OPTIONS] [-e PATTERN | -f FILE ]... [&lt;path&gt; ...]
+    rg [OPTIONS] --files [&lt;path&gt; ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 14:07</div>
+            <div class="timeline-body"><p>@kpp I don't quite have the time to think about this. Is it possible to modify how <code>-r/--replace</code> works when the <code>-o/--only-matching</code> flag is set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 14:09</div>
+            <div class="timeline-body"><p>Yes, it is possible. Just tell me your expectations)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-30 17:02</div>
+            <div class="timeline-body"><p>I think it doesn't really matter too much which method you take (suppressing <code>-A -B -C</code> or not)  so long as it's clearly articulated in the help message of affected flags/options.</p>
+<p>I tend to lean towards grep's way being more &quot;correct&quot; (minus still printing context separators...that doesn't make sense), but the proposed ripgrep way is more flexible and I'd totally find it fine to see it implemented. I say. &quot;correct&quot; as in &quot;do what I <em>want</em>, not what I say.&quot;</p>
+<p>How does the proposed ripgrep handle this:</p>
+<pre><code>$ cat /tmp/scratch
+foo foo foo
+foo foo foo
+foo foo bar
+foo foo bar
+foo foo foo
+foo foo foo
+$ grep bar -o -B1 scratch
+bar
+bar
+</code></pre>
+<p>I would find this less correct, and harder to pipe:</p>
+<pre><code>$ cat /tmp/scratch
+foo foo foo
+foo foo foo
+foo foo bar
+foo foo bar
+foo foo foo
+foo foo foo
+$ rg bar -o -B1 scratch
+2-foo foo foo
+3:bar
+4:bar
+</code></pre>
+<p>Because <em>technically</em> I'd think of the <code>-B1</code> of the second match as <code>foo foo bar</code>, so if we're modifying that line to show &quot;only matches&quot; the <code>-B1</code> of the first match should <em>also</em> be modified to show &quot;only matches&quot; to be consistent.</p>
+<p>Having said this, the proposed ripgrep way allows one to actually see (minus caveats above) context when showing <code>-o</code>, whereas there is no way that I know of in grep to do this. Hence, why I said ripgrep being more flexible.</p>
+<p>A way to kind of sidestep this is to use a <a href="https://docs.rs/clap/2.22.1/clap/struct.Arg.html#method.overrides_with">soft override</a>. Whichever conflicting arg comes last wins.  Meaning <code>-o -C1</code> is equivalent to <code>-C1</code>, likewise <code>-C1 -o</code> is equivalent to <code>-o</code>. But this would need to be clearly articulated in the help. This would allow one to script a <em>default behavior</em> (either <code>-o</code> or using contexts) and then opt-out of that default by passing in something additional. It does however go back to the grep issue of being slightly less flexible and not providing a way to see <em>both</em> contexts and <code>-o</code> at the same time (which is still somewhat counter-intuitive IMO).</p>
+<p>Just my thoughts. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 17:13</div>
+            <div class="timeline-body"><p>@kbknapp That's an interesting point. I suppose the only way to really figure out why using <code>-B1</code> makes it harder to pipe is to ask why <code>-B1</code> was used at all in the first place. If you care about the &quot;before context&quot; in the case of the second match, then that would be shown whether or not <code>-B1</code> is passed. So if you didn't want the line before the first match, you probably should just drop <code>-B1</code> completely.</p>
+<p>What I'm trying to say is this: under what circumstances is the behavior of GNU grep desirable (modulo the weirdness of emitting context separators)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-30 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>So if you didn't want the line before the first match, you probably should just drop <code>-B1</code> completely.</p>
+</blockquote>
+<p>I totally agree, and I can't really think of a valid reason why someone would do that unless it's just scripted as a default behavior...which still seems strange but it's all I can come up with 😟</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-03-30 19:19</div>
+            <div class="timeline-body"><p>@BurntSushi, @kbknapp are you happy to see how context and <code>-o</code> interact? Is there anything I should change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 19:22</div>
+            <div class="timeline-body"><p>@kpp I think I'm happy with the current interaction. My mind could be changed by use cases. I realize I'm still on the hook for figuring out how <code>-r/--replace</code> should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-04-01 11:42</div>
+            <div class="timeline-body"><p>How about:</p>
+<pre><code>$ rg '(?P&lt;first&gt;[A-Z][a-z]+)\s+(?P&lt;last&gt;[A-Z][a-z]+)'  tests/test.txt -o
+7:Baker Street
+</code></pre>
+<pre><code>$ rg '(?P&lt;first&gt;[A-Z][a-z]+)\s+(?P&lt;last&gt;[A-Z][a-z]+)'  tests/test.txt -o --replace '$last, $first'
+7:Street, Baker
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-09 12:50</div>
+            <div class="timeline-body"><p>I've merged this in https://github.com/BurntSushi/ripgrep/commit/90a11dec5e5765af560d343e879869a60363ef54 after a rebase, squash and a tweak to the <code>-h</code> output.</p>
+<p>While I don't particularly like that we now have conflicting flags, I also don't know what the right behavior for combining <code>-o</code> and with <code>-r</code> is. I hope that by banning their combinations, some folks will come along and tell us how they should be used together. At that point, someone should <strong>write a specification that we agree on</strong> before submitting a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mernen">@mernen</a> on 2017-04-09 20:13</div>
+            <div class="timeline-body"><p>Guess someone beat me to implementing <code>-o</code>! (Which is fair, I’ve been postponing this since January)</p>
+<p>So, as I mentioned in #308, I think the best combination for <code>--only-matching</code> and <code>--replace</code> would be an approximation of Ack’s <code>--output</code>: perform a replace on the matched part, and output only the result of the replacement, not anything else on the line. If there are multiple matches on a single line, output multiple lines. Same as on @kpp’s last comment, if I understood it correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 10:41</div>
+            <div class="timeline-body"><p>@mernen Thanks for the ideas! Please note that commenting on closed issues/PRs is a surefire way for me to completely lose track of your feedback. I created a new issue, #443, to track combining <code>-o</code> with <code>-r</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 10:42</div>
+            <div class="timeline-body"><p>Errmm, OK, so I forgot to close this PR after I did a manual merge in https://github.com/BurntSushi/ripgrep/commit/90a11dec5e5765af560d343e879869a60363ef54. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-04-10 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-04-10 11:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:49 UTC
+    </footer>
+</body>
+</html>

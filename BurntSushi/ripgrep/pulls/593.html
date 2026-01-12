@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow -o, --only-matching work together with -r, --replace - BurntSushi/ripgrep #593</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow -o, --only-matching work together with -r, --replace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/593">#593</a>
+        opened by <a href="https://github.com/beyondcompute">@beyondcompute</a>
+        on 2017-09-01 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/beyondcompute">@beyondcompute</a></div>
+            <div class="timeline-body"><p>Hello!</p>
+<p>Thank you for your amazing work on much-needed and super-fast fully-featured regex search utility which is <code>ripgrep</code>.</p>
+<p>However I’ve been missing a bit a feature similar to <em>ack’s</em> helpful <code>--output</code> which allows printing only certain capture groups. That feature is discussed in https://github.com/BurntSushi/ripgrep/issues/320 and the discussion offers a solution. However it requires matching an entire line, which still might seem a bit less straightforward for some users.</p>
+<p>Now, there is probably a reason why <code>-o</code> is made to conflict with <code>-r</code> so please excuse me if this PR is really out-of-place. However after implementing it, upon superficial gaze, things seem to be working fine:</p>
+<details>
+<summary>
+Examples outputs
+</summary>
+
+<h4>ripgrep</h4>
+<pre><code class="language-bash">$ ./target/debug/rg 'of (\w+)' -Nor '$1' ./tests/hay.rs 
+this
+detective
+luck
+straw
+cigar
+</code></pre>
+<h4>ack</h4>
+<pre><code class="language-bash">$ ack 'of (\w+)' --output '$1' ./tests/hay.rs 
+this
+detective
+luck
+straw
+cigar
+</code></pre>
+</details>
+
+<h4></h4>
+<p>So I hope this has a chance of being considered. Thank you again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-01 17:43</div>
+            <div class="timeline-body"><p>I can't quite remember why we set the flags to conflict. There might be some subtle corner cases. I'd have to go back to that PR and read.</p>
+<p>With that said, I'm not in principle against this, and I feel like this combination of flags makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ayosec">@ayosec</a> on 2017-10-17 02:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't quite remember why we set the flags to conflict.</p>
+</blockquote>
+<p>I guess that the conflict was set because the <a href="https://github.com/beyondcompute/ripgrep/commit/90a11dec5e5765af560d343e879869a60363ef54">original implementation</a> didn't add the <a href="https://github.com/beyondcompute/ripgrep/blob/90a11dec5e5765af560d343e879869a60363ef54/src/printer.rs#L310-L313"><code>if self.only_matching</code></a> condition in the <a href="https://github.com/beyondcompute/ripgrep/blob/90a11dec5e5765af560d343e879869a60363ef54/src/printer.rs#L291-L309"><code>if self.replace.is_some()</code></a> block.</p>
+<p>The combination of <code>-r</code> and <code>-o</code> seems pretty natural for me. Actually, I tried to write <code>rg -o 'Enqueued (\S+)' -r '$1'</code> a few minutes ago, and then I saw that it was impossible :-( .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 01:02</div>
+            <div class="timeline-body"><p>I rebased this on top of master and merged it in https://github.com/BurntSushi/ripgrep/commit/f887bc1f8673fea9969adae6e70b68e3761ba171. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-21 01:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:53 UTC
+    </footer>
+</body>
+</html>

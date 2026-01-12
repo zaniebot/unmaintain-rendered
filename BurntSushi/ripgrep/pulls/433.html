@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add dfa-size-limit and regex-size-limit arguments - BurntSushi/ripgrep #433</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add dfa-size-limit and regex-size-limit arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/433">#433</a>
+        opened by <a href="https://github.com/tiehuis">@tiehuis</a>
+        on 2017-04-01 22:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tiehuis">@tiehuis</a></div>
+            <div class="timeline-body"><p>See #362.</p>
+<ul>
+<li><p>The macro is not really to my taste but I wanted to see if you were happy with it first or had any ideas otherwise. I did try creating a generic function with the required trait bounds but the generic multiplication was the stopping point here for me. Also, if using a <code>saturating_mul</code> this is further pronounced since there is currently no trait in std which these are bound to. The <code>Saturating</code> trait on the <a href="https://github.com/rust-num/num">num</a> also only applies for addition to.</p>
+</li>
+<li><p>Removed the straight-forward multiplications and replaced with saturating versions. This avoids the potential overflow. Added a test case for this also to ensure it is handled properly. Since these arguments are always some memory bound (as per the suffix) a saturating limit makes the most sense. That being said, it is very (very) unlikely for the current width types.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kpp">@kpp</a> reviewed on 2017-04-03 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kpp">@kpp</a> on <code>src/args.rs</code>:322 on 2017-04-03 16:45</div>
+            <div class="timeline-body"><p>You can split this macro into 2 functions: validator and value converter. See <a href="https://github.com/kbknapp/clap-validators/blob/master/src/num/mod.rs">an example of validator</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/app.rs</code>:350 on 2017-04-09 12:26</div>
+            <div class="timeline-body"><p>I think this should say <code>10M</code> instead of <code>10Mb</code>. (Even so, the <code>Mb</code> suffix means &quot;megabit&quot;, which is otherwise wrong. :-))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/app.rs</code>:471 on 2017-04-09 12:27</div>
+            <div class="timeline-body"><p>Same here. <code>10M</code> instead of <code>10Mb</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/args.rs</code>:322 on 2017-04-09 12:29</div>
+            <div class="timeline-body"><p>I'm not sure this macro is necessary, and I'd really like to find a way to get rid of it. Can it be written to specifically return a <code>u64</code> and then just convert the result to a <code>usize</code>? (That conversion should return an error if the <code>u64</code> is greater than <a href="https://doc.rust-lang.org/std/usize/constant.MAX.html"><code>std::usize::MAX</code></a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-04-09 12:31</div>
+            <div class="timeline-body"><p>Thanks for this! This looks great. My only request is that we get rid of the macro. See the comments. :-)</p>
+<p>I'd also argue that if overflow occurs, it should return an error to the user. But that doesn't need to be solved in this PR. Saturating is better than what we were doing. :-) Thanks for that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-09 12:55</div>
+            <div class="timeline-body"><p>Could you also change the commit message to say, <code>Fixes #362</code> so that github properly connects the PR with the issue? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiehuis">@tiehuis</a> on 2017-04-10 07:08</div>
+            <div class="timeline-body"><p>Made fixes as per your suggestions and squashed into a single commit.</p>
+<p>I've also added overflow detection instead of the saturation as you argued. Figured that it was better to get it as intended right now rather than leaving it for later.</p>
+<p>Added an extra test specifically for 32-bit systems for when <code>usize &lt; u64</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-12 22:17</div>
+            <div class="timeline-body"><p>@tiehuis Thanks again for working on this! I merged this PR in https://github.com/BurntSushi/ripgrep/commit/66efbad871620fe2dbe675438fdc8d9922e72826. I ended up making a few cosmetic changes to make the code more consistent with the style of the rest of the code. Nice work! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-04-12 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-04-13 07:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-04-15 09:55</div>
+            <div class="timeline-body"><p>@BurntSushi stop closing pull requests. There is a button to merge the code with any message you like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-15 10:51</div>
+            <div class="timeline-body"><p>@kpp If you have a problem with the way I'm running the project and can suggest a better alternative, then please file an issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:49 UTC
+    </footer>
+</body>
+</html>

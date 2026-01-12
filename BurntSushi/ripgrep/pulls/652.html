@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properly match the rules &quot;**/&quot; and &quot;!**/&quot; - BurntSushi/ripgrep #652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Properly match the rules &quot;<strong>/&quot; and &quot;!</strong>/&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/652">#652</a>
+        opened by <a href="https://github.com/lambda">@lambda</a>
+        on 2017-10-24 03:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lambda">@lambda</a></div>
+            <div class="timeline-body"><p>When processing a rule that ends in a slash, we strip it off and set the
+<code>is_only_dir</code> flag.  We then apply the rule that paths that aren't
+absolute should be given an implicit <code>**/</code> prefix, while avoiding
+adding that prefix if it already exists.</p>
+<p>However, this means that we miss the case in which we had already
+stripped off the trailing slash and set <code>is_only_dir</code>.  Correct this
+by also explicitly checking for that case.</p>
+<p>Fixes #649</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2017-10-24 04:18</div>
+            <div class="timeline-body"><p>I think the build failure here on macOS is spurious. The same test passes on my own machine (running 10.12.6, while the build machine is 10.11.6), and the test that failed is one that is supposed to panic but failed with a <code>SIGBUS</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2017-10-24 04:46</div>
+            <div class="timeline-body"><p>Huh, failed twice the exact same way, which I can't reproduce here with the exact same nightly compiler, though a different kernel. That's strange.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-24 11:24</div>
+            <div class="timeline-body"><p>That's... strange. I just kicked it again.</p>
+<p>Looks like a great fix, thank you. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-24 11:47</div>
+            <div class="timeline-body"><p>Damn, defeated again. I'm not sure what's going on. I'm at work so I can't really dig into this at the moment, but I would at least like to try to get to the bottom of this before merging. (I can't imagine how this PR is causing this error though!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2017-10-24 14:55</div>
+            <div class="timeline-body"><p>Yeah, it's really strange, I also don't see how this change could have caused this error, but it makes sense to get it worked out before merging since you do need to keep the CI working happily.</p>
+<p>I might try spinning up a 10.11 VM this evening and see if I can repro the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-01 11:10</div>
+            <div class="timeline-body"><p>The same CI problem is happening with other PRs, so it's clearly not provoked by this specific PR. Therefore, I shall merge! Thanks again @lambda!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-11-01 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-11-01 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2017-11-15 11:03</div>
+            <div class="timeline-body"><p>Wonder if the CI problem was rust-lang/rust#45866?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-15 11:44</div>
+            <div class="timeline-body"><p>@lambda Ah yup, I believe it is! That particular test is also a <code>should_panic</code> test, which means it was invoking the backtrace stuff, which is consistent with that bug. Nice find. :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:55 UTC
+    </footer>
+</body>
+</html>

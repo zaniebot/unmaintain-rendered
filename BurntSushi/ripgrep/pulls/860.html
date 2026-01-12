@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --no-error-messages to suppress search-time errors - BurntSushi/ripgrep #860</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --no-error-messages to suppress search-time errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/860">#860</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2018-03-14 21:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><p>In mixed-permission trees (such as <code>C:\Users\USERNAME\</code>), the valid
+results are vastly outnumbered by the invalid ones for most searches,
+due to restrictions on accessing OS-owned paths/files. Unfortunately,
+the traditional unix greybeard <code>2&gt;/dev/null</code> (and, as I learned
+modifying the source code, the <code>--no-messages</code> which does just that and
+only that) suppresses <code>rg</code> errors only too well, including those that
+one would <em>not</em> prefer to be hidden/swallowed, such as warnings about no
+folders searched, errors in the syntax, etc.</p>
+<p>This necessitates an initial run of <code>rg ....</code> followed by a hasty ^C as
+the file access errors accumulate and then a repeated search redirected
+to stderr <code>rg .... 2&gt;/dev/null</code> now that the search pattern is verified
+correct to filter out those errors.</p>
+<p>This patch adds a <code>--no-error-messages</code> (which could maybe use a better
+name to distinguish it from the existing <code>--no-messages</code>, perhaps
+<code>--no-search-errors</code>?) to achieve just that.</p>
+<p>Sidenote: it seems that a <code>--no-messages</code> doing nothing more than
+globally redirecting all <code>stderr</code> output to the ether is of possibly
+limited utility. In the interest of preserving backwards compatibility,
+this patch was written to add <code>--no-error-messages</code> rather than changing
+<code>--no-messages</code>' behavior to emit rg's own error messages but swallow
+I/O errors during the actual search (as this new argument does). Anyone
+actually wanting all of <code>stderr</code> silenced is welcome to pick up a primer
+on unix shells and can learn about just how powerful and customizable
+shell scripts can be. /ENDRANT</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-23 22:01</div>
+            <div class="timeline-body"><p>Thanks for the PR!</p>
+<blockquote>
+<p>Unfortunately,
+the traditional unix greybeard 2&gt;/dev/null (and, as I learned
+modifying the source code, the --no-messages which does just that and
+only that) suppresses rg errors only too well, including those that
+one would not prefer to be hidden/swallowed, such as warnings about no
+folders searched, errors in the syntax, etc.</p>
+</blockquote>
+<p>I am wondering if I got too over-eager in my implementation of the <code>--no-messages</code> flag. Namely, I added this flag because it was also present in grep. But the behavior is different from grep. Namely, ripgrep says that <code>--no-messages</code> &quot;suppresses all error messages.&quot; But GNU grep's documentation says, &quot;suppress error messages about nonexistent or unreadable files.&quot;</p>
+<p>I just went back through and checked where <code>--no-messages</code> is used, but for the most part, it actually looks consistent with GNU grep. In particular, if an error is bubbled back up to <code>main</code>, then it is printed regardless of the <code>--no-messages</code> setting. That means syntax errors are printed regardless, so I'm curious about your claim here. Could you provide a reproducible example?</p>
+<p>Once place where <code>--no-messages</code> is used is for the &quot;no files searched&quot; error message. It's not clear what we should do about that.</p>
+<blockquote>
+<p>Anyone actually wanting all of stderr silenced is welcome to pick up a primer
+on unix shells and can learn about just how powerful and customizable
+shell scripts can be. /ENDRANT</p>
+</blockquote>
+<p>ripgrep is officially supported in non-Unix environments so...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-04-29 16:35</div>
+            <div class="timeline-body"><p>I was basing my assertion mainly off of the documentation, but if you run <code>rg no_messages -C 2</code> with the patch applied, while the places where my patch checks for the new flag largely line up with where the checks for the old flag are done, they don't always match up. (i.e. where <code>args.no_error_messages</code> is <em>not</em> checked but <code>args.no_messages</code> <em>is</em> checked).</p>
+<p>e.g. first result is errors with <code>RIPGREP_CONFIG_PATH</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-04-29 16:36</div>
+            <div class="timeline-body"><p>btw, is there a non-unix environment that doesn't support redirection of stderr? Even on Windows with legacy batch (let alone powershell), <code>2&gt; nul</code> can be used to silence errors. If so, I pity anyone working on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-29 20:04</div>
+            <div class="timeline-body"><p>It sounds like the <code>--no-ignore-messages</code> available on master should help with this, and the docs on master have been updated to reflect actual behavior (which is very explicitly not the same as redirecting stderr to <code>/dev/null</code>).</p>
+<blockquote>
+<p>is there a non-unix environment that doesn't support redirection of stderr?</p>
+</blockquote>
+<p>I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-04-29 20:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:01 UTC
+    </footer>
+</body>
+</html>

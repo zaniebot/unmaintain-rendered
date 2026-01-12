@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solving extra blank line error #441 - BurntSushi/ripgrep #651</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Solving extra blank line error #441</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/651">#651</a>
+        opened by <a href="https://github.com/deg4uss3r">@deg4uss3r</a>
+        on 2017-10-23 20:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/deg4uss3r">@deg4uss3r</a></div>
+            <div class="timeline-body"><p>Hi guys taking a stab at #441</p>
+<p>There are 3 tests that are failing:</p>
+<ul>
+<li>search_stream::tests::after_context_invert_one1</li>
+<li>search_stream::tests::before_context_invert_one1</li>
+<li>search_stream::tests::invert_match_line_numbers</li>
+</ul>
+<p>This has to do with the way the tests are passed, since a command line test produces the correct assertion:</p>
+<pre><code>&gt; ../target/debug/rg 'Sherlock' -v -C 1 ./sherlock 
+1-For the Doctor Watsons of this world, as opposed to the Sherlock
+2:Holmeses, success in the province of detective work must always
+3-be, to a very large extent, the result of luck. Sherlock Holmes
+4:can extract a clew from a wisp of straw or a flake of cigar ash;
+5:but Doctor Watson has to have it taken out for him and dusted,
+6:and exhibited clearly, with a label attached.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/printer.rs</code>:311 on 2017-10-23 20:18</div>
+            <div class="timeline-body"><p>Sorry, but this just won't work on multiple levels. Firstly, <code>buf</code> doesn't necessarily contain the entire contents of the file being searched (this <em>is</em> true for the memory map searcher only). Secondly, <code>buf.lines().count()</code> is recounting all of the lines in the buffer <strong>every time a match is written</strong>, which would be a devastating performance regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-10-23 20:19</div>
+            <div class="timeline-body"><p>Thanks for trying, I really appreciate it! Unfortunately, fixing this bug requires quite a bit more work. You need to know when you're at the end of the input, and you need to know it without impacting performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-10-23 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/printer.rs</code>:311 on 2017-10-23 20:20</div>
+            <div class="timeline-body"><p>Third, if the end user disabled line numbers, then this check won't run at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-11-22 11:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:55 UTC
+    </footer>
+</body>
+</html>

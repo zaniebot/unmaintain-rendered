@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore (one) trailing line break per --file parameter - BurntSushi/ripgrep #783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore (one) trailing line break per --file parameter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/783">#783</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2018-02-09 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><p>Currently ripgrep interprets a trailing line break at the end of a
+pattern file specified via <code>--file</code> or similar as a global &quot;match-all&quot;
+pattern. Given that many editors are configured to automatically add a
+trailing new line at the end of a file on save, this is not necessarily
+a good thing.</p>
+<p>This patch removes a single new line from the end of each pattern file
+contents by simply dropping an empty rule from the pattern vector if it
+is the last rule in the vector after loading rules from a file. Multiple
+line breaks are not ignored, and no overhead is added by omitting this
+check from within the for loop (not that it would really matter since
+this is just init time). Additionally, line breaks not at the end of the
+file are similarly kept.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a> reviewed on 2018-02-09 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mqudsi">@mqudsi</a> on <code>src/args.rs</code>:514 on 2018-02-09 18:48</div>
+            <div class="timeline-body"><p>This can be replaced with <code>while Some(....)</code> to make it drop all trailing line breaks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-09 19:01</div>
+            <div class="timeline-body"><p>@mqudsi Thanks! Could you add a test for this in <code>tests/tests.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-02-09 19:36</div>
+            <div class="timeline-body"><p>@BurntSushi I did, but to be honest, I wasn't sure what it should look like. I tried to just copy the syntax from a nearby test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-09 21:21</div>
+            <div class="timeline-body"><p>Hmm... OK, so it occurred to me that these are exactly the kinds of cases where it is good to be consistent with other tools. grep supports this flag, and it actually looks like ripgrep's current behavior is consistent with grep's behavior. To me, this is a subtle enough of a change that it makes more sense to be consistent with existing tools instead of trying to be smarter.</p>
+<p>Apologies for asking you to write a test and then rejecting the PR, but the test does look good! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-09 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-02-10 01:22</div>
+            <div class="timeline-body"><p>No problem. Perhaps I'm missing something however - is there ever a time where you'd want a match-anything rule (loaded from a file, at that)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-10 01:24</div>
+            <div class="timeline-body"><p>@mqudsi Possibly. At least for GNU grep, it might be useful as a trick to show every line and color only those things which match. ripgrep does have a <code>--passthru</code> flag (recently added) that lets you explicitly do this. It's also consistent with the fact that the empty file will match every pattern.</p>
+<p>With that said, even if there weren't a compelling use case (and honestly, the above isn't particularly compelling to me), then matching existing behavior with well established tools in subtle cases like this is important for its own sake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-02-10 01:25</div>
+            <div class="timeline-body"><p>Cheers!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walkbuilder add ignore root - BurntSushi/ripgrep #1399</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Walkbuilder add ignore root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1399">#1399</a>
+        opened by <a href="https://github.com/tommilligan">@tommilligan</a>
+        on 2019-10-07 16:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tommilligan">@tommilligan</a></div>
+            <div class="timeline-body"><p>See #1394 for full description.</p>
+<blockquote>
+<p>When building an instance of Walk using ignore::WalkBuilder, the patterns in files added by .add_ignore() are matched against the current working directory of the process, instead of the root of the tree being Walked.</p>
+</blockquote>
+<p>This PR changes the behaviour or <code>WalkBuilder.add_ignore()</code>. <strong>This is a breaking change.</strong> Absolute file paths are now resolved based on the directory the <code>WalkBuilder</code> was initialised with.</p>
+<p>Example directory structure:</p>
+<pre><code class="language-log">// /home
+//   /subdir
+//     - ignorefile
+//     - README.md
+</code></pre>
+<p>Contents of <code>/home/subdir/ignorefile</code>:</p>
+<pre><code class="language-log">/README.md
+</code></pre>
+<p>The below code will now always ignore <code>/home/subdir/README.md</code> rather than <code>./README.md</code> of wherever the executing process is.</p>
+<pre><code class="language-rust">// psuedococde
+let mut builder = WalkBuilder::new(&quot;/home/subdir&quot;);
+builder.add_ignore(&quot;/home/subdir/ignorefile);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tommilligan">@tommilligan</a> on 2019-10-08 16:30</div>
+            <div class="timeline-body"><p>Test failure appears to be unrelated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-15 16:07</div>
+            <div class="timeline-body"><p>@tommilligan Thanks for investigating this! However, I don't think I can merge this PR in its current form, and I'm not quite sure what the fix <em>should</em> be. As you point out, this is a breaking change. Unfortunately, this is not a <em>desirable</em> breaking change. Namely, the current behavior is actually intended as far as I can tell. If you look at ripgrep's docs for the <code>--ignore-file</code> flag, then you'll see that all ignore files provided in this way (which use <code>WalkBuilder::add_ignore</code>, and the <code>--ignore-file</code> flag is why this method was added) are <em>supposed</em> to be matched relative to the current working directory.</p>
+<p>So you might say, &quot;OK, that's fine, then we can add a new <code>add_ignore</code>-like method that matches relative to the root.&quot; While I would be okay with that, the problem here is that a <code>WalkBuilder</code> <em>doesn't actually have a single root</em>. You can add multiple additional paths via the <code>add</code> method. The ignore files processed by <code>add_ignore</code> would then be incorrectly matched on subsequent paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-15 16:08</div>
+            <div class="timeline-body"><p>(I am going to close this PR for now for procedural reasons, but I will leave #1394 open for now I think.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-15 16:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:10 UTC
+    </footer>
+</body>
+</html>

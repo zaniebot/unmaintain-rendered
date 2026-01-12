@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix inconsistent handling of gitignore patterns like foo*bar - BurntSushi/ripgrep #1093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix inconsistent handling of gitignore patterns like foo*bar</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1093">#1093</a>
+        opened by <a href="https://github.com/okdana">@okdana</a>
+        on 2018-10-28 06:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
+            <div class="timeline-body"><p>(This is kind of related to #762, but not exactly. The issue was present before that was merged. I don't think anyone's ever complained, though, because there's no test for it.)</p>
+<p>In the <code>ignore</code> crate, there's a check for a literal <code>/</code> in <code>gitignore</code> patterns. If there is one, <code>literal_separator</code> is set to <code>true</code>, preventing <code>*</code> from matching slashes; if there's not, <code>*</code> is allowed to match slashes.</p>
+<p>Whether the <code>*</code> matches slashes doesn't really matter either way for patterns like <code>*foo</code> and <code>foo*</code>, but it's pretty important for <code>foo*bar</code>. In that case (without <code>literal_separator</code>), the <code>gitignore</code> matcher will return a successful match for both <code>foobazbar</code> <em>and</em> <code>foo/baz/bar</code>.</p>
+<p>Git itself does not seem to treat <code>gitignore</code> patterns like this (tested 2.17.1 and 2.19.1).</p>
+<p>You can run the following in the root of the ripgrep repo to demonstrate this:</p>
+<pre><code>% \rg --no-ignore-global --files -g 's*.rs' | sort
+globset/src/glob.rs
+globset/src/lib.rs
+globset/src/pathutil.rs
+grep-cli/src/decompress.rs
+grep-cli/src/escape.rs
+... # and so on
+% \git ls-files --ignored -x 's*.rs' | sort
+grep-printer/src/standard.rs
+grep-printer/src/stats.rs
+grep-printer/src/summary.rs
+grep-regex/src/strip.rs
+grep-searcher/examples/search-stdin.rs
+grep-searcher/src/sink.rs
+grep/examples/simplegrep.rs
+src/search.rs
+src/subject.rs
+</code></pre>
+<p>The <code>rg</code> command lists almost all of the Rust source files in the repo, because <code>s*.rs</code> without <code>literal_separator</code> matches <code>src/whatever.rs</code>. The <code>git</code> command lists only Rust source files that actually start with an <code>s</code>.</p>
+<p>With this change, both commands produce the same output.</p>
+<hr />
+<p>I think <code>ignore</code>'s current behaviour is the result of attempting to account for the apparent distinction being made by these two bullet points in the <code>gitignore</code> documentation:</p>
+<blockquote>
+<p>If the pattern does not contain a slash /, Git treats it as a shell glob pattern and checks for a match against the pathname relative to the location of the .gitignore file (relative to the toplevel of the work tree if not from a .gitignore file).</p>
+<p>Otherwise, Git treats the pattern as a shell glob: &quot;*&quot; matches anything except &quot;/&quot;, &quot;?&quot; matches any one character except &quot;/&quot; and &quot;[]&quot; matches one character in a selected range. See fnmatch(3) and the FNM_PATHNAME flag for a more detailed description.</p>
+</blockquote>
+<p>Someone obviously felt the need to split these two scenarios out here, suggesting there's a difference, but whatever that might be isn't really communicated at all.</p>
+<p>The first point kind of suggests, with the 'match against the pathname' bit, that it should be matched against the full relative path, but that's actually the <em>opposite</em> of how it behaves, which is evidenced in the <code>ignore</code> crate by the way it (correctly) treats patterns without a slash as having <code>**/</code> prepended to them.</p>
+<p>Both points also use the phrase 'treats ... as a shell glob', and the second one clarifies that, in a shell glob, <code>*</code> doesn't match <code>/</code>.</p>
+<p>So, despite their weird attempt at a distinction, i'm not sure that the existing behaviour is actually supported by the documentation. Or at least the alternative isn't <em>not</em> supported...?</p>
+<p>Does that make sense, or is this another case where you'd like to see the up-stream documentation made more explicit before changing things? (I should probably send them another e-mail about this either way, but i haven't yet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-10-28 10:08</div>
+            <div class="timeline-body"><p>I also found that the pattern <code>**</code> is not handled correctly by <code>ignore</code>. It turns it into <code>**/**/*</code>, which <code>globset</code> transforms into <code>(?-u)^(?:/|/.*/).*$</code>, which doesn't match anything at all unless you give an absolute path on the command line.</p>
+<p>That's an even easier fix, but it touches the same code and i don't think you can make a PR based on another one, so i'll hold off until i know how you feel about this</p>
+<p>Edit: Well, it's easy to fix the problem in <code>ignore</code>. But actually i think the fact that <code>globset</code> doesn't handle <code>**/**/*</code> properly is a <em>third</em> bug — Git seems to treat it the same as <code>**/*</code>. Maybe the fix for that one should be part of the changes required to support <code>**</code> fall-back to <code>*</code>, assuming the change being discussed on the Git mailing list goes through</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2019-01-23 22:53</div>
+            <div class="timeline-body"><p>Excellent, thank you. Sorry it took me so long to get to this, but I wanted to carefully read your argument and change, and I think I buy it! Your diagnosis of why the code was the way it was because of how <code>man gitignore</code> was written is exactly right I believe. I definitely inferred a distinction there where in turns out that in practice there isn't one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2019-01-23 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-23 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-05 12:46</div>
+            <div class="timeline-body"><p>FWIW, as of at least <code>2.23.0</code>, <code>man gitignore</code> has much clearer language now than it did. (And re-affirming that this fix is indeed correct!)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:05 UTC
+    </footer>
+</body>
+</html>

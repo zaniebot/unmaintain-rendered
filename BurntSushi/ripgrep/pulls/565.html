@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zsh completion... again - BurntSushi/ripgrep #565</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>zsh completion... again</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/565">#565</a>
+        opened by <a href="https://github.com/okdana">@okdana</a>
+        on 2017-07-26 02:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
+            <div class="timeline-body"><p>Sorry for PR spam, found another issue with this. :/</p>
+<p>I hadn't noticed that the old completion function didn't support completing values without a space after short options — doing something like <code>rg -C3 &lt;tab&gt;</code> instead of <code>rg -C 3 &lt;tab&gt;</code> would break the completion.</p>
+<p>I fixed that. And, as discussed last time, i updated the test stuff so that it just pulls the optspecs straight out of the function. That should make the 'parsing' a lot more reliable (at the expense of requiring zsh for the test, obv).</p>
+<p>Not sure if i put the zsh-installation stuff in the right place, guess we'll see what it says...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-26 02:50</div>
+            <div class="timeline-body"><p>Oh, i guess Travis doesn't actually use that arch. I looked for the <code>addons.apt.packages</code> file it mentioned but i don't see it. I don't know much about Travis unfortunately :/</p>
+<p>Also i guess i should make it so that <code>script.sh</code> skips the test if zsh isn't installed? Rather than just exploding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-26 10:42</div>
+            <div class="timeline-body"><p>No worries about the PRs! This is kinda how I expect this sort of thing to go. Iterate and improve!</p>
+<p>With respect to Travis, I think you can install zsh by putting a special incantation into the <code>.travis.yml</code>. Like this: https://docs.travis-ci.com/user/installing-dependencies/#Installing-Packages-on-Standard-Infrastructure</p>
+<blockquote>
+<p>Also i guess i should make it so that script.sh skips the test if zsh isn't installed? Rather than just exploding?</p>
+</blockquote>
+<p>I think exploding is fine actually. That way, if zsh is somehow not installed, then we aren't tricked into believing the test is running and passing. If we want to test somewhere that zsh isn't feasible to install, then we should specifically ignore the test on that configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-07-26 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ci/install.sh</code>:50 on 2017-07-26 10:44</div>
+            <div class="timeline-body"><p>I don't think I understand this. Why are you trying to install zsh only when testing on aarch64? aarch64 is ARM. I suspect ripgrep probably works on ARM, but I don't run CI on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a> reviewed on 2017-07-26 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/okdana">@okdana</a> on <code>ci/install.sh</code>:50 on 2017-07-26 13:02</div>
+            <div class="timeline-body"><p>Yeah, i kind of just copy-and-pasted the section above it without thinking too much about it. In hind-sight i see that it special-cased ARM because the C tool chain is arch-specific. But since you mentioned you didn't write these scripts i assume even that is probably just boiler-plate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-07-26 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ci/install.sh</code>:50 on 2017-07-26 13:09</div>
+            <div class="timeline-body"><p>Ah, I <a href="https://github.com/BurntSushi/ripgrep/blob/master/ci/install.sh#L9">see now</a>. Yeah, all boiler plate. The original source is <a href="https://github.com/japaric/rust-everywhere">rust-everywhere</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-26 13:14</div>
+            <div class="timeline-body"><p>I reverted the <code>install.sh</code> stuff and made it explode again if zsh is missing. I added the <code>zsh</code> package to <code>.travis.yml</code> per your link; that seems to sort it for Linux. Darwin doesn't need anything special because it ships with zsh. Looks like it worked!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-26 13:16</div>
+            <div class="timeline-body"><p>Oh, it doesn't like <code>pipe_fail</code> though. Not really necessary, will remove and rebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-26 13:29</div>
+            <div class="timeline-body"><p>Looks OK now i think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-26 13:30</div>
+            <div class="timeline-body"><p>Awesome, looks great! Thanks so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-07-26 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-07-26 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:53 UTC
+    </footer>
+</body>
+</html>

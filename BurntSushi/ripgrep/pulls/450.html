@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>walk.rs: queue -&gt; stack - BurntSushi/ripgrep #450</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>walk.rs: queue -&gt; stack</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/450">#450</a>
+        opened by <a href="https://github.com/bmalehorn">@bmalehorn</a>
+        on 2017-04-16 19:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bmalehorn">@bmalehorn</a></div>
+            <div class="timeline-body"><p>Change the pool of &quot;files to search&quot; from queue to a stack. This causes
+ripgrep to approximate depth-first search instead of breadth-first
+search. This dramatically reduces the size of the pool, since most
+directories are much more &quot;wide&quot; than they are &quot;deep&quot;.</p>
+<p>As a result, ripgrep uses ~45% less peak memory:</p>
+<p>Before:</p>
+<pre><code>/usr/bin/time -f '%M' rg PM_RESUME &gt; /dev/null
+...
+8876</code></pre>
+<p>After:</p>
+<pre><code>/usr/bin/time -f '%M' rg PM_RESUME &gt; /dev/null
+16240</code></pre>
+<p>Throughput improves a tiny bit:</p>
+<p>Before:</p>
+<pre><code>linux_literal (pattern: PM_RESUME)
+----------------------------------
+rg (ignore)*  0.376 +/- 0.003 (lines: 16)*</code></pre>
+<p>After:</p>
+<pre><code>linux_literal (pattern: PM_RESUME)
+----------------------------------
+rg (ignore)*  0.371 +/- 0.004 (lines: 16)*</code></pre>
+<p>Related to #152.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 23:41</div>
+            <div class="timeline-body"><p>OK, so I finally had a chance to manually QA this. If I run <code>rg PM_SUSPEND</code> in a checkout of the Linux kernel, then the results appear much more consistent from run-to-run in current master than they do with this PR. Is this something you expected to happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2017-05-09 05:44</div>
+            <div class="timeline-body"><p>Great, thanks for taking a look!</p>
+<p>I've tested it on my end and can also confirm that master is more consistent. I don't really have a great explanation; it's rather tricky to diff two types of undefined behaviors.</p>
+<p>I guess this PR is a bit open-ended: how do you defined consistency? Master is more likely to output in the same order from one run to another. But &quot;stack&quot; will usually group directories together. If you only run ripgrep once, which output is better?</p>
+<p>Master:</p>
+<pre><code>include/linux/ide.h
+Documentation/dev-tools/sparse.rst
+drivers/ide/ide-pm.c
+include/uapi/linux/apm_bios.h
+arch/x86/kernel/apm_32.c
+Documentation/translations/zh_CN/sparse.txt
+drivers/input/mouse/cyapa.h
+drivers/usb/mtu3/mtu3_hw_regs.h
+drivers/mtd/maps/pcmciamtd.c
+drivers/net/wireless/intersil/hostap/hostap_cs.c</code></pre>
+<p>Stack:</p>
+<pre><code>drivers/mtd/maps/pcmciamtd.c
+drivers/ide/ide-pm.c
+drivers/net/wireless/intersil/hostap/hostap_cs.c
+drivers/usb/mtu3/mtu3_hw_regs.h
+drivers/input/mouse/cyapa.h
+Documentation/translations/zh_CN/sparse.txt
+Documentation/dev-tools/sparse.rst
+arch/x86/kernel/apm_32.c
+include/uapi/linux/apm_bios.h
+include/linux/ide.h</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-09 11:16</div>
+            <div class="timeline-body"><p>Right, if you qualify it with &quot;which is better if you only run ripgrep once,&quot; then I agree that this PR is better. But I'm not sure that I buy that qualification...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hlieberman">@hlieberman</a> on 2017-06-12 20:12</div>
+            <div class="timeline-body"><p>I did a little bit of a back-of-the-envelope test here on how different these two actually are.</p>
+<p>I ran 1,000 greps of PM_SUSPEND of Linux through current HEAD (45e850aff769a9d3f1fc6457bd5e1390021f433c) and through the PR branch here (d4fa0155e7e2fb68de133c0cd36f0be2f92e782f), both with SIMD/AVX optimizations, on a machine with 4 CPU cores.</p>
+<p>HEAD showed very little overlap; of the 1000 entries, there are 998 unique md5sums. The PR branch shows no overlap at all; all 1000 entries are unique. As you might expect, there is also no overlap between the two sets.</p>
+<p>To get a rough measure of &quot;compactness&quot;, I looked at the number of times that top level directories were listed not in a row.  (that is: &quot;a/foo, a/bar, b/foo/, a/bar&quot; would have a score of 3)</p>
+<p>Master:</p>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  13.00   13.00   15.00   15.66   16.25   28.00
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/711517/27053006-c47e2620-4f89-11e7-8076-095aa875032e.png" alt="master" /></p>
+<p>PR:</p>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   7.00    9.00   11.00   14.21   21.00   35.00 
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/711517/27053008-cb75b4b6-4f89-11e7-8b56-f90b5b893c92.png" alt="stack" /></p>
+<p>So, the PR seems to produce more concise results on average, though the spread is a little worse.</p>
+<p>Food for thought!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-23 21:51</div>
+            <div class="timeline-body"><p>@hlieberman Thanks for that analysis! I think for now I'm going to close this PR. It's a neat idea, and we might want to revisit it, but I don't feel that there's compelling enough evidence to switch at this point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-08-23 21:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:50 UTC
+    </footer>
+</body>
+</html>

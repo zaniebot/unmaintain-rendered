@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep: add --no-ignore-exclude flag - BurntSushi/ripgrep #1420</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep: add --no-ignore-exclude flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1420">#1420</a>
+        opened by <a href="https://github.com/nnathan">@nnathan</a>
+        on 2019-11-07 00:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nnathan">@nnathan</a></div>
+            <div class="timeline-body"><p>This is PR arises from a fundamental misunderstanding on my part of how exclude files are handled by ripgrep and ag (silversearcher) (#1417).</p>
+<ol>
+<li>ripgrep ignores .gitignore and goes further to ignore configured global ignores (toggleable) and local .git/info/exclude (not toggleable).</li>
+<li>ag ignores .gitignore and ostensibly .git/info/exclude. I say ostensibly because I came to the incorrect conclusion in #1417  that it actually ignores excludes but a cursory reading of source suggests otherwise.</li>
+</ol>
+<p>Local excludes are setup because these are files you don't want to see when working in a VCS. So it does make sense to retain default behaviour to ignore them. It is imperative the user however knows this which is explained in the guide but not manpage (this is added as part of this patch).</p>
+<p>However when the VCS is shared among others -- local excludes are not. Being able to turn it off allows to get a more consistent view when shared.</p>
+<p>The functionality of this patch has been verified manually. It should work because it is essentially a copy of --no-ignore-global behaviour.</p>
+<p>I haven't added tests - I didn't see any for --[no-]ignore-global otherwise I would've followed that.</p>
+<p>Manual verification:</p>
+<pre><code># we don't want doc/rg.1.txt.tpl to match
+a:ripgrep $ cat .git/info/exclude
+doc/*
+
+
+# ag respects exclude and doesnt match doc/rg.1.txt.tp
+a:ripgrep $ ag -l info.exclude
+CHANGELOG.md
+ignore/src/dir.rs
+ignore/src/walk.rs
+GUIDE.md
+src/app.rs
+
+# rg respects exclude and doesnt match doc/rg.1.txt.tp
+a:ripgrep $ target/release/rg -l info.exclude
+CHANGELOG.md
+GUIDE.md
+src/app.rs
+ignore/src/dir.rs
+ignore/src/walk.rs
+
+a:ripgrep $ cd doc
+
+# ag does not respect exclude (inconsistent behaviour)
+a:doc $ ag -l info.exclude
+rg.1.txt.tpl
+
+# rg continues to respect exclude
+a:doc $ ../target/release/rg -l info.exclude
+
+# rg now also respects --no-ignore-exclude
+a:doc $ ../target/release/rg --no-ignore-exclude -l info.exclude
+rg.1.txt.tpl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(wip) ripgrep: add --no-ignore-exclude flag" to "ripgrep: add --no-ignore-exclude flag" by @nnathan on 2019-11-07 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2020-02-17 01:19</div>
+            <div class="timeline-body"><p>Thanks! I'll be merging this with some tweaks as part of my rollup PR in #1486. In particular, I do not feel that details such as <code>.git/info/exclude</code> belong in the very first sentences that introduce ripgrep. My opinion is that &quot;respect your .gitignore&quot; is general enough to cover everything. However, I do take your point that this could be documented better than it currently is. As such, I've added a new section on automatic filtering to the man page. (It's mostly a more condensed version of what's in the guide.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-02-17 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:11 UTC
+    </footer>
+</body>
+</html>

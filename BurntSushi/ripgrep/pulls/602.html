@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `*.cfg` and `*.conf` to `config` type - BurntSushi/ripgrep #602</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>*.cfg</code> and <code>*.conf</code> to <code>config</code> type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/602">#602</a>
+        opened by <a href="https://github.com/okdana">@okdana</a>
+        on 2017-09-08 21:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
+            <div class="timeline-body"><p>Unless i'm misunderstanding the purpose/history of the <code>config</code> type, the lack of <code>*.conf</code> seems like a pretty big miss here, since it is by far the most common extension for config files on UNIX systems — see just about anything in <code>/etc</code> for example. <code>*.cfg</code> is less common, but also used a lot (<code>grub.cfg</code> and so on).</p>
+<h2>Other musings</h2>
+<ul>
+<li><p>Are you happy with the structure/formatting of the type list? Some of the lines exceed 80 cols, for example. And then some of the types are broken into multiple lines even though there are only like three entries. Is there any formatting work i can do on this for you? Would it be easier to read if each pattern was on its own line? Or is that too much vertical space?</p>
+</li>
+<li><p>Should i add an <code>ini</code> (e.g., <code>php.ini</code>)?</p>
+</li>
+<li><p>Given that <code>zsh</code> has zsh profile/<code>rc</code> files, should i also add <code>.profile</code>, <code>.bash_profile</code>, <code>.bashrc</code>, &amp;c., for <code>sh</code>?</p>
+</li>
+<li><p>On the subject of shell types, it's kind of weird: <code>fish</code> gets its own type, which makes sense to me, since it's out doing its own thing. But <code>zsh</code> having its own type when it's a more-or-less Bourne/ksh-descended shell just like bash is a little strange, especially when you consider that bizarro incompatible shells like tcsh are included with bash.</p>
+</li>
+<li><p>Should i add <code>*.psql</code> (PostgreSQL) for <code>sql</code>?</p>
+</li>
+<li><p>Should i add a <code>systemd</code>? systemd has loads of different extensions: <code>*.conf</code>, <code>*.service</code>, <code>*.target</code>, &amp;c.</p>
+</li>
+<li><p>Should i add a <code>license</code> or similar for <code>LICEN[CS]E</code>, <code>COPYING</code>, &amp;c.?</p>
+</li>
+<li><p>I'm thinking <code>*.xsl</code> belongs with <code>xml</code>?</p>
+</li>
+<li><p>Might consider <code>*.xml.dist</code> for <code>xml</code> too — this is common in the PHP world.</p>
+</li>
+<li><p>If we're considering lock files (<code>Cargo.lock</code>) i suppose we should probably also add the ones for Composer, Yarn, &amp;c.?</p>
+</li>
+</ul>
+<p>Let me know if i'm getting all over-engineer-y 😦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-18 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless i'm misunderstanding the purpose/history of the config type, the lack of *.conf seems like a pretty big miss here, since it is by far the most common extension for config files on UNIX systems</p>
+</blockquote>
+<p>Agreed! For the most part, I tend to just rely on folks to come up with the right types/globs. My only real requirement is that there's some semblance of ubiquity to the type.</p>
+<blockquote>
+<p>Are you happy with the structure/formatting of the type list? Some of the lines exceed 80 cols, for example. And then some of the types are broken into multiple lines even though there are only like three entries. Is there any formatting work i can do on this for you? Would it be easier to read if each pattern was on its own line? Or is that too much vertical space?</p>
+</blockquote>
+<p>I definitely prefer 79 columns for everything. I think the ideal case is that CI will run a column checker because it's hard to see line length violations in PR diffs. The problem is that applying a column limit to literally every line isn't feasible since some lines are OK going over 79 columns. e.g., Lines that contain URLs. So you wind up needing a whitelist of some sort, and I've just never gotten around to doing that.</p>
+<p>So in that sense, I've mostly just let it drift. If I ever touch that file, then I try to clean up the formatting. I'd probably try to fit most types on one line, but if they don't fit, I'd just insert manual breaks probably similar to <a href="https://github.com/BurntSushi/ripgrep/blob/1136f8adabb694634e6bc0c5ca3842e9403fe697/ignore/src/types.rs#L131-L134">this</a>. Although, I'd try to fill up the first line first.</p>
+<blockquote>
+<p>Should i add an ini (e.g., php.ini)?</p>
+</blockquote>
+<p>Yeah that seems fine. <code>ini</code> files are generally config files in my experience.</p>
+<blockquote>
+<p>Given that zsh has zsh profile/rc files, should i also add .profile, .bash_profile, .bashrc, &amp;c., for sh?</p>
+</blockquote>
+<p>Hmm. I'm not actually sure. If I search for <code>-tsh</code>, should it search a bash specific file? I kind of feel like there's no obvious answer here. Happy to defer to your opinion.</p>
+<blockquote>
+<p>On the subject of shell types, it's kind of weird: fish gets its own type, which makes sense to me, since it's out doing its own thing. But zsh having its own type when it's a more-or-less Bourne/ksh-descended shell just like bash is a little strange, especially when you consider that bizarro incompatible shells like tcsh are included with bash.</p>
+</blockquote>
+<p>Hmm yeah. The problem is that I've intentionally let this list grow organically because I knew I personally wouldn't be familiar with every extension and therefore would not be able to sort them all correctly anyway. I'd generally prefer not <em>removing</em> extensions from types, but I think I'm generally OK with adding extensions to types. So I'd be OK leaving the <code>zsh</code> type for example but also adding it to the <code>sh</code> type.</p>
+<blockquote>
+<p>Should i add <code>*.psql</code> (PostgreSQL) for <code>sql</code>?</p>
+</blockquote>
+<p>Oh hmm I've never seen the <code>psql</code> extension used, but if that's a thing specifically for PostgreSQL then yeah sure that sounds fine.</p>
+<blockquote>
+<p>Should i add a systemd? systemd has loads of different extensions: *.conf, *.service, *.target, &amp;c.</p>
+</blockquote>
+<p>Yeah. I'd actually find that pretty useful!</p>
+<blockquote>
+<p>Should i add a license or similar for LICEN[CS]E, COPYING, &amp;c.?</p>
+</blockquote>
+<p>Sounds good.</p>
+<blockquote>
+<p>I'm thinking <code>*.xsl</code> belongs with <code>xml</code>?</p>
+</blockquote>
+<p>Isn't that kind of like saying <code>*.css</code> belongs with <code>html</code>?</p>
+<blockquote>
+<p>Might consider <code>*.xml.dist</code> for <code>xml</code> too — this is common in the PHP world.</p>
+</blockquote>
+<p>Sounds good.</p>
+<blockquote>
+<p>If we're considering lock files (<code>Cargo.lock</code>) i suppose we should probably also add the ones for Composer, Yarn, &amp;c.?</p>
+</blockquote>
+<p>That's an interesting one. Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-09-18 16:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah that seems fine. ini files are generally config files in my experience.</p>
+</blockquote>
+<p>Ah, just add to <code>config</code> then?</p>
+<blockquote>
+<p>Hmm. I'm not actually sure. If I search for -tsh, should it search a bash specific file? I kind of feel like there's no obvious answer here. Happy to defer to your opinion.</p>
+</blockquote>
+<p>I'm not sure either tbh. I could see the <code>sh</code> type being useful both as an umbrella type including bash- and zsh-specific files, and as a more particular type including only the 'portable' stuff. It <em>already</em> includes a bunch of non-portable shell-specific extensions, though, so maybe the decision's already been made? idk.</p>
+<p>I think that adding <code>.profile</code> should be pretty unobjectionable, at the very least — it's not shell-specific.</p>
+<blockquote>
+<p>Oh hmm I've never seen the psql extension used, but if that's a thing specifically for PostgreSQL then yeah sure that sounds fine.</p>
+</blockquote>
+<p><a href="https://github.com/search?utf8=%E2%9C%93&amp;q=from+extension%3Apsql&amp;type=Code">Examples here</a>. On balance it doesn't seem <em>super</em> common, though. Could probably live without it if it seems weird 🤷‍♀️</p>
+<blockquote>
+<p>Isn't that kind of like saying *.css belongs with html?</p>
+</blockquote>
+<p>Well, CSS is a completely different language from HTML. XSLT is itself expressed in XML. I don't do much with XML/XSL stuff though so i'm not sure how it would fit into people's work-flows. Was just a random thought i had whilst scanning through the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-18 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, just add to config then?</p>
+</blockquote>
+<p>Ya.</p>
+<blockquote>
+<p>I'm not sure either tbh. I could see the sh type being useful both as an umbrella type including bash- and zsh-specific files, and as a more particular type including only the 'portable' stuff. It already includes a bunch of non-portable shell-specific extensions, though, so maybe the decision's already been made? idk.</p>
+</blockquote>
+<blockquote>
+<p>I think that adding .profile should be pretty unobjectionable, at the very least — it's not shell-specific.</p>
+</blockquote>
+<p>Sounds good. I think adding zsh extensions to sh, given what's already there, is fine.</p>
+<blockquote>
+<p>Examples here. On balance it doesn't seem super common, though. Could probably live without it if it seems weird 🤷‍♀️</p>
+</blockquote>
+<p>Ah yeah that's good enough for me!</p>
+<blockquote>
+<p>Well, CSS is a completely different language from HTML. XSLT is itself expressed in XML. I don't do much with XML/XSL stuff though so i'm not sure how it would fit into people's work-flows. Was just a random thought i had whilst scanning through the file.</p>
+</blockquote>
+<p>Hmm, right. I guess I'd rather hold off on this one until someone who works with XSLT/XML frequently says they make sense to be grouped. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-09-18 18:09</div>
+            <div class="timeline-body"><p>K, updated and rebased. In addition to what we already discussed i also made some very minor formatting changes and i added <code>*.j2</code> for <code>jinja</code> (this is used by Ansible and i think Django).</p>
+<p>I'll admit the <code>license</code> type i added is rather complex, but i wanted to accurately catch everything that i could find in GitHub's project show-case. I think i managed it, but let me know if you think it's too much. Here's the result of running it on the repo anyway:</p>
+<pre><code>% target/release/rg -tlicense --files
+COPYING
+LICENSE-MIT
+UNLICENSE
+globset/COPYING
+globset/LICENSE-MIT
+globset/UNLICENSE
+grep/COPYING
+ignore/COPYING
+grep/LICENSE-MIT
+ignore/LICENSE-MIT
+termcolor/COPYING
+termcolor/LICENSE-MIT
+termcolor/UNLICENSE
+grep/UNLICENSE
+ignore/UNLICENSE
+wincolor/COPYING
+wincolor/LICENSE-MIT
+wincolor/UNLICENSE
+</code></pre>
+<p>I didn't mess with any tests because it doesn't seem like we test specific types — let me know if i missed something though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2017-10-08 12:05</div>
+            <div class="timeline-body"><p>This LGTM! Those license globs are crazy. :-)</p>
+<p><em>idly wonders when we'll start noticing startup lag from compiling file type filtering rules</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-10-08 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-08 12:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:54 UTC
+    </footer>
+</body>
+</html>

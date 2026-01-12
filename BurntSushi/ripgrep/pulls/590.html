@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement custom error for grep errors - BurntSushi/ripgrep #590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement custom error for grep errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/590">#590</a>
+        opened by <a href="https://github.com/andrea-prearo">@andrea-prearo</a>
+        on 2017-08-30 20:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andrea-prearo">@andrea-prearo</a></div>
+            <div class="timeline-body"><p>This PR tries to address the issues with error messages returned by <a href="https://github.com/rust-lang/regex">regex</a>:</p>
+<ul>
+<li>Issue https://github.com/BurntSushi/ripgrep/issues/478</li>
+<li>Issue https://github.com/BurntSushi/ripgrep/issues/395</li>
+</ul>
+<p>It does that by implementing a custom error to wrap such errors and truncating them before the portion that contains all the details about the AST (<code> at character ...</code>).</p>
+<p>For instance, the output for the example provided in Issue https://github.com/BurntSushi/ripgrep/issues/478 is:</p>
+<pre><code class="language-sh">$ rg -e foo -f src/search_stream.rs 
+Regex syntax error caused by: Error parsing regex near 'fer.|*/|z{'
+</code></pre>
+<p>Here are other few examples of error messages:</p>
+<pre><code class="language-sh">$ rg &quot;s{&quot;
+Regex syntax error caused by: Error parsing regex near '\s{'
+</code></pre>
+<pre><code class="language-sh">$ rg &quot;a*{&quot;
+Regex syntax error caused by: Error parsing regex near 'a*{'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-30 20:58</div>
+            <div class="timeline-body"><p>Hmmm... Thanks for trying to fix this! Unfortunately, I'm not sure this is quite the right path to take here. By implementing a custom error, I meant using the regex parser directly and then implementing a different error message than the one produced by <code>regex-syntax</code> directly: https://github.com/rust-lang/regex/blob/32eb9643b45bebd2ce5169e75daed6e8579e74b2/regex-syntax/src/lib.rs#L1549 --- Basically, do the same case analysis, but don't try to print any sub-expressions in the error message.</p>
+<p>There are a couple problems with this PR as is. Firstly, the error message truncation ends up cutting off important pieces of the message. For example, <code>rg 's{'</code> used to be</p>
+<pre><code>$ rg 's{'
+Error parsing regex near 's{' at character offset 2: Missing maximum in counted
+repetition operator.
+</code></pre>
+<p>but now it's</p>
+<pre><code>$ rg 's{'                                                                                                                                                                                     
+Regex syntax error caused by: Error parsing regex near 's{'
+</code></pre>
+<p>Personally, I think the unpleasant corner case isn't worth dropping the extra information for all regex parse errors.</p>
+<p>The other issue I have with this PR as-is is that it's reporting less information to the caller by translating the error to a much less structured form. I'd expect to see this fixed by retaining a structured error message and then fixing the output.</p>
+<p>At some point, I'd like to fix this for real by using a better regex parser/pretty printer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrea-prearo">@andrea-prearo</a> on 2017-08-30 21:17</div>
+            <div class="timeline-body"><p>It makes perfect sense. I am going to close this PR.
+If nobody is working on tweaking the message produced by <code>regex-syntax</code>, I may look into that.
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @andrea-prearo on 2017-08-30 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-08-30 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-30 21:40</div>
+            <div class="timeline-body"><p>@andrea-prearo Yeah I think a PR to the regex crate that removes the sub-expressions from the messages would be great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrea-prearo">@andrea-prearo</a> on 2017-08-30 21:52</div>
+            <div class="timeline-body"><p>@BurntSushi Sounds good. I'll look into that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:53 UTC
+    </footer>
+</body>
+</html>

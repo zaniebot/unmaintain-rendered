@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add zip file support - BurntSushi/ripgrep #974</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add zip file support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/974">#974</a>
+        opened by <a href="https://github.com/derekmorr">@derekmorr</a>
+        on 2018-07-09 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/derekmorr">@derekmorr</a></div>
+            <div class="timeline-body"><p>This adds support for searching in zip files for the <code>-z</code> option. It partially addresses #918.</p>
+<p>I'm not sure if we should use the <code>-p</code> or <code>-c</code> option to unzip. I'd appreciate feedback on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-07-09 21:05</div>
+            <div class="timeline-body"><p><code>-p</code> definitely seems preferable to <code>-c</code>. It's probably also worth mentioning that there are at least two or three different implementations of the <code>unzip</code> tool — but AFAIK they all support <code>-p</code>, so that's probably fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derekmorr">@derekmorr</a> on 2018-07-09 22:00</div>
+            <div class="timeline-body"><p>Do I need to update the ignore crate and add the unzip package to travis? I assume unzip is pretty common, but it might not be a bad idea to explicitly list it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 11:08</div>
+            <div class="timeline-body"><p>@derekmorr Thanks for this PR! Unfortunately, I'm not sure it's a good fit. Namely, as I understand it, <code>zip</code> is an <em>archive format</em>, which means it may contain multiple files. As far as I can see, this PR provides an implementation that always searches zip archives as if they contained a single file. I'm not convinced that this is actually what we want, and in particular, I worry that it could be quite confusing to end users.</p>
+<p>Interestingly, #918 is slightly different than this. Namely, the file extensions used (<code>tar</code> and <code>gz</code>) decouple the notion of archive from compression, such that decompression can be done without unpacking the archive and the archive can be searched directly. In this instance, there is no confusion presented to the end user because the archive isn't being unpacked; it's just searching a <code>.tar</code> like any other file.</p>
+<p>I'm honestly not sure how to proceed here. My inclination is to draw line and say that ripgrep should not be responsible for unpacking archive formats.</p>
+<blockquote>
+<p>Do I need to update the ignore crate and add the unzip package to travis?</p>
+</blockquote>
+<p>@derekmorr I'm not sure what you mean with respect to the <code>ignore</code> crate, but we should make sure the test will run on Windows CI. Unfortunately, Cargo's output won't tell you anything here, and as far as it's concerned, the test ran and passed even though for all intents and purposes, it might have been skipped. It might be wise to remove the skipping logic and see what happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derekmorr">@derekmorr</a> on 2018-07-10 20:32</div>
+            <div class="timeline-body"><p>I see what you mean. It is possible that a user would only have a single file in a zip archive, but it's also possible they wouldn't.</p>
+<p>FWIW, I think there are valid use cases for wanting to search inside the contents of a .tar.gz or a zip file. I've certainly seen plenty of questions about how to do that online. There is a tool that greps inside the full content of zip archives -- zipgrep -- but it sounds like you don't want to incorporate that functionality into ripgrep. That's a reasonable position to take.</p>
+<p>My question about the ignore crate was that <code>DEFAULT_TYPES</code> doesn't have an entry for &quot;zip&quot; and does it need to have one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 20:56</div>
+            <div class="timeline-body"><p>Yeah I think I'd rather not have ripgrep get in the business of reading archives, at least, not at this point.</p>
+<blockquote>
+<p>My question about the ignore crate was that DEFAULT_TYPES doesn't have an entry for &quot;zip&quot; and does it need to have one?</p>
+</blockquote>
+<p>It's not necessary, no. But probably a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derekmorr">@derekmorr</a> on 2018-07-11 13:20</div>
+            <div class="timeline-body"><p>Ok, fair enough. I'll close this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @derekmorr on 2018-07-11 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edsu">@edsu</a> on 2022-01-20 21:05</div>
+            <div class="timeline-body"><p>I'm just noting that this actually would have been useful to me just now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danie-dejager">@danie-dejager</a> on 2023-01-17 19:45</div>
+            <div class="timeline-body"><p>It would've been useful if ripgrep can search inside a zip and list the files and string matched in the zip but that would mean that ripgrep would need to extract the data from the zip first. a helper tool like <code>rga</code> does that using rg already.
+https://github.com/phiresky/ripgrep-all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garoto">@garoto</a> on 2023-01-17 23:07</div>
+            <div class="timeline-body"><p>Workarounds and third-party tools for zip searching has been posted on the issue tracker many times. This is a four-year-old closed PR. Avoid commenting on closed PRs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:03 UTC
+    </footer>
+</body>
+</html>

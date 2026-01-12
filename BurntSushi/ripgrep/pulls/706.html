@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support ignore files with custom names - BurntSushi/ripgrep #706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support ignore files with custom names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/706">#706</a>
+        opened by <a href="https://github.com/ptzz">@ptzz</a>
+        on 2017-12-04 09:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ptzz">@ptzz</a></div>
+            <div class="timeline-body"><p>This allows for application specific ignorefile names, e.g. using
+<code>.fdignore</code> for <code>fd</code>.</p>
+<ul>
+<li><p>Moved the hardcoded <code>.rgignore</code> from the ignore crate to ripgrep</p>
+</li>
+<li><p><code>.ignore</code> is always respected and has the highest precedence</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2017-12-04 09:12</div>
+            <div class="timeline-body"><p>See discussion in https://github.com/sharkdp/fd/issues/156, specifically https://github.com/sharkdp/fd/issues/156#issuecomment-347371863</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ptzz">@ptzz</a> reviewed on 2017-12-04 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ptzz">@ptzz</a> on <code>ignore/src/dir.rs</code>:531 on 2017-12-04 09:15</div>
+            <div class="timeline-body"><p><code>ignorefile()</code> vs existing <code>add_ignore()</code> (for global ignorefiles) might be a bit confusing. Happy to change the name into something better. Or maybe change <code>add_ignore</code> to <code>add_global_ignore</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2017-12-04 11:09</div>
+            <div class="timeline-body"><p>Should probably add tests that uses multiple ignore files and validates precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:115 on 2017-12-04 11:36</div>
+            <div class="timeline-body"><p>The names here could be better I think. I'd probably go with <code>custom_ignore_filenames</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:531 on 2017-12-04 11:38</div>
+            <div class="timeline-body"><p>This method's type signature should be:</p>
+<pre><code class="language-rust">pub fn ignorefile&lt;S: AsRef&lt;OsStr&gt;&gt;(&amp;mut self, file_name: S) -&gt; &amp;mut IgnoreBuilder {
+</code></pre>
+<p>And yes, this means your ignore files should not be <code>Vec&lt;String&gt;</code> but rather <code>Vec&lt;OsString&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:531 on 2017-12-04 11:39</div>
+            <div class="timeline-body"><p>I think this should be named <code>add_custom_ignore_filename</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-12-04 12:11</div>
+            <div class="timeline-body"><p>Thanks for working on this! Unfortunately, I think there was a miscommunication or I didn't make myself sufficiently clear, and as a result, this PR isn't quite what I was expecting.</p>
+<p>First and foremost, these docs need to be our reference point: https://docs.rs/ignore/0.3.1/ignore/struct.WalkBuilder.html#ignore-rules --- I'll speak in terms of those.</p>
+<p>A critical aspect of ignore file checking is that there are layers of ignore rules. Notice that in the second bullet item, each class of ignore file has its own precedence rules. This is necessary not only for predictable UX, but it also matches how <code>git</code> does things. (<code>git</code> has its own layers: <code>.gitignore</code>, <code>.git/info/exclude</code> and global gitignores.) In particular, <em>any</em> <code>.gitignore</code> file---regardless of where it lives---will override <em>all</em> <code>.git/info/exclude</code> files.</p>
+<p>This precedence hierarchy continues with <code>.ignore</code>. This is best shown with an example:</p>
+<pre><code>$ mkdir /tmp/demorules
+$ cd /tmp/demorules
+$ git init
+$ mkdir foo
+$ echo test &gt; baz
+$ echo test &gt; foo/quux
+$ echo test &gt; foo/bar
+$ echo -e 'baz\nquux' &gt; .gitignore
+$ echo '!quux' &gt; foo/.gitignore
+</code></pre>
+<p>If you stop here, you'll notice that <code>git</code> won't ignore <code>quux</code> since the <code>.gitignore</code> inside the <code>foo</code> directory overrides the rules found in the <code>.gitignore</code> in the root of the repository. If you run <code>rg --files</code>, then ripgrep will come up with the same results.</p>
+<p>However, if you run</p>
+<pre><code>$ echo quux &gt; .ignore
+</code></pre>
+<p>in the root of the repository and run <code>rg --files</code>, you'll notice that <code>quux</code> is actually ignored, even though a <code>.gitignore</code> file exists that is &quot;closer&quot; to <code>quux</code> in the <code>foo</code> directory. This is because <em>any</em> <code>.ignore</code> overrides <em>all</em> <code>.gitignore</code> files.</p>
+<p>So where am I going with this? Well, when I said this:</p>
+<blockquote>
+<p>I think the way to solve your problem is to add an additional layer of ignore files that has higher precedence than .ignore but uses a custom (probably application specific) name.</p>
+</blockquote>
+<p>I meant that the application specific ignore files should actually be another layer, in addition to <code>.ignore</code>. That means <em>any</em> application specific ignore file (like <code>.fdignore</code>) will override <em>all</em> <code>.ignore</code> rules, just like <em>any</em> <code>.ignore</code> file will override <em>all</em> <code>.gitignore</code> rules.</p>
+<p>In this PR, you've implemented such that <code>.ignore</code> is inter-mingled with the application specific ignores. That is, a <code>foo/.fdignore</code> won't override a <code>foo/bar/.ignore</code>, even though I think it should in order to be consistent with how the ignore rules are processed today.</p>
+<p>Doing this is a little harder, but you should still mostly be able to work off of what's there. Please ping me with questions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2017-12-04 13:01</div>
+            <div class="timeline-body"><p>@BurntSushi Thanks for the comments!</p>
+<blockquote>
+<p>I think the way to solve your problem is to add an additional layer of ignore files that has higher precedence than .ignore but uses a custom (probably application specific) name.</p>
+</blockquote>
+<p>Indeed I didn't read this carefully and assumed <code>.ignore</code> would have the highest precedence. I understand that just correcting the order won't solve the hierarchy issues that you talk about though.</p>
+<p>I will try to find time to fix this properly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2017-12-06 20:36</div>
+            <div class="timeline-body"><p>@BurntSushi I <em>think</em> it should be working as expected now. Also addressed your comments on naming and method signatures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:116 on 2017-12-30 21:12</div>
+            <div class="timeline-body"><p>This should have a doc string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:218 on 2017-12-30 21:14</div>
+            <div class="timeline-body"><p>I suspect we don't want this. The caller needs to supply an application specific name, I assume, in order for a matcher to be created at all. So by passing a name, they are implicitly enabling it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/dir.rs</code>:115 on 2017-12-30 21:15</div>
+            <div class="timeline-body"><p>This should be in a <code>Arc&lt;Vec&lt;OsString&gt;&gt;</code>. Otherwise you're going to wind up copying it everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-12-30 21:21</div>
+            <div class="timeline-body"><p>Thanks for continuing to work on this! I took another review and this is looking much better. There are still a few fixes I'd like to see though.</p>
+<p>One major thing missing from this PR is tests, and we really need those before merging this. The tests should cover at least the following:</p>
+<ol>
+<li>Basic functionality. i.e., Can I specify a custom ignore file and have it be respected?</li>
+<li>Precedence. Precedence should be checked between different ignore file types and also between different custom ignore names.</li>
+<li>Integration tests for ripgrep itself. These tests don't need to have as much coverage as 1+2, but something that checks that it actually works is fine.</li>
+</ol>
+<p>I think 1+2 should be in the <code>ignore</code> crate while 3 should be in <code>tests/tests.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2018-01-01 20:55</div>
+            <div class="timeline-body"><p>@BurntSushi Tests have been added for 1+2 above. As for precedence tests, I added one that verifies that a custom ignore file have higher precedence than <code>.ignore</code>, and one that verifies that earlier custom ignore files have lower precedence than later.</p>
+<p>Let me know if you want to see more extensive tests. I wasn’t sure if it would make sense to add precedence tests between e.g. custom ignore and <code>.gitignore</code>, as there already tests for <code>.ignore</code> over <code>.gitignore</code> and precedence should apply transitively.</p>
+<p>As for 3, there are already tests that uses <code>.rgignore</code>, maybe that's sufficient? It's not hardcoded in the ignore crate anymore, but passed as a (hardcoded) parameter from ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2018-01-27 21:31</div>
+            <div class="timeline-body"><p>@BurntSushi Do you have concerns about merging this and/or want more time for review? Let me know if there is anything I can address.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2018-01-29 19:18</div>
+            <div class="timeline-body"><p>This looks great! Thanks for pinging me. Apologies for the tardiness. Also, thanks for pointing out existing tests for <code>.rgignore</code>, I forgot about those. :-) I will get this merged once CI passes (I just kicked it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2018-01-29 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-29 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2018-01-29 22:52</div>
+            <div class="timeline-body"><p>Thanks, it was a great learning experience doing a bit of Rust!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>These structs are extremely large! - BurntSushi/ripgrep #1802</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>These structs are extremely large!</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1802">#1802</a>
+        opened by <a href="https://github.com/hbina">@hbina</a>
+        on 2021-02-12 03:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hbina">@hbina</a></div>
+            <div class="timeline-body"><p>The smallest of them is 600 bytes. Is there a benchmark somewhere?</p>
+<p>Signed-off-by: Hanif Bin Ariffin <a href="mailto:hanif.ariffin.4326@gmail.com">hanif.ariffin.4326@gmail.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-12 12:00</div>
+            <div class="timeline-body"><p>I don't understand this PR. Could you please motivate it? &quot;The structs are large&quot; isn't good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hbina">@hbina</a> on 2021-02-12 12:31</div>
+            <div class="timeline-body"><p>Sorry about that, from the commit</p>
+<pre><code>The smallest of them is 600 bytes.
+From my (admittedly minimal) knowledge, this causes trashing.
+
+Since these structs are so large, objects before and after this object
+won't exist in the same page. Assuming that these values are being used together,
+they require 2 pages to actually work instead of (possibly) just 1.
+
+Was the point to prevent a syscall?
+
+Signed-off-by: Hanif Bin Ariffin &lt;hanif.ariffin.4326@gmail.com&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-12 12:50</div>
+            <div class="timeline-body"><p>If you can provide a meaningful benchmark motivating this change, then we can think abiut merging. But without that, I don't know that this is a problem, even if your theory is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2021-02-14 03:12</div>
+            <div class="timeline-body"><p>@hbina If 600 bytes don't fit in a page, moving the same 600 bytes to the <code>heap</code>, they still wouldn't fit in a page, right?</p>
+<p>Cause the page size is the same for the stack and the heap, or maybe I'm missing something.</p>
+<p>Also, I think that these changes add some problems:</p>
+<ul>
+<li>Unnecessary increase of code complexity</li>
+</ul>
+<p>And because we are talking about tiny optimizations:</p>
+<ul>
+<li>Waiting for allocator to allocate (and deallocate) the resources</li>
+<li>One more level of indirection, adding a branch and a possible cache miss</li>
+</ul>
+<p>And AFAIK, each one of the above would make code even slower.</p>
+<p>Waiting for the allocator to return an address, and then loading that unpredictable page is slower than loading 1 predictable page without waiting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-30 13:30</div>
+            <div class="timeline-body"><p>While it is plausible that big structs cause perf problems---I've certainly seen and fixed a few of those in the past---primarily by spending more time copying data around, I'm not convinced that that is the case here. I'd need to see a real benchmark to be sure. So with that, I'm going to close it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-30 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: Provide IO Error - BurntSushi/ripgrep #1740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: Provide IO Error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1740">#1740</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2020-11-22 03:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a></div>
+            <div class="timeline-body"><p><code>ignore::Error</code> wraps <code>std::io::Error</code> with additional information (as
+well as expose non-IO errors).  For people wanting to inspect what the
+error is, they have to recursively match the Enum.  Like with <code>is_io()</code>,
+this provides <code>io_error</code> and <code>into_io_error</code> helpers to do this for
+the user.  These are written to be consistent with <code>walkdir::Error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/lib.rs</code>:262 on 2020-11-22 15:10</div>
+            <div class="timeline-body"><p>I think it would probably be better to just expose a <code>&amp;std::io::Error</code>, no? It gives strictly more information and also provides access to a <code>std::io::ErrorKind</code>. Might as well provide an <code>into_io_error</code> as well.</p>
+<p>This is how walkdir does it: https://docs.rs/walkdir/2.3.1/walkdir/struct.Error.html#method.io_error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2020-11-22 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore: Provide IO ErrorKind" to "ignore: Provide IO Error" by @epage on 2020-11-23 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/epage">@epage</a> reviewed on 2020-11-23 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>crates/ignore/src/lib.rs</code>:262 on 2020-11-23 15:01</div>
+            <div class="timeline-body"><p>Good to know there is a baseline to be consistent with.  I copied things over from there.</p>
+<p>When writing this, I was split on which direction to go.  I saw the <code>ErrorKind</code> being useful for programmatic use and <code>Error</code> being useful for error propagation but wasn't as clear what the value of a <code>&amp;Error</code> would be.  However, there is value in not being prescriptive and letting the user decide what has value.  And then comes along consistency :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2020-11-23 15:02</div>
+            <div class="timeline-body"><p>Random asides from before I saw <code>WalkDir::Error</code>:</p>
+<ul>
+<li>I considered naming <code>io_error</code> as <code>io_error_ref</code> though from the API guidelines <code>as_io_error_ref</code> would probably be the most &quot;correct&quot; but at that point its a bit verbose.</li>
+<li>I considered <code>into_io_error</code> returning a <code>Result&lt;std::io::Error, Self&gt;</code>, kind of like what some String operations do, to avoid any data loss but the <code>Partial</code> case made this messier.  I figured someone could take the non-IO case and <code>to_string</code> it and put it into an <code>std::io::Error</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2020-11-23 15:17</div>
+            <div class="timeline-body"><p>Nice, LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2020-11-23 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-11-23 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2020-11-23 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-23 15:26</div>
+            <div class="timeline-body"><p>This PR is on crates.io in <code>ignore 0.4.17</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:15 UTC
+    </footer>
+</body>
+</html>

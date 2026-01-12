@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTF-8 BOM Sniffing - BurntSushi/ripgrep #1697</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UTF-8 BOM Sniffing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1697">#1697</a>
+        opened by <a href="https://github.com/alessandroasm">@alessandroasm</a>
+        on 2020-10-02 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alessandroasm">@alessandroasm</a></div>
+            <div class="timeline-body"><p>UTF-8 encoded files with BOM didn't sniff the BOM from results, regardless of
+config.bom_sniffing; ripgrep already implemented this option for UTF-16 files
+correctly.</p>
+<p>Fixes #1638</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/searcher/src/searcher/mod.rs</code>:798 on 2020-10-03 13:14</div>
+            <div class="timeline-body"><p>I think it would be better to implement this the same way that UTF-16 is. Namely, tweak this to:</p>
+<pre><code>(self.config.bom_sniffing &amp;&amp; slice_has_bom(slice))
+</code></pre>
+<p>and then create <code>slice_has_bom</code> by merging <code>slice_has_utf16_bom</code> and <code>slice_has_utf8_bom</code>. And then remove the <code>slice_has_utf8_bom_to_sniff</code> helper that you created and the corresponding check in <code>search_slice</code>. The <code>search_reader</code> implementation should then handle it.</p>
+<p>The main problem here is that UTF-8 BOM stripping only <em>sometimes</em> doesn't work. Namely, it doesn't work in precisely the case where ripgrep searches via memory maps. That's why, if a UTF-16 BOM is detected, then it falls back to <code>search_reader</code> because <code>search_reader</code> will do all the necessary transcoding and BOM stripping.</p>
+<p>e.g., looking at #1638, while <code>rg foo utf8bom --json</code> does indeed show the bug, <code>rg foo utf8bom --json --no-mmap</code> does not, because <code>search_reader</code> gets this right. So I think we should just divert to that like we do for UTF-16.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2020-10-03 13:15</div>
+            <div class="timeline-body"><p>Thank you! While I agree this fixes the issue, I think it would be simpler to fix it in the same way that the UTF-16 BOM is handled. See my comment below.</p>
+<p>Also, can you add a an integration test in <code>tests/regression.rs</code> as well? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alessandroasm">@alessandroasm</a> reviewed on 2020-10-03 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alessandroasm">@alessandroasm</a> on <code>crates/searcher/src/searcher/mod.rs</code>:798 on 2020-10-03 14:48</div>
+            <div class="timeline-body"><p>Thanks for reviewing this! I'll push those changes you requested shortly.</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/def993bad1a9275cdc249f04048e5b2065b79f05/crates/searcher/src/searcher/mod.rs#L748-L752
+When implementing the fix, this comment on line 748 implies that <code>search_reader</code> doesn't have the same perfomance that the other methods have. That's why I implemented UTF-8 BOM handling after <code>search_reader</code> option is discarded. But indeed the code will look much cleaner with all BOM sniffing done by <code>search_reader</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alessandroasm">@alessandroasm</a> reviewed on 2020-10-03 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alessandroasm">@alessandroasm</a> on <code>crates/searcher/src/searcher/mod.rs</code>:798 on 2020-10-03 14:53</div>
+            <div class="timeline-body"><p>https://github.com/BurntSushi/ripgrep/blob/def993bad1a9275cdc249f04048e5b2065b79f05/crates/searcher/src/searcher/mod.rs#L976-L980
+The same performance warning is mentioned on <code>slice_has_utf16_bom</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @alessandroasm on 2020-10-05 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2021-05-30 17:02</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-30 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2021-05-30 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/searcher/src/searcher/mod.rs</code>:798 on 2021-05-30 17:33</div>
+            <div class="timeline-body"><p>Yes. Technically, mmaps can be a bit faster in some cases. But UTF-8 BOM's are quite rare, and it's not worth the code complexity IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:15 UTC
+    </footer>
+</body>
+</html>

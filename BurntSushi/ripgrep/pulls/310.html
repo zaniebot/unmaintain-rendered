@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't search stdout redirected file. - BurntSushi/ripgrep #310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't search stdout redirected file.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/310">#310</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-01-09 02:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>When running ripgrep like this:</p>
+<pre><code>rg foo &gt; output</code></pre>
+<p>we must be careful not to search <code>output</code> since ripgrep is actively writing
+to it. Searching it can cause massive blowups where the file grows without
+bound.</p>
+<p>While this is conceptually easy to fix (check the inode of the redirection
+and the inode of the file you're about to search), there are a few problems
+with it.</p>
+<p>First, inodes are a Unix thing, so we need a Windows specific solution to
+this as well. To resolve this concern, I created a new crate, <code>same-file</code>,
+which provides a cross platform abstraction.</p>
+<p>Second, stat'ing every file is costly. This is not avoidable on Windows,
+but on Unix, we can get the inode number directly from directory traversal.
+However, this information wasn't exposed, but now it is (through both the
+ignore and walkdir crates).</p>
+<p>Fixes #286</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-09 02:46</div>
+            <div class="timeline-body"><p>The new crate, <code>same-file</code>, can be found here: https://docs.rs/same-file</p>
+<p>cc @retep998</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-01-09 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-09 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2017-01-09 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:47 UTC
+    </footer>
+</body>
+</html>

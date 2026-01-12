@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limit line lengths - BurntSushi/ripgrep #245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Limit line lengths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/245">#245</a>
+        opened by <a href="https://github.com/forgottenswitch">@forgottenswitch</a>
+        on 2016-11-22 04:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/forgottenswitch">@forgottenswitch</a></div>
+            <div class="timeline-body"><p>Possible fix for https://github.com/BurntSushi/ripgrep/issues/129
+Python to generate a test:</p>
+<pre><code>with open(&quot;long_line_test&quot;, &quot;w&quot;) as f:
+    for n in range(1, 10):
+        for i in range(1, 100):
+            i_z = str(i).zfill(5)
+            f.write(&quot;_{}:{}_,&quot;.format(n, i_z))
+        f.write(&quot;\n&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-22 12:00</div>
+            <div class="timeline-body"><p>@forgottenswitch Thanks for the PR! I really appreciate you taking the time to try to fix #129! :-)</p>
+<p>Unfortunately, I think there are significant problems with the patch as-is:</p>
+<ol>
+<li>In #129, I proposed a specification for fixing the issue, but I don't see any evidence that this was considered here. I would much rather start with a simpler solution than jump to something as complex as this.</li>
+<li>Doing stuff based on the tty width seems a bit too magical for my taste. (Moreover, I don't know how to do it on Windows, and the patch as-is looks like it won't compile on Windows.)</li>
+<li>The printer code has gotten <em>significantly</em> more complicated and I don't understand most of the changes you've made. I <em>can't</em> merge code that I don't understand.</li>
+</ol>
+<p>Before continuing, I think we should focus entirely on my first objection, (1), and avoid getting distracted with (2) or (3) until we actually decide that this is what we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-22 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>The proper solution would be to make sure each match has even context before and after.
+(except left- and right- most).</p>
+</blockquote>
+<p>It seems very complex and error prone to do this for multiple matches on one very long line. Before I even <em>consider</em> supporting something like that, I would absolutely demand a well designed abstraction around it. I'd suggest we iterate on it in the issue tracker, and not move to the PR phase until we have a design that we're both happy with.</p>
+<p>I'd also suggest we wait to do this until I get more of #162 done, which I hope to include pulling the printer out of ripgrep proper and into its own crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-22 15:43</div>
+            <div class="timeline-body"><p>I would strongly urge you not to spend more time on this PR until we hammer out a lot more details and a proper specification. This feature is simply too complicated to do otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-22 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forgottenswitch">@forgottenswitch</a> on 2016-11-22 15:48</div>
+            <div class="timeline-body"><p>What this implements instead of even left- and rightmost context,
+is try to print as much as possible before the match, and all that fits after.
+This should be a mistake.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:46 UTC
+    </footer>
+</body>
+</html>

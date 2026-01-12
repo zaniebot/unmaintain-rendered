@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --git-ignore-case-insensitive - BurntSushi/ripgrep #1170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --git-ignore-case-insensitive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1170">#1170</a>
+        opened by <a href="https://github.com/davidtorosyan">@davidtorosyan</a>
+        on 2019-01-21 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidtorosyan">@davidtorosyan</a></div>
+            <div class="timeline-body"><p>This closes #1164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidtorosyan">@davidtorosyan</a> on 2019-01-21 07:24</div>
+            <div class="timeline-body"><p>A few things I'm unsure about:</p>
+<ol>
+<li>The flag is named <code>--git-ignore-case-insensitive</code>, but I'm applying the case insensitivity to <code>.ignore</code> files as well. Do I need a more inclusive name?</li>
+<li>Do I need a short name for the flag?</li>
+<li>I'm not sure I understand the &quot;overrides the X flag&quot; comments. For example, <code>flag_heading</code> says <code>--heading</code> overrides <code>--no-heading</code>, and <code>--no-heading</code> overrides <code>--heading</code>. That doesn't make sense to me, but I followed the pattern and just had <code>--git-ignore-case-sensitive</code> take precedence over <code>-insensitive</code>, since that's the priority for <code>-c</code> and <code>-i</code>.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-01-21 15:26</div>
+            <div class="timeline-body"><p>I think that based on the names of the other ignore-file-related options it would probably just be like <code>--ignore-case-insensitive</code>, right? And you usually don't need to document the option that negates it separately, especially when it's the default behaviour; see how options like <code>--no-ignore-messages</code> and <code>--no-multiline-dotall</code> are implemented, for example. (That's related to the <code>$no</code> thing in the completion function)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidtorosyan">@davidtorosyan</a> on 2019-01-21 18:47</div>
+            <div class="timeline-body"><p>I considered <code>--ignore-case-insensitive</code>, but thought it might be confused as a variant of <code>--ignore-case</code>. I didn't use <code>$no</code> because <code>--ignore-case</code> and <code>--case-sensitive</code> don't.</p>
+<p>Maybe <code>--ignore-iglob</code> and <code>--no-ignore-iglob</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-01-21 19:06</div>
+            <div class="timeline-body"><p>Ah, i didn't consider the name confusion. Mixing the concepts of ignore files and command-line globbing seems a bit suspect to me as well, but i'm not sure.</p>
+<p>I do feel like the option should be documented/completed more like <code>--[no-]ignore-messages</code> than <code>--case-insensitive</code> &amp;al., though, in any case. Those match-case options aren't quite analogous (there's three of them, for one thing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidtorosyan">@davidtorosyan</a> on 2019-01-21 19:13</div>
+            <div class="timeline-body"><p>Both good points.</p>
+<p>I think the clearest then would probably be <code>--[no-]ignore-file-case-insensitive</code>, but I'll wait for @BurntSushi to weigh in before updating the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-23 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-23 01:12</div>
+            <div class="timeline-body"><p>@davidtorosyan Thanks so much for working on this! I think you got the general approach correct, but there were a lot of details that I wanted to iron out, so I just did them myself here in https://github.com/BurntSushi/ripgrep/commit/718a00f6f2f88238546f7d33c1ea52217002495e. You can see my changes off your PR here: https://gist.github.com/BurntSushi/6456ad9be5ce650fa36bf02956cee14e</p>
+<p>In summary:</p>
+<ul>
+<li>There were some formatting issues that were inconsistent with the rest of the code. In particular, there were some very long lines. I'd like to adhere to 79 columns inclusive.</li>
+<li>There were several breaking changes made to the public API of the <code>ignore</code> crate. This is not something we should do lightly. I do see why you did it though, because avoiding that did require a touch of refactoring that wasn't at all obvious. (<code>ignore</code> badly needs a facelift.)</li>
+<li>I decided on just using <code>--ignore-file-case-insensitive</code> as the flag name in order to avoid confusion with <code>--ignore-case</code>.</li>
+<li>The flag overrides just mean that all/most flags can be overridden. Following the pattern of <code>--ignore-case</code> is understandable, but <code>--case-sensitive</code> was added before we started getting more rigorous about creating flags for disabling other flags. These days, we consistently try to just prefix flags with a <code>--no-</code> in order to indicate disabling them. Moreover, since most flags have that variant, we hide them from the listing of flags since there are so many.</li>
+<li>Short names are in short supply. This definitely does not deserve a short name. There are literally only a few short flag names left.</li>
+</ul>
+<p>I think that's it! Nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidtorosyan">@davidtorosyan</a> on 2019-01-23 01:30</div>
+            <div class="timeline-body"><p>@BurntSushi thanks for the detailed feedback (and for merging the feature).</p>
+<p>It didn't register to me that the signature for <code>case_insensitive</code> was public, I guess that means I've got to get more familiar with Rust!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2019-01-23 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-23 01:34</div>
+            <div class="timeline-body"><p>@davidtorosyan Yup! Basically, you want to take a look at the public API in the docs, e.g., https://docs.rs/ignore. Your changes made sense though---those methods should not have been returning <code>Result</code>s. I added a TODO comment to update them on the next breaking release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:06 UTC
+    </footer>
+</body>
+</html>

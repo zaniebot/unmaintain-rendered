@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>search: add support for counting individual matches (Fixes #566) - BurntSushi/ripgrep #814</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>search: add support for counting individual matches (Fixes #566)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/814">#814</a>
+        opened by <a href="https://github.com/balajisivaraman">@balajisivaraman</a>
+        on 2018-02-17 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/balajisivaraman">@balajisivaraman</a></div>
+            <div class="timeline-body"><p>As discussed in #566, this PR adds a <code>--count-matches</code> flag that will count the individual matches instead of the matching lines.</p>
+<ul>
+<li><p>This does essentially the same thing <code>printer.matched</code> does for printing only matches, which is to use the Regex's <code>find_iter</code> method for getting the individual matches. We then increment a variable to keep track of the count, ignoring the actual match itself. Since this will always happen behind a flag, I hope this won't have any performance implications.</p>
+</li>
+<li><p>I initially considered using the existing <code>match_count</code> variable in <code>search_stream</code> and <code>search_buffer</code> to keep track of individual matches if <code>--count-matches</code> were passed in. This would've been handy if we later wanted to use the individual match count for something like the <code>--stats</code> flag, as it would get returned all the way up to <code>main.rs</code>; we can then use this for our purposes.</p>
+<p>However, I decided against this because it conflicts with the existing <code>--max-count</code> argument, which terminates the search early if we've hit the max count of matching lines. As a result, <code>rg</code> still terminates for matching line count and not individual match count even after this change. I'm just throwing this out there for your consideration.</p>
+<p>Currently, I've renamed the existing <code>match_count</code> to <code>matching_line_count</code> to better reflect what it keeps track of. <code>match_count</code> is now an <code>Option&lt;usize&gt;</code> and used to keep track of individual match count.</p>
+</li>
+<li><p><code>-c/--count</code> and <code>--count-matches</code> will override each other.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/search_buffer.rs</code>:24 on 2018-02-20 13:11</div>
+            <div class="timeline-body"><p>Could you name this <code>match_line_count</code> so that it's more consistent with <code>match_count</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/search_buffer.rs</code>:155 on 2018-02-20 13:12</div>
+            <div class="timeline-body"><p>When wrapping a conditional to multiple lines, could you move the brace down to the next line so that the division between the conditional and the conditional body is more clear?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/search_buffer.rs</code>:24 on 2018-02-20 13:15</div>
+            <div class="timeline-body"><p>Also, in the future (no need to do this for this PR), it would be super helpful to put renames (and similarly uninteresting changes) in a separate commit. In this case, a commit that came before the principle change. The reason is that I don't really care about the mechanics of a name change so long as the compiler is happy, but it increases the noise in the diff among other changes that I do carefully want to look at.</p>
+<p>It can be hard to do this though because it does require some forethought, so don't feel like I'm imposing a strong requirement! But if you think of it and it's not too much work, it definitely helps the review process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/search_buffer.rs</code>:141 on 2018-02-20 13:17</div>
+            <div class="timeline-body"><p>Would it be possible to move this call into <code>print_match</code> itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/search_stream.rs</code>:308 on 2018-02-20 13:20</div>
+            <div class="timeline-body"><p>Same as for the mmap searcher. Can you move this into the <code>print_match</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2018-02-20 13:21</div>
+            <div class="timeline-body"><p>@balajisivaraman This looks great to me! I left some comments but I think they are all pretty minor!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/balajisivaraman">@balajisivaraman</a> reviewed on 2018-02-20 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on <code>src/search_buffer.rs</code>:24 on 2018-02-20 15:07</div>
+            <div class="timeline-body"><p>Ah this does indeed make a lot of sense to me. I understand completely and will make the change in a separate commit for this PR also. No issues. :-) Good housekeeping is always welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-03-10 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-10 15:40</div>
+            <div class="timeline-body"><p>@balajisivaraman OK, I finally got a chance to merge this today in https://github.com/BurntSushi/ripgrep/commit/27fc9f2fd341bd3ed672f79d43bf983514188b96. All I did was fix up the conflicts with latest master and reformatted the commit message. (Commit messages should note the issues they close.) I also added an additional commit that causes <code>--count --only-matching</code> to behave the same as <code>--count-matches</code>. (The next release of ripgrep will be 0.9.0, so this is OK.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2018-03-10 16:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:59 UTC
+    </footer>
+</body>
+</html>

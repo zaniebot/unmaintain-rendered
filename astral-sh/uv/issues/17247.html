@@ -55,10 +55,35 @@ org-deep-nested-namespace-dependency = { path = &quot;../../../namespace/depende
             <div class="timeline-body"><p>This sounds like https://github.com/astral-sh/uv/issues/11826</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danijar">@danijar</a> on 2026-01-12 17:47</div>
+            <div class="timeline-body"><h3>Commit vs. Runtime Consistency</h3>
+<p>At first I also thought #11826 was the same feature, but it seems to be more about the pre-commit use case, i.e. enforcing constraints of commits to the repository. They mention husky and lint-staged, which lints files or runs tests. Those tasks just need to happen <strong>at some point before a commit is created</strong>.</p>
+<p>My feature request here is about ensuring runtime constraints to the local files, even before they are committed. We want to enforce correct and consistent <code>uv run</code> results when sections of <code>pyproject.toml</code> are generated. This needs to be enforced <strong>before every uv command that reads <code>pyproject.toml</code></strong>.</p>
+<p>There may be one feature that solves both problems, but it's not entirely clear one way or the other yet.</p>
+<h3>Task Runners</h3>
+<p>I also saw your comment about task runners in the other thread, for example using hatch:</p>
+<pre><code class="language-toml">[tool.hatch.envs.default.scripts]
+sync = [&quot;sh sync_deps.sh&quot;, &quot;uv sync&quot;]
+build = [&quot;sh sync_deps.sh&quot;, &quot;uv build&quot;]
+run = [&quot;sh sync_deps.sh&quot;, &quot;uv run&quot;]
+# ...
+</code></pre>
+<p>The problems here are:</p>
+<ul>
+<li>Have to wrap every single uv command (boilerplate, hassle to maintain)</li>
+<li>Developers can't use familiar <code>uv ...</code> commands anymore (cognitive overhead, both when using commands and when copying uv commands from websites, from Claude, etc)</li>
+<li>More verbose to type out and harder to read, e.g. <code>hatch run run python</code> instead of <code>uv run python</code></li>
+<li>Forwarding args to uv is possible but needs workarounds</li>
+<li>Makes everything less standard (if there are other scripts, they all need to use the new commands now instead of plain uv)</li>
+<li>uv knows better in what situations it reads <code>pyproject.toml</code> than us (and it could change over time)</li>
+</ul>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:45 UTC
+        Synced at 2026-01-12 18:33:08 UTC
     </footer>
 </body>
 </html>

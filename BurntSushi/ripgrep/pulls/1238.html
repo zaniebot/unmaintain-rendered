@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regex: make multi-literal searcher faster - BurntSushi/ripgrep #1238</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>regex: make multi-literal searcher faster</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1238">#1238</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2019-04-07 22:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>This makes the case of searching for a dictionary of a very large number
+of literals much much faster. (~10x or so.) In particular, we achieve this
+by short-circuiting the construction of a full regex when we know we have
+a simple alternation of literals. Building the regex for a large dictionary
+(&gt;100,000 literals) turns out to be quite slow, even if it internally will
+dispatch to Aho-Corasick.</p>
+<p>Even that isn't quite enough. It turns out that even <em>parsing</em> such a regex
+is quite slow. So when the -F/--fixed-strings flag is set, we short
+circuit regex parsing completely and jump straight to Aho-Corasick.</p>
+<p>We aren't quite as fast as GNU grep here, but it's much closer (less than
+2x slower).</p>
+<p>In general, this is somewhat of a hack. In particular, it seems plausible
+that this optimization could be implemented entirely in the regex engine.
+Unfortunately, the regex engine's internals are just not amenable to this
+at all, so it would require a larger refactoring effort. For now, it's
+good enough to add this fairly simple hack at a higher level.</p>
+<p>Unfortunately, if you don't pass -F/--fixed-strings, then ripgrep will
+be slower, because of the aforementioned missing optimization. Moreover,
+passing flags like <code>-i</code> or <code>-S</code> will cause ripgrep to abandon this
+optimization and fall back to something potentially much slower. Again,
+this fix really needs to happen inside the regex engine, although we
+might be able to special case -i when the input literals are pure ASCII
+via Aho-Corasick's <code>ascii_case_insensitive</code>.</p>
+<p>Fixes #497, Fixes #838</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2019-04-07 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-07 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2019-04-07 23:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lto=true only for deploy - BurntSushi/ripgrep #1255</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>lto=true only for deploy</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1255">#1255</a>
+        opened by <a href="https://github.com/In-line">@In-line</a>
+        on 2019-04-17 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/In-line">@In-line</a></div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-17 20:23</div>
+            <div class="timeline-body"><p>Do you  have any benchmarks justifying this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/In-line">@In-line</a> on 2019-04-17 20:27</div>
+            <div class="timeline-body"><p>@BurntSushi It was discussed many times before, as I undestood It is okay to enable LTO only on deploy.</p>
+<p>https://github.com/BurntSushi/ripgrep/pull/325#issuecomment-285069439</p>
+<p>I will try to post some up to date benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-17 21:01</div>
+            <div class="timeline-body"><p>I don't enable stuff like this just because it seems &quot;okay.&quot; I'd like to have good justification for doing it.
+My suspicion is that this will give a small but negligible performance benefit at the cost of a significantly longer release cycle, which I find frustrating. I'd also want to make sure that stack traces from panics still work correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2019-04-17 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ci/before_deploy.sh</code>:12 on 2019-04-17 21:02</div>
+            <div class="timeline-body"><p>My guess is that this doesn't work on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a> reviewed on 2019-04-17 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/okdana">@okdana</a> on <code>ci/before_deploy.sh</code>:12 on 2019-04-17 21:07</div>
+            <div class="timeline-body"><p>It does not, both because of the missing <code>-i</code> extension and because the command can't be written that way. Something like this should work with both GNU and BSD <code>sed</code>:</p>
+<pre><code>sed -i.bak $'/\\[profile\.release\\]/a\\\nlto = true\n' Cargo.toml
+</code></pre>
+<p>The <code>grep</code> pattern is also not very precise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/In-line">@In-line</a> on 2019-04-18 19:25</div>
+            <div class="timeline-body"><p>Benchmarks without compiling linux kernel. It seems that thin lto is best in terms of performance for ripgrep.</p>
+<pre><code># ./benchsuite --bench-iter=5 --warmup-iter=2 linux_literal
+linux_literal (pattern: PM_RESUME)
+----------------------------------
+rg-lto-thin (ignore)          0.389 +/- 0.035 (lines: 17)
+rg-lto-thin (ignore) (mmap)   0.898 +/- 0.022 (lines: 17)
+rg-lto-thin (whitelist)*      0.354 +/- 0.025 (lines: 17)*
+
+rg-lto-full (ignore)          0.394 +/- 0.031 (lines: 17)
+rg-lto-full (ignore) (mmap)   0.907 +/- 0.030 (lines: 17)
+rg-lto-full (whitelist)       0.389 +/- 0.025 (lines: 17)
+
+rg-no-lto (ignore)            0.399 +/- 0.024 (lines: 17)
+rg-no-lto (ignore) (mmap)     0.937 +/- 0.014 (lines: 17)
+rg-no-lto (whitelist)         0.375 +/- 0.033 (lines: 17)
+missing commands: ag, pt, sift, ucg, skipping benchmark linux_literal_casei (run with --allow-missing to run incomplete benchmarks)
+
+linux_literal_default (pattern: PM_RESUME)
+------------------------------------------
+rg-lto-full   0.358 +/- 0.013 (lines: 17)*
+rg-lto-thin*  0.380 +/- 0.035 (lines: 17)
+rg-no-lto     0.421 +/- 0.044 (lines: 17)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/In-line">@In-line</a> on 2019-04-18 19:41</div>
+            <div class="timeline-body"><p>Same benchmark with <code>codegen-units=1</code></p>
+<pre><code>linux_literal (pattern: PM_RESUME)
+----------------------------------
+rg-lto-thin (ignore)          0.342 +/- 0.029 (lines: 17)
+rg-lto-thin (ignore) (mmap)   0.911 +/- 0.010 (lines: 17)
+rg-lto-thin (whitelist)*      0.326 +/- 0.033 (lines: 17)
+
+rg-lto-full (ignore)          0.357 +/- 0.037 (lines: 17)
+rg-lto-full (ignore) (mmap)   0.881 +/- 0.022 (lines: 17)
+rg-lto-full (whitelist)       0.321 +/- 0.015 (lines: 17)*
+
+rg-no-lto (ignore)            0.393 +/- 0.014 (lines: 17)
+rg-no-lto (ignore) (mmap)     0.883 +/- 0.043 (lines: 17)
+rg-no-lto (whitelist)         0.346 +/- 0.008 (lines: 17)
+missing commands: ag, pt, sift, ucg, skipping benchmark linux_literal_casei (run with --allow-missing to run incomplete benchmarks)
+
+linux_literal_default (pattern: PM_RESUME)
+------------------------------------------
+rg-lto-full   0.355 +/- 0.013 (lines: 17)
+rg-lto-thin*  0.364 +/- 0.019 (lines: 17)
+rg-no-lto     0.352 +/- 0.016 (lines: 17)*
+./benchsuite --bench-iter=5 --warmup-iter=
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/In-line">@In-line</a> on 2019-04-18 19:42</div>
+            <div class="timeline-body"><p>@BurntSushi Is this good performance improvement to consider merging?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-19 13:57</div>
+            <div class="timeline-body"><p>It looks pretty weak to be honest. I'm going to try playing with it locally to see how badly it impacts compilation times, and whether stack traces still work correctly. The last time I looked at, compilation times were pretty bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danilaml">@danilaml</a> on 2019-06-19 11:38</div>
+            <div class="timeline-body"><p>@BurntSushi Have you looked at the regular LTO or ThinLTO? ThinLTO should be pretty fast, at the cost of the slightly worse optimization (compared to the regular LTO).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-19 12:01</div>
+            <div class="timeline-body"><p>@danilaml Sorry, but have you read the comments above? This entire PR is about enabling LTO or thin LTO, and even comes with benchmarks.</p>
+<p>In any case, the benchmarks above show a very small gain. I just played around with compile times, and even enabling thin LTO results in about a ~33% longer incremental build. A build from scratch is only ~8% longer, which is perhaps tolerable, but a 33% longer incremental build is not.</p>
+<p>So that means we could enable thin LTO in the release build, but I still don't think it's worth it, and would prefer to keep dogfooding the exact release configuration unless there's a more compelling motivation. The performance gains, as shown above, are middling at <em>best</em>. And the LTO binaries aren't even unambiguously faster in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-06-19 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/In-line">@In-line</a> on 2019-06-24 15:04</div>
+            <div class="timeline-body"><p>@BurntSushi Benchmarks are not full, because I don't have time to run absurd amount of time for benchmarks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:08 UTC
+    </footer>
+</body>
+</html>

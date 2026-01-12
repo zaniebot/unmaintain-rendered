@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>walk: treat symbolic links to directories as directories - BurntSushi/ripgrep #1397</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>walk: treat symbolic links to directories as directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1397">#1397</a>
+        opened by <a href="https://github.com/nikofil">@nikofil</a>
+        on 2019-10-02 09:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nikofil">@nikofil</a></div>
+            <div class="timeline-body"><p>Due to how walkdir works if symlinks are not followed, symlinks to
+directories are seen as simple files by ripgrep. This caused a panic
+in some cases due to receiving a WalkEvent::Exit event without a
+corresponding WalkEvent::Dir event.</p>
+<p>This is fixed by looking at the metadata of the file in the case of a
+symlink to determine if it's a directory.</p>
+<p>Fixes #1389</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-02 11:05</div>
+            <div class="timeline-body"><p>Thanks. It's going to take me a bit to review this, as this adds an additional syscall for every symlink that is seen, as far as I can tell. We've had performance problems in the past (especially on Windows) when doing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikofil">@nikofil</a> on 2019-10-02 11:22</div>
+            <div class="timeline-body"><p>I see, that could indeed be too much overhead.
+The only case that this PR fixes should be the case reported (when the given path is a symlink to a directory). Otherwise when the option to follow symlinks isn't given the depth never changes so there are no <code>WalkEvent::Exit</code> events caused by symlinks:
+https://github.com/BurntSushi/ripgrep/blob/8892bf648cfec111e6e7ddd9f30e932b0371db68/ignore/src/walk.rs#L1026-L1030
+Therefore checking only the given path, instead of any symlink encountered, should also fix this case. I can try fixing it that way if you agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2020-02-17 21:14</div>
+            <div class="timeline-body"><p>Great, thanks! I think this looks good. I'll be merging it with some tweaks as part of #1486. In particular, I made it so the additional stat check only occurred when the directory entry had depth <code>0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-02-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:10 UTC
+    </footer>
+</body>
+</html>

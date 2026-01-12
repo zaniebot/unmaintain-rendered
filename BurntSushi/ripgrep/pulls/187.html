@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset the terminal when Ctrl-C is pressed - BurntSushi/ripgrep #187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reset the terminal when Ctrl-C is pressed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/187">#187</a>
+        opened by <a href="https://github.com/lambda">@lambda</a>
+        on 2016-10-19 03:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lambda">@lambda</a></div>
+            <div class="timeline-body"><p>If a user hits Ctrl-C to exit out of a search in the middle of printing
+a line, we don't want to leave the terminal colors screwed up for them.
+Catch Ctrl-C using the ctrlc crate, obtain a stdout lock to ensure that
+other threads don't continue writing after we do so, reset the terminal,
+and exit the program.</p>
+<p>Closes #119</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2016-10-19 03:54</div>
+            <div class="timeline-body"><p>This PR is a bit of a strawman; I figured I'd try the simplest possible thing that seemed to work. I first tried to see whether I should thread this into <code>ColoredTerminal</code> somehow, but that seemed complicated, and this approach seemed simpler.</p>
+<p>I haven't tested this at all on Windows, so don't know if this will work properly on there.</p>
+<p>On my system, for some reason, this suppresses the shell prompt printed after exiting. I haven't quite figure out why that is. But it does have the effect of resetting the colors appropriately, so if I just hit &quot;return&quot;, I do get the prompt properly. Writing out extra newlines and flushing doesn't seem to help this.</p>
+<p>I had expected that this would have the effect of losing the information about the process being killed by a signal, just returning 1 instead, since I didn't clear the signal handler and re-raise the signal, but <code>echo $?</code> gives me 130 as you'd expect from an interrupted process. So I guess that's good, if unexpected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-19 11:12</div>
+            <div class="timeline-body"><p>@lambda Nice! Thanks so much for doing this. I'll pull this down and try to play with it soon before merging. (It may not happen until this weekend, sorry!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-30 01:55</div>
+            <div class="timeline-body"><p>OK, I tried this out and it does indeed fix the issue for me. Interestingly, I'm not experiencing the shell prompt suppression. I get my shell prompt back, but I have no idea what the forces are at play here. (FWIW, I'm running <code>bash</code> in <code>konsole</code> as my terminal emulator on Linux.)</p>
+<p>I merged this in 811fcc1fe80e32916350888f4e6923cc2488901a (after a rebase).</p>
+<p>Thanks so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-30 01:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:45 UTC
+    </footer>
+</body>
+</html>

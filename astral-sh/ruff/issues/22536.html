@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` ignores config from nested directory if files are opened directly - astral-sh/ruff #22536</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code> ignores config from nested directory if files are opened directly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22536">#22536</a>
+        opened by <a href="https://github.com/ZedThree">@ZedThree</a>
+        on 2026-01-12 17:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ZedThree">@ZedThree</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's a simple example:</p>
+<pre><code>└── dir
+    ├── ruff.toml
+    └── test.py
+</code></pre>
+<p><code>dir/test.py</code>:</p>
+<pre><code class="language-py">import os
+</code></pre>
+<p><code>dir/ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;FURB&quot;]
+preview = true
+</code></pre>
+<p><code>ruff check</code> gives the expected behaviour: no warnings. Opening the top-level dir or <code>dir_1</code> in VS Code also gives the expected behaviour.</p>
+<p>However, opening the file directly does give a warning (<code>F401</code>). This also happens with helix, neovim, and emacs (which don't all necessarily have opening a folder as a workspace as a concept).</p>
+<p>Creating <code>pyproject.toml</code> at the top level resolves the issue.</p>
+<p>This might be a duplicate of #20847 and #17944, which are similar issues where the server is not resolving config correctly.</p>
+<h3>Version</h3>
+<p>ruff 0.14.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-12 17:55</div>
+            <div class="timeline-body"><p>Thanks for the great write up and also mentioning the related issues. The root cause for this is the same as https://github.com/astral-sh/ruff/issues/17944, Ruff doesn't even try to find settings for files outside the workspace root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-12 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZedThree">@ZedThree</a> on 2026-01-12 18:01</div>
+            <div class="timeline-body"><p>Well, not quite -- in this case, it's <em>below</em> the workspace root:</p>
+<pre><code>DEBUG Indexing settings for workspace: /tmp/mvce
+ INFO Registering workspace: /tmp/mvce
+DEBUG Received message: Notification(Notification { method: &quot;textDocument/didOpen&quot;, params: Object {&quot;textDocument&quot;: Object {&quot;languageId&quot;: String(&quot;python&quot;), &quot;text&quot;: String(&quot;import os\n&quot;), &quot;uri&quot;: String(&quot;file:///tmp/mvce/dir/test.py&quot;), &quot;version&quot;: Number(0)}} })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-12 18:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Well, not quite -- in this case, it's below the workspace root:</p>
+</blockquote>
+<p>I understood that it's working if you open the folder (in which case the workspace root is <code>/tmp/mvce</code>) but not when opening the file (in which case I believe VS Code uses <code>~/</code>)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:29:45 UTC
+    </footer>
+</body>
+</html>

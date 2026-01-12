@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>doc: use asciidoctor instead of a2x - BurntSushi/ripgrep #1544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>doc: use asciidoctor instead of a2x</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1544">#1544</a>
+        opened by <a href="https://github.com/yous">@yous</a>
+        on 2020-04-06 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/yous">@yous</a></div>
+            <div class="timeline-body"><p>Ref: Homebrew/linuxbrew-core#19885</p>
+<p>AsciiDoc development is continued under asciidoctor. See https://github.com/asciidoc/asciidoc.</p>
+<p>I tried to run CI several times, but on nightly build, Rust fails to find the asciidoctor binary even <code>/usr/bin/asciidoctor</code> exists.</p>
+<p>Attaching <code>rg.1.asciidoc</code> from current build, and <code>rg.1.asciidoctor</code> from new build.</p>
+<ul>
+<li><a href="https://github.com/BurntSushi/ripgrep/files/4439537/rg.1.asciidoc.txt">rg.1.asciidoc.txt</a></li>
+<li><a href="https://github.com/BurntSushi/ripgrep/files/4439540/rg.1.asciidoctor.txt">rg.1.asciidoctor.txt</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yous">@yous</a> on 2020-04-06 16:33</div>
+            <div class="timeline-body"><p>Seems that replacing <code>{</code> and <code>}</code> is no longer needed. Just updated and here is the updated <code>rg.1.asciidoctor</code>.</p>
+<ul>
+<li><a href="https://github.com/BurntSushi/ripgrep/files/4439642/rg.1.asciidoctor.txt">rg.1.asciidoctor.txt</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ci/macos-install-packages</code>:3 on 2020-04-06 20:10</div>
+            <div class="timeline-body"><p>I wonder if <code>docbook-xsl</code> is still needed? We can leave it here for now and I'll experiment with it later. IIRC, asciidoc complained when this wasn't installed before. No idea if asciidoctor also needs it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2020-04-06 20:15</div>
+            <div class="timeline-body"><p>Thanks very much! I had no idea that this was the root cause of the Homebrew issue and also had no idea that asciidoc was itself being EOL'd this year.</p>
+<p>So one thing that I'm concerned about here is the abrupt switchover to asciidoctor. I think what I'd rather do is to use asciidoctor like you have in this PR, but fallback to a2x if asciidoctor isn't available. That will make it easy to release this change in a point release with a note that <code>a2x</code> support will be removed and man page generation will require asciidoctor in ripgrep 13. That will give package maintainers a bit more slack to deal with this change.</p>
+<p>I know it's more of a pain to do that here. Let me know how you'd like to proceed. If you don't do it, then I'd be happy to take over this PR and do it myself, but I don't know when that will be. If you do want to do it, then I'd recommend just having two totally different paths between asciidoc and asciidoctor. No need to try to reuse code between them in <code>build.rs</code>. Then we can just lift out <code>a2x</code> when we're ready.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/yous">@yous</a> reviewed on 2020-04-07 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/yous">@yous</a> on <code>ci/macos-install-packages</code>:3 on 2020-04-07 06:18</div>
+            <div class="timeline-body"><p>I don't think it's needed as when I don't have installed <code>docbook</code> or <code>docbook-xsl</code>, asciidoctor worked. How about Ubuntu packages? Are <code>libxslt1-dev</code>, <code>docbook-xsl</code>, <code>xsltproc</code>, <code>libxml2-utils</code> related only to asciidoc? I'll try running the CI without them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yous">@yous</a> on 2020-04-09 07:30</div>
+            <div class="timeline-body"><p>I renamed the original <code>generate_man_page</code> to <code>legacy_generate_man_page</code>, and added <code>generate_man_page</code> that uses asciidoctor. Please have a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-05-09 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2020-05-09 02:37</div>
+            <div class="timeline-body"><p>Brilliant, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-09 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2020-05-09 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support colorized output to standard error - BurntSushi/ripgrep #323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support colorized output to standard error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/323">#323</a>
+        opened by <a href="https://github.com/pkgw">@pkgw</a>
+        on 2017-01-15 23:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pkgw">@pkgw</a></div>
+            <div class="timeline-body"><p>This pull request adds support for colorized output to standard error on both Unix and Windows platforms. It preserves compatibility with the existing API at the expense of being a bit verbose in some of its data structure names.</p>
+<p>Virtually all of the changes are re-castings of the previous code to be generic over the <code>io::Stdout</code> and <code>io::Stderr</code> types. This involves the creation of a few new traits that need to be exposed in the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 00:15</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>So... A change like this that significantly impacts the public API of a crate really needs to have discussion before launching into patches. For example, I am pretty solidly against adding more traits. I would rather add more concrete types.</p>
+<p>I don't quite have time to do a thorough review right now, but judging the code from a quick perusal, I suspect major changes will be required before I'd be willing to land this PR.</p>
+<p>And to be clear, I do agree with the motivation for this change. We should be able to emit colors to stderr. What I'm not sold on however is adding a generic API. Maybe you could talk more about that?</p>
+<p>I will also add a CONTRIBUTING.md file that will hopefully avoid PRs like this without prior discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 00:19</div>
+            <div class="timeline-body"><p>Yes. A generic API is absolutely not something we can do because it doesn't work on Windows. Moreover, I don't like the generic API for the complexity it introduces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-01-16 00:20</div>
+            <div class="timeline-body"><p>Hmm, perhaps I didn't explain it well. The generic bits are just to avoid internal code duplication — it's not intended to be something that users of the crate will ever care about. The motivation for is the fact that <code>io::Stdout</code> and <code>io::Stderr</code> are completely unrelated types in Rust. So, if you want to support colorized output to both of them, you either need to duplicate a lot of code, or you need to add an internal layer that lets you abstract between the two.</p>
+<p>There isn't an expectation that the generic API will ever be implemented for other types. But I made the generic traits public because I <em>think</em> you have to ... but I actually just read something that made me think that maybe you don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 00:31</div>
+            <div class="timeline-body"><p>Generics that are strictly internal are something I could get on board with. But none of your PR is really internal. Everything is public, and for example, StandardStream is generic which is not an accurate reflection of its capabilities.</p>
+<p>Code duplication can be solved in other ways, like macros or truly internal generics.</p>
+<p>Sorry I don't have time to into more details at the moment. :-( My current suggestion would be to open a new issue for a proposal that includes public API changes and an implementation plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-01-16 00:31</div>
+            <div class="timeline-body"><p>Ok, yeah, in principle you can keep all of the traits private by changing the newtypes from things ilke this:</p>
+<pre><code>pub type Stdout = StandardStream&lt;io::Stdout&gt;;
+</code></pre>
+<p>to structs like this:</p>
+<pre><code>pub struct Stdout(StandardStream&lt;io::Stdout&gt;);
+</code></pre>
+<p>I don't think that actually buys you much, though. You have to write wrappers for the exposed functions and you remove the ability for users of the crate to genericize their code over the stdout/stderr choice. There are some more traits exposed but again, the typical user can completely ignore them — as far as most of them are concerned, there's just a new <code>Stderr</code> struct to go along with the preexisting <code>Stdout</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 00:40</div>
+            <div class="timeline-body"><p>No. I'm not on board with exposing those. As I've said, they aren't an accurate reflection of all supported platform capabilities. On top of that, I am <strong>very firmly</strong> opposed to just exposing things in the public API and justifying it by saying that most users can ignore it. If it's part of the public API, then there should be cohesion and stability guarantees. A larger API means more maintenance and potentially less flexibility moving forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-01-16 00:43</div>
+            <div class="timeline-body"><p>OK, <a href="https://github.com/BurntSushi/ripgrep/issues/324">issue #324</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-01-19 16:05</div>
+            <div class="timeline-body"><p>Closing as it seems unlikely that this PR will move forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pkgw on 2017-01-19 16:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proof of concept: skip unused Gitignore matchers - BurntSushi/ripgrep #836</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proof of concept: skip unused Gitignore matchers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/836">#836</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2018-02-25 16:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><p>This is just a proof of concept. I'm not sure if this is the best approach. Even if it is, the code should probably be clean up.</p>
+<p>This PR addresses the findings in #835 and disables unneeded <code>Gitignore</code> matchers completely. This leads to a performance improvement for use cases where one or more of the matchers (custom ignore files, <code>.ignore</code> files, <code>.gitignore</code> files, <code>.git/info/exclude</code>) are not needed.</p>
+<h3>Benchmark 1: <code>rg -uu --files</code></h3>
+<p>master</p>
+<pre><code>▶ hyperfine --warmup 10 'rg -uu --files'
+Benchmark #1: rg -uu --files
+
+  Time (mean ± σ):      1.298 s ±  0.067 s    [User: 4.348 s, System: 2.667 s]
+ 
+  Range (min … max):    1.203 s …  1.398 s
+</code></pre>
+<p>this branch (~ 8% faster):</p>
+<pre><code>▶ hyperfine --warmup 10 'rg -uu --files'
+Benchmark #1: rg -uu --files
+
+  Time (mean ± σ):      1.201 s ±  0.032 s    [User: 3.732 s, System: 2.532 s]
+ 
+  Range (min … max):    1.165 s …  1.264 s
+</code></pre>
+<h3>Benchmark 2: <code>rg -uu --files --glob &quot;Cargo.toml&quot;</code></h3>
+<p>master:</p>
+<pre><code>▶ hyperfine --warmup 10 'rg -uu --files --glob &quot;Cargo.toml&quot;'
+Benchmark #1: rg -uu --files --glob &quot;Cargo.toml&quot;
+
+  Time (mean ± σ):     662.5 ms ±   2.2 ms    [User: 2.991 s, System: 2.198 s]
+ 
+  Range (min … max):   659.3 ms … 665.7 ms
+</code></pre>
+<p>this branch (~ 10% faster):</p>
+<pre><code>▶ hyperfine --warmup 10 'rg -uu --files --glob &quot;Cargo.toml&quot;' 
+Benchmark #1: rg -uu --files --glob &quot;Cargo.toml&quot;
+
+  Time (mean ± σ):     602.6 ms ±   1.7 ms    [User: 2.527 s, System: 2.183 s]
+ 
+  Range (min … max):   599.1 ms … 604.8 ms
+</code></pre>
+<h3>Benchmark 3: <code>rg --files --glob &quot;Cargo.toml&quot;</code></h3>
+<p>As expected, there is no significant change if <code>-uu</code> is not used:</p>
+<p>master:</p>
+<pre><code>▶ hyperfine --warmup 10 'rg --files --glob &quot;Cargo.toml&quot;'    
+Benchmark #1: rg --files --glob &quot;Cargo.toml&quot;
+
+  Time (mean ± σ):     101.1 ms ±   1.6 ms    [User: 420.4 ms, System: 327.0 ms]
+ 
+  Range (min … max):    99.5 ms … 107.1 ms
+</code></pre>
+<p>this branch:</p>
+<pre><code>▶ hyperfine --warmup 10 'rg --files --glob &quot;Cargo.toml&quot;'
+Benchmark #1: rg --files --glob &quot;Cargo.toml&quot;
+
+  Time (mean ± σ):     101.6 ms ±   0.6 ms    [User: 419.2 ms, System: 331.5 ms]
+ 
+  Range (min … max):   100.3 ms … 103.0 ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-10 13:32</div>
+            <div class="timeline-body"><p>@sharkdp Thanks for this! I think I'd be OK with this PR, but just to cover our bases, did you explore whether this improvement was possible by just using <code>Gitignore::empty()</code>? That was basically my intent, where if a matcher wasn't needed, then we could create an empty one and the empty cases would just get folded into the matcher instead of needing to add a bunch of explicit case analysis everywhere.</p>
+<p>Let's work through this. Here's the definition of <code>Gitignore::empty()</code>:</p>
+<pre><code class="language-rust">    pub fn empty() -&gt; Gitignore {
+        GitignoreBuilder::new(&quot;&quot;).build().unwrap()
+    }
+</code></pre>
+<p>OK, so this is creating a new builder with an empty root, not adding any globs and then building it. That means running this code:</p>
+<pre><code class="language-rust">    pub fn new&lt;P: AsRef&lt;Path&gt;&gt;(root: P) -&gt; GitignoreBuilder {
+        let root = root.as_ref();
+        GitignoreBuilder {
+            builder: GlobSetBuilder::new(),
+            root: strip_prefix(&quot;./&quot;, root).unwrap_or(root).to_path_buf(),
+            globs: vec![],
+            case_insensitive: false,
+        }
+    }
+</code></pre>
+<p>and this code</p>
+<pre><code class="language-rust">    pub fn build(&amp;self) -&gt; Result&lt;Gitignore, Error&gt; {
+        let nignore = self.globs.iter().filter(|g| !g.is_whitelist()).count();
+        let nwhite = self.globs.iter().filter(|g| g.is_whitelist()).count();
+        let set =
+            self.builder.build().map_err(|err| {
+                Error::Glob {
+                    glob: None,
+                    err: err.to_string(),
+                }
+            })?;
+        Ok(Gitignore {
+            set: set,
+            root: self.root.clone(),
+            globs: self.globs.clone(),
+            num_ignores: nignore as u64,
+            num_whitelists: nwhite as u64,
+            matches: Arc::new(ThreadLocal::default()),
+        })
+    }
+</code></pre>
+<p>The constructor seems pretty cheap to me. There's a call to <code>to_path_buf</code> which might invoke an allocation, although given it's an empty string, that probably gets  optimized out. (IIRC, <code>vec![]</code> doesn't actually allocate, for example, and <code>PathBuf</code> is certainly built on <code>Vec</code>.)</p>
+<p>The <code>build</code> method is a little more interesting. The first couple lines filter over the globs, but we have none, so that should be negligible. Then we build the <code>GlobSet</code> itself. This is actually cheap since <code>GlobSet::new(&amp;[])</code> is special cases to do no work and just return a set that never matches.</p>
+<p>The builder otherwise does some cloning (but again, those should all be empty), and sets up a scratch buffer (which also defaults to empty).</p>
+<p>So my question is: if we changed this</p>
+<pre><code class="language-rust">        let custom_ig_matcher =
+            {
+                let (m, err) =
+                    create_gitignore(&amp;dir, &amp;self.0.custom_ignore_filenames);
+                errs.maybe_push(err);
+                m
+            };
+</code></pre>
+<p>to be more in line with how the other matchers handle the empty case on master</p>
+<pre><code class="language-rust">        let custom_ig_matcher =
+            if self.custom_ignore_filenames.is_empty() {
+                Gitignore::empty()
+            } else {
+                let (m, err) =
+                    create_gitignore(&amp;dir, &amp;self.0.custom_ignore_filenames);
+                errs.maybe_push(err);
+                m
+            };
+</code></pre>
+<p>then does that solve the performance problem? Or are there costs in <code>Gitignore::empty()</code> that I am not accounting for?</p>
+<p>The reason why I think the above might work is because the <code>create_gitignore</code> function definitely does have overhead associated with it, and always does at least a syscall to open a file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-03-12 22:52</div>
+            <div class="timeline-body"><p>@BurntSushi Thank you for the detailed answer.</p>
+<p>I should have explained this better:</p>
+<ol>
+<li><p>I'm pretty sure that the problem is <em>not</em> with the additional <code>Gitignore::empty</code> invocation. The expensive operation is the <code>matched(&amp;path, is_dir)</code> call on the four <code>Gitignore</code> instances in (every loop iteration inside) <code>Ignore::matched_ignore</code>.</p>
+</li>
+<li><p>This PR does not only resolve the performance regression in #835 but improves the speed beyond that (if more than one matcher is disabled).</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-04-24 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2018-04-24 17:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[WIP] Hgignore support - BurntSushi/ripgrep #733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[WIP] Hgignore support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/733">#733</a>
+        opened by <a href="https://github.com/kalekseev">@kalekseev</a>
+        on 2018-01-06 18:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kalekseev">@kalekseev</a></div>
+            <div class="timeline-body"><p>Hi @BurntSushi, last time you said that you would accept hg support with minimal feature set support https://github.com/BurntSushi/ripgrep/issues/6/ so during the holidays I refactored my original pull request https://github.com/BurntSushi/ripgrep/pull/477.</p>
+<p>Now globset is unchanged, everything live in hgignore module therefore current code shouldn't be affected by merging in hgignore support.</p>
+<p>The places that I think should be fixed before merge are marked by FIXME, please review the code and tell me what do you think, is this the right direction to move?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kalekseev">@kalekseev</a> reviewed on 2018-01-07 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kalekseev">@kalekseev</a> on <code>ignore/src/hgignore.rs</code>:397 on 2018-01-07 13:02</div>
+            <div class="timeline-body"><p>Can anyone describe what leading slash mean in regular glob or especially in hgignore? I can't find a case that would match glob with leading slash in hgignore, maybe just skip them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-07 14:08</div>
+            <div class="timeline-body"><p>@kalekseev I just wanted to quickly chime in and say thanks so much for this PR! It might take me a bit to review though. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2018-01-07 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/hgignore.rs</code>:397 on 2018-01-07 14:09</div>
+            <div class="timeline-body"><p>I think <code>man gitignore</code> says it best:</p>
+<blockquote>
+<p>A leading slash matches the beginning of the pathname. For example, &quot;/*.c&quot; matches &quot;cat-file.c&quot; but not &quot;mozilla-sha1/sha1.c&quot;.</p>
+</blockquote>
+<p>It other words, it's a form of an anchor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2018-01-07 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/hgignore.rs</code>:397 on 2018-01-07 14:09</div>
+            <div class="timeline-body"><p>(I don't know whether it's a thing in <code>hgignore</code> or not. It seems easy enough to test though?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kalekseev">@kalekseev</a> reviewed on 2018-01-07 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kalekseev">@kalekseev</a> on <code>ignore/src/hgignore.rs</code>:397 on 2018-01-07 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know whether it's a thing in hgignore or not.</p>
+</blockquote>
+<pre><code>$ cat &gt; .hgignore
+ syntax: glob
+ /foo
+ bar
+
+$ touch foo
+$ touch bar
+$ hg status
+ ? .hgignore
+ ? foo
+
+$ mkdir xxx
+$ touch xxx/foo
+$ hg status
+ ? .hgignore
+ ? foo
+ ? xxx/foo
+</code></pre>
+<p>I've tested it and haven't found a case where leading slash would match anything, I believe git uses leading slash because standard glob doesn't support leading slash at all. That's why I assumed that we can skip such rules.</p>
+<p>Globs in .hgignore are not rooted if you want rooted glob you should use <code>glob:</code>, from the <code>hg help patterns</code></p>
+<pre><code>To use an extended glob, start a name with &quot;glob:&quot;. Globs are rooted at
+    the current directory; a glob such as &quot;*.c&quot; will only match files in the
+    current directory ending with &quot;.c&quot;.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2018-04-22 08:10</div>
+            <div class="timeline-body"><p>Hi @BurntSushi, I will have a couple of holidays at the beginning of May and I want to finish this pr, could you briefly review it or just comment what do you think about these two places:</p>
+<ol>
+<li><p>Here I need the path https://github.com/BurntSushi/ripgrep/pull/733/files#diff-90bb8ac326bac2bf846c8c831a2abba9R180 as in Candidate
+https://github.com/BurntSushi/ripgrep/pull/733/files#diff-258f99315c5f915cf0fdea294e12a8efR480 should I copy methods from globset::pathutils into ignore::pathutils to bulid that path?</p>
+</li>
+<li><p>We have to skip lines with invalid regex. I use regexset and I think maybe we can build regex in <code>add_regex_line</code> method to be sure that it's valid or this is too bad for performance?
+https://github.com/BurntSushi/ripgrep/pull/733/files#diff-90bb8ac326bac2bf846c8c831a2abba9R369</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngoldbaum">@ngoldbaum</a> on 2018-04-24 18:49</div>
+            <div class="timeline-body"><p>It looks like you're mostly testing hgignore files that only have glob patterns. How are you dealing with regex patterns? What about differences between the python regex engine used by mercurial and rust's regex engine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngoldbaum">@ngoldbaum</a> on 2018-04-24 18:54</div>
+            <div class="timeline-body"><p>For more test cases it may be worth looking at mercurial's own test suite:</p>
+<p>https://www.mercurial-scm.org/repo/hg/file/tip/tests/test-hgignore.t</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2018-04-24 19:07</div>
+            <div class="timeline-body"><p>Yeah I will add more testcases with regexes, right now I just copied tests from gitignore.</p>
+<blockquote>
+<p>What about differences between the python regex engine used by mercurial and rust's regex engine?</p>
+</blockquote>
+<p>I was orienting on this @BurntSushi comment https://github.com/BurntSushi/ripgrep/pull/477#pullrequestreview-37025693</p>
+<blockquote>
+<p>Surely the regex syntax supported by mercurial is not in precise correspondence with Rust's regex engine. Is the plan to just emit an error message and suffer wontfix bug reports for eternity? (I say this with some snark as the maintainer, but I suppose there isn't a good alternative.)</p>
+</blockquote>
+<p>This is why I'm asking advice about how to check regex before adding it to regexset. I want to check if it valid rust regexp and if not print debug message about that line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2018-05-07 07:12</div>
+            <div class="timeline-body"><p>If anyone subscribed to that pr then please test current version with your mercurial setup.</p>
+<pre><code>$ git clone git@github.com:kalekseev/ripgrep.git
+$ cd ripgrep
+$ git checkout hgignore
+$ cargo build --release
+$  cp target/release/rg ~/.local/bin/rg # change to your PATH dir
+</code></pre>
+<p>Things that are not implemented (skipped by ripgrep):</p>
+<ul>
+<li>Extended mercurial patterns: path, rootfilesin, listfile, listfile0, include, subinclude</li>
+<li>python specific regexes (that are not valid rust regexes)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 17:48</div>
+            <div class="timeline-body"><p>@kalekseev I hate to close this out, and I'm very appreciative of your hard work on this feature, but after thinking about this for a long time, I no longer believe its viable for ripgrep to support Mercurial. I left a longer explanation here: https://github.com/BurntSushi/ripgrep/issues/6#issuecomment-406812551</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-21 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:57 UTC
+    </footer>
+</body>
+</html>

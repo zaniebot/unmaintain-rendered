@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix resource leak on Linux - BurntSushi/ripgrep #1767</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix resource leak on Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1767">#1767</a>
+        opened by <a href="https://github.com/3point2">@3point2</a>
+        on 2020-12-22 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/3point2">@3point2</a></div>
+            <div class="timeline-body"><p>resolves BurntSushi/ripgrep#1766</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2020-12-27 16:54</div>
+            <div class="timeline-body"><p>Thanks for digging into this! It's a great find.</p>
+<p>Your hesitation about the use of <code>warn!</code> is spot on. I suspect we need to find a way to at least make it possible for the error to be returned to the caller. Log messages like <code>warn!</code> aren't really something I've used much in ripgrep, as I see them more for developer usage. But the kinds of errors reported here are most definitely of interest to the user. Additionally, these are messages that ripgrep needs to be able to squash if requested (i.e., <code>--no-messages</code>).</p>
+<p>More concretely, I <em>think</em> what's needed here is this:</p>
+<ol>
+<li>Move the reap logic to its own separate routine and make that routine idempotent.</li>
+<li>Call that reap logic from within the <code>read</code> routine, as was done before.</li>
+<li>Also call it in <code>Drop</code> as a last-ditch-effort. Retaining the <code>warn!</code> here in case of an error is fine. (Because of steps 4 and 5.)</li>
+<li>Add a <code>close</code> method to the public API of <code>CommandReader</code> that permits callers to stop and reap the process early.</li>
+<li>Have ripgrep call <code>close</code> whenever it uses a <code>CommandReader</code>. (This looks doable inside of <code>search_preprocessor</code> in <code>crates/core/search.rs</code>.)</li>
+</ol>
+<p>Since ripgrep will always call <code>close</code>, it also follows that the <code>warn!</code> messages will never appear. So if they do appear, they can be considered a bug.</p>
+<p>And on top of that, this behavior should be documented in the <code>grep-cli</code> crate. Probably best to put it on the docs for the new <code>close</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/3point2">@3point2</a> on 2020-12-29 19:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for digging into this! It's a great find.</p>
+</blockquote>
+<p>My pleasure :blush: Thanks for the feedback! That design sounds sensible to me. I've just pushed those changes, minus point 5.</p>
+<p>The issue with point 5 is that <code>search_preprocessor</code> and <code>search_decompress</code> in <code>crates/core/search.rs</code> both <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/core/search.rs#L405">pass</a> the <code>CommandReader</code> into <code>self.search_reader</code> <em>by value</em>. We can't call <code>close</code> on the reader afterwards as it ends up being owned by a <code>encoding_rs_io::DecodeReaderBytes</code> struct, part of the <code>ReadByLine</code> struct in searcher::glue in the grep-searcher crate.</p>
+<p>I briefly toyed with refactoring the code to pass the reader around by reference so that we can <code>close</code> it afterwards in <code>crates/core/search.rs</code> as you suggested. That quickly started feeling like a large enough change that I wanted to check in before going down that route.</p>
+<p>I also played with defining and implementing a <code>Close</code> trait so that <code>ReadByLine.run</code> in searcher/glue.rs could call <code>close()</code> which turned out to be a bit of a goose chase as there's no way to get a mutable reference to the CommandReader once it's in DecodeReaderBytes. Part of the reason for my confusion was that Searcher.search_reader takes a read_from argument, then <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/searcher/src/searcher/mod.rs#L699-L710">shadows</a> the variable. <a href="https://github.com/BurntSushi/ripgrep/pull/1767/commits/32ba75695e3ce79bd542cc3377ee85330fc9375a">This commit</a> is to try make that method easier to read.</p>
+<p>I can think of a few ways forward:</p>
+<ul>
+<li>Embark on a non-trivial refactor to pass the CommandReader by reference</li>
+<li>Go back to drop() being the only place where the CommandReader <code>wait</code>s on its child, and work on the formatting of the output so that it matches what ripgrep would print if the error had been bubbled up</li>
+<li>Add a method to DecodeReaderBytes in the encoding_rs_io crate which allows us to get a mutable reference to the inner reader so that we can call <code>close</code> on it in glue.rs (this implies a Close trait, using a DecodeReaderBytes<T> where T: std::io::Read + Close, and implementing a no-op <code>close</code> method on the remaining reader types we use it with).</li>
+<li>Something else? Happy to hear your thoughts on this.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-30 01:35</div>
+            <div class="timeline-body"><p>@3point2 Thanks so much for working on this! I've merged this in a WIP rollup branch. I made a few small tweaks but kept the overall approach. Thanks for digging into this. :-)</p>
+<p>One tweak was changing the code to read more linearly, like this:</p>
+<pre><code class="language-rust">        let stdout = match self.child.stdout.take() {
+            None =&gt; return Ok(()),
+            Some(stdout) =&gt; stdout,
+        };
+        drop(stdout);
+        ...
+</code></pre>
+<p>I also just passed a mutable reference to the reader in the search code. The refactor wasn't too bad at all. The only tricky part I think was returning an error from closing only if the actual operation was successful, but still calling <code>close</code> even if the search returned an error.</p>
+<p>The most critical change I think was handling an error condition. Namely, when we close stdout before reading its entirety, that provokes a broken pipe error (usually via a signal). I don't know how to detect this portably by inspecting the error code, so instead, I assume it happens when: EOF hasn't been reached yet and when reading stderr produces no data.</p>
+<p>After all that, I can confirm that it fixes your reproduction. Thank you for that. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-30 01:36</div>
+            <div class="timeline-body"><p>Here's my updated commit: https://github.com/BurntSushi/ripgrep/commit/feb8dbc6a6e7f3df5a1a2ee8ab7d2825d2210a94</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-30 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/3point2">@3point2</a> on 2021-05-30 13:39</div>
+            <div class="timeline-body"><p>Thanks for picking that up @BurntSushi, I'm glad the refactor was easy!</p>
+<p>While I'm fine with closing this PR in favor of your ag/work branch, I want to point out that your heuristic approach to deal with the child process receiving a SIGPIPE probably isn't necessary. In my opinion it's the child's responsibility to handle SIGPIPE gracefully and all the common decompression child processes that rg runs by default should be well behaved in this respect. Check out <code>gzip</code> for example: I use bash's <code>pipefail</code> option to return the error code if any component of the pipe returns with nonzero status. You can see that <code>gzip</code> returns 0 even when <code>head</code> closes its stdout halfway.</p>
+<pre><code>[vasili@hal ~]$ false| cat
+[vasili@hal ~]$ echo $?
+0
+[vasili@hal ~]$ set -o pipefail
+[vasili@hal ~]$ false| cat
+[vasili@hal ~]$ echo $?
+1
+[vasili@hal ~]$ echo -e 'hello\nworld'| gzip &gt; test.gz
+[vasili@hal ~]$ gunzip -c test.gz | head -n1
+hello
+[vasili@hal ~]$ echo $?
+0
+</code></pre>
+<p>So my vote would be to leave the responsibility of gracefully handling SIGPIPE to the child process, which all compression utilities should do (I can test the remaining ones used by rg if you'd like). The heuristic you're suggesting says &quot;If you exit due to SIGPIPE and don't print anything to stderr I'm going to assume all was well', but that's not going to be a valid assumption in some cases. An application could exit with an error code without printing to stderr for reasons other than SIGPIPE - in that case rg will silently ignore the error and print misleading output. In my opinion between putting the burden on the child process to behave correctly vs. printing misleading output, I'd choose the former. As always happy to hear your thoughts on this  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-30 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I want to point out that your heuristic approach to deal with the child process receiving a SIGPIPE probably isn't necessary.</p>
+</blockquote>
+<p>Sorry, I probably didn't give full context. It is <em>empirically</em> necessary. I tried without it, and the error branch was triggered every time when using <code>gzip</code>. As far as I can tell, this is expected behavior: broken pipe surfaces as a signal by default, and this in turn makes its way into the code returned from reaping the child. This in turn means that <code>success()</code> returns false.</p>
+<p>If you have a better way of doing this, then I'm all ears. I'd recommend checking out my <code>ag/work</code> branch and testing it with and without the broken pipe handling heuristic.</p>
+<blockquote>
+<p>While I'm fine with closing this PR in favor of your ag/work branch</p>
+</blockquote>
+<p>Yeah once it comes in it will close this PR automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/3point2">@3point2</a> on 2021-06-06 14:00</div>
+            <div class="timeline-body"><p>Hi again @BurntSushi, I'm a bit late, but I've taken a closer look at this. You are right, my test in my last comment showing that gzip would exit with code 0 (success) when stdout is closed was incorrect. The test.gz file I created was very small, so gunzip was able to successfully write all of it to the pipe's buffer before exiting. Using a larger test.gz file shows that gzip in fact exits with code 141 (which is 128 plus 13 which is SIGPIPE - that's how bash constructs the exit code when a process terminates from a signal).</p>
+<pre><code>[vasili@hal ~]$ set -o pipefail
+[vasili@hal ~]$ yes | head -n 100000 &gt; test
+[vasili@hal ~]$ gzip test 
+[vasili@hal ~]$ gunzip -c test.gz | head -n1
+y
+[vasili@hal ~]$ echo $?
+141
+</code></pre>
+<p>I took a quick look at the <a href="https://git.savannah.gnu.org/cgit/gzip.git/tree/gzip.c">gzip source code</a> and interestingly it does handle SIGPIPE under certain circumstances - one way to get it to do that is to run it with -q:</p>
+<pre><code>[vasili@hal ~]$ gunzip -q -c test.gz | head -n1
+y
+[vasili@hal ~]$ echo $?
+2
+</code></pre>
+<p>The exit code is 2 which, although still nonzero, represents a warning not an error, so rg could safely ignore it.</p>
+<p>The problem with that approach is that the various decompression utilities that rg runs don't all behave the same way - rg would have to know the acceptable non-zero return codes for each (if any), which is a bit of pain, not to mention not having that information for any command given to --pre. (I suppose an --ignore-precmd-rc option or similar could allow the user to supply that).</p>
+<p>After thinking a bit more about the problem, I realized that all the above might be completetly redundant: When ripgrep closes stdout on a child process, that means it has already found what the user looking for. One could make the argument that this is enough of a success to <em>completely</em> ignore the return code of the child process after closing its stdout. I haven't read the source code to check that this holds in all cases (especially inverted matching), but if it did you could just remove the existing heuristic and always return <code>Ok(())</code> when <code>!self.eof</code> in CommandReader::close.</p>
+<p>Having said all that, the existing heuristic will probably work well enough in practice. Thanks for working with me on this PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-06 14:39</div>
+            <div class="timeline-body"><p>That's a good insight! I think I like it. I think I'll stick with the existing heuristic since it's a bit more aggressive with reporting failures than the approach of always dropping them. And whenever possible, I'd like to report failures to make debugging easier.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make handling of patterns containing a `/` match actual git behaviour - BurntSushi/ripgrep #762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make handling of patterns containing a <code>/</code> match actual git behaviour</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/762">#762</a>
+        opened by <a href="https://github.com/okdana">@okdana</a>
+        on 2018-01-27 03:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
+            <div class="timeline-body"><p>Fixes #761</p>
+<p>This is kind of a scary change, but it <em>seems</em> right...?</p>
+<p>Per the unit tests, the <code>ignore</code> crate assumes that <code>bar/*.rs</code> should match both <code>bar/main.rs</code> and <code>foo/bar/main.rs</code>. However, the <code>gitignore</code> documentation seems to state very clearly that it should <em>not</em> behave this way:</p>
+<blockquote>
+<p>Otherwise [if the pattern contains a slash], Git treats the pattern as a shell glob suitable for consumption by fnmatch(3) with the FNM_PATHNAME flag: wildcards in the pattern will not match a / in the pathname. <strong>For example, &quot;Documentation/*.html&quot; matches &quot;Documentation/git.html&quot; but not &quot;Documentation/ppc/ppc.html&quot; or &quot;tools/perf/Documentation/perf.html&quot;.</strong></p>
+</blockquote>
+<p>The real-world behaviour of git 2.16.1 is consistent with this.</p>
+<p>Looking at the <code>ignore</code> unit tests, the test patterns borrowed from <a href="https://github.com/behnam/gitignore-test">behnam/gitignore-test</a> seem to have made this assumption as well:</p>
+<pre><code># NO_MATCH
+dir_deep_02/*
+
+# NO_MATCH
+dir_deep_03/**
+</code></pre>
+<p>Both patterns say <code>NO_MATCH</code>, but the unit tests designed for them <em>do</em> in fact expect a match. I don't see any comments anywhere that explain why it should be different, so i'm guessing it wasn't an intentional design decision or anything.</p>
+<p>Anyway, <em>without</em> this change, if you check out the <code>gitignore-test</code> repo, build the file tree, and then compare <code>rg --files</code> to <code>git add . &amp;&amp; git status</code>, you'll see that <code>rg</code> is missing the two matches for those directories. <em>With</em> the change, they both match exactly the same files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2018-01-29 19:09</div>
+            <div class="timeline-body"><p>You are indeed correct that this is a scary change! But I cannot find any holes in your analysis or implementation, so I'm happy to go with it. We do have reasonably good test coverage here and a good history of adding regression tests, so my fear is somewhat tempered. :-)</p>
+<p>Thanks so much for taking a deep dive on this and figuring it out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2018-01-29 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-29 19:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:58 UTC
+    </footer>
+</body>
+</html>

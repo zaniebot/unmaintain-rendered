@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an `only-capture` flag for printing only the text in the specified capture group - BurntSushi/ripgrep #714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an <code>only-capture</code> flag for printing only the text in the specified capture group</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/714">#714</a>
+        opened by <a href="https://github.com/markprzepiora">@markprzepiora</a>
+        on 2017-12-15 03:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/markprzepiora">@markprzepiora</a></div>
+            <div class="timeline-body"><p>This is the first Rust code I've ever written so I apologize in advance if it's horrible.</p>
+<p>This option implies <code>--only-matching</code>, and will result in only the given capture group (specified by its number) being printed.</p>
+<p>I often find myself wanting this functionality in <code>rg</code>/<code>ag</code>/<code>ack</code>... I can imitate <em>some</em> use-cases with look-behinds/look-aheads, but not all. (Look-aheads and look-behinds need to be fixed-length, in particular.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-12-15 03:12</div>
+            <div class="timeline-body"><p>Are you familiar with the <code>--replace</code> option? It can do this (and more). I'm on mobile but it's something like:</p>
+<pre><code>rg --replace '$1' '.*foo(bar)baz.*'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markprzepiora">@markprzepiora</a> on 2017-12-15 03:18</div>
+            <div class="timeline-body"><p>Oof, how embarrassing! How did I never know about this?</p>
+<p>Sorry to waste your time with this PR. :) At least I learned a little bit of Rust in the process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markprzepiora">@markprzepiora</a> on 2017-12-15 03:20</div>
+            <div class="timeline-body"><p>(In my defence, it looks like silver searcher doesn't have this option, which is what I was using until I found ripgrep recently, so that would explain why I didn't know about this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/printer.rs</code>:93 on 2017-12-18 13:11</div>
+            <div class="timeline-body"><p>For reference, this should probably be an <code>Option&lt;usize&gt;</code>, where <code>Some(0)</code> is equivalent to <code>--only-matching</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>src/printer.rs</code>:291 on 2017-12-18 13:14</div>
+            <div class="timeline-body"><p>This is interesting behavior. If the capture index doesn't exist in the match, then the result is to use the entire match? That doesn't feel quite right to me. It kind of feels like it should use an empty string. And in that case, the line emitted would be empty I guess, which feels a little weird but is consistent with <code>--only-matching</code> and <code>--replace</code> I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>tests/tests.rs</code>:1833 on 2017-12-18 13:15</div>
+            <div class="timeline-body"><p>I suspect we need more tests than this. In particular, the case of testing the use of a capture index that sometimes doesn't exist, depending on the match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-12-18 13:17</div>
+            <div class="timeline-body"><p>Thanks for this PR! It is an interesting feature. @okdana is of course correct in that the <code>--replace</code> flag already provides an avenue for achieving this. However, I do somewhat appreciate the UX of this particular flag, and I like its seeming parallel with <code>--only-matching</code>. @okdana What do you think about adding this? Is it worth it?</p>
+<p>Also, it looks like CI is failing because the docs need to be updated. (I think it would be nice to include something like the phrase &quot;<code>--only-capture 0</code> is equivalent to <code>--only-matching</code>.&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-12-18 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>@okdana What do you think about adding this? Is it worth it?</p>
+</blockquote>
+<p>There are two nice things about it compared to <code>--replace</code>, imo: It eliminates the need to explicitly surround the pattern by <code>.*</code> (which some users have seemed confused by), and, if granted the suggested short option, it's way easier to type:</p>
+<pre><code>rg --replace '$1' '.*(foo)bar.*'
+rg -O1 '(foo)bar'
+</code></pre>
+<p>~~(Personally i think the <code>--replace</code> option is so useful that it deserves its own short option, but that's another thing i guess)~~</p>
+<p>Edit: lol, it turns out <code>--replace</code> already has a short option. Whoops. Guess i should read the manual sometimes too. Still shorter though</p>
+<p>It doesn't seem like a huge maintenance burden either. I would probably use it once in a while, tbh</p>
+<p>The documentation and completion function need updated to reflect both the short and long options, if added, though (that seems to be why the CI failed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-18 21:30</div>
+            <div class="timeline-body"><p>@okdana Awesome, I think I agree. I also like the the idea of having a short flag for this too. <code>-O</code> doesn't appear to be used in grep, so I think it'd be OK to use that.</p>
+<p>@markprzepiora If you would like to respond to the feedback here and get this PR updated, then I think this can be merged!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markprzepiora">@markprzepiora</a> on 2017-12-19 18:34</div>
+            <div class="timeline-body"><p>Thanks for the feedback, everyone! :)</p>
+<p>I have a busy day at work for the next two days but I will grok the changes you requested and try to implement them Thursday evening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/beyondcompute">@beyondcompute</a> on 2018-01-22 15:32</div>
+            <div class="timeline-body"><p>Isn’t the same thing addressed in #593? ☺️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-29 21:17</div>
+            <div class="timeline-body"><p>@beyondcompute Indeed! <code>rg 'fn (\w+)' -or '$1'</code> does the expected thing. In light of that, I think I'm going to close this out. Documentation improvements to increase awareness of combining <code>--only-matching</code> and <code>--replace</code> would be great though. Thanks @markprzepiora for the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-29 21:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix a bug in literal extraction from exact-count repetition patterns - BurntSushi/ripgrep #1367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix a bug in literal extraction from exact-count repetition patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1367">#1367</a>
+        opened by <a href="https://github.com/jakubadamw">@jakubadamw</a>
+        on 2019-09-06 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jakubadamw">@jakubadamw</a></div>
+            <div class="timeline-body"><p>Closes #1319.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakubadamw">@jakubadamw</a> on 2019-09-06 21:31</div>
+            <div class="timeline-body"><p>I'll honestly say that I am not sure if this is the right fix. I just don't know the code. But this particular line looked suspicious.</p>
+<p>I did try to verify this empirically by writing <a href="https://github.com/jakubadamw/grep-searcher-fuzz-test/blob/master/src/main.rs">a fuzzer</a> to look out for more bugs by fuzz-feeding the <code>grep_matcher::RegexMatcher</code> with inputs derived from a particular regular expression with the <a href="https://crates.io/crates/regex_generate">regex_generate</a> crate, i.e. ones that by definition ought to match. As of this comment the fuzzer has not found any more failing cases (and it had found the one described in the bug). However, that still is no proof that this fix is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakubadamw">@jakubadamw</a> on 2019-09-06 21:44</div>
+            <div class="timeline-body"><p>One of the failing fuzz-generated cases of the sort related to this issue:</p>
+<pre><code>(lldb) p needle
+(alloc::string::String) $0 = &quot;TAACCCCGTTGTACAGTTGCAGCCGCA&quot;
+(lldb) p haystack
+(alloc::string::String) $1 = &quot;TTTTTTTTTTAACCCCGTTGTACAGTTGCAGCCGCATATTTTTTTTT&quot;
+(lldb) p regex_string
+(alloc::string::String) $2 = &quot;TAA[ATCG]{5,5}TTGTACAGTTGCAGCCGCA&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-02-17 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2020-02-17 18:17</div>
+            <div class="timeline-body"><p>Apologies for the delay, but thanks so much for this PR! I agree that this does fix the problem. I simplified this just a bit by just removing the <code>if n &lt; min {</code> check above and uncondionally running <code>lits.cut()</code>.</p>
+<p>This code is completely inscrutable, but the essence of the problem is that the literal detector was continuing the extension of literals when it shouldn't have been.</p>
+<p>I'll be merging this in #1486, where your commit message has grown a few details if you're curious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:28:09 UTC
+    </footer>
+</body>
+</html>

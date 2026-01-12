@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix invisible file path text in PowerShell - BurntSushi/ripgrep #557</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix invisible file path text in PowerShell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/557">#557</a>
+        opened by <a href="https://github.com/latkin">@latkin</a>
+        on 2017-07-16 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/latkin">@latkin</a></div>
+            <div class="timeline-body"><p>Fix for https://github.com/BurntSushi/ripgrep/issues/342</p>
+<p>Root cause is that the standard Windows PowerShell launch shortcut sets the console background color to &quot;dark magenta&quot;, then re-defines &quot;dark magenta&quot; as RGB(1, 36, 86) aka &quot;powershell noble blue.&quot; Thus if a console app writes output with &quot;dark magenta&quot; foreground color, it will be invisible in a default PowerShell console.</p>
+<p>Fix is to do a simple, Windows-only check for a &quot;dark magenta&quot; background at startup, and in this case change path output style to &quot;intense magenta,&quot; which will render fine.</p>
+<p>Result:</p>
+<p><img src="https://user-images.githubusercontent.com/5943573/28249015-2bcd8166-6a03-11e7-9990-c825daa12a0d.png" alt="image" /></p>
+<p>Potential concerns:</p>
+<ul>
+<li>Arg parsing now has to know about Windows console. That's not great but it was simplest path forward for me as a rust n00b.</li>
+<li>This will add &quot;intense&quot; styling to path output even when user has manually overridden the color themselves. Additional <code>path:style:nointense</code> will be needed to counteract this change.<ul>
+<li>Seems not terribly burdensome. By definition this will only affect users who are already comfortable overriding color settings.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>wincolor/src/win.rs</code>:100 on 2017-07-17 12:58</div>
+            <div class="timeline-body"><p>I'd rather not rename these methods, since that would be a breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-07-17 13:01</div>
+            <div class="timeline-body"><p>@latkin Thanks for doing this!</p>
+<p>I'm not sure if this is the path I necessarily want to go down. In particular, what do you think about just changing the default colors on Windows and removing the conditional check altogether? That way, we don't interfere with any specific user settings but we avoid the &quot;text is invisible&quot; problem by default.</p>
+<p>Tangentially, I did a lot of work to avoid making <code>wincolor</code> a direct dependency on ripgrep in an effort to hide that layer of abstraction. I'll bow to the alter of pragmatism if necessary, but I think I'd rather see if we can get away with just changing the defaults for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/latkin">@latkin</a> on 2017-07-17 20:22</div>
+            <div class="timeline-body"><p>@BurntSushi No problem, I understand your concerns. If you are ok with simply changing the Windows defaults, then that's even easier :-) I went with Cyan for now.</p>
+<p>PR udpated. New behavior:</p>
+<p><img src="https://user-images.githubusercontent.com/5943573/28288509-41f4a8b0-6af4-11e7-9639-2bd553247b8e.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2017-07-17 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-07-17 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-17 22:01</div>
+            <div class="timeline-body"><p>Fantastic, thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 18:27:52 UTC
+    </footer>
+</body>
+</html>
