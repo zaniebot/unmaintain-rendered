@@ -1,0 +1,38 @@
+```yaml
+number: 2549
+title: Avoid hang when detecting trailing comments
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/endless
+created_at: 2023-02-03T17:51:49Z
+updated_at: 2023-02-03T18:05:57Z
+url: https://github.com/astral-sh/ruff/pull/2549
+synced_at: 2026-01-12T04:52:00Z
+```
+
+# Avoid hang when detecting trailing comments
+
+---
+
+_Pull request opened by @charliermarsh on 2023-02-03 17:51_
+
+Closes #2523.
+
+---
+
+_Merged by @charliermarsh on 2023-02-03 18:05_
+
+---
+
+_Closed by @charliermarsh on 2023-02-03 18:05_
+
+---
+
+_Branch deleted on 2023-02-03 18:05_
+
+---
