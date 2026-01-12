@@ -1,0 +1,205 @@
+```yaml
+number: 7168
+title: Remove autofix for ambiguous unicode rules
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - fixes
+assignees: []
+merged: true
+base: main
+head: charlie/RUF001
+created_at: 2023-09-05T16:49:26Z
+updated_at: 2023-09-05T17:30:58Z
+url: https://github.com/astral-sh/ruff/pull/7168
+synced_at: 2026-01-12T02:45:38Z
+```
+
+# Remove autofix for ambiguous unicode rules
+
+---
+
+_Pull request opened by @charliermarsh on 2023-09-05 16:49_
+
+## Summary
+
+This has been the source of many bugs (via fuzzing and in practice). They're marked as manual, and we can always restore them later on if we want them to appear in code frames, but for now, I'd rather remove.
+
+Closes https://github.com/astral-sh/ruff/issues/7158.
+
+---
+
+_Review requested from @zanieb by @charliermarsh on 2023-09-05 16:49_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-09-05 16:49_
+
+---
+
+_@zanieb approved on 2023-09-05 16:56_
+
+---
+
+_Merged by @charliermarsh on 2023-09-05 17:22_
+
+---
+
+_Closed by @charliermarsh on 2023-09-05 17:22_
+
+---
+
+_Branch deleted on 2023-09-05 17:22_
+
+---
+
+_Comment by @github-actions[bot] on 2023-09-05 17:30_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+54, -54, 0 error(s))
+
+<details><summary>airflow (+23, -23)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/airflow/providers/google/cloud/hooks/bigquery.py#L262'>airflow/providers/google/cloud/hooks/bigquery.py:262:49:</a> RUF002 Docstring contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/airflow/providers/google/cloud/hooks/bigquery.py#L262'>airflow/providers/google/cloud/hooks/bigquery.py:262:49:</a> RUF002 [*] Docstring contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:21:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:21:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:22:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:22:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:27:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:27:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:28:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L47'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:47:28:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:21:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:21:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:22:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:22:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:27:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:27:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:28:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L64'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:64:28:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:21:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:21:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:22:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:22:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:27:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:27:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:28:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:28:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:43:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:43:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:44:</a> RUF001 String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:44:</a> RUF001 [*] String contains ambiguous `ˆ` (MODIFIER LETTER CIRCUMFLEX ACCENT). Did you mean `^` (CIRCUMFLEX ACCENT)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:49:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:49:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:50:</a> RUF001 String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py#L81'>tests/providers/cncf/kubernetes/test_kubernetes_helper_functions.py:81:50:</a> RUF001 [*] String contains ambiguous `˜` (SMALL TILDE). Did you mean `~` (TILDE)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1725'>tests/serialization/test_dag_serialization.py:1725:21:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1725'>tests/serialization/test_dag_serialization.py:1725:21:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1726'>tests/serialization/test_dag_serialization.py:1726:19:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1726'>tests/serialization/test_dag_serialization.py:1726:19:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1729'>tests/serialization/test_dag_serialization.py:1729:26:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1729'>tests/serialization/test_dag_serialization.py:1729:26:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1732'>tests/serialization/test_dag_serialization.py:1732:19:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1732'>tests/serialization/test_dag_serialization.py:1732:19:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1735'>tests/serialization/test_dag_serialization.py:1735:27:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1735'>tests/serialization/test_dag_serialization.py:1735:27:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
++ <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1736'>tests/serialization/test_dag_serialization.py:1736:25:</a> RUF001 String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+- <a href='https://github.com/apache/airflow/blob/5e6e107f733df9d0130fb0e89d975b35f08fb911/tests/serialization/test_dag_serialization.py#L1736'>tests/serialization/test_dag_serialization.py:1736:25:</a> RUF001 [*] String contains ambiguous `╱` (BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT). Did you mean `/` (SOLIDUS)?
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+2, -2)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/3348f65bb545a16523942cbb751ea7384556c53b/examples/plotting/histogram.py#L44'>examples/plotting/histogram.py:44:43:</a> RUF001 String contains ambiguous `σ` (GREEK SMALL LETTER SIGMA). Did you mean `o` (LATIN SMALL LETTER O)?
+- <a href='https://github.com/bokeh/bokeh/blob/3348f65bb545a16523942cbb751ea7384556c53b/examples/plotting/histogram.py#L44'>examples/plotting/histogram.py:44:43:</a> RUF001 [*] String contains ambiguous `σ` (GREEK SMALL LETTER SIGMA). Did you mean `o` (LATIN SMALL LETTER O)?
++ <a href='https://github.com/bokeh/bokeh/blob/3348f65bb545a16523942cbb751ea7384556c53b/examples/plotting/histogram.py#L57'>examples/plotting/histogram.py:57:47:</a> RUF001 String contains ambiguous `σ` (GREEK SMALL LETTER SIGMA). Did you mean `o` (LATIN SMALL LETTER O)?
+- <a href='https://github.com/bokeh/bokeh/blob/3348f65bb545a16523942cbb751ea7384556c53b/examples/plotting/histogram.py#L57'>examples/plotting/histogram.py:57:47:</a> RUF001 [*] String contains ambiguous `σ` (GREEK SMALL LETTER SIGMA). Did you mean `o` (LATIN SMALL LETTER O)?
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+29, -29)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/docs/conf.py#L23'>docs/conf.py:23:18:</a> RUF001 String contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/docs/conf.py#L23'>docs/conf.py:23:18:</a> RUF001 [*] String contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/docs/conf.py#L23'>docs/conf.py:23:43:</a> RUF001 String contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/docs/conf.py#L23'>docs/conf.py:23:43:</a> RUF001 [*] String contains ambiguous `–` (EN DASH). Did you mean `-` (HYPHEN-MINUS)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/scripts/lib/zulip_tools.py#L49'>scripts/lib/zulip_tools.py:49:22:</a> RUF003 Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/scripts/lib/zulip_tools.py#L49'>scripts/lib/zulip_tools.py:49:22:</a> RUF003 [*] Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/tools/lib/provision.py#L460'>tools/lib/provision.py:460:68:</a> RUF003 Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/tools/lib/provision.py#L460'>tools/lib/provision.py:460:68:</a> RUF003 [*] Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/actions/message_send.py#L232'>zerver/actions/message_send.py:232:18:</a> RUF003 Comment contains ambiguous ` ` (NO-BREAK SPACE). Did you mean ` ` (SPACE)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/actions/message_send.py#L232'>zerver/actions/message_send.py:232:18:</a> RUF003 [*] Comment contains ambiguous ` ` (NO-BREAK SPACE). Did you mean ` ` (SPACE)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/lib/onboarding.py#L237'>zerver/lib/onboarding.py:237:23:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/lib/onboarding.py#L237'>zerver/lib/onboarding.py:237:23:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/lib/rate_limiter.py#L431'>zerver/lib/rate_limiter.py:431:51:</a> RUF003 Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/lib/rate_limiter.py#L431'>zerver/lib/rate_limiter.py:431:51:</a> RUF003 [*] Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L103'>zerver/tests/test_i18n.py:103:33:</a> RUF001 String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L103'>zerver/tests/test_i18n.py:103:33:</a> RUF001 [*] String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L103'>zerver/tests/test_i18n.py:103:34:</a> RUF001 String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L103'>zerver/tests/test_i18n.py:103:34:</a> RUF001 [*] String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L115'>zerver/tests/test_i18n.py:115:33:</a> RUF001 String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L115'>zerver/tests/test_i18n.py:115:33:</a> RUF001 [*] String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L115'>zerver/tests/test_i18n.py:115:34:</a> RUF001 String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L115'>zerver/tests/test_i18n.py:115:34:</a> RUF001 [*] String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L131'>zerver/tests/test_i18n.py:131:33:</a> RUF001 String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L131'>zerver/tests/test_i18n.py:131:33:</a> RUF001 [*] String contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L131'>zerver/tests/test_i18n.py:131:34:</a> RUF001 String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_i18n.py#L131'>zerver/tests/test_i18n.py:131:34:</a> RUF001 [*] String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_tutorial.py#L168'>zerver/tests/test_tutorial.py:168:19:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/tests/test_tutorial.py#L168'>zerver/tests/test_tutorial.py:168:19:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/views/video_calls.py#L73'>zerver/views/video_calls.py:73:38:</a> RUF003 Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/views/video_calls.py#L73'>zerver/views/video_calls.py:73:38:</a> RUF003 [*] Comment contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L220'>zerver/webhooks/jira/tests.py:220:154:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L220'>zerver/webhooks/jira/tests.py:220:154:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L220'>zerver/webhooks/jira/tests.py:220:176:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L220'>zerver/webhooks/jira/tests.py:220:176:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L225'>zerver/webhooks/jira/tests.py:225:141:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L225'>zerver/webhooks/jira/tests.py:225:141:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L225'>zerver/webhooks/jira/tests.py:225:163:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L225'>zerver/webhooks/jira/tests.py:225:163:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L230'>zerver/webhooks/jira/tests.py:230:185:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L230'>zerver/webhooks/jira/tests.py:230:185:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L235'>zerver/webhooks/jira/tests.py:235:187:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/jira/tests.py#L235'>zerver/webhooks/jira/tests.py:235:187:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L105'>zerver/webhooks/lidarr/tests.py:105:6:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L105'>zerver/webhooks/lidarr/tests.py:105:6:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L109'>zerver/webhooks/lidarr/tests.py:109:13:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L109'>zerver/webhooks/lidarr/tests.py:109:13:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L130'>zerver/webhooks/lidarr/tests.py:130:11:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L130'>zerver/webhooks/lidarr/tests.py:130:11:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L136'>zerver/webhooks/lidarr/tests.py:136:6:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L136'>zerver/webhooks/lidarr/tests.py:136:6:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L140'>zerver/webhooks/lidarr/tests.py:140:13:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L140'>zerver/webhooks/lidarr/tests.py:140:13:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L75'>zerver/webhooks/lidarr/tests.py:75:8:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L75'>zerver/webhooks/lidarr/tests.py:75:8:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L99'>zerver/webhooks/lidarr/tests.py:99:11:</a> RUF001 String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/lidarr/tests.py#L99'>zerver/webhooks/lidarr/tests.py:99:11:</a> RUF001 [*] String contains ambiguous `’` (RIGHT SINGLE QUOTATION MARK). Did you mean ``` (GRAVE ACCENT)?
++ <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/slack_incoming/tests.py#L155'>zerver/webhooks/slack_incoming/tests.py:155:1:</a> RUF001 String contains ambiguous `➕` (HEAVY PLUS SIGN). Did you mean `+` (PLUS SIGN)?
+- <a href='https://github.com/zulip/zulip/blob/81bd63cb46273b8c94ef9e92c00893ed97110119/zerver/webhooks/slack_incoming/tests.py#L155'>zerver/webhooks/slack_incoming/tests.py:155:1:</a> RUF001 [*] String contains ambiguous `➕` (HEAVY PLUS SIGN). Did you mean `+` (PLUS SIGN)?
+</pre>
+
+</p>
+</details>
+Rules changed: 3
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RUF001 | 96 | 48 | 48 |
+| RUF003 | 10 | 5 | 5 |
+| RUF002 | 2 | 1 | 1 |
+
+
+
+---

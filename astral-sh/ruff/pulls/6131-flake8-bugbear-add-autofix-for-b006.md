@@ -1,0 +1,244 @@
+```yaml
+number: 6131
+title: "[`flake8-bugbear`] Add autofix for B006"
+type: pull_request
+state: merged
+author: qdegraaf
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: autofix/B006
+created_at: 2023-07-27T16:10:35Z
+updated_at: 2023-08-29T18:31:57Z
+url: https://github.com/astral-sh/ruff/pull/6131
+synced_at: 2026-01-12T02:45:38Z
+```
+
+# [`flake8-bugbear`] Add autofix for B006
+
+---
+
+_Pull request opened by @qdegraaf on 2023-07-27 16:10_
+
+## Summary
+
+Reopening of https://github.com/astral-sh/ruff/pull/4880 
+
+One open TODO as described in: https://github.com/astral-sh/ruff/pull/4880#discussion_r1265110215 
+
+FYI @charliermarsh seeing as you commented you wanted to do final review and merge. @konstin @dhruvmanila @MichaReiser as previous reviewers.
+
+# Old Description
+## Summary
+
+Adds an autofix for B006 turning mutable argument defaults into None and setting their original value back in the function body if still `None` at runtime like so:
+```python
+def before(x=[]):
+    pass
+    
+def after(x=None):
+    if x is None:
+        x = []
+    pass
+```
+
+## Test Plan
+
+Added an extra test case to existing fixture with more indentation. Checked results for all old examples.
+
+NOTE: Also adapted the jupyter notebook test as this checked for B006 as well.
+
+## Issue link
+
+Closes: https://github.com/charliermarsh/ruff/issues/4693
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-27 16:41_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+44, -44, 0 error(s))
+
+<details><summary>airflow (+10, -10)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/models/dag.py#L2114'>airflow/models/dag.py:2114:30:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/models/dag.py#L2114'>airflow/models/dag.py:2114:30:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/operators/lambda_function.py#L76'>airflow/providers/amazon/aws/operators/lambda_function.py:76:24:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/operators/lambda_function.py#L76'>airflow/providers/amazon/aws/operators/lambda_function.py:76:24:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/sensors/lambda_function.py#L59'>airflow/providers/amazon/aws/sensors/lambda_function.py:59:31:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/sensors/lambda_function.py#L59'>airflow/providers/amazon/aws/sensors/lambda_function.py:59:31:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py#L93'>airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py:93:33:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py#L93'>airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py:93:33:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py#L94'>airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py:94:31:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py#L94'>airflow/providers/amazon/aws/transfers/azure_blob_to_s3.py:94:31:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/redshift_to_s3.py#L106'>airflow/providers/amazon/aws/transfers/redshift_to_s3.py:106:42:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/redshift_to_s3.py#L106'>airflow/providers/amazon/aws/transfers/redshift_to_s3.py:106:42:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/s3_to_redshift.py#L99'>airflow/providers/amazon/aws/transfers/s3_to_redshift.py:99:42:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/providers/amazon/aws/transfers/s3_to_redshift.py#L99'>airflow/providers/amazon/aws/transfers/s3_to_redshift.py:99:42:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/utils/event_scheduler.py#L32'>airflow/utils/event_scheduler.py:32:16:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/airflow/utils/event_scheduler.py#L32'>airflow/utils/event_scheduler.py:32:16:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/tests/api_connexion/endpoints/test_mapped_task_instance_endpoint.py#L93'>tests/api_connexion/endpoints/test_mapped_task_instance_endpoint.py:93:74:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/tests/api_connexion/endpoints/test_mapped_task_instance_endpoint.py#L93'>tests/api_connexion/endpoints/test_mapped_task_instance_endpoint.py:93:74:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/tests/conftest.py#L721'>tests/conftest.py:721:25:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/apache/airflow/blob/369b9bc947215d396570b06c3a5e7b982f234e76/tests/conftest.py#L721'>tests/conftest.py:721:25:</a> B006 [*] Do not use mutable data structures for argument defaults
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+34, -34)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/interaction/js_callbacks/js_on_event.py#L15'>examples/interaction/js_callbacks/js_on_event.py:15:53:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/interaction/js_callbacks/js_on_event.py#L15'>examples/interaction/js_callbacks/js_on_event.py:15:53:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/server/app/events_app.py#L16'>examples/server/app/events_app.py:16:35:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/server/app/events_app.py#L16'>examples/server/app/events_app.py:16:35:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/server/app/events_app.py#L38'>examples/server/app/events_app.py:38:28:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/examples/server/app/events_app.py#L38'>examples/server/app/events_app.py:38:28:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/code.py#L82'>src/bokeh/application/handlers/code.py:82:78:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/code.py#L82'>src/bokeh/application/handlers/code.py:82:78:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/directory.py#L110'>src/bokeh/application/handlers/directory.py:110:65:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/directory.py#L110'>src/bokeh/application/handlers/directory.py:110:65:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/notebook.py#L66'>src/bokeh/application/handlers/notebook.py:66:65:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/notebook.py#L66'>src/bokeh/application/handlers/notebook.py:66:65:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/script.py#L80'>src/bokeh/application/handlers/script.py:80:65:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/script.py#L80'>src/bokeh/application/handlers/script.py:80:65:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/server_lifecycle.py#L55'>src/bokeh/application/handlers/server_lifecycle.py:55:65:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/server_lifecycle.py#L55'>src/bokeh/application/handlers/server_lifecycle.py:55:65:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/server_request_handler.py#L57'>src/bokeh/application/handlers/server_request_handler.py:57:65:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/application/handlers/server_request_handler.py#L57'>src/bokeh/application/handlers/server_request_handler.py:57:65:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/json_encoder.py#L178'>src/bokeh/core/json_encoder.py:178:51:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/json_encoder.py#L178'>src/bokeh/core/json_encoder.py:178:51:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L123'>src/bokeh/core/property/container.py:123:82:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L123'>src/bokeh/core/property/container.py:123:82:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L150'>src/bokeh/core/property/container.py:150:82:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L150'>src/bokeh/core/property/container.py:150:82:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L189'>src/bokeh/core/property/container.py:189:32:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L189'>src/bokeh/core/property/container.py:189:32:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L297'>src/bokeh/core/property/container.py:297:32:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L297'>src/bokeh/core/property/container.py:297:32:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L310'>src/bokeh/core/property/container.py:310:66:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/container.py#L310'>src/bokeh/core/property/container.py:310:66:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/visual.py#L133'>src/bokeh/core/property/visual.py:133:32:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/visual.py#L133'>src/bokeh/core/property/visual.py:133:32:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/visual.py#L92'>src/bokeh/core/property/visual.py:92:32:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/visual.py#L92'>src/bokeh/core/property/visual.py:92:32:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/wrappers.py#L404'>src/bokeh/core/property/wrappers.py:404:37:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/property/wrappers.py#L404'>src/bokeh/core/property/wrappers.py:404:37:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/serialization.py#L217'>src/bokeh/core/serialization.py:217:52:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/core/serialization.py#L217'>src/bokeh/core/serialization.py:217:52:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L108'>src/bokeh/embed/bundle.py:108:46:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L108'>src/bokeh/embed/bundle.py:108:46:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L108'>src/bokeh/embed/bundle.py:108:70:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L108'>src/bokeh/embed/bundle.py:108:70:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:36:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:36:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:61:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:61:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:82:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/bundle.py#L109'>src/bokeh/embed/bundle.py:109:82:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/elements.py#L84'>src/bokeh/embed/elements.py:84:46:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/elements.py#L84'>src/bokeh/embed/elements.py:84:46:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/server.py#L130'>src/bokeh/embed/server.py:130:114:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/server.py#L130'>src/bokeh/embed/server.py:130:114:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/standalone.py#L299'>src/bokeh/embed/standalone.py:299:52:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/embed/standalone.py#L299'>src/bokeh/embed/standalone.py:299:52:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/layouts.py#L367'>src/bokeh/layouts.py:367:26:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/layouts.py#L367'>src/bokeh/layouts.py:367:26:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/plotting/_renderer.py#L144'>src/bokeh/plotting/_renderer.py:144:56:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/plotting/_renderer.py#L144'>src/bokeh/plotting/_renderer.py:144:56:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/plotting/_renderer.py#L144'>src/bokeh/plotting/_renderer.py:144:78:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/src/bokeh/plotting/_renderer.py#L144'>src/bokeh/plotting/_renderer.py:144:78:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/support/util/examples.py#L77'>tests/support/util/examples.py:77:90:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/support/util/examples.py#L77'>tests/support/util/examples.py:77:90:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/models/_util_models.py#L87'>tests/unit/bokeh/models/_util_models.py:87:127:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/models/_util_models.py#L87'>tests/unit/bokeh/models/_util_models.py:87:127:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/server/_util_server.py#L66'>tests/unit/bokeh/server/_util_server.py:66:35:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/server/_util_server.py#L66'>tests/unit/bokeh/server/_util_server.py:66:35:</a> B006 [*] Do not use mutable data structures for argument defaults
+- <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/test_events.py#L43'>tests/unit/bokeh/test_events.py:43:35:</a> B006 Do not use mutable data structures for argument defaults
++ <a href='https://github.com/bokeh/bokeh/blob/ef355aa3fe8861aaf78732617d1f082aed4aed6f/tests/unit/bokeh/test_events.py#L43'>tests/unit/bokeh/test_events.py:43:35:</a> B006 [*] Do not use mutable data structures for argument defaults
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| B006 | 88 | 44 | 44 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.2±0.04ms     4.9 MB/sec    1.01      8.4±0.18ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1644.3±30.97µs    10.1 MB/sec    1.01  1653.8±18.73µs    10.1 MB/sec
+formatter/numpy/globals.py                 1.00    186.9±6.73µs    15.8 MB/sec    1.01    187.9±6.92µs    15.7 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.08ms     7.3 MB/sec    1.01      3.5±0.04ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.1±0.06ms     4.0 MB/sec    1.00     10.1±0.11ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    384.0±1.86µs     7.7 MB/sec    1.01    386.6±0.55µs     7.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.3±0.06ms     4.8 MB/sec    1.00      5.3±0.03ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.3±0.02ms     7.7 MB/sec    1.00      5.3±0.05ms     7.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1149.4±12.89µs    14.5 MB/sec    1.00  1146.0±13.74µs    14.5 MB/sec
+linter/default-rules/numpy/globals.py      1.01    134.1±4.61µs    22.0 MB/sec    1.00    133.1±2.69µs    22.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.4±0.04ms    10.6 MB/sec    1.00      2.4±0.03ms    10.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01     10.0±0.10ms     4.1 MB/sec    1.00      9.9±0.10ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1919.8±22.18µs     8.7 MB/sec    1.00  1910.8±23.09µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.00    213.9±6.06µs    13.8 MB/sec    1.00    214.5±9.59µs    13.8 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.07ms     6.0 MB/sec    1.00      4.2±0.12ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.10ms     3.3 MB/sec    1.01     12.6±0.15ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.03ms     4.9 MB/sec    1.00      3.4±0.04ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    429.0±5.52µs     6.9 MB/sec    1.01    431.8±8.86µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.06ms     3.9 MB/sec    1.00      6.5±0.08ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.06ms     6.0 MB/sec    1.00      6.8±0.16ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1411.9±17.78µs    11.8 MB/sec    1.00  1408.6±18.73µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.01    163.2±3.37µs    18.1 MB/sec    1.00    161.6±2.84µs    18.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.04ms     8.4 MB/sec    1.00      3.0±0.03ms     8.4 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `rule` added by @MichaReiser on 2023-07-28 06:18_
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2023-07-28 06:18_
+
+---
+
+_@konstin approved on 2023-08-10 10:25_
+
+---
+
+_Comment by @konstin on 2023-08-10 10:56_
+
+I've rebased onto main
+
+---
+
+_Merged by @konstin on 2023-08-10 11:06_
+
+---
+
+_Closed by @konstin on 2023-08-10 11:06_
+
+---
+
+_Branch deleted on 2023-08-29 18:31_
+
+---

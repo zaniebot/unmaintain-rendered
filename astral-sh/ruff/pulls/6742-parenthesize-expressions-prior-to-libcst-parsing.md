@@ -1,0 +1,294 @@
+```yaml
+number: 6742
+title: Parenthesize expressions prior to LibCST parsing
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/parens
+created_at: 2023-08-21T22:28:31Z
+updated_at: 2023-08-22T17:57:21Z
+url: https://github.com/astral-sh/ruff/pull/6742
+synced_at: 2026-01-12T02:45:38Z
+```
+
+# Parenthesize expressions prior to LibCST parsing
+
+---
+
+_Pull request opened by @charliermarsh on 2023-08-21 22:28_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+This PR adds a utility for transforming expressions via LibCST that automatically wraps the expression in parentheses, applies a user-provided transformation, then strips the parentheses from the generated code. LibCST can't parse arbitrary expression ranges, since some expressions may require parenthesization in order to be parsed properly.  For example:
+
+```python
+option = (
+    '{name}={value}'
+    .format(nam=name, value=value)
+)
+```
+
+In this case, the expression range is:
+
+```python
+'{name}={value}'
+    .format(nam=name, value=value)
+```
+
+Which isn't valid on its own. So, instead, we add "fake" parentheses around the expression.
+
+We were already doing this in a few places, so this is mostly formalizing and DRYing up that pattern.
+
+Closes https://github.com/astral-sh/ruff/issues/6720.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-21 22:29_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pyupgrade/rules/format_literals.rs`:206 on 2023-08-21 22:30_
+
+I spent a long time trying to get this to work and ultimately gave up.
+
+---
+
+_@charliermarsh reviewed on 2023-08-21 22:30_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-21 22:43_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+31, -31, 0 error(s))
+
+<details><summary>airflow (+31, -31)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_basic_helm_chart.py#L572'>helm_tests/airflow_aux/test_basic_helm_chart.py:572:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_basic_helm_chart.py#L572'>helm_tests/airflow_aux/test_basic_helm_chart.py:572:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_basic_helm_chart.py#L585'>helm_tests/airflow_aux/test_basic_helm_chart.py:585:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_basic_helm_chart.py#L585'>helm_tests/airflow_aux/test_basic_helm_chart.py:585:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_cleanup_pods.py#L267'>helm_tests/airflow_aux/test_cleanup_pods.py:267:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_cleanup_pods.py#L267'>helm_tests/airflow_aux/test_cleanup_pods.py:267:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_cleanup_pods.py#L274'>helm_tests/airflow_aux/test_cleanup_pods.py:274:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_cleanup_pods.py#L274'>helm_tests/airflow_aux/test_cleanup_pods.py:274:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_configmap.py#L85'>helm_tests/airflow_aux/test_configmap.py:85:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/airflow_aux/test_configmap.py#L85'>helm_tests/airflow_aux/test_configmap.py:85:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/other/test_pgbouncer.py#L582'>helm_tests/other/test_pgbouncer.py:582:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/other/test_pgbouncer.py#L582'>helm_tests/other/test_pgbouncer.py:582:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_elasticsearch_secret.py#L99'>helm_tests/security/test_elasticsearch_secret.py:99:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_elasticsearch_secret.py#L99'>helm_tests/security/test_elasticsearch_secret.py:99:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L125'>helm_tests/security/test_metadata_connection_secret.py:125:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L125'>helm_tests/security/test_metadata_connection_secret.py:125:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L57'>helm_tests/security/test_metadata_connection_secret.py:57:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L57'>helm_tests/security/test_metadata_connection_secret.py:57:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L67'>helm_tests/security/test_metadata_connection_secret.py:67:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L67'>helm_tests/security/test_metadata_connection_secret.py:67:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L80'>helm_tests/security/test_metadata_connection_secret.py:80:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_metadata_connection_secret.py#L80'>helm_tests/security/test_metadata_connection_secret.py:80:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_result_backend_connection_secret.py#L143'>helm_tests/security/test_result_backend_connection_secret.py:143:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_result_backend_connection_secret.py#L143'>helm_tests/security/test_result_backend_connection_secret.py:143:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_result_backend_connection_secret.py#L207'>helm_tests/security/test_result_backend_connection_secret.py:207:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/security/test_result_backend_connection_secret.py#L207'>helm_tests/security/test_result_backend_connection_secret.py:207:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/webserver/test_webserver.py#L936'>helm_tests/webserver/test_webserver.py:936:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/helm_tests/webserver/test_webserver.py#L936'>helm_tests/webserver/test_webserver.py:936:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L785'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:785:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L785'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:785:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L806'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:806:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L806'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:806:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L834'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:834:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L834'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:834:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L879'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:879:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L879'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:879:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L897'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:897:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L897'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:897:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L924'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:924:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py#L924'>tests/providers/google/cloud/hooks/test_cloud_storage_transfer_service.py:924:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_life_sciences.py#L300'>tests/providers/google/cloud/hooks/test_life_sciences.py:300:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/hooks/test_life_sciences.py#L300'>tests/providers/google/cloud/hooks/test_life_sciences.py:300:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/operators/test_mlengine.py#L250'>tests/providers/google/cloud/operators/test_mlengine.py:250:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/operators/test_mlengine.py#L250'>tests/providers/google/cloud/operators/test_mlengine.py:250:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/operators/test_mlengine.py#L259'>tests/providers/google/cloud/operators/test_mlengine.py:259:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/cloud/operators/test_mlengine.py#L259'>tests/providers/google/cloud/operators/test_mlengine.py:259:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/firebase/hooks/test_firestore.py#L243'>tests/providers/google/firebase/hooks/test_firestore.py:243:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/providers/google/firebase/hooks/test_firestore.py#L243'>tests/providers/google/firebase/hooks/test_firestore.py:243:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L275'>tests/www/test_utils.py:275:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L275'>tests/www/test_utils.py:275:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L289'>tests/www/test_utils.py:289:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L289'>tests/www/test_utils.py:289:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L305'>tests/www/test_utils.py:305:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L305'>tests/www/test_utils.py:305:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L333'>tests/www/test_utils.py:333:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L333'>tests/www/test_utils.py:333:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L354'>tests/www/test_utils.py:354:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L354'>tests/www/test_utils.py:354:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L372'>tests/www/test_utils.py:372:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L372'>tests/www/test_utils.py:372:13:</a> SIM300 [*] Yoda conditions are discouraged
+- <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L401'>tests/www/test_utils.py:401:13:</a> SIM300 Yoda conditions are discouraged
++ <a href='https://github.com/apache/airflow/blob/62b917a6ac61fd6882c377e3b04f72d908f52a58/tests/www/test_utils.py#L401'>tests/www/test_utils.py:401:13:</a> SIM300 [*] Yoda conditions are discouraged
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| SIM300 | 62 | 31 | 31 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      4.0±0.03ms    10.2 MB/sec    1.00      3.9±0.05ms    10.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00    845.5±4.18µs    19.7 MB/sec    1.00    849.2±7.90µs    19.6 MB/sec
+formatter/numpy/globals.py                 1.00     90.9±0.82µs    32.4 MB/sec    1.01     91.7±0.79µs    32.2 MB/sec
+formatter/pydantic/types.py                1.00   1650.6±8.32µs    15.5 MB/sec    1.00  1658.6±25.75µs    15.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.5±0.20ms     3.5 MB/sec    1.03     11.9±0.25ms     3.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.2±0.06ms     5.2 MB/sec    1.00      3.2±0.03ms     5.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    451.0±8.90µs     6.5 MB/sec    1.01    453.7±6.02µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.2±0.13ms     4.1 MB/sec    1.00      6.1±0.12ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.2±0.09ms     6.6 MB/sec    1.02      6.3±0.05ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1407.4±24.20µs    11.8 MB/sec    1.00  1410.3±23.86µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.2±1.64µs    17.9 MB/sec    1.00    166.0±2.39µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.07ms     9.1 MB/sec    1.03      2.9±0.03ms     8.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      2.8±0.03ms    14.4 MB/sec    1.01      2.8±0.04ms    14.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00    561.9±6.41µs    29.6 MB/sec    1.01    566.2±6.39µs    29.4 MB/sec
+formatter/numpy/globals.py                 1.00     55.4±0.55µs    53.3 MB/sec    1.02     56.5±0.84µs    52.3 MB/sec
+formatter/pydantic/types.py                1.00  1168.6±15.15µs    21.8 MB/sec    1.01  1182.8±13.31µs    21.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.1±0.05ms     4.0 MB/sec    1.01     10.2±0.07ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.01      2.8±0.02ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    298.0±2.35µs     9.9 MB/sec    1.00    299.4±3.56µs     9.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.1±0.03ms     5.0 MB/sec    1.01      5.2±0.03ms     4.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.6±0.05ms     7.3 MB/sec    1.01      5.6±0.04ms     7.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1142.9±6.13µs    14.6 MB/sec    1.01   1157.4±7.57µs    14.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    121.1±1.03µs    24.4 MB/sec    1.01    122.4±1.30µs    24.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.4±0.02ms    10.5 MB/sec    1.01      2.5±0.01ms    10.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/cst/matchers.rs`:219 on 2023-08-22 06:29_
+
+```suggestion
+/// expression is not a valid standalone expression (e.g., it or any enclosing expression are parenthesized in the original
+/// source). This method instead wraps the expression in "fake" parentheses, runs the
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/cst/matchers.rs`:252 on 2023-08-22 06:30_
+
+I would expect this method to orchestrate the whole transformation: Meaning it 
+
+* should call `match_expression` on the source and pass the expression to `func`. Ideally, it would pass the unparenthesized expression, but I think this isn't possible because libCST stores the parenthesized as a field rather than having a separate `ParenthesizedExpression` node.
+* `func` mutates the expression and returns a new expression.
+* it calls `codegen`, returning the unparenthesized expression
+
+This may have the added benefit that it can remove the parentheses by mutating the CST rather than manipulating the returned string. 
+
+---
+
+_@MichaReiser approved on 2023-08-22 06:35_
+
+---
+
+_@charliermarsh reviewed on 2023-08-22 17:01_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/cst/matchers.rs`:252 on 2023-08-22 17:01_
+
+I structured it this way initially but I lost like an hour or two fighting lifetimes. Let me revisit...
+
+---
+
+_@charliermarsh reviewed on 2023-08-22 17:02_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/cst/matchers.rs`:252 on 2023-08-22 17:02_
+
+> This may have the added benefit that it can remove the parentheses by mutating the CST rather than manipulating the returned string.
+
+Unfortunately LibCST doesn't let you do this, AFAICT :(
+
+---
+
+_@charliermarsh reviewed on 2023-08-22 17:12_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/cst/matchers.rs`:252 on 2023-08-22 17:12_
+
+I can't for the life of me figure out how to make the lifetimes work. The issue is in `format_literals.rs` where we already have to use an Arena to solve weird lifetime problems. Now changing the signature of `transform_expression` gives me:
+
+```rust
+error[E0597]: `arena` does not live long enough
+   --> crates/ruff/src/rules/pyupgrade/rules/format_literals.rs:220:44
+    |
+210 |     let output = transform_ex(source_code, stylist, |mut expression| {
+    |                                                      -------------- has type `libcst_native::Expression<'1>`
+...
+219 |         let arena = typed_arena::Arena::new();
+    |             ----- binding `arena` declared here
+220 |         remove_specifiers(&mut item.value, &arena);
+    |         -----------------------------------^^^^^^-
+    |         |                                  |
+    |         |                                  borrowed value does not live long enough
+    |         argument requires that `arena` is borrowed for `'1`
+...
+223 |     })?;
+    |     - `arena` dropped here while still borrowed
+```
+
+I've tried moving the arena out of the closure, messing with lifetimes, etc.
+
+---
+
+_@charliermarsh reviewed on 2023-08-22 17:36_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/cst/matchers.rs`:252 on 2023-08-22 17:36_
+
+I was able to change this everywhere except `format_literals.rs`.
+
+---
+
+_Merged by @charliermarsh on 2023-08-22 17:45_
+
+---
+
+_Closed by @charliermarsh on 2023-08-22 17:45_
+
+---
+
+_Branch deleted on 2023-08-22 17:45_
+
+---

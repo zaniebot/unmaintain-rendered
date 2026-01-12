@@ -1,0 +1,209 @@
+```yaml
+number: 6691
+title: "Extend `repeated-equality-comparison-target` to check for mixed orderings and Yoda conditions."
+type: pull_request
+state: merged
+author: tjkuson
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: yoda-cond
+created_at: 2023-08-19T14:09:55Z
+updated_at: 2023-08-29T10:44:06Z
+url: https://github.com/astral-sh/ruff/pull/6691
+synced_at: 2026-01-12T02:45:38Z
+```
+
+# Extend `repeated-equality-comparison-target` to check for mixed orderings and Yoda conditions.
+
+---
+
+_Pull request opened by @tjkuson on 2023-08-19 14:09_
+
+## Summary
+
+Closes #5987. I am not convinced this is the most efficient way to do this, but it works.
+
+## Test Plan
+
+`cargo test`
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-19 14:28_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+16, -0, 0 error(s))
+
+<details><summary>airflow (+8, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/common/sql/operators/sql.py#L973'>airflow/providers/common/sql/operators/sql.py:973:16:</a> PLR1714 Consider merging multiple comparisons: `0 in (cur, ref)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/databricks/hooks/databricks_base.py#L498'>airflow/providers/databricks/hooks/databricks_base.py:498:16:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/databricks/hooks/databricks_base.py#L507'>airflow/providers/databricks/hooks/databricks_base.py:507:16:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/databricks/hooks/databricks_base.py#L526'>airflow/providers/databricks/hooks/databricks_base.py:526:16:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/databricks/hooks/databricks_base.py#L535'>airflow/providers/databricks/hooks/databricks_base.py:535:16:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/google/cloud/hooks/bigquery.py#L3281'>airflow/providers/google/cloud/hooks/bigquery.py:3281:16:</a> PLR1714 Consider merging multiple comparisons: `0 in (cur, ref)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/airflow/providers/google/cloud/triggers/bigquery.py#L358'>airflow/providers/google/cloud/triggers/bigquery.py:358:22:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/a54c2424df51bf1acec420f4792a237dabcfa12b/tests/providers/celery/executors/test_celery_executor.py#L179'>tests/providers/celery/executors/test_celery_executor.py:179:24:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+4, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/ed5f22bdc0e23a87436fac813090beb8a77f2d24/src/bokeh/io/export.py#L126'>src/bokeh/io/export.py:126:8:</a> PLR1714 Consider merging multiple comparisons: `0 in (image.width, image.height)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/ed5f22bdc0e23a87436fac813090beb8a77f2d24/src/bokeh/layouts.py#L450'>src/bokeh/layouts.py:450:20:</a> PLR1714 Consider merging multiple comparisons: `0 not in (child.nrows, child.ncols)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/ed5f22bdc0e23a87436fac813090beb8a77f2d24/src/bokeh/server/util.py#L236'>src/bokeh/server/util.py:236:12:</a> PLR1714 Consider merging multiple comparisons: `p in (h, '*')`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/ed5f22bdc0e23a87436fac813090beb8a77f2d24/src/bokeh/sphinxext/bokeh_sampledata_xref.py#L176'>src/bokeh/sphinxext/bokeh_sampledata_xref.py:176:16:</a> PLR1714 Consider merging multiple comparisons: `node.subfolder in ('all', sp[-2])`. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+4, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/3de007d9cd02ab30e82e00a821096b2946e7a4f7/zerver/actions/message_edit.py#L348'>zerver/actions/message_edit.py:348:9:</a> PLR1714 Consider merging multiple comparisons. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/3de007d9cd02ab30e82e00a821096b2946e7a4f7/zerver/forms.py#L96'>zerver/forms.py:96:8:</a> PLR1714 Consider merging multiple comparisons: `"-" in (subdomain[0], subdomain[-1])`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/3de007d9cd02ab30e82e00a821096b2946e7a4f7/zerver/lib/domains.py#L15'>zerver/lib/domains.py:15:8:</a> PLR1714 Consider merging multiple comparisons: `"." in (domain[0], domain[-1])`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/3de007d9cd02ab30e82e00a821096b2946e7a4f7/zerver/lib/domains.py#L20'>zerver/lib/domains.py:20:12:</a> PLR1714 Consider merging multiple comparisons: `"-" in (subdomain[0], subdomain[-1])`. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLR1714 | 16 | 16 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.8±0.10ms    10.7 MB/sec    1.03      3.9±0.07ms    10.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   809.7±20.43µs    20.6 MB/sec    1.03   833.9±14.49µs    20.0 MB/sec
+formatter/numpy/globals.py                 1.01     89.0±2.02µs    33.1 MB/sec    1.00     88.3±2.78µs    33.4 MB/sec
+formatter/pydantic/types.py                1.00  1598.0±50.51µs    16.0 MB/sec    1.02  1627.9±31.52µs    15.7 MB/sec
+linter/all-rules/large/dataset.py          1.06     12.3±0.19ms     3.3 MB/sec    1.00     11.6±0.19ms     3.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.2±0.06ms     5.2 MB/sec    1.00      3.2±0.06ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01    451.4±9.25µs     6.5 MB/sec    1.00   449.0±10.21µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.3±0.13ms     4.1 MB/sec    1.00      6.1±0.10ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.07      6.7±0.10ms     6.1 MB/sec    1.00      6.3±0.09ms     6.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1462.8±30.28µs    11.4 MB/sec    1.00  1409.9±19.34µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.2±4.54µs    17.9 MB/sec    1.00    165.2±4.15µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.05      3.0±0.05ms     8.4 MB/sec    1.00      2.9±0.04ms     8.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.4±0.19ms     9.2 MB/sec    1.02      4.5±0.17ms     9.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   910.6±31.93µs    18.3 MB/sec    1.00   908.5±25.44µs    18.3 MB/sec
+formatter/numpy/globals.py                 1.00     94.1±2.55µs    31.4 MB/sec    1.01     95.2±4.36µs    31.0 MB/sec
+formatter/pydantic/types.py                1.00  1830.2±64.12µs    13.9 MB/sec    1.02  1866.8±60.21µs    13.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.4±0.52ms     2.6 MB/sec    1.01     15.5±0.45ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.19ms     4.0 MB/sec    1.02      4.3±0.21ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   528.0±21.73µs     5.6 MB/sec    1.22  642.5±352.85µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.4±0.53ms     3.1 MB/sec    1.21     10.1±3.47ms     2.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.20ms     4.8 MB/sec    1.05      8.9±0.96ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1810.1±44.79µs     9.2 MB/sec    1.00  1811.3±49.11µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    214.7±7.28µs    13.7 MB/sec    1.00   215.4±10.31µs    13.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.10ms     6.7 MB/sec    1.03      3.9±0.21ms     6.5 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @tjkuson on 2023-08-19 15:03_
+
+The results from the ecosystem check seem sensible, unless people object to writing stuff like `0 in (foo, bar)`.
+
+---
+
+_Review requested from @charliermarsh by @charliermarsh on 2023-08-20 14:43_
+
+---
+
+_@charliermarsh reviewed on 2023-08-20 14:58_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:112 on 2023-08-20 14:58_
+
+@tjkuson - What do you think of this? It's a bit closer to the previous version: we just track the comparators with the thing they're compared against (and this time, including the RHS), then raise if any comparator is used multiple times.
+
+---
+
+_@charliermarsh reviewed on 2023-08-20 14:59_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/resources/test/fixtures/pylint/repeated_equality_comparison_target.py`:24 on 2023-08-20 14:59_
+
+We have odd behavior for this kind of thing on `main` already:
+
+```
+         49 │+repeated_equality_comparison_target.py:40:1: PLR1714 Consider merging multiple comparisons: `foo in ("a", "b")`. Use a `set` if the elements are hashable.
+         50 │+   |
+         51 │+38 | foo == bar == "b" or foo == "c"  # Multiple comparisons.
+         52 │+39 |
+         53 │+40 | foo == "a" or foo == "b" or bar == "c" or bar == "d"  # Multiple targets
+         54 │+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ PLR1714
+         55 │+   |
+         56 │+
+         57 │+repeated_equality_comparison_target.py:40:1: PLR1714 Consider merging multiple comparisons: `bar in ("c", "d")`. Use a `set` if the elements are hashable.
+         58 │+   |
+         59 │+38 | foo == bar == "b" or foo == "c"  # Multiple comparisons.
+         60 │+39 |
+         61 │+40 | foo == "a" or foo == "b" or bar == "c" or bar == "d"  # Multiple targets
+         62 │+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ PLR1714
+```
+
+It's not _awful_ because it's not like we autofix this and remove the comparisons, but it'd be nice to have a more targeted range. Anyway...
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-20 14:59_
+
+---
+
+_Merged by @charliermarsh on 2023-08-23 03:45_
+
+---
+
+_Closed by @charliermarsh on 2023-08-23 03:45_
+
+---
+
+_Comment by @tjkuson on 2023-08-23 18:32_
+
+Apologies for not getting back to you on this, I was/am on holiday and forgot to add a GitHub notification!
+
+---
+
+_Comment by @tjkuson on 2023-08-23 18:33_
+
+Apologies for not getting back to you on this, I was/am on holiday away from my computer and forgot to add a GitHub notification!
+
+---
+
+_Comment by @charliermarsh on 2023-08-23 18:46_
+
+No prob! Enjoy your holiday :) I just biased towards merging after a few days with the thinking that we can always revisit later.
+
+---
+
+_Branch deleted on 2023-08-29 10:44_
+
+---

@@ -1,0 +1,209 @@
+```yaml
+number: 6858
+title: Avoid parsing other parts of a format specification if replacements are present
+type: pull_request
+state: merged
+author: zanieb
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: fix/format-spec
+created_at: 2023-08-24T19:31:35Z
+updated_at: 2023-08-25T17:57:51Z
+url: https://github.com/astral-sh/ruff/pull/6858
+synced_at: 2026-01-12T02:45:38Z
+```
+
+# Avoid parsing other parts of a format specification if replacements are present
+
+---
+
+_Pull request opened by @zanieb on 2023-08-24 19:31_
+
+Closes #6767
+Replaces https://github.com/astral-sh/ruff/pull/6773 (this cherry-picks some parts from there)
+Alternative to the approach introduced in #6616 which added support for placeholders in format specifications while retaining parsing of other format specification parts.
+
+The idea is that if there are placeholders in a format specification we will not attempt to glean semantic meaning from the other parts of the format specification we'll just extract all of the placeholders ignoring other characters. The dynamic content of placeholders can drastically change the meaning of the format specification in ways unknowable by static analysis. This change prevents false analysis and will ensure safety if we build other rules on top of this at the cost of missing detection of some bad specifications.
+
+Minor note: I've use "replacements" and "placeholders" interchangeably but am trying to go with "placeholder" as I think it's a better term for the static analysis concept here
+
+---
+
+_Review requested from @charliermarsh by @zanieb on 2023-08-24 19:41_
+
+---
+
+_@zanieb reviewed on 2023-08-24 19:42_
+
+---
+
+_Review comment by @zanieb on `crates/ruff_python_literal/src/format.rs`:954 on 2023-08-24 19:42_
+
+Here's an example case where we no longer detect invalid format type specifications because there was a replacement earlier — this is a trade-off for generally safer analysis.
+
+---
+
+_@zanieb reviewed on 2023-08-24 19:42_
+
+---
+
+_Review comment by @zanieb on `crates/ruff_python_literal/src/format.rs`:816 on 2023-08-24 19:42_
+
+Here we lose all these additional fields which were correct in this test but _could_ be wrong depending on the dynamic content of the placeholder.
+
+---
+
+_Label `bug` added by @zanieb on 2023-08-24 19:45_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-24 19:55_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04      5.3±0.09ms     7.6 MB/sec    1.00      5.2±0.06ms     7.9 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1055.0±3.85µs    15.8 MB/sec    1.00  1041.2±14.72µs    16.0 MB/sec
+formatter/numpy/globals.py                 1.08    107.0±6.56µs    27.6 MB/sec    1.00     99.2±1.34µs    29.7 MB/sec
+formatter/pydantic/types.py                1.09      2.1±0.14ms    11.9 MB/sec    1.00  1972.2±25.70µs    12.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.6±0.20ms     3.5 MB/sec    1.08     12.5±0.64ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.1±0.04ms     5.4 MB/sec    1.08      3.3±0.11ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    448.1±4.94µs     6.6 MB/sec    1.02    458.4±1.65µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.09ms     4.2 MB/sec    1.05      6.4±0.10ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.1±0.07ms     6.7 MB/sec    1.05      6.4±0.11ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1356.8±15.71µs    12.3 MB/sec    1.03   1395.8±7.68µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.01    163.6±0.59µs    18.0 MB/sec    1.00    161.8±2.24µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.02ms     8.9 MB/sec    1.02      2.9±0.08ms     8.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.3±0.11ms     7.7 MB/sec    1.00      5.3±0.17ms     7.7 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1029.8±32.42µs    16.2 MB/sec    1.00  1024.3±27.21µs    16.3 MB/sec
+formatter/numpy/globals.py                 1.00     97.8±3.29µs    30.2 MB/sec    1.01     98.8±5.43µs    29.9 MB/sec
+formatter/pydantic/types.py                1.00  1983.0±45.52µs    12.9 MB/sec    1.00  1982.5±57.70µs    12.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.6±0.16ms     3.2 MB/sec    1.01     12.7±0.20ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.05ms     4.8 MB/sec    1.01      3.5±0.09ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   431.6±10.74µs     6.8 MB/sec    1.01    435.3±9.36µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.14ms     3.9 MB/sec    1.01      6.6±0.13ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.13ms     5.8 MB/sec    1.00      7.0±0.12ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1503.2±36.14µs    11.1 MB/sec    1.01  1517.2±43.22µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    177.2±6.23µs    16.6 MB/sec    1.00    176.0±4.86µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.06ms     8.1 MB/sec    1.00      3.1±0.06ms     8.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_python_literal/src/format.rs`:360 on 2023-08-25 04:01_
+
+Nit: I think you could now consider having `consume_all_placeholders` return a vector rather than taking `&mut Vec` and returning text, since you won't use the remaining text if it returns anything.
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_python_literal/src/format.rs`:353 on 2023-08-25 04:10_
+
+Since you mentioned that this felt awkward to you in the prior PR, I tried to simplify it a little by using the text directly:
+
+```rust
+/// Parses a format part within a format spec
+fn parse_nested_placeholder(text: &str) -> Result<Option<(FormatPart, &str)>, FormatSpecError> {
+    match FormatString::parse_spec(text, AllowPlaceholderNesting::No) {
+        // Not a nested placeholder, OK
+        Err(FormatParseError::MissingStartBracket) => Ok(None),
+        Err(err) => Err(FormatSpecError::InvalidPlaceholder(err)),
+        Ok((format_part, text)) => Ok(Some((format_part, text))),
+    }
+}
+
+/// Parse and consume all placeholders in a format spec
+/// This will also consume any intermediate characters such as `x` and `y` in `"x{foo}y{bar}z"`
+/// If no placeholders are present, the text will be returned unmodified.
+fn consume_all_placeholders(mut text: &str) -> Result<Vec<FormatPart>, FormatSpecError> {
+    let mut placeholders = vec![];
+    while let Some(bracket) = text.find('{') {
+        if let Some((format_part, rest)) = parse_nested_placeholder(&text[bracket..])? {
+            text = rest;
+            placeholders.push(format_part);
+        } else {
+            text = &text[bracket + 1..];
+        }
+    }
+    Ok(placeholders)
+}
+```
+
+Don't feel strongly, only a suggestion.
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_python_literal/src/format.rs`:358 on 2023-08-25 04:11_
+
+Should we not run this loop "for every `{`", rather than "for every character, as long as there's a `{` somewhere later on in the string"?
+
+---
+
+_@charliermarsh approved on 2023-08-25 04:11_
+
+Looks great!
+
+---
+
+_@zanieb reviewed on 2023-08-25 16:04_
+
+---
+
+_Review comment by @zanieb on `crates/ruff_python_literal/src/format.rs`:358 on 2023-08-25 16:04_
+
+Yeah that's true we're doing unnecessary calls to `parse_nested_placeholder` here and we should be able to scan forward to avoid that.
+
+---
+
+_@zanieb reviewed on 2023-08-25 16:04_
+
+---
+
+_Review comment by @zanieb on `crates/ruff_python_literal/src/format.rs`:353 on 2023-08-25 16:04_
+
+I'll study this :) thank you!
+
+---
+
+_@zanieb reviewed on 2023-08-25 16:04_
+
+---
+
+_Review comment by @zanieb on `crates/ruff_python_literal/src/format.rs`:360 on 2023-08-25 16:04_
+
+👍 
+
+---
+
+_Comment by @zanieb on 2023-08-25 16:28_
+
+#6877 fixes CI
+
+---
+
+_Merged by @zanieb on 2023-08-25 17:42_
+
+---
+
+_Closed by @zanieb on 2023-08-25 17:42_
+
+---
+
+_Branch deleted on 2023-08-25 17:42_
+
+---
