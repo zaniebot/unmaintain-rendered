@@ -70,10 +70,32 @@ def bing():
 <p>I'm currently working on adding a couple maps to symbol tables that will track &quot;reference -&gt; definition in enclosing scope&quot; and &quot;definition -&gt; references in nested scopes&quot;, and it might be easier to fix this once that change lands. I'll link it here when I put up a PR. cc @mtshiba</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/udifuchs">@udifuchs</a> on 2026-01-10 17:55</div>
+            <div class="timeline-body"><p>This issue bit me in an annoying way. My tests have code which is equivalent to:</p>
+<pre><code class="language-py">def test() -&gt; None:
+    x = &quot;hello&quot;
+    y: int = 1
+
+    def inner_test() -&gt; None:
+        nonlocal x
+        x = &quot;world&quot;
+
+    inner_test()
+    assert x == &quot;world&quot;
+
+    y = &quot;2&quot;  # Should be: Object of type `Literal[&quot;2&quot;]` is not assignable to `int`
+</code></pre>
+<p><code>ty</code> assumes that <code>x</code> does not change and therefore treats all code after the <code>assert</code> as unreachable.
+This causes <code>ty</code> to silently ignore all type errors after the <code>assert</code>.</p>
+<p>There is a PR to fix this issue in astral-sh/ruff#19820.  But it seems dormant.
+I think that issue deserves a milestone tag.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 02:11:21 UTC
+        Synced at 2026-01-12 02:26:57 UTC
     </footer>
 </body>
 </html>

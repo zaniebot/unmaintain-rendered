@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unannotated implicit instance attributes: consider prioritising the inferred type in constructor methods over the inferred type in other methods - astral-sh/ty #2446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unannotated implicit instance attributes: consider prioritising the inferred type in constructor methods over the inferred type in other methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2446">#2446</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-11 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 14:03</div>
+            <div class="timeline-body"><p>Currently, if an instance attribute is not annotated in a class's body or in any of its methods, ty infers the type of that attribute as the union of all assignments to that attribute inside the class. Assignments in constructor methods are treated identically to assignments in other methods. For example:</p>
+<pre><code class="language-py">class A:
+    def __init__(self, x: int):
+        self.x = x
+
+class B:
+    def foo(self):
+        self.x = 42
+
+class C:
+    def __init__(self, x: int):
+        self.x = x
+
+    def foo(self):
+        self.x = &quot;foo&quot;
+
+class D:
+    def foo(self):
+        self.x = 42
+
+    def bar(self):
+        self.x = &quot;bar&quot;
+
+reveal_type(A(42).x)  # revealed: Unknown | int
+reveal_type(B().x)  # revealed: Unknown | Literal[42]
+reveal_type(C(42).x)  # revealed: Unknown | int | Literal[&quot;foo&quot;]
+reveal_type(D().x)  # revealed: Unknown | Literal[42, &quot;bar&quot;]
+</code></pre>
+<p>Once https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 has been implemented, the revealed types will change to:</p>
+<pre><code class="language-py">reveal_type(A(42).x)  # revealed: int
+reveal_type(B().x)  # revealed: int
+reveal_type(C(42).x)  # revealed: int | str
+reveal_type(D().x)  # revealed: int | str
+</code></pre>
+<p>But while I would be happy with the inferred types for <code>A</code>, <code>B</code> and <code>D</code> there, I'm still not sure that this is what most users would expect or want for <code>C</code>. I think most users would probably consider their <code>C</code> class to be fully typed, and would want the type checker to complain about the assignment of a string in the <code>C.foo</code> method, because it is inconsistent with the inferred type of the attribute when it was assigned in <code>__init__</code>. While in principle there is nothing special about <code>__init__</code> when it comes to setting attributes, in practice most Python developers declare and assign most instance attributes in <code>__init__</code> and think of unannotated attribute assignments to <code>self</code> in these methods as having similar status to a &quot;declaration&quot; of the attribute.</p>
+<p>I therefore propose that for instance attributes which:</p>
+<ol>
+<li>Have no explicit annotation in any method or the class body, and</li>
+<li>Are assigned in <code>__init__</code> and/or <code>__new__</code>,</li>
+</ol>
+<p>we simply ignore the inferred type of assignments in any other methods and treat the &quot;declared type&quot; of that attribute as the type that was assigned in <code>__init__</code> and/or <code>__new__</code>. This would lead us to reject the <code>self.x</code> assignment in <code>C.foo</code> and infer the following types:</p>
+<pre><code class="language-py">reveal_type(A(42).x)  # revealed: int
+reveal_type(B().x)  # revealed: int
+reveal_type(C(42).x)  # revealed: int
+reveal_type(D().x)  # revealed: int | str
+</code></pre>
+<p>It would bring us closer to <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=3fe94795c0019335686cbc0efcc8e437">mypy's behaviour</a> -- but, unlike mypy, I would want to retain our current behaviour for the <code>D</code> class and not emit a diagnostic on <code>D.foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2026-01-11 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2026-01-11 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2026-01-11 14:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:26:57 UTC
+    </footer>
+</body>
+</html>

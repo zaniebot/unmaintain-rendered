@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe places to totally stop unioning with `Unknown` and maybe infer more precise types - astral-sh/ty #2441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Safe places to totally stop unioning with <code>Unknown</code> and maybe infer more precise types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2441">#2441</a>
+        opened by <a href="https://github.com/hamdanal">@hamdanal</a>
+        on 2026-01-11 09:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hamdanal">@hamdanal</a> on 2026-01-11 09:21</div>
+            <div class="timeline-body"><p>#1240 suggests to stop adding <code>| Unknown</code> in places where ty currently adds it for better gradual typing.
+https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 is a recent great news in this regard as it proposes a very well thought solution - to stop adding the union with <code>Unknown</code> except for certain cases where the assigned value is a singleton like <code>None</code>. There are some places where even this special case isn't needed as the value used if final somewhat, either by being assigned to a <code>Final</code> target or by being a never-assigned throwaway expression. Here is a non-exhaustive list of these places:</p>
+<pre><code class="language-py">from typing import Final, reveal_type
+
+# Final variable
+_1: Final = reveal_type([1, 2, 3])
+
+# Throwaway loop iterable
+for _2 in reveal_type([1, 2, 3]): ...
+
+# Throwaway comprehension loop iterable
+_3 = [_ for _ in reveal_type([1, 2, 3])]
+
+# Throwaway function argument
+_4 = map(str, reveal_type([1, 2, 3]))
+</code></pre>
+<p>All these <code>reveal_type</code> currently reveal <code>list[Unknown | int]</code>. With the solution proposed in https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 they will become <code>list[int]</code>. However, if we replace <code>[1, 2, 3]</code> by , say, <code>[None]</code> the <code>Unknown</code> union will still be used. I think that won't be necessary with no fallout as the value in these cases is kind of &quot;final&quot;. I'd also argue that a more precise type could be inferred here, like <code>list[Literal[1, 2, 3]]</code> in the examples above (well, maybe, unless I am missing something).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 09:34</div>
+            <div class="timeline-body"><p>Hmm, but <code>Final</code> doesn't mean immutable — it just means that the variable can't be reassigned. I wouldn't want to emit false-positive diagnostics on things like this:</p>
+<pre><code class="language-py">X: Final = [None, None, None]
+
+if foo:
+    X[1] = Foo
+
+</code></pre>
+<p>Or this:</p>
+<pre><code class="language-py">X: Final = [None, None, None]
+
+if foo:
+    X.append(42)
+</code></pre>
+<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you'd basically never iterate over a throwaway list that only contains <code>None</code>, so I don't think we'd be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we've implemented https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren't too large</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hamdanal">@hamdanal</a> on 2026-01-11 09:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, but <code>Final</code> doesn't mean immutable — it just means that the variable can't be reassigned.</p>
+</blockquote>
+<p>I was sure I missed something!</p>
+<blockquote>
+<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you'd basically never iterate over a throwaway list that only contains <code>None</code>, so I don't think we'd be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we've implemented <a href="https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824">#1240 (comment)</a>. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren't too large</p>
+</blockquote>
+<p>Sounds reasonable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 14:13</div>
+            <div class="timeline-body"><p>The proposal to avoid <code>Literal</code> promotion in cases of &quot;throwaway&quot; list/dict/set literals like <code>for x in [1, 2, 3]</code> is similar to https://github.com/astral-sh/ty/issues/2280, where the request is for us to avoid <code>Literal</code> promotion for</p>
+<pre><code class="language-py">x = frozenset({1, 2, 3})
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:26:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewrite ecosystem checks and add `ruff format` reports - astral-sh/ruff #8223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rewrite ecosystem checks and add <code>ruff format</code> reports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8223">#8223</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-25 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-25 17:47</div>
+            <div class="timeline-body"><p>Closes #7239</p>
+<ul>
+<li>Refactors <code>scripts/check_ecosystem.py</code> into a new Python project at <code>python/ruff-ecosystem</code><ul>
+<li>Includes <a href="https://github.com/astral-sh/ruff/blob/zanie/ecosystem-format/python/ruff-ecosystem/README.md">documentation</a> now</li>
+<li>Provides a <code>ruff-ecosystem</code> CLI</li>
+</ul>
+</li>
+<li>Fixes bug where <code>ruff check</code> report included &quot;fixable&quot; summary line</li>
+<li>Adds truncation to <code>ruff check</code> reports<ul>
+<li>Otherwise we often won't see the <code>ruff format</code> reports</li>
+<li>The truncation uses some very simple heuristics and could be improved in the future</li>
+</ul>
+</li>
+<li>Identifies diagnostic changes that occur just because a violation's fix available changes<ul>
+<li>We still show the diff for the line because it's could matter <em>where</em> this changes, but we could improve this</li>
+<li>Similarly, we could improve detection of diagnostic changes where just the message changes</li>
+</ul>
+</li>
+<li>Adds support for JSON ecosystem check output<ul>
+<li>I added this primarily for development purposes</li>
+</ul>
+</li>
+<li>If there are no changes, only errors while processing projects, we display a different summary message</li>
+<li>When caching repositories, we now checkout the requested ref</li>
+<li>Adds <code>ruff format</code> reports, which format with the baseline then the use <code>format --diff</code> to generate a report</li>
+<li>Runs all CI jobs when the CI workflow is changed</li>
+</ul>
+<h2>Known problems</h2>
+<ul>
+<li>Since we must format the project to get a baseline, the permalink line numbers do not exactly correspond to the correct range<ul>
+<li>This looks... hard. I tried using <code>git diff</code> and some wonky hunk matching to recover the original line numbers but it doesn't seem worth it. I think we should probably commit the formatted changes to a fork or something if we want great results here. Consequently, I've just used the start line instead of a range for now.</li>
+</ul>
+</li>
+<li>I don't love the comment structure — it'd be nice, perhaps, to have separate headings for the linter and formatter.<ul>
+<li>However, the <code>pr-comment</code> workflow is an absolute pain to change because it runs <em>separately</em> from this pull request so I if I want to make edits to it I can only test it via manual workflow dispatch.</li>
+</ul>
+</li>
+<li>Lines are not printed &quot;as we go&quot; which means they're all held in memory, presumably this would be a problem for large-scale ecosystem checks</li>
+<li>We are encountering a hard limit with the maximum comment length supported by GitHub. We will need to move the bulk of the report elsewhere.</li>
+</ul>
+<h2>Future work</h2>
+<ul>
+<li>Update <code>ruff-ecosystem</code> to support non-default projects and <code>check_ecosystem_all.py</code> behavior</li>
+<li>Remove existing ecosystem check scripts</li>
+<li>Add preview mode toggle (#8076)</li>
+<li>Add a toggle for truncation</li>
+<li>Add hints for quick reproduction of runs locally</li>
+<li>Consider parsing JSON output of Ruff instead of using regex to parse the text output</li>
+<li>Links to project repositories should use the commit hash we checked against</li>
+<li>When caching repositories, we should pull the latest changes for the ref</li>
+<li>Sort check diffs by path and rule code only (changes in messages should not change order)</li>
+<li>Update check diffs to distinguish between new violations and changes in messages</li>
+<li>Add &quot;fix&quot; diffs</li>
+<li>Remove existing formatter similarity reports</li>
+<li>On release pull request, compare to the previous tag instead</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-25 18:41</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2023-10-25 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-26 23:49</div>
+            <div class="timeline-body"><p>I heaven't read all the code but I find it much easier to quickly identify the relevant code parts that are responsible or X compared to before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>python/ruff-ecosystem/README.md</code>:3 on 2023-10-27 08:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Compare lint and format results for two different ruff versions (e.g. main and a PR) on real world projects.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>python/ruff-ecosystem/ruff_ecosystem/check.py</code>:246 on 2023-10-27 08:11</div>
+            <div class="timeline-body"><p>got confused that this is frozen when we later use its interior mutability a lot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>python/ruff-ecosystem/ruff_ecosystem/check.py</code>:270 on 2023-10-27 08:13</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">            return TypeError
+</code></pre>
+<p>That's TRY004 :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>python/ruff-ecosystem/ruff_ecosystem/format.py</code>:27 on 2023-10-27 08:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-27 09:03</div>
+            <div class="timeline-body"><p>very clean code!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 09:04</div>
+            <div class="timeline-body"><blockquote>
+<p>very clean code!</p>
+</blockquote>
+<p>That means a lot if comes from @konstin !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-27 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/ruff-ecosystem/ruff_ecosystem/check.py</code>:270 on 2023-10-27 16:53</div>
+            <div class="timeline-body"><p>I think not here https://docs.python.org/3.11/library/constants.html#NotImplemented</p>
+<p>Although <code>raise TypeError</code> would be fine, this is &quot;more correct&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-27 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-27 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-27 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-27 22:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:26:51 UTC
+    </footer>
+</body>
+</html>

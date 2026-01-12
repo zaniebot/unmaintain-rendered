@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope - astral-sh/ty #2438</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2438">#2438</a>
+        opened by <a href="https://github.com/nemowang2003">@nemowang2003</a>
+        on 2026-01-11 02:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nemowang2003">@nemowang2003</a> on 2026-01-11 02:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Description</h1>
+<p>I have found a minimal reproduction where a <code>try-except</code> block placed <strong>before</strong> an import causes type inference ambiguity inside a function scope.</p>
+<p>The issue specifically occurs when the imported object shares the same name as the module it is imported from (shadowing).</p>
+<h1>Minimal Reproducible Example</h1>
+<h3>File Structure:</h3>
+<pre><code class="language-text">repro/src/
+├── __init__.py
+└── demo.py
+</code></pre>
+<pre><code class="language-python"># __init__.py
+
+try:
+    pass
+except Exception:
+    pass
+
+import typing
+
+from .demo import demo
+
+typing.reveal_type(demo)  # Literal[42]
+
+
+def main() -&gt; None:
+    typing.reveal_type(demo)  # &lt;module 'repro.demo'&gt; | Literal[42]
+
+# demo.py
+
+demo = 42
+</code></pre>
+<h1>Investigation Notes</h1>
+<p>Order is critial. If the <code>try-except</code> block is moved <strong>after</strong> the import, the issue disappears.</p>
+<h3>Version</h3>
+<p>ty 0.0.11 (Homebrew 2026-01-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nemowang2003">@nemowang2003</a> on 2026-01-11 02:30</div>
+            <div class="timeline-body"><p>Using <code>from .demo import demo as var</code> and <code>typing.reveal_type(var)</code> in <code>main</code> would also fix this. So I think it's somehow related to shadowing.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:26:57 UTC
+    </footer>
+</body>
+</html>

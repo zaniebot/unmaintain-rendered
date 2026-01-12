@@ -96,10 +96,28 @@ test(MyStr(&quot;something else&quot;))  # returns MyStr(&quot;something else&qu
 <p>The advantage of this approach is that people who aren't worried about the unsoundness and want to match pyright behavior can always just turn off the &quot;unsafe subclass&quot; warning and still get the narrowing.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yilei">@yilei</a> on 2026-01-12 01:40</div>
+            <div class="timeline-body"><p>We have a similar use case (several tens of errors in our codebase) for <code>dict[Literal[&quot;a&quot;, &quot;b&quot;, ...], T]</code>, something like:</p>
+<pre><code class="language-python">from typing import Literal, TypeAlias
+
+ConfigType: TypeAlias = Literal[&quot;dev&quot;, &quot;staging&quot;, &quot;prod&quot;]  # Reusable alias
+CONFIGS: dict[ConfigType, int] = {&quot;dev&quot;: 1, &quot;staging&quot;: 2, &quot;prod&quot;: 3}
+
+
+def get_config(name: str) -&gt; int | None:
+    if name in CONFIGS:
+        # error[invalid-argument-type]: Method `__getitem__` of type `bound method dict[Literal[&quot;dev&quot;, &quot;staging&quot;, &quot;prod&quot;], int].__getitem__(key: Literal[&quot;dev&quot;, &quot;staging&quot;, &quot;prod&quot;], /) -&gt; int` cannot be called with key of type `str` on object of type `dict[Literal[&quot;dev&quot;, &quot;staging&quot;, &quot;prod&quot;], int]`
+        return CONFIGS[name]
+    # Do something else ...
+    return None
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:53:03 UTC
+        Synced at 2026-01-12 02:26:57 UTC
     </footer>
 </body>
 </html>

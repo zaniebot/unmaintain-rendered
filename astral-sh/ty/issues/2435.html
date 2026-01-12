@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>total_ordering when mixed with literals fails - astral-sh/ty #2435</title>
+    <title>`total_ordering` generated methods should derive their signature from the user-provided comparison method - astral-sh/ty #2435</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,10 +11,10 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>total_ordering when mixed with literals fails</h1>
+    <h1><code>total_ordering</code> generated methods should derive their signature from the user-provided comparison method</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ty/issues/2435">#2435</a>
         opened by <a href="https://github.com/behrmann">@behrmann</a>
         on 2026-01-10 12:26
@@ -68,10 +68,68 @@ print(a &lt;= b)
 <p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 12:33</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Cc. @charliermarsh. The generated <code>__le__</code> method currently has a different signature to the user-provided <code>__lt__</code> method, but it should have the same signature:</p>
+<pre><code class="language-py">import functools
+
+@functools.total_ordering
+class Comparable:
+    def __init__(self, value: int):
+        self.value = value
+
+    def __eq__(self, other: object) -&gt; bool:
+        if isinstance(other, Comparable):
+            return self.value == other.value
+        if isinstance(other, int):
+            return self == Comparable(other)
+        return False
+
+    def __lt__(self, other: object) -&gt; bool:
+        if isinstance(other, Comparable):
+            return self.value &lt; other.value
+        if isinstance(other, int):
+            return self &lt; Comparable(other)
+        return False
+
+reveal_type(Comparable.__lt__)  # revealed: `def __lt__(self, other: object) -&gt; bool`
+reveal_type(Comparable.__le__)  # revealed: `(self: Comparable, other: Comparable) -&gt; bool`
+
+a = Comparable(1)
+b = 2
+
+print(a &lt;= b)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2026-01-10 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2026-01-10 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "total_ordering when mixed with literals fails" to "`total_ordering` generated methods should derive their signature from the user-provided comparison method" by @AlexWaygood on 2026-01-10 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2026-01-10 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-10 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-10 13:04</div>
+            <div class="timeline-body"><p>Will fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-10 19:35</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 12:30:25 UTC
+        Synced at 2026-01-12 02:26:57 UTC
     </footer>
 </body>
 </html>

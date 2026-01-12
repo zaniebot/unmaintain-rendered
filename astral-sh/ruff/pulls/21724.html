@@ -368,10 +368,39 @@ index 717c805721..47e1e7352d 100644
             <div class="timeline-body"><p>I have <code>options=metadata,uid=1000,gid=100</code>, the uid/gid stuff is just NixOS weirdness for historical reasons.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 14:25</div>
+            <div class="timeline-body"><p>Thanks - think I've got it now... I see that NixOS <a href="https://nix-community.github.io/NixOS-WSL/options.html#wslwslconfautomountenabled">defaults metadata enabled</a>, unlike the <a href="https://learn.microsoft.com/en-us/windows/wsl/wsl-config?source=recommendations#automount-options">base WSL default</a>, and for various reasons you have chosen/need to keep your code on an NTFS partition rather than the native linux one.</p>
+<ol>
+<li><p>I'm assuming from your comments above that you usually clone with linux git. So in your case your system usually behaves like the native WSL case and either of the PRs give you valid lints, status quo gives you potentially false negatives (?)</p>
+</li>
+<li><p>I don't have git for windows installed, but from looking at <a href="https://github.com/astral-sh/ruff/pull/21724#issuecomment-3734341168">your example under <code>d/test/chaintsu-master</code></a> it appears that cloning to an NTFS partition under windows doesn't add xattr info to maintain the *nix exe-bit. I'm assuming this is not your usual workflow(?)</p>
+<ul>
+<li>I'd expect that this could get messy quickly, as any future <code>git pull</code>s inside WSL will update file permissions for added/changed files that it retrieves from the remote, and any new files will not have 0644 perms. These perms will persist thanks to the metadata setting. <strong>&lt;-- <em>Could you confirm that easily?</em></strong></li>
+<li>As you say, there's no decent heuristic available to help in this situation. So the only option would be a command-line-option/environment-variable. I looked into this and dropped it as doing it nicely and well documented affects a lot more code and forces the option to also be exposed via the config files. It's doable but at a higher cost to the maintainers ...</li>
+<li>There is an argument to say that anyone working this way hopefully understands the consequences of their setup choices and will be in a small minority. Personally, I never like taking that attitude if it can be avoided ...</li>
+</ul>
+</li>
+</ol>
+<p>If I've understood things correctly this means we have the following situation:
+| | WSL user, WSL FS (#10084) | Linux user USB stick (#12941) | WSL user, Win FS (#3110, #5445) | WSL user, metadata (@k900) | WSL user, metadata, cloned on Win |
+| -- | -- | -- | -- | -- | -- |
+| Status Quo | :exclamation: (false negatives) | :x: (false positives) | :exclamation: (false negatives) | :exclamation: (false negatives) | :exclamation: (false negatives) |
+| #17548 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :exclamation: (false negatives) |
+| #21724 | :white_check_mark: | :x: (false positives) | :x: (false positives) | :white_check_mark: | :exclamation: (false negatives) |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 14:31</div>
+            <div class="timeline-body"><p>To be clear, this is not my actual setup that I actually use, it's a setup that I assume people ran into which led to the initial change. However, it's also yet another proof that guessing &quot;is the filesystem broken&quot; in the general case is impossible (even ignoring all kinds of obviously-pathological things like FileStation 9000 which returns random permission bits on every read).</p>
+<p>My normal usage of Ruff doesn't actually trigger this bug - I've run into it because I occasionally build NixOS from source on my WSL systems, and Ruff fails <em>in its own tests</em> because those are not designed to run under WSL.</p>
+<p>Also, Git knows nothing about the NTFS Unix-permission xattrs, so it never writes or updates them for any reason, meaning newly added files (if pulled from Windows) will be 0755, and any updated files will keep their existing permissions (unless moved, possibly?). Teaching Git about these xattrs is another thing that could probably improve things a lot, but not my can and not my worms.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 02:13:32 UTC
+        Synced at 2026-01-12 02:26:54 UTC
     </footer>
 </body>
 </html>
